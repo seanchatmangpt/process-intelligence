@@ -47,3 +47,7 @@
 ### Classify: de_medeiros_2007_genetic_miner
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: gunther_2007_fuzzy_miner
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
