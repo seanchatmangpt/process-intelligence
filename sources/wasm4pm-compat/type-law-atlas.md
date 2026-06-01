@@ -7,3 +7,6 @@
 
 * **Step: map witness lattice**
   - Evaluating type safety and witness validations.
+
+* **Step: map Evidence<T, State, Witness>**
+  - Evaluating type safety and witness validations.
