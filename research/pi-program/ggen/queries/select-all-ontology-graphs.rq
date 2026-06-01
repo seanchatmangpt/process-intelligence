@@ -1,0 +1,15 @@
+# Selection Query: All Ontology Graphs
+# Returns all ontology definitions with their namespaces and definitions
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?ontology ?label ?namespace ?version
+WHERE {
+  ?ontology a ggen:Ontology .
+  OPTIONAL { ?ontology rdfs:label ?label }
+  OPTIONAL { ?ontology ggen:namespace ?namespace }
+  OPTIONAL { ?ontology owl:versionInfo ?version }
+}
+ORDER BY ?ontology

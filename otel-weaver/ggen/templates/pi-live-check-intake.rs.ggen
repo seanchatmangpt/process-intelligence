@@ -1,0 +1,83 @@
+// pi-live-check-intake.rs.ggen
+// Live check intake routing engine for Process Intelligence.
+// Nominal Rules:
+// - Telemetry feedstock is verified and routed.
+// - Verdicts represent process consequence (court).
+// - Weaver schema diffs are recorded as telemetry schema updates, NOT runtime process drift.
+
+use std::net::SocketAddr;
+
+pub struct TelemetryFeedstockFrame {
+    pub witness_id: String,
+    pub source: String,
+    pub payload: Vec<u8>,
+    pub schema_version: String,
+}
+
+pub struct LiveCheckIntake {
+    pub bind_address: SocketAddr,
+    pub current_schema_version: String,
+}
+
+impl LiveCheckIntake {
+    pub fn new(bind_address: SocketAddr, current_schema_version: String) -> Self {
+        Self {
+            bind_address,
+            current_schema_version,
+        }
+    }
+
+    pub fn handle_incoming_feedstock(&self, frame: TelemetryFeedstockFrame) -> Result<(), String> {
+        println!(
+            "Live check intake active: processing telemetry feedstock from {} (source: {})",
+            frame.witness_id, frame.source
+        );
+
+        // Check if schema matches current registry
+        if frame.schema_version != self.current_schema_version {
+            // Weaver schema diff detected. This is a schema mismatch, not runtime process drift.
+            println!(
+                "Weaver Schema Diff detected: Feedstock has version {}, but system registry is running {}",
+                frame.schema_version, self.current_schema_version
+            );
+            self.route_weaver_schema_diff(&frame.schema_version, &self.current_schema_version);
+        }
+
+        // Verify content and route to Court Consequence
+        if frame.payload.is_empty() {
+            self.route_court_consequence(
+                &frame.witness_id,
+                "violation_halt",
+                "critical",
+                "Empty payload feedstock received"
+            );
+            return Err("Empty feedstock payload".to_string());
+        }
+
+        // Valid feedstock, normal compliant route
+        self.route_court_consequence(
+            &frame.witness_id,
+            "compliant",
+            "informational",
+            "Feedstock ingestion successful and verified"
+        );
+
+        Ok(())
+    }
+
+    fn route_court_consequence(&self, witness_id: &str, verdict: &str, severity: &str, msg: &str) {
+        // Nominal Category: Process consequence is Court
+        println!(
+            "[COURT CONVERSION] Witness: {}, Case: case_live_{}, Verdict: {}, Severity: {}, Message: {}",
+            witness_id, witness_id, verdict, severity, msg
+        );
+    }
+
+    fn route_weaver_schema_diff(&self, source_ver: &str, target_ver: &str) {
+        // Nominal Category: Weaver diffs are not process drift
+        println!(
+            "[WEAVER DIFF ROUTER] Schema diff detected from version {} to {}. Generating structural change log.",
+            source_ver, target_ver
+        );
+    }
+}

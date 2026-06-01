@@ -1,0 +1,91 @@
+# otel-signal-to-process-evidence-map.yaml
+# OpenTelemetry Signal (Trace Spans/Metrics) to Process Evidence Mapping
+# Authority: /Users/sac/process-intelligence/otel-weaver/mappings/otel-signal-to-process-evidence-map.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Telemetry is feedstock. Raw spans/metrics are feedstock.
+# - Process consequence is court. Evidence is a court record, backed by conformance checking.
+# - Weaver diffs are not process drift.
+
+version: "1.0.0"
+schema_url: "https://opentelemetry.io/schemas/1.25.0"
+target_schema: "OCEL-2.0"
+authority: "Process Intelligence Research Foundry"
+
+telemetry_to_evidence_projection:
+  metadata:
+    projection_name: "OtelSpanToOcelEventProjection"
+    projection_version: "1.0.3"
+    witness_marker: "OtelSpanToOcelEventProjection" # zero-sized witness type
+    immutable_signature: "SIG_ED25519_550e8400e29b41d4a716446655440000"
+
+  structural_mappings:
+    - otel_source: "TraceID"
+      pi_target: "CaseCorrelationID"
+      description: "Identifies the execution flow across distributed services, mapping to a Case ID or Object ID."
+      transform: "hex_to_string"
+
+    - otel_source: "SpanID"
+      pi_target: "EventTransactionID"
+      description: "Unique event identifier representing a specific execution transaction step."
+      transform: "hex_to_string"
+
+    - otel_source: "ParentSpanID"
+      pi_target: "ParentChildRelation"
+      description: "Defines the preceding execution context, representing edges in the process model."
+      transform: "hex_to_string"
+
+    - otel_source: "SpanName"
+      pi_target: "ActivityLabel"
+      description: "Maps the OTel span operation name directly to the Process Mining activity name."
+      transform: "direct_copy"
+
+    - otel_source: "StartTime"
+      pi_target: "StartEndTimestamp.Start"
+      description: "Records the beginning of the execution step."
+      transform: "epoch_ns_to_rfc3339"
+
+    - otel_source: "EndTime"
+      pi_target: "StartEndTimestamp.End"
+      description: "Records the completion of the execution step."
+      transform: "epoch_ns_to_rfc3339"
+
+    - otel_source: "Attributes"
+      pi_target: "DynamicAttributes"
+      description: "Collects contextual span metadata into dynamic event properties."
+      transform: "map_key_value_pairs"
+
+  timing_constraints:
+    parent_child_timing:
+      formula: "t_start(parent) <= t_start(child) <= t_end(child) <= t_end(parent)"
+      enforcement: "reject_violating_spans"
+      action: "emit_timing_refusal"
+    no_cyclic_dependencies:
+      graph_type: "Directed Acyclic Graph (DAG)"
+      validation: "cycle_detection_dfs"
+      action: "reject_trace"
+
+  loss_policy:
+    policy_name: "OtelToOcelLossPolicy"
+    outputs:
+      - report_type: "LossReport"
+        file_target: "/Users/sac/process-intelligence/checkpoints/otel_loss_reports.json"
+    accounting_rules:
+      span_duration_truncation:
+        action: "truncate_ns_to_us"
+        description: "Nanoseconds to microseconds truncation loss accounted."
+      resource_scope_collapse:
+        action: "collapse_namespaces_to_string"
+        description: "Resource attribute objects collapsed into a flat string."
+      causality_to_correlation_degradation:
+        action: "mark_async_spans_as_correlated"
+        description: "Async child spans mapped as correlated events rather than strict causally-dependent transitions."
+
+  conformance_target:
+    petri_net_reference: "OrderPipelineNet"
+    powl_reference: "/Users/sac/process-intelligence/experiments/powl_projection_sample.md"
+    verification_engine: "wasm4pm"
+    court_verdict_mapping:
+      compliant_replay: "compliant"
+      unfit_replay: "violation_halt"
+      missing_witness: "escalation_warning"

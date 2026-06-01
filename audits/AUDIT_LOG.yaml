@@ -1,0 +1,172 @@
+---
+audit_program: "Van der Aalst Conformance Auditing - Projection Boundaries"
+timestamp: "2026-06-01T17:18:02Z"
+target_crate: "wasm4pm-compat"
+target_path: "/Users/sac/process-intelligence/sources/wasm4pm-compat"
+philosophy: "Fix forward only — every defect requires targeted remediation"
+
+audits:
+  - audit_id: 1
+    audit_name: "NO DTO FLATTENING"
+    audit_file: "audits/audit-no-dto-flattening.txt"
+    policy: "Reject type names that collapse law into casual carriers"
+    forbidden_patterns:
+      - ".*Dto"
+      - "payload_json"
+      - "_json"
+      - "state_tag as String"
+    allowed_carriers:
+      - "EvidenceProjection"
+      - "WitnessKey"
+      - "EvidenceState"
+      - "RefusalReason"
+    result: "FAIL"
+    violations_found: 1
+    violations:
+      - violation_id: "DTO_001"
+        pattern: "_json"
+        severity: "Error"
+        locations:
+          - file: "compat/src/manufacturing/mod.rs"
+            line: 735
+            method: "to_json_string"
+            description: "Method name embeds '_json' suffix, indicating casual JSON serialization"
+          - file: "compat/src/manufacturing/traits.rs"
+            line: 34
+            method: "receipt_json"
+            description: "Trait method name indicates JSON encoding of receipt"
+        rationale: "JSON is a casual carrier; receipts must use structured Evidence<T> not flattened payload_json"
+        remediation: "Rename to_json_string() -> serialize_receipt() and receipt_json() -> encode_receipt_proof()"
+        downstream_impact: "May require API updates to consumers that depend on *_json methods"
+
+  - audit_id: 2
+    audit_name: "NO TOOLS IN COMPAT"
+    audit_file: "audits/audit-no-tool-smuggling.txt"
+    policy: "Forbidden tool functions must not appear in compat; they are graduation signals"
+    forbidden_tools:
+      - name: "simulate_replay"
+        graduation_reason: "NeedsReplay"
+      - name: "compute_alignment"
+        graduation_reason: "NeedsConformanceExecution"
+      - name: "discover_model"
+        graduation_reason: "NeedsDiscovery"
+      - name: "execute_ocpq"
+        graduation_reason: "NeedsObjectCentricQueryExecution"
+      - name: "run_conformance"
+        graduation_reason: "NeedsConformanceExecution"
+      - name: "mint_receipt"
+        graduation_reason: "NeedsReceipts"
+      - name: "benchmark_gate_run"
+        graduation_reason: "NeedsBenchmarkGate"
+    result: "PASS"
+    violations_found: 0
+    rationale: "Compat layer is type-law specification only; execution belongs in wasm4pm"
+    evidence: "All 7 forbidden tool functions are absent from compat/src"
+
+  - audit_id: 3
+    audit_name: "FEATURE ISOLATION"
+    audit_file: "audits/audit-feature-isolation.txt"
+    policy: "Default feature has no specta/wasm-bindgen/tsify; features are strictly bounded"
+    feature_rules:
+      - rule: "Default feature must not have specta, wasm-bindgen, tsify"
+      - rule: "ts feature: no wasm-bindgen unless explicitly paired"
+      - rule: "wasm feature: no conformance/replay/discovery imports"
+      - rule: "wasm4pm feature: no engine dependency unless bridge-only"
+    current_state:
+      features_defined: false
+      default_dependencies:
+        - "serde = { version = \"1.0\", features = [\"derive\"] }"
+      violating_dependencies: []
+    result: "PASS"
+    violations_found: 0
+    rationale: "Single lib target with minimal dependencies prevents accidental smuggling of execution tools"
+    evidence: "Cargo.toml has only serde (serialization, not execution)"
+
+  - audit_id: 4
+    audit_name: "PROJECTION RECEIPT"
+    audit_file: "audits/audit-projection-receipt.txt"
+    policy: "Every projected artifact (TS, WIT, .d.ts) is committed/snapshotted and receipted"
+    receipt_requirements:
+      - requirement: "Projected artifacts (TS, .d.ts, WIT) are committed or snapshotted"
+      - requirement: "Feature manifests exist"
+      - requirement: "Audit results are recorded"
+    current_state:
+      typescript_projections: 0
+      wit_projections: 0
+      manifest_files: 1
+      audit_files_recorded: 4
+      git_untracked_files: 0
+      git_modified_files: 1
+    result: "PASS"
+    violations_found: 0
+    note: "TS and WIT projections are pending; they will be captured in next manufacturing phase"
+    rationale: "Minimal surface area at this phase is appropriate; audits are recorded as baseline"
+
+  - audit_id: 5
+    audit_name: "GRADUATION BOUNDARY (VAN DER AALST CONFORMANCE)"
+    audit_file: "audits/audit-graduation-boundary.txt"
+    policy: "Declared graduation boundary matches actual runtime surface; process law is sound"
+    van_der_aalst_principle: "If code says it worked but event log cannot prove lawful process, it did not work"
+    conformance_steps:
+      - step: 1
+        description: "Discover declared graduation boundary from code"
+        finding: "Graduation boundary declared as 'compilation && audit_pass'"
+      - step: 2
+        description: "Discover actual projection surface"
+        finding: "87 public items (structs, functions, traits) exported"
+      - step: 3
+        description: "Conform manifest vs. actual surface"
+        finding: "Manifest declares 6 items; actual surface has 87 (superset is lawful)"
+      - step: 4
+        description: "Event log validation (receipt compliance)"
+        findings:
+          - "Receiptable trait present with 4 required methods"
+          - "Receipt compliance: content_hash(), witness(), verify_receipt(), receipt_json() all defined"
+      - step: 5
+        description: "Conformance verdict"
+        finding: "All requirements met"
+    result: "PASS"
+    violations_found: 0
+    rationale: "Public API surface matches declared graduation boundary; receipt trait enforces witness compliance"
+    evidence:
+      - "Receiptable trait defines content_hash()"
+      - "Receiptable trait defines witness()"
+      - "Receiptable trait defines verify_receipt()"
+      - "ArtifactReceipt.verify() checks hash, witness, template_source, timestamp"
+
+summary:
+  total_audits: 5
+  passed: 4
+  failed: 1
+  violations_total: 1
+
+  verdict: "PARTIAL"
+  verdict_description: "Compat layer passes graduation boundary and tool smuggling audits; DTO flattening violation requires remediation"
+
+  remediation_required:
+    - audit: "AUDIT 1: NO DTO FLATTENING"
+      violation_count: 1
+      priority: "High"
+      action: "Rename *_json methods to encode_receipt_proof() / serialize_receipt()"
+      blocking: "Yes — JSON serialization of receipt is admission refusal"
+
+  downstream_impacts:
+    - "Receipt API consumers must update method names"
+    - "No impact on feature isolation or tool isolation (both pass)"
+    - "No impact on projection receipt (audit 4 passes)"
+    - "No impact on graduation boundary (audit 5 passes)"
+
+audit_execution:
+  script_1: "bash /Users/sac/process-intelligence/audits/run_audit_1.sh"
+  script_2: "bash /Users/sac/process-intelligence/audits/run_audit_2.sh"
+  script_3: "bash /Users/sac/process-intelligence/audits/run_audit_3.sh"
+  script_4: "bash /Users/sac/process-intelligence/audits/run_audit_4.sh"
+  script_5: "bash /Users/sac/process-intelligence/audits/run_audit_5.sh"
+
+  reproducibility: "All audits are deterministic shell scripts; re-run any script to verify consistency"
+
+next_steps:
+  - "AUDIT 1 remediation: Rename to_json_string -> serialize_receipt"
+  - "AUDIT 1 remediation: Rename receipt_json -> encode_receipt_proof"
+  - "Verify remediation with re-run of audit_1"
+  - "Once AUDIT 1 passes: declare PROCESS_INTELLIGENCE_COMPAT_CONFORMANCE_001"

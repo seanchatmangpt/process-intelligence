@@ -1,0 +1,51 @@
+---
+# GGen Source Ledger — Authority & Provenance
+# Generated: {{ generated_at }}
+# Run ID: {{ run.run_id }}
+
+sources:
+{% for source in sources %}
+  - id: {{ source.id }}
+    type: {{ source.type }}
+    name: "{{ source.name }}"
+    authority_level: {{ source.authority_level }}
+
+    location: "{{ source.location }}"
+    content_hash: "{{ source.content_hash }}"
+    last_accessed: "{{ source.last_accessed }}"
+
+    extraction_method: {{ source.extraction_method }}
+    confidence_score: {{ source.confidence_score }}
+
+    generation_uses:
+{% for use in source.generation_uses %}
+      - rule_id: {{ use.rule_id }}
+        artifact_id: {{ use.artifact_id }}
+        binding_type: {{ use.binding_type }}
+        timestamp: "{{ use.timestamp }}"
+{% endfor %}
+
+    materialization_status: {{ source.materialization_status }}
+
+    metadata:
+      line_count: {{ source.metadata.line_count }}
+      section_count: {{ source.metadata.section_count }}
+      reference_count: {{ source.metadata.reference_count }}
+      parsed_claims: {{ source.metadata.parsed_claims }}
+
+{% endfor %}
+
+provenance_chain:
+  depth: {{ provenance_chain.depth }}
+  root_source: "{{ provenance_chain.root_source }}"
+  derivation_steps: {{ provenance_chain.derivation_steps }}
+  cryptographic_evidence: "{{ provenance_chain.evidence_hash }}"
+
+ledger_metrics:
+  total_sources: {{ sources | length }}
+  sources_by_type:
+    paper: {{ sources | select(attribute='type', value='paper') | length }}
+    specification: {{ sources | select(attribute='type', value='specification') | length }}
+    ontology: {{ sources | select(attribute='type', value='ontology') | length }}
+    prior_research: {{ sources | select(attribute='type', value='prior_research') | length }}
+  average_confidence: {{ sources | map(attribute='confidence_score') | sum / (sources | length) }}

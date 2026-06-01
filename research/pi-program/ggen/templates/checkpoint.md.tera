@@ -1,0 +1,182 @@
+# Checkpoint: {{ checkpoint_name }}
+
+**Timestamp:** {{ checkpoint_timestamp }}
+**Run ID:** {{ run_id }}
+**Program:** {{ program_name }}
+**Verdict:** {{ verdict }}
+
+---
+
+## Checkpoint Metadata
+
+| Field | Value |
+|-------|-------|
+| **Checkpoint ID** | `{{ checkpoint_id }}` |
+| **Phase** | {{ phase }} |
+| **Execution Duration** | {{ execution_duration_seconds }}s |
+| **Artifacts Generated** | {{ total_artifacts }} |
+| **Proof Gates Evaluated** | {{ gates_evaluated }} |
+| **Conformance Score** | {{ conformance_score }}% |
+
+---
+
+## Verdict Details
+
+### Verdict: {{ verdict }}
+
+{% if verdict == "ALIVE" %}
+
+#### ALIVE Criteria Met
+
+All required criteria for an ALIVE checkpoint have been satisfied:
+
+- [x] All artifacts successfully generated ({{ total_artifacts }} total)
+- [x] All proof gates passed ({{ gates_evaluated }}/{{ gates_evaluated }} passing)
+- [x] Conformance score ≥ 85% ({{ conformance_score }}% achieved)
+- [x] Event log proves lawful execution
+- [x] All negative tests passed
+- [x] Warrant path proof is valid
+- [x] No model-vs-log contradictions
+- [x] All artifacts have valid lifecycle
+- [x] Cryptographic receipt chain verified
+
+**Status:** Production Ready
+
+**Next Actions:**
+- Release authorized
+- Downstream consumption may proceed
+- Artifact registry updated
+- Receipt chain sealed
+
+{% elsif verdict == "PARTIAL" %}
+
+#### PARTIAL Findings
+
+This checkpoint is PARTIAL because the following gates have not achieved ALIVE status:
+
+{% for failing_gate in failing_gates %}
+- **{{ failing_gate.gate_name }}** — {{ failing_gate.reason }}
+{% endfor %}
+
+**Remediation Required:** Yes, {{ remediation_count }} remediations
+**Estimated Effort:** {{ estimated_remediation_hours }}h
+**Blocker Status:** {{ blocker_status }}
+
+**Next Actions:**
+- Execute remediation plan (see `remediation-plan.md`)
+- Re-run ggen with corrected sources/rules
+- Resubmit for checkpoint evaluation
+
+{% elsif verdict == "FAILED" %}
+
+#### FAILED Status
+
+This checkpoint has FAILED due to critical defects that prevent lawful execution:
+
+{% for critical_defect in critical_defects %}
+- **{{ critical_defect.name }}** — {{ critical_defect.description }}
+  - **Impact:** {{ critical_defect.impact }}
+  - **Recovery:** {{ critical_defect.recovery }}
+{% endfor %}
+
+**Restart Required:** Yes
+**Previous Checkpoint Valid:** {{ previous_checkpoint_valid }}
+
+**Next Actions:**
+- Investigate root causes
+- Debug ggen configuration
+- Review process model declaration
+- Engage architecture review
+
+{% endif %}
+
+---
+
+## Execution Summary
+
+### Pipeline Stages
+
+| Stage | Status | Duration | Artifacts |
+|-------|--------|----------|-----------|
+{% for stage in pipeline_stages %}
+| {{ stage.name }} | {{ stage.status }} | {{ stage.duration_ms }}ms | {{ stage.artifacts_count }} |
+{% endfor %}
+
+### Proof Gates Evaluated
+
+| Gate | Type | Result | Criteria Met |
+|------|------|--------|--------------|
+{% for gate in proof_gates %}
+| {{ gate.name }} | {{ gate.type }} | {{ gate.result }} | {{ gate.criteria_met }}/{{ gate.total_criteria }} |
+{% endfor %}
+
+### Conformance Evidence
+
+- **Fitness:** {{ conformance.fitness }}%
+- **Precision:** {{ conformance.precision }}%
+- **Generalization:** {{ conformance.generalization }}%
+- **Simplicity:** {{ conformance.simplicity }}%
+
+### Artifact Distribution
+
+- **Success:** {{ artifact_counts.success }}
+- **Partial:** {{ artifact_counts.partial }}
+- **Failed:** {{ artifact_counts.failed }}
+- **Total:** {{ artifact_counts.total }}
+
+---
+
+## Generated Artifacts
+
+All artifacts from this run are indexed in the unified ledgers:
+
+| Ledger | Purpose |
+|--------|---------|
+| `ggen-unified-run-report.md` | Executive summary of entire run |
+| `project-registry.yaml` | All projects and their artifacts |
+| `rendered-artifact-ledger.yaml` | Complete artifact inventory |
+| `generation-rule-ledger.yaml` | All rules applied during generation |
+| `ggen-source-ledger.yaml` | Source authority and provenance |
+| `checkpoint-ledger.md` | Execution checkpoint sequence |
+| `failed-gate-ledger.yaml` | All failed proof gates (if any) |
+| `invalid-ggen-classification-ledger.md` | Classification violations (if any) |
+| `remediation-plan.md` | Corrective actions required (if needed) |
+| `warrant-path-proof.md` | Proof of lawful execution |
+
+---
+
+## Authorization
+
+{% if verdict == "ALIVE" %}
+
+**This checkpoint is AUTHORIZED for production use.**
+
+- **Approved By:** {{ approved_by }}
+- **Authorization Timestamp:** {{ authorization_timestamp }}
+- **Signed:** {{ checkpoint_signature }}
+
+**Immutability:** This checkpoint is now immutable. All artifacts are locked.
+
+{% elif verdict == "PARTIAL" %}
+
+**This checkpoint is CONDITIONAL pending remediations.**
+
+- **Reviewed By:** {{ reviewed_by }}
+- **Status:** Awaiting Remediation Plan Execution
+- **Remediation Deadline:** {{ remediation_deadline }}
+
+{% elsif verdict == "FAILED" %}
+
+**This checkpoint is REJECTED. Restart required.**
+
+- **Rejected By:** {{ rejected_by }}
+- **Rejection Reason:** {{ rejection_reason }}
+- **Escalation:** Architecture Review Required
+
+{% endif %}
+
+---
+
+**Checkpoint Ledger Location:** `research/pi-program/emitted/ggen-unified-run/checkpoint-{{ checkpoint_id }}.md`
+
+**Issued:** {{ issued_timestamp }}

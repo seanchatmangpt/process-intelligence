@@ -1,0 +1,126 @@
+# Program Status Matrix: ALIVE / PARTIAL Cross-Project
+
+**Generated:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+**Authority:** Process Intelligence Research Foundry
+
+This matrix shows the ALIVE/PARTIAL/FAILED status of every research program and execution project.
+
+---
+
+## Executive Summary
+
+| Status | Count | Percentage | Trend |
+|--------|-------|-----------|-------|
+| **ALIVE** | {{ matrix_summary.alive_count }} | {{ matrix_summary.alive_pct }}% | {{ matrix_summary.alive_trend }} |
+| **PARTIAL** | {{ matrix_summary.partial_count }} | {{ matrix_summary.partial_pct }}% | {{ matrix_summary.partial_trend }} |
+| **FAILED** | {{ matrix_summary.failed_count }} | {{ matrix_summary.failed_pct }}% | {{ matrix_summary.failed_trend }} |
+
+---
+
+## Full Cross-Project Matrix
+
+| Program | Phase | Latest Checkpoint | Status | Gates | Open Gaps | Remediation Owner |
+|---------|-------|-------------------|--------|-------|-----------|------------------|
+{% for program in programs | sort(attribute="name") %}
+| **{{ program.name }}** | {{ program.phase }} | `{{ program.latest_checkpoint_id }}` | **{{ program.status }}** | {{ program.gates_met }}/{{ program.gates_total }} | {{ program.open_gaps_count }} | {{ program.owner }} |
+{% endfor %}
+
+---
+
+## By Status
+
+### ALIVE Programs
+
+These programs have achieved full proof-gate closure and canonical verdict status.
+
+{% set alive_programs = programs | filter(attribute="status", value="ALIVE") %}
+{% if alive_programs | length > 0 %}
+{% for program in alive_programs | sort(attribute="name") %}
+- **{{ program.name }}** ({{ program.phase }})
+  - Checkpoint: `{{ program.latest_checkpoint_id }}`
+  - Authority Level: {{ program.authority_level }}
+  - Issued: {{ program.checkpoint_date }}
+{% endfor %}
+{% else %}
+_No ALIVE programs yet._
+{% endif %}
+
+### PARTIAL Programs
+
+These programs have open gates and documented gaps. Evidence supports closure of some gates; gaps remain.
+
+{% set partial_programs = programs | filter(attribute="status", value="PARTIAL") %}
+{% if partial_programs | length > 0 %}
+{% for program in partial_programs | sort(attribute="name") %}
+- **{{ program.name }}** ({{ program.phase }})
+  - Checkpoint: `{{ program.latest_checkpoint_id }}`
+  - Gates Closed: {{ program.gates_met }}/{{ program.gates_total }}
+  - Open Gaps: {{ program.open_gaps_count }}
+  - Critical Blockers:
+{% for blocker in program.critical_blockers %}
+    - `{{ blocker.gap_id }}` — {{ blocker.description }}
+{% endfor %}
+  - Owner: {{ program.owner }}
+{% endfor %}
+{% else %}
+_No PARTIAL programs yet._
+{% endif %}
+
+### FAILED Programs
+
+Programs with failed proof gates. Remediation required before re-evaluation.
+
+{% set failed_programs = programs | filter(attribute="status", value="FAILED") %}
+{% if failed_programs | length > 0 %}
+{% for program in failed_programs | sort(attribute="name") %}
+- **{{ program.name }}** ({{ program.phase }})
+  - Checkpoint: `{{ program.latest_checkpoint_id }}`
+  - Failed Gates: {{ program.failed_gates | join(", ") }}
+  - Root Cause: {{ program.failure_root_cause | safe }}
+  - Owner: {{ program.owner }}
+  - Remediation Target: {{ program.next_checkpoint_target }}
+{% endfor %}
+{% else %}
+_No FAILED programs yet._
+{% endif %}
+
+---
+
+## Critical Path
+
+**Blockers (gates that, if closed, would enable downstream progress):**
+
+{% for blocker in critical_blockers | sort(attribute="priority") %}
+1. **{{ blocker.program }}** / `{{ blocker.gap_id }}`
+   - Severity: {{ blocker.severity }}
+   - Blocks Programs: {{ blocker.blocks_programs | join(", ") }}
+   - Current Status: {{ blocker.status }}
+   - Owner: {{ blocker.owner }}
+{% endfor %}
+
+---
+
+## Phase Distribution
+
+| Phase | Total | ALIVE | PARTIAL | FAILED |
+|-------|-------|-------|---------|--------|
+{% for phase_name, phase_data in phases_breakdown %}
+| {{ phase_name }} | {{ phase_data.total }} | {{ phase_data.alive }} | {{ phase_data.partial }} | {{ phase_data.failed }} |
+{% endfor %}
+
+---
+
+## Velocity & Trends
+
+**Last 30 Days:**
+- New ALIVE Checkpoints: {{ recent_stats.alive_new }}
+- New PARTIAL Checkpoints: {{ recent_stats.partial_new }}
+- Gaps Closed: {{ recent_stats.gaps_closed }}
+- New Gaps Opened: {{ recent_stats.gaps_opened }}
+
+**Program Health Score (Weighted):** {{ program_health_score }}/100
+
+---
+
+**Last Updated:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+**Next Review:** {{ next_review_date }}

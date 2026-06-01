@@ -1,0 +1,171 @@
+---
+# Program Surface Map — Ontology Class to Artifact Mapping
+# Generated: {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+# Authority: Process Intelligence Research Foundry
+
+version: "1.0"
+generated_by: "process-intelligence/ggen"
+
+ontology:
+  base_uri: "https://process-intelligence.org/ontology/v1/"
+  namespace: "pi"
+  last_updated: "{{ now | date(format="%Y-%m-%d") }}"
+
+classes:
+{% for ontology_class in ontology_classes | sort(attribute="name") %}
+  {{ ontology_class.slug }}:
+    name: "{{ ontology_class.name }}"
+    description: "{{ ontology_class.description | safe }}"
+    parent_class: "{{ ontology_class.parent_class }}"
+    authority_level: {{ ontology_class.authority_level }}
+
+    artifacts:
+{% for artifact in ontology_class.artifacts %}
+      - id: "{{ artifact.id }}"
+        name: "{{ artifact.name }}"
+        type: "{{ artifact.type }}"
+        path: "{{ artifact.path }}"
+        status: {{ artifact.status }}
+{% endfor %}
+
+    properties:
+{% for prop in ontology_class.properties %}
+      - name: "{{ prop.name }}"
+        type: "{{ prop.type }}"
+        cardinality: "{{ prop.cardinality }}"
+{% endfor %}
+
+    subclasses:
+{% for subclass in ontology_class.subclasses %}
+      - "{{ subclass }}"
+{% endfor %}
+
+{% endfor %}
+
+surface_areas:
+  process_law:
+    description: "Foundational process mining law and theory"
+    authority: "CANONICAL"
+    artifacts:
+{% for artifact in surface_areas.process_law.artifacts %}
+      - "{{ artifact }}"
+{% endfor %}
+
+  execution_capability:
+    description: "PM4Py and wasm4pm algorithm and operator coverage"
+    authority: "PRIMARY"
+    artifacts:
+{% for artifact in surface_areas.execution_capability.artifacts %}
+      - "{{ artifact }}"
+{% endfor %}
+
+  lifecycle_governance:
+    description: "Process lifecycle states, stages, and transitions"
+    authority: "CANONICAL"
+    artifacts:
+{% for artifact in surface_areas.lifecycle_governance.artifacts %}
+      - "{{ artifact }}"
+{% endfor %}
+
+  conformance_proof:
+    description: "Proof gates, receipt issuance, and validation"
+    authority: "PRIMARY"
+    artifacts:
+{% for artifact in surface_areas.conformance_proof.artifacts %}
+      - "{{ artifact }}"
+{% endfor %}
+
+  standards_compliance:
+    description: "XES, OCEL, BPMN, ISO, SOC2, GDPR compliance"
+    authority: "PRIMARY"
+    artifacts:
+{% for artifact in surface_areas.standards_compliance.artifacts %}
+      - "{{ artifact }}"
+{% endfor %}
+
+  m_and_a_claims:
+    description: "M&A claim taxonomy and board admissibility"
+    authority: "SECONDARY"
+    artifacts:
+{% for artifact in surface_areas.m_and_a_claims.artifacts %}
+      - "{{ artifact }}"
+{% endfor %}
+
+  gap_remediation:
+    description: "Open gaps, blockers, and research required"
+    authority: "PRIMARY"
+    artifacts:
+{% for artifact in surface_areas.gap_remediation.artifacts %}
+      - "{{ artifact }}"
+{% endfor %}
+
+type_classifications:
+  papers:
+    count: {{ papers_count }}
+    classifications:
+{% for classification, count in paper_classifications %}
+      "{{ classification }}": {{ count }}
+{% endfor %}
+
+  experiments:
+    count: {{ experiments_count }}
+    types:
+{% for exp_type, count in experiment_types %}
+      "{{ exp_type }}": {{ count }}
+{% endfor %}
+
+  artifacts:
+    count: {{ total_artifacts }}
+    by_authority:
+      CANONICAL: {{ canonical_artifacts }}
+      PRIMARY: {{ primary_artifacts }}
+      SECONDARY: {{ secondary_artifacts }}
+      PROVISIONAL: {{ provisional_artifacts }}
+
+artifact_relationships:
+  papers_to_doctrines: {{ paper_to_doctrine_links }}
+  experiments_to_claims: {{ experiment_to_claim_links }}
+  gaps_to_gates: {{ gap_to_gate_links }}
+  audits_to_findings: {{ audit_to_finding_links }}
+
+checkpoint_artifact_dependencies:
+{% for checkpoint in checkpoints | sort(attribute="id") %}
+  {{ checkpoint.id }}:
+    papers: {{ checkpoint.paper_deps | length }}
+    experiments: {{ checkpoint.experiment_deps | length }}
+    doctrines: {{ checkpoint.doctrine_deps | length }}
+    audits: {{ checkpoint.audit_deps | length }}
+    total_dependencies: {{ checkpoint.all_deps | length }}
+{% endfor %}
+
+graph_metrics:
+  total_nodes: {{ total_ontology_nodes }}
+  total_edges: {{ total_artifact_links }}
+  average_degree: {{ avg_degree | round(precision=2) }}
+  connected_components: {{ connected_components }}
+  cycles_detected: {{ cycles_detected }}
+  longest_dependency_chain: {{ longest_chain_depth }}
+
+coverage_by_surface:
+{% for surface_name, coverage in surface_coverage %}
+  {{ surface_name }}: "{{ coverage }}%"
+{% endfor %}
+
+completeness_metrics:
+  documented_classes: "{{ documented_classes }}/{{ total_classes }}"
+  fully_mapped_artifacts: "{{ fully_mapped }}/{{ total_artifacts }}"
+  type_law_coverage: "{{ type_law_coverage }}%"
+  execution_law_coverage: "{{ execution_law_coverage }}%"
+
+last_validation:
+  timestamp: "{{ last_validation_timestamp }}"
+  validator: "{{ validator_name }}"
+  status: "{{ validation_status }}"
+  errors: {{ validation_errors }}
+  warnings: {{ validation_warnings }}
+
+maintenance:
+  scheduled_review_date: "{{ next_review_date }}"
+  review_interval_days: 30
+  last_updated_by: "{{ last_updated_by }}"
+  update_frequency: "After each checkpoint"

@@ -1,0 +1,16 @@
+# Selection Query: All ggen Manifest Files
+# Returns all registered ggen manifest documents with their metadata
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT ?manifest ?label ?created ?modified ?status
+WHERE {
+  ?manifest a ggen:Manifest .
+  OPTIONAL { ?manifest rdfs:label ?label }
+  OPTIONAL { ?manifest dc:created ?created }
+  OPTIONAL { ?manifest dc:modified ?modified }
+  OPTIONAL { ?manifest ggen:status ?status }
+}
+ORDER BY ?manifest

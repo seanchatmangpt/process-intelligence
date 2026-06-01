@@ -1,0 +1,226 @@
+# Remediation Plan: Full-Lifecycle Execution
+
+**Generated:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+**Authority:** Process Intelligence Research Foundry
+**Planning Horizon:** {{ planning_horizon_months }} months
+
+This document provides a prioritized roadmap for closing failed gates and resolving open gaps across the process intelligence research program.
+
+---
+
+## Executive Summary
+
+| Metric | Value |
+|--------|-------|
+| Total Failed Gates | {{ total_failed_gates }} |
+| Total Open Gaps | {{ total_open_gaps }} |
+| Critical Blockers | {{ critical_blockers_count }} |
+| Estimated Total Effort | {{ total_effort_weeks }} weeks |
+| Target Completion | {{ target_completion_date }} |
+| Program Health (Current) | {{ current_health_score }}/100 |
+| Program Health (Target) | {{ target_health_score }}/100 |
+
+---
+
+## Phase 1: CRITICAL Blockers — Immediate (Next 4 Weeks)
+
+**Objective:** Resolve blocking failures that prevent any forward progress.
+
+**Timeline:** {{ phase1_start_date }} — {{ phase1_end_date }}
+
+### Gates to Close
+
+{% for gate in phase1_gates | sort(attribute="priority") %}
+#### {{ gate.id }}: {{ gate.gate_name }}
+
+**Program:** {{ gate.program }}
+**Current Status:** {{ gate.status }}
+**Owner:** {{ gate.owner }}
+
+**Failure Summary:**
+> {{ gate.failure_reason | safe }}
+
+**Required Actions:**
+{% for action in gate.actions %}
+1. {{ action.description | safe }}
+   - Assigned To: {{ action.assigned_to }}
+   - Due: {{ action.due_date }}
+   - Effort: {{ action.effort_hours }}h
+{% endfor %}
+
+**Success Criteria:**
+- {{ gate.success_criteria_1 }}
+- {{ gate.success_criteria_2 }}
+- {{ gate.success_criteria_3 }}
+
+**Dependencies:**
+{% if gate.blockers | length > 0 %}
+{% for blocker in gate.blockers %}
+  - Blocks: `{{ blocker }}`
+{% endfor %}
+{% else %}
+None — can proceed independently.
+{% endif %}
+
+**Estimated Completion:** {{ gate.estimated_completion_phase1 }}
+**Checkpoint Target:** {{ gate.checkpoint_target }}
+
+---
+{% endfor %}
+
+**Phase 1 Checkpoint:** `{{ phase1_checkpoint_id }}`
+- **Verdict Target:** PARTIAL (all critical gates closed)
+- **Gates Closed:** {{ phase1_gates | length }}/{{ phase1_gates | length }}
+
+---
+
+## Phase 2: HIGH Priority Gates — Near-Term (Weeks 5–12)
+
+**Objective:** Close high-priority gates that unblock downstream programs.
+
+**Timeline:** {{ phase2_start_date }} — {{ phase2_end_date }}
+
+### Gates to Close
+
+{% for gate in phase2_gates | sort(attribute="priority") %}
+#### {{ gate.id }}: {{ gate.gate_name }}
+
+**Program:** {{ gate.program }}
+**Owner:** {{ gate.owner }}
+
+**Remediation Path:**
+> {{ gate.remediation_path | safe }}
+
+**Required Actions:**
+{% for action in gate.actions %}
+- {{ action.description | safe }} ({{ action.effort_hours }}h)
+{% endfor %}
+
+**Blocking Gaps:**
+{% for gap in gate.blocking_gaps %}
+- `{{ gap.id }}` — {{ gap.description | safe }}
+{% endfor %}
+
+**Estimated Completion:** {{ gate.estimated_completion_phase2 }}
+
+---
+{% endfor %}
+
+**Phase 2 Checkpoint:** `{{ phase2_checkpoint_id }}`
+- **Verdict Target:** PARTIAL or ALIVE (depends on Phase 1 closure)
+- **Gates Closed (Cumulative):** {{ (phase1_gates | length) + (phase2_gates | length) }}/{{ total_gates_phase2 }}
+
+---
+
+## Phase 3: MEDIUM Priority Gates — Medium-Term (Weeks 13+)
+
+**Objective:** Close remaining gaps and achieve full lifecycle maturity.
+
+**Timeline:** {{ phase3_start_date }} — {{ phase3_end_date }}
+
+### Remaining Gates
+
+| Gate ID | Program | Owner | Effort | Due Date |
+|---------|---------|-------|--------|----------|
+{% for gate in phase3_gates | sort(attribute="program") %}
+| `{{ gate.id }}` | {{ gate.program }} | {{ gate.owner }} | {{ gate.effort_weeks }}w | {{ gate.due_date }} |
+{% endfor %}
+
+**Phase 3 Checkpoint:** `{{ phase3_checkpoint_id }}`
+- **Verdict Target:** ALIVE (all gates closed)
+- **Gates Closed (Cumulative):** {{ total_gates_closed_phase3 }}/{{ total_all_gates }}
+
+---
+
+## Dependency Graph
+
+**Critical Path (gates must resolve in order):**
+
+```
+{{ dependency_graph_ascii | safe }}
+```
+
+**Parallel Work Streams:**
+{% for stream in parallel_streams %}
+- **{{ stream.name }}:** {{ stream.gates | join(", ") }}
+{% endfor %}
+
+---
+
+## Resource Allocation
+
+### By Program
+
+| Program | Phase 1 | Phase 2 | Phase 3 | Total |
+|---------|---------|---------|---------|-------|
+{% for program in programs_allocation %}
+| {{ program.name }} | {{ program.phase1_weeks }}w | {{ program.phase2_weeks }}w | {{ program.phase3_weeks }}w | **{{ program.total_weeks }}w** |
+{% endfor %}
+
+### By Role
+
+| Role | Effort | Utilization |
+|------|--------|-------------|
+{% for role in role_allocation %}
+| {{ role.name }} | {{ role.effort_weeks }}w | {{ role.utilization }}% |
+{% endfor %}
+
+---
+
+## Risk Mitigation
+
+| Risk | Likelihood | Impact | Mitigation Strategy |
+|------|-----------|--------|-------------------|
+{% for risk in risks | sort(attribute="likelihood") | reverse %}
+| {{ risk.description | safe }} | {{ risk.likelihood }} | {{ risk.impact }} | {{ risk.mitigation | safe }} |
+{% endfor %}
+
+---
+
+## Alternate Execution Paths
+
+**If Phase 1 Slips (3 weeks overrun):**
+- Escalate to: {{ escalation_contact }}
+- Compressed Phase 2: {{ compressed_phase2_strategy | safe }}
+- Checkpoint Delay: {{ phase1_checkpoint_delay_weeks }} weeks
+
+**If Critical Blocker Cannot Resolve:**
+- Alternate Path Available: {{ alternate_path_available }}
+- Bypass Strategy: {{ bypass_strategy | safe }}
+- Recovery Checkpoint: {{ recovery_checkpoint_id }}
+
+---
+
+## Metrics & Tracking
+
+### Weekly Standup Metrics
+- Gates closed this week: _fill in_
+- Blockers resolved: _fill in_
+- New dependencies discovered: _fill in_
+- Effort variance (planned vs actual): _fill in_
+
+### Checkpoint Tracking
+
+| Checkpoint | Target Date | Status | Gate Count | Owner |
+|-----------|------------|--------|-----------|-------|
+{% for cp in checkpoint_tracking | sort(attribute="target_date") %}
+| `{{ cp.id }}` | {{ cp.target_date }} | {{ cp.status }} | {{ cp.gate_count }} | {{ cp.owner }} |
+{% endfor %}
+
+---
+
+## Approval & Sign-Off
+
+**Prepared By:** {{ prepared_by }}
+**Date:** {{ preparation_date }}
+
+**Approved By:** {{ approved_by }}
+**Approval Date:** {{ approval_date }}
+
+**Rationale:**
+> {{ approval_rationale | safe }}
+
+---
+
+**Next Review Date:** {{ next_review_date }}
+**Review Frequency:** Weekly (Phase 1), Bi-weekly (Phase 2–3)

@@ -103,6 +103,112 @@ field_modifiers:
     attribute: "#[specta(optional)]"
     ts_output: "Emits key as optional field 'key?: value' in TypeScript"
 
+forbidden_projection_names:
+  - pattern: ".*Dto$"
+    reason: "Generic DTO suffix forbidden; use specific suffixed name (e.g., EvidenceDto, AdmissionDto, RefusalDto)"
+    action: "REFUSE: dto-naming-forbidden"
+  - pattern: "payload_json"
+    reason: "Payloads must not project as raw JSON strings; use structured Evidence<T> fields"
+    action: "REFUSE: payload-json-forbidden"
+  - pattern: "state_tag.*string"
+    reason: "State tags must project as enums, not string literals"
+    action: "REFUSE: state-tag-as-string-forbidden"
+  - pattern: "witness.*string"
+    reason: "Witness markers must project as branded enums (e.g., WitnessKey), not strings"
+    action: "REFUSE: witness-as-string-forbidden"
+
+monomorphization_rules:
+  generic_evidence:
+    description: "Generic Evidence<T, State, W> cannot be directly exported to TypeScript"
+    pattern: "Evidence<(?P<type>\\w+),\\s*(?P<state>\\w+),\\s*(?P<witness>\\w+)>"
+    projection_requirement: "Create concrete DTO struct monomorphizing T, State, W to specific types"
+    example:
+      rust: "Evidence<EventPayload, Admitted, Ocel20>"
+      typescript_dto: |
+        export interface EvidenceDto {
+          payload: EventPayload;
+          state_tag: EvidenceState;
+          witness_tag: WitnessKey;
+          timestamp_ns: bigint;
+        }
+  generic_enums:
+    description: "Generic enums must be expanded to all concrete variants"
+    pattern: "RefusalReason<T>"
+    projection_requirement: "Generate all variant combinations or use contained type pattern"
+
+brand_token_rules:
+  witness_marker_projection:
+    description: "Witness markers (Raw, Admitted, Ocel20, Xes1849, WfNetSoundness, Strict) project as enum brand tokens in TypeScript"
+    mappings:
+      Raw:
+        ts_type: "WitnessKey.Raw"
+        meaning: "Unvalidated external telemetry"
+      Admitted:
+        ts_type: "WitnessKey.Admitted"
+        meaning: "Passed all boundary validations"
+      Ocel20:
+        ts_type: "WitnessKey.Ocel20"
+        meaning: "OCEL 2.0 standard compliance"
+      Xes1849:
+        ts_type: "WitnessKey.Xes1849"
+        meaning: "XES IEEE 1849 standard compliance"
+      WfNetSoundness:
+        ts_type: "WitnessKey.WfNetSoundness"
+        meaning: "Petri net soundness proof attached"
+      Strict:
+        ts_type: "WitnessKey.Strict"
+        meaning: "Stricter compile-time enforcement applied"
+  evidence_state_projection:
+    description: "Evidence lifecycle states project as enum tags"
+    mappings:
+      Raw:
+        ts_type: "EvidenceState.Raw"
+      Parsed:
+        ts_type: "EvidenceState.Parsed"
+      Admitted:
+        ts_type: "EvidenceState.Admitted"
+      Refused:
+        ts_type: "EvidenceState.Refused"
+      Projected:
+        ts_type: "EvidenceState.Projected"
+      Exportable:
+        ts_type: "EvidenceState.Exportable"
+      Receipted:
+        ts_type: "EvidenceState.Receipted"
+
+snapshot_and_audit_rules:
+  snapshot_requirement:
+    description: "Every generated TypeScript interface must be captured in a cryptographic snapshot"
+    format: "blake3-json-hashable"
+    location: "../receipts/ts-projection-snapshot-{timestamp}.json"
+    contents:
+      - interface_name
+      - field_list
+      - derives_applied
+      - serde_attributes
+      - ts_generated_output
+  audit_gates:
+    - gate_id: "A-001"
+      name: "Forbidden Name Detection"
+      description: "Scan generated TypeScript for forbidden naming patterns (Dto, payload_json, state_tag as string)"
+      script: "audits/audit-ts-projection-surface.sh.ggen"
+      failure_action: "REFUSE: forbidden-name-detected"
+    - gate_id: "A-002"
+      name: "Monomorphization Verification"
+      description: "Verify all generic Evidence<T,State,W> instances are monomorphized in TypeScript"
+      script: "audits/audit-ts-monomorphization.sh.ggen"
+      failure_action: "REFUSE: generic-evidence-not-monomorphized"
+    - gate_id: "A-003"
+      name: "Brand Token Consistency"
+      description: "Verify witness markers and evidence states project as branded enums"
+      script: "audits/audit-ts-brand-tokens.sh.ggen"
+      failure_action: "REFUSE: witness-brands-not-consistent"
+    - gate_id: "A-004"
+      name: "Tagging Rule Compliance"
+      description: "Verify enum tagging rules are correctly applied (external/internal/adjacent/untagged)"
+      script: "audits/audit-ts-enum-tagging.sh.ggen"
+      failure_action: "REFUSE: enum-tagging-mismatch"
+
 verification_checkpoints:
   - id: "V-001"
     name: "Derive Check"
@@ -116,3 +222,51 @@ verification_checkpoints:
   - id: "V-004"
     name: "Generic Propagation"
     description: "Verify that generic TS interfaces are generated with matching generic parameters and do not resolve to 'any' due to missing Type bounds in Rust."
+  - id: "V-005"
+    name: "Forbidden Name Scan"
+    description: "Audit generated TypeScript files for forbidden naming patterns (Dto, payload_json, state_tag string)."
+  - id: "V-006"
+    name: "Monomorphization Proof"
+    description: "Confirm all generic Evidence<T,State,W> instances are replaced with concrete DTO types."
+  - id: "V-007"
+    name: "Brand Token Validation"
+    description: "Verify witness markers project as branded enums, not strings."
+  - id: "V-008"
+    name: "Snapshot & Receipt"
+    description: "Confirm cryptographic snapshot of all generated TypeScript interfaces with blake3 hash."
+
+refusal_protocol:
+  rule_id: "ts-projection-violation"
+  on_detection:
+    - action: "REFUSE"
+      code: "ERR_TS_PROJECTION_VIOLATION"
+      message: "TypeScript projection violates law. Check derive annotations, forbidden names, monomorphization, or brand token consistency."
+      recovery:
+        - "Run audit-ts-projection-surface.sh to identify violations"
+        - "Add missing #[derive(Type, Serialize, Deserialize)] annotations"
+        - "Replace forbidden names with specific suffixes"
+        - "Monomorphize all generic Evidence<T,State,W> to concrete DTOs"
+        - "Ensure witness markers project as WitnessKey enums, not strings"
+        - "Re-generate TypeScript and audit again"
+
+compliance:
+  standards:
+    - "ISO-IEC-23894:2024 (AI risk management)"
+    - "board-admissible (governance)"
+    - "Specta 2.x specification"
+  evidence_backing:
+    - "ts-projection-manifest.yaml"
+    - "projectable-type-ledger.yaml"
+    - "allowed-projection-surfaces.yaml"
+  immutable: true
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "../receipts/ts-projection-law-receipt.json"
+
+version_history:
+  - version: "1.0.0"
+    date: "2026-06-01"
+    status: "EXPANDED"
+    description: "Added forbidden projection names, monomorphization rules, brand tokens, snapshot/audit rules"

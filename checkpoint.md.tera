@@ -1,0 +1,266 @@
+# Checkpoint: {{ checkpoint_id }}
+
+**Issued:** {{ issue_date | date(format="%Y-%m-%d %H:%M:%S") }}
+**Authority:** Process Intelligence Research Foundry
+**Verdict:** **{{ verdict | upper }}**
+
+---
+
+## Checkpoint Summary
+
+| Field | Value |
+|-------|-------|
+| **ID** | `{{ checkpoint_id }}` |
+| **Status** | **{{ verdict | upper }}** |
+| **Program** | {{ program_name }} |
+| **Phase** | {{ phase_name }} |
+| **Issued By** | {{ issuer_name }} |
+| **Authority** | {{ authority_level }} |
+| **Receipt Hash** | `{{ receipt_hash }}` |
+
+---
+
+## Verdict Details
+
+### Verdict Statement
+
+**Status:** {{ verdict | upper }}
+
+{% if verdict == "ALIVE" %}
+> All proof gates have been satisfied. The {{ program_name }} program has achieved full closure of required gates and is ready for canonical authorization.
+{% elsif verdict == "PARTIAL" %}
+> Partial closure achieved. {{ gates_met }}/{{ gates_total }} gates are closed. {{ gates_total - gates_met }} gate(s) remain open with documented remediation path.
+{% elsif verdict == "FAILED" %}
+> Proof gates not satisfied. {{ failed_gate_count }} gate(s) failed. Root cause analysis required before re-evaluation.
+{% endif %}
+
+---
+
+## Proof Gates Status
+
+### Gates Overview
+
+| Gate ID | Gate Name | Status | Criteria | Evidence |
+|---------|-----------|--------|----------|----------|
+{% for gate in proof_gates | sort(attribute="name") %}
+| `{{ gate.id }}` | {{ gate.name }} | **{{ gate.status }}** | {{ gate.criteria_short | safe }} | `{{ gate.evidence_artifact }}` |
+{% endfor %}
+
+### Detailed Gate Analysis
+
+{% for gate in proof_gates | sort(attribute="status") | sort(attribute="name") %}
+
+#### {{ gate.id }}: {{ gate.name }}
+
+**Status:** {{ gate.status }}
+
+**Criteria:**
+> {{ gate.criteria_full | safe }}
+
+**Evidence:**
+- Artifact: `{{ gate.evidence_artifact }}`
+- Type: {{ gate.evidence_type }}
+- Authority: {{ gate.evidence_authority }}
+- Date Verified: {{ gate.verification_date }}
+
+**Verification Details:**
+{{ gate.verification_details | safe }}
+
+**Result:**
+- Status: **{{ gate.status }}**
+- {% if gate.status == "CLOSED" %}✓ Gate satisfied.{% elsif gate.status == "OPEN" %}✗ Gate not satisfied. Remediation: `{{ gate.remediation_gap_id }}`{% elsif gate.status == "FAILED" %}✗ Gate failed. Root cause: {{ gate.failure_reason | safe }}{% endif %}
+
+---
+{% endfor %}
+
+---
+
+## Authority Statement
+
+The {{ program_name }} program has been evaluated against the {{ phase_name }} proof-gate framework. The verdict is rendered by the Process Intelligence Research Foundry authority layer on the basis of:
+
+1. **Paper Analysis:** {{ papers_reviewed }} papers classified and mapped to type-law surface
+2. **PM4Py Validation:** {{ pm4py_tests_passed }}/{{ pm4py_tests_total }} conformance tests passed
+3. **wasm4pm Coverage:** {{ wasm4pm_coverage_percent }}% algorithm coverage confirmed
+4. **Lifecycle Integrity:** {{ lifecycle_states_verified }} lifecycle states verified in OCEL logs
+5. **M&A Claim Defensibility:** {{ ma_claims_validated }} M&A claims validated for board admissibility
+6. **Standards Compliance:** {{ standards_conformant }}/{{ standards_total }} standards achieved conformance
+7. **Gap Documentation:** {{ gaps_documented }} gaps documented with remediation plans
+
+**Verdict:** {% if verdict == "ALIVE" %}**ALIVE** — Full canonical authority granted.{% elsif verdict == "PARTIAL" %}**PARTIAL** — Provisional authority with documented gaps.{% elsif verdict == "FAILED" %}**FAILED** — No authority until gates are satisfied.{% endif %}
+
+---
+
+## Metrics Summary
+
+### Coverage Metrics
+
+| Metric | Value | Target | Status |
+|--------|-------|--------|--------|
+| Paper Type-Law Coverage | {{ paper_coverage_pct }}% | 100% | {% if paper_coverage_pct >= 100 %}✓{% else %}✗{% endif %} |
+| PM4Py Algorithm Coverage | {{ pm4py_coverage_pct }}% | {{ pm4py_target_pct }}% | {% if pm4py_coverage_pct >= pm4py_target_pct %}✓{% else %}✗{% endif %} |
+| wasm4pm Capability Coverage | {{ wasm4pm_coverage_pct }}% | {{ wasm4pm_target_pct }}% | {% if wasm4pm_coverage_pct >= wasm4pm_target_pct %}✓{% else %}✗{% endif %} |
+| Lifecycle State Definition | {{ lifecycle_coverage_pct }}% | 100% | {% if lifecycle_coverage_pct >= 100 %}✓{% else %}✗{% endif %} |
+| Standards Conformance | {{ standards_coverage_pct }}% | {{ standards_target_pct }}% | {% if standards_coverage_pct >= standards_target_pct %}✓{% else %}✗{% endif %} |
+| M&A Claim Taxonomy | {{ ma_claims_pct }}% | 100% | {% if ma_claims_pct >= 100 %}✓{% else %}✗{% endif %} |
+| Audit Completeness | {{ audit_completeness_pct }}% | 100% | {% if audit_completeness_pct >= 100 %}✓{% else %}✗{% endif %} |
+
+### Quality Metrics
+
+| Metric | Value |
+|--------|-------|
+| Tests Passed | {{ tests_passed }}/{{ tests_total }} |
+| Conformance Fitness | {{ conformance_fitness }}% |
+| Precision Score | {{ precision_score }} |
+| Generalization Score | {{ generalization_score }} |
+| Simplicity Score | {{ simplicity_score }} |
+| Average Citation Authority | {{ avg_citation_authority }}/10 |
+
+{% if verdict == "PARTIAL" %}
+
+---
+
+## Open Gates & Remediation
+
+### Open Gates
+
+{% for open_gap in open_gaps %}
+
+**Gap:** `{{ open_gap.id }}`
+- **Description:** {{ open_gap.description | safe }}
+- **Severity:** {{ open_gap.severity }}
+- **Remediation:** {{ open_gap.remediation | safe }}
+- **Owner:** {{ open_gap.owner }}
+- **Due:** {{ open_gap.due_date }}
+- **Estimated Effort:** {{ open_gap.effort_weeks }} weeks
+
+{% endfor %}
+
+### Remediation Path
+
+**Phase 1 (Next 4 weeks):**
+{% for phase1_action in phase1_remediation_actions %}
+- {{ phase1_action | safe }}
+{% endfor %}
+
+**Phase 2 (Weeks 5–12):**
+{% for phase2_action in phase2_remediation_actions %}
+- {{ phase2_action | safe }}
+{% endfor %}
+
+**Phase 3 (Weeks 13+):**
+{% for phase3_action in phase3_remediation_actions %}
+- {{ phase3_action | safe }}
+{% endfor %}
+
+**Target Next Checkpoint:** `{{ next_checkpoint_target }}` ({{ next_checkpoint_target_date }})
+
+{% endif %}
+
+{% if verdict == "FAILED" %}
+
+---
+
+## Failure Analysis
+
+### Root Cause
+
+> {{ failure_root_cause | safe }}
+
+### Failed Gates
+
+{% for failed_gate in failed_gates %}
+- **{{ failed_gate.id }}:** {{ failed_gate.failure_reason | safe }}
+{% endfor %}
+
+### Remediation Required
+
+Before next checkpoint attempt:
+{% for remediation in required_remediations %}
+1. {{ remediation | safe }}
+{% endfor %}
+
+### Re-evaluation Timeline
+
+- **Investigation Deadline:** {{ investigation_deadline }}
+- **Remediation Target:** {{ remediation_target_date }}
+- **Next Checkpoint Attempt:** {{ next_checkpoint_attempt_date }}
+- **Escalation Contact:** {{ escalation_contact }}
+
+{% endif %}
+
+---
+
+## Artifacts & Evidence
+
+### Primary Evidence Artifacts
+
+{% for artifact in primary_evidence %}
+- `{{ artifact.id }}` — {{ artifact.type }} ({{ artifact.authority_level }})
+  - Path: `{{ artifact.path }}`
+  - Verified: {{ artifact.verification_date }}
+{% endfor %}
+
+### Supporting Evidence
+
+{% for artifact in supporting_evidence %}
+- `{{ artifact.id }}` — {{ artifact.type }}
+{% endfor %}
+
+---
+
+## Immutability & Authority
+
+This checkpoint is **permanent and immutable**. The verdict is recorded in the canonical checkpoint ledger and cannot be revoked, rebased, or replaced. Future progress is tracked via new checkpoints, never through revision of prior verdicts.
+
+**Receipt Chain:**
+- Prior Checkpoint: `{{ prior_checkpoint_id }}`
+- This Checkpoint: `{{ checkpoint_id }}` (`{{ receipt_hash }}`)
+- Next Checkpoint: `{{ next_checkpoint_id }}` (pending)
+
+**Authority Delegation:**
+- Issued By: {{ issuer_name }} ({{ issuer_title }})
+- Authority Source: {{ authority_source }}
+- Binding For: {{ binding_scope }}
+
+---
+
+## Appendix: Full Gate Details
+
+{% for gate in proof_gates %}
+
+### {{ gate.id }}: {{ gate.name }}
+
+**Criteria Definition:**
+```
+{{ gate.criteria_definition | safe }}
+```
+
+**Evidence Specification:**
+```
+{{ gate.evidence_specification | safe }}
+```
+
+**Verification Methodology:**
+```
+{{ gate.methodology | safe }}
+```
+
+**Artifacts Used in Verification:**
+{% for ev_artifact in gate.verification_artifacts %}
+- `{{ ev_artifact }}`
+{% endfor %}
+
+**Pass/Fail Determination:**
+{{ gate.pass_fail_logic | safe }}
+
+**Result:** **{{ gate.status }}**
+
+---
+{% endfor %}
+
+---
+
+**Checkpoint Issued:** {{ issue_date | date(format="%Y-%m-%d %H:%M:%S") }}
+**Receipt Hash:** `{{ receipt_hash }}`
+**Authority Ledger:** `checkpoint-ledger.md`

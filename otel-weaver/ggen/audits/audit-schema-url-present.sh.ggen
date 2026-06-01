@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# audit-schema-url-present.sh.ggen
+# Verifies that the official schema URL is explicitly present in all registry, document, and source files.
+
+set -euo pipefail
+
+echo "=== Running Audit: Schema URL Presence ==="
+echo "Target Source Directory: {{ target_src_dir }}"
+
+violations=0
+
+# Iterate over files in the target directory and ensure they reference schema_url
+# Excluding binary, git, and build directories
+while IFS= read -r file; do
+    # Only search files of type yaml, json, rs, md
+    if [[ "$file" =~ \.(yaml|json|rs|md)$ ]]; then
+        if ! grep -q "schema_url" "$file" && ! grep -q "schema.opentelemetry.io" "$file"; then
+            echo "FAIL: Schema URL reference missing in $file"
+            violations=$((violations + 1))
+        fi
+    fi
+done < <(find "{{ target_src_dir }}" -type f -not -path '*/.*' -not -path '*/target/*')
+
+if [ $violations -eq 0 ]; then
+    echo "PASS: All registry, document, and source files contain a schema URL."
+    exit 0
+else
+    echo "FAIL: Missing schema URL in $violations files."
+    exit 1
+fi

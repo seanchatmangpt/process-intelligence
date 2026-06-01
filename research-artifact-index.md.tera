@@ -1,0 +1,319 @@
+# Research Artifact Index
+
+**Generated:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+**Authority:** Process Intelligence Research Foundry
+
+Complete inventory of papers, experiments, audits, and manufacturing artifacts produced by the research program.
+
+---
+
+## Summary
+
+| Artifact Type | Count | Status | Authority |
+|---------------|-------|--------|-----------|
+| Papers Analyzed | {{ papers | length }} | {{ papers_status }} | {{ papers_authority }} |
+| Experiments | {{ experiments | length }} | {{ experiments_status }} | {{ experiments_authority }} |
+| Audits Completed | {{ audits | length }} | {{ audits_status }} | {{ audits_authority }} |
+| Gap Documents | {{ gaps | length }} | {{ gaps_status }} | {{ gaps_authority }} |
+| Doctrine Files | {{ doctrines | length }} | {{ doctrines_status }} | {{ doctrines_authority }} |
+| **TOTAL** | **{{ total_artifacts }}** | **{{ overall_status }}** | **Canonical** |
+
+---
+
+## Papers Archive
+
+Authoritative classification of process mining, BPM, event logging, and workflow literature.
+
+{% for paper in papers | sort(attribute="year") | reverse %}
+### {{ paper.title }}
+
+**Authors:** {{ paper.authors | join(", ") }}
+**Year:** {{ paper.year }}
+**Venue:** {{ paper.venue }}
+
+**Classification:**
+- Primary Type: `{{ paper.primary_type }}`
+- Authority Level: {{ paper.authority_level }}
+- Coverage: {{ paper.coverage_percent }}%
+
+**Type-Law Mapping Status:** {{ paper.type_law_status }}
+**Execution-Law Mapping:** {{ paper.execution_law_status }}
+
+**Key Claims:**
+{% for claim in paper.key_claims %}
+- {{ claim | safe }}
+{% endfor %}
+
+**Cited In:**
+{% for citation in paper.cited_in %}
+- `{{ citation.artifact_id }}` ({{ citation.artifact_type }})
+{% endfor %}
+
+**File:** `{{ paper.file_path }}`
+
+---
+{% endfor %}
+
+## Experiments & Benchmarks
+
+Controlled experiments validating research hypotheses.
+
+{% for experiment in experiments | sort(attribute="date") | reverse %}
+### {{ experiment.title }}
+
+**Date:** {{ experiment.date }}
+**Type:** {{ experiment.type }}
+**Status:** {{ experiment.status }}
+
+**Objective:**
+> {{ experiment.objective | safe }}
+
+**Methodology:**
+{{ experiment.methodology | safe }}
+
+**Findings:**
+{% for finding in experiment.findings %}
+- {{ finding | safe }}
+{% endfor %}
+
+**Artifacts Generated:**
+{% for artifact in experiment.artifacts %}
+- `{{ artifact.name }}` ({{ artifact.type }})
+{% endfor %}
+
+**File:** `{{ experiment.file_path }}`
+
+---
+{% endfor %}
+
+## Audits & Completeness Reviews
+
+Systematic audits of program coverage and authority.
+
+{% for audit in audits | sort(attribute="date") | reverse %}
+### {{ audit.title }}
+
+**Date:** {{ audit.date }}
+**Scope:** {{ audit.scope }}
+**Auditor:** {{ audit.auditor }}
+
+**Coverage Summary:**
+- Total Items Audited: {{ audit.items_audited }}
+- Complete: {{ audit.items_complete }} ({{ audit.complete_pct }}%)
+- Partial: {{ audit.items_partial }} ({{ audit.partial_pct }}%)
+- Missing: {{ audit.items_missing }} ({{ audit.missing_pct }}%)
+
+**Key Findings:**
+{% for finding in audit.key_findings %}
+- {{ finding | safe }}
+{% endfor %}
+
+**Gaps Identified:**
+{% for gap in audit.gaps_identified %}
+- `{{ gap.id }}` — {{ gap.description | safe }}
+{% endfor %}
+
+**Recommendations:**
+{% for rec in audit.recommendations %}
+- {{ rec | safe }}
+{% endfor %}
+
+**File:** `{{ audit.file_path }}`
+
+---
+{% endfor %}
+
+## Doctrine Files (Immutable Authority)
+
+Canonical process law definitions — never rebased, only extended.
+
+{% for doctrine in doctrines | sort(attribute="name") %}
+### {{ doctrine.name }}
+
+**Authority Level:** {{ doctrine.authority_level }}
+**Status:** {{ doctrine.status }}
+**Created:** {{ doctrine.created_date }}
+**Last Updated:** {{ doctrine.last_updated }}
+
+**Purpose:**
+> {{ doctrine.purpose | safe }}
+
+**Key Definitions:**
+{% for def in doctrine.key_definitions %}
+- `{{ def.term }}`: {{ def.definition | safe }}
+{% endfor %}
+
+**Citations in Artifacts:** {{ doctrine.citation_count }}
+
+**Immutable Since:** {{ doctrine.immutable_date }}
+**File:** `{{ doctrine.file_path }}`
+
+---
+{% endfor %}
+
+## Gap Documents (Open Research)
+
+Structural gaps requiring investigation and remediation.
+
+{% set open_gaps = gaps | filter(attribute="status", value="OPEN") %}
+{% if open_gaps | length > 0 %}
+
+**Open Gaps:** {{ open_gaps | length }}
+
+{% for gap in open_gaps | sort(attribute="severity") %}
+### {{ gap.id }}: {{ gap.title }}
+
+**Severity:** {{ gap.severity }}
+**Discovered:** {{ gap.discovered_date }}
+**Blocks Programs:** {{ gap.blocks_programs | join(", ") }}
+
+**Description:**
+> {{ gap.description | safe }}
+
+**Research Required:**
+{{ gap.research_required | safe }}
+
+**Current Status:**
+- Investigation: {{ gap.investigation_status }}
+- Owner: {{ gap.owner }}
+- Due: {{ gap.due_date }}
+
+**File:** `{{ gap.file_path }}`
+
+---
+{% endfor %}
+
+{% else %}
+_No open gaps._
+{% endif %}
+
+## Type-Law Crosswalks
+
+Mappings between paper types, execution capabilities, and canonical process law.
+
+{% for crosswalk in type_law_crosswalks | sort(attribute="name") %}
+### {{ crosswalk.name }}
+
+**Authority:** {{ crosswalk.authority_source }}
+**Coverage:** {{ crosswalk.coverage_percent }}%
+
+**Mapping Entries:** {{ crosswalk.entries | length }}
+
+**Key Mappings:**
+{% for entry in crosswalk.entries | slice(3) %}
+- `{{ entry.source }}` → `{{ entry.target }}` ({{ entry.confidence }}%)
+{% endfor %}
+
+**File:** `{{ crosswalk.file_path }}`
+
+---
+{% endfor %}
+
+## Lifecycle State Definitions
+
+Process lifecycle stages and lawful state transitions.
+
+{% for lifecycle_state in lifecycle_states | sort(attribute="sequence") %}
+### {{ lifecycle_state.name }} (Stage {{ lifecycle_state.sequence }})
+
+**Proof Gates:**
+{% for gate in lifecycle_state.proof_gates %}
+- {{ gate }}
+{% endfor %}
+
+**Artifacts Required:**
+{% for artifact in lifecycle_state.required_artifacts %}
+- `{{ artifact }}`
+{% endfor %}
+
+**Transitions:**
+{% for trans in lifecycle_state.valid_transitions %}
+- → `{{ trans.target_state }}`
+{% endfor %}
+
+**File:** `{{ lifecycle_state.file_path }}`
+
+---
+{% endfor %}
+
+## M&A Claim Taxonomy
+
+Claims taxonomy for board admissibility and buyer defensibility.
+
+{% for claim_category in claim_categories | sort(attribute="name") %}
+### {{ claim_category.name }}
+
+**Total Claims:** {{ claim_category.claim_count }}
+**Defensibility Level:** {{ claim_category.defensibility_level }}
+**Board Admissible:** {{ claim_category.board_admissible }}
+
+**Claim Archetypes:**
+{% for archetype in claim_category.archetypes %}
+- {{ archetype }}
+{% endfor %}
+
+**Supporting Doctrines:** {{ claim_category.doctrine_count }}
+
+**File:** `{{ claim_category.file_path }}`
+
+---
+{% endfor %}
+
+## Standards Compliance Maps
+
+Public standards (XES, OCEL, BPMN, ISO, SOC2, GDPR) compliance mappings.
+
+{% for standard in standards | sort(attribute="name") %}
+### {{ standard.name }} ({{ standard.version }})
+
+**Authority Source:** {{ standard.authority_source }}
+**Coverage:** {{ standard.coverage_percent }}%
+
+**Key Requirements Mapped:**
+{% for req in standard.requirements | slice(5) %}
+- {{ req }}
+{% endfor %}
+
+**Conformance Status:** {{ standard.conformance_status }}
+
+**File:** `{{ standard.file_path }}`
+
+---
+{% endfor %}
+
+## Summaries by Authority Level
+
+### Canonical (Immutable)
+- Doctrines: {{ doctrines | filter(attribute="authority_level", value="CANONICAL") | length }}
+- Papers: {{ papers | filter(attribute="authority_level", value="CANONICAL") | length }}
+- Standards: {{ standards | filter(attribute="authority_level", value="CANONICAL") | length }}
+
+### Primary (Research-Grounded)
+- Experiments: {{ experiments | filter(attribute="authority_level", value="PRIMARY") | length }}
+- Audits: {{ audits | filter(attribute="authority_level", value="PRIMARY") | length }}
+
+### Secondary (Derived)
+- Type-Law Crosswalks: {{ type_law_crosswalks | filter(attribute="authority_level", value="SECONDARY") | length }}
+- Lifecycle Definitions: {{ lifecycle_states | filter(attribute="authority_level", value="SECONDARY") | length }}
+
+### Provisional (Under Investigation)
+- Open Gaps: {{ gaps | filter(attribute="status", value="OPEN") | length }}
+
+---
+
+## Search Index
+
+**By Artifact Type:**
+{% for artifact_type in artifact_types | sort %}
+- {{ artifact_type }}: {{ artifacts_by_type[artifact_type] | length }} items
+{% endfor %}
+
+**By Checkpoint Dependency:**
+{% for checkpoint in checkpoints | sort(attribute="id") %}
+- `{{ checkpoint.id }}`: {{ checkpoint.artifact_dependencies | length }} artifacts
+{% endfor %}
+
+---
+
+**Last Indexed:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+**Total Artifacts:** {{ total_artifacts }}

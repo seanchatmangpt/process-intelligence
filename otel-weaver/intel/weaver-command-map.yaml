@@ -1,0 +1,350 @@
+cli_tool: weaver
+description: OpenTelemetry Weaver CLI for semantic convention registry and telemetry schema management.
+version: 0.22.1
+binary_name: weaver
+nominal_category_clarification:
+  feedstock_definition: "Telemetry is feedstock. Raw events, metrics, and traces are feedstock to be structured and validated."
+  court_definition: "Process consequence is court. The business consequence, verification, and audit of telemetry against contracts is court."
+  weaver_diff_vs_process_drift: "Weaver diffs represent structural, static changes in schemas or semantic convention registries. They are not process drift, which refers to runtime shifts in execution paths, latency, or frequency relative to process mining models."
+
+commands:
+  - name: registry
+    description: Manage Semantic Convention Registries (semconv schemas, validation, generation).
+    subcommands:
+      - name: check
+        description: Validates a semantic convention registry against syntax, structure, and Rego policies.
+        usage: "weaver registry check [OPTIONS]"
+        options:
+          - flag: --registry
+            short: -r
+            type: string
+            description: Local folder, Git repo URL, or Git archive URL of the registry.
+            default: "https://github.com/open-telemetry/semantic-conventions.git[model]"
+          - flag: --quiet
+            type: boolean
+            description: Turn quiet mode on (minimal output).
+          - flag: --follow-symlinks
+            short: -s
+            type: boolean
+            description: Follow symlinks when loading the registry.
+            default: false
+          - flag: --future
+            type: boolean
+            description: Enable the most recent validation rules (recommended for main branches/new registries).
+          - flag: --include-unreferenced
+            type: boolean
+            description: Include signals and attributes defined in dependency registries, even if unreferenced in the current registry.
+          - flag: --v2
+            type: boolean
+            description: Output version 2 of the schema (impacts templates and policies).
+          - flag: --policy
+            short: -p
+            type: string
+            description: Path to Rego policy file or directory.
+          - flag: --skip-policies
+            type: boolean
+            description: Skip the policy checks.
+          - flag: --display-policy-coverage
+            type: boolean
+            description: Display the policy coverage report.
+          - flag: --diagnostic-format
+            type: string
+            description: Format for diagnostic messages (ansi, json, gh_workflow_command).
+            default: ansi
+          - flag: --diagnostic-template
+            type: string
+            description: Path to diagnostic templates directory.
+            default: diagnostic_templates
+          - flag: --diagnostic-stdout
+            type: boolean
+            description: Send diagnostic output to stdout instead of stderr.
+        exit_codes:
+          0: Success (Registry is valid and complies with all policy checks)
+          1: Validation failure (syntax, registry resolution, or policy violation)
+
+      - name: generate
+        description: Generates code, documentation, or other target-specific artifacts from resolved registries.
+        usage: "weaver registry generate [OPTIONS] [TARGET] [OUTPUT]"
+        arguments:
+          - name: TARGET
+            type: string
+            description: Specific target language or format to generate (e.g. go, rust, markdown).
+            default: ""
+          - name: OUTPUT
+            type: string
+            description: Path to save generated artifacts.
+            default: "output"
+        options:
+          - flag: --templates
+            short: -t
+            type: string
+            description: Path to template directory.
+            default: templates
+          - flag: --config
+            short: -c
+            type: string
+            description: List of weaver.yaml configuration files.
+          - flag: --quiet
+            type: boolean
+            description: Minimal output.
+          - flag: --param
+            short: -D
+            type: string
+            description: Custom key=value template parameters.
+          - flag: --params
+            type: string
+            description: Path to YAML file containing template parameters.
+          - flag: --registry
+            short: -r
+            type: string
+            description: Registry path/URL.
+            default: "https://github.com/open-telemetry/semantic-conventions.git[model]"
+          - flag: --follow-symlinks
+            short: -s
+            type: boolean
+            description: Follow symlinks.
+            default: false
+          - flag: --include-unreferenced
+            type: boolean
+            description: Include unreferenced signals.
+          - flag: --v2
+            type: boolean
+            description: Output version 2 of the schema.
+          - flag: --policy
+            short: -p
+            type: string
+            description: Policy path.
+          - flag: --skip-policies
+            type: boolean
+            description: Skip policies.
+          - flag: --display-policy-coverage
+            type: boolean
+            description: Show coverage.
+          - flag: --future
+            type: boolean
+            description: Enable recent validation rules.
+          - flag: --diagnostic-format
+            type: string
+            description: Diagnostic format.
+            default: ansi
+          - flag: --diagnostic-template
+            type: string
+            description: Diagnostic template path.
+            default: diagnostic_templates
+          - flag: --diagnostic-stdout
+            type: boolean
+            description: Write diagnostics to stdout.
+        exit_codes:
+          0: Generation completed successfully
+          1: Pre-generation validation failed, template rendering error, or IO write failure
+
+      - name: diff
+        description: Computes differences between two registry versions. This tracks schema evolution (contract differences) and does NOT track runtime process drift.
+        usage: "weaver registry diff [OPTIONS] --baseline-registry <BASELINE_REGISTRY>"
+        options:
+          - flag: --baseline-registry
+            type: string
+            description: Baseline registry path/URL (required).
+          - flag: --registry
+            short: -r
+            type: string
+            description: Current registry path/URL.
+            default: "https://github.com/open-telemetry/semantic-conventions.git[model]"
+          - flag: --format
+            type: string
+            description: Output format (ansi, json, markdown).
+            default: ansi
+          - flag: --templates
+            type: string
+            description: Path to diff templates directory.
+            default: diff_templates
+          - flag: --output
+            short: -o
+            type: string
+            description: Directory/file to save diff. If omitted, prints to stdout.
+          - flag: --quiet
+            type: boolean
+            description: Minimal output.
+          - flag: --follow-symlinks
+            short: -s
+            type: boolean
+            description: Follow symlinks.
+          - flag: --future
+            type: boolean
+            description: Enable future validation.
+          - flag: --include-unreferenced
+            type: boolean
+            description: Include unreferenced.
+          - flag: --v2
+            type: boolean
+            description: Output version 2 schema.
+          - flag: --diagnostic-format
+            type: string
+            description: Diagnostic format.
+            default: ansi
+          - flag: --diagnostic-template
+            type: string
+            description: Diagnostic templates.
+          - flag: --diagnostic-stdout
+            type: boolean
+            description: Diagnostics to stdout.
+        exit_codes:
+          0: Diff generated successfully
+          1: Evaluation error or baseline registry load failure
+
+      - name: live-check
+        description: Enforces telemetry feedstock validation in real-time by comparing live telemetry signals with a registry schema (acting as a gateway for process consequence admissibility).
+        usage: "weaver registry live-check [OPTIONS]"
+        options:
+          - flag: --registry
+            short: -r
+            type: string
+            description: Registry path/URL.
+            default: "https://github.com/open-telemetry/semantic-conventions.git[model]"
+          - flag: --input-source
+            type: string
+            description: Source of telemetry data (file, stdin, otlp).
+            default: otlp
+          - flag: --input-format
+            type: string
+            description: Format of incoming telemetry (text, json).
+            default: json
+          - flag: --format
+            type: string
+            description: Format for rendering the live-check report (ansi, json, yaml, jsonl, or template name).
+            default: ansi
+          - flag: --templates
+            type: string
+            description: Path to live check templates.
+            default: live_check_templates
+          - flag: --no-stream
+            type: boolean
+            description: Disable stream mode (waits for all input before reporting).
+          - flag: --no-stats
+            type: boolean
+            description: Disable statistics accumulation (highly recommended for infinite/long-lived sessions).
+          - flag: --output
+            short: -o
+            type: string
+            description: Report output path. Print to stdout if omitted. Use 'none' to discard rendering, or 'http' to respond to admin stop request.
+          - flag: --otlp-grpc-address
+            type: string
+            description: Bind address for gRPC OTLP receiver.
+            default: "0.0.0.0"
+          - flag: --otlp-grpc-port
+            type: string
+            description: Port for gRPC OTLP receiver.
+            default: "4317"
+          - flag: --emit-otlp-logs
+            type: boolean
+            description: Send policy violation logs to an external OTLP endpoint.
+          - flag: --otlp-logs-endpoint
+            type: string
+            description: Destination URL for emitted OTLP logs.
+            default: "http://localhost:4317"
+          - flag: --otlp-logs-stdout
+            type: boolean
+            description: Emit OTLP violation logs to stdout (debug mode).
+          - flag: --admin-port
+            type: string
+            description: HTTP administrative port for control endpoints (e.g. /stop).
+            default: "4320"
+          - flag: --inactivity-timeout
+            type: string
+            description: Inactivity timeout in seconds before the listener automatically shuts down.
+            default: "10"
+          - flag: --policy
+            short: -p
+            type: string
+            description: Policies directory/file.
+          - flag: --advice-policies
+            type: string
+            description: Override policy folder for advice rules.
+          - flag: --advice-preprocessor
+            type: string
+            description: jq preprocessor script to transform registry format for high-efficiency Rego evaluation.
+        exit_codes:
+          0: Live-check stopped cleanly without critical violations (or timeout elapsed)
+          1: Configuration error, endpoint bind failure, or critical schema mismatch detected
+
+      - name: stats
+        description: Calculates registry statistics (counts of groups, metrics, spans, attributes).
+        usage: "weaver registry stats [OPTIONS]"
+        options:
+          - flag: --registry
+            short: -r
+            type: string
+            description: Registry path/URL.
+        exit_codes:
+          0: Stats displayed successfully
+          1: Registry failed to parse
+
+      - name: update-markdown
+        description: Injects registry definitions into markdown documents marked with special placeholders.
+        usage: "weaver registry update-markdown [OPTIONS]"
+        options:
+          - flag: --registry
+            short: -r
+            type: string
+            description: Registry path/URL.
+        exit_codes:
+          0: Markdown files updated successfully
+          1: File writing or parsing error
+
+      - name: json-schema
+        description: Outputs the JSON schema of resolved registries.
+        usage: "weaver registry json-schema [OPTIONS]"
+        exit_codes:
+          0: Schema printed successfully
+          1: Resolution error
+
+      - name: package
+        description: Packages registry files and templates into a unified, resolved distribution.
+        usage: "weaver registry package [OPTIONS]"
+        exit_codes:
+          0: Packaging completed successfully
+          1: Packager failed
+
+      - name: mcp
+        description: Starts a Model Context Protocol (MCP) server for querying semantic convention definitions.
+        usage: "weaver registry mcp [OPTIONS]"
+        exit_codes:
+          0: MCP server terminated cleanly
+          1: Port conflict or startup error
+
+      - name: infer
+        description: Auto-generates a registry schema by sniffing OTLP payload shapes.
+        usage: "weaver registry infer [OPTIONS]"
+        exit_codes:
+          0: Inference completed
+          1: Sniffer failed
+
+  - name: diagnostic
+    description: Manage diagnostic templates and messages.
+    subcommands:
+      - name: init
+        description: Scaffolds a local `diagnostic_templates` directory with template definitions.
+        usage: "weaver diagnostic init"
+        exit_codes:
+          0: Diagnostic scaffolding created
+          1: Write permission error
+
+  - name: completion
+    description: Generates shell completion files.
+    usage: "weaver completion <SHELL>"
+    exit_codes:
+      0: Completion script generated successfully
+      1: Unsupported shell type
+
+  - name: serve
+    description: Starts an HTTP API server for querying and resolving semantic registries.
+    usage: "weaver serve [OPTIONS]"
+    options:
+      - flag: --bind
+        type: string
+        description: Binding host and port.
+        default: "127.0.0.1:8080"
+      - flag: --cors-origins
+        type: string
+        description: Allowed CORS origins (e.g. *, domain.com).
+        default: same-origin only

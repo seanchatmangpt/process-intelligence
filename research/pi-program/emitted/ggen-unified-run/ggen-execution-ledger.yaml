@@ -1,0 +1,402 @@
+---
+version: "1.0"
+execution_timestamp: "2026-06-01T19:07:50Z"
+execution_authority: "ggen-unified-run"
+report_format: "ggen-execution-ledger"
+
+summary:
+  total_pipelines_discovered: 3
+  pipelines_executed: 3
+  rules_total: 11
+  rules_passed: 0
+  rules_failed: 11
+  failure_classification_summary:
+    RUNNER_NOT_DISCOVERED: 1
+    MANIFEST_PARSE_FAIL: 1
+    TEMPLATE_MISSING: 4
+    QUERY_PARSE_FAIL: 0
+    QUERY_EXECUTION_FAIL: 0
+    TEMPLATE_RENDER_FAIL: 1
+    OUTPUT_WRITE_BLOCKED: 0
+    MISSING_ONTOLOGY: 0
+    MISSING_QUERY: 0
+    STALE_OUTPUT: 0
+    TRACEABILITY_MISSING: 4
+
+pipelines:
+  - pipeline_id: "ggen-001"
+    project_root: "/Users/sac/process-intelligence"
+    manifest_path: "ggen/ggen.toml"
+    manifest_valid: true
+    runner_discovered: true
+    runner_path: "/Users/sac/.local/bin/ggen"
+    runner_version: "26.5.21"
+    execution_status: "FAILED"
+    failure_reason: "GATE_TEMPLATE_VALIDATION: Template validation failed for rule 'visualizer-dashboard-nextjs'"
+
+    inputs_validation:
+      ontology_source: "ontology-extensions.ttl"
+      ontology_exists: true
+      queries_directory: "queries/"
+      queries_count: 4
+      templates_directory: "templates/"
+      templates_count: 9
+
+    rules:
+      - rule_id: "ggen-001-normalize"
+        rule_name: "normalize"
+        rule_type: "inference"
+        description: "Pass-through normalization to satisfy DMAIC measurement gates"
+        query_path: "N/A"
+        query_type: "inline-construct"
+        query_content: "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
+        template_path: "N/A"
+        output_path: "N/A"
+        input_status: "VALID"
+        query_status: "PARSE_WARNING"
+        query_status_detail: "CONSTRUCT query lacks ORDER BY - may produce non-deterministic results"
+        template_status: "N/A"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "BLOCKED_BY_DOWNSTREAM"
+        failure_classification: "QUERY_PARSE_FAIL"
+
+      - rule_id: "ggen-001-blue-river"
+        rule_name: "blue-river-orchestrator"
+        rule_type: "generation"
+        description: "Autonomic MAPE-K governance engine with lifecycle state transitions"
+        query_path: "queries/extract-lifecycle-governance.rq"
+        query_exists: true
+        query_size_bytes: 3710
+        template_path: "templates/blue-river.tera"
+        template_exists: true
+        template_size_bytes: 14381
+        output_path: "../blue_river_dam/src/lib.rs"
+        output_target_exists: true
+        input_status: "VALID"
+        query_status: "NOT_EXECUTED"
+        query_execution_status: "N/A"
+        template_status: "NOT_VALIDATED"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "BLOCKED_BY_QUALITY_GATE"
+        failure_classification: "TEMPLATE_RENDER_FAIL"
+
+      - rule_id: "ggen-001-visualizer"
+        rule_name: "visualizer-dashboard-nextjs"
+        rule_type: "generation"
+        description: "Generate NextJS visualizer dashboard pages with conformance-backed claims"
+        query_path: "queries/extract-visualizer-data.rq"
+        query_exists: true
+        query_size_bytes: 1737
+        template_path: "templates/visualizer-dashboard.tsx.tera"
+        template_exists: true
+        template_size_bytes: 76001
+        output_path: "../experiments/visualizer-nextjs/src/app/page.tsx"
+        output_target_exists: true
+        input_status: "VALID"
+        query_status: "NOT_EXECUTED"
+        query_execution_status: "N/A"
+        template_status: "VALIDATION_FAILED"
+        template_validation_error: "SyntaxError: Failed to parse 'test_template'"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_RENDER_FAIL"
+
+  - pipeline_id: "ggen-002"
+    project_root: "/Users/sac/process-intelligence/research/pi-program"
+    manifest_path: "ggen/ggen.toml"
+    manifest_valid: false
+    manifest_validation_error: "TOML parse error at line 14, column 1: missing field 'source' in [ontology] section"
+    runner_discovered: true
+    runner_path: "/Users/sac/.local/bin/ggen"
+    runner_version: "26.5.21"
+    execution_status: "FAILED"
+    failure_reason: "MANIFEST_PARSE_FAIL: ggen.toml does not conform to ggen manifest schema"
+
+    inputs_validation:
+      ontology_files:
+        - "ontology/pi-program.ttl"
+        - "ontology/project-registry.ttl"
+        - "ontology/checkpoint-ledger.ttl"
+        - "ontology/research-artifact-ledger.ttl"
+        - "ontology/conformance-ledger.ttl"
+        - "ontology/graduation-boundary.ttl"
+        - "ontology/forbidden-collapse-law.ttl"
+      all_ontology_files_exist: true
+      queries_directory: "queries/"
+      queries_count: 51
+      templates_directory: "templates/"
+      templates_count: 14
+
+    notes: "This ggen.toml appears to be a custom research program manifest, not a standard ggen generation manifest. It defines a reconciliation mode with references to multiple external projects. The manifest structure does not match the ggen schema (missing required [project] section with 'name' field, no [generation.rules] section, etc.)"
+
+    rules:
+      - rule_id: "ggen-002-manifest"
+        rule_name: "manifest-schema-validation"
+        rule_type: "manifest"
+        description: "Validate ggen.toml manifest structure"
+        manifest_path: "ggen.toml"
+        input_status: "PRESENT"
+        execution_status: "FAILED"
+        failure_classification: "MANIFEST_PARSE_FAIL"
+
+  - pipeline_id: "ggen-003"
+    project_root: "/Users/sac/process-intelligence/research/prompt-manufactory"
+    manifest_path: "ggen/ggen.toml"
+    manifest_valid: true
+    runner_discovered: true
+    runner_path: "/Users/sac/.local/bin/ggen"
+    runner_version: "26.5.21"
+    execution_status: "FAILED"
+    failure_reason: "TEMPLATE_MISSING: Template files referenced in rules do not exist"
+
+    inputs_validation:
+      ontology_files:
+        - "ontology/prompt-manufactory.ttl"
+        - "ontology/research-program-law.ttl"
+        - "ontology/workflow-law.ttl"
+        - "ontology/subagent-role-law.ttl"
+        - "ontology/skill-law.ttl"
+        - "ontology/hook-law.ttl"
+        - "ontology/checkpoint-law.ttl"
+        - "ontology/forbidden-collapse-law.ttl"
+      all_ontology_files_exist: true
+      queries_directory: "queries/"
+      queries_count: 2
+      templates_directory: "templates/"
+      templates_count: 0
+      templates_missing_count: 8
+
+    rules:
+      - rule_id: "ggen-003-workflow"
+        rule_name: "workflow-prompts"
+        rule_type: "generation"
+        description: "Render one .md workflow warrant per ResearchProgram instance"
+        query_path: "queries/select-workflow-prompts.rq"
+        query_exists: true
+        query_size_bytes: 935
+        template_path: "templates/workflow-prompt.md.tera"
+        template_exists: false
+        output_path: "emitted/prompts/workflows/"
+        input_status: "PARTIAL"
+        query_status: "NOT_EXECUTED"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+      - rule_id: "ggen-003-subagent"
+        rule_name: "subagent-prompts"
+        rule_type: "generation"
+        description: "Render one .md subagent role prompt per SubagentRole instance"
+        query_path: "queries/select-subagent-prompts.rq"
+        query_exists: false
+        template_path: "templates/subagent-prompt.md.tera"
+        template_exists: false
+        output_path: "emitted/prompts/subagents/"
+        input_status: "PARTIAL"
+        query_status: "MISSING"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+      - rule_id: "ggen-003-skill-docs"
+        rule_name: "skill-docs"
+        rule_type: "generation"
+        description: "Render one .md skill doc per Skill instance"
+        query_path: "queries/select-skill-prompts.rq"
+        query_exists: false
+        template_path: "templates/skill.md.tera"
+        template_exists: false
+        output_path: "emitted/prompts/skills/"
+        input_status: "PARTIAL"
+        query_status: "MISSING"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+      - rule_id: "ggen-003-hooks"
+        rule_name: "hook-policies"
+        rule_type: "generation"
+        description: "Render one .md hook policy per HookPolicy instance"
+        query_path: "queries/select-hook-policies.rq"
+        query_exists: false
+        template_path: "templates/hook-policy.md.tera"
+        template_exists: false
+        output_path: "emitted/prompts/hooks/"
+        input_status: "PARTIAL"
+        query_status: "MISSING"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+      - rule_id: "ggen-003-checkpoint-prompts"
+        rule_name: "checkpoint-prompts"
+        rule_type: "generation"
+        description: "Render one .md checkpoint prompt per program"
+        query_path: "queries/select-checkpoint-prompts.rq"
+        query_exists: false
+        template_path: "templates/checkpoint-prompt.md.tera"
+        template_exists: false
+        output_path: "emitted/prompts/checkpoints/"
+        input_status: "PARTIAL"
+        query_status: "MISSING"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+      - rule_id: "ggen-003-program-index"
+        rule_name: "program-index"
+        rule_type: "generation"
+        description: "Render single comprehensive program index"
+        query_path: "queries/select-research-programs.rq"
+        query_exists: true
+        query_size_bytes: 517
+        template_path: "templates/research-program-index.md.tera"
+        template_exists: false
+        output_path: "emitted/indexes/research-program-prompt-index.md"
+        input_status: "PARTIAL"
+        query_status: "NOT_EXECUTED"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+      - rule_id: "ggen-003-invalid-ggen"
+        rule_name: "invalid-ggen-ledger"
+        rule_type: "generation"
+        description: "Render ledger of all 22 legacy .ggen files with classification"
+        query_path: "queries/select-legacy-ggen-files.rq"
+        query_exists: false
+        template_path: "templates/invalid-ggen-classification-ledger.md.tera"
+        template_exists: false
+        output_path: "emitted/indexes/invalid-ggen-classification-ledger.md"
+        input_status: "PARTIAL"
+        query_status: "MISSING"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+      - rule_id: "ggen-003-receipt"
+        rule_name: "receipt-ledger"
+        rule_type: "generation"
+        description: "Render ledger of all rendered prompts with proof-of-manufacture receipts"
+        query_path: "queries/select-rendered-prompts.rq"
+        query_exists: false
+        template_path: "templates/prompt-receipt.md.tera"
+        template_exists: false
+        output_path: "emitted/indexes/prompt-receipt-ledger.md"
+        input_status: "PARTIAL"
+        query_status: "MISSING"
+        template_status: "MISSING"
+        output_status: "NOT_EXECUTED"
+        receipt_status: "NOT_GENERATED"
+        execution_status: "FAILED"
+        failure_classification: "TEMPLATE_MISSING"
+
+failure_analysis:
+  - failure_class: "RUNNER_NOT_DISCOVERED"
+    count: 0
+    pipelines_affected: []
+
+  - failure_class: "MANIFEST_PARSE_FAIL"
+    count: 1
+    pipelines_affected: ["ggen-002"]
+    description: "ggen-002 manifest is not in standard ggen format. It appears to be a custom research program manifest with [program], [inputs], [ontology] (without 'source' field), [queries], [templates], [emitted], and [checkpoints] sections. Standard ggen manifests require [project] and [generation.rules] sections."
+    resolution: "Convert ggen-002 ggen.toml to standard ggen manifest format or use a custom manifest parser."
+
+  - failure_class: "TEMPLATE_MISSING"
+    count: 7
+    pipelines_affected: ["ggen-003"]
+    description: "ggen-003 references 8 generation rules with template files, but the templates/ directory is empty. All expected template files are missing."
+    missing_files:
+      - "templates/workflow-prompt.md.tera"
+      - "templates/subagent-prompt.md.tera"
+      - "templates/skill.md.tera"
+      - "templates/hook-policy.md.tera"
+      - "templates/checkpoint-prompt.md.tera"
+      - "templates/research-program-index.md.tera"
+      - "templates/invalid-ggen-classification-ledger.md.tera"
+      - "templates/prompt-receipt.md.tera"
+    resolution: "Create template files in templates/ directory before executing ggen sync."
+
+  - failure_class: "QUERY_PARSE_FAIL"
+    count: 1
+    pipelines_affected: ["ggen-001"]
+    description: "normalize rule CONSTRUCT query lacks ORDER BY clause, producing non-deterministic results."
+    query_path: "ggen/queries/ (inline CONSTRUCT)"
+    resolution: "Add ORDER BY clause to CONSTRUCT query or set determinism guarantee in ggen.toml."
+
+  - failure_class: "TEMPLATE_RENDER_FAIL"
+    count: 1
+    pipelines_affected: ["ggen-001"]
+    description: "visualizer-dashboard-nextjs rule template failed syntax validation. Template parse error: 'Failed to parse test_template'."
+    template_path: "ggen/templates/visualizer-dashboard.tsx.tera"
+    template_size: "76001 bytes"
+    resolution: "Review Tera template syntax in visualizer-dashboard.tsx.tera. Use `ggen sync --validate_only` with custom path to debug specific template errors."
+
+  - failure_class: "MISSING_QUERY"
+    count: 5
+    pipelines_affected: ["ggen-003"]
+    description: "Five rules reference SPARQL query files that do not exist in queries/ directory."
+    missing_queries:
+      - "queries/select-subagent-prompts.rq"
+      - "queries/select-skill-prompts.rq"
+      - "queries/select-hook-policies.rq"
+      - "queries/select-checkpoint-prompts.rq"
+      - "queries/select-legacy-ggen-files.rq"
+      - "queries/select-rendered-prompts.rq"
+    resolution: "Create missing SPARQL query files before executing ggen sync."
+
+  - failure_class: "TRACEABILITY_MISSING"
+    count: 4
+    pipelines_affected: ["ggen-002", "ggen-003"]
+    description: "No audit trail, receipt, or execution evidence generated due to upstream failures."
+
+recommendations:
+  - priority: "CRITICAL"
+    pipeline: "ggen-001"
+    action: "Fix visualizer-dashboard.tsx.tera template syntax error. Error: SyntaxError: Failed to parse 'test_template'. Review Tera syntax at line with test_template definition."
+
+  - priority: "CRITICAL"
+    pipeline: "ggen-003"
+    action: "Create all 8 missing template files in research/prompt-manufactory/ggen/templates/ before execution. Current templates/ directory is empty."
+
+  - priority: "CRITICAL"
+    pipeline: "ggen-003"
+    action: "Create all 5 missing SPARQL query files in research/prompt-manufactory/ggen/queries/ before execution."
+
+  - priority: "HIGH"
+    pipeline: "ggen-002"
+    action: "Decide: either convert ggen.toml to standard ggen manifest format, or implement custom research program manifest executor. Current ggen.toml is not compatible with ggen sync."
+
+  - priority: "MEDIUM"
+    pipeline: "ggen-001"
+    action: "Add ORDER BY clause to normalize rule CONSTRUCT query to ensure deterministic results."
+
+conclusion: |
+  Of 3 discovered ggen pipelines, 0 successfully executed any generation rules.
+  All 11 rules across the three pipelines failed due to:
+  - 1 manifest parse error (ggen-002: non-standard format)
+  - 1 template syntax validation error (ggen-001: visualizer dashboard)
+  - 7 template files missing (ggen-003: all templates)
+  - 5 query files missing (ggen-003: multiple queries)
+  - 1 determinism warning on inference rule (ggen-001: normalize)
+
+  No receipts or cryptographic proofs were generated.
+  No code artifacts were manufactured.
+  Full failure traceability documented above.

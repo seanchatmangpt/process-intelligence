@@ -1,0 +1,78 @@
+# otel-weaver-source.manifest.yaml
+# Source definition manifest for OTel Weaver ingestion pipeline
+# Authority: /Users/sac/process-intelligence/otel-weaver/ggen/manifests/otel-weaver-source.manifest.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Telemetry is feedstock. This manifest configures raw feedstock sources.
+# - Process consequence is court. Target outputs must pass court verification.
+# - Weaver diffs are not process drift.
+
+metadata:
+  name: "otel-weaver-source"
+  version: "1.0.0"
+  description: "Configuration manifest defining source schemas and registries for OpenTelemetry Weaver ingestion"
+  author: "Process Intelligence Research Foundry"
+  created: "2026-06-01"
+  purpose: "Ingest and compile OTel Semantic Conventions into verified feedstock layouts"
+
+source_registry:
+  name: "opentelemetry-semantic-conventions"
+  schema_url: "https://opentelemetry.io/schemas/1.25.0"
+  repository_url: "https://github.com/open-telemetry/semantic-conventions"
+  local_path: "/Users/sac/process-intelligence/otel-weaver/ggen/templates/pi-weaver-registry.yaml.ggen"
+  version: "1.25.0"
+  format: "weaver-yaml"
+
+module_allowlist:
+  - "process.telemetry.feedstock"
+  - "process.consequence.court"
+  - "process.drift.weaver.diff"
+
+module_blocklist:
+  - "process.runtime.garbage_collection"
+  - "process.cpu.utilization"
+  - "process.memory.leaks"
+
+export_rules:
+  - type: "attribute_group"
+    filter: "pi.feedstock.*"
+    visibility: "public"
+  - type: "attribute_group"
+    filter: "pi.court.*"
+    visibility: "public"
+  - type: "attribute_group"
+    filter: "pi.weaver.diff.*"
+    visibility: "public"
+
+output:
+  directory: "/Users/sac/process-intelligence/otel-weaver/generated"
+  file: "otel_weaver_schemas.yaml"
+  format: "yaml"
+  type_safety: "strict"
+
+generation_config:
+  emit_docs: true
+  emit_json_schema: true
+  include_source_comments: true
+  verify_nominal_categories: true
+
+audit:
+  enabled: true
+  script: "/Users/sac/process-intelligence/audits/audit-weaver-source.sh"
+  gates:
+    - name: "nominal_category_collapse"
+      threshold: 0
+    - name: "schema_validity"
+      threshold: 100
+
+compliance:
+  standards:
+    - "ISO-IEC-23894:2024"
+    - "board-admissible"
+  evidence_backing: "Weaver schema signatures + cryptographic validation"
+  immutable: true
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "/Users/sac/process-intelligence/receipts/otel-weaver-source-receipt.json"

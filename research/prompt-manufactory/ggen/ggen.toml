@@ -1,0 +1,114 @@
+[project]
+name = "prompt-manufactory"
+version = "0.1.0"
+description = "Post-cyberpunk layer: research warrants manufactured from law"
+authors = ["Sean Chatman"]
+hand_coding = false
+
+[ontology]
+source = "ontology/prompt-manufactory.ttl"
+additional = [
+  "ontology/research-program-law.ttl",
+  "ontology/workflow-law.ttl",
+  "ontology/subagent-role-law.ttl",
+  "ontology/skill-law.ttl",
+  "ontology/hook-law.ttl",
+  "ontology/checkpoint-law.ttl",
+  "ontology/forbidden-collapse-law.ttl"
+]
+standard_only = false
+
+[generation]
+output_dir = ".."
+
+# --- Rule 1: Render workflow prompts ---
+[[generation.rules]]
+name = "workflow-prompts"
+query = { file = "queries/select-workflow-prompts.rq" }
+template = { file = "templates/workflow-prompt.md.tera" }
+output_file = "emitted/prompts/workflows/"
+mode = "Overwrite"
+description = "Render one .md workflow warrant per ResearchProgram instance"
+
+# --- Rule 2: Render subagent role prompts ---
+[[generation.rules]]
+name = "subagent-prompts"
+query = { file = "queries/select-subagent-prompts.rq" }
+template = { file = "templates/subagent-prompt.md.tera" }
+output_file = "emitted/prompts/subagents/"
+mode = "Overwrite"
+description = "Render one .md subagent role prompt per SubagentRole instance"
+
+# --- Rule 3: Render skill documentation ---
+[[generation.rules]]
+name = "skill-docs"
+query = { file = "queries/select-skill-prompts.rq" }
+template = { file = "templates/skill.md.tera" }
+output_file = "emitted/prompts/skills/"
+mode = "Overwrite"
+description = "Render one .md skill doc per Skill instance"
+
+# --- Rule 4: Render hook policies ---
+[[generation.rules]]
+name = "hook-policies"
+query = { file = "queries/select-hook-policies.rq" }
+template = { file = "templates/hook-policy.md.tera" }
+output_file = "emitted/prompts/hooks/"
+mode = "Overwrite"
+description = "Render one .md hook policy per HookPolicy instance"
+
+# --- Rule 5: Render checkpoint prompts ---
+[[generation.rules]]
+name = "checkpoint-prompts"
+query = { file = "queries/select-checkpoint-prompts.rq" }
+template = { file = "templates/checkpoint-prompt.md.tera" }
+output_file = "emitted/prompts/checkpoints/"
+mode = "Overwrite"
+description = "Render one .md checkpoint prompt per program"
+
+# --- Rule 6: Render program index ---
+[[generation.rules]]
+name = "program-index"
+query = { file = "queries/select-research-programs.rq" }
+template = { file = "templates/research-program-index.md.tera" }
+output_file = "emitted/indexes/research-program-prompt-index.md"
+mode = "Overwrite"
+description = "Render single comprehensive program index"
+
+# --- Rule 7: Render invalid .ggen classification ledger ---
+[[generation.rules]]
+name = "invalid-ggen-ledger"
+query = { file = "queries/select-legacy-ggen-files.rq" }
+template = { file = "templates/invalid-ggen-classification-ledger.md.tera" }
+output_file = "emitted/indexes/invalid-ggen-classification-ledger.md"
+mode = "Overwrite"
+description = "Render ledger of all 22 legacy .ggen files with classification"
+
+# --- Rule 8: Render prompt receipt ledger ---
+[[generation.rules]]
+name = "receipt-ledger"
+query = { file = "queries/select-rendered-prompts.rq" }
+template = { file = "templates/prompt-receipt.md.tera" }
+output_file = "emitted/indexes/prompt-receipt-ledger.md"
+mode = "Overwrite"
+description = "Render ledger of all rendered prompts with proof-of-manufacture receipts"
+
+[sync]
+enabled = true
+on_change = "manual"
+validate_after = true
+conflict_mode = "fail"
+
+[rdf]
+formats = ["turtle"]
+default_format = "turtle"
+strict_validation = false
+
+[templates]
+enable_caching = true
+auto_reload = true
+
+[output]
+formatting = "default"
+line_length = 100
+indent = 4

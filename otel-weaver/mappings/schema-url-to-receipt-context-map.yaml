@@ -1,0 +1,71 @@
+# schema-url-to-receipt-context-map.yaml
+# OpenTelemetry Schema URL to Process Intelligence Receipt Context Mapping
+# Authority: /Users/sac/process-intelligence/otel-weaver/mappings/schema-url-to-receipt-context-map.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Telemetry is feedstock. Schema URLs define feedstock syntax.
+# - Process consequence is court. Receipt Context defines how court verdicts are recorded.
+# - Weaver diffs are not process drift.
+
+version: "1.0.0"
+authority: "Process Intelligence Research Foundry"
+nominal_role: "receipt_metadata_resolution"
+
+schema_url_mappings:
+  - schema_url: "https://opentelemetry.io/schemas/1.25.0"
+    receipt_context:
+      context_id: "ctx_otel_1_25_0_conformance"
+      description: "Receipt context for OTel 1.25.0 semantic convention telemetry feedstock"
+      standards_conformance:
+        - "ISO-IEC-23894:2024"
+        - "board-admissible"
+        - "standard_Ocel20"
+      cryptographic_signing:
+        algorithm: "blake3"
+        hash_length_bits: 256
+        key_derivation: "HKDF-SHA256"
+      loss_policy_reference: "OtelToOcelLossPolicy"
+      compliance_assertion_bridge:
+        target: "Slide-to-Receipt Map"
+        link_reference: "/Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md"
+        board_admissible_requirements: "/Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md"
+
+  - schema_url: "https://opentelemetry.io/schemas/1.24.0"
+    receipt_context:
+      context_id: "ctx_otel_1_24_0_legacy"
+      description: "Receipt context for OTel 1.24.0 semantic convention telemetry feedstock"
+      standards_conformance:
+        - "board-admissible"
+        - "standard_Ocel10"
+      cryptographic_signing:
+        algorithm: "blake3"
+        hash_length_bits: 256
+        key_derivation: "HKDF-SHA256"
+      loss_policy_reference: "OtelToOcelLegacyLossPolicy"
+      compliance_assertion_bridge:
+        target: "Slide-to-Receipt Map"
+        link_reference: "/Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md"
+        board_admissible_requirements: "/Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md"
+
+  - schema_url: "https://opentelemetry.io/schemas/1.20.0"
+    receipt_context:
+      context_id: "ctx_otel_1_20_0_deprecated"
+      description: "Receipt context for deprecated OTel 1.20.0 semantic conventions"
+      standards_conformance:
+        - "non-board-admissible"
+        - "standard_Xes1849"
+      cryptographic_signing:
+        algorithm: "sha256"
+        hash_length_bits: 256
+        key_derivation: "PBKDF2"
+      loss_policy_reference: "OtelToXesLossPolicy"
+      compliance_assertion_bridge:
+        target: "Hearsay Telemetry Log"
+        link_reference: "/Users/sac/process-intelligence/ma/hearsay_telemetry_log.md"
+        board_admissible_requirements: "rejected"
+
+resolution_rules:
+  - rule_id: "res_rule_01_unknown_schema_url"
+    condition: "If incoming telemetry has a schema URL not listed in this registry"
+    default_context: "ctx_unknown_telemetry_hearsay"
+    action: "raise_validation_warning"

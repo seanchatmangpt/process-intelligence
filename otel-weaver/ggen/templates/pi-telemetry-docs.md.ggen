@@ -1,0 +1,35 @@
+# Process Intelligence Telemetry Documentation
+
+Generated version: `{{ schema_version }}`
+OpenTelemetry Schema URL: `{{ schema_url }}`
+
+This document defines the process intelligence telemetry framework, strictly honoring the nominal category separations.
+
+## 1. Telemetry Feedstock (Ingestion)
+Telemetry is feedstock—raw operational data collected directly from witnesses. It does not carry semantic judgment.
+
+| Attribute Key | Type | Description | Example |
+|---|---|---|---|
+| `pi.feedstock.witness.id` | string | Unique process witness ID | `wit_sys_exec_01` |
+| `pi.feedstock.source` | string | Feedstock telemetry source mechanism | `ebpf_syscall` |
+| `pi.feedstock.payload_size` | int | Byte length of the witness report payload | `2048` |
+
+## 2. Process Consequence (Court)
+Process consequence is court—the analytical/governance outcome or judicial decision rendered after verifying telemetry feedstock.
+
+| Attribute Key | Type | Description | Example |
+|---|---|---|---|
+| `pi.court.case.id` | string | Active audit/compliance case identifier | `case_2026_q2_09` |
+| `pi.court.verdict.type` | string | Verdict type assigned to the consequence | `violation_halt` |
+| `pi.court.verdict.severity` | string | Verdict consequence severity | `critical` |
+
+## 3. Schema Diffs vs Process Drift
+- **Weaver Diffs**: Represent structural changes, extensions, or deletions within the semantic convention schema versions.
+- **Process Drift**: Represents operational deviations of runtime execution patterns from defined gold-standard models.
+Weaver diffs are **not** process drift.
+
+| Attribute Key | Type | Description | Example |
+|---|---|---|---|
+| `pi.weaver.diff.source_version` | string | Base schema version | `1.0.0` |
+| `pi.weaver.diff.target_version` | string | Updated schema version | `1.1.0` |
+| `pi.weaver.diff.type` | string | Characterization of the schema diff | `schema_addition` |

@@ -1,0 +1,33 @@
+# Process Intelligence Registry Diff Report
+
+Generated on: `{{ generation_time }}`
+Weaver Schema Source Version: `{{ source_version }}`
+Weaver Schema Target Version: `{{ target_version }}`
+
+This report highlights structural schema changes (Weaver diffs) between the two versions of the Process Intelligence Registry. 
+Reminder: Weaver schema diffs are strictly structural. They represent specification shifts and must never be conflated with **Process Drift** (operational runtime execution deviations).
+
+## Summary of Schema Differences
+
+Total added attributes: `{{ added_count }}`
+Total deprecated attributes: `{{ deprecated_count }}`
+Total modified attributes: `{{ modified_count }}`
+
+## Weaver Schema Differences Breakdown
+
+### 1. Telemetry Feedstock Additions/Removals
+Telemetry remains raw feedstock. The following feedstock changes are introduced in this diff:
+
+{% for change in feedstock_changes %}
+- **{{ change.attribute_name }}** (`{{ change.action }}`): {{ change.description }}
+{% endfor %}
+
+### 2. Process Consequence (Court) Changes
+Process consequence remains court. The following court semantic adjustments are introduced:
+
+{% for change in court_changes %}
+- **{{ change.attribute_name }}** (`{{ change.action }}`): {{ change.description }}
+{% endfor %}
+
+## Resolution Actions
+All schema translation systems, codecs, and target consumers (e.g., the Court engines) must update their parser tables to match the target schema version.

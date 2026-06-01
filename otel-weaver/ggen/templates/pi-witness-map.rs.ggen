@@ -1,0 +1,102 @@
+// pi-witness-map.rs.ggen
+// Rust template for compiling witness maps in the Ostar generative pipeline.
+// Nominal constraints:
+// - Telemetry is feedstock (raw witness inputs)
+// - Process consequence is court (verdicts, policy determinations)
+// - Weaver diffs are schema changes, not process drift (runtime deviations)
+
+use std::collections::HashMap;
+
+#[derive(Debug, Clone)]
+pub struct WitnessMetadata {
+    pub id: String,
+    pub source_type: String,
+    pub schema_url: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct CourtVerdictConsequence {
+    pub case_id: String,
+    pub verdict_type: String,
+    pub severity: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct WeaverDiffMetadata {
+    pub source_version: String,
+    pub target_version: String,
+    pub change_count: usize,
+}
+
+pub struct WitnessMap {
+    pub witnesses: HashMap<String, WitnessMetadata>,
+    pub consequences: HashMap<String, CourtVerdictConsequence>,
+    pub schema_diffs: Vec<WeaverDiffMetadata>,
+}
+
+impl WitnessMap {
+    pub fn new() -> Self {
+        let mut witnesses = HashMap::new();
+        let mut consequences = HashMap::new();
+        let schema_diffs = Vec::new();
+
+        // Populate from generator template arguments
+        {% for witness in witnesses %}
+        witnesses.insert(
+            "{{ witness.id }}".to_string(),
+            WitnessMetadata {
+                id: "{{ witness.id }}".to_string(),
+                source_type: "{{ witness.source }}".to_string(),
+                schema_url: "{{ witness.schema_url }}".to_string(),
+            }
+        );
+        {% endfor %}
+
+        {% for consequence in consequences %}
+        consequences.insert(
+            "{{ consequence.case_id }}".to_string(),
+            CourtVerdictConsequence {
+                case_id: "{{ consequence.case_id }}".to_string(),
+                verdict_type: "{{ consequence.verdict_type }}".to_string(),
+                severity: "{{ consequence.severity }}".to_string(),
+            }
+        );
+        {% endfor %}
+
+        Self {
+            witnesses,
+            consequences,
+            schema_diffs,
+        }
+    }
+
+    pub fn process_feedstock(&self, witness_id: &str, raw_payload: &[u8]) -> Result<CourtVerdictConsequence, String> {
+        let witness = self.witnesses.get(witness_id)
+            .ok_or_else(|| format!("Unknown witness ID: {}", witness_id))?;
+        
+        // Real logic: Telemetry is feedstock. We evaluate the feedstock to produce a court consequence.
+        println!("Ingesting feedstock from witness {} of type {}", witness.id, witness.source_type);
+        
+        // Simple rules-based court consequence logic based on telemetry input length
+        if raw_payload.is_empty() {
+            return Ok(CourtVerdictConsequence {
+                case_id: format!("case_empty_feedstock_{}", witness_id),
+                verdict_type: "violation_halt".to_string(),
+                severity: "critical".to_string(),
+            });
+        }
+
+        Ok(CourtVerdictConsequence {
+            case_id: format!("case_valid_{}", witness_id),
+            verdict_type: "compliant".to_string(),
+            severity: "informational".to_string(),
+        })
+    }
+
+    pub fn log_weaver_diff(&mut self, diff: WeaverDiffMetadata) {
+        // Weaver diffs are NOT process drift. Process drift represents operational runtime deviation.
+        // Weaver diffs represent schema translation adjustments.
+        println!("Structural weaver schema diff registered: {} -> {}", diff.source_version, diff.target_version);
+        self.schema_diffs.push(diff);
+    }
+}

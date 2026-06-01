@@ -1,0 +1,111 @@
+# Feature Plan Template (Tera)
+# Generates Cargo.toml feature activation plan for wasm4pm-compat
+# Authority: feature-law.yaml
+# Template Type: Configuration Generation
+
+{%- comment -%}
+  This template generates a Cargo.toml [features] section that implements
+  the feature-law.yaml doctrine: features add derives and dependencies only,
+  no execution engines, no tool smuggling.
+
+  Input Variables:
+  - features: Map of feature definitions from feature-law.yaml
+  - crate_name: wasm4pm-compat
+  - default_feature: "formats"
+  - activation_scope: "workspace" (global unification applies)
+{%- endcomment -%}
+
+# Cargo.toml Fragment: Feature Plan for {{ crate_name }}
+# Generated: {{ now() }}
+# Authority: ggen/rules/feature-law.yaml
+
+[features]
+{%- comment -%} Default feature: always enabled, always active {%- endcomment -%}
+default = ["formats"]
+
+{%- comment -%} Core formats feature: base compatibility, no tools {%- endcomment -%}
+formats = []
+
+{%- comment -%} TypeScript Projection Feature: Specta + serde for browser bindings {%- endcomment -%}
+ts = [
+  "specta",
+  "specta/typescript",
+  "serde",
+  "serde/derive",
+  "tsify",
+  "wasm-bindgen",
+]
+
+{%- comment -%} WebAssembly ABI Projection: tsify + wasm-bindgen for WASM FFI {%- endcomment -%}
+wasm = [
+  "wasm-bindgen",
+  "wasm-bindgen/default",
+  "tsify",
+  "serde",
+  "serde/derive",
+  "serde-wasm-bindgen",
+]
+
+{%- comment -%} WebAssembly Component Model: wit-bindgen for portable components {%- endcomment -%}
+component = [
+  "wit-bindgen",
+]
+
+{%- comment -%} Strict Boundary Enforcement: local crate; no transitive unification {%- endcomment -%}
+strict = []
+
+{%- comment -%} Graduation Bridge to wasm4pm Engine {%- endcomment -%}
+wasm4pm = [
+  "serde",
+  "serde/derive",
+]
+
+# Note: Feature Dependencies are Unified Globally
+#
+# When any downstream crate enables "ts" or "wasm" features:
+# 1. All workspace members inherit tsify, wasm-bindgen, specta, serde
+# 2. All crates must remain correct under feature-enabled builds
+# 3. Core algorithms must NOT depend on feature enablement
+# 4. Only serialization derives allowed; execution engines forbidden
+#
+# Mitigation:
+# - Use #[cfg(feature = "...")] guards on feature-dependent code
+# - Test all feature combinations via CI matrix
+# - Audit transitive dependency closure for tool smuggling
+# - Run: cargo make audit-feature-law
+
+[dependencies]
+{%- comment -%} Always available {%- endcomment -%}
+serde = { version = "1.0", features = ["derive"], optional = true }
+
+{%- comment -%} Feature-gated: ts and wasm only {%- endcomment -%}
+specta = { version = "2.0", optional = true }
+tsify = { version = "0.9", optional = true }
+wasm-bindgen = { version = "0.2.90", optional = true }
+serde-wasm-bindgen = { version = "0.4", optional = true }
+
+{%- comment -%} Feature-gated: component only {%- endcomment -%}
+wit-bindgen = { version = "0.25", optional = true }
+
+# FORBIDDEN Transitive Dependencies (must never appear):
+# - pm4py-bindings (process discovery)
+# - ocpq-engine (object-centric queries)
+# - replay-executor (token game simulation)
+# - receipt-minter (cryptographic chaining)
+# - conformance-solver (alignment algorithms)
+# - benchmark-harness (performance validation)
+#
+# If any forbidden transitive dependency is detected:
+# 1. cargo make audit-feature-law will fail with ERR_TOOL_SMUGGLING_INTO_COMPAT
+# 2. Remediate by removing the transitive path
+# 3. Re-run audit to verify
+
+# Verification:
+# cargo build
+# cargo build --features ts
+# cargo build --features wasm
+# cargo build --features component
+# cargo build --features strict
+# cargo build --features wasm4pm
+# cargo build --all-features
+# cargo make audit-feature-law

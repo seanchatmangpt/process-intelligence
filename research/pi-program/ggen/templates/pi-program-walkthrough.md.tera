@@ -1,0 +1,141 @@
+# Process Intelligence Program Walkthrough
+
+**Generated:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+
+## Mission Statement
+
+The Process Intelligence (PI) Program is the research foundry for full-lifecycle process intelligence. This document provides a guided narrative through the program's structure, authority layers, and manufacturing pipeline.
+
+---
+
+## Part 1: Doctrine Layer
+
+The immutable doctrine layer defines canonical process law and foundational principles.
+
+{% for doctrine_item in doctrines %}
+### {{ doctrine_item.title }}
+- **File:** `{{ doctrine_item.path }}`
+- **Status:** {{ doctrine_item.status }}
+- **Last Updated:** {{ doctrine_item.updated }}
+
+{{ doctrine_item.summary }}
+{% endfor %}
+
+---
+
+## Part 2: Research Authority
+
+### Papers Archive
+{% for paper in papers %}
+- **{{ paper.title }}** ({{ paper.year }})
+  - Classification: `{{ paper.classification }}`
+  - Type-Law Mapping: {{ paper.type_law_status }}
+  - Authority Level: {{ paper.authority_level }}
+{% endfor %}
+
+### PM4Py Capability Atlas
+- **Status:** {{ pm4py_status }}
+- **Coverage:** {{ pm4py_coverage }}%
+- **Key Capabilities:** {{ pm4py_capabilities | join(", ") }}
+
+### Wasm4PM Execution Authority
+- **Status:** {{ wasm4pm_status }}
+- **Algorithm Coverage:** {{ wasm4pm_algorithm_coverage }}%
+- **Conformance Capability:** {{ wasm4pm_conformance | default(value="Pending") }}
+
+---
+
+## Part 3: Lifecycle Definitions
+
+The process lifecycle defines lawful state transitions and manufacturing stages.
+
+{% for lifecycle_state in lifecycle_states %}
+### {{ lifecycle_state.name }}
+- **Stage:** {{ lifecycle_state.stage }}
+- **Proof Gates:** {{ lifecycle_state.gates | join(", ") }}
+- **Artifacts Required:** {{ lifecycle_state.artifacts | join(", ") }}
+{% endfor %}
+
+---
+
+## Part 4: M&A Claim Taxonomy
+
+### Claim Categories
+{% for claim_cat in claim_categories %}
+- **{{ claim_cat.name }}** ({{ claim_cat.count }} claims)
+  - Defensibility Requirements: {{ claim_cat.defensibility_level }}
+  - Board Admissibility: {{ claim_cat.board_admissible }}
+{% endfor %}
+
+---
+
+## Part 5: Standards Compliance
+
+{% for standard in standards %}
+- **{{ standard.name }}** ({{ standard.version }})
+  - Coverage: {{ standard.coverage }}%
+  - Authority: {{ standard.authority_source }}
+{% endfor %}
+
+---
+
+## Part 6: Research Experiments
+
+{% for experiment in experiments %}
+### {{ experiment.title }}
+- **Type:** {{ experiment.type }}
+- **Status:** {{ experiment.status }}
+- **Finding:** {{ experiment.finding | safe }}
+{% endfor %}
+
+---
+
+## Part 7: Checkpoint Verdicts
+
+| Checkpoint | Status | Date | Criteria Met |
+|-----------|--------|------|--------------|
+{% for checkpoint in checkpoints %}
+| {{ checkpoint.id }} | {{ checkpoint.status }} | {{ checkpoint.date }} | {{ checkpoint.criteria_met }}/{{ checkpoint.criteria_total }} |
+{% endfor %}
+
+---
+
+## Part 8: Open Gaps
+
+{% for gap in gaps %}
+- **{{ gap.id }}:** {{ gap.title }}
+  - Severity: {{ gap.severity }}
+  - Blocker For: {{ gap.blocks | join(", ") }}
+  - Status: {{ gap.status }}
+{% endfor %}
+
+---
+
+## Part 9: Manufacturing Pipeline
+
+The manufacturing pipeline transforms research findings into executable capability.
+
+1. **Research Intake** → Papers, PM4Py, wasm4pm analysis
+2. **Type-Law Mapping** → Classification and conformance rules
+3. **Authority Determination** → Capability boundaries and gaps
+4. **Lifecycle Integration** → Stage-gated process definitions
+5. **Claim Manufacturing** → M&A claim taxonomy generation
+6. **Proof Gates** → Conformance and quality validation
+7. **Receipt Issuance** → Checkpoint ledger and milestone verdicts
+
+---
+
+## Part 10: Program Health Summary
+
+- **Total Doctrines:** {{ doctrines | length }}
+- **Total Papers Classified:** {{ papers | length }}
+- **Total Lifecycle States:** {{ lifecycle_states | length }}
+- **Total M&A Claims:** {{ claims | length }}
+- **Total Gaps Open:** {{ gaps | length }}
+- **Checkpoints ALIVE:** {{ checkpoints | filter(attribute="status", value="ALIVE") | length }}
+- **Checkpoints PARTIAL:** {{ checkpoints | filter(attribute="status", value="PARTIAL") | length }}
+- **Checkpoints FAILED:** {{ checkpoints | filter(attribute="status", value="FAILED") | length }}
+
+---
+
+**Next Workflow:** See `next-workflow-plan.md` for planned research activities.

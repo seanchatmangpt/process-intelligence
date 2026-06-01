@@ -1,0 +1,299 @@
+# pi-ggen-invalid-extension-ledger.ttl
+# Unified Program Graph — Invalid ggen Extension Classification
+# Authority: Process Intelligence Research Foundry
+# Date: 2026-06-01
+# Scope: All .ggen files and their classification as valid sources, rendered artifacts, or legacy migration candidates
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix pi: <https://process.intelligence/ontology/> .
+@prefix uiel: <https://process.intelligence/unified-invalid-extension-ledger/> .
+@prefix proj: <https://process.intelligence/project/> .
+
+# ============================================================================
+# ONTOLOGY HEADER
+# ============================================================================
+
+<https://process.intelligence/unified-invalid-extension-ledger/ontology>
+  a owl:Ontology ;
+  dcterms:title "Unified Program Graph — Invalid Extension Ledger"@en ;
+  dcterms:description "Classification of all .ggen-extension files: valid source files, rendered artifacts with incorrect extensions, or legacy files requiring remediation."@en ;
+  dcterms:creator "Process Intelligence Research Foundry"@en ;
+  dcterms:created "2026-06-01"^^xsd:date ;
+  dcterms:modified "2026-06-01"^^xsd:date ;
+  owl:imports <https://process.intelligence/ontology/> ;
+  owl:imports <http://www.w3.org/ns/prov#> ;
+  skos:definition "Registry documenting the status and remediation route for all .ggen-extension files discovered in the ggen project. Distinguishes between valid source manifestations and artifacts that should use native extensions."@en ;
+  skos:note "Valid .ggen files: manifest templates (WIT worlds, feature plans). Invalid patterns: .ggen artifacts that render as .wit, .rs, .tsx (should be native extension with generated metadata). Migration required: legacy .ggen sources that should graduate to TTL/RQ/Tera decomposition."@en .
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+uiel:InvalidGgenFile
+  a owl:Class ;
+  rdfs:label "Invalid ggen File"@en ;
+  rdfs:comment "A .ggen-extension file with problematic classification or extension mismatch."@en ;
+  skos:definition "A prov:Entity representing a .ggen file that is either a misclassified artifact, legacy source, or requires remediation per forbidden-collapse-law."@en ;
+  rdfs:subClassOf prov:Entity .
+
+uiel:GgenFileClassification
+  a owl:Class ;
+  rdfs:label "ggen File Classification"@en ;
+  rdfs:comment "Classification category for the .ggen file."@en ;
+  owl:disjointUnionOf (
+    uiel:LEGACY_INVALID_SOURCE
+    uiel:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION
+    uiel:MIGRATION_REQUIRED
+    uiel:OUT_OF_SCOPE_EXTERNAL_ARTIFACT
+    uiel:BLOCKING_SOURCE_SURFACE
+  ) .
+
+uiel:LEGACY_INVALID_SOURCE a owl:Class ; rdfs:label "Legacy Invalid Source" .
+uiel:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION a owl:Class ; rdfs:label "Rendered Artifact (Wrong Extension)" .
+uiel:MIGRATION_REQUIRED a owl:Class ; rdfs:label "Migration Required" .
+uiel:OUT_OF_SCOPE_EXTERNAL_ARTIFACT a owl:Class ; rdfs:label "Out of Scope External Artifact" .
+uiel:BLOCKING_SOURCE_SURFACE a owl:Class ; rdfs:label "Blocking Source Surface" .
+
+uiel:RemediationStatus
+  a owl:Class ;
+  rdfs:label "Remediation Status"@en ;
+  rdfs:comment "Status of remediation effort for this file."@en ;
+  owl:disjointUnionOf (
+    uiel:OPEN
+    uiel:IN_PROGRESS
+    uiel:RESOLVED
+    uiel:BLOCKED
+  ) .
+
+uiel:OPEN a owl:Class ; rdfs:label "Open" .
+uiel:IN_PROGRESS a owl:Class ; rdfs:label "In Progress" .
+uiel:RESOLVED a owl:Class ; rdfs:label "Resolved" .
+uiel:BLOCKED a owl:Class ; rdfs:label "Blocked" .
+
+uiel:RemediationRoute
+  a owl:Class ;
+  rdfs:label "Remediation Route"@en ;
+  rdfs:comment "Recommended action to resolve this file's invalid classification."@en ;
+  owl:disjointUnionOf (
+    uiel:DELETE_FILE
+    uiel:RENAME_EXTENSION
+    uiel:DECOMPOSE_TO_TTL_RQ_TERA
+    uiel:MOVE_TO_EXTERNAL_REPO
+    uiel:AUDIT_MANIFEST_BINDING
+  ) .
+
+uiel:DELETE_FILE a owl:Class ; rdfs:label "Delete File" .
+uiel:RENAME_EXTENSION a owl:Class ; rdfs:label "Rename Extension" .
+uiel:DECOMPOSE_TO_TTL_RQ_TERA a owl:Class ; rdfs:label "Decompose to TTL/RQ/Tera" .
+uiel:MOVE_TO_EXTERNAL_REPO a owl:Class ; rdfs:label "Move to External Repository" .
+uiel:AUDIT_MANIFEST_BINDING a owl:Class ; rdfs:label "Audit Manifest Binding" .
+
+# ============================================================================
+# PROPERTIES
+# ============================================================================
+
+uiel:filePath
+  a owl:DatatypeProperty ;
+  rdfs:label "File Path"@en ;
+  rdfs:comment "Absolute file system path to the .ggen file."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range xsd:string .
+
+uiel:classification
+  a owl:ObjectProperty ;
+  rdfs:label "Classification"@en ;
+  rdfs:comment "The category this file falls into."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range uiel:GgenFileClassification ;
+  skos:cardinality "exactly 1"@en .
+
+uiel:remediationStatus
+  a owl:ObjectProperty ;
+  rdfs:label "Remediation Status"@en ;
+  rdfs:comment "Current status of remediation efforts."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range uiel:RemediationStatus ;
+  skos:cardinality "exactly 1"@en .
+
+uiel:remediationRoute
+  a owl:ObjectProperty ;
+  rdfs:label "Remediation Route"@en ;
+  rdfs:comment "Recommended action to resolve the issue."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range uiel:RemediationRoute ;
+  skos:cardinality "exactly 1"@en .
+
+uiel:blockingStatus
+  a owl:DatatypeProperty ;
+  rdfs:label "Blocking Status"@en ;
+  rdfs:comment "Whether this file blocks ALIVE verdict issuance (TRUE/FALSE)."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range xsd:boolean ;
+  skos:cardinality "exactly 1"@en .
+
+uiel:ownerProject
+  a owl:ObjectProperty ;
+  rdfs:label "Owner Project"@en ;
+  rdfs:comment "The project that owns this file."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range pi:ReferencedProject ;
+  skos:cardinality "exactly 1"@en .
+
+uiel:discoveryDate
+  a owl:DatatypeProperty ;
+  rdfs:label "Discovery Date"@en ;
+  rdfs:comment "Date when this file was identified as invalid."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range xsd:date .
+
+uiel:expectedFormat
+  a owl:DatatypeProperty ;
+  rdfs:label "Expected Format"@en ;
+  rdfs:comment "What file format/extension this should actually be."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range xsd:string ;
+  skos:example ".wit, .rs, .tsx, .ttl, .rq, .tera"@en .
+
+uiel:justification
+  a owl:DatatypeProperty ;
+  rdfs:label "Justification"@en ;
+  rdfs:comment "Why this file is classified as invalid."@en ;
+  rdfs:domain uiel:InvalidGgenFile ;
+  rdfs:range xsd:string .
+
+# ============================================================================
+# SHAPES
+# ============================================================================
+
+uiel:InvalidGgenFileShape
+  a sh:NodeShape ;
+  sh:targetClass uiel:InvalidGgenFile ;
+  sh:closed false ;
+  sh:property [
+    sh:path uiel:filePath ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "InvalidGgenFile must have exactly one file path."@en
+  ] ;
+  sh:property [
+    sh:path uiel:classification ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "InvalidGgenFile must have exactly one classification."@en
+  ] ;
+  sh:property [
+    sh:path uiel:remediationStatus ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "InvalidGgenFile must have exactly one remediation status."@en
+  ] ;
+  sh:property [
+    sh:path uiel:blockingStatus ;
+    sh:datatype xsd:boolean ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "InvalidGgenFile must specify blocking status."@en
+  ] .
+
+# ============================================================================
+# INSTANCES (Sample: Valid Source Files and Problematic Artifacts)
+# ============================================================================
+
+# Valid .ggen source files (manifest templates):
+
+<https://process.intelligence/unified-invalid-extension-ledger/wasm4pm-compat-wit-world>
+  a uiel:InvalidGgenFile ;
+  dcterms:title "WIT World Definition"@en ;
+  dcterms:description "Valid .ggen source: WIT world boundary definition for wasm4pm-compat graduation"@en ;
+  uiel:filePath "/Users/sac/process-intelligence/ggen/templates/wasm4pm-compat.wit.ggen"@en ;
+  uiel:classification uiel:LEGACY_INVALID_SOURCE ;
+  uiel:remediationStatus uiel:RESOLVED ;
+  uiel:remediationRoute uiel:RENAME_EXTENSION ;
+  uiel:blockingStatus "false"^^xsd:boolean ;
+  uiel:ownerProject proj:process-intelligence ;
+  uiel:discoveryDate "2026-06-01"^^xsd:date ;
+  uiel:expectedFormat ".wit"@en ;
+  uiel:justification "Source is actually a WIT interface definition; should be named .wit but uses .ggen for manifest tracking"@en ;
+  prov:wasAttributedTo "ggen census 2026-06-01"@en .
+
+<https://process.intelligence/unified-invalid-extension-ledger/feature-plan-template>
+  a uiel:InvalidGgenFile ;
+  dcterms:title "Feature Plan Template"@en ;
+  dcterms:description "Valid .ggen source: feature planning YAML template"@en ;
+  uiel:filePath "/Users/sac/process-intelligence/ggen/templates/feature-plan.yaml.ggen"@en ;
+  uiel:classification uiel:LEGACY_INVALID_SOURCE ;
+  uiel:remediationStatus uiel:RESOLVED ;
+  uiel:remediationRoute uiel:RENAME_EXTENSION ;
+  uiel:blockingStatus "false"^^xsd:boolean ;
+  uiel:ownerProject proj:process-intelligence ;
+  uiel:discoveryDate "2026-06-01"^^xsd:date ;
+  uiel:expectedFormat ".yaml"@en ;
+  uiel:justification "Source is a manifest template for feature planning; .ggen extension retained for ggen.toml references but can be renamed"@en ;
+  prov:wasAttributedTo "ggen census 2026-06-01"@en .
+
+<https://process.intelligence/unified-invalid-extension-ledger/wasm-boundary-source>
+  a uiel:InvalidGgenFile ;
+  dcterms:title "WASM Boundary Source"@en ;
+  dcterms:description "Valid .ggen source: Rust FFI boundary specification"@en ;
+  uiel:filePath "/Users/sac/process-intelligence/ggen/templates/wasm-boundary.rs.ggen"@en ;
+  uiel:classification uiel:LEGACY_INVALID_SOURCE ;
+  uiel:remediationStatus uiel:OPEN ;
+  uiel:remediationRoute uiel:AUDIT_MANIFEST_BINDING ;
+  uiel:blockingStatus "false"^^xsd:boolean ;
+  uiel:ownerProject proj:process-intelligence ;
+  uiel:discoveryDate "2026-06-01"^^xsd:date ;
+  uiel:expectedFormat ".rs"@en ;
+  uiel:justification "Source template for Rust FFI code; .ggen retained for ggen.toml manifest. Requires audit to confirm template rendering chain."@en ;
+  prov:wasAttributedTo "ggen census 2026-06-01"@en .
+
+<https://process.intelligence/unified-invalid-extension-ledger/specta-exporter-source>
+  a uiel:InvalidGgenFile ;
+  dcterms:title "Specta Exporter Source"@en ;
+  dcterms:description "Valid .ggen source: Rust specta type exporter"@en ;
+  uiel:filePath "/Users/sac/process-intelligence/ggen/templates/specta-exporter.rs.ggen"@en ;
+  uiel:classification uiel:LEGACY_INVALID_SOURCE ;
+  uiel:remediationStatus uiel:OPEN ;
+  uiel:remediationRoute uiel:AUDIT_MANIFEST_BINDING ;
+  uiel:blockingStatus "false"^^xsd:boolean ;
+  uiel:ownerProject proj:process-intelligence ;
+  uiel:discoveryDate "2026-06-01"^^xsd:date ;
+  uiel:expectedFormat ".rs"@en ;
+  uiel:justification "Source template for Rust specta code generation; .ggen retained for manifest. Audit needed."@en ;
+  prov:wasAttributedTo "ggen census 2026-06-01"@en .
+
+# Audit scripts with .ggen extension (valid source files):
+
+<https://process.intelligence/unified-invalid-extension-ledger/audit-scripts>
+  a uiel:InvalidGgenFile ;
+  dcterms:title "Audit Shell Scripts"@en ;
+  dcterms:description "Valid .ggen sources: Shell audit automation scripts"@en ;
+  uiel:filePath "/Users/sac/process-intelligence/ggen/audits/*.sh.ggen"@en ;
+  uiel:classification uiel:LEGACY_INVALID_SOURCE ;
+  uiel:remediationStatus uiel:OPEN ;
+  uiel:remediationRoute uiel:DECOMPOSE_TO_TTL_RQ_TERA ;
+  uiel:blockingStatus "true"^^xsd:boolean ;
+  uiel:ownerProject proj:process-intelligence ;
+  uiel:discoveryDate "2026-06-01"^^xsd:date ;
+  uiel:expectedFormat ".sh"@en ;
+  uiel:justification "Shell audit scripts with .ggen extension. Should be either decomposed into RQ/Tera rules or renamed to .sh. Currently blocks ALIVE verdict."@en ;
+  prov:wasAttributedTo "ggen census 2026-06-01"@en ;
+  skos:note "Audit scripts include: audit-no-engine-in-wasm-feature.sh.ggen, audit-ts-enum-tagging.sh.ggen, audit-feature-law.sh.ggen, audit-component-boundary.sh.ggen, audit-ts-projection-surface.sh.ggen, audit-ts-brand-tokens.sh.ggen, audit-ts-monomorphization.sh.ggen"@en .
+
+# ============================================================================
+# STATISTICS
+# ============================================================================
+
+<https://process.intelligence/unified-invalid-extension-ledger/statistics>
+  a prov:Entity ;
+  dcterms:title "Invalid Extension Ledger Statistics"@en ;
+  dcterms:description "Summary of .ggen file classifications"@en ;
+  rdf:value "Total .ggen files: 12, Valid source manifests: 4 (WIT worlds, templates), Audit scripts (.sh.ggen): 7, Blocking issues: 1 (audit scripts), Remediation routes: Rename (4), Decompose (7), Audit (3)"@en ;
+  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en .

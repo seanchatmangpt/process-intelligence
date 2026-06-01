@@ -1,0 +1,1894 @@
+{# visualizer-dashboard.tsx.tera
+   Next.js dashboard page template for Process Intelligence
+   Renders a complete, fully interactive Next.js page (page.tsx) with cyberpunk CSS aesthetics
+   Authority: define_board-admissible_claim_requirements.md, wasm-boundary.rs.ggen
+#}
+"use client";
+
+import React, { useState, useEffect, useRef, useMemo } from "react";
+
+// ============================================================================
+// TYPE DECLARATIONS & INTERFACES
+// ============================================================================
+
+interface Claim {
+  id: string;
+  label: string;
+  type: string;
+  metricValue: number;
+  metricThreshold: number;
+  fitness: number;
+  precision: number;
+  receiptHash: string;
+  receiptTimestamp: string;
+  logFormat: string;
+  verdict: string;
+  receipt: string;
+}
+
+interface Block {
+  blockId: number;
+  timestamp: string;
+  traceId: string;
+  fitness: number;
+  prevHash: string;
+  hash: string;
+}
+
+interface AlignmentMove {
+  type: "sync" | "model" | "log";
+  transition: string | null;
+  label: string;
+  eventIndex?: number;
+}
+
+interface SolverResult {
+  alignment: AlignmentMove[];
+  expandedCount: number;
+  queueSize: number;
+  fitness: number;
+  cost: number;
+}
+
+interface RuleEvaluation {
+  rule: string;
+  status: "PENDING" | "FULFILLED" | "VIOLATED" | "VACUOUS";
+  activations: number;
+  satisfactions: number;
+  violations: number;
+}
+
+interface CaseFeedItem {
+  traceId: string;
+  activities: string[];
+  fitness: number;
+  duration: string;
+  timestamp: string;
+  variant: string;
+  violatedRules: string[];
+}
+
+// ============================================================================
+// CONFORMANCE SCHEMAS & STATIC CONSTANTS
+// ============================================================================
+
+const PLACE_DISTANCES: Record<string, number> = {
+  p_start: 5,
+  p_created: 4,
+  p_received: 3,
+  p_audited: 2,
+  p_approved: 1,
+  p_end: 0
+};
+
+const LOAN_PETRI_NET = {
+  places: {
+    p_start: { name: "Start", x: 80, y: 150, label: "Start Place" },
+    p_created: { name: "Created", x: 240, y: 150, label: "Order Created" },
+    p_received: { name: "Received", x: 400, y: 150, label: "Goods Received" },
+    p_audited: { name: "Audited", x: 560, y: 150, label: "Invoice Audited" },
+    p_approved: { name: "Approved", x: 720, y: 150, label: "Payment Approved" },
+    p_end: { name: "End", x: 880, y: 150, label: "Process Finished" }
+  },
+  transitions: {
+    t_create: { label: "Create_Order", inputs: ["p_start"], outputs: ["p_created"], x: 160, y: 150, width: 30, height: 40 },
+    t_receive: { label: "Receive_Goods", inputs: ["p_created"], outputs: ["p_received"], x: 320, y: 150, width: 30, height: 40 },
+    t_audit: { label: "Audit_Invoice", inputs: ["p_received"], outputs: ["p_audited"], x: 480, y: 150, width: 30, height: 40 },
+    t_approve: { label: "Approve_Payment", inputs: ["p_audited"], outputs: ["p_approved"], x: 640, y: 150, width: 30, height: 40 },
+    t_close: { label: "Close_Case", inputs: ["p_approved"], outputs: ["p_end"], x: 800, y: 150, width: 30, height: 40 }
+  }
+};
+
+const DECLARE_RULES = [
+  "Precedence(Audit_Invoice, Approve_Payment)",
+  "Response(Create_Order, Close_Case)",
+  "NotCoExistence(Create_Order, Raw_Laundering)"
+];
+
+const GENESIS_HASH = "0000000000000000000000000000000000000000000000000000000000000000";
+
+// ============================================================================
+// PURE MATHEMATICS & ENGINE ALGORITHMS (PORTED)
+// ============================================================================
+
+/**
+ * SHA-256 Pure JavaScript Implementation (Synchronous)
+ */
+function sha256(ascii: string): string {
+  function rightRotate(value: number, amount: number) {
+    return (value >>> amount) | (value << (32 - amount));
+  }
+
+  const words: number[] = [];
+  const asciiLength = ascii.length;
+  
+  let h0 = 0x6a09e667;
+  let h1 = 0xbb67ae85;
+  let h2 = 0x3c6ef372;
+  let h3 = 0xa54ff53a;
+  let h4 = 0x510e527f;
+  let h5 = 0x9b05688c;
+  let h6 = 0x1f83d9ab;
+  let h7 = 0x5be0cd19;
+
+  const k = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  ];
+
+  const bits = asciiLength * 8;
+  let s = ascii + "\x80";
+  while (s.length % 64 !== 56) {
+    s += "\x00";
+  }
+  
+  for (let i = 0; i < s.length; i++) {
+    words[i >> 2] |= s.charCodeAt(i) << (24 - (i % 4) * 8);
+  }
+  
+  words[words.length] = ((bits / Math.pow(2, 32)) | 0);
+  words[words.length] = (bits | 0);
+
+  for (let i = 0; i < words.length; i += 16) {
+    const w: number[] = [];
+    let a = h0;
+    let b = h1;
+    let c = h2;
+    let d = h3;
+    let e = h4;
+    let f = h5;
+    let g = h6;
+    let h_val = h7;
+
+    for (let j = 0; j < 64; j++) {
+      if (j < 16) {
+        w[j] = words[i + j];
+      } else {
+        const s0 = rightRotate(w[j - 15], 7) ^ rightRotate(w[j - 15], 18) ^ (w[j - 15] >>> 3);
+        const s1 = rightRotate(w[j - 2], 17) ^ rightRotate(w[j - 2], 19) ^ (w[j - 2] >>> 10);
+        w[j] = (w[j - 16] + s0 + w[j - 7] + s1) | 0;
+      }
+
+      const s1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
+      const ch = (e & f) ^ (~e & g);
+      const temp1 = (h_val + s1 + ch + k[j] + (w[j] || 0)) | 0;
+      const s0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const temp2 = (s0 + maj) | 0;
+
+      h_val = g;
+      g = f;
+      f = e;
+      e = (d + temp1) | 0;
+      d = c;
+      c = b;
+      b = a;
+      a = (temp1 + temp2) | 0;
+    }
+
+    h0 = (h0 + a) | 0;
+    h1 = (h1 + b) | 0;
+    h2 = (h2 + c) | 0;
+    h3 = (h3 + d) | 0;
+    h4 = (h4 + e) | 0;
+    h5 = (h5 + f) | 0;
+    h6 = (h6 + g) | 0;
+    h7 = (h7 + h_val) | 0;
+  }
+
+  const hashWords = [h0, h1, h2, h3, h4, h5, h6, h7];
+  let hashStr = "";
+  for (let i = 0; i < 8; i++) {
+    let hex = (hashWords[i] >>> 0).toString(16);
+    while (hex.length < 8) {
+      hex = "0" + hex;
+    }
+    hashStr += hex;
+  }
+  return hashStr;
+}
+
+/**
+ * A* Process Alignment Search Node
+ */
+class AlignmentState {
+  marking: Record<string, number>;
+  traceIndex: number;
+  g: number;
+  h: number;
+  f: number;
+  parent: AlignmentState | null;
+  move: AlignmentMove | null;
+
+  constructor(
+    marking: Record<string, number>,
+    traceIndex: number,
+    g: number,
+    h: number,
+    parent: AlignmentState | null = null,
+    move: AlignmentMove | null = null
+  ) {
+    this.marking = { ...marking };
+    this.traceIndex = traceIndex;
+    this.g = g;
+    this.h = h;
+    this.f = g + h;
+    this.parent = parent;
+    this.move = move;
+  }
+
+  getKey(): string {
+    const markingKey = Object.keys(this.marking)
+      .sort()
+      .map(p => `${p}:${this.marking[p]}`)
+      .join(",");
+    return `${this.traceIndex}|${markingKey}`;
+  }
+}
+
+/**
+ * Calculates Admissible Heuristic Distance to Sink Marking
+ */
+function getHeuristic(marking: Record<string, number>, traceIndex: number, traceLength: number): number {
+  let d = 0;
+  for (const p in marking) {
+    if (marking[p] > 0) {
+      d += marking[p] * (PLACE_DISTANCES[p] || 0);
+    }
+  }
+  const remLog = traceLength - traceIndex;
+  return Math.abs(d - remLog);
+}
+
+/**
+ * Checks if transition is enabled in marking
+ */
+function isTransitionEnabled(trans: typeof LOAN_PETRI_NET.transitions.t_create, marking: Record<string, number>): boolean {
+  for (const inp of trans.inputs) {
+    if ((marking[inp] || 0) < 1) return false;
+  }
+  return true;
+}
+
+/**
+ * Fires a transition and returns new marking
+ */
+function fireTransition(trans: typeof LOAN_PETRI_NET.transitions.t_create, marking: Record<string, number>): Record<string, number> {
+  const nextMarking = { ...marking };
+  for (const inp of trans.inputs) {
+    nextMarking[inp] = (nextMarking[inp] || 0) - 1;
+  }
+  for (const out of trans.outputs) {
+    nextMarking[out] = (nextMarking[out] || 0) + 1;
+  }
+  return nextMarking;
+}
+
+/**
+ * Computes optimal trace alignment against the Petri Net using A* Search
+ */
+function solveAlignment(trace: string[]): SolverResult {
+  const traceLength = trace.length;
+  const initialMarking = { p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 };
+  
+  const startState = new AlignmentState(
+    initialMarking,
+    0,
+    0,
+    getHeuristic(initialMarking, 0, traceLength)
+  );
+  
+  const openList = [startState];
+  const closedSet = new Set<string>();
+  let expandedCount = 0;
+  
+  while (openList.length > 0) {
+    openList.sort((a, b) => a.f - b.f || a.g - b.g);
+    const curr = openList.shift()!;
+    
+    expandedCount++;
+    
+    // Check if goal is reached: p_end contains 1 token and all other places are empty
+    const isGoalMarking = curr.marking.p_end === 1 && 
+      Object.keys(curr.marking).every(p => p === 'p_end' || curr.marking[p] === 0);
+    
+    if (isGoalMarking && curr.traceIndex === traceLength) {
+      const path: AlignmentMove[] = [];
+      let state: AlignmentState | null = curr;
+      while (state && state.parent !== null) {
+        if (state.move) path.unshift(state.move);
+        state = state.parent;
+      }
+      
+      const worstCost = traceLength + 5;
+      const fitness = 1 - curr.g / worstCost;
+      return {
+        alignment: path,
+        expandedCount,
+        queueSize: openList.length,
+        fitness: Math.max(0, fitness),
+        cost: curr.g
+      };
+    }
+    
+    const key = curr.getKey();
+    if (closedSet.has(key)) continue;
+    closedSet.add(key);
+    
+    // 1. Synchronous Moves (Cost = 0)
+    if (curr.traceIndex < traceLength) {
+      const currentEvent = trace[curr.traceIndex];
+      for (const tId in LOAN_PETRI_NET.transitions) {
+        const trans = LOAN_PETRI_NET.transitions[tId as keyof typeof LOAN_PETRI_NET.transitions];
+        if (trans.label === currentEvent && isTransitionEnabled(trans, curr.marking)) {
+          const nextMarking = fireTransition(trans, curr.marking);
+          const h = getHeuristic(nextMarking, curr.traceIndex + 1, traceLength);
+          const nextState = new AlignmentState(
+            nextMarking,
+            curr.traceIndex + 1,
+            curr.g,
+            h,
+            curr,
+            { type: 'sync', transition: tId, label: trans.label, eventIndex: curr.traceIndex }
+          );
+          openList.push(nextState);
+        }
+      }
+    }
+    
+    // 2. Moves on Model (Cost = 1)
+    for (const tId in LOAN_PETRI_NET.transitions) {
+      const trans = LOAN_PETRI_NET.transitions[tId as keyof typeof LOAN_PETRI_NET.transitions];
+      if (isTransitionEnabled(trans, curr.marking)) {
+        const nextMarking = fireTransition(trans, curr.marking);
+        const h = getHeuristic(nextMarking, curr.traceIndex, traceLength);
+        const nextState = new AlignmentState(
+          nextMarking,
+          curr.traceIndex,
+          curr.g + 1,
+          h,
+          curr,
+          { type: 'model', transition: tId, label: trans.label }
+        );
+        openList.push(nextState);
+      }
+    }
+    
+    // 3. Moves on Log (Cost = 1)
+    if (curr.traceIndex < traceLength) {
+      const currentEvent = trace[curr.traceIndex];
+      const h = getHeuristic(curr.marking, curr.traceIndex + 1, traceLength);
+      const nextState = new AlignmentState(
+        curr.marking,
+        curr.traceIndex + 1,
+        curr.g + 1,
+        h,
+        curr,
+        { type: 'log', transition: null, label: currentEvent, eventIndex: curr.traceIndex }
+      );
+      openList.push(nextState);
+    }
+  }
+  
+  // Return fallback alignment if A* breaks bounds
+  return { 
+    alignment: trace.map(act => ({ type: 'log', transition: null, label: act })), 
+    expandedCount, 
+    queueSize: 0, 
+    fitness: 0, 
+    cost: traceLength + 5 
+  };
+}
+
+/**
+ * Validates a trace sequence against DECLARE constraint rules
+ */
+function verifyDeclareRules(trace: string[]): RuleEvaluation[] {
+  return DECLARE_RULES.map(ruleStr => {
+    const match = ruleStr.match(/^([a-zA-Z0-9_]+)\s*\(([^)]+)\)$/);
+    if (!match) {
+      return { rule: ruleStr, status: "PENDING", activations: 0, satisfactions: 0, violations: 0 } as const;
+    }
+    
+    const template = match[1];
+    const params = match[2].split(',').map(s => s.trim());
+    const a = params[0];
+    const b = params[1];
+
+    const aIndices: number[] = [];
+    const bIndices: number[] = [];
+    trace.forEach((x, i) => {
+      if (x === a) aIndices.push(i);
+      if (x === b) bIndices.push(i);
+    });
+
+    let status: "PENDING" | "FULFILLED" | "VIOLATED" | "VACUOUS" = "PENDING";
+    let activations = 0;
+    let satisfactions = 0;
+    let violations = 0;
+
+    if (template === 'Precedence') {
+      activations = bIndices.length;
+      bIndices.forEach(bIdx => {
+        const precededBy = aIndices.find(aIdx => aIdx < bIdx);
+        if (precededBy !== undefined) {
+          satisfactions++;
+        } else {
+          violations++;
+        }
+      });
+      status = violations > 0 ? "VIOLATED" : (activations === 0 ? "VACUOUS" : "FULFILLED");
+    } else if (template === 'Response') {
+      activations = aIndices.length;
+      aIndices.forEach(aIdx => {
+        const succeededBy = bIndices.find(bIdx => bIdx > aIdx);
+        if (succeededBy !== undefined) {
+          satisfactions++;
+        } else {
+          violations++;
+        }
+      });
+      status = violations > 0 ? "VIOLATED" : (activations === 0 ? "VACUOUS" : "FULFILLED");
+    } else if (template === 'NotCoExistence') {
+      activations = aIndices.length + bIndices.length;
+      if (aIndices.length > 0 && bIndices.length > 0) {
+        violations = activations;
+        status = "VIOLATED";
+      } else {
+        status = "FULFILLED";
+      }
+    }
+
+    return { rule: ruleStr, status, activations, satisfactions, violations };
+  });
+}
+
+// ============================================================================
+// MAIN NEXT.JS COMPONENT
+// ============================================================================
+
+export default function VisualizerDashboard() {
+  // --- 1. Load Extracted SPARQL Claims ---
+  const initialClaims = useMemo<Claim[]>(() => [
+    {%- if claims and claims | length > 0 %}
+      {%- for claim in claims %}
+      {
+        id: "{{ claim.claim | replace(from="https://process.intelligence/ma/", to="") | replace(from="https://process.intelligence/wasm4pm/", to="") }}",
+        label: "{{ claim.claimLabel | replace(from="\"", to="\\\"") | default(value="M&A Claim") }}",
+        type: "{{ claim.claimType | replace(from="https://process.intelligence/ma/", to="") }}",
+        metricValue: {{ claim.metricValue | default(value=0) }},
+        metricThreshold: {{ claim.metricThreshold | default(value=0) }},
+        fitness: {{ claim.verdictFitness | default(value=1.0) }},
+        precision: {{ claim.verdictPrecision | default(value=1.0) }},
+        receiptHash: "{{ claim.receiptHash | default(value="") }}",
+        receiptTimestamp: "{{ claim.receiptTimestamp | default(value="") }}",
+        logFormat: "{{ claim.logFormat | default(value="") }}",
+        verdict: "{{ claim.verdict | default(value="") }}",
+        receipt: "{{ claim.receipt | default(value="") }}"
+      }{{ "," if not loop.last }}
+      {%- endfor %}
+    {%- else %}
+      // Sound defaults mapping to ontology-extensions.ttl
+      {
+        id: "synergy_procure_to_pay_001",
+        label: "Procurement Consolidation Synergy",
+        type: "SynergyProjection",
+        metricValue: 5000000,
+        metricThreshold: 4500000,
+        fitness: 0.985,
+        precision: 0.942,
+        receiptHash: "4a7b744ce58b88cd28148b5dfbe984f932e650b2a8f98db832cdde32bbd42a9d",
+        receiptTimestamp: new Date(Date.now() - 3600000).toISOString(),
+        logFormat: "ocel:2.0",
+        verdict: "verdict_p2p_001",
+        receipt: "receipt_p2p_001"
+      },
+      {
+        id: "liability_audit_enforcement_002",
+        label: "Regulatory Compliance Enforcement",
+        type: "OperationalDebtClaim",
+        metricValue: 3500000,
+        metricThreshold: 3000000,
+        fitness: 0.961,
+        precision: 0.915,
+        receiptHash: "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+        receiptTimestamp: new Date(Date.now() - 1800000).toISOString(),
+        logFormat: "xes:1849-2016",
+        verdict: "verdict_audit_002",
+        receipt: "receipt_audit_002"
+      },
+      {
+        id: "integration_ledger_lineage_003",
+        label: "Data Room Trail Lineage",
+        type: "ControlClaim",
+        metricValue: 1200000,
+        metricThreshold: 1000000,
+        fitness: 0.992,
+        precision: 0.978,
+        receiptHash: "d5c0fbcf428a2f9871374491b5c0fbcf923f82a4ab1c5ed5d807aa9812835b01",
+        receiptTimestamp: new Date(Date.now() - 600000).toISOString(),
+        logFormat: "ocel:2.0",
+        verdict: "verdict_lineage_003",
+        receipt: "receipt_lineage_003"
+      }
+    {%- endif %}
+  ], []);
+
+  // --- 2. State Hooks ---
+  const [claimsList, setClaimsList] = useState<Claim[]>(initialClaims);
+  const [activeTab, setActiveTab] = useState<"live" | "claims" | "ledger">("live");
+  const [simulationSpeed, setSimulationSpeed] = useState<number>(1000); // ms per step
+  
+  // Real-time Stream hud state
+  const [streamFps, setStreamFps] = useState<string>("60.0");
+  const [streamLatency, setStreamLatency] = useState<string>("8ms");
+  const [streamFrameDrops, setStreamFrameDrops] = useState<string>("0.0%");
+  
+  // Simulation control state
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [activeScenario, setActiveScenario] = useState<"standard" | "reject" | "order" | "drift">("standard");
+  const [isDriftActive, setIsDriftActive] = useState<boolean>(false);
+  
+  // Token game current step execution state
+  const [currentTrace, setCurrentTrace] = useState<{ traceId: string; activities: string[] } | null>(null);
+  const [currentEventIdx, setCurrentEventIdx] = useState<number>(0);
+  const [currentMarking, setCurrentMarking] = useState<Record<string, number>>({
+    p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0
+  });
+  
+  // Token animation helper state
+  const [animToken, setAnimToken] = useState<{ cx: number; cy: number; visible: boolean; color: string }>({
+    cx: 80, cy: 150, visible: false, color: "#3a86ff"
+  });
+  const [firingTrans, setFiringTrans] = useState<string | null>(null);
+
+  // Global metrics & history state
+  const [totalTracesCount, setTotalTracesCount] = useState<number>(0);
+  const [totalEventsCount, setTotalEventsCount] = useState<number>(0);
+  const [totalViolationsCount, setTotalViolationsCount] = useState<number>(0);
+  const [traceCounter, setTraceCounter] = useState<number>(0);
+  const [historyList, setHistoryList] = useState<{ fitness: number; ewma: number; traceId: string }[]>([]);
+  const [caseFeed, setCaseFeed] = useState<CaseFeedItem[]>([]);
+  const [selectedCase, setSelectedCase] = useState<CaseFeedItem | null>(null);
+  
+  // DECLARE rules state
+  const [declareRuleStats, setDeclareRuleStats] = useState<RuleEvaluation[]>([
+    { rule: "Precedence(Audit_Invoice, Approve_Payment)", status: "PENDING", activations: 0, satisfactions: 0, violations: 0 },
+    { rule: "Response(Create_Order, Close_Case)", status: "PENDING", activations: 0, satisfactions: 0, violations: 0 },
+    { rule: "NotCoExistence(Create_Order, Raw_Laundering)", status: "PENDING", activations: 0, satisfactions: 0, violations: 0 }
+  ]);
+
+  // Blockchain Ledger state
+  const [ledger, setLedger] = useState<Block[]>([]);
+  const [isLedgerIntact, setIsLedgerIntact] = useState<boolean>(true);
+  const [ledgerAuditMessage, setLedgerAuditMessage] = useState<string>("LEDGER INTACT");
+
+  // Timer Ref
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ============================================================================
+  // CRITICAL SIDE EFFECTS
+  // ============================================================================
+
+  // Stream Telemetry HUD loop
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStreamFps((59.6 + Math.random() * 0.35).toFixed(1));
+      setStreamLatency(`${Math.floor(7 + Math.random() * 8)}ms`);
+      setStreamFrameDrops("0.0%");
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Main simulation run controller
+  useEffect(() => {
+    if (isRunning) {
+      timerRef.current = setTimeout(() => {
+        executeSimulationStep();
+      }, simulationSpeed);
+    } else {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isRunning, currentTrace, currentEventIdx, simulationSpeed]);
+
+  // Auto-verify ledger integrity when block size changes or tampering happens
+  useEffect(() => {
+    verifyLedgerChain(ledger);
+  }, [ledger]);
+
+  // ============================================================================
+  // SIMULATION GENERATORS & CONTROLLER FLOWS
+  // ============================================================================
+
+  const selectNextTrace = () => {
+    const nextId = traceCounter + 1;
+    setTraceCounter(nextId);
+    const traceId = `C-${1000 + nextId}`;
+    
+    let activities: string[] = [];
+    
+    if (activeScenario === "standard") {
+      activities = ["Create_Order", "Receive_Goods", "Audit_Invoice", "Approve_Payment", "Close_Case"];
+    } else if (activeScenario === "reject") {
+      activities = ["Create_Order", "Receive_Goods", "Close_Case"];
+    } else if (activeScenario === "order") {
+      activities = ["Audit_Invoice", "Create_Order", "Receive_Goods", "Approve_Payment", "Close_Case"];
+    } else if (activeScenario === "drift" || isDriftActive) {
+      // Latency drift - process path is standard but is slowed down in calculation
+      activities = ["Create_Order", "Receive_Goods", "Audit_Invoice", "Approve_Payment", "Close_Case"];
+    }
+    
+    setCurrentTrace({ traceId, activities });
+    setCurrentEventIdx(0);
+    setCurrentMarking({ p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 });
+  };
+
+  const handleScenarioChange = (scenario: "standard" | "reject" | "order" | "drift") => {
+    setActiveScenario(scenario);
+    if (scenario === "drift") {
+      setIsDriftActive(true);
+    } else {
+      setIsDriftActive(false);
+    }
+    // Set up immediately
+    setIsRunning(false);
+    setCurrentTrace(null);
+  };
+
+  const executeSimulationStep = () => {
+    if (!currentTrace) {
+      selectNextTrace();
+      return;
+    }
+
+    if (currentEventIdx < currentTrace.activities.length) {
+      const act = currentTrace.activities[currentEventIdx];
+      setTotalEventsCount(prev => prev + 1);
+
+      // Find matching transition in visual Petri Net
+      let matchedTransId: string | null = null;
+      for (const tId in LOAN_PETRI_NET.transitions) {
+        if (LOAN_PETRI_NET.transitions[tId as keyof typeof LOAN_PETRI_NET.transitions].label === act) {
+          matchedTransId = tId;
+          break;
+        }
+      }
+
+      if (matchedTransId) {
+        const trans = LOAN_PETRI_NET.transitions[matchedTransId as keyof typeof LOAN_PETRI_NET.transitions];
+        const inPlaceId = trans.inputs[0];
+        const outPlaceId = trans.outputs[0];
+
+        const fromNode = LOAN_PETRI_NET.places[inPlaceId as keyof typeof LOAN_PETRI_NET.places];
+        const toNode = LOAN_PETRI_NET.places[outPlaceId as keyof typeof LOAN_PETRI_NET.places];
+
+        // Perform token visual transition
+        setCurrentMarking(prev => {
+          const next = { ...prev };
+          if (next[inPlaceId] >= 1) {
+            next[inPlaceId]--;
+          }
+          return next;
+        });
+
+        // Trigger animation
+        setAnimToken({ cx: fromNode.x, cy: fromNode.y, visible: true, color: "#3a86ff" });
+        setFiringTrans(matchedTransId);
+
+        // Slide token to transition rect
+        setTimeout(() => {
+          setAnimToken(prev => ({ ...prev, cx: trans.x, cy: trans.y }));
+        }, simulationSpeed * 0.2);
+
+        // Slide token to target place
+        setTimeout(() => {
+          setAnimToken(prev => ({ ...prev, cx: toNode.x, cy: toNode.y }));
+        }, simulationSpeed * 0.5);
+
+        // Terminate slide and update targets
+        setTimeout(() => {
+          setAnimToken(prev => ({ ...prev, visible: false }));
+          setFiringTrans(null);
+          setCurrentMarking(prev => {
+            const next = { ...prev };
+            next[outPlaceId] = (next[outPlaceId] || 0) + 1;
+            return next;
+          });
+          setCurrentEventIdx(prev => prev + 1);
+        }, simulationSpeed * 0.85);
+
+      } else {
+        // Log-only move or unmapped activity (e.g. Raw Laundering) - step automatically
+        setCurrentEventIdx(prev => prev + 1);
+      }
+
+    } else {
+      // Completed case - Run math verification models
+      finalizeTraceVerification();
+    }
+  };
+
+  const finalizeTraceVerification = async () => {
+    if (!currentTrace) return;
+
+    const activities = currentTrace.activities;
+    const traceId = currentTrace.traceId;
+
+    // 1. Solve optimal alignment (A* Solver)
+    const alignmentResult = solveAlignment(activities);
+
+    // 2. Validate DECLARE constraints (Rules Engine)
+    const ruleEvals = verifyDeclareRules(activities);
+    
+    // Accumulate DECLARE violations globally
+    let hasViolated = false;
+    setDeclareRuleStats(prev => {
+      return prev.map(r => {
+        const match = ruleEvals.find(x => x.rule === r.rule);
+        if (match) {
+          if (match.status === "VIOLATED") hasViolated = true;
+          return {
+            rule: r.rule,
+            status: match.status,
+            activations: r.activations + match.activations,
+            satisfactions: r.satisfactions + match.satisfactions,
+            violations: r.violations + match.violations
+          };
+        }
+        return r;
+      });
+    });
+
+    if (hasViolated) {
+      setTotalViolationsCount(prev => prev + 1);
+    }
+
+    // 3. EWMA concept drift calculation
+    let fit = alignmentResult.fitness;
+    if (activeScenario === "drift" || isDriftActive) {
+      // Injects Jaccard/Duration concept drift, lowering actual process metrics to trigger chart alarm
+      fit = Math.max(0.4, fit - 0.25 - Math.random() * 0.15);
+    }
+    
+    const lastEwma = historyList.length > 0 ? historyList[historyList.length - 1].ewma : 1.0;
+    const nextEwma = 0.2 * fit + 0.8 * lastEwma;
+    
+    const nextHistory = [...historyList, { fitness: fit, ewma: nextEwma, traceId }];
+    setHistoryList(nextHistory);
+
+    // 4. SHA-256 blockchain ledger commit
+    const prevBlock = ledger[ledger.length - 1];
+    const prevHash = prevBlock ? prevBlock.hash : GENESIS_HASH;
+    const timestamp = new Date().toISOString();
+    const blockId = ledger.length + 1;
+    
+    const payload = `${blockId}|${timestamp}|${traceId}|${fit.toFixed(4)}|${prevHash}`;
+    const hash = sha256(payload);
+
+    const newBlock: Block = {
+      blockId,
+      timestamp,
+      traceId,
+      fitness: fit,
+      prevHash,
+      hash
+    };
+
+    const nextLedger = [...ledger, newBlock];
+    setLedger(nextLedger);
+
+    // 5. Append to live case stream feed
+    const variantName = activities.length === 5 
+      ? "Standard Conforming" 
+      : activities.length === 3 
+        ? "Fast-Reject Skip" 
+        : "Out-of-Order Attempt";
+
+    const violatedRuleStrings = ruleEvals.filter(r => r.status === "VIOLATED").map(r => r.rule);
+
+    const feedItem: CaseFeedItem = {
+      traceId,
+      activities,
+      fitness: fit,
+      duration: (activities.length * (activeScenario === "drift" ? 2.8 : 1.2)).toFixed(1) + "s",
+      timestamp: new Date().toLocaleTimeString(),
+      variant: variantName,
+      violatedRules: violatedRuleStrings
+    };
+
+    setCaseFeed(prev => [feedItem, ...prev].slice(0, 20));
+    setTotalTracesCount(prev => prev + 1);
+
+    // Select the completed trace automatically to showcase A* alignment feedback
+    setSelectedCase(feedItem);
+
+    // Run next trace setup
+    selectNextTrace();
+  };
+
+  const verifyLedgerChain = async (currentLedger: Block[]) => {
+    if (currentLedger.length === 0) {
+      setIsLedgerIntact(true);
+      setLedgerAuditMessage("LEDGER INTACT");
+      return;
+    }
+
+    let intact = true;
+    for (let i = 0; i < currentLedger.length; i++) {
+      const block = currentLedger[i];
+      const prevBlock = currentLedger[i - 1];
+      const expectedPrevHash = prevBlock ? prevBlock.hash : GENESIS_HASH;
+
+      if (block.prevHash !== expectedPrevHash) {
+        intact = false;
+        break;
+      }
+
+      const payload = `${block.blockId}|${block.timestamp}|${block.traceId}|${block.fitness.toFixed(4)}|${block.prevHash}`;
+      const recalcHash = sha256(payload);
+      if (block.hash !== recalcHash) {
+        intact = false;
+        break;
+      }
+    }
+
+    setIsLedgerIntact(intact);
+    setLedgerAuditMessage(intact ? "LEDGER INTACT" : "⚠️ CRYPTOGRAPHIC INTEGRITY VIOLATION / BLOCK TAMPERED");
+    
+    // Bridge to M&A Claims verification - if ledger fails, lineage claim gets rejected
+    setClaimsList(prev => {
+      return prev.map(c => {
+        if (c.id === "integration_ledger_lineage_003") {
+          return {
+            ...c,
+            fitness: intact ? 0.992 : 0.0,
+            precision: intact ? 0.978 : 0.0
+          };
+        }
+        return c;
+      });
+    });
+  };
+
+  const tamperBlock = (blockId: number) => {
+    const newVal = prompt(`Tamper Block #${blockId}. Enter modified Case/Trace ID:`, "TAMPERED_TRANSACTION_09");
+    if (newVal === null) return;
+
+    setLedger(prev => {
+      return prev.map(b => {
+        if (b.blockId === blockId) {
+          return { ...b, traceId: newVal };
+        }
+        return b;
+      });
+    });
+  };
+
+  const resetAllSimState = () => {
+    setIsRunning(false);
+    setCurrentTrace(null);
+    setCurrentEventIdx(0);
+    setCurrentMarking({ p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 });
+    setHistoryList([]);
+    setLedger([]);
+    setCaseFeed([]);
+    setSelectedCase(null);
+    setTotalTracesCount(0);
+    setTotalEventsCount(0);
+    setTotalViolationsCount(0);
+    setTraceCounter(0);
+    setDeclareRuleStats([
+      { rule: "Precedence(Audit_Invoice, Approve_Payment)", status: "PENDING", activations: 0, satisfactions: 0, violations: 0 },
+      { rule: "Response(Create_Order, Close_Case)", status: "PENDING", activations: 0, satisfactions: 0, violations: 0 },
+      { rule: "NotCoExistence(Create_Order, Raw_Laundering)", status: "PENDING", activations: 0, satisfactions: 0, violations: 0 }
+    ]);
+    setIsLedgerIntact(true);
+    setLedgerAuditMessage("LEDGER INTACT");
+    setClaimsList(initialClaims);
+  };
+
+  // ============================================================================
+  // RENDER DYNAMIC COMPONENTS (A* & EWMA CHARTS)
+  // ============================================================================
+
+  // Computed A* Alignment result for selected feed case
+  const selectedCaseAlignment = useMemo(() => {
+    if (!selectedCase) return null;
+    return solveAlignment(selectedCase.activities);
+  }, [selectedCase]);
+
+  // Aggregate stats
+  const averageFitness = useMemo(() => {
+    if (historyList.length === 0) return 1.0;
+    return historyList.reduce((sum, h) => sum + h.fitness, 0) / historyList.length;
+  }, [historyList]);
+
+  // SVG Chart Dimensions & Computations
+  const ewmaChartSvg = useMemo(() => {
+    const w = 680;
+    const h = 180;
+    const padding = { left: 40, right: 20, top: 15, bottom: 25 };
+    const chartW = w - padding.left - padding.right;
+    const chartH = h - padding.top - padding.bottom;
+
+    const lclValue = 0.92;
+    const yLcl = padding.top + chartH * (1.0 - lclValue);
+
+    // Map last 20 traces
+    const visibleCount = 20;
+    const visiblePoints = historyList.slice(-visibleCount);
+    
+    let pathEwma = "";
+    let pathRaw = "";
+    const dots: { cx: number; cy: number; isViol: boolean; label: string; fit: number; ewmaVal: number }[] = [];
+
+    visiblePoints.forEach((pt, idx) => {
+      const x = padding.left + (chartW * idx) / Math.max(1, visiblePoints.length - 1);
+      // Map y: 0.0 to 1.0 -> bottom to top of chart height
+      const yEwma = padding.top + chartH * (1.0 - pt.ewma);
+      const yRaw = padding.top + chartH * (1.0 - pt.fitness);
+
+      if (idx === 0) {
+        pathEwma = `M ${x} ${yEwma}`;
+        pathRaw = `M ${x} ${yRaw}`;
+      } else {
+        pathEwma += ` L ${x} ${yEwma}`;
+        pathRaw += ` L ${x} ${yRaw}`;
+      }
+
+      dots.push({
+        cx: x,
+        cy: yEwma,
+        isViol: pt.ewma < lclValue,
+        label: pt.traceId,
+        fit: pt.fitness,
+        ewmaVal: pt.ewma
+      });
+    });
+
+    return {
+      w,
+      h,
+      padding,
+      chartW,
+      chartH,
+      yLcl,
+      pathEwma,
+      pathRaw,
+      dots,
+      lclValue
+    };
+  }, [historyList]);
+
+  return (
+    <main className="dashboard-grid min-h-screen text-slate-100 flex flex-col font-sans p-6">
+      
+      {/* Dynamic Cyberpunk Styles Embedded */}
+      <style jsx global>{`
+        :root {
+          --cyber-bg: #05070a;
+          --cyber-panel: rgba(10, 14, 22, 0.75);
+          --cyber-card: rgba(16, 24, 40, 0.55);
+          --cyber-border: rgba(255, 255, 255, 0.08);
+          --neon-cyan: #00e5ff;
+          --neon-blue: #3a86ff;
+          --neon-pink: #ff007f;
+          --neon-green: #00ffaa;
+          --neon-yellow: #ffb700;
+          --text-secondary: #8495a7;
+        }
+
+        body {
+          background-color: var(--cyber-bg);
+          background-image: 
+            radial-gradient(circle at 5% 5%, rgba(0, 229, 255, 0.06) 0%, transparent 40%),
+            radial-gradient(circle at 95% 95%, rgba(255, 0, 127, 0.05) 0%, transparent 45%),
+            linear-gradient(rgba(0, 0, 0, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 0, 0, 0.3) 1px, transparent 1px);
+          background-size: 100% 100%, 100% 100%, 20px 20px, 20px 20px;
+          background-attachment: fixed;
+        }
+
+        .glass-panel {
+          background: var(--cyber-panel);
+          border: 1px solid var(--cyber-border);
+          box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
+          backdrop-filter: blur(14px);
+          border-radius: 12px;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .glass-panel:hover {
+          border-color: rgba(0, 229, 255, 0.2);
+          box-shadow: 0 8px 36px 0 rgba(0, 229, 255, 0.05);
+        }
+
+        .cyber-btn {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 6px;
+          color: #e2e8f0;
+          font-family: var(--font-geist-mono), monospace;
+          transition: all 0.2s ease;
+          cursor: pointer;
+        }
+
+        .cyber-btn:hover:not(:disabled) {
+          background: rgba(0, 229, 255, 0.08);
+          border-color: var(--neon-cyan);
+          text-shadow: 0 0 5px var(--neon-cyan);
+          box-shadow: 0 0 8px rgba(0, 229, 255, 0.2);
+        }
+
+        .cyber-btn.active {
+          background: var(--neon-cyan);
+          color: #000;
+          border-color: transparent;
+          font-weight: 700;
+          box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .cyber-btn:disabled {
+          opacity: 0.25;
+          cursor: not-allowed;
+        }
+
+        /* Replay Visual Elements Firing pulse */
+        .petri-trans {
+          fill: rgba(255, 255, 255, 0.05);
+          stroke: rgba(255, 255, 255, 0.2);
+          stroke-width: 1.5;
+          transition: all 0.15s ease;
+        }
+
+        .petri-trans.active {
+          stroke: var(--neon-cyan);
+          fill: rgba(0, 229, 255, 0.08);
+        }
+
+        .petri-trans.firing {
+          fill: var(--neon-pink) !important;
+          stroke: var(--neon-pink) !important;
+          filter: drop-shadow(0 0 8px var(--neon-pink));
+        }
+
+        .petri-place {
+          fill: rgba(5, 7, 10, 0.9);
+          stroke: rgba(255, 255, 255, 0.2);
+          stroke-width: 2;
+          transition: all 0.2s ease;
+        }
+
+        .petri-place.active {
+          stroke: var(--neon-blue);
+          filter: drop-shadow(0 0 5px var(--neon-blue));
+        }
+
+        .petri-arc {
+          stroke: rgba(255, 255, 255, 0.15);
+          stroke-width: 1.5;
+          fill: none;
+        }
+
+        /* Chart paths */
+        .chart-raw {
+          stroke: rgba(58, 134, 255, 0.35);
+          stroke-width: 1.5;
+          fill: none;
+        }
+
+        .chart-ewma {
+          stroke: var(--neon-green);
+          stroke-width: 2.5;
+          fill: none;
+          filter: drop-shadow(0 0 3px var(--neon-green));
+        }
+        
+        .chart-ewma.drifting {
+          stroke: var(--neon-pink);
+          filter: drop-shadow(0 0 3px var(--neon-pink));
+        }
+
+        /* Custom Scrollbar for Cyberpunk Feel */
+        ::-webkit-scrollbar {
+          width: 5px;
+          height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+          background: rgba(0, 229, 255, 0.2);
+          border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: var(--neon-cyan);
+        }
+      `}</style>
+
+      {/* HEADER SECTION */}
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-white/10 pb-4 mb-6 gap-4">
+        <div>
+          <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400 flex items-center gap-3">
+            PROCESS INTELLIGENCE DASHBOARD
+            <span className="text-xs px-2 py-0.5 border border-cyan-500/30 text-cyan-400 rounded font-mono bg-cyan-950/20">WASM4PM Core v2.2.0</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1 font-mono">
+            Extracted Ontological Governance & Conformance Engine
+          </p>
+        </div>
+
+        {/* Streaming HUD Telemetry HUD */}
+        <div className="flex gap-4 items-center bg-black/40 border border-white/10 px-4 py-2 rounded-lg font-mono text-xs text-slate-300">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span className="text-emerald-400 font-bold">STREAM LIVE</span>
+          </div>
+          <div>FPS: <span className="text-cyan-400">{streamFps}</span></div>
+          <div>Latency: <span className="text-emerald-400">{streamLatency}</span></div>
+          <div>Drops: <span className="text-emerald-400">{streamFrameDrops}</span></div>
+          <div>Status: <span className="text-emerald-400">CONNECTED</span></div>
+        </div>
+      </header>
+
+      {/* METRIC TOP STRIP */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="glass-panel p-4 flex flex-col justify-between">
+          <span className="text-xs font-mono tracking-wider text-slate-400">TOTAL CASES</span>
+          <span className="text-2xl font-black text-cyan-400 mt-2 font-mono">{totalTracesCount}</span>
+        </div>
+        <div className="glass-panel p-4 flex flex-col justify-between">
+          <span className="text-xs font-mono tracking-wider text-slate-400">TOTAL EVENTS</span>
+          <span className="text-2xl font-black text-cyan-400 mt-2 font-mono">{totalEventsCount}</span>
+        </div>
+        <div className="glass-panel p-4 flex flex-col justify-between">
+          <span className="text-xs font-mono tracking-wider text-slate-400">AVERAGE FITNESS</span>
+          <span className={`text-2xl font-black mt-2 font-mono ${averageFitness >= 0.95 ? 'text-emerald-400' : 'text-pink-500'}`}>
+            {(averageFitness * 100).toFixed(1)}%
+          </span>
+        </div>
+        <div className="glass-panel p-4 flex flex-col justify-between">
+          <span className="text-xs font-mono tracking-wider text-slate-400">DECLARE VIOLATIONS</span>
+          <span className="text-2xl font-black text-pink-500 mt-2 font-mono">{totalViolationsCount}</span>
+        </div>
+      </div>
+
+      {/* MAIN TWO-COLUMN WORKSPACE */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* LEFT COLUMN: CONTROLS & STREAM (4 cols) */}
+        <section className="lg:col-span-4 flex flex-col gap-6">
+          
+          {/* CONTROL BOX */}
+          <div className="glass-panel p-5">
+            <h2 className="text-sm font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2 mb-4">SIMULATION DIRECT FEED</h2>
+            
+            <div className="flex flex-col gap-4">
+              
+              {/* Playback Controls */}
+              <div className="grid grid-cols-3 gap-2">
+                <button 
+                  onClick={() => setIsRunning(true)} 
+                  disabled={isRunning}
+                  className={`cyber-btn py-2 ${isRunning ? 'active' : ''}`}
+                >
+                  ▶ RUN
+                </button>
+                <button 
+                  onClick={() => setIsRunning(false)} 
+                  disabled={!isRunning}
+                  className={`cyber-btn py-2 ${!isRunning ? 'active' : ''}`}
+                >
+                  ⏸ PAUSE
+                </button>
+                <button 
+                  onClick={resetAllSimState}
+                  className="cyber-btn py-2 hover:bg-red-950/20"
+                >
+                  🔄 RESET
+                </button>
+              </div>
+
+              {/* Single step trigger */}
+              <button 
+                onClick={executeSimulationStep} 
+                disabled={isRunning}
+                className="cyber-btn py-2 w-full text-xs hover:border-emerald-500"
+              >
+                STEP REPLAY (MANUAL)
+              </button>
+
+              {/* Simulation speed */}
+              <div className="flex items-center justify-between text-xs font-mono mt-2">
+                <span className="text-slate-400">Step Interval:</span>
+                <select 
+                  value={simulationSpeed} 
+                  onChange={(e) => setSimulationSpeed(Number(e.target.value))}
+                  className="bg-black/50 border border-white/10 text-cyan-400 rounded px-2 py-1 outline-none"
+                >
+                  <option value={1500}>1.5s (Inspect)</option>
+                  <option value={1000}>1.0s (Normal)</option>
+                  <option value={500}>0.5s (Fast)</option>
+                  <option value={200}>0.2s (Hyper)</option>
+                </select>
+              </div>
+
+              {/* Simulation scenarios */}
+              <div className="border-t border-white/5 pt-3">
+                <span className="text-xs text-slate-400 font-mono">SCENARIO STREAM PROFILE:</span>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <button 
+                    onClick={() => handleScenarioChange("standard")}
+                    className={`cyber-btn text-xs py-1.5 ${activeScenario === "standard" ? 'active' : ''}`}
+                  >
+                    Standard Loop
+                  </button>
+                  <button 
+                    onClick={() => handleScenarioChange("reject")}
+                    className={`cyber-btn text-xs py-1.5 ${activeScenario === "reject" ? 'active' : ''}`}
+                  >
+                    Short-Circuit
+                  </button>
+                  <button 
+                    onClick={() => handleScenarioChange("order")}
+                    className={`cyber-btn text-xs py-1.5 ${activeScenario === "order" ? 'active' : ''}`}
+                  >
+                    Out of Order
+                  </button>
+                  <button 
+                    onClick={() => handleScenarioChange("drift")}
+                    className={`cyber-btn text-xs py-1.5 ${activeScenario === "drift" ? 'active' : ''}`}
+                  >
+                    Concept Drift
+                  </button>
+                </div>
+              </div>
+
+              {/* Performance Drift Injector Toggle */}
+              <div className="flex items-center justify-between border-t border-white/5 pt-3 mt-1">
+                <span className="text-xs text-slate-400 font-mono">ADVERSARIAL PROCESS DRIFT:</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={isDriftActive} 
+                    onChange={(e) => setIsDriftActive(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-300 after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-pink-600"></div>
+                </label>
+              </div>
+
+            </div>
+          </div>
+
+          {/* ACTIVE LIVE STREAM CASE TABLE */}
+          <div className="glass-panel p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-sm font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2">LIVE CASE INGESTION</h2>
+              <span className="text-xs font-mono text-slate-500">showing last 10</span>
+            </div>
+            
+            <div className="overflow-x-auto max-h-[300px]">
+              <table className="w-full text-xs font-mono">
+                <thead>
+                  <tr className="text-slate-400 border-b border-white/10 pb-2">
+                    <th className="text-left font-semibold py-2">CASE ID</th>
+                    <th className="text-left font-semibold py-2">PROFILE</th>
+                    <th className="text-right font-semibold py-2">FITNESS</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {caseFeed.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="text-center py-8 text-slate-500 text-xs">
+                        Awaiting transaction executions...
+                      </td>
+                    </tr>
+                  ) : (
+                    caseFeed.slice(0, 10).map((c, idx) => (
+                      <tr 
+                        key={idx} 
+                        onClick={() => setSelectedCase(c)}
+                        className={`hover:bg-cyan-500/5 cursor-pointer transition-colors ${selectedCase?.traceId === c.traceId ? 'bg-cyan-500/10 text-cyan-400 font-bold' : ''}`}
+                      >
+                        <td className="py-2.5">#{c.traceId}</td>
+                        <td className="py-2.5 text-[10px] text-slate-400">{c.variant}</td>
+                        <td className={`py-2.5 text-right font-bold ${c.fitness >= 0.95 ? 'text-emerald-400' : 'text-pink-500'}`}>
+                          {(c.fitness * 100).toFixed(0)}%
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+        {/* RIGHT COLUMN: WORKSPACE VIEWS & ALIGNMENTS (8 cols) */}
+        <section className="lg:col-span-8 flex flex-col gap-6">
+
+          {/* PETRI NET REPLAY SIMULATOR */}
+          <div className="glass-panel p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-sm font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2">PETRI NET TOKEN GAME PLAYBACK</h2>
+              
+              <div className="text-xs font-mono bg-black/40 border border-white/5 px-2.5 py-1 rounded text-cyan-400">
+                Marking: <span className="font-bold text-white">
+                  [{Object.keys(currentMarking).map(p => `${p.replace("p_", "")}:${currentMarking[p]}`).join(", ")}]
+                </span>
+              </div>
+            </div>
+
+            {/* SVG Petri Net */}
+            <div className="bg-black/30 border border-white/10 rounded-xl overflow-hidden relative" style={{ height: "260px" }}>
+              
+              <svg className="w-full h-full" viewBox="0 0 960 260" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 2.5 L 8 5 L 0 7.5 z" fill="#475569" />
+                  </marker>
+                </defs>
+
+                {/* Arcs (Draw connections) */}
+                {Object.keys(LOAN_PETRI_NET.transitions).map((tId) => {
+                  const trans = LOAN_PETRI_NET.transitions[tId as keyof typeof LOAN_PETRI_NET.transitions];
+                  
+                  return (
+                    <g key={tId}>
+                      {/* Inputs to Transition */}
+                      {trans.inputs.map((inp, idx) => {
+                        const place = LOAN_PETRI_NET.places[inp as keyof typeof LOAN_PETRI_NET.places];
+                        return (
+                          <path
+                            key={`inp-${idx}`}
+                            d={`M ${place.x} ${place.y} L ${trans.x} ${trans.y}`}
+                            className="petri-arc"
+                            markerEnd="url(#arrow)"
+                          />
+                        );
+                      })}
+                      {/* Outputs from Transition */}
+                      {trans.outputs.map((out, idx) => {
+                        const place = LOAN_PETRI_NET.places[out as keyof typeof LOAN_PETRI_NET.places];
+                        return (
+                          <path
+                            key={`out-${idx}`}
+                            d={`M ${trans.x} ${trans.y} L ${place.x} ${place.y}`}
+                            className="petri-arc"
+                            markerEnd="url(#arrow)"
+                          />
+                        );
+                      })}
+                    </g>
+                  );
+                })}
+
+                {/* Transitions (Draw Rectangles) */}
+                {Object.keys(LOAN_PETRI_NET.transitions).map((tId) => {
+                  const trans = LOAN_PETRI_NET.transitions[tId as keyof typeof LOAN_PETRI_NET.transitions];
+                  const isFiring = firingTrans === tId;
+                  const currentIdx = currentTrace?.activities.indexOf(trans.label) ?? -1;
+                  const isPassed = currentIdx !== -1 && currentIdx < currentEventIdx;
+
+                  return (
+                    <g key={tId}>
+                      <rect
+                        x={trans.x - 15}
+                        y={trans.y - 20}
+                        width={30}
+                        height={40}
+                        rx={4}
+                        className={`petri-trans ${isFiring ? 'firing' : ''} ${isPassed ? 'active' : ''}`}
+                      />
+                      <text
+                        x={trans.x}
+                        y={trans.y + 35}
+                        textAnchor="middle"
+                        className="fill-slate-400 font-mono text-[9px] font-semibold"
+                      >
+                        {trans.label}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Places (Draw Circles) */}
+                {Object.keys(LOAN_PETRI_NET.places).map((pId) => {
+                  const place = LOAN_PETRI_NET.places[pId as keyof typeof LOAN_PETRI_NET.places];
+                  const tokenCount = currentMarking[pId] || 0;
+                  const isActive = tokenCount > 0;
+
+                  return (
+                    <g key={pId}>
+                      <circle
+                        cx={place.x}
+                        cy={place.y}
+                        r={18}
+                        className={`petri-place ${isActive ? 'active' : ''}`}
+                      />
+                      <text
+                        cx={place.x}
+                        cy={place.y}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        className="fill-white font-mono text-[10px] font-black"
+                        x={place.x}
+                        y={place.y + 1}
+                      >
+                        {tokenCount}
+                      </text>
+                      <text
+                        x={place.x}
+                        y={place.y - 25}
+                        textAnchor="middle"
+                        className="fill-slate-400 font-mono text-[10px] font-semibold"
+                      >
+                        {place.name}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Sliding Replay Token Animation Element */}
+                {animToken.visible && (
+                  <circle
+                    cx={animToken.cx}
+                    cy={animToken.cy}
+                    r={6}
+                    fill={animToken.color}
+                    style={{ transition: `cx ${simulationSpeed * 0.3}ms cubic-bezier(0.25, 0.46, 0.45, 0.94), cy ${simulationSpeed * 0.3}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)` }}
+                    filter="drop-shadow(0 0 4px #3a86ff)"
+                  />
+                )}
+              </svg>
+
+              {/* Playback trace index overlays */}
+              <div className="absolute bottom-2 left-3 text-[10px] font-mono text-slate-500">
+                Playing Case: <span className="text-slate-300 font-semibold">{currentTrace ? `#${currentTrace.traceId}` : "None"}</span> | 
+                Step: <span className="text-slate-300 font-semibold">{currentEventIdx} / {currentTrace?.activities.length || 0}</span>
+              </div>
+              
+              {currentTrace && (
+                <div className="absolute top-2 left-3 flex gap-1 items-center overflow-x-auto max-w-[80%] pr-4 py-1">
+                  {currentTrace.activities.map((act, i) => (
+                    <span 
+                      key={i} 
+                      className={`text-[9px] font-mono px-2 py-0.5 rounded border ${
+                        i === currentEventIdx 
+                          ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/50 font-bold animate-pulse' 
+                          : i < currentEventIdx 
+                            ? 'bg-slate-900 text-slate-500 border-slate-800 line-through' 
+                            : 'bg-black/50 text-slate-400 border-white/5'
+                      }`}
+                    >
+                      {act}
+                    </span>
+                  ))}
+                </div>
+              )}
+
+            </div>
+          </div>
+
+          {/* TABS SELECTOR PANEL */}
+          <div className="flex gap-2">
+            <button 
+              onClick={() => setActiveTab("live")}
+              className={`cyber-btn px-4 py-2 text-xs flex-1 ${activeTab === "live" ? 'active' : ''}`}
+            >
+              📊 A* COMPLIANCE ALIGNMENTS
+            </button>
+            <button 
+              onClick={() => setActiveTab("claims")}
+              className={`cyber-btn px-4 py-2 text-xs flex-1 ${activeTab === "claims" ? 'active' : ''}`}
+            >
+              💎 M&A BOARD CLAIMS VERIFICATION
+            </button>
+            <button 
+              onClick={() => setActiveTab("ledger")}
+              className={`cyber-btn px-4 py-2 text-xs flex-1 ${activeTab === "ledger" ? 'active' : ''}`}
+            >
+              🔒 LEDGER RECEIPTS ({ledger.length} BLOCKS)
+            </button>
+          </div>
+
+          {/* VIEW TAB 1: LIVE A* CONFORMANCE ALIGNMENT */}
+          {activeTab === "live" && (
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              
+              {/* Optimal alignment moves */}
+              <div className="glass-panel p-5 md:col-span-7 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xs font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2 mb-4">
+                    A* CONFORMANCE ALIGNMENT PATH
+                  </h3>
+                  
+                  {selectedCase ? (
+                    <div className="flex flex-col gap-3">
+                      <div className="flex justify-between items-center text-xs font-mono bg-black/40 border border-white/5 p-2 rounded">
+                        <div>CASE: <span className="text-white font-bold">#{selectedCase.traceId}</span></div>
+                        <div>FITNESS: <span className={selectedCase.fitness >= 0.95 ? 'text-emerald-400 font-bold' : 'text-pink-500 font-bold'}>{(selectedCase.fitness*100).toFixed(1)}%</span></div>
+                      </div>
+
+                      {/* Alignment List */}
+                      <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-1">
+                        {selectedCaseAlignment?.alignment.map((move, idx) => {
+                          let labelColor = "border-slate-700 bg-black/20";
+                          let typeLabel = "SYNC MOVE";
+                          let cost = 0;
+                          
+                          if (move.type === "model") {
+                            labelColor = "border-pink-500 bg-pink-950/10 text-pink-400";
+                            typeLabel = "MOVE ON MODEL";
+                            cost = 1;
+                          } else if (move.type === "log") {
+                            labelColor = "border-cyan-500 bg-cyan-950/10 text-cyan-400";
+                            typeLabel = "MOVE ON LOG";
+                            cost = 1;
+                          }
+
+                          return (
+                            <div key={idx} className={`border-l-3 px-3 py-2 rounded text-xs font-mono flex flex-col gap-1 ${labelColor}`}>
+                              <div className="flex justify-between font-bold">
+                                <span>{typeLabel}: {move.label}</span>
+                                <span className={cost > 0 ? "text-pink-500" : "text-emerald-400"}>Cost: {cost}</span>
+                              </div>
+                              <div className="grid grid-cols-2 text-[10px] text-slate-400">
+                                <span>Trace/Log: <strong className="text-slate-200">{move.type === 'model' ? '-' : move.label}</strong></span>
+                                <span>Model/Net: <strong className="text-slate-200">{move.type === 'log' ? '-' : move.label}</strong></span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-12 text-slate-500 text-xs font-mono">
+                      Select a replayed case trace from the list to view optimal A* alignments.
+                    </div>
+                  )}
+                </div>
+                
+                {selectedCase && selectedCaseAlignment && (
+                  <div className="grid grid-cols-2 gap-2 mt-4 text-[10px] font-mono text-slate-500 border-t border-white/5 pt-3">
+                    <div>Nodes Expanded: <span className="text-white font-bold">{selectedCaseAlignment.expandedCount}</span></div>
+                    <div>Search Cost: <span className="text-white font-bold">{selectedCaseAlignment.cost}</span></div>
+                  </div>
+                )}
+              </div>
+
+              {/* LTL declare validator list */}
+              <div className="glass-panel p-5 md:col-span-5">
+                <h3 className="text-xs font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2 mb-4">
+                  LTL DECLARE DECLARED RULES
+                </h3>
+                
+                <div className="flex flex-col gap-3">
+                  {declareRuleStats.map((r, idx) => {
+                    let statusColor = "bg-slate-800 border-slate-700 text-slate-400";
+                    if (r.status === "FULFILLED") statusColor = "bg-emerald-950/20 border-emerald-500/30 text-emerald-400";
+                    else if (r.status === "VIOLATED") statusColor = "bg-pink-950/20 border-pink-500/30 text-pink-400";
+                    else if (r.status === "VACUOUS") statusColor = "bg-cyan-950/20 border-cyan-500/30 text-cyan-400";
+
+                    return (
+                      <div key={idx} className="bg-black/30 border border-white/5 p-3 rounded flex flex-col gap-2">
+                        <div className="flex justify-between items-start">
+                          <span className="text-[10px] font-mono text-slate-200 max-w-[70%] truncate" title={r.rule}>
+                            {r.rule}
+                          </span>
+                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ${statusColor}`}>
+                            {r.status}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 text-[9px] font-mono text-slate-500">
+                          <div>Act: <strong className="text-slate-300">{r.activations}</strong></div>
+                          <div>Sat: <strong className="text-slate-300">{r.satisfactions}</strong></div>
+                          <div>Viol: <strong className="text-slate-300">{r.violations}</strong></div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Drift Monitor Chart (Wide Card) */}
+              <div className="glass-panel p-5 md:col-span-12">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="text-xs font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2">
+                    STATISTICAL PROCESS DRIFT (EWMA CHARTS)
+                  </h3>
+                  <div className="flex items-center gap-4 text-[10px] font-mono">
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-2 w-4 bg-blue-500/30 border border-blue-500/50 inline-block"></span>
+                      <span className="text-slate-400">Raw Trace Fitness</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-2 w-4 bg-emerald-400 inline-block"></span>
+                      <span className="text-slate-400">EWMA smoothed</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-0 w-4 border-t border-dashed border-pink-500 inline-block"></span>
+                      <span className="text-slate-400">LCL ({ewmaChartSvg.lclValue.toFixed(3)})</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Alarm banner */}
+                {historyList.length > 0 && historyList[historyList.length - 1].ewma < ewmaChartSvg.lclValue ? (
+                  <div className="bg-pink-950/20 border border-pink-500/30 text-pink-400 text-xs py-2 px-3 rounded mb-4 font-mono animate-pulse">
+                    ⚠️ CRITICAL DRIFT DETECTED: Process conformance fitness falls below LCL limit! (EWMA: {historyList[historyList.length - 1].ewma.toFixed(3)})
+                  </div>
+                ) : (
+                  <div className="bg-emerald-950/20 border border-emerald-500/30 text-emerald-400 text-xs py-2 px-3 rounded mb-4 font-mono">
+                    System nominal. Running within standard parameters.
+                  </div>
+                )}
+
+                {/* Render SVG Line Chart */}
+                <div className="w-full" style={{ height: `${ewmaChartSvg.h}px` }}>
+                  <svg className="w-full h-full font-mono text-[8px]" viewBox={`0 0 ${ewmaChartSvg.w} ${ewmaChartSvg.h}`}>
+                    {/* Draw grid lines */}
+                    {[0, 0.25, 0.5, 0.75, 1.0].map((val, idx) => {
+                      const y = ewmaChartSvg.padding.top + ewmaChartSvg.chartH * (1.0 - val);
+                      return (
+                        <g key={idx}>
+                          <line
+                            x1={ewmaChartSvg.padding.left}
+                            y1={y}
+                            x2={ewmaChartSvg.w - ewmaChartSvg.padding.right}
+                            y2={y}
+                            stroke="rgba(255, 255, 255, 0.05)"
+                          />
+                          <text
+                            x={ewmaChartSvg.padding.left - 8}
+                            y={y}
+                            textAnchor="end"
+                            dominantBaseline="central"
+                            className="fill-slate-500"
+                          >
+                            {val.toFixed(2)}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* Lower control limit line (LCL) */}
+                    <line
+                      x1={ewmaChartSvg.padding.left}
+                      y1={ewmaChartSvg.yLcl}
+                      x2={ewmaChartSvg.w - ewmaChartSvg.padding.right}
+                      y2={ewmaChartSvg.yLcl}
+                      stroke="#ff007f"
+                      strokeDasharray="4,4"
+                      strokeWidth={1.5}
+                    />
+                    <text
+                      x={ewmaChartSvg.padding.left + 8}
+                      y={ewmaChartSvg.yLcl - 5}
+                      className="fill-pink-500 font-bold"
+                    >
+                      LCL: {ewmaChartSvg.lclValue.toFixed(2)}
+                    </text>
+
+                    {/* Chart Paths */}
+                    {historyList.length > 0 ? (
+                      <>
+                        <path d={ewmaChartSvg.pathRaw} className="chart-raw" />
+                        <path 
+                          d={ewmaChartSvg.pathEwma} 
+                          className={`chart-ewma ${historyList[historyList.length - 1].ewma < ewmaChartSvg.lclValue ? 'drifting' : ''}`} 
+                        />
+                        {/* Dots and highlights */}
+                        {ewmaChartSvg.dots.map((dot, idx) => (
+                          <g key={idx}>
+                            <circle
+                              cx={dot.cx}
+                              cy={dot.cy}
+                              r={dot.isViol ? 4 : 2}
+                              className={dot.isViol ? 'fill-pink-500 stroke-white' : 'fill-emerald-400'}
+                              filter={dot.isViol ? 'drop-shadow(0 0 3px #ff007f)' : ''}
+                            />
+                          </g>
+                        ))}
+                      </>
+                    ) : (
+                      <text
+                        x={ewmaChartSvg.w / 2}
+                        y={ewmaChartSvg.h / 2}
+                        textAnchor="middle"
+                        className="fill-slate-500 text-[11px] font-sans"
+                      >
+                        Awaiting case stream traces to compile EWMA control data...
+                      </text>
+                    )}
+                  </svg>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* VIEW TAB 2: M&A BOARD CLAIMS VERIFICATION */}
+          {activeTab === "claims" && (
+            <div className="glass-panel p-5">
+              <h3 className="text-xs font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2 mb-4">
+                ONTOLOGICAL DILIGENCE CLAIM ENVELOPE
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {claimsList.map((claim, idx) => {
+                  const defensible = claim.fitness >= 0.95 && claim.precision >= 0.90 && isLedgerIntact;
+                  
+                  return (
+                    <div 
+                      key={idx} 
+                      className={`border p-4 rounded-lg flex flex-col justify-between min-h-[160px] bg-black/40 transition-all ${
+                        defensible 
+                          ? 'border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)] hover:border-emerald-500/40' 
+                          : 'border-pink-500/20 shadow-[0_0_15px_rgba(239,68,68,0.05)] hover:border-pink-500/40'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex justify-between items-start gap-2">
+                          <h4 className="text-xs font-bold text-white tracking-tight">{claim.label}</h4>
+                          <span className={`text-[8px] font-mono px-2 py-0.5 rounded ${
+                            defensible 
+                              ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' 
+                              : 'bg-pink-950/20 text-pink-400 border border-pink-500/30'
+                          }`}>
+                            {defensible ? "DEFENSIBLE" : "REJECTED"}
+                          </span>
+                        </div>
+                        <p className="text-[10px] font-mono text-slate-500 mt-1">{claim.id}</p>
+                        
+                        <div className="grid grid-cols-2 gap-3 mt-4 text-[10px] font-mono">
+                          <div>
+                            <span className="text-slate-400 block">Fitness Proof</span>
+                            <span className={`font-bold ${claim.fitness >= 0.95 ? 'text-emerald-400' : 'text-pink-500'}`}>
+                              {(claim.fitness * 100).toFixed(1)}% (th: &ge; 95%)
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 block">Precision Limit</span>
+                            <span className={`font-bold ${claim.precision >= 0.90 ? 'text-emerald-400' : 'text-pink-500'}`}>
+                              {(claim.precision * 100).toFixed(1)}% (th: &ge; 90%)
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between items-center mt-4 border-t border-white/5 pt-3">
+                        <span className="text-xs font-mono font-bold text-cyan-400">
+                          ${claim.metricValue.toLocaleString()} USD
+                        </span>
+                        <a 
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            alert(`Verifying BLAKE3 Receipt for block:\n\nHash: ${claim.receiptHash}\nTimestamp: ${claim.receiptTimestamp}\nLog: ${claim.logFormat}\nVerdict URL: https://proof.intelligence/verify/${claim.receipt}`);
+                          }}
+                          className="text-[9px] font-mono text-slate-500 hover:text-cyan-400 transition-colors"
+                        >
+                          Verify Receipt →
+                        </a>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* VIEW TAB 3: LEDGER BLOCKCHAIN RECEIPTS */}
+          {activeTab === "ledger" && (
+            <div className="glass-panel p-5">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-4">
+                <div>
+                  <h3 className="text-xs font-bold tracking-wider text-cyan-400 border-l-2 border-cyan-400 pl-2">
+                    CRYPTOGRAPHIC BLOCKCHAIN LEDGER
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-mono mt-1">SHA-256 process transaction audit trail</p>
+                </div>
+                
+                <span className={`text-[10px] font-bold font-mono px-3 py-1 rounded border ${
+                  isLedgerIntact 
+                    ? 'bg-emerald-950/20 border-emerald-500/30 text-emerald-400' 
+                    : 'bg-pink-950/20 border-pink-500/30 text-pink-400 animate-pulse'
+                }`}>
+                  {ledgerAuditMessage}
+                </span>
+              </div>
+
+              {/* Horizontal block sequence */}
+              <div className="flex gap-4 overflow-x-auto pb-4 pt-2">
+                {ledger.length === 0 ? (
+                  <div className="text-center py-12 text-slate-500 text-xs font-mono w-full">
+                    Awaiting transactions to write block data...
+                  </div>
+                ) : (
+                  ledger.slice().reverse().map((block, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`flex-none w-[240px] border p-4 rounded-lg bg-black/40 flex flex-col justify-between gap-3 ${
+                        isLedgerIntact ? 'border-white/10 hover:border-cyan-500/30' : 'border-pink-500/40 bg-pink-950/5'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                        <span className="text-xs font-bold text-cyan-400 font-mono">BLOCK #{block.blockId}</span>
+                        <span className="text-[9px] text-slate-500 font-mono">{block.timestamp.substring(11, 19)}</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-3 gap-y-2 text-[10px] font-mono leading-tight">
+                        <span className="text-slate-400 col-span-1">Trace ID:</span>
+                        <span className="text-slate-200 font-bold col-span-2">{block.traceId}</span>
+                        
+                        <span className="text-slate-400 col-span-1">Fitness:</span>
+                        <span className={`font-bold col-span-2 ${block.fitness >= 0.95 ? 'text-emerald-400' : 'text-pink-500'}`}>
+                          {(block.fitness * 100).toFixed(1)}%
+                        </span>
+
+                        <span className="text-slate-400 col-span-1">Prev:</span>
+                        <span className="text-slate-500 col-span-2 font-mono truncate" title={block.prevHash}>
+                          {block.prevHash.substring(0, 12)}...
+                        </span>
+                        
+                        <span className="text-slate-400 col-span-1">Hash:</span>
+                        <span className="text-cyan-400 font-bold col-span-2 font-mono truncate" title={block.hash}>
+                          {block.hash.substring(0, 12)}...
+                        </span>
+                      </div>
+
+                      <button 
+                        onClick={() => tamperBlock(block.blockId)}
+                        className="cyber-btn py-1 w-full text-[10px] hover:border-pink-500 text-slate-300"
+                      >
+                        ⚡ TAMPER RECORD
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
+        </section>
+
+      </div>
+
+    </main>
+  );
+}

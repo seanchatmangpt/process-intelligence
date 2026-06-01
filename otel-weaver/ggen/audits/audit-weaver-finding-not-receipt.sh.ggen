@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# audit-weaver-finding-not-receipt.sh.ggen
+# Verifies that Weaver schema validation findings or diffs are not treated as transactional process receipts or consequences.
+# Weaver findings represent structural schema matching, not runtime execution/transaction receipts.
+
+set -euo pipefail
+
+echo "=== Running Audit: Weaver Finding is Not Receipt ==="
+echo "Target Source Directory: {{ target_src_dir }}"
+
+violations=0
+
+# Ensure that weaver findings are logged or routed separately and not mixed with execution receipts.
+# Search for instances where weaver diff structures are handled inside transactional receipt functions.
+if grep -rn "receipt.*weaver" "{{ target_src_dir }}"; then
+    echo "FAIL: Weaver schema diff references found inside process execution receipt logic."
+    violations=$((violations + 1))
+fi
+
+if grep -rn "process_drift.*weaver" "{{ target_src_dir }}"; then
+    echo "FAIL: Weaver diff conflated with process drift or runtime deviation tracker."
+    violations=$((violations + 1))
+fi
+
+if [ $violations -eq 0 ]; then
+    echo "PASS: Weaver structural findings are properly isolated from operational process receipts."
+    exit 0
+else
+    echo "FAIL: Found $violations violations where Weaver findings were treated as process receipts/drift."
+    exit 1
+fi

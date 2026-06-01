@@ -1,0 +1,36 @@
+// pi-otel-constants.rs.ggen
+// OpenTelemetry Semantic Convention constants for Process Intelligence
+// Generated via Ostar Weaver template. Do not edit manually.
+// Preserving Nominal Categories:
+// - Feedstock represents raw telemetry input signals.
+// - Court represents process consequence judgments.
+// - Weaver Diff represents structural schema alterations, distinct from process drift.
+
+pub mod feedstock {
+    pub const ATTRIBUTE_WITNESS_ID: &str = "pi.feedstock.witness.id";
+    pub const ATTRIBUTE_FEEDSTOCK_SOURCE: &str = "pi.feedstock.source";
+    pub const ATTRIBUTE_FEEDSTOCK_PAYLOAD_SIZE: &str = "pi.feedstock.payload_size";
+}
+
+pub mod court {
+    pub const ATTRIBUTE_CASE_ID: &str = "pi.court.case.id";
+    pub const ATTRIBUTE_VERDICT_TYPE: &str = "pi.court.verdict.type";
+    pub const ATTRIBUTE_VERDICT_SEVERITY: &str = "pi.court.verdict.severity";
+}
+
+pub mod weaver_diff {
+    pub const ATTRIBUTE_DIFF_SOURCE_VERSION: &str = "pi.weaver.diff.source_version";
+    pub const ATTRIBUTE_DIFF_TARGET_VERSION: &str = "pi.weaver.diff.target_version";
+    pub const ATTRIBUTE_DIFF_TYPE: &str = "pi.weaver.diff.type";
+}
+
+// Struct representing the compiled schema metadata
+pub struct SchemaMetadata {
+    pub version: &'static str,
+    pub schema_url: &'static str,
+}
+
+pub const COMPILED_SCHEMA: SchemaMetadata = SchemaMetadata {
+    version: "{{ schema_version }}",
+    schema_url: "{{ schema_url }}",
+};

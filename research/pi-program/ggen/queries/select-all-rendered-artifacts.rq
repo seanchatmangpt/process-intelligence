@@ -1,0 +1,18 @@
+# Selection Query: All Rendered Artifacts
+# Returns all manufactured artifacts with their sources and proof gates
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT ?artifact ?label ?artifactType ?source ?sourceRule ?status ?receipt
+WHERE {
+  ?artifact a ggen:RenderedArtifact .
+  OPTIONAL { ?artifact rdfs:label ?label }
+  OPTIONAL { ?artifact ggen:artifactType ?artifactType }
+  OPTIONAL { ?artifact ggen:source ?source }
+  OPTIONAL { ?artifact ggen:sourceRule ?sourceRule }
+  OPTIONAL { ?artifact ggen:status ?status }
+  OPTIONAL { ?artifact ggen:receipt ?receipt }
+}
+ORDER BY ?artifact

@@ -1,0 +1,34 @@
+[program]
+name = "PI_RESEARCH_PROGRAM_INTEL_001"
+mode = "research_program_reconciliation"
+hand_coding = false
+scope = "all_referenced_projects"
+
+[inputs]
+wasm4pm = "/Users/sac/process-intelligence/sources/wasm4pm"
+wasm4pm_compat = "/Users/sac/wasm4pm-compat"
+zoeapp = "/Users/sac/zoeapp"
+blue_river_dam = "/Users/sac/blue_river_dam"
+process_intelligence = "/Users/sac/process-intelligence"
+
+[ontology]
+program = "ontology/pi-program.ttl"
+project_registry = "ontology/project-registry.ttl"
+checkpoint_ledger = "ontology/checkpoint-ledger.ttl"
+research_artifacts = "ontology/research-artifact-ledger.ttl"
+conformance = "ontology/conformance-ledger.ttl"
+graduation = "ontology/graduation-boundary.ttl"
+forbidden = "ontology/forbidden-collapse-law.ttl"
+
+[queries]
+directory = "queries"
+
+[templates]
+directory = "templates"
+
+[emitted]
+directory = "../emitted"
+
+[checkpoints]
+partial = "../checkpoints/PI_RESEARCH_PROGRAM_PARTIAL_001.md"
+alive = "../checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md"

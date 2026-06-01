@@ -1,0 +1,222 @@
+# Component Model Projection Manifest
+# WIT (WebAssembly Interface Types) code generation for system boundaries
+# Authority: wasm4pm-compat type law surface
+
+metadata:
+  name: "component-projection"
+  version: "1.0.0"
+  description: "WebAssembly Component Model projection from wasm4pm-compat"
+  author: "Process Intelligence Research Foundry"
+  created: "2026-06-01"
+  purpose: "Generate board-admissible Component Model boundaries for autonomic governance"
+
+projection:
+  name: "component"
+  target_platform: "WebAssembly Component Model"
+  source_crate: "wasm4pm-compat"
+  source_path: "../sources/wasm4pm-compat/compat"
+  feature: "component"
+  toolchain:
+    - tool: "wit"
+      version: ">=1.0.0"
+      purpose: "WebAssembly Interface Types specification"
+    - tool: "wit-bindgen"
+      version: ">=0.25.0"
+      purpose: "Generate Component Model bindings"
+
+world_definitions:
+  compat_world:
+    name: "wasm4pm-compat"
+    description: "Evidence, admission, refusal, loss, graduation type interfaces"
+    interfaces:
+      - name: "evidence-types"
+        module: "evidence"
+        exports:
+          - name: "Evidence"
+            type: "record"
+      - name: "admission-gate"
+        module: "admission"
+        exports:
+          - name: "AdmissionVerdict"
+            type: "enum"
+      - name: "refusal-gate"
+        module: "refusal"
+        exports:
+          - name: "RefusalReason"
+            type: "enum"
+      - name: "loss-accounting"
+        module: "loss"
+        exports:
+          - name: "LossReport"
+            type: "record"
+      - name: "graduation-state"
+        module: "graduation"
+        exports:
+          - name: "GraduationReason"
+            type: "enum"
+
+  engine_world:
+    name: "wasm4pm-engine"
+    description: "Discovery, replay, conformance, OCPQ, and receipt generation engines"
+    interfaces:
+      - name: "discovery-engine"
+        module: "discovery"
+        imports:
+          - name: "EventLog"
+            type: "record"
+      - name: "replay-engine"
+        module: "replay"
+        imports:
+          - name: "ExecutionTrace"
+            type: "record"
+      - name: "conformance-engine"
+        module: "conformance"
+        imports:
+          - name: "ConformanceQuery"
+            type: "record"
+      - name: "ocpq-engine"
+        module: "ocpq"
+        imports:
+          - name: "QueryContext"
+            type: "record"
+      - name: "receipt-engine"
+        module: "receipts"
+        exports:
+          - name: "CryptographicReceipt"
+            type: "record"
+
+module_mapping:
+  evidence:
+    wit_package: "process-intelligence/evidence"
+    direction: "export"
+  admission:
+    wit_package: "process-intelligence/admission"
+    direction: "export"
+  refusal:
+    wit_package: "process-intelligence/refusal"
+    direction: "export"
+  loss:
+    wit_package: "process-intelligence/loss"
+    direction: "export"
+  graduation:
+    wit_package: "process-intelligence/graduation"
+    direction: "export"
+  discovery:
+    wit_package: "process-intelligence/discovery"
+    direction: "import"
+  replay:
+    wit_package: "process-intelligence/replay"
+    direction: "import"
+  conformance:
+    wit_package: "process-intelligence/conformance"
+    direction: "import"
+  ocpq:
+    wit_package: "process-intelligence/ocpq"
+    direction: "import"
+  receipts:
+    wit_package: "process-intelligence/receipts"
+    direction: "import"
+
+boundary_enforcement:
+  compat_boundary:
+    modules:
+      - "evidence"
+      - "admission"
+      - "refusal"
+      - "loss"
+      - "graduation"
+    visibility: "public"
+    stability: "stable"
+    versioning: "semver"
+
+  engine_boundary:
+    modules:
+      - "discovery"
+      - "replay"
+      - "conformance"
+      - "ocpq"
+      - "receipts"
+    visibility: "internal"
+    stability: "evolving"
+    versioning: "internal"
+
+type_rules:
+  - name: "evidence-primitives"
+    modules: ["evidence"]
+    max_nesting_depth: 3
+    allow_references: true
+  - name: "verdict-enums"
+    modules: ["admission", "refusal", "graduation"]
+    max_variants: 32
+    allow_discriminants: true
+  - name: "accounting-records"
+    modules: ["loss"]
+    allow_numeric_fields: true
+    numeric_precision: "f64"
+
+output:
+  wit_directory: "wit"
+  wit_file: "wasm4pm-compat.wit"
+  bindings_directory: "generated/component-bindings"
+  format: "wit"
+
+generation_config:
+  wit_version: "1.0"
+  include_docs: true
+  emit_source_comments: true
+  generate_rust_bindings: true
+  generate_typescript_bindings: true
+  validate_cyclic_dependencies: true
+
+component_config:
+  component_name: "wasm4pm-compat"
+  component_version: "1.0.0"
+  wasm_component_ld: true
+  validate_imports: true
+  validate_exports: true
+
+validation:
+  enabled: true
+  checks:
+    - name: "wit-syntax"
+      level: "error"
+    - name: "interface-compatibility"
+      level: "error"
+    - name: "world-closure"
+      level: "error"
+    - name: "type-safety"
+      level: "error"
+
+audit:
+  enabled: true
+  script: "audits/audit-component-boundary.sh"
+  gates:
+    - name: "wit_validation"
+      threshold: 100
+    - name: "boundary_separation"
+      threshold: 100
+    - name: "circular_dependency_detection"
+      threshold: 0
+    - name: "interface_stability"
+      threshold: 100
+
+compliance:
+  standards:
+    - "WebAssembly Component Model"
+    - "WIT Specification"
+    - "WASI"
+    - "board-admissible"
+  evidence_backing: "Type law lattice + boundary enforcement matrix"
+  immutable: true
+
+integration:
+  consumer_manifests:
+    - "blue-river-dam"
+    - "m-and-a-deck-manufacturing"
+  dependency_graph: "../intel/component-dependency-graph.ttl"
+  composition_rules: "../rules/component-composition.rego"
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "../receipts/component-projection-receipt.json"

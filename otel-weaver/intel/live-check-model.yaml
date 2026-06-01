@@ -1,0 +1,85 @@
+model: Weaver Live-Check Model
+description: System schema and configuration mapping for Weaver's real-time telemetry verification engine (`weaver registry live-check`).
+nominal_category_clarification:
+  live_check_feedstock: "Live-check intercepts raw telemetry feedstock (spans, metrics, events) emitted by active applications. It validates the feedstock against the registered contract before it can be used for compliance or process mining verification (court)."
+
+ingestion_sources:
+  - source: otlp
+    protocol: gRPC or HTTP
+    default_address: 0.0.0.0
+    default_port: 4317
+    description: Receives standard OTLP telemetry streams directly from an application or a collector exporter.
+  - source: stdin
+    format: JSON or Line-delimited Text
+    description: Streams telemetry data from stdin (piped input).
+  - source: file
+    format: JSON or Text
+    description: Parses offline, recorded telemetry files.
+
+input_payload_schemas:
+  otlp_json:
+    description: Standard OpenTelemetry OTLP JSON representation.
+    payload_types:
+      - resource_spans:
+          structure:
+            resource:
+              attributes: array of key-value pairs
+            scope_spans:
+              - scope:
+                  name: string
+                  version: string
+                spans:
+                  - trace_id: hex-encoded string
+                    span_id: hex-encoded string
+                    parent_span_id: hex-encoded string
+                    name: string
+                    kind: integer
+                    start_time_unix_nano: string
+                    end_time_unix_nano: string
+                    attributes: array of key-value pairs
+                    events: array of event objects
+                    status: object
+      - resource_metrics:
+          structure:
+            resource:
+              attributes: array of key-value pairs
+            scope_metrics:
+              - scope: object
+                metrics:
+                  - name: string
+                    description: string
+                    unit: string
+                    data: object (gauge, sum, histogram)
+
+evaluation_policies:
+  type: Rego
+  execution_mode: Stream-based (runs for every incoming telemetry packet/entity).
+  advice_rules:
+    description: Specific rules used to flag missing attributes, bad naming patterns, and incorrect data types in the feedstock.
+
+output_report_schema:
+  description: The validation report generated after checking.
+  formats: [ansi, json, yaml, jsonl]
+  fields:
+    - name: statistics
+      type: object
+      properties:
+        - total_entities_processed: integer
+        - valid_entities: integer
+        - invalid_entities: integer
+        - processing_time_seconds: double
+    - name: violations
+      type: array
+      items:
+        type: object
+        properties:
+          - telemetry_type: string (e.g. span, metric, log)
+          - entity_id: string (e.g. TraceID/SpanID, metric name)
+          - policy_id: string
+          - severity: string (error, warning)
+          - message: string
+          - invalid_attributes: array of strings
+          - missing_attributes: array of strings
+    - name: status
+      type: string
+      enum: [pass, fail, partial_pass]

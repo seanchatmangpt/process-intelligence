@@ -1,0 +1,16 @@
+# Audit Query: Every Rendered Artifact Has Source Trace
+# ASSERT: All manufactured artifacts can be traced back to their source rules and queries
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+
+ASK {
+  ?artifact a ggen:RenderedArtifact .
+  FILTER NOT EXISTS {
+    ?artifact ggen:sourceRule ?rule .
+    ?rule a ggen:GenerationRule .
+  }
+  FILTER NOT EXISTS {
+    ?artifact ggen:sourceQuery ?query .
+    ?query a ggen:QuerySurface .
+  }
+}

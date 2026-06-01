@@ -1,0 +1,56 @@
+---
+# Project Registry
+# Generated: {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+# Authority: Process Intelligence Research Foundry
+
+version: "1.0"
+generated_by: "process-intelligence/ggen"
+
+projects:
+{% for project in projects %}
+  - id: {{ project.id }}
+    name: {{ project.name | safe }}
+    role: {{ project.role }}
+    status: {{ project.status }}
+    authority_level: {{ project.authority_level }}
+    phase: {{ project.phase }}
+    owner: {{ project.owner }}
+    active: {{ project.active | default(value=true) }}
+    checkpoint_status: {{ project.checkpoint_status }}
+    last_milestone: {{ project.last_milestone }}
+    description: |
+      {{ project.description | safe }}
+    lifecycle_states:
+{% for state in project.lifecycle_states %}
+      - {{ state }}
+{% endfor %}
+    dependencies:
+{% for dep in project.dependencies %}
+      - {{ dep }}
+{% endfor %}
+    proof_gates:
+{% for gate in project.proof_gates %}
+      - name: {{ gate.name }}
+        status: {{ gate.status }}
+{% endfor %}
+{% endfor %}
+
+roles:
+  foundry: "Research and doctrine authority — establishes canonical process law"
+  product: "Execution and manufacturing — implements research findings"
+  auxiliary: "Support and validation — enables research program operation"
+
+phases:
+  bootstrap: "Initial research infrastructure"
+  discovery: "Authority and gap analysis"
+  integration: "Cross-system conformance and bridging"
+  production: "Full-lifecycle manufacturing readiness"
+  maintenance: "Ongoing authority and governance"
+
+summary:
+  total_projects: {{ projects | length }}
+  foundry_projects: {{ projects | filter(attribute="role", value="foundry") | length }}
+  product_projects: {{ projects | filter(attribute="role", value="product") | length }}
+  auxiliary_projects: {{ projects | filter(attribute="role", value="auxiliary") | length }}
+  total_active: {{ projects | filter(attribute="active", value=true) | length }}
+  total_paused: {{ projects | filter(attribute="active", value=false) | length }}

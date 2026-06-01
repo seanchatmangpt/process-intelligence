@@ -17,7 +17,7 @@ use std::fmt;
 pub enum LifecycleState {
     {%- for state in states %}
     /// {{ state.stateDescription | default(value="Lifecycle state") }}
-    {{ state.stateName | upper | replace("-", "_") }},
+    {{ state.stateName | upper | replace(from="-", to="_") }},
     {%- endfor %}
 }
 
@@ -25,7 +25,7 @@ impl fmt::Display for LifecycleState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             {%- for state in states %}
-            LifecycleState::{{ state.stateName | upper | replace("-", "_") }} => write!(f, "{{ state.stateName }}"),
+            LifecycleState::{{ state.stateName | upper | replace(from="-", to="_") }} => write!(f, "{{ state.stateName }}"),
             {%- endfor %}
         }
     }
@@ -42,7 +42,7 @@ pub struct TransitionGuard {
 impl TransitionGuard {
     pub fn evaluate(&self, context: &GovernanceContext) -> bool {
         // Guard evaluation happens in autonomic runtime context
-        // {{ monitorRule.expression if monitorRule else "Condition evaluation TBD" }}
+        // {% if monitorRule %}{{ monitorRule.expression }}{% else %}Condition evaluation TBD{% endif %}
         true // Placeholder: real evaluation requires runtime state
     }
 }
@@ -165,9 +165,9 @@ impl BlueRiverOrchestrator {
         {%- for state in states %}
 
         states.insert(
-            LifecycleState::{{ state.stateName | upper | replace("-", "_") }},
+            LifecycleState::{{ state.stateName | upper | replace(from="-", to="_") }},
             StateDefinition {
-                state: LifecycleState::{{ state.stateName | upper | replace("-", "_") }},
+                state: LifecycleState::{{ state.stateName | upper | replace(from="-", to="_") }},
                 phase: "{{ state.statePhase }}".to_string(),
                 description: "{{ state.stateDescription | default(value="Process state") }}".to_string(),
 
@@ -175,8 +175,8 @@ impl BlueRiverOrchestrator {
                 transitions: vec![
                     {%- for transition in state.transitions %}
                     StateTransition {
-                        from: LifecycleState::{{ state.stateName | upper | replace("-", "_") }},
-                        to: LifecycleState::{{ transition.transitionTargetName | upper | replace("-", "_") }},
+                        from: LifecycleState::{{ state.stateName | upper | replace(from="-", to="_") }},
+                        to: LifecycleState::{{ transition.transitionTargetName | upper | replace(from="-", to="_") }},
                         guard: {% if transition.transitionGuardCondition %}Some(TransitionGuard {
                             name: "{{ transition.transitionGuardCondition }}".to_string(),
                             condition: "{{ transition.transitionGuardCondition }}".to_string(),
@@ -236,8 +236,8 @@ impl BlueRiverOrchestrator {
                 // MAPE-K Knowledge: learned models and strategies
                 knowledge_sources: vec![
                     {%- for knowledge in state.knowledge_sources %}
-                    KnowledgeAsset::{{ knowledge.knowledgeAssetType | replace("lifecycle:", "") }} {
-                        name: "{{ knowledge.knowledgeAsset | replace("https://process.intelligence/lifecycle/", "") }}".to_string(),
+                    KnowledgeAsset::{{ knowledge.knowledgeAssetType | replace(from="lifecycle:", to="") }} {
+                        name: "{{ knowledge.knowledgeAsset | replace(from="https://process.intelligence/lifecycle/", to="") }}".to_string(),
                         {% if knowledge.knowledgeAssetType == "lifecycle:ProcessModel" %}
                         fitness: {{ knowledge.knowledgeAssetValue | default(value=0.95) }},
                         {% elif knowledge.knowledgeAssetType == "lifecycle:ConformancePattern" %}

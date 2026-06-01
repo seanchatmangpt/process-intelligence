@@ -1,0 +1,149 @@
+SPARQL Query Surface Emission Manifest
+Generated: 2026-06-01
+Program: ggen-unified-run
+Authority: research/pi-program/ggen/queries/
+
+================================
+SELECTION QUERIES (12)
+================================
+
+1. select-all-ggen-manifests.rq
+   Purpose: Enumerate all registered ggen manifest documents
+   Type: SELECT
+   Output: Manifest URIs with metadata
+
+2. select-all-generation-rules.rq
+   Purpose: Enumerate all generation rule definitions
+   Type: SELECT
+   Output: Rule URIs with inputs, outputs, conditions
+
+3. select-all-ontology-graphs.rq
+   Purpose: Enumerate all ontology definitions with namespace bindings
+   Type: SELECT
+   Output: Ontology URIs with namespace, version
+
+4. select-all-query-surfaces.rq
+   Purpose: Enumerate all SPARQL query definitions
+   Type: SELECT
+   Output: Query surface URIs with purpose, pattern, format
+
+5. select-all-template-surfaces.rq
+   Purpose: Enumerate all template definitions for artifact manufacturing
+   Type: SELECT
+   Output: Template URIs with engine, type, parameters
+
+6. select-all-rendered-artifacts.rq
+   Purpose: Enumerate all manufactured artifacts with source tracing
+   Type: SELECT
+   Output: Artifact URIs with type, source rule, status, receipt
+
+7. select-all-checkpoints.rq
+   Purpose: Enumerate all lifecycle checkpoint verdicts (ALIVE/PARTIAL/FAILED)
+   Type: SELECT
+   Output: Checkpoint URIs with verdict, timestamp, criteria, evidence
+
+8. select-failed-gates.rq
+   Purpose: Enumerate all proof gates that failed validation
+   Type: SELECT
+   Output: Gate URIs with artifact, failure reason, assertion, timestamp
+
+9. select-remediation-candidates.rq
+   Purpose: Identify artifacts and rules requiring remediation
+   Type: SELECT (UNION)
+   Output: Candidate URIs with failed gate, remedy path, priority
+
+10. select-invalid-ggen-files.rq
+    Purpose: Enumerate all ggen configuration files with errors
+    Type: SELECT
+    Output: File URIs with error type, message, location, severity
+
+11. select-unified-run-plan.rq
+    Purpose: Return the complete execution plan with rule ordering and dependencies
+    Type: SELECT
+    Output: Step URIs with precedence, dependencies, parallelization, duration
+
+12. select-warrant-paths.rq
+    Purpose: Return provenance chains from checkpoints through receipts to evidence
+    Type: SELECT
+    Output: Paths from checkpoint → artifact → receipt → rule → evidence
+
+================================
+AUDIT QUERIES (8)
+================================
+
+1. audit-no-invalid-new-ggen-source.rq
+   Invariant: All newly created ggen files pass validation gates before registration
+   Type: ASK
+   Violation Return: true if new file with errors lacks validation timestamp
+   Verdict Impact: Blocks ALIVE transition
+
+2. audit-all-legacy-ggen-classified.rq
+   Invariant: Every ggen file from prior checkpoints has been reviewed and classified
+   Type: ASK
+   Violation Return: true if file lacks reviewedAt timestamp or classification
+   Verdict Impact: Blocks ALIVE transition
+
+3. audit-no-file-count-alive.rq
+   Invariant: ALIVE verdicts are NOT based solely on artifact count thresholds
+   Type: ASK
+   Violation Return: true if ALIVE checkpoint has only file-count-threshold criteria
+   Verdict Impact: Demotes verdict to PARTIAL
+
+4. audit-no-forced-alive.rq
+   Invariant: ALIVE checkpoints require all gate criteria to be met with evidence
+   Type: ASK
+   Violation Return: true if ALIVE checkpoint lacks validated criteria and evidence
+   Verdict Impact: Demotes verdict to PARTIAL
+
+5. audit-every-generation-rule-has-query-template-output.rq
+   Invariant: All generation rules have associated query surfaces and template surfaces
+   Type: ASK
+   Violation Return: true if rule lacks output query or outputTemplate binding
+   Verdict Impact: Blocks rule execution
+
+6. audit-every-rendered-artifact-has-source-trace.rq
+   Invariant: All manufactured artifacts can be traced to source rules and queries
+   Type: ASK
+   Violation Return: true if artifact lacks sourceRule or sourceQuery binding
+   Verdict Impact: Fails artifact proof gate
+
+7. audit-checkpoints-have-receipts-or-explicit-missing.rq
+   Invariant: ALIVE/PARTIAL checkpoints have cryptographic receipts or documented gaps
+   Type: ASK
+   Violation Return: true if ALIVE/PARTIAL checkpoint lacks receipt and declaredGaps
+   Verdict Impact: Blocks verdict issuance
+
+8. audit-warrant-path-exists.rq
+   Invariant: Every ALIVE verdict has a complete provenance chain from checkpoint to evidence
+   Type: ASK
+   Violation Return: true if ALIVE checkpoint lacks complete receipt trace chain
+   Verdict Impact: Revokes ALIVE status
+
+================================
+EXECUTION AUTHORITY
+================================
+
+Selection Query Pipeline:
+  - Execute all 12 selection queries to populate artifact graph
+  - Order results by precedence/timestamp for chronological verification
+  - Cross-reference artifact URIs for completeness
+
+Audit Query Pipeline:
+  - Execute all 8 audit queries sequentially
+  - Each returns true if invariant is violated
+  - Any violation blocks checkpoint verdict advancement
+  - Log violations with reference to specific query results
+
+Unified Run Plan:
+  - Query select-unified-run-plan.rq for execution order
+  - Group steps by precedence
+  - Execute in order, respecting dependencies
+
+Warrant Path Validation:
+  - Query select-warrant-paths.rq for each ALIVE checkpoint
+  - Verify complete chain to source evidence
+  - Validate receipt cryptographic signature
+
+================================
+STATUS: EMISSION COMPLETE
+================================

@@ -1,0 +1,374 @@
+version: "1.0.0"
+title: "ggen Feature Governance Law - wasm4pm-compat"
+doctrine: "Features enable derive macros and dependencies only. No features enable execution engines. No features enable tsify, wasm-bindgen, or tool smuggling into compat."
+authority: "Process Intelligence Research Foundry"
+date: "2026-06-01"
+
+---
+
+## Feature Definitions & Activation Rules
+
+features:
+  default:
+    name: "default feature (formats)"
+    description: "Core compatibility mapping without any projection tooling or execution engines."
+    dependencies: []
+    enabled_derives: []
+    activation_rule: "Always active; cannot be disabled."
+    boundary_rules:
+      - "Evidence and state types available; no Specta, tsify, wasm-bindgen"
+      - "Only serde derives allowed for serialization"
+      - "No execution engines (discovery, replay, conformance, OCPQ)"
+    immutable: true
+
+  ts:
+    name: "TypeScript Projection Feature"
+    description: "Enables Specta derives and dependency imports for generating TypeScript browser bindings via NPM."
+    dependencies:
+      - specta
+      - serde
+      - tsify
+      - wasm-bindgen
+    enabled_derives:
+      - specta::Type
+      - serde::Serialize
+      - serde::Deserialize
+    activation_rule: "Explicitly requested in Cargo.toml feature list or via wasm-pack build --target web"
+    activation_scope: "Cargo feature unification applies globally across workspace; all dependencies built once."
+    module_allowlist:
+      - evidence
+      - state
+      - witness
+      - admission
+      - refusal
+      - loss
+      - receipt
+      - graduation
+    module_blocklist:
+      - discovery
+      - replay_execution
+      - conformance_execution
+      - ocpq_execution
+      - benchmark_execution
+      - engine_receipt_minting
+    boundary_rules:
+      - "All exported structs must derive Type + Serialize + Deserialize"
+      - "All exported enums must derive Type + Serialize + Deserialize"
+      - "Evidence<T, State, W> projectable only if T is a concrete serializable type"
+      - "Witness markers (Raw, Admitted, Ocel20, Xes1849, WfNetSoundness, Strict) project as brand tokens in TypeScript"
+      - "All refusal reasons must be named variants (no catch-all error strings)"
+      - "No generic Evidence<T, State, W> exported directly; use concrete monomorphic DTOs"
+      - "Forbidden projection names: Dto (use suffixed name like EvidenceDto), payload_json, state_tag as string"
+    compliance_gates:
+      - gate: "type_coverage"
+        threshold: 100
+        description: "All public surface types must be projectable"
+      - gate: "export_completeness"
+        threshold: 100
+        description: "All exported types must have proper derive annotations"
+      - gate: "forbidden_module_breach"
+        threshold: 0
+        description: "Zero execution engines allowed"
+    audit_script: "audits/audit-ts-projection-surface.sh.ggen"
+
+  wasm:
+    name: "WebAssembly ABI Projection Feature"
+    description: "Enables tsify and wasm-bindgen derives for generating ABI-safe WASM bindings and JavaScript FFI glue."
+    dependencies:
+      - wasm-bindgen
+      - serde-wasm-bindgen
+      - tsify
+      - serde
+    enabled_derives:
+      - tsify::Tsify
+      - serde::Serialize
+      - serde::Deserialize
+      - wasm_bindgen::prelude::wasm_bindgen
+    activation_rule: "Explicitly requested in Cargo.toml; typically paired with wasm-pack build tooling"
+    activation_scope: "Cargo feature unification applies globally; all wasm-bindgen dependencies built once"
+    abi_safe_types:
+      - Evidence
+      - RefusalReason
+      - LossReport
+      - GraduationReason
+      - AdmissionVerdict
+      - WitnessState
+      - EvidenceState
+    abi_unsafe_types:
+      - EventLog (high-order collection, pointer semantics; use Evidence-based derivation)
+      - ProcessModel (Petri net graphs, non-portable semantics; use conformance queries)
+      - AlignmentCost (floating point matrices, precision concerns; use verdict comparisons)
+    module_allowlist:
+      - evidence
+      - admission
+      - refusal
+      - loss
+      - graduation
+    module_blocklist:
+      - discovery
+      - replay_execution
+      - conformance_execution
+      - ocpq_execution
+      - benchmark_execution
+      - engine_receipt_minting
+    boundary_rules:
+      - "All exported functions must use ABI-safe type signatures"
+      - "No generic Evidence<T, State, W> exported directly"
+      - "All DTOs must derive both Tsify and serde traits"
+      - "No trait objects or lifetime-bound references in FFI signatures"
+      - "No dyn Trait exports"
+      - "No raw pointers or unsafe operations in exported signatures"
+      - "#[tsify(into_wasm_abi, from_wasm_abi)] required on all DTO structs"
+      - "All witness markers must resolve to enum tags in DTO"
+      - "Refusal representation in JavaScript: Result<T, Error> with named error variants"
+    compliance_gates:
+      - gate: "abi_safety"
+        threshold: 100
+        description: "All exported functions must be ABI-safe"
+      - gate: "unsafe_type_banishment"
+        threshold: 0
+        description: "Zero unsafe types exported"
+      - gate: "serialization_coverage"
+        threshold: 100
+        description: "All types must be serializable"
+      - gate: "typescript_definition_completeness"
+        threshold: 100
+        description: "All DTO types must have TypeScript definitions"
+    audit_script: "audits/audit-no-engine-in-wasm-feature.sh.ggen"
+    npm_packaging:
+      scope: "@process-intelligence"
+      package_name: "@process-intelligence/wasm4pm-compat"
+      include_license: true
+      include_readme: true
+
+  component:
+    name: "WebAssembly Component Model Feature"
+    description: "Enables WIT interface definitions and component boundary splits between compat-world (exports) and engine-world (imports)."
+    dependencies:
+      - wit-bindgen
+    enabled_derives: []
+    activation_rule: "Explicitly requested to compile portable component modules"
+    activation_scope: "Feature affects WIT world definitions; engine downstream imports compat-world structures"
+    world_definitions:
+      compat_world:
+        stability: "stable"
+        versioning: "semver"
+        exports:
+          - evidence_types
+          - admission_gate
+          - refusal_gate
+          - loss_accounting
+          - graduation_state
+        module_list:
+          - evidence
+          - admission
+          - refusal
+          - loss
+          - graduation
+        boundary_rules:
+          - "No execution functions exported (discovery, replay, conformance, OCPQ)"
+          - "Exports are structural-only types and validators"
+          - "All witness markers map to enum variants"
+          - "All refusal reasons map to named variants"
+      engine_world:
+        stability: "evolving"
+        versioning: "internal"
+        imports:
+          - compat_world
+        exports:
+          - discovery_engine
+          - replay_engine
+          - conformance_engine
+          - ocpq_engine
+          - receipt_engine
+        module_list:
+          - discovery
+          - replay
+          - conformance
+          - ocpq
+          - receipts
+        boundary_rules:
+          - "All engine functions are imported from compat-world structures"
+          - "No re-export of compat world; only consumption"
+          - "Receipt generation isolated in receipts module"
+    module_allowlist:
+      - evidence
+      - admission
+      - refusal
+      - loss
+      - graduation
+    module_blocklist:
+      - "Nothing explicitly blocked; engine imports allowed separately"
+    boundary_rules:
+      - "WIT identifiers must be in kebab-case (not snake_case or camelCase)"
+      - "All Evidence variants map to WIT records with payload, state-tag, witness-tag, timestamp-ns fields"
+      - "Witness markers (Raw, Admitted, Ocel20, Xes1849, WfNetSoundness, Strict) map to witness-key enum variants"
+      - "RefusalReason variants map to named refusal-reason enum"
+      - "GraduationCandidate carries candidate-id, payload, reason-tag, is-grounded fields"
+      - "No WASI imports in compat-world (filesystem, sockets, CLI, HTTP)"
+      - "First-class refusal mapping: functions return result<ok, refusal-reason> (not generic strings)"
+      - "No raw logs crossing into engine without structural admission validation"
+    compliance_gates:
+      - gate: "wit_validation"
+        threshold: 100
+        description: "WIT syntax and type safety"
+      - gate: "boundary_separation"
+        threshold: 100
+        description: "compat-world and engine-world boundaries strictly enforced"
+      - gate: "circular_dependency_detection"
+        threshold: 0
+        description: "Zero circular dependencies between worlds"
+      - gate: "interface_stability"
+        threshold: 100
+        description: "Stable interface contracts maintained"
+    audit_script: "audits/audit-component-boundary.sh.ggen"
+
+  strict:
+    name: "Strict Boundary Enforcement Feature"
+    description: "Opt-in stricter compile-time and audit-time boundary validation gates."
+    dependencies: []
+    enabled_derives: []
+    activation_rule: "Explicitly enabled in CI/CD or release builds for heightened validation"
+    activation_scope: "Local crate; does not affect workspace-wide unification"
+    enforcement_rules:
+      - "Require 100% explicit #[cfg] feature gating on all tool-dependent derives"
+      - "Forbid implicit feature activation through transitive dependencies"
+      - "Validate that no execution engine code is reachable through feature combinations"
+      - "Enforce strict naming conventions (forbidden projection names forbidden absolutely)"
+      - "Require explicit witness-key mapping for all witness markers in evidence payloads"
+      - "Audit proof tokens; forbid forgery of soundness proofs or seals"
+    compliance_gates:
+      - gate: "strict_feature_isolation"
+        threshold: 100
+        description: "Features must not leak tool dependencies into dependent crates"
+      - gate: "no_transitive_tool_smuggling"
+        threshold: 0
+        description: "Transitive dependencies cannot bring execution engines"
+    audit_script: "audits/audit-strict-boundary-enforcement.sh.ggen"
+
+  wasm4pm:
+    name: "Graduation Bridge to wasm4pm Execution"
+    description: "Bridge feature enabling graduation candidates and receipt types targeting wasm4pm execution engine downstream."
+    dependencies: []
+    enabled_derives:
+      - serde::Serialize
+      - serde::Deserialize
+    activation_rule: "Activated by wasm4pm engine at link time to consume graduation contracts"
+    activation_scope: "Workspace-level; downstream engine signals graduation readiness"
+    graduation_rules:
+      - "GraduationCandidate must carry non-empty subject_id and evidence_ref"
+      - "All graduation candidates must be grounded (is_grounded() = true)"
+      - "Receipt types must include blake3 hash, timestamp-ns, and produced_by fields"
+      - "No graduated types re-exported to other projections (TS, WASM, Component)"
+    module_allowlist:
+      - receipt
+      - graduation
+    compliance_gates:
+      - gate: "graduation_groundedness"
+        threshold: 100
+        description: "All graduates must pass is_grounded() validation"
+      - gate: "receipt_completeness"
+        threshold: 100
+        description: "All receipts must have required fields"
+    audit_script: "audits/audit-graduation-readiness.sh.ggen"
+
+---
+
+## Feature Unification Effects & Warnings
+
+unification_doctrine: "Cargo features are unified globally across the entire build graph. Enabling a feature in any downstream crate enables it for the entire workspace."
+
+effects:
+  - effect_id: "workspace_unification"
+    trigger: "Enabling 'ts' or 'wasm' in any workspace member"
+    consequence:
+      - "All workspace members inherit tsify, wasm-bindgen, specta, serde dependencies"
+      - "All crates must remain correct under feature-enabled builds"
+      - "Core algorithms cannot depend on feature enablement (must stay correct for all combinations)"
+    mitigation:
+      - "Use #[cfg(feature = '...')] to guard feature-dependent code strictly"
+      - "Test core algorithms with all feature combinations (via matrix CI)"
+      - "Maintain invariant: features add only serialization, never change logic"
+
+  - effect_id: "transitive_dependency_inheritance"
+    trigger: "Feature dependencies are inherited transitively"
+    consequence:
+      - "Optional dependencies must only add serialization derives"
+      - "Execution engines must NEVER be optional dependencies"
+      - "Tool smuggling prevents graduation and breaks warranty"
+    mitigation:
+      - "Audit all transitive dependencies in feature closure"
+      - "Run audit-no-engine-in-ts-feature and audit-no-engine-in-wasm-feature"
+
+---
+
+## Refusal Protocol: Tool Smuggling Detection
+
+rule_id: "tool-smuggling-into-compat"
+
+trigger_conditions:
+  - "Feature 'ts' or 'wasm' imports discovery, replay, conformance, OCPQ, or benchmark-execution modules"
+  - "Execution engine code reachable through feature-gated imports"
+  - "Forbidden tool present in dependency closure: eval, Function constructor, process.exit, child_process"
+
+refusal_action:
+  code: "ERR_TOOL_SMUGGLING_INTO_COMPAT"
+  severity: "FATAL"
+  message: "Tool smuggling detected: Execution engines belong downstream in wasm4pm; compat is strictly structure-only."
+  remedy:
+    - "Remove execution engine imports from feature-gated code"
+    - "Delete optional dependency on any execution tool"
+    - "Refactor downstream boundary: move execution logic to wasm4pm crate"
+    - "Re-run audit-no-engine-in-feature.sh to confirm remediation"
+
+---
+
+## Compliance Checklist
+
+compliance:
+  standards:
+    - "ISO-IEC-23894:2024 (AI risk management for process autonomy)"
+    - "board-admissible (governance framework)"
+    - "WebAssembly spec (wasm feature)"
+    - "WASI spec (component world imports)"
+  evidence_backing:
+    - "Cargo feature map (cargo-feature-map.yaml)"
+    - "Projectable type ledger (projectable-type-ledger.yaml)"
+    - "Non-projectable type ledger (non-projectable-type-ledger.yaml)"
+    - "Allowed projection surfaces (allowed-projection-surfaces.yaml)"
+  immutability: true
+  audit_frequency: "On every feature change; on every dependency update"
+
+---
+
+## Receipt & Versioning
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "../receipts/feature-law-receipt.json"
+
+version_history:
+  - version: "1.0.0"
+    date: "2026-06-01"
+    status: "MANUFACTURED"
+    description: "Initial feature law specification with all 6 features fully defined"
+
+---
+
+## Summary Statement
+
+**ggen Feature Governance Law** defines 6 features controlling Cargo derives and optional dependencies in wasm4pm-compat:
+
+1. **default**: Core compatibility; no tools
+2. **ts**: Specta-based TypeScript projection for browsers
+3. **wasm**: ABI-safe WebAssembly bindings with JavaScript FFI
+4. **component**: WebAssembly Component Model (WIT worlds)
+5. **strict**: Stricter compile-time and audit-time validation
+6. **wasm4pm**: Graduation bridge to execution engine
+
+All features follow the doctrine: **Features add derives and dependencies only. No features enable execution engines. No tool smuggling.**
+
+Cargo feature unification applies globally; all features are tested in all combinations. Core algorithms remain correct regardless of feature enablement.
+
+**Status: MANUFACTURED — Ready for cargo-make integration and audit enforcement.**

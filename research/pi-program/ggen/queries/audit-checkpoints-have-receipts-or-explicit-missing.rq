@@ -1,0 +1,18 @@
+# Audit Query: Checkpoints Have Receipts or Explicit Missing Declaration
+# ASSERT: ALIVE/PARTIAL checkpoints have cryptographic receipts or documented gaps
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+
+ASK {
+  ?checkpoint a ggen:Checkpoint .
+  ?checkpoint ggen:verdict ?verdict .
+  FILTER (?verdict IN (ggen:Alive, ggen:Partial))
+  FILTER NOT EXISTS {
+    ?checkpoint ggen:receipt ?receipt .
+    ?receipt a ggen:Receipt .
+  }
+  FILTER NOT EXISTS {
+    ?checkpoint ggen:declaredGaps ?gap .
+    ?gap a ggen:DocumentedGap .
+  }
+}

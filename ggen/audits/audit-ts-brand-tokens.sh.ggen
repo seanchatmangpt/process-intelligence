@@ -1,0 +1,227 @@
+#!/usr/bin/env bash
+# Audit: TypeScript Brand Token Consistency
+# Authority: ggen/rules/ts-projection-law.yaml (brand_token_rules section)
+# Purpose: Verify that witness markers and evidence states project as branded enums,
+#          not raw strings or untyped values
+
+set -euo pipefail
+
+# Configuration
+TS_OUTPUT_DIR="{{ ts_output_dir | default(value='generated') }}"
+TS_PATTERN="{{ ts_pattern | default(value='*.ts') }}"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+audit_log=""
+failures=0
+warnings=0
+
+log_info() {
+  echo -e "${GREEN}[INFO]${NC} $1"
+  audit_log+=$'  INFO: '"$1"$'\n'
+}
+
+log_warn() {
+  echo -e "${YELLOW}[WARN]${NC} $1"
+  audit_log+=$'  WARN: '"$1"$'\n'
+  ((warnings++))
+}
+
+log_fail() {
+  echo -e "${RED}[FAIL]${NC} $1"
+  audit_log+=$'  FAIL: '"$1"$'\n'
+  ((failures++))
+}
+
+if [ ! -d "$TS_OUTPUT_DIR" ]; then
+  log_fail "TypeScript output directory not found: $TS_OUTPUT_DIR"
+  exit 1
+fi
+
+log_info "=== TypeScript Brand Token Audit ==="
+log_info "Output Directory: $TS_OUTPUT_DIR"
+
+# =============================================================================
+# GATE 1: Witness Key Enum vs String Detection
+# =============================================================================
+
+log_info "GATE 1: Detecting Witness Markers as Raw Strings"
+
+witness_string_violations=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Look for witness fields with string type (should be WitnessKey enum)
+  if grep -n "witness_tag.*: string\|witness.*: \"Raw\"\|witness.*: \"Admitted\"\|witness.*: \"Ocel\|witness.*: \"Xes\|witness.*: \"WfNet\|witness.*: \"Strict" "$ts_file" > /dev/null; then
+    log_fail "  Witness marker as raw string in $ts_file"
+    grep -n "witness.*string\|witness.*:.*\"" "$ts_file" | while read -r line; do
+      log_fail "    $line"
+    done
+    witness_string_violations=$((witness_string_violations + 1))
+  fi
+done
+
+if [ $witness_string_violations -eq 0 ]; then
+  log_info "  ✓ No witness markers projected as raw strings"
+else
+  log_fail "  Found $witness_string_violations file(s) with string witness markers"
+  ((failures++))
+fi
+
+# =============================================================================
+# GATE 2: Evidence State Enum vs String Detection
+# =============================================================================
+
+log_info "GATE 2: Detecting Evidence States as Raw Strings"
+
+state_string_violations=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Look for state_tag fields with string type (should be EvidenceState enum)
+  if grep -n "state_tag.*: string" "$ts_file" > /dev/null; then
+    log_fail "  Evidence state as raw string in $ts_file"
+    grep -n "state_tag.*: string" "$ts_file" | while read -r line; do
+      log_fail "    $line"
+    done
+    state_string_violations=$((state_string_violations + 1))
+  fi
+done
+
+if [ $state_string_violations -eq 0 ]; then
+  log_info "  ✓ No evidence states projected as raw strings"
+else
+  log_fail "  Found $state_string_violations file(s) with string state markers"
+  ((failures++))
+fi
+
+# =============================================================================
+# GATE 3: WitnessKey Enum Type Verification
+# =============================================================================
+
+log_info "GATE 3: Verifying WitnessKey Enum Type Definition"
+
+witness_enum_found=false
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  if grep -q "enum WitnessKey\|type WitnessKey\|export.*WitnessKey" "$ts_file"; then
+    witness_enum_found=true
+    log_info "  ✓ WitnessKey enum/type found in $ts_file"
+
+    # Verify enum has string union type or enum variants
+    if grep -A 10 "type WitnessKey\|enum WitnessKey" "$ts_file" | grep -q "string\|Raw\|Admitted\|Ocel"; then
+      log_info "    ✓ WitnessKey has enum variants"
+    else
+      log_warn "    ✗ WitnessKey enum structure unclear"
+    fi
+  fi
+done
+
+if [ "$witness_enum_found" = false ]; then
+  log_fail "  WitnessKey enum type not found"
+  ((failures++))
+fi
+
+# =============================================================================
+# GATE 4: EvidenceState Enum Type Verification
+# =============================================================================
+
+log_info "GATE 4: Verifying EvidenceState Enum Type Definition"
+
+state_enum_found=false
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  if grep -q "enum EvidenceState\|type EvidenceState\|export.*EvidenceState" "$ts_file"; then
+    state_enum_found=true
+    log_info "  ✓ EvidenceState enum/type found in $ts_file"
+
+    # Verify enum has string union type or enum variants
+    if grep -A 10 "type EvidenceState\|enum EvidenceState" "$ts_file" | grep -q "string\|Raw\|Admitted\|Receipted"; then
+      log_info "    ✓ EvidenceState has enum variants"
+    else
+      log_warn "    ✗ EvidenceState enum structure unclear"
+    fi
+  fi
+done
+
+if [ "$state_enum_found" = false ]; then
+  log_fail "  EvidenceState enum type not found"
+  ((failures++))
+fi
+
+# =============================================================================
+# GATE 5: Branded Field Type Consistency
+# =============================================================================
+
+log_info "GATE 5: Verifying Branded Field Type Consistency"
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # For DTOs, witness_tag and state_tag should be enum types
+  if grep -q "interface.*Dto\|type.*Dto" "$ts_file"; then
+    log_info "  Checking DTO file: $(basename "$ts_file")"
+
+    if grep -A 20 "interface.*Dto\|type.*Dto" "$ts_file" | grep -q "witness_tag"; then
+      if grep -A 20 "interface.*Dto\|type.*Dto" "$ts_file" | grep "witness_tag" | grep -v ": WitnessKey\|: string" > /dev/null; then
+        log_fail "    witness_tag has unexpected type"
+      else
+        log_info "    ✓ witness_tag has correct type"
+      fi
+    fi
+
+    if grep -A 20 "interface.*Dto\|type.*Dto" "$ts_file" | grep -q "state_tag"; then
+      if grep -A 20 "interface.*Dto\|type.*Dto" "$ts_file" | grep "state_tag" | grep -v ": EvidenceState\|: string" > /dev/null; then
+        log_fail "    state_tag has unexpected type"
+      else
+        log_info "    ✓ state_tag has correct type"
+      fi
+    fi
+  fi
+done
+
+# =============================================================================
+# GATE 6: Witness Marker Lattice Ordering
+# =============================================================================
+
+log_info "GATE 6: Verifying Witness Marker Lattice (Optional)"
+
+# Note: This is a type-system check; TypeScript doesn't enforce lattice ordering at runtime
+# We check that the enum declaration includes all expected variants in order
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  if grep -q "enum WitnessKey\|type WitnessKey" "$ts_file"; then
+    log_info "  Checking witness lattice in $(basename "$ts_file")"
+
+    # Extract witness variants and verify they exist
+    witness_variants=("Raw" "Admitted" "Ocel20" "Xes1849" "WfNetSoundness" "Strict")
+    for variant in "${witness_variants[@]}"; do
+      if grep -A 15 "WitnessKey" "$ts_file" | grep -q "\"$variant\"\|'$variant'\|$variant,"; then
+        log_info "    ✓ Variant: $variant"
+      else
+        log_warn "    ✗ Variant missing: $variant"
+      fi
+    done
+  fi
+done
+
+# =============================================================================
+# Summary & Exit Code
+# =============================================================================
+
+echo ""
+log_info "=== Audit Summary ==="
+log_info "Failures: $failures"
+log_info "Warnings: $warnings"
+
+if [ $failures -eq 0 ]; then
+  log_info "✓ All brand token gates PASSED"
+  echo ""
+  echo "$audit_log"
+  exit 0
+else
+  log_fail "✗ Brand token audit FAILED with $failures error(s)"
+  echo ""
+  echo "$audit_log"
+  exit 1
+fi

@@ -1,0 +1,151 @@
+# Remediation Plan — GGen Unified Run Correction Path
+
+**Generated:** {{ generated_at }}
+**Run ID:** {{ run.run_id }}
+**Program:** {{ run.program_name }}
+
+## Overview
+
+This document specifies all remediation actions required to transition from current state ({{ current_state }}) to ALIVE checkpoint.
+
+**Total Remediations Required:** {{ remediations | length }}
+**Estimated Effort:** {{ total_estimated_hours }}h
+**Critical Path Gates:** {{ critical_path_gates | length }}
+
+---
+
+## Critical Path Analysis
+
+{% if critical_path_gates %}
+### Blocking Gates (Must Be Fixed First)
+
+{% for gate in critical_path_gates %}
+1. **{{ gate.gate_name }}**
+   - Artifact: {{ gate.artifact_name }}
+   - Failure: {{ gate.primary_failure }}
+   - Impact: {{ gate.impact }}
+   - Blocking: {{ gate.gates_blocked_count }} downstream gate(s)
+
+{% endfor %}
+
+**Critical Path Duration:** {{ critical_path_duration }}h
+
+{% endif %}
+
+---
+
+## Detailed Remediation Actions
+
+{% for remediation in remediations %}
+### Remediation {{ loop.index }}: {{ remediation.title }}
+
+**Priority:** {{ remediation.priority }}
+**Status:** {{ remediation.status }}
+**Estimated Hours:** {{ remediation.estimated_hours }}h
+
+#### Scope
+
+- **Artifacts Affected:** {{ remediation.artifacts_affected | length }}
+- **Gates Resolved:** {{ remediation.gates_resolved | length }}
+- **Rules Modified:** {{ remediation.rules_modified | length }}
+
+#### Problem Statement
+
+{{ remediation.problem_statement }}
+
+#### Root Cause
+
+**Primary Cause:** {{ remediation.root_cause.primary }}
+
+{% if remediation.root_cause.contributing %}
+**Contributing Factors:**
+{% for factor in remediation.root_cause.contributing %}
+- {{ factor }}
+{% endfor %}
+{% endif %}
+
+#### Solution Approach
+
+{% for step in remediation.solution_steps %}
+{{ loop.index }}. {{ step.description }}
+   - File(s): {{ step.files | join(", ") }}
+   - Validation: {{ step.validation_method }}
+   - Est. Time: {{ step.estimated_time }}min
+
+{% endfor %}
+
+#### Success Criteria
+
+{% for criterion in remediation.success_criteria %}
+- [ ] {{ criterion }}
+{% endfor %}
+
+#### Validation Evidence
+
+- **Gate to Verify:** {{ remediation.verification.gate }}
+- **Conformance Check:** {{ remediation.verification.conformance_check }}
+- **Event Log Inspection:** {{ remediation.verification.event_log_check }}
+
+#### Rollback Plan
+
+If remediation fails:
+
+{{ remediation.rollback_procedure }}
+
+#### Dependencies
+
+{% if remediation.depends_on %}
+Requires completion of: {{ remediation.depends_on | join(", ") }}
+{% else %}
+No upstream dependencies.
+{% endif %}
+
+#### Post-Remediation Validation
+
+```
+{% for test in remediation.validation_tests %}
+{{ test }}
+{% endfor %}
+```
+
+---
+
+{% endfor %}
+
+## Summary by Priority
+
+| Priority | Count | Total Hours | Status |
+|----------|-------|-------------|--------|
+{% for summary in priority_summary %}
+| {{ summary.priority }} | {{ summary.count }} | {{ summary.total_hours }}h | {{ summary.status }} |
+{% endfor %}
+
+## Execution Order
+
+```mermaid
+graph TD
+{% for remediation in remediations %}
+    R{{ loop.index }}["{{ remediation.title }}"]
+{% if remediation.depends_on %}
+{% for dep in remediation.depends_on %}
+    R{{ dep }} --> R{{ loop.index0 }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+```
+
+## Checkpoint Milestones
+
+| Milestone | Remediations Completed | Expected State | Target Date |
+|-----------|------------------------|-----------------|------------|
+{% for milestone in milestones %}
+| {{ milestone.name }} | {{ milestone.remediations_count }}/{{ remediations | length }} | {{ milestone.expected_state }} | {{ milestone.target_date }} |
+{% endfor %}
+
+## Sign-Off
+
+- **Prepared By:** {{ prepared_by }}
+- **Reviewed By:** {{ reviewed_by }}
+- **Target ALIVE Checkpoint:** {{ target_checkpoint }}
+
+**This plan is binding. All remediations must be completed for ALIVE verdict.**

@@ -1,0 +1,85 @@
+model: Telemetry Schema URL Version Model
+description: Schema translation definition format used by Weaver to manage transformations, deprecations, and renames across versioned Schema URLs.
+nominal_category_clarification:
+  feedstock_migration: "Schema URL versioning enables historical feedstock (telemetry emitted under older schemas) to be mapped and translated dynamically to contemporary contracts, preserving comparability in the court (process consequence analysis)."
+
+file_metadata:
+  file_extension: .yaml
+  canonical_example_filename: schema.yaml
+  root_fields:
+    - name: file_format
+      type: string
+      required: true
+      description: The version of the telemetry schema file format itself (typically '1.0.0').
+    - name: schema_url
+      type: string
+      required: true
+      description: The target schema URL identifying the latest schema version in this file.
+    - name: versions
+      type: map
+      required: true
+      description: A map of individual schema versions to their respective changes and updates.
+
+version_definition:
+  properties:
+    - name: changes
+      type: array
+      required: false
+      description: A sequence of transformations applied to the telemetry schemas in this version.
+      items:
+        type: object
+        properties:
+          - name: rename_attributes
+            type: object
+            description: Maps old attribute keys to new attribute keys.
+            properties:
+              - name: attribute_map
+                type: map (string -> string)
+                example:
+                  old.attribute.name: new.attribute.name
+          - name: rename_metrics
+            type: array
+            description: Renames specific metric names.
+            items:
+              type: object
+              properties:
+                - name: from
+                  type: string
+                  required: true
+                - name: to
+                  type: string
+                  required: true
+          - name: rename_spans
+            type: array
+            description: Renames specific span names or their child elements.
+            items:
+              type: object
+              properties:
+                - name: from
+                  type: string
+                  required: true
+                - name: to
+                  type: string
+                  required: true
+
+    - name: metrics
+      type: map
+      required: false
+      description: Defines metrics added or updated in this schema version.
+      example:
+        http.client.duration:
+          rename_attributes:
+            from: http.duration
+            to: http.client.duration
+    - name: spans
+      type: map
+      required: false
+      description: Defines spans added or updated in this schema version.
+    - name: logs
+      type: map
+      required: false
+      description: Defines logs and events added or updated in this schema version.
+    - name: resources
+      type: map
+      required: false
+      description: Resource-level attributes introduced or transformed.

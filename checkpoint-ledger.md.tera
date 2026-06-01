@@ -1,0 +1,141 @@
+# Checkpoint Ledger
+
+**Generated:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+**Authority:** Process Intelligence Research Foundry
+
+All checkpoint verdicts are immutable. Checkpoints document milestone achievements and phase transitions.
+
+---
+
+## Checkpoint Summary
+
+| ID | Status | Program | Date | Gates Met | Gates Total | Phase | Authority |
+|-------|--------|---------|------|-----------|-------------|-------|-----------|
+{% for checkpoint in checkpoints | sort(attribute="date") | reverse %}
+| `{{ checkpoint.id }}` | **{{ checkpoint.status }}** | {{ checkpoint.program }} | {{ checkpoint.date }} | {{ checkpoint.gates_met }} | {{ checkpoint.gates_total }} | {{ checkpoint.phase }} | {{ checkpoint.authority }} |
+{% endfor %}
+
+---
+
+## ALIVE Checkpoints
+
+These checkpoints have achieved full-gate closure and canonical verdict status.
+
+{% set alive_cps = checkpoints | filter(attribute="status", value="ALIVE") %}
+{% if alive_cps | length > 0 %}
+{% for checkpoint in alive_cps | sort(attribute="date") | reverse %}
+### {{ checkpoint.id }}
+
+**Date Issued:** {{ checkpoint.date }}
+**Program:** {{ checkpoint.program }}
+**Phase:** {{ checkpoint.phase }}
+
+**Verdict:** ALIVE — All proof gates satisfied.
+
+**Gates Closure:**
+{% for gate in checkpoint.gates %}
+- ✓ {{ gate.name }}: {{ gate.criteria | safe }}
+{% endfor %}
+
+**Authority Statement:**
+> {{ checkpoint.authority_statement | safe }}
+
+**Receipt Hash:** `{{ checkpoint.receipt_hash }}`
+
+---
+{% endfor %}
+{% else %}
+_No ALIVE checkpoints yet._
+{% endif %}
+
+---
+
+## PARTIAL Checkpoints
+
+These checkpoints have achieved provisional status with documented gaps. Evidence supports gates, but gaps remain open.
+
+{% set partial_cps = checkpoints | filter(attribute="status", value="PARTIAL") %}
+{% if partial_cps | length > 0 %}
+{% for checkpoint in partial_cps | sort(attribute="date") | reverse %}
+### {{ checkpoint.id }}
+
+**Date Issued:** {{ checkpoint.date }}
+**Program:** {{ checkpoint.program }}
+**Phase:** {{ checkpoint.phase }}
+
+**Verdict:** PARTIAL — {{ checkpoint.gates_met }}/{{ checkpoint.gates_total }} gates closed. {{ checkpoint.gates_total - checkpoint.gates_met }} gates remain open.
+
+**Gates Status:**
+{% for gate in checkpoint.gates %}
+- {% if gate.status == "CLOSED" %}✓{% else %}✗{% endif %} {{ gate.name }}: {{ gate.status }}
+{% endfor %}
+
+**Open Gates:**
+{% for gap in checkpoint.open_gaps %}
+- `{{ gap.id }}` — {{ gap.description | safe }}
+{% endfor %}
+
+**Authority Statement:**
+> {{ checkpoint.authority_statement | safe }}
+
+**Receipt Hash:** `{{ checkpoint.receipt_hash }}`
+
+---
+{% endfor %}
+{% else %}
+_No PARTIAL checkpoints yet._
+{% endif %}
+
+---
+
+## FAILED Checkpoints
+
+These checkpoints documented failed proof gate closures. Failures documented here are permanent; remediation requires new checkpoint issuance.
+
+{% set failed_cps = checkpoints | filter(attribute="status", value="FAILED") %}
+{% if failed_cps | length > 0 %}
+{% for checkpoint in failed_cps | sort(attribute="date") | reverse %}
+### {{ checkpoint.id }}
+
+**Date Issued:** {{ checkpoint.date }}
+**Program:** {{ checkpoint.program }}
+**Phase:** {{ checkpoint.phase }}
+
+**Verdict:** FAILED — Proof gates not satisfied.
+
+**Failed Gates:**
+{% for gate in checkpoint.gates %}
+{% if gate.status == "FAILED" %}
+- ✗ {{ gate.name }}: {{ gate.failure_reason | safe }}
+{% endif %}
+{% endfor %}
+
+**Root Cause:**
+> {{ checkpoint.failure_root_cause | safe }}
+
+**Remediation Path:**
+- Required Actions: {{ checkpoint.remediation_actions | join(", ") }}
+- Next Checkpoint Target: {{ checkpoint.next_checkpoint_target }}
+
+**Receipt Hash:** `{{ checkpoint.receipt_hash }}`
+
+---
+{% endfor %}
+{% else %}
+_No FAILED checkpoints yet._
+{% endif %}
+
+---
+
+## Checkpoint Statistics
+
+- **Total Checkpoints:** {{ checkpoints | length }}
+- **ALIVE Checkpoints:** {{ checkpoints | filter(attribute="status", value="ALIVE") | length }}
+- **PARTIAL Checkpoints:** {{ checkpoints | filter(attribute="status", value="PARTIAL") | length }}
+- **FAILED Checkpoints:** {{ checkpoints | filter(attribute="status", value="FAILED") | length }}
+
+**Latest Milestone:** {{ checkpoints | sort(attribute="date") | reverse | first.id }} ({{ checkpoints | sort(attribute="date") | reverse | first.status }})
+
+---
+
+**Immutability Notice:** All checkpoint verdicts are permanent. No rewriting, rebasing, or revocation. New checkpoints add to the ledger; they do not replace prior verdicts.

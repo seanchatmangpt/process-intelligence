@@ -1,0 +1,336 @@
+# Failed Gate Ledger
+# Process Intelligence Program — Blocking Violations & Remediations
+# Authority: Research Foundry (PROCESS_INTELLIGENCE_ALIVE_001)
+# Generated: 2026-06-01
+# Source: audit-results.yaml + gaps/
+
+failed_gates:
+  total: 2
+  blocking: 1
+  non_blocking: 1
+  verdict: "PARTIAL"
+
+gates:
+
+  audit_005_no_dto_flattening:
+    # PRIMARY BLOCKING GATE
+    name: "No DTO Flattening"
+    status: "FAIL"
+    severity: "CRITICAL"
+    blocking: true
+    audit_framework: "12-Gate Van der Aalst Chicago TDD"
+    audit_date: "2026-05-31"
+
+    description: >
+      Compatibility layer (wasm4pm-compat) public API must not collapse
+      Evidence<T, State, Witness> type structure into untyped JSON strings
+      without boundary classification. This violates the one-way lifecycle
+      law: Raw→Parsed→Admitted→{Projected|Exportable|Receipted}.
+
+    law_citations:
+      - "doctrine/EVIDENCE_CHAIN.md: Evidence lifecycle principle"
+      - "doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md: Graduation separation"
+      - "sources/wasm4pm-compat/ggen/rules/forbidden-collapse-law.ttl: DTO boundary"
+      - "project-registry.ttl: pi:FORBIDDEN_COLLAPSE class definition"
+
+    violation_count: 2
+    violations:
+      violation_1:
+        location: "sources/wasm4pm-compat/compat/src/manufacturing/traits.rs"
+        method: "receipt_json() → String"
+        line_range: "TBD (requires source inspection)"
+        severity: "CRITICAL"
+        description: >
+          Public method returns JSON serialization without Evidence<T, State, Witness> wrapper.
+          Caller receives opaque string, losing lifecycle state and witness lattice semantics.
+        impact: >
+          Type-law guarantees broken at API boundary. Downstream systems cannot verify
+          that JSON payload is properly Admitted/Receipted/Projected.
+        remediation_class: "BOUNDARY_LAW_VIOLATION"
+        fix_strategy: "Remove from compat public API; move to wasm4pm engine only"
+
+      violation_2:
+        location: "sources/wasm4pm-compat/compat/src/manufacturing/mod.rs"
+        method: "to_json_string() → String"
+        line_range: "TBD (requires source inspection)"
+        severity: "CRITICAL"
+        description: >
+          Manufacturing state serialized to JSON string without type law wrapper.
+          Collapses typed Evidence hierarchy into primitive String.
+        impact: >
+          Manufacturing state machine loses typestate guarantees. No compile-time
+          verification that state transitions are lawful.
+        remediation_class: "BOUNDARY_LAW_VIOLATION"
+        fix_strategy: "Replace String return with Evidence<T, State, Witness> bindings"
+
+    remediation_plan:
+      owner_project: "wasm4pm-compat"
+      owner_team: "wasm4pm-compat maintenance team"
+      blocking: true
+      blocks_downstream:
+        - "Board-admissible M&A claim manufacturing (depends on compat type safety)"
+        - "Any system directly calling receipt_json() or to_json_string()"
+        - "Type-law enforcement in downstream wasm4pm integrations"
+
+      steps:
+        step_1:
+          title: "Identify JSON dependencies"
+          description: "Find all callers of receipt_json() and to_json_string() in codebase"
+          effort: "1 hour"
+          tools: "grep, LSP findReferences"
+
+        step_2:
+          title: "Move JSON serialization to wasm4pm engine"
+          description: >
+            Create new JSON serialization functions in wasm4pm/src/manufacturing/json.rs
+            that accept Evidence<T, State, Witness> and return JSON-serializable wrapper types.
+          effort: "2 hours"
+          constraints: "Must maintain backward compatibility for non-public APIs"
+
+        step_3:
+          title: "Replace compat public API"
+          description: >
+            Update wasm4pm-compat manufacturing/traits.rs and mod.rs to remove
+            receipt_json() and to_json_string(). Replace with structured
+            Evidence<T, State, Witness> bindings.
+          effort: "1 hour"
+          enforcement: "Sealed trait pattern to prevent public String leakage"
+
+        step_4:
+          title: "Create audit script"
+          description: "Add audit-no-json-in-compat.sh.ggen to enforce no JSON in compat public API"
+          effort: "0.5 hours"
+          location: "sources/wasm4pm-compat/ggen/audits/audit-no-json-in-compat.sh.ggen"
+
+      total_effort: "4 hours"
+      estimated_completion: "2026-06-02 (next business day)"
+
+      verification_checklist:
+        - "[ ] All callers of removed methods identified and updated"
+        - "[ ] New JSON functions in wasm4pm pass all tests"
+        - "[ ] compat public API contains no String-returning methods related to receipts/manufacturing"
+        - "[ ] audit-no-json-in-compat.sh.ggen passes (0 violations)"
+        - "[ ] wasm4pm-compat compile-pass/fail fixtures all pass"
+        - "[ ] ALIVE_002 recertification audit passes"
+
+    impact_analysis:
+      projects_affected: 1
+      severity_distribution:
+        critical: 2
+        high: 0
+        medium: 0
+      blocking_downstream: true
+      blocks:
+        - "PROCESS_INTELLIGENCE_ALIVE_002 (recertification)"
+        - "Full board-admissible claim manufacturing"
+        - "Production wasm4pm-compat deployments"
+      does_not_block:
+        - "PROCESS_INTELLIGENCE_ALIVE_001 (already issued)"
+        - "wasm4pm engine execution"
+        - "ggen manufacturing pipeline (can work around via wasm4pm JSON layer)"
+      recommendation: "High priority; allocate 4 hours for immediate remediation"
+
+  audit_012_remediation_routed:
+    # SECONDARY NON-BLOCKING GATE
+    name: "Remediation Routed"
+    status: "FAIL"
+    severity: "HIGH"
+    blocking: false
+    audit_framework: "12-Gate Van der Aalst Chicago TDD"
+    audit_date: "2026-05-31"
+
+    description: >
+      Every failed gate must have an owner project and explicit remediation class.
+      This audit failed because audit_012 itself (meta-audit routing) has no
+      explicit routing assignment in the gaps/ directory.
+
+    violation_count: 1
+    violations:
+      violation_1:
+        gate_name: "audit_012_remediation_routed (THIS AUDIT)"
+        issue_type: "META_AUDIT_ROUTING"
+        description: >
+          audit_005 remediation is properly routed (owner=wasm4pm-compat,
+          class=BOUNDARY_LAW_VIOLATION, effort=4h). However, audit_012 itself
+          (the routing audit) has no owner assignment in gaps/GAP_REGISTER.md.
+        impact: >
+          Minor process gap: no explicit owner for meta-audit routing clarification.
+          Does not block remediation of audit_005.
+        remediation_class: "META_AUDIT_ROUTING"
+        fix_strategy: "Add explicit routing law document"
+
+    remediation_plan:
+      owner_project: "Process Intelligence Program Authority"
+      owner_team: "Research Foundry (unassigned — meta-task)"
+      blocking: false
+      blocks_downstream: false
+
+      steps:
+        step_1:
+          title: "Create audit-routing-law.yaml"
+          description: >
+            Define routing rules for meta-audit failures (audit-audit interactions).
+            Establish that meta-audit failures are advisory only, not blocking.
+          effort: "1 hour"
+          location: "gaps/audit-routing-law.yaml"
+          schema:
+            - "meta_audit_name: string"
+            - "remediation_class: enum(META_AUDIT_ROUTING|META_PROCESS_GAP|DOCUMENTATION)"
+            - "blocking: boolean (false for all meta-audits)"
+            - "owner: program_authority_string"
+
+        step_2:
+          title: "Update gaps/GAP_REGISTER.md"
+          description: >
+            Add entry: GAP_003_META_AUDIT_ROUTING
+            Status: RESOLVED (via audit-routing-law.yaml)
+            Severity: LOW
+          effort: "0.5 hours"
+
+        step_3:
+          title: "Document in checkpoint addendum"
+          description: >
+            Add addendum to PROCESS_INTELLIGENCE_ALIVE_001 explaining that
+            audit_012 failure is meta-audit only and non-blocking.
+          effort: "0.5 hours"
+
+      total_effort: "2 hours"
+      estimated_completion: "2026-06-02 (same day as audit_005 remediation)"
+
+      verification_checklist:
+        - "[ ] audit-routing-law.yaml created and syntactically valid"
+        - "[ ] GAP_003 added to GAP_REGISTER.md"
+        - "[ ] Checkpoint addendum documents non-blocking nature"
+        - "[ ] No new blocking violations introduced"
+
+open_gaps:
+  count: 2
+  blocking: 1
+
+  gaps:
+    gap_001:
+      id: "GAP_001_COMPAT_WASM_BRIDGE"
+      title: "DTO Flattening in wasm4pm-compat"
+      status: "OPEN"
+      severity: "CRITICAL"
+      blocking: true
+      related_audit: "audit_005_no_dto_flattening"
+      location: "gaps/GAP_001_COMPAT_WASM_BRIDGE.md"
+      description: >
+        JSON serialization in compat violates Evidence<T, State, Witness> boundary.
+        Remediation routed to wasm4pm-compat team, 4 hours effort.
+      remediation_class: "BOUNDARY_LAW_VIOLATION"
+      remediation_owner: "wasm4pm-compat maintenance team"
+      priority: "IMMEDIATE"
+      depends_on: "None"
+      blocks:
+        - "PROCESS_INTELLIGENCE_ALIVE_002 recertification"
+        - "Board-admissible M&A claim manufacturing"
+      target_resolution: "2026-06-02"
+
+    gap_002:
+      id: "GAP_002_OR_JOIN_AMBIGUITY"
+      title: "BPMN OR-join Completion Semantics"
+      status: "OPEN"
+      severity: "MEDIUM"
+      blocking: false
+      related_audit: "None (documented gap from phase 10)"
+      location: "gaps/GAP_002_OR_JOIN_AMBIGUITY.md"
+      description: >
+        BPMN OR-join quorum completion semantics are ambiguous in pm4py and
+        wasm4pm. Requires formal definition per van der Aalst OR-join semantics.
+      remediation_class: "SEMANTIC_AMBIGUITY"
+      remediation_owner: "wasm4pm research team (unassigned)"
+      priority: "MEDIUM"
+      depends_on: "None"
+      blocks:
+        - "Conformance claims for BPMN processes with OR-joins"
+      target_resolution: "2026-06-15"
+
+    gap_003:
+      id: "GAP_003_META_AUDIT_ROUTING"
+      title: "Meta-Audit Routing Documentation"
+      status: "PROPOSED"
+      severity: "LOW"
+      blocking: false
+      related_audit: "audit_012_remediation_routed"
+      location: "gaps/audit-routing-law.yaml (to be created)"
+      description: >
+        Audit meta-interactions (audit-audit routing) require explicit documentation.
+        Non-blocking by definition, but adds process clarity.
+      remediation_class: "META_AUDIT_ROUTING"
+      remediation_owner: "Process Intelligence Program Authority"
+      priority: "LOW"
+      depends_on: "None"
+      blocks: "None"
+      target_resolution: "2026-06-02"
+
+compliance_summary:
+  audit_framework: "12-Gate Van der Aalst Chicago TDD"
+  gates_total: 12
+  gates_passed: 10
+  gates_failed: 2
+
+  gate_breakdown:
+    gate_1_project_registry: "PASS ✓"
+    gate_2_checkpoint_ledger: "PASS ✓"
+    gate_3_no_forced_alive: "PASS ✓"
+    gate_4_no_invalid_ggen: "PASS ✓"
+    gate_5_no_dto_flattening: "FAIL ⚠ (CRITICAL, BLOCKING)"
+    gate_6_no_tool_smuggling: "PASS ✓"
+    gate_7_no_telemetry_as_receipt: "PASS ✓"
+    gate_8_no_realtime_as_evidence: "PASS ✓"
+    gate_9_no_dashboard_truth: "PASS ✓"
+    gate_10_no_client_only_auth: "PASS ✓"
+    gate_11_receipts_present: "PASS ✓"
+    gate_12_remediation_routed: "FAIL ⚠ (HIGH, NON-BLOCKING)"
+
+remediation_roadmap:
+  phase_1:
+    name: "Immediate Remediation (High Priority)"
+    duration: "4-6 hours"
+    target_date: "2026-06-02"
+    tasks:
+      - "audit_005 remediation (4 hours)"
+      - "audit_012 routing documentation (2 hours)"
+    deliverables:
+      - "wasm4pm-compat JSON serialization moved to wasm4pm engine"
+      - "audit-no-json-in-compat.sh.ggen created and passing"
+      - "audit-routing-law.yaml published"
+      - "GAP_003 created in gaps/"
+    unblocks:
+      - "ALIVE_002 recertification"
+      - "Board-admissible manufacturing at scale"
+
+  phase_2:
+    name: "ALIVE_002 Recertification"
+    duration: "2 hours"
+    target_date: "2026-06-02"
+    tasks:
+      - "Re-run 13-gate audit suite"
+      - "Verify zero violations in audit_005 and audit_012"
+      - "Issue PROCESS_INTELLIGENCE_ALIVE_002 checkpoint"
+    deliverables:
+      - "PROCESS_INTELLIGENCE_ALIVE_002 checkpoint (immutable)"
+      - "All 13 gates passed"
+    unblocks:
+      - "Authorized downstream workflows (ggen, OTel, Blue River, ZOEapp)"
+
+  phase_3:
+    name: "Downstream Authorization Wave"
+    duration: "Variable"
+    target_date: "2026-06-03+"
+    tasks:
+      - "Authorize ggen manufacturing pipeline scaling"
+      - "Deploy OTel Weaver production integration"
+      - "Activate Blue River Dam orchestration"
+      - "Rollout ZOEapp full-lifecycle process intelligence"
+    deliverables:
+      - "All downstream workflows authorized and operational"
+      - "Receipt ledger continuously growing"
+
+authority_signatures:
+  research_foundry: "Process Intelligence Research Foundry"
+  audit_framework: "Van der Aalst Chicago TDD (12-gate system)"
+  remediation_authority: "Named owner projects + explicit remediation classes"
+  immutability: "This ledger is immutable. New failures will be appended."

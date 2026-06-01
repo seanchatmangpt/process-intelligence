@@ -1,0 +1,17 @@
+# Selection Query: All Checkpoints
+# Returns all lifecycle checkpoint verdicts (ALIVE, PARTIAL, FAILED)
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT ?checkpoint ?label ?verdict ?timestamp ?criteria ?evidence
+WHERE {
+  ?checkpoint a ggen:Checkpoint .
+  OPTIONAL { ?checkpoint rdfs:label ?label }
+  OPTIONAL { ?checkpoint ggen:verdict ?verdict }
+  OPTIONAL { ?checkpoint dc:issued ?timestamp }
+  OPTIONAL { ?checkpoint ggen:criteria ?criteria }
+  OPTIONAL { ?checkpoint ggen:evidence ?evidence }
+}
+ORDER BY DESC(?timestamp)

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# audit-no-telemetry-equals-process.sh.ggen
+# Verifies that telemetry (feedstock) is never collapsed into or equated directly with process consequence (court).
+# This audit scans codebase and schemas to ensure nominal category boundaries.
+
+set -euo pipefail
+
+echo "=== Running Audit: No Telemetry Equals Process ==="
+echo "Target Source Directory: {{ target_src_dir }}"
+
+# Search for violations where feedstock and court metrics or attributes are conflated
+# E.g., check that feedstock attributes do not contain court/verdict terminology.
+violations=0
+
+echo "Checking schema definitions for nominal category collapse..."
+
+# Check that telemetry feedstock does not contain court/consequence keywords
+if grep -rn "pi.feedstock.*court" "{{ target_src_dir }}"; then
+    echo "FAIL: Conflation of feedstock and court namespaces found!"
+    violations=$((violations + 1))
+fi
+
+if grep -rn "pi.feedstock.*verdict" "{{ target_src_dir }}"; then
+    echo "FAIL: Verdict attribute found inside raw telemetry feedstock namespace!"
+    violations=$((violations + 1))
+fi
+
+# Check that court namespaces do not contain feedstock keywords
+if grep -rn "pi.court.*feedstock" "{{ target_src_dir }}"; then
+    echo "FAIL: Feedstock attribute found inside process consequence court namespace!"
+    violations=$((violations + 1))
+fi
+
+if [ $violations -eq 0 ]; then
+    echo "PASS: Telemetry (feedstock) and Process Consequence (court) are strictly separated."
+    exit 0
+else
+    echo "FAIL: Found $violations violations of the nominal category separation rule."
+    exit 1
+fi

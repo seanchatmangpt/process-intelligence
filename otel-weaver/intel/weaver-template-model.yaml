@@ -1,0 +1,115 @@
+model: Weaver Template Model
+description: Configuration schema for the template rendering engine within OpenTelemetry Weaver, normally declared in `weaver.yaml`.
+nominal_category_clarification:
+  schema_vs_template: "The template configuration maps standard telemetry feedstock structures into target source code artifacts. While feedstock is static data, templates allow projection to various runtime languages."
+
+fields:
+  - name: text_maps
+    type: map
+    required: false
+    description: "Dictionaries that map registry schema data types or keywords to target-specific strings (e.g. mapping schema types to Rust, Go, or Java types)."
+    example:
+      rust_types:
+        int: "i64"
+        double: "f64"
+        boolean: "bool"
+        string: "String"
+        "string[]": "Vec<String>"
+
+  - name: template_syntax
+    type: object
+    required: false
+    description: Customizes the delimiters for the Jinja2 template engine.
+    fields:
+      - name: block_start
+        type: string
+        default: "{%"
+      - name: block_end
+        type: string
+        default: "%}"
+      - name: variable_start
+        type: string
+        default: "{{"
+      - name: variable_end
+        type: string
+        default: "}}"
+      - name: comment_start
+        type: string
+        default: "{#"
+      - name: comment_end
+        type: string
+        default: "#}"
+
+  - name: whitespace_control
+    type: object
+    required: false
+    description: Controls whitespace handling in Jinja2 output.
+    fields:
+      - name: trim_blocks
+        type: boolean
+        default: true
+      - name: lstrip_blocks
+        type: boolean
+        default: true
+      - name: keep_trailing_newline
+        type: boolean
+        default: false
+
+  - name: acronyms
+    type: array
+    required: false
+    description: List of acronyms to preserve or map during word capitalization/casing filters (e.g. 'HTTP', 'IP', 'UUID').
+    items:
+      type: string
+
+  - name: comment_formats
+    type: map
+    required: false
+    description: Defines code comment formats for various file types generated.
+    example:
+      markdown:
+        format: markdown
+        trim: true
+        escape_backslashes: true
+      rust_doc:
+        format: text
+        prefix: "/// "
+        trim: true
+        remove_trailing_dots: false
+        enforce_trailing_dots: true
+
+  - name: params
+    type: map
+    required: false
+    description: Global parameters injected into the Jinja2 context and accessible within filters and expressions.
+    example:
+      owner: "Process Intelligence Group"
+      incubating: true
+
+  - name: templates
+    type: array
+    required: true
+    description: A list of templates that Weaver will execute.
+    items:
+      type: object
+      fields:
+        - name: template
+          type: string
+          required: true
+          description: Relative path to the Jinja2 template file (e.g. 'attributes.rs.j2').
+        - name: filter
+          type: string
+          required: false
+          description: A `jaq` (Rust JQ implementation) query string used to preprocess or filter the resolved registry data structure before passing it to this template.
+          default: "."
+        - name: application_mode
+          type: string
+          required: true
+          description: Mode of template application.
+          enum:
+            - single  # Evaluates the template once for the entire registry (outputs a single file)
+            - each    # Evaluates the template iteratively for each matching group, attribute, or signal (outputs multiple files)
+        - name: output_path
+          type: string
+          required: false
+          description: Target path for the generated file. Supports variable interpolation from JQ results in 'each' mode (e.g., 'src/otel/{{ group.id }}.rs').

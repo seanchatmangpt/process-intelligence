@@ -1,0 +1,63 @@
+# pi-weaver-registry.yaml.ggen
+# OpenTelemetry Weaver Semantic Convention Registry for Process Intelligence
+# Constraints: Nominal categories are preserved.
+# - Telemetry is Feedstock (raw signals ingested from witnesses).
+# - Process Consequence is Court (verdict or execution state of compliance/governance).
+# - Weaver Diffs are not Process Drift (Weaver diffs are structural schema alignment differences; Process Drift is operational execution deviation).
+
+file_format: "1.2.0"
+schema_url: "https://opentelemetry.io/schemas/1.25.0"
+groups:
+  - id: process.telemetry.feedstock
+    prefix: pi.feedstock
+    type: attribute_group
+    brief: "Attributes representing the raw telemetry feedstock captured from witnesses."
+    attributes:
+      - id: witness.id
+        type: string
+        brief: "The unique identifier of the process witness producing telemetry feedstock."
+        examples: ["wit_sys_exec_01", "wit_db_audit_02"]
+      - id: feedstock.source
+        type: string
+        brief: "The source type of the telemetry feedstock."
+        examples: ["ebpf_syscall", "auditd", "application_log"]
+      - id: feedstock.payload_size
+        type: int
+        brief: "The raw payload size in bytes of the incoming feedstock."
+        examples: [1024, 4096]
+
+  - id: process.consequence.court
+    prefix: pi.court
+    type: attribute_group
+    brief: "Attributes representing process consequence and court determinations."
+    attributes:
+      - id: case.id
+        type: string
+        brief: "The judicial or auditing case identifier associated with this process consequence."
+        examples: ["case_2026_q2_compliance_09"]
+      - id: verdict.type
+        type: string
+        brief: "The verdict consequence determined by the process intelligence court."
+        examples: ["compliant", "violation_halt", "escalation_warning"]
+      - id: verdict.severity
+        type: string
+        brief: "The severity level of the court verdict consequence."
+        examples: ["informational", "critical", "blocking"]
+
+  - id: process.drift.weaver.diff
+    prefix: pi.weaver.diff
+    type: attribute_group
+    brief: "Attributes capturing schema metadata differences from Weaver diffs. NOT process drift."
+    attributes:
+      - id: diff.source_version
+        type: string
+        brief: "The starting version of the Weaver schema being compared."
+        examples: ["1.0.0"]
+      - id: diff.target_version
+        type: string
+        brief: "The target version of the Weaver schema being compared."
+        examples: ["1.1.0"]
+      - id: diff.type
+        type: string
+        brief: "The type of Weaver diff (e.g. additive, destructive)."
+        examples: ["schema_addition", "attribute_deprecation"]

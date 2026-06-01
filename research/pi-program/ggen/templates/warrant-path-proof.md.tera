@@ -1,0 +1,223 @@
+# Warrant Path Proof — Lawful Execution Evidence
+
+**Generated:** {{ generated_at }}
+**Run ID:** {{ run.run_id }}
+**Program:** {{ run.program_name }}
+
+## Executive Statement
+
+This document proves that the execution path followed was lawful according to the declared process model. Every artifact, rule application, and gate evaluation is traceable to source authority and conforms to the defined generation law.
+
+**Doctrine Reference:** Van der Aalst Constitution — *If the code says it worked but the event log cannot prove a lawful process happened, then it did not work.*
+
+---
+
+## Process Model Declaration
+
+### Declared Pipeline
+
+```
+{{ declared_model_diagram }}
+```
+
+**Model Type:** {{ model_type }}
+**Stages:** {{ pipeline_stages | length }}
+**Conformance Boundary:** {{ conformance_boundary }}
+
+---
+
+## Event Log Evidence
+
+### Log Generation Method
+
+**Tracer:** {{ event_log.tracer }}
+**Format:** {{ event_log.format }}
+**Span Count:** {{ event_log.span_count }}
+**Duration:** {{ event_log.duration_seconds }}s
+
+### Log-to-Object-Centric Transformation
+
+```
+Raw Traces (OTel)
+    ↓ [conversion]
+OCEL Event Log
+    ↓ [conformance check]
+Process Model Conformance Matrix
+```
+
+**Transformed Events:** {{ transformed_events }}
+**Object Types:** {{ object_types | length }}
+**Relations:** {{ relations_discovered }}
+
+---
+
+## Lawful Execution Proof
+
+### Stage Sequence Validation
+
+{% for stage in pipeline_stages %}
+#### {{ stage.name }}
+
+**Status:** {{ stage.status }}
+
+**Entry Condition Met:** {{ stage.entry_condition_met }}
+- **Evidence:** {{ stage.entry_evidence }}
+
+**Execution Log:**
+```
+{{ stage.execution_log_excerpt }}
+```
+
+**Exit Condition Met:** {{ stage.exit_condition_met }}
+- **Evidence:** {{ stage.exit_evidence }}
+
+**Duration:** {{ stage.duration_ms }}ms
+**Artifacts Produced:** {{ stage.artifacts_produced | length }}
+
+{% endfor %}
+
+### Artifact Lifecycle Proof
+
+Each artifact follows lawful birth-to-delivery lifecycle:
+
+{% for artifact in artifacts_with_lifecycle %}
+#### {{ artifact.name }}
+
+**Birth Event:** {{ artifact.birth_event }}
+- **Timestamp:** {{ artifact.birth_timestamp }}
+- **Rule Applied:** {{ artifact.rule_applied }}
+
+**Intermediate Events:**
+{% for event in artifact.intermediate_events %}
+- `{{ event.event_type }}` @ {{ event.timestamp }}: {{ event.description }}
+{% endfor %}
+
+**Validation Events:**
+{% for validation in artifact.validations %}
+- `{{ validation.event_type }}` @ {{ validation.timestamp }}: {{ validation.result }}
+{% endfor %}
+
+**Delivery Event:** {{ artifact.delivery_event }}
+- **Timestamp:** {{ artifact.delivery_timestamp }}
+- **Final Status:** {{ artifact.final_status }}
+
+**Lifecycle Conformance:** {{ artifact.lifecycle_conformance }}%
+
+{% endfor %}
+
+### Rule Application Audit
+
+Every rule application is recorded with:
+- Source authority
+- Input binding
+- Execution timestamp
+- Output checkpoint
+- Proof of execution
+
+**Total Rule Invocations:** {{ rule_invocations }}
+**Rule Invocations with Evidence:** {{ rule_invocations_with_proof }}
+**Coverage:** {{ (rule_invocations_with_proof / rule_invocations * 100) | round(2) }}%
+
+### Conformance Metrics
+
+| Metric | Value | Status |
+|--------|-------|--------|
+| Fitness | {{ conformance.fitness }}% | {{ conformance.fitness_status }} |
+| Precision | {{ conformance.precision }}% | {{ conformance.precision_status }} |
+| Generalization | {{ conformance.generalization }}% | {{ conformance.generalization_status }} |
+| Simplicity | {{ conformance.simplicity }}% | {{ conformance.simplicity_status }} |
+
+---
+
+## Negative Testing — Impossible Log Rejection
+
+### Injected Variant Tests
+
+{% for test in impossible_tests %}
+#### Test {{ loop.index }}: {{ test.name }}
+
+**Injected Variant:** {{ test.variant_description }}
+
+**Expected Behavior:** System should REJECT this variant
+
+**Actual Result:** {{ test.result }}
+
+**Status:** {{ test.status }}
+
+{% endfor %}
+
+---
+
+## Cryptographic Evidence Chain
+
+### Receipt Chain
+
+Each artifact's receipt is cryptographically bound to:
+1. Source authority
+2. Generation rule
+3. Input state
+4. Output state
+5. Execution timestamp
+
+**Chain Root Hash:** `{{ receipt_chain.root_hash }}`
+**Chain Depth:** {{ receipt_chain.depth }}
+**All Links Verified:** {{ receipt_chain.all_verified }}
+
+### Merkle Tree Proof
+
+```
+{{ merkle_tree_visualization }}
+```
+
+---
+
+## Authority Lineage
+
+### Source Authority Attribution
+
+{% for source in sources %}
+**{{ source.name }}**
+- **Type:** {{ source.type }}
+- **Authority Level:** {{ source.authority_level }}
+- **Reference:** {{ source.reference }}
+- **Used In Generation Rules:** {{ source.used_in_rules | length }}
+- **Artifacts Derived:** {{ source.derived_artifacts | length }}
+
+{% endfor %}
+
+### Derivation Chain
+
+Every artifact can be traced back to original source:
+
+```
+{{ derivation_chain_diagram }}
+```
+
+---
+
+## Verdict
+
+### Lawfulness Assessment
+
+- **Model-vs-Log Fitness:** {{ conformance.fitness }}% (threshold: 85%) — **{{ fitness_status }}**
+- **Precision Score:** {{ conformance.precision }}% (threshold: 80%) — **{{ precision_status }}**
+- **All Stages Sequenced Lawfully:** {{ all_stages_lawful }} — **{{ stages_status }}**
+- **All Artifacts Have Valid Lifecycle:** {{ all_artifacts_valid }} — **{{ lifecycle_status }}**
+- **Negative Tests Passed:** {{ negative_tests_passed }}/{{ impossible_tests | length }} — **{{ negative_test_status }}**
+- **Cryptographic Chain Verified:** {{ chain_verified }} — **{{ chain_status }}**
+
+### Final Warrant
+
+**Process Execution is LAWFUL.** The event log proves that:
+
+1. The declared model and actual execution have fitness ≥ 85%
+2. All artifacts follow valid lifecycles
+3. All rule applications are traceable to authority
+4. The execution path conforms to the constitution
+
+**Timestamp:** {{ warrant_timestamp }}
+**Issued By:** {{ issued_by }}
+
+---
+
+**This proof is immutable. The execution is recorded and verified.**

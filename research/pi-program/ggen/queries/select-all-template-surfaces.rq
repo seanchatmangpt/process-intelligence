@@ -1,0 +1,15 @@
+# Selection Query: All Template Surfaces
+# Returns all template definitions used in artifact manufacturing
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?template ?label ?templateType ?renderEngine ?parameters
+WHERE {
+  ?template a ggen:TemplateSurface .
+  OPTIONAL { ?template rdfs:label ?label }
+  OPTIONAL { ?template ggen:templateType ?templateType }
+  OPTIONAL { ?template ggen:renderEngine ?renderEngine }
+  OPTIONAL { ?template ggen:parameters ?parameters }
+}
+ORDER BY ?template

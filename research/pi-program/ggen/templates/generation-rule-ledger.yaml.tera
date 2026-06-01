@@ -1,0 +1,63 @@
+---
+# Generation Rule Ledger — Applied Rules & Transformations
+# Generated: {{ generated_at }}
+# Run ID: {{ run.run_id }}
+
+generation_rules:
+{% for rule in rules %}
+  - rule_id: {{ rule.rule_id }}
+    name: "{{ rule.name }}"
+    description: "{{ rule.description }}"
+    category: {{ rule.category }}
+
+    source_authority: {{ rule.source_authority }}
+    confidence_level: {{ rule.confidence_level }}
+
+    input_signature:
+      type: {{ rule.input_signature.type }}
+      fields: {{ rule.input_signature.fields | length }}
+
+    output_signature:
+      type: {{ rule.output_signature.type }}
+      fields: {{ rule.output_signature.fields | length }}
+
+    transformation_logic:
+      method: {{ rule.transformation_logic.method }}
+      complexity_class: {{ rule.transformation_logic.complexity_class }}
+
+    applications:
+      total_invocations: {{ rule.applications.total_invocations }}
+      successful_renders: {{ rule.applications.successful_renders }}
+      failed_renders: {{ rule.applications.failed_renders }}
+      average_duration_ms: {{ rule.applications.average_duration_ms }}
+
+    artifacts_produced:
+{% for artifact in rule.artifacts_produced %}
+      - artifact_id: {{ artifact.artifact_id }}
+        artifact_name: "{{ artifact.artifact_name }}"
+        status: {{ artifact.status }}
+{% endfor %}
+
+    gate_coverage:
+{% for gate in rule.gate_coverage %}
+      - gate_name: "{{ gate.gate_name }}"
+        coverage_type: {{ gate.coverage_type }}
+        pass_rate: {{ gate.pass_rate }}%
+{% endfor %}
+
+    metadata:
+      last_applied: "{{ rule.metadata.last_applied }}"
+      derivation_source: "{{ rule.metadata.derivation_source }}"
+      immutability_status: {{ rule.metadata.immutability_status }}
+
+{% endfor %}
+
+rule_statistics:
+  total_rules: {{ rules | length }}
+  rules_by_category:
+{% for category in rule_categories %}
+    {{ category.name }}: {{ category.count }}
+{% endfor %}
+  total_invocations: {{ rules | map(attribute='applications') | map(attribute='total_invocations') | sum }}
+  cumulative_success_rate: {{ cumulative_success_rate }}%
+  cumulative_duration_seconds: {{ cumulative_duration_seconds }}

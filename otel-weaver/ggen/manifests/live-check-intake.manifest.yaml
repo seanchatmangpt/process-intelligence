@@ -1,0 +1,58 @@
+# live-check-intake.manifest.yaml
+# Generation and runtime manifest for the Live Ingestion Check Engine
+# Authority: /Users/sac/process-intelligence/otel-weaver/ggen/manifests/live-check-intake.manifest.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Telemetry is feedstock. This service operates on incoming telemetry feedstock frames.
+# - Process consequence is court. Violations trigger court-admissible Refusals.
+# - Weaver diffs are not process drift. Mismatched schemas trigger Weaver Diff events, not runtime process drift metrics.
+
+metadata:
+  name: "live-check-intake"
+  version: "1.0.0"
+  description: "Configures the runtime intake socket and validation rules for live checks on feedstock"
+  author: "Process Intelligence Research Foundry"
+  created: "2026-06-01"
+  purpose: "Ingest real-time feedstock telemetry and route court consequences"
+
+runtime_configuration:
+  bind_address: "127.0.0.1:8080"
+  current_schema_version: "1.25.0"
+  protocol: "tcp-protobuf"
+  max_frame_size_bytes: 8388608
+  concurrency_limit: 128
+
+validation_rules_mapping:
+  rules_source: "/Users/sac/process-intelligence/otel-weaver/mappings/live-check-finding-to-refusal-map.yaml"
+  witness_map_source: "/Users/sac/process-intelligence/otel-weaver/mappings/otel-to-pi-witness-map.yaml"
+
+templates:
+  - source_template: "/Users/sac/process-intelligence/otel-weaver/ggen/templates/pi-live-check-intake.rs.ggen"
+    output_file: "/Users/sac/process-intelligence/otel-weaver/generated/pi_live_check_intake.rs"
+    format: "rust"
+
+generation_config:
+  emit_docs: true
+  type_safety: "strict"
+  target_rust_edition: "2021"
+
+audit:
+  enabled: true
+  script: "/Users/sac/process-intelligence/audits/audit-live-check-intake.sh"
+  gates:
+    - name: "intake_port_validity"
+      threshold: 100
+    - name: "refusal_mapping_completeness"
+      threshold: 100
+
+compliance:
+  standards:
+    - "ISO-IEC-23894:2024"
+    - "board-admissible"
+  evidence_backing: "Real-time verification logs + court verdict emission"
+  immutable: true
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "/Users/sac/process-intelligence/receipts/live-check-intake-receipt.json"

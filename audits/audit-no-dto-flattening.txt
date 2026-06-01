@@ -1,0 +1,14 @@
+=== AUDIT 1: NO DTO FLATTENING ===
+Timestamp: 2026-06-01T17:17:24Z
+Target: /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/src
+
+VIOLATION: Found pattern '_json'
+  /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/src/manufacturing/mod.rs:    pub fn to_json_string(&self) -> String {
+  /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/src/manufacturing/traits.rs:    fn receipt_json(&self) -> String;
+
+Allowed carriers found:
+
+RESULT: FAIL
+Found 1 violation(s).
+
+Audit complete: 2026-06-01T17:17:24Z

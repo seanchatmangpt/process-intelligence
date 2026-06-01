@@ -1,0 +1,14 @@
+# Audit Query: No Forced ALIVE Verdicts
+# ASSERT: ALIVE checkpoints require all gate criteria to be met with evidence
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+
+ASK {
+  ?checkpoint a ggen:Checkpoint .
+  ?checkpoint ggen:verdict ggen:Alive .
+  FILTER NOT EXISTS {
+    ?checkpoint ggen:criteria ?criteria .
+    ?criteria ggen:validated true .
+    ?criteria ggen:evidence ?evidence .
+  }
+}

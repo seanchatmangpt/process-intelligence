@@ -1,0 +1,17 @@
+# Selection Query: Failed Proof Gates
+# Returns all proof gates that failed validation with their artifacts and failure reasons
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?gate ?artifact ?gateType ?failureReason ?failedAssertion ?timestamp
+WHERE {
+  ?gate a ggen:ProofGate .
+  ?gate ggen:status ggen:Failed .
+  OPTIONAL { ?gate ggen:artifact ?artifact }
+  OPTIONAL { ?gate ggen:gateType ?gateType }
+  OPTIONAL { ?gate ggen:failureReason ?failureReason }
+  OPTIONAL { ?gate ggen:failedAssertion ?failedAssertion }
+  OPTIONAL { ?gate ggen:evaluatedAt ?timestamp }
+}
+ORDER BY DESC(?timestamp)

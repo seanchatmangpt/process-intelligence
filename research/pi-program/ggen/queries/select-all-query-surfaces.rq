@@ -1,0 +1,16 @@
+# Selection Query: All Query Surfaces
+# Returns all SPARQL query definitions and their purposes
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT ?query ?label ?purpose ?pattern ?resultFormat
+WHERE {
+  ?query a ggen:QuerySurface .
+  OPTIONAL { ?query rdfs:label ?label }
+  OPTIONAL { ?query ggen:purpose ?purpose }
+  OPTIONAL { ?query ggen:pattern ?pattern }
+  OPTIONAL { ?query ggen:resultFormat ?resultFormat }
+}
+ORDER BY ?query

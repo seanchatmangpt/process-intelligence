@@ -59,3 +59,28 @@ export type XesBrand = null
  * Branding tag for WF-Net soundness in the TypeScript type court.
  */
 export type WfNetBrand = null
+
+/**
+ * Structure representing a process witness across the WASM boundary.
+ */
+export type WasmWitness = { key: string; title: string; year: number | null }
+
+/**
+ * Structure representing a typestate lifecycle state across the WASM boundary.
+ */
+export type WasmStateTag = { name: string; is_terminal: boolean }
+
+/**
+ * Structure representing structural admission and Refusal checks.
+ */
+export type WasmAdmissionResult = { is_ok: boolean; refusal_law: string | null; refusal_message: string | null }
+
+/**
+ * Structure representing a graduation candidate requesting execution power.
+ */
+export type WasmGraduationCandidate = { reason: string; subject: string; evidence_ref: string }
+
+/**
+ * Structure representing a complete process evidence envelope for roundtrip simulation.
+ */
+export type WasmProcessEvidence = { case_id: string; events: string[]; timestamp_ns: number; parent_block_hash: string; block_hash: string; state: string; witness_key: string; is_valid: boolean }

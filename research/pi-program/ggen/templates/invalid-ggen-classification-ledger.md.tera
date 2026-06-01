@@ -1,0 +1,81 @@
+# Invalid GGen Classification Ledger
+
+**Generated:** {{ generated_at }}
+**Run ID:** {{ run.run_id }}
+
+## Overview
+
+This ledger documents all invalid generation classifications discovered during the unified run. Each entry represents a mismatch between declared artifact type and actual rendered output, or a violation of classification law.
+
+**Total Invalid Classifications:** {{ invalid_classifications | length }}
+
+---
+
+{% for classification in invalid_classifications %}
+## {{ loop.index }}. {{ classification.artifact_name }}
+
+**Artifact ID:** `{{ classification.artifact_id }}`
+**Declared Type:** `{{ classification.declared_type }}`
+**Actual Type:** `{{ classification.actual_type }}`
+**Discovered At:** {{ classification.discovered_at }}
+
+### Violation Details
+
+**Primary Violation:** {{ classification.primary_violation }}
+
+{% if classification.secondary_violations %}
+**Secondary Violations:**
+{% for violation in classification.secondary_violations %}
+- {{ violation }}
+{% endfor %}
+{% endif %}
+
+### Evidence
+
+{% if classification.content_sample %}
+```
+{{ classification.content_sample }}
+```
+{% endif %}
+
+### Impact Assessment
+
+- **Conformance Breach:** {{ classification.impact.conformance_breach }}
+- **Gate Failure:** {{ classification.impact.gate_failure }}
+- **Downstream Effects:** {{ classification.impact.downstream_effects | length }} artifact(s) affected
+- **Remediation Level:** {{ classification.impact.remediation_level }}
+
+### Root Cause Analysis
+
+**Primary Cause:** {{ classification.root_cause.primary }}
+
+{% if classification.root_cause.contributing_factors %}
+**Contributing Factors:**
+{% for factor in classification.root_cause.contributing_factors %}
+- {{ factor }}
+{% endfor %}
+{% endif %}
+
+### Remediation Required
+
+{% for action in classification.remediation_actions %}
+- {{ action }}
+{% endfor %}
+
+---
+
+{% endfor %}
+
+## Summary by Violation Type
+
+| Violation Type | Count | Severity |
+|---|---|---|
+{% for summary in violation_summary %}
+| {{ summary.type }} | {{ summary.count }} | {{ summary.severity }} |
+{% endfor %}
+
+## Next Actions
+
+All invalid classifications must be remediated before checkpoint is marked ALIVE.
+
+Remediation tracking: `remediation-plan.md`

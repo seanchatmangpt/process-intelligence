@@ -1,0 +1,67 @@
+# live-check-finding-to-refusal-map.yaml
+# Live Ingestion Check Finding to Process Refusal Mapping
+# Authority: /Users/sac/process-intelligence/otel-weaver/mappings/live-check-finding-to-refusal-map.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Ingested findings are evaluated on telemetry feedstock.
+# - Refusal is the formal process consequence (court verdict).
+# - Weaver diffs are recorded as schema transitions, not process drift.
+
+version: "1.0.0"
+authority: "Process Intelligence Research Foundry"
+nominal_role: "intake_court_admission"
+
+refusal_mappings:
+  - finding_id: "find_empty_payload"
+    description: "The incoming telemetry feedstock has a zero-byte payload."
+    named_law: "EmptyTrace"
+    standard_reference: "XES 1849"
+    verdict: "violation_halt"
+    severity: "critical"
+    refusal_action: "reject_feedstock_ingestion"
+    remediation: "Verify telemetry emitter instrumentation active state."
+
+  - finding_id: "find_missing_trace_id"
+    description: "The incoming OTel span does not have a valid TraceID."
+    named_law: "MissingCaseId"
+    standard_reference: "XES 1849"
+    verdict: "violation_halt"
+    severity: "critical"
+    refusal_action: "reject_feedstock_ingestion"
+    remediation: "Check W3C trace context propagation in upstream HTTP headers."
+
+  - finding_id: "find_non_monotone_timestamps"
+    description: "Child span start time is earlier than parent span start time, or end time is later than parent end time."
+    named_law: "InvalidTimestampOrder"
+    standard_reference: "OCEL 2.0"
+    verdict: "violation_halt"
+    severity: "critical"
+    refusal_action: "reject_and_quarantine_trace"
+    remediation: "Ensure synchronized clocks (NTP) across distributed hosts."
+
+  - finding_id: "find_dangling_span_parent"
+    description: "Span references a parent span ID that is not present in the current trace session context."
+    named_law: "DanglingEventObjectLink"
+    standard_reference: "OCEL 2.0"
+    verdict: "escalation_warning"
+    severity: "warning"
+    refusal_action: "admit_with_quarantine_warning"
+    remediation: "Verify span collector buffer size and tail-based sampling configurations."
+
+  - finding_id: "find_schema_url_missing"
+    description: "Telemetry feedstock submitted without a defining OpenTelemetry Schema URL."
+    named_law: "ProjectionNameRequired"
+    standard_reference: "wasm4pm-compat loss covenant"
+    verdict: "violation_halt"
+    severity: "critical"
+    refusal_action: "reject_feedstock_ingestion"
+    remediation: "Ensure the telemetry exporter populates the schema_url property."
+
+  - finding_id: "find_strict_schema_mismatch"
+    description: "Feedstock schema version differs from system registry version."
+    named_law: "SchemaVersionMismatch"
+    standard_reference: "Weaver Semantic Registry Protocol"
+    verdict: "escalation_warning"
+    severity: "warning"
+    refusal_action: "admit_and_route_to_weaver_diff_log"
+    remediation: "Run weaver code generator to sync parser types with new registry version."

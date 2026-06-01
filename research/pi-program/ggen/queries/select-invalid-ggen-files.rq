@@ -1,0 +1,16 @@
+# Selection Query: Invalid ggen Files
+# Returns all ggen configuration files with syntax, semantic, or validation errors
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?file ?errorType ?errorMessage ?errorLocation ?severity
+WHERE {
+  ?file a ggen:GgenFile .
+  ?file ggen:hasError ?error .
+  ?error ggen:errorType ?errorType .
+  OPTIONAL { ?error ggen:message ?errorMessage }
+  OPTIONAL { ?error ggen:location ?errorLocation }
+  OPTIONAL { ?error ggen:severity ?severity }
+}
+ORDER BY ?severity DESC(?file)

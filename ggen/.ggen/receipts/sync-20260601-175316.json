@@ -1,0 +1,12 @@
+{
+  "operation_id": "de2ad19f-4b06-4116-a7eb-a98aa33071f9",
+  "timestamp": "2026-06-01T17:53:16.567747Z",
+  "input_hashes": [
+    "ggen.toml:b88d67693a04bd38d5982b6c02be1894c546228c0ed0e081e1cf1a3dc5dfe8ba"
+  ],
+  "output_hashes": [
+    "../blue_river_dam/src/lib.rs:4e341f5a08c1fd35a5e6aa5dabdd328613263bbc9f7c23bc3bae4893a2562593"
+  ],
+  "signature": "22e24e8f8256b7f8e4ca7ab3f4772ed9cd872b2274dc10bcc81617eb4aedbf4134781a99300d15c43fc31f6ed3c58ad975c43ac0bd34912f85ae7b6eef047a08",
+  "previous_receipt_hash": null
+}

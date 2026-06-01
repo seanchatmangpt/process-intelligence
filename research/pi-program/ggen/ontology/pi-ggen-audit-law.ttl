@@ -1,0 +1,489 @@
+# pi-ggen-audit-law.ttl
+# Unified Program Graph — Audit Law & 15 Gate Definitions
+# Authority: Process Intelligence Research Foundry
+# Date: 2026-06-01
+# Scope: Complete specification of 15 audit gates with pass/fail rules, evidence requirements, and remediation paths
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix pi: <https://process.intelligence/ontology/> .
+@prefix ual: <https://process.intelligence/unified-audit-law/> .
+
+# ============================================================================
+# ONTOLOGY HEADER
+# ============================================================================
+
+<https://process.intelligence/unified-audit-law/ontology>
+  a owl:Ontology ;
+  dcterms:title "Unified Program Graph — Audit Law (15 Gates)"@en ;
+  dcterms:description "Definitive specification of 15 audit gates that govern ALIVE verdict issuance. Each gate has explicit pass/fail rules, evidence requirements, automated detection criteria, and remediation paths."@en ;
+  dcterms:creator "Process Intelligence Research Foundry"@en ;
+  dcterms:created "2026-06-01"^^xsd:date ;
+  dcterms:modified "2026-06-01"^^xsd:date ;
+  owl:imports <https://process.intelligence/ontology/> ;
+  owl:imports <http://www.w3.org/ns/prov#> ;
+  skos:definition "Authoritative law governing which audit gates must pass (all 15) before an ALIVE verdict can be issued. Each gate is independently verifiable via SPARQL, shell audit, or file system inspection. No gate is advisory; all are mandatory."@en ;
+  skos:note "Gates fall into 5 categories: Source Surface (3), Evidence Requirement (3), Conformance (3), Immutability (3), Blocking Issues (3). Gates are applied in order; failure of any gate blocks ALIVE verdict, necessitating remediation and new checkpoint."@en .
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+ual:AuditGate
+  a owl:Class ;
+  rdfs:label "Audit Gate"@en ;
+  rdfs:comment "A single deterministic criterion that must be satisfied for ALIVE verdict issuance."@en ;
+  skos:definition "A verifiable gate with explicit PASS/FAIL rules, evidence requirement(s), and automated detection mechanism. All 15 gates must PASS for ALIVE; failure of any blocks verdict."@en ;
+  rdfs:subClassOf prov:Activity .
+
+ual:GateCategory
+  a owl:Class ;
+  rdfs:label "Gate Category"@en ;
+  rdfs:comment "Functional category of audit gate."@en ;
+  owl:disjointUnionOf (
+    ual:SOURCE_SURFACE_GATE
+    ual:EVIDENCE_REQUIREMENT_GATE
+    ual:CONFORMANCE_GATE
+    ual:IMMUTABILITY_GATE
+    ual:BLOCKING_ISSUES_GATE
+  ) .
+
+ual:SOURCE_SURFACE_GATE a owl:Class ; rdfs:label "Source Surface Gate" .
+ual:EVIDENCE_REQUIREMENT_GATE a owl:Class ; rdfs:label "Evidence Requirement Gate" .
+ual:CONFORMANCE_GATE a owl:Class ; rdfs:label "Conformance Gate" .
+ual:IMMUTABILITY_GATE a owl:Class ; rdfs:label "Immutability Gate" .
+ual:BLOCKING_ISSUES_GATE a owl:Class ; rdfs:label "Blocking Issues Gate" .
+
+ual:GateResult
+  a owl:Class ;
+  rdfs:label "Gate Result"@en ;
+  rdfs:comment "Outcome of gate evaluation."@en ;
+  owl:disjointUnionOf (
+    ual:PASS
+    ual:FAIL
+    ual:CONDITIONAL_PASS
+  ) .
+
+ual:PASS a owl:Class ; rdfs:label "PASS" .
+ual:FAIL a owl:Class ; rdfs:label "FAIL" .
+ual:CONDITIONAL_PASS a owl:Class ; rdfs:label "CONDITIONAL_PASS" .
+
+ual:DetectionMechanism
+  a owl:Class ;
+  rdfs:label "Detection Mechanism"@en ;
+  rdfs:comment "How the gate condition is automatically verified."@en ;
+  owl:disjointUnionOf (
+    ual:FILE_SYSTEM_INSPECTION
+    ual:SHELL_AUDIT
+    ual:SPARQL_QUERY
+    ual:MANUAL_CODE_REVIEW
+    ual:AUTOMATED_TEST
+  ) .
+
+ual:FILE_SYSTEM_INSPECTION a owl:Class ; rdfs:label "File System Inspection" .
+ual:SHELL_AUDIT a owl:Class ; rdfs:label "Shell Audit" .
+ual:SPARQL_QUERY a owl:Class ; rdfs:label "SPARQL Query" .
+ual:MANUAL_CODE_REVIEW a owl:Class ; rdfs:label "Manual Code Review" .
+ual:AUTOMATED_TEST a owl:Class ; rdfs:label "Automated Test" .
+
+ual:RemediationPath
+  a owl:Class ;
+  rdfs:label "Remediation Path"@en ;
+  rdfs:comment "Steps to remediate a gate failure."@en ;
+  owl:disjointUnionOf (
+    ual:CREATE_MISSING_ARTIFACT
+    ual:FIX_SOURCE_CODE
+    ual:RESOLVE_COLLAPSE
+    ual:UPDATE_DOCUMENTATION
+    ual:DECOMPOSE_FILE
+  ) .
+
+ual:CREATE_MISSING_ARTIFACT a owl:Class ; rdfs:label "Create Missing Artifact" .
+ual:FIX_SOURCE_CODE a owl:Class ; rdfs:label "Fix Source Code" .
+ual:RESOLVE_COLLAPSE a owl:Class ; rdfs:label "Resolve Collapse" .
+ual:UPDATE_DOCUMENTATION a owl:Class ; rdfs:label "Update Documentation" .
+ual:DECOMPOSE_FILE a owl:Class ; rdfs:label "Decompose File" .
+
+ual:FailedGate
+  a owl:Class ;
+  rdfs:label "Failed Gate"@en ;
+  rdfs:comment "Record of a gate failure event."@en ;
+  skos:definition "A prov:Entity documenting a single gate failure, its detection time, evidence, and remediation status."@en ;
+  rdfs:subClassOf prov:Entity .
+
+# ============================================================================
+# PROPERTIES
+# ============================================================================
+
+ual:gateNumber
+  a owl:DatatypeProperty ;
+  rdfs:label "Gate Number"@en ;
+  rdfs:comment "Sequential number (1-15) of the gate."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range xsd:integer .
+
+ual:gateName
+  a owl:DatatypeProperty ;
+  rdfs:label "Gate Name"@en ;
+  rdfs:comment "Human-readable name of the gate."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range xsd:string .
+
+ual:gateCategory
+  a owl:ObjectProperty ;
+  rdfs:label "Gate Category"@en ;
+  rdfs:comment "Functional category of the gate."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range ual:GateCategory ;
+  skos:cardinality "exactly 1"@en .
+
+ual:passCondition
+  a owl:DatatypeProperty ;
+  rdfs:label "Pass Condition"@en ;
+  rdfs:comment "The condition that must be true for the gate to PASS."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range xsd:string .
+
+ual:failCondition
+  a owl:DatatypeProperty ;
+  rdfs:label "Fail Condition"@en ;
+  rdfs:comment "The condition that triggers gate FAILURE."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range xsd:string .
+
+ual:detectionMechanism
+  a owl:ObjectProperty ;
+  rdfs:label "Detection Mechanism"@en ;
+  rdfs:comment "How the gate is automatically verified."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range ual:DetectionMechanism ;
+  skos:cardinality "exactly 1"@en .
+
+ual:evidenceRequirement
+  a owl:DatatypeProperty ;
+  rdfs:label "Evidence Requirement"@en ;
+  rdfs:comment "What evidence is required to verify this gate passes."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range xsd:string .
+
+ual:remediationPath
+  a owl:ObjectProperty ;
+  rdfs:label "Remediation Path"@en ;
+  rdfs:comment "Steps to fix a gate failure."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range ual:RemediationPath ;
+  skos:cardinality "at least 1"@en .
+
+ual:blockingVerdicts
+  a owl:DatatypeProperty ;
+  rdfs:label "Blocking Verdicts"@en ;
+  rdfs:comment "Which verdicts (ALIVE, PARTIAL, FAILED) are blocked by failure of this gate."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range xsd:string ;
+  skos:example "ALIVE, PARTIAL, FAILED"@en .
+
+ual:automatedDetection
+  a owl:DatatypeProperty ;
+  rdfs:label "Automated Detection"@en ;
+  rdfs:comment "Shell command, SPARQL query, or test script to automatically verify this gate."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range xsd:string .
+
+ual:failureEvent
+  a owl:ObjectProperty ;
+  rdfs:label "Failure Event"@en ;
+  rdfs:comment "Links a gate to its failure records."@en ;
+  rdfs:domain ual:AuditGate ;
+  rdfs:range ual:FailedGate .
+
+# ============================================================================
+# SHAPES
+# ============================================================================
+
+ual:AuditGateShape
+  a sh:NodeShape ;
+  sh:targetClass ual:AuditGate ;
+  sh:closed false ;
+  sh:property [
+    sh:path ual:gateNumber ;
+    sh:datatype xsd:integer ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "AuditGate must have exactly one gate number."@en
+  ] ;
+  sh:property [
+    sh:path ual:gateName ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "AuditGate must have exactly one gate name."@en
+  ] ;
+  sh:property [
+    sh:path ual:passCondition ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "AuditGate must define pass condition."@en
+  ] ;
+  sh:property [
+    sh:path ual:detectionMechanism ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "AuditGate must specify detection mechanism."@en
+  ] .
+
+# ============================================================================
+# INSTANCES (15 Gates: Source, Evidence, Conformance, Immutability, Issues)
+# ============================================================================
+
+# ===== SOURCE SURFACE GATES (3) =====
+
+<https://process.intelligence/unified-audit-law/gate-1-ontology-present>
+  a ual:AuditGate ;
+  dcterms:title "Gate 1: Ontology Present"@en ;
+  ual:gateNumber "1"^^xsd:integer ;
+  ual:gateName "Ontology Present"@en ;
+  ual:gateCategory ual:SOURCE_SURFACE_GATE ;
+  ual:passCondition "At least one .ttl file exists in ontology directory and parses without syntax error."@en ;
+  ual:failCondition "No .ttl files found OR all .ttl files contain syntax errors."@en ;
+  ual:detectionMechanism ual:FILE_SYSTEM_INSPECTION ;
+  ual:evidenceRequirement ".ttl files with valid Turtle syntax (N3 parser conformant)"@en ;
+  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
+  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
+  ual:automatedDetection "find . -name '*.ttl' -exec ttl-lint {} \\;"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-2-queries-present>
+  a ual:AuditGate ;
+  dcterms:title "Gate 2: Queries Present"@en ;
+  ual:gateNumber "2"^^xsd:integer ;
+  ual:gateName "Queries Present"@en ;
+  ual:gateCategory ual:SOURCE_SURFACE_GATE ;
+  ual:passCondition "At least one .rq (SPARQL) file exists in queries directory and parses without syntax error."@en ;
+  ual:failCondition "No .rq files found OR all .rq files contain SPARQL syntax errors."@en ;
+  ual:detectionMechanism ual:FILE_SYSTEM_INSPECTION ;
+  ual:evidenceRequirement ".rq files with valid SPARQL 1.1 syntax"@en ;
+  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
+  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
+  ual:automatedDetection "find . -name '*.rq' -exec sparql-lint {} \\;"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-3-templates-present>
+  a ual:AuditGate ;
+  dcterms:title "Gate 3: Templates Present"@en ;
+  ual:gateNumber "3"^^xsd:integer ;
+  ual:gateName "Templates Present"@en ;
+  ual:gateCategory ual:SOURCE_SURFACE_GATE ;
+  ual:passCondition "At least one .tera file exists in templates directory and parses without syntax error."@en ;
+  ual:failCondition "No .tera files found OR all .tera files contain Tera syntax errors."@en ;
+  ual:detectionMechanism ual:FILE_SYSTEM_INSPECTION ;
+  ual:evidenceRequirement ".tera files with valid Jinja2-compatible Tera syntax"@en ;
+  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
+  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
+  ual:automatedDetection "find . -name '*.tera' -exec tera-lint {} \\;"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+# ===== EVIDENCE REQUIREMENT GATES (3) =====
+
+<https://process.intelligence/unified-audit-law/gate-4-ggen-toml-valid>
+  a ual:AuditGate ;
+  dcterms:title "Gate 4: ggen.toml Valid"@en ;
+  ual:gateNumber "4"^^xsd:integer ;
+  ual:gateName "ggen.toml Valid"@en ;
+  ual:gateCategory ual:EVIDENCE_REQUIREMENT_GATE ;
+  ual:passCondition "ggen.toml file is present, parses as valid TOML, and references existing ontology, query, and template files."@en ;
+  ual:failCondition "ggen.toml missing, invalid TOML syntax, OR references non-existent source files."@en ;
+  ual:detectionMechanism ual:SHELL_AUDIT ;
+  ual:evidenceRequirement "Valid ggen.toml with [ontology], [generation.rules], [query], [template] sections"@en ;
+  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "toml-lint ggen.toml && cargo make check"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-5-seed-programs-encoded>
+  a ual:AuditGate ;
+  dcterms:title "Gate 5: Seed Programs Encoded"@en ;
+  ual:gateNumber "5"^^xsd:integer ;
+  ual:gateName "Seed Programs Encoded"@en ;
+  ual:gateCategory ual:EVIDENCE_REQUIREMENT_GATE ;
+  ual:passCondition "All known research programs are explicitly listed in ontology as pm:ResearchProgram or pi:PROGRAM instances."@en ;
+  ual:failCondition "Any known program is missing from ontology OR ontology has undocumented program instances."@en ;
+  ual:detectionMechanism ual:SPARQL_QUERY ;
+  ual:evidenceRequirement "SPARQL result showing all research programs with program IDs, missions, prompt classes"@en ;
+  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
+  ual:blockingVerdicts "PARTIAL"@en ;
+  ual:automatedDetection "sparql --query list-programs.rq --data ontology/*.ttl"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-6-warrant-path-end-to-end>
+  a ual:AuditGate ;
+  dcterms:title "Gate 6: Warrant Path End-to-End"@en ;
+  ual:gateNumber "6"^^xsd:integer ;
+  ual:gateName "Warrant Path End-to-End"@en ;
+  ual:gateCategory ual:EVIDENCE_REQUIREMENT_GATE ;
+  ual:passCondition "A complete chain exists from checkpoint (ALIVE/PARTIAL) → generation rule → artifact production → receipt emission."@en ;
+  ual:failCondition "Chain is broken: missing checkpoint link, generation rule not executable, artifact not produced, OR receipt missing."@en ;
+  ual:detectionMechanism ual:SPARQL_QUERY ;
+  ual:evidenceRequirement "SPARQL urun:WarrantPath results showing connected prov:wasGeneratedBy chain from checkpoint through artifact"@en ;
+  ual:remediationPath ual:FIX_SOURCE_CODE ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "sparql --query warrant-path-closure.rq --data unified-run.ttl"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+# ===== CONFORMANCE GATES (3) =====
+
+<https://process.intelligence/unified-audit-law/gate-7-warrant-is-receipted>
+  a ual:AuditGate ;
+  dcterms:title "Gate 7: Warrant Is Receipted"@en ;
+  ual:gateNumber "7"^^xsd:integer ;
+  ual:gateName "Warrant Is Receipted"@en ;
+  ual:gateCategory ual:CONFORMANCE_GATE ;
+  ual:passCondition "Each artifact has a corresponding cryptographic receipt (BLAKE3 hash) in receipt chain."@en ;
+  ual:failCondition "One or more artifacts lack receipt hashes OR hashes do not match artifact contents."@en ;
+  ual:detectionMechanism ual:SHELL_AUDIT ;
+  ual:evidenceRequirement "Receipt files with BLAKE3 digests matching artifact hash values"@en ;
+  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "for file in $(find . -name 'artifact*'); do b3sum $file; done"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-8-no-new-ggen-source-files>
+  a ual:AuditGate ;
+  dcterms:title "Gate 8: No New ggen Source Files"@en ;
+  ual:gateNumber "8"^^xsd:integer ;
+  ual:gateName "No New ggen Source Files"@en ;
+  ual:gateCategory ual:CONFORMANCE_GATE ;
+  ual:passCondition "No .ggen files have been added that are not in the historical .ggen source registry."@en ;
+  ual:failCondition "New .ggen files exist outside expected source subdirectories (templates, audits, queries, manifests)."@en ;
+  ual:detectionMechanism ual:SHELL_AUDIT ;
+  ual:evidenceRequirement "Git diff showing no new .ggen files in source areas, or inventoried .ggen classification"@en ;
+  ual:remediationPath ual:DECOMPOSE_FILE ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "git diff --name-only | grep '\\.ggen$' | sort"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-9-legacy-ggen-classified>
+  a ual:AuditGate ;
+  dcterms:title "Gate 9: Legacy ggen Classified"@en ;
+  ual:gateNumber "9"^^xsd:integer ;
+  ual:gateName "Legacy ggen Classified"@en ;
+  ual:gateCategory ual:CONFORMANCE_GATE ;
+  ual:passCondition "All legacy .ggen files are inventoried in pi-ggen-invalid-extension-ledger.ttl with explicit classification and remediation route."@en ;
+  ual:failCondition "Unclassified .ggen files exist OR remediation routes are missing."@en ;
+  ual:detectionMechanism ual:SPARQL_QUERY ;
+  ual:evidenceRequirement "uiel:InvalidGgenFile instances covering all .ggen files with classification and remediationRoute properties"@en ;
+  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "sparql --query list-legacy-ggen-files.rq --data invalid-extension-ledger.ttl"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+# ===== IMMUTABILITY GATES (3) =====
+
+<https://process.intelligence/unified-audit-law/gate-10-audits-pass>
+  a ual:AuditGate ;
+  dcterms:title "Gate 10: Audits Pass"@en ;
+  ual:gateNumber "10"^^xsd:integer ;
+  ual:gateName "Audits Pass"@en ;
+  ual:gateCategory ual:IMMUTABILITY_GATE ;
+  ual:passCondition "All automated audit scripts (.sh.ggen or shell) execute without error and produce PASS results."@en ;
+  ual:failCondition "Any audit script exits with non-zero status OR produces FAIL result."@en ;
+  ual:detectionMechanism ual:AUTOMATED_TEST ;
+  ual:evidenceRequirement "Audit log output showing all scripts executed and PASS status"@en ;
+  ual:remediationPath ual:FIX_SOURCE_CODE ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "for audit in $(find . -name '*.sh.ggen'); do bash $audit; done"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-11-no-active-forbidden-collapses>
+  a ual:AuditGate ;
+  dcterms:title "Gate 11: No Active Forbidden Collapses"@en ;
+  ual:gateNumber "11"^^xsd:integer ;
+  ual:gateName "No Active Forbidden Collapses"@en ;
+  ual:gateCategory ual:IMMUTABILITY_GATE ;
+  ual:passCondition "No pi:FORBIDDEN_COLLAPSE instances have collapseStatus = ACTIVE and collapseAuditResult = FAIL."@en ;
+  ual:failCondition "One or more active collapses with failed audit result exist."@en ;
+  ual:detectionMechanism ual:SPARQL_QUERY ;
+  ual:evidenceRequirement "SPARQL query showing all collapses with status ACTIVE/FAIL filtered out"@en ;
+  ual:remediationPath ual:RESOLVE_COLLAPSE ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "sparql --query active-forbidden-collapses.rq --data forbidden-collapse-law.ttl"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-12-evidence-backing-sufficient>
+  a ual:AuditGate ;
+  dcterms:title "Gate 12: Evidence Backing Sufficient"@en ;
+  ual:gateNumber "12"^^xsd:integer ;
+  ual:gateName "Evidence Backing Sufficient"@en ;
+  ual:gateCategory ual:IMMUTABILITY_GATE ;
+  ual:passCondition "All doctrine claims cite at least one source (paper, experiment, prior checkpoint, or audit finding)."@en ;
+  ual:failCondition "Doctrine claim exists without dcterms:source reference OR dcterms:source points to non-existent artifact."@en ;
+  ual:detectionMechanism ual:MANUAL_CODE_REVIEW ;
+  ual:evidenceRequirement "Manual audit confirming all doctrine/claims in markdown files have citation trail"@en ;
+  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "grep -r 'claims' doctrine/ | grep -v 'dcterms:source' || true"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+# ===== BLOCKING ISSUES GATES (3) =====
+
+<https://process.intelligence/unified-audit-law/gate-13-no-open-blocking-gaps>
+  a ual:AuditGate ;
+  dcterms:title "Gate 13: No Open Blocking Gaps"@en ;
+  ual:gateNumber "13"^^xsd:integer ;
+  ual:gateName "No Open Blocking Gaps"@en ;
+  ual:gateCategory ual:BLOCKING_ISSUES_GATE ;
+  ual:passCondition "No pi:Gap instances exist with pi:blockingStatus = TRUE."@en ;
+  ual:failCondition "One or more open blocking gaps are documented."@en ;
+  ual:detectionMechanism ual:SPARQL_QUERY ;
+  ual:evidenceRequirement "SPARQL result showing all gaps have blockingStatus = FALSE or are resolved"@en ;
+  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
+  ual:blockingVerdicts "ALIVE"@en ;
+  ual:automatedDetection "sparql --query blocking-gaps.rq --data gaps/*.md"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-14-checkpoint-immutability>
+  a ual:AuditGate ;
+  dcterms:title "Gate 14: Checkpoint Immutability"@en ;
+  ual:gateNumber "14"^^xsd:integer ;
+  ual:gateName "Checkpoint Immutability"@en ;
+  ual:gateCategory ual:BLOCKING_ISSUES_GATE ;
+  ual:passCondition "All prior checkpoint files are unchanged (hash mismatch detected if modified)."@en ;
+  ual:failCondition "A prior checkpoint file has been modified OR deleted."@en ;
+  ual:detectionMechanism ual:SHELL_AUDIT ;
+  ual:evidenceRequirement "Git history showing no commits that modify checkpoint files"@en ;
+  ual:remediationPath ual:FIX_SOURCE_CODE ;
+  ual:blockingVerdicts "ALIVE, PARTIAL, FAILED"@en ;
+  ual:automatedDetection "git log --oneline checkpoints/ | wc -l"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+<https://process.intelligence/unified-audit-law/gate-15-no-forced-alive>
+  a ual:AuditGate ;
+  dcterms:title "Gate 15: No Forced ALIVE Verdicts"@en ;
+  ual:gateNumber "15"^^xsd:integer ;
+  ual:gateName "No Forced ALIVE Verdicts"@en ;
+  ual:gateCategory ual:BLOCKING_ISSUES_GATE ;
+  ual:passCondition "No checkpoint is marked with internal flag or comment indicating it was forced ALIVE without gate verification."@en ;
+  ual:failCondition "Manual audit discovers forced ALIVE verdict OR code comment reveals gate bypass."@en ;
+  ual:detectionMechanism ual:MANUAL_CODE_REVIEW ;
+  ual:evidenceRequirement "Manual review of all ALIVE checkpoints confirming each passed all 13-15 gates"@en ;
+  ual:remediationPath ual:FIX_SOURCE_CODE ;
+  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
+  ual:automatedDetection "grep -r 'forced' checkpoints/*.md || true"@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+
+# ============================================================================
+# STATISTICS
+# ============================================================================
+
+<https://process.intelligence/unified-audit-law/statistics>
+  a prov:Entity ;
+  dcterms:title "Audit Law Statistics"@en ;
+  dcterms:description "Summary of all audit gates"@en ;
+  rdf:value "Total gates: 15, Source Surface gates: 3 (ontology, queries, templates), Evidence gates: 3 (ggen.toml, programs, warrant), Conformance gates: 3 (receipts, ggen files, classification), Immutability gates: 3 (audits, collapses, evidence), Blocking gates: 3 (gaps, checkpoint, forced), Detection mechanisms: FILE_SYSTEM_INSPECTION (3), SHELL_AUDIT (3), SPARQL_QUERY (5), MANUAL_REVIEW (3), AUTOMATED_TEST (1)"@en ;
+  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en .

@@ -1,0 +1,14 @@
+# Audit Query: All Legacy ggen Classified
+# ASSERT: Every ggen file from prior checkpoints has been reviewed and classified
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+ASK {
+  ?file a ggen:GgenFile .
+  ?file dc:created ?created .
+  FILTER NOT EXISTS {
+    ?file ggen:reviewedAt ?reviewTimestamp .
+    ?file ggen:classification ?classification .
+  }
+}

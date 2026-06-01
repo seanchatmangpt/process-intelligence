@@ -1,0 +1,16 @@
+# Audit Query: Every Generation Rule Has Query Template Output
+# ASSERT: All generation rules have associated query surfaces and template surfaces for output
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+
+ASK {
+  ?rule a ggen:GenerationRule .
+  FILTER NOT EXISTS {
+    ?rule ggen:output ?output .
+    ?output a ggen:QuerySurface .
+  }
+  FILTER NOT EXISTS {
+    ?rule ggen:outputTemplate ?template .
+    ?template a ggen:TemplateSurface .
+  }
+}

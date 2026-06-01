@@ -1,0 +1,78 @@
+# weaver-template-targets.manifest.yaml
+# Template target manifest for compiling documentation and semantic registries
+# Authority: /Users/sac/process-intelligence/otel-weaver/ggen/manifests/weaver-template-targets.manifest.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Telemetry is feedstock.
+# - Process consequence is court.
+# - Weaver diffs are not process drift.
+
+metadata:
+  name: "weaver-template-targets"
+  version: "1.0.0"
+  description: "Defines output targets and rendering contexts for OTel Weaver templates"
+  author: "Process Intelligence Research Foundry"
+  created: "2026-06-01"
+  purpose: "Generate documentation and schema registries preserving nominal system boundaries"
+
+targets:
+  - id: "telemetry_docs"
+    template_path: "/Users/sac/process-intelligence/otel-weaver/ggen/templates/pi-telemetry-docs.md.ggen"
+    output_path: "/Users/sac/process-intelligence/otel-weaver/generated/pi-telemetry-docs.md"
+    format: "markdown"
+    context_variables:
+      schema_version: "1.25.0"
+      schema_url: "https://opentelemetry.io/schemas/1.25.0"
+
+  - id: "registry_diff_report"
+    template_path: "/Users/sac/process-intelligence/otel-weaver/ggen/templates/pi-registry-diff-report.md.ggen"
+    output_path: "/Users/sac/process-intelligence/otel-weaver/generated/pi-registry-diff-report.md"
+    format: "markdown"
+    context_variables:
+      generation_time: "2026-06-01T10:10:50-07:00"
+      source_version: "1.24.0"
+      target_version: "1.25.0"
+      added_count: 3
+      deprecated_count: 1
+      modified_count: 2
+      feedstock_changes:
+        - attribute_name: "pi.feedstock.payload_size"
+          action: "added"
+          description: "Tracks raw payload size in bytes to account for feedstock transfer volumes."
+      court_changes:
+        - attribute_name: "pi.court.verdict.severity"
+          action: "added"
+          description: "Enhances court consequence mapping with severity levels."
+
+  - id: "weaver_registry"
+    template_path: "/Users/sac/process-intelligence/otel-weaver/ggen/templates/pi-weaver-registry.yaml.ggen"
+    output_path: "/Users/sac/process-intelligence/otel-weaver/generated/pi-weaver-registry.yaml"
+    format: "yaml"
+    context_variables:
+      schema_version: "1.25.0"
+      schema_url: "https://opentelemetry.io/schemas/1.25.0"
+
+generation_config:
+  fail_on_missing_variable: true
+  strip_whitespaces: false
+
+audit:
+  enabled: true
+  script: "/Users/sac/process-intelligence/audits/audit-template-targets.sh"
+  gates:
+    - name: "unresolved_placeholders"
+      threshold: 0
+    - name: "nominal_category_checks"
+      threshold: 100
+
+compliance:
+  standards:
+    - "ISO-IEC-23894:2024"
+    - "board-admissible"
+  evidence_backing: "Static documentation validation with sha256 checksums"
+  immutable: true
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "/Users/sac/process-intelligence/receipts/weaver-template-targets-receipt.json"

@@ -1,0 +1,80 @@
+---
+# Failed Gate Ledger — Proof Gate Failures & Non-Conformances
+# Generated: {{ generated_at }}
+# Run ID: {{ run.run_id }}
+
+failed_gates:
+{% for gate_failure in failed_gates %}
+  - gate_id: {{ gate_failure.gate_id }}
+    gate_name: "{{ gate_failure.gate_name }}"
+    gate_type: {{ gate_failure.gate_type }}
+    artifact_id: {{ gate_failure.artifact_id }}
+    artifact_name: "{{ gate_failure.artifact_name }}"
+
+    evaluation:
+      timestamp: "{{ gate_failure.evaluation.timestamp }}"
+      evaluator: "{{ gate_failure.evaluation.evaluator }}"
+      duration_ms: {{ gate_failure.evaluation.duration_ms }}
+
+    verdict: {{ gate_failure.verdict }}
+    severity: {{ gate_failure.severity }}
+
+    failed_criteria:
+{% for criterion in gate_failure.failed_criteria %}
+      - criterion_id: {{ criterion.criterion_id }}
+        criterion_name: "{{ criterion.criterion_name }}"
+        expected: "{{ criterion.expected }}"
+        actual: "{{ criterion.actual }}"
+        delta_from_expectation: "{{ criterion.delta }}"
+        failure_reason: "{{ criterion.failure_reason }}"
+{% endfor %}
+
+    conformance_impact:
+      fitness_delta: {{ gate_failure.conformance_impact.fitness_delta }}
+      precision_delta: {{ gate_failure.conformance_impact.precision_delta }}
+      makes_model_unsound: {{ gate_failure.conformance_impact.makes_model_unsound }}
+
+    dependency_chain:
+      blocking_gates: {{ gate_failure.dependency_chain.blocking_gates | length }}
+      blocked_by_gates: {{ gate_failure.dependency_chain.blocked_by_gates | length }}
+      propagation_risk: {{ gate_failure.dependency_chain.propagation_risk }}
+
+    evidence:
+      event_log_excerpt: "{{ gate_failure.evidence.event_log_excerpt }}"
+      model_vs_log_violation: "{{ gate_failure.evidence.model_vs_log_violation }}"
+      discovered_variant: "{{ gate_failure.evidence.discovered_variant }}"
+
+    required_remediation:
+      action_type: {{ gate_failure.required_remediation.action_type }}
+      priority: {{ gate_failure.required_remediation.priority }}
+      estimated_effort: {{ gate_failure.required_remediation.estimated_effort }}
+      downstream_impact: {{ gate_failure.required_remediation.downstream_impact }}
+
+    metadata:
+      first_failure: "{{ gate_failure.metadata.first_failure }}"
+      recurrence_count: {{ gate_failure.metadata.recurrence_count }}
+      known_root_cause: "{{ gate_failure.metadata.known_root_cause }}"
+
+{% endfor %}
+
+failure_summary:
+  total_failed_gates: {{ failed_gates | length }}
+  by_severity:
+    critical: {{ failed_gates | select(attribute='severity', value='critical') | length }}
+    high: {{ failed_gates | select(attribute='severity', value='high') | length }}
+    medium: {{ failed_gates | select(attribute='severity', value='medium') | length }}
+    low: {{ failed_gates | select(attribute='severity', value='low') | length }}
+
+  by_type:
+{% for gate_type_summary in failed_gates_by_type %}
+    {{ gate_type_summary.type }}: {{ gate_type_summary.count }}
+{% endfor %}
+
+  cumulative_fitness_delta: {{ cumulative_fitness_delta }}
+  cumulative_precision_delta: {{ cumulative_precision_delta }}
+  blocking_checkpoint: {{ blocking_checkpoint }}
+
+remediation_priority:
+  critical_path_gates: {{ critical_path_gates | length }}
+  gates_blocking_release: {{ gates_blocking_release | length }}
+  estimated_total_remediation_hours: {{ estimated_remediation_hours }}

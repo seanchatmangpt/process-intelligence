@@ -1,0 +1,95 @@
+# TypeScript Projection Manifest
+# Specta-based code generation for type-safe TypeScript bindings
+# Authority: wasm4pm-compat type law surface
+
+metadata:
+  name: "ts-projection"
+  version: "1.0.0"
+  description: "TypeScript projection from wasm4pm-compat evidence types"
+  author: "Process Intelligence Research Foundry"
+  created: "2026-06-01"
+  purpose: "Generate board-admissible TypeScript type definitions for M&A assets"
+
+projection:
+  name: "ts"
+  target_language: "TypeScript"
+  source_crate: "wasm4pm-compat"
+  source_path: "../sources/wasm4pm-compat/compat"
+  feature: "ts"
+  tool: "specta"
+  tool_version: ">=1.0.0"
+
+module_allowlist:
+  - "evidence"
+  - "state"
+  - "witness"
+  - "admission"
+  - "refusal"
+  - "loss"
+  - "receipt"
+  - "graduation"
+
+module_blocklist:
+  - "discovery"
+  - "replay_execution"
+  - "conformance_execution"
+  - "ocpq_execution"
+  - "benchmark_execution"
+  - "engine_receipt_minting"
+
+export_rules:
+  - type: "struct"
+    filter: "Evidence<T,State,W>"
+    visibility: "public"
+  - type: "struct"
+    filter: "RefusalReason"
+    visibility: "public"
+  - type: "struct"
+    filter: "LossReport"
+    visibility: "public"
+  - type: "struct"
+    filter: "GraduationReason"
+    visibility: "public"
+  - type: "enum"
+    filter: "AdmissionVerdic*"
+    visibility: "public"
+  - type: "enum"
+    filter: "State*"
+    visibility: "public"
+
+output:
+  directory: "generated"
+  file: "wasm4pm-compat.ts"
+  format: "typescript"
+  module_format: "esm"
+  type_safety: "strict"
+
+generation_config:
+  emit_docs: true
+  emit_runtime_validation: false
+  emit_json_schema: true
+  include_source_comments: true
+  target_es_version: "2020"
+
+audit:
+  enabled: true
+  script: "audits/audit-ts-projection.sh"
+  gates:
+    - name: "type_coverage"
+      threshold: 100
+    - name: "export_completeness"
+      threshold: 100
+    - name: "forbidden_module_breach"
+      threshold: 0
+
+compliance:
+  standards:
+    - "ISO-IEC-23894:2024"
+    - "board-admissible"
+  evidence_backing: "wasm4pm ConformanceVerdicts + cryptographic receipts"
+  immutable: true
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "../receipts/ts-projection-receipt.json"

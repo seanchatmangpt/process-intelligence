@@ -1,0 +1,16 @@
+# Audit Query: File Count Should Not Determine Checkpoint Verdict
+# ASSERT: ALIVE verdicts are not based solely on artifact count thresholds
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+
+ASK {
+  ?checkpoint a ggen:Checkpoint .
+  ?checkpoint ggen:verdict ggen:Alive .
+  ?checkpoint ggen:criteria ?criteria .
+  ?criteria ggen:type "file-count-threshold" .
+  FILTER NOT EXISTS {
+    ?checkpoint ggen:criteria ?otherCriteria .
+    ?otherCriteria ggen:type ?type .
+    FILTER (?type NOT IN ("file-count-threshold"))
+  }
+}

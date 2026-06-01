@@ -1,0 +1,83 @@
+# GGen Unified Run Report
+
+**Timestamp:** {{ run.timestamp }}
+**Run ID:** {{ run.run_id }}
+**Program:** {{ run.program_name }}
+**Environment:** {{ run.environment }}
+
+## Executive Summary
+
+| Metric | Value |
+|--------|-------|
+| Total Artifacts Generated | {{ run.total_artifacts }} |
+| Successful Renders | {{ run.successful_renders }} |
+| Failed Gates | {{ run.failed_gates }} |
+| Conformance Score | {{ run.conformance_score }}% |
+| Execution Duration | {{ run.duration_seconds }}s |
+
+## Generation Pipeline Status
+
+{% for stage in run.pipeline_stages %}
+### {{ stage.name }}
+
+- **Status:** {{ stage.status }}
+- **Duration:** {{ stage.duration_ms }}ms
+- **Artifacts Processed:** {{ stage.artifacts_count }}
+{% if stage.errors %}
+- **Errors:** {{ stage.errors | length }}
+{% endif %}
+
+{% endfor %}
+
+## Artifact Manifest
+
+| Artifact | Type | Status | Ledger Reference |
+|----------|------|--------|------------------|
+{% for artifact in run.artifacts %}
+| {{ artifact.name }} | {{ artifact.type }} | {{ artifact.status }} | {{ artifact.ledger_ref }} |
+{% endfor %}
+
+## Gate Assessment Summary
+
+{% for gate in run.gates %}
+### {{ gate.name }}
+
+- **Type:** {{ gate.gate_type }}
+- **Result:** {{ gate.result }}
+- **Criteria Met:** {{ gate.criteria_met }}/{{ gate.total_criteria }}
+
+{% if gate.failures %}
+**Failed Criteria:**
+{% for failure in gate.failures %}
+- {{ failure.criterion }}: {{ failure.reason }}
+{% endfor %}
+{% endif %}
+
+{% endfor %}
+
+## Conformance Evidence
+
+- **Model-vs-Log Fitness:** {{ run.conformance.fitness }}
+- **Precision Score:** {{ run.conformance.precision }}
+- **Generalization Score:** {{ run.conformance.generalization }}
+- **Simplicity Score:** {{ run.conformance.simplicity }}
+
+## Next Actions
+
+{% for action in run.next_actions %}
+- {{ action }}
+{% endfor %}
+
+## Generated Ledgers
+
+Detailed ledgers have been written to:
+
+- `rendered-artifact-ledger.yaml` — All artifacts with status and metadata
+- `failed-gate-ledger.yaml` — Failed gates and remediation requirements
+- `checkpoint-ledger.md` — Execution checkpoint sequence
+- `remediation-plan.md` — Corrective actions for failures
+- `warrant-path-proof.md` — Proof of lawful execution path
+
+---
+
+**Report Generated:** {{ generated_at }}

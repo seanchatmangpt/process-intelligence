@@ -1,0 +1,45 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Filter processor drops all spans that do not belong to the Process Intelligence namespace
+  filter/pi:
+    error_mode: ignore
+    traces:
+      span:
+        - 'attributes["process.pi.instance_id"] == nil'
+
+  # Transform processor uses OTTL to extract and normalize the feedstock attributes
+  transform/pi:
+    error_mode: propagate
+    trace_statements:
+      - context: span
+        statements:
+          # Enforce lowercase and trim spaces on activity names
+          - set(attributes["process.pi.activity.name"], Lowercase(attributes["process.pi.activity.name"]))
+          # Inject ingestion metadata
+          - set(attributes["pi.intake.ingested_at"], "2026-06-01T10:10:51-07:00")
+          - set(attributes["pi.intake.collector_version"], "v0.98.0")
+
+exporters:
+  # Outputs raw telemetry feedstock to a JSON file format mapped for the process mining engine
+  file/pi_json:
+    path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/output/pi_intake_events.json
+    rotation:
+      max_megabytes: 10
+      max_backups: 5
+
+service:
+  pipelines:
+    traces/pi_intake:
+      receivers: [otlp]
+      processors: [filter/pi, transform/pi]
+      exporters: [file/pi_json]
+  telemetry:
+    logs:
+      level: info

@@ -1,0 +1,84 @@
+# otel-to-pi-witness-map.yaml
+# OpenTelemetry Resource/Tracer to Process Intelligence Witness Mapping
+# Authority: /Users/sac/process-intelligence/otel-weaver/mappings/otel-to-pi-witness-map.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Telemetry is feedstock. A witness is a telemetry feedstock source.
+# - Process consequence is court. Witness definitions must not contain or compute court verdicts.
+# - Weaver diffs are not process drift.
+
+version: "1.0.0"
+schema_url: "https://opentelemetry.io/schemas/1.25.0"
+authority: "Process Intelligence Research Foundry"
+nominal_role: "feedstock_ingestion"
+
+witness_mapping_rules:
+  - rule_id: "wit_rule_01_service_to_witness"
+    description: "Map OTel service identity to Process Intelligence witness ID"
+    source_keys:
+      - "service.name"
+      - "service.namespace"
+    target_key: "pi.feedstock.witness.id"
+    transformation:
+      type: "format_string"
+      format: "wit_{service.namespace}_{service.name}"
+      fallback: "wit_anonymous_service"
+    validation:
+      required: true
+      allow_empty: false
+
+  - rule_id: "wit_rule_02_sdk_to_source"
+    description: "Map OTel SDK and instrumentation library details to feedstock source mechanism"
+    source_keys:
+      - "telemetry.sdk.name"
+      - "telemetry.sdk.language"
+      - "otel.library.name"
+    target_key: "pi.feedstock.source"
+    transformation:
+      type: "format_string"
+      format: "{telemetry.sdk.name}:{telemetry.sdk.language}:{otel.library.name}"
+      fallback: "unknown_otel_source"
+    validation:
+      required: true
+      allow_empty: false
+
+  - rule_id: "wit_rule_03_payload_size"
+    description: "Map OTel attribute or event size to feedstock payload size"
+    source_keys:
+      - "http.request.body.size"
+      - "messaging.message.body.size"
+      - "rpc.grpc.request.length"
+    target_key: "pi.feedstock.payload_size"
+    transformation:
+      type: "coalesce_int"
+      fallback: 0
+    validation:
+      min_value: 0
+
+witness_registry:
+  - witness_id: "wit_sys_exec_01"
+    description: "eBPF System Call Witness for kernel process execution events"
+    otel_match:
+      service.name: "kernel-monitor"
+      otel.library.name: "ebpf-tracer"
+    feedstock_type: "ebpf_syscall"
+    security_context: "root_namespace"
+
+  - witness_id: "wit_db_audit_02"
+    description: "Database Audit Log Witness capturing transactional operations"
+    otel_match:
+      service.name: "postgres-db"
+      otel.library.name: "db-audit-tracer"
+    feedstock_type: "auditd"
+    security_context: "db_admin_role"
+
+  - witness_id: "wit_app_gateway_03"
+    description: "API Gateway Edge Witness capturing boundary traffic"
+    otel_match:
+      service.name: "kong-gateway"
+      otel.library.name: "http-traffic-tracer"
+    feedstock_type: "application_log"
+    security_context: "gateway_proxy"
+
+conformance_isolation:
+  prevention_rule: "Never map feedstock directly to court consequences. A witness only asserts observations of feedstock, not conformity verdicts."

@@ -1,0 +1,66 @@
+model: OpenTelemetry Collector Weaver Integration Model
+description: Configuration templates and pipeline architectures for routing OpenTelemetry Collector telemetry feedstock into Weaver's validation gateways.
+nominal_category_clarification:
+  collector_pipeline: "The OpenTelemetry Collector serves as the ingestion pipeline for raw telemetry feedstock. By integrating Weaver at the exporter or processor stage, invalid telemetry is intercepted before it affects process consequences in the court."
+
+integration_architectures:
+  - name: CI/CD Active Test Ingestion
+    description: "Telemetry feedstock is emitted by active test cases, aggregated by a local OTel Collector, and exported directly to `weaver registry live-check` over OTLP/gRPC."
+    diagram_concept: "App -> [OTel Collector (otlp exporter)] -> [Weaver Live-Check (otlp receiver:4317)]"
+
+  - name: Schema Transformation Pipeline
+    description: "The OTel Collector transforms incoming telemetry with old Schema URLs using a transformation processor (e.g. `ottl`), aligned with the Weaver Schema URL version mappings."
+
+collector_configuration_template:
+  yaml_schema:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: "0.0.0.0:4317"
+          http:
+            endpoint: "0.0.0.0:4318"
+
+    processors:
+      # The transform processor leverages OpenTelemetry Transformation Language (OTTL) 
+      # to align attributes with the target schema version specified in the Weaver registry.
+      transform/weaver_alignment:
+        error_mode: propagate
+        trace_statements:
+          - context: span
+            statements:
+              - set(attributes["sdk.version"], "1.25.0")
+              - replace_pattern(attributes["http.status_code"], "^2\\d\\d$", "2xx")
+              # Aligning deprecated attribute name with Weaver's newer registry target schema
+              - set(attributes["http.response.status_code"], attributes["http.status_code"])
+              - delete_key(attributes, "http.status_code")
+
+    exporters:
+      # OTLP exporter targeted at Weaver's live-check server endpoint
+      otlp/weaver_live_check:
+        endpoint: "localhost:4317" # Binds to weaver registry live-check gRPC listener
+        tls:
+          insecure: true
+        sending_queue:
+          enabled: true
+          num_consumers: 2
+        retry_on_failure:
+          enabled: true
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [transform/weaver_alignment]
+          exporters: [otlp/weaver_live_check]
+        metrics:
+          receivers: [otlp]
+          processors: []
+          exporters: [otlp/weaver_live_check]
+        logs:
+          receivers: [otlp]
+          processors: []
+          exporters: [otlp/weaver_live_check]
+      telemetry:
+        logs:
+          level: "info"

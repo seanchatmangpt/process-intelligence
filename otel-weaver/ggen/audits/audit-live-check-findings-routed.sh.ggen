@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# audit-live-check-findings-routed.sh.ggen
+# Verifies that findings from live feedstock intake validation are correctly and exclusively routed
+# to the process consequence (court) engine, and are not dropped or conflated with schema translation updates.
+
+set -euo pipefail
+
+echo "=== Running Audit: Live Check Findings Routing ==="
+echo "Target Source Directory: {{ target_src_dir }}"
+
+violations=0
+
+# Check that the live-check intake code contains appropriate routing to the court (consequence) engine
+# Search for presence of court consequence routing in live check code
+if ! grep -rn "route_court_consequence" "{{ target_src_dir }}"; then
+    echo "FAIL: Live check engine does not define or use a court consequence router."
+    violations=$((violations + 1))
+fi
+
+# Ensure validation failure paths route to court consequences rather than being ignored or logged only as warnings
+# We check if there's any panic or unrouted fallback in payload check
+if grep -rn "handle_incoming_feedstock" "{{ target_src_dir }}" | grep -v "route_court_consequence"; then
+    # We want to make sure the function has calls to route_court_consequence
+    # Let's inspect the files containing handle_incoming_feedstock to ensure route_court_consequence is present
+    files_with_intake=$(grep -rl "handle_incoming_feedstock" "{{ target_src_dir }}" || true)
+    if [ -n "$files_with_intake" ]; then
+        for f in $files_with_intake; do
+            if ! grep -q "route_court_consequence" "$f"; then
+                echo "FAIL: File $f has feedstock intake but does not route consequences to the Court."
+                violations=$((violations + 1))
+            fi
+        done
+    fi
+fi
+
+if [ $violations -eq 0 ]; then
+    echo "PASS: Live check feedstock findings are correctly routed to the process court."
+    exit 0
+else
+    echo "FAIL: Found $violations live check routing violations."
+    exit 1
+fi

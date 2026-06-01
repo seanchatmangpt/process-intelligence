@@ -1,0 +1,583 @@
+# Program Surface Map
+# Process Intelligence Program — Ontology Class to Artifact Cross-Reference
+# Authority: Research Foundry (PROCESS_INTELLIGENCE_ALIVE_001)
+# Generated: 2026-06-01
+# Source: pi-program.ttl + project-registry.ttl + audit-results.yaml
+
+ontology_classes:
+  total: 31
+  verified: 29
+  violations: 2
+
+surface_taxonomy:
+
+  # ============================================================
+  # AUTHORIZATION_COURT
+  # ============================================================
+  authorization_court:
+    ontology_class: "pi:AUTHORIZATION_COURT"
+    definition: "The admission/refusal/graduation gate system"
+    instances: 1
+
+    blue_river_dam:
+      id: "proj:blue-river-dam"
+      name: "Blue River Dam Orchestrator"
+      location: "/Users/sac/process-intelligence/blue_river_dam"
+      language: "Rust"
+      lines_of_code: 629
+      components: 5
+      artifacts:
+        - type: "ADMISSION_SURFACE"
+          name: "Blue River Admission Law"
+          pathways: 11
+          details: "Temporal monotonicity, schema type mismatch, causal disconnection, memory bounds, cryptographic signature, Petri net soundness, fitness threshold, object identity, BPMN OR-join, Declare constraints, duplicate event IDs"
+        - type: "REFUSAL_SURFACE"
+          name: "Blue River Refusal Surface"
+          refusal_codes: 13
+          details: "TemporalAnomaly, SchemaViolation, CausalDisconnect, MemoryBoundsViolation, HashMismatch, UnknownAuthority, SignatureVerificationFailed, UnsoundPetriNet, FitnessThresholdViolation, ObjectIdentityConflict, AmbiguousBpmnGateway, UnsupportedFeature, DuplicateEventId"
+        - type: "RECEIPT_SURFACE"
+          name: "Blue River Receipt Surface"
+          cryptography: "SHA-256 blockchain"
+          details: "Receipt on every action execution (success/failure); governance ledger with authority signature (Ed25519)"
+        - type: "CONFORMANCE_SURFACE"
+          name: "Blue River Conformance Surface"
+          algorithm: "LCS-based alignment"
+          thresholds:
+            board_admissible: 0.95
+            elastic_repair: 0.85
+      audit_status: "PASS (all 13 gates verified)"
+      checkpoint: "ORCHESTRATOR_ALIVE"
+
+  # ============================================================
+  # ADMISSION_SURFACE (Subclass)
+  # ============================================================
+  admission_surfaces:
+    ontology_class: "pi:ADMISSION_SURFACE"
+    definition: "Gates permitting evidence to enter next stage"
+    instances: 5
+    total_rules: "30+"
+
+    zoeapp_admission:
+      id: "proj:zoeapp-admission-surface"
+      parent: "proj:zoeapp"
+      location: "src/route-law/ProtectedRoute.tsx"
+      language: "TypeScript/React"
+      boundary_checks: 3
+      details: "Identity boundary (anonymous|authenticated|verified|mfa_verified), disclosure verification, BLAKE3 receipt verification"
+      refusal_codes_related: 6
+        - UNAUTHENTICATED
+        - INSUFFICIENT_BOUNDARY
+        - MISSING_DISCLOSURE
+        - RECEIPT_NOT_FOUND
+        - RECEIPT_HASH_MISMATCH
+        - RECEIPT_VERIFICATION_ERROR
+      audit_status: "PASS (audit_10)"
+
+    wasm4pm_admission:
+      id: "proj:wasm4pm-admission-surface"
+      parent: "proj:wasm4pm"
+      location: "sources/wasm4pm/src/admission/"
+      language: "Rust"
+      lifecycle_stages: 5
+      transition_rules: "Evidence<T, Parsed> → Evidence<T, ValidatedSound> → Evidence<T, Replayed>"
+      witness_lattice: "Monotonic (enforced at compile-time)"
+      audit_status: "PASS (audit_6)"
+
+    compat_admission:
+      id: "proj:compat-admission-surface"
+      parent: "proj:wasm4pm-compat"
+      location: "sources/wasm4pm-compat/compat/src/admit.rs"
+      language: "Rust"
+      trait_enforcement: "Admit<T, Raw, W> → Result<Admission<T, W>, Refusal<R, W>>"
+      reason_types: "Named law variants per impl"
+      violation_count: 0
+      audit_status: "PASS (audit_6)"
+      note: "Despite audit_005 DTO violation, admission trait itself is sound"
+
+    otel_weaver_admission:
+      id: "proj:otel-weaver-admission-surface"
+      parent: "proj:otel-weaver"
+      location: "otel-weaver/src/admission/mod.rs"
+      language: "Rust"
+      requirements: 5
+        - schema_url_present
+        - trace_id_present
+        - timestamps_monotonic
+        - no_dangling_parent_spans
+        - payload_non_empty
+      witness_type: "OtelSpanToOcelEventProjection"
+      loss_reporting: "LossReport generated for every admission"
+      audit_status: "PASS (audit_7)"
+
+  # ============================================================
+  # REFUSAL_SURFACE (Subclass)
+  # ============================================================
+  refusal_surfaces:
+    ontology_class: "pi:REFUSAL_SURFACE"
+    definition: "Named refusal laws rejecting evidence"
+    instances: 5
+    total_refusal_codes: "50+"
+
+    zoeapp_refusal:
+      id: "proj:zoeapp-refusal-surface"
+      parent: "proj:zoeapp"
+      location: "src/route-law/ProtectedRoute.tsx"
+      refusal_codes: 6
+      law_citations: "route-law/refusal-doctrine.md"
+      audit_status: "PASS (audit_10)"
+
+    wasm4pm_refusal:
+      id: "proj:wasm4pm-refusal-surface"
+      parent: "proj:wasm4pm"
+      location: "sources/wasm4pm/src/refusal/"
+      refusal_categories: 3
+        - "ConformanceRefusal: EmptyLog, EmptyModel, UnsoundNet, UnknownActivity, EarlyTermination, StateSpaceExceeded, MalformedCase, NotImplementedYet"
+        - "ReplayRefusal: EmptyLog, NoValidReplay, ActivityNotEnabled, NoFinalMarking, Deadlock, ChainCapExceeded, TimestampNonMonotonic"
+        - "OcelError: InvalidMagic, InvalidVersion, OutOfBounds, Utf8Error, NullPointer"
+      audit_status: "PASS (audit_6)"
+
+    compat_refusal:
+      id: "proj:compat-refusal-surface"
+      parent: "proj:wasm4pm-compat"
+      location: "sources/wasm4pm-compat/compat/src/refusal/"
+      refusal_laws: 7
+        - DanglingEventObjectLink
+        - MissingFinalMarking
+        - UnsoundWfNet
+        - FlatteningLoss
+        - InvalidPowlProjection
+        - UnreplayableClaim
+        - MissingWitness
+      strict_violations: 8
+      audit_status: "PASS (audit_6)"
+
+    otel_weaver_refusal:
+      id: "proj:otel-weaver-refusal-surface"
+      parent: "proj:otel-weaver"
+      location: "otel-weaver/src/refusal/finding_codex.rs"
+      finding_to_refusal_mappings: 6
+        - "find_empty_payload → EmptyTrace(violation_halt)"
+        - "find_missing_trace_id → MissingCaseId(violation_halt)"
+        - "find_non_monotone_timestamps → InvalidTimestampOrder(violation_halt)"
+        - "find_dangling_span_parent → DanglingEventObjectLink(escalation_warning)"
+        - "find_schema_url_missing → ProjectionNameRequired(violation_halt)"
+        - "find_strict_schema_mismatch → SchemaVersionMismatch(escalation_warning)"
+      audit_status: "PASS (audit_7)"
+
+  # ============================================================
+  # RECEIPT_SURFACE (Subclass)
+  # ============================================================
+  receipt_surfaces:
+    ontology_class: "pi:RECEIPT_SURFACE"
+    definition: "Cryptographic proof of lawful execution"
+    instances: 4
+    cryptography_standard: "BLAKE3 + Ed25519 + SHA-256"
+
+    zoeapp_receipt:
+      id: "proj:zoeapp-receipt-surface"
+      parent: "proj:zoeapp"
+      location: "supabase/functions/truex-verify/"
+      fixtures_count: 516
+      fixture_format: "OCEL 2.0 + BLAKE3 receipt hashes"
+      storage_fallback: 3
+        - "Zustand (in-memory cache)"
+        - "MMKV (persisted key-value store)"
+        - "SQLite (database backup)"
+      verification: "BLAKE3 cryptographic proof"
+      audit_status: "PASS (audit_11)"
+
+    wasm4pm_receipt:
+      id: "proj:wasm4pm-receipt-surface"
+      parent: "proj:wasm4pm"
+      location: "sources/wasm4pm/src/receipt/"
+      operation: "ReplayModuleReceipt::mint(artifact_hash, witness_marker, previous_receipt)"
+      binding: "IdentitySignature (Ed25519 32-byte pubkey + 64-byte signature)"
+      otel_trace: "event_chain_root (Blake3 hex)"
+      audit_status: "PASS (audit_11)"
+
+    blue_river_receipt:
+      id: "proj:blue-river-receipt-surface"
+      parent: "proj:blue-river-dam"
+      location: "blue_river_dam/src/ledger/"
+      receipt_per_execution: "Every action (success + failure)"
+      ledger_structure: "SHA-256 blockchain"
+      magic_constant: "0xDEC0FFEE (decommissioning)"
+      authority_signature: "Ed25519"
+      audit_status: "PASS (audit_11)"
+
+  # ============================================================
+  # REPLAY_SURFACE (Subclass)
+  # ============================================================
+  replay_surfaces:
+    ontology_class: "pi:REPLAY_SURFACE"
+    definition: "Deterministic re-execution of process traces"
+    instances: 3
+
+    zoeapp_replay:
+      id: "proj:zoeapp-replay-surface"
+      parent: "proj:zoeapp"
+      location: "supabase/functions/truex-hook-replay/"
+      fixtures: 516
+      fixture_format: "rec_intel_*.json with OCEL 2.0 batch hashes"
+      verdicts: 4
+        - ocel_batch_valid
+        - sha256_expected_path_match
+        - blake3_receipt_match
+        - replay_verified
+      audit_status: "PASS (audit_8)"
+
+    wasm4pm_replay:
+      id: "proj:wasm4pm-replay-surface"
+      parent: "proj:wasm4pm"
+      location: "sources/wasm4pm/src/replay/"
+      components: 2
+        - "ReplayEngine: Full token game with OtelSpan per step, BLAKE3 receipt per step"
+        - "StepSimulator: Interactive single-step execution"
+      refusal_codes: 7
+        - EmptyLog, NoValidReplay, ActivityNotEnabled, NoFinalMarking, Deadlock, ChainCapExceeded, TimestampNonMonotonic
+      audit_status: "PASS (audit_8)"
+
+  # ============================================================
+  # CONFORMANCE_SURFACE (Subclass)
+  # ============================================================
+  conformance_surfaces:
+    ontology_class: "pi:CONFORMANCE_SURFACE"
+    definition: "Compare model vs. event log"
+    instances: 2
+
+    wasm4pm_conformance:
+      id: "proj:wasm4pm-conformance-surface"
+      parent: "proj:wasm4pm"
+      location: "sources/wasm4pm/src/conformance/"
+      algorithm: "Token replay"
+      verdicts: 3
+        - FullyConforming
+        - "PartiallyConforming{fitness, deviations}"
+        - NonConforming
+      aggregation: "ConformanceVerdicts (aggregate_fitness, aggregate_precision, admission_rate)"
+      fitness_formula: "f(L, N) = 1 - (alignment_cost / (log_length * 2))"
+      audit_status: "PASS (audit_3)"
+
+    blue_river_conformance:
+      id: "proj:blue-river-conformance-surface"
+      parent: "proj:blue-river-dam"
+      location: "blue_river_dam/src/auditor/"
+      algorithm: "LCS-based alignment"
+      metrics:
+        - "fitness (threshold-based gating)"
+        - "trace_id (event identification)"
+        - "alignment_moves (deviation tracking)"
+        - "threshold (configurable gate)"
+      gate_levels: 2
+        - "board_admissible: fitness >= 0.95"
+        - "elastic_repair: 0.85 <= fitness < 0.95"
+      audit_status: "PASS (audit_3)"
+
+  # ============================================================
+  # EXECUTION_COURT
+  # ============================================================
+  execution_court:
+    ontology_class: "pi:EXECUTION_COURT"
+    definition: "Runtime engine surfaces for process mining computation"
+    instances: 2
+
+    wasm4pm_execution:
+      id: "proj:wasm4pm"
+      parent: "Process Intelligence (PROGRAM)"
+      location: "sources/wasm4pm"
+      language: "Rust"
+      executable: "WASM + Rust FFI"
+      surfaces_count: 5
+        - discovery (Inductive, Heuristics, Alpha, DFG)
+        - conformance (Token replay)
+        - replay (Token game + step simulator)
+        - receipts (BLAKE3/Ed25519 signing)
+        - admission (Evidence lifecycle)
+      audit_status: "PASS (all gates)"
+
+    blue_river_execution:
+      id: "proj:blue-river-dam"
+      name: "Blue River Dam Executor"
+      location: "/Users/sac/process-intelligence/blue_river_dam"
+      language: "Rust"
+      mape_k_components: 5
+        - Governor (authority decision-making)
+        - Architect (process definition)
+        - Operator (action execution)
+        - Auditor (conformance verification)
+        - Doctor (recovery/remediation)
+      actuation_protocols: 4
+        - elastic (0.85-0.95 fitness range)
+        - compliance (<0.85 lockdown)
+        - debt (>15% operational debt)
+        - retirement (decommissioning)
+      audit_status: "PASS (all gates)"
+
+  # ============================================================
+  # MANUFACTURING_CELL
+  # ============================================================
+  manufacturing_cells:
+    ontology_class: "pi:MANUFACTURING_CELL"
+    definition: "ggen surfaces manufacturing board-admissible artifacts"
+    instances: 2
+
+    ggen_primary:
+      id: "proj:ggen-primary-cell"
+      name: "ggen Primary Manufacturing Cell"
+      location: "/Users/sac/process-intelligence/ggen"
+      language: "Tera templates + SPARQL queries"
+      ontology_files: 1
+        - "ontology-extensions.ttl (592 lines)"
+      sparql_queries: 3
+        - "extract-board-claims.rq"
+        - "extract-diligence-claims.rq"
+        - "extract-lifecycle-governance.rq"
+      templates: 3
+        - "ma-deck.tera"
+        - "ma-diligence.tera"
+        - "blue-river.tera"
+      output_formats: "YAML, Markdown, JSON"
+      board_admissible_gate: "fitness >= 0.95 AND precision >= 0.90"
+      audit_status: "PASS (audit_4)"
+
+    ggen_telemetry:
+      id: "proj:ggen-telemetry-cell"
+      name: "ggen Telemetry Bridge Manufacturing Cell"
+      location: "/Users/sac/process-intelligence/otel-weaver/ggen"
+      parent: "ggen_primary"
+      language: "Tera templates + SPARQL queries"
+      manifests: 2
+        - "live-check-intake.manifest.yaml"
+        - "weaver-template-targets.manifest.yaml"
+      output: "OTel Weaver intake validation code + court consequence routing"
+      audit_status: "PASS (audit_4)"
+
+  # ============================================================
+  # COMPATIBILITY_LAYER
+  # ============================================================
+  compatibility_layer:
+    ontology_class: "pi:COMPATIBILITY_LAYER"
+    definition: "Paper-grounded type law for Evidence<T, State, Witness>"
+    instances: 1
+
+    wasm4pm_compat:
+      id: "proj:wasm4pm-compat"
+      name: "wasm4pm-compat Type Law"
+      location: "/Users/sac/wasm4pm-compat"
+      language: "Rust (Nightly)"
+      stability: "Nightly-only, no stable Rust"
+      scope: "Structure-only, zero execution logic"
+      lifecycle: "Raw→Parsed→Admitted→{Projected|Exportable|Receipted}"
+      type_enforcement: "Typestate pattern (Evidence<T, State, Witness>)"
+      features: 5
+        - documented: 3 (inductive_miner, heuristics_miner, alpha_miner)
+        - undocumented: 2 (ts, wasm)
+      fixtures: "46 compile-pass + 46 compile-fail"
+      violations:
+        violation_count: 2
+        violation_class: "FORBIDDEN_COLLAPSE (DTO flattening)"
+        methods_affected:
+          - "receipt_json() → String"
+          - "to_json_string() → String"
+        location: "compat/src/manufacturing/"
+        severity: "CRITICAL"
+        audit_status: "FAIL (audit_005)"
+        remediation: "Move JSON to wasm4pm engine only"
+      surfaces:
+        admission: "Admit trait (compile-time enforcement)"
+        refusals: "7 named laws + 8 strict violations"
+        graduation: "GraduateToWasm4pm trait (requires wasm4pm feature)"
+
+  # ============================================================
+  # TELEMETRY_FEEDSTOCK
+  # ============================================================
+  telemetry_feedstock:
+    ontology_class: "pi:TELEMETRY_FEEDSTOCK"
+    definition: "OTel Weaver integration layer (feedstock, not evidence)"
+    instances: 1
+
+    otel_weaver:
+      id: "proj:otel-weaver"
+      name: "OTel Weaver Integration Layer"
+      location: "/Users/sac/process-intelligence/otel-weaver"
+      language: "Rust + YAML"
+      conformance: "OpenTelemetry 1.25.0"
+      scope: "Validates OTel schema compliance; routes findings to refusal codes"
+      boundary_enforcement: "Strict feedstock/court separation"
+      doctrine_laws: 6
+        - "telemetry-is-not-process-evidence.md"
+        - "weaver-finding-is-not-receipt.md"
+        - "feedstock-admission-gate-law.md"
+        - "loss-report-encoding.md"
+        - "schema-drift-refusal-routing.md"
+        - "witness-projection-binding.md"
+      experiments: 5
+        - "Custom PI Weaver registry"
+        - "Diff bridge implementation"
+        - "Live-check to refusal routed"
+        - "OTel span to OCEL event projection"
+        - "Collector config manufacturing"
+      surfaces:
+        admission: "OtelSpanToOcelEventProjection witness"
+        refusals: "6 finding-to-refusal mappings"
+        manufacturing: "ggen telemetry cell (templates + manifests)"
+      audit_status: "PASS (audit_7)"
+
+  # ============================================================
+  # PROOF_CELL
+  # ============================================================
+  proof_cells:
+    ontology_class: "pi:PROOF_CELL"
+    definition: "Customer domain app demonstrating full-lifecycle PI"
+    instances: 1
+
+    zoeapp:
+      id: "proj:zoeapp"
+      name: "ZOEapp (Zoe Community Church)"
+      location: "/Users/sac/zoeapp"
+      language: "TypeScript + React Native"
+      framework: "Expo SDK 56 + Supabase"
+      domain: "Church ministry process intelligence"
+      scope: "Reference implementation validating process mining + conformance + receipt"
+      evidence_artifacts: 516
+      test_suites: 268
+      surfaces:
+        admission: "Route identity boundaries + disclosure verification + BLAKE3 checks"
+        refusal: "Named refusal codes (UNAUTHENTICATED, INSUFFICIENT_BOUNDARY, etc.)"
+        receipt: "BLAKE3-signed cryptographic receipts via Supabase Edge Functions"
+        replay: "Deterministic replay verification (truex-hook-replay)"
+      audit_status: "PASS (audit_8, audit_9, audit_10)"
+
+  # ============================================================
+  # ENGINE
+  # ============================================================
+  engine:
+    ontology_class: "pi:ENGINE"
+    definition: "Wasm4pm execution court (discovery, conformance, replay, receipts)"
+    instances: 1
+
+    wasm4pm:
+      id: "proj:wasm4pm"
+      name: "Wasm4PM Execution Engine"
+      location: "/Users/sac/process-intelligence/sources/wasm4pm"
+      language: "Rust"
+      executable: "WASM + FFI"
+      lines_of_code: 10098
+      scope: "Executes discovery, conformance, replay, OCPQ, cryptography"
+      algorithms:
+        discovery: 4
+          - "Inductive Miner → Evidence<ProcessTree, Admitted, InductiveWitness>"
+          - "Heuristics Miner → Evidence<PetriNet, Admitted, HeuristicsWitness>"
+          - "Alpha Miner → Evidence<PetriNet, Admitted, AlphaWitness>"
+          - "DFG Mining → Evidence<DFG, Admitted, DFGWitness>"
+        conformance: "Token replay with fitness/precision metrics"
+        replay: "Token game + step simulator (OTel span per step)"
+        ocpq: "Object-centric process queries"
+        cryptography: "BLAKE3, Ed25519, SHA-256, Curve25519"
+      parser: "Zero-copy OCEL 2.0 binary parser"
+      lifecycle: "12-state autonomic state machine"
+      features: "Gas metering, FFI bridge, receipt minting"
+      audit_status: "PASS (all gates)"
+
+  # ============================================================
+  # MOBILE_SUBSTRATE
+  # ============================================================
+  mobile_substrates:
+    ontology_class: "pi:MOBILE_SUBSTRATE"
+    definition: "Reusable auth, routing, RLS, Realtime CDC patterns"
+    instances: 1
+
+    expo_supabase:
+      id: "proj:expo-supabase-framework"
+      name: "Expo/Supabase Mobile Framework"
+      location: "Extracted from ZOEapp"
+      language: "TypeScript + React Native + PL/pgSQL"
+      components: 8
+        - "Expo Router file-system navigation (Stack.Protected guards)"
+        - "Supabase Auth (SessionProvider, JWT lifecycle, AsyncStorage persistence)"
+        - "RLS deny-by-default policies"
+        - "Realtime CDC channels (actor_commands, actor_events, actor_receipts, rdf_quads_ld)"
+        - "Edge Functions (Deno runtime)"
+        - "EAS build/update infrastructure"
+        - "ApprovalFlowManager governance"
+        - "Identity boundary hierarchy (anonymous→authenticated→verified→mfa_verified)"
+      audit_status: "PASS (audit_8, audit_10)"
+
+  # ============================================================
+  # WORKFLOW_SUBSTRATE
+  # ============================================================
+  workflow_substrates:
+    ontology_class: "pi:WORKFLOW_SUBSTRATE"
+    definition: "Phase-gated, receipt-bearing, adversarial audit loop"
+    instances: 1
+
+    claude_workflow:
+      id: "proj:claude-workflow"
+      name: "Claude Code Research Orchestration"
+      location: "/Users/sac/process-intelligence (root workflow)"
+      language: "Git commits + CLAUDE.md + Markdown"
+      phases: 12
+        - "Phase 0: Init (doctrine lock)"
+        - "Phase 1: Design (type law)"
+        - "Phase 2: Papers (canon + classification)"
+        - "Phase 3: PM4Py (capability atlas)"
+        - "Phase 4: Wasm4PM (engine execution)"
+        - "Phase 5: Compat (type law foundations)"
+        - "Phase 6: Ggen (manufacturing pipeline)"
+        - "Phase 7: OTel Weaver (feedstock integration)"
+        - "Phase 8: Blue River (autonomic governor)"
+        - "Phase 9: M&A (board claims)"
+        - "Phase 10: PARTIAL (bootstrap verdicts)"
+        - "Phase 11: ALIVE (final graduation)"
+      gate_criteria: 13
+      gates_passed: 13
+      gates_failed: 0
+      commits: 570
+      checkpoints: 4
+      receipts: 6 (categories)
+      subagent_roles: 13
+      adversarial_swarm_version: "v30.1.1"
+      adversarial_agents: 20
+      state_persistence: "git commit log + checkpoints + BLAKE3 receipt chain"
+      audit_status: "PASS (all gates)"
+
+# ============================================================
+# SURFACE INTEGRATION MATRIX
+# ============================================================
+
+surface_integration_matrix:
+  admission_count: 5
+  refusal_count: 5
+  receipt_count: 4
+  replay_count: 3
+  conformance_count: 2
+  total_surfaces: 19
+
+  separation_verified:
+    admission_refusal_separation: "ENFORCED (5+5 distinct surfaces)"
+    refusal_receipt_separation: "ENFORCED (refusals are events, receipts are proofs)"
+    replay_conformance_separation: "ENFORCED (replay=execution, conformance=verification)"
+    feedstock_evidence_separation: "ENFORCED (OTel findings ≠ receipts)"
+    manufacturing_execution_separation: "ENFORCED (ggen ≠ wasm4pm)"
+
+  duplication_status:
+    admission_surfaces: "No duplication (5 distinct implementations)"
+    refusal_surfaces: "No duplication (5 distinct law sets)"
+    receipt_surfaces: "No duplication (4 distinct ledgers)"
+    replay_surfaces: "No duplication (3 distinct engines)"
+
+violations:
+  violation_1:
+    surface: "wasm4pm-compat-DTO-boundary"
+    class: "FORBIDDEN_COLLAPSE"
+    description: "JSON serialization without type-law wrapper"
+    location: "sources/wasm4pm-compat/compat/src/manufacturing/"
+    methods:
+      - "receipt_json() → String"
+      - "to_json_string() → String"
+    audit: "audit_005"
+    severity: "CRITICAL"
+    remediation: "Move JSON to wasm4pm engine"
+
+authority_statement:
+  "This surface map is derived from pi-program.ttl (ontology) + project-registry.ttl (instances) + audit-results.yaml (verification). All classes instantiated with specific artifact locations and verification status. Map is complete and immutable."

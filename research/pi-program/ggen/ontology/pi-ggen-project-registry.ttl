@@ -1,0 +1,313 @@
+# pi-ggen-project-registry.ttl
+# Unified Program Graph — Discovered Projects Registry
+# Authority: Process Intelligence Research Foundry
+# Date: 2026-06-01
+# Scope: All 9 major systems and their ggen roles in the PI ecosystem
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix schema: <https://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix pi: <https://process.intelligence/ontology/> .
+@prefix upreg: <https://process.intelligence/unified-registry/> .
+@prefix proj: <https://process.intelligence/project/> .
+
+# ============================================================================
+# ONTOLOGY HEADER
+# ============================================================================
+
+<https://process.intelligence/unified-registry/ontology>
+  a owl:Ontology ;
+  dcterms:title "Unified Program Graph — Discovered Projects Registry"@en ;
+  dcterms:description "Complete census of all 9 major systems in the Process Intelligence ecosystem, their program roles, discovery dates, authorities, and ggen integration status."@en ;
+  dcterms:creator "Process Intelligence Research Foundry"@en ;
+  dcterms:created "2026-06-01"^^xsd:date ;
+  dcterms:modified "2026-06-01"^^xsd:date ;
+  owl:imports <https://process.intelligence/ontology/> ;
+  owl:imports <http://www.w3.org/ns/prov#> ;
+  owl:imports <http://www.w3.org/ns/dcat#> ;
+  skos:definition "Registry of all ReferencedProject instances discovered during unified program graph analysis. Each project has ggen.toml configuration, ontology fingerprint, and role assignment in the PI pyramid of authorities."@en ;
+  skos:note "Authority: ~/process-intelligence (PROGRAM role) controls all downstream project authorizations."@en .
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+upreg:ReferencedProject
+  a owl:Class ;
+  rdfs:label "Referenced Project"@en ;
+  rdfs:comment "A system or component referenced by ggen generation rules or PI research program."@en ;
+  skos:definition "A discoverable software project with ggen.toml configuration, source files (TTL/RQ/Tera), and role assignments in the PI ecosystem."@en ;
+  rdfs:subClassOf dcat:Dataset ;
+  rdfs:subClassOf prov:Entity .
+
+upreg:GgenManifest
+  a owl:Class ;
+  rdfs:label "ggen Manifest"@en ;
+  rdfs:comment "The ggen.toml configuration file for a project."@en ;
+  skos:definition "A prov:Entity representing the ggen.toml manifest that configures generation rules, query/template dependencies, and ontology sources for a project."@en ;
+  rdfs:subClassOf prov:Entity ;
+  rdfs:subClassOf dcat:Distribution .
+
+upreg:ProjectRole
+  a owl:Class ;
+  rdfs:label "Project Role"@en ;
+  rdfs:comment "The functional role of a project in the PI pyramid of authorities."@en ;
+  skos:definition "Classification: PROGRAM, ENGINE, LIFECYCLE_AUTHORITY, MANUFACTURING_CELL, PROOF_CELL, RESEARCH_SUBSTRATE, COMPATIBILITY_LAYER, SOURCE_COURT, EXECUTION_COURT, AUTHORIZATION_COURT."@en ;
+  owl:disjointUnionOf (
+    upreg:PROGRAM_ROLE
+    upreg:ENGINE_ROLE
+    upreg:LIFECYCLE_AUTHORITY_ROLE
+    upreg:MANUFACTURING_CELL_ROLE
+    upreg:PROOF_CELL_ROLE
+    upreg:RESEARCH_SUBSTRATE_ROLE
+    upreg:COMPATIBILITY_LAYER_ROLE
+    upreg:COURT_ROLE
+  ) .
+
+upreg:PROGRAM_ROLE a owl:Class ; rdfs:label "PROGRAM" .
+upreg:ENGINE_ROLE a owl:Class ; rdfs:label "ENGINE" .
+upreg:LIFECYCLE_AUTHORITY_ROLE a owl:Class ; rdfs:label "LIFECYCLE_AUTHORITY" .
+upreg:MANUFACTURING_CELL_ROLE a owl:Class ; rdfs:label "MANUFACTURING_CELL" .
+upreg:PROOF_CELL_ROLE a owl:Class ; rdfs:label "PROOF_CELL" .
+upreg:RESEARCH_SUBSTRATE_ROLE a owl:Class ; rdfs:label "RESEARCH_SUBSTRATE" .
+upreg:COMPATIBILITY_LAYER_ROLE a owl:Class ; rdfs:label "COMPATIBILITY_LAYER" .
+upreg:COURT_ROLE a owl:Class ; rdfs:label "COURT" .
+
+upreg:OntologyFingerprint
+  a owl:Class ;
+  rdfs:label "Ontology Fingerprint"@en ;
+  rdfs:comment "Hash-based summary of all TTL files in a project."@en ;
+  skos:definition "BLAKE3 digest summarizing all ontologies, enabling change detection and idempotency verification."@en ;
+  rdfs:subClassOf prov:Entity .
+
+# ============================================================================
+# PROPERTIES
+# ============================================================================
+
+upreg:projectName
+  a owl:DatatypeProperty ;
+  rdfs:label "Project Name"@en ;
+  rdfs:comment "Canonical name of the project."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range xsd:string ;
+  skos:example "process-intelligence, wasm4pm, blue_river_dam"@en .
+
+upreg:projectPath
+  a owl:DatatypeProperty ;
+  rdfs:label "Project Path"@en ;
+  rdfs:comment "File system path to the project root."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range xsd:string ;
+  skos:example "/Users/sac/process-intelligence"@en .
+
+upreg:hasProjectRole
+  a owl:ObjectProperty ;
+  rdfs:label "Has Project Role"@en ;
+  rdfs:comment "Assigns a role to a project in the PI ecosystem."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range upreg:ProjectRole ;
+  skos:cardinality "at least 1"@en .
+
+upreg:hasGgenManifest
+  a owl:ObjectProperty ;
+  rdfs:label "Has ggen Manifest"@en ;
+  rdfs:comment "Links a project to its ggen.toml configuration."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range upreg:GgenManifest ;
+  skos:cardinality "at most 1"@en .
+
+upreg:manifestPath
+  a owl:DatatypeProperty ;
+  rdfs:label "Manifest Path"@en ;
+  rdfs:comment "File system path to the ggen.toml manifest."@en ;
+  rdfs:domain upreg:GgenManifest ;
+  rdfs:range xsd:string .
+
+upreg:hasOntologyFingerprint
+  a owl:ObjectProperty ;
+  rdfs:label "Has Ontology Fingerprint"@en ;
+  rdfs:comment "Links a project to the digest of its all TTL files."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range upreg:OntologyFingerprint ;
+  skos:cardinality "at most 1"@en .
+
+upreg:fingerprintDigest
+  a owl:DatatypeProperty ;
+  rdfs:label "Fingerprint Digest"@en ;
+  rdfs:comment "BLAKE3 hash of concatenated TTL file contents."@en ;
+  rdfs:domain upreg:OntologyFingerprint ;
+  rdfs:range xsd:string .
+
+upreg:discoveredDate
+  a owl:DatatypeProperty ;
+  rdfs:label "Discovered Date"@en ;
+  rdfs:comment "Date when the project was first integrated into ggen unified run."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range xsd:date .
+
+upreg:integratedInRun
+  a owl:ObjectProperty ;
+  rdfs:label "Integrated In Run"@en ;
+  rdfs:comment "Links a project to the unified run that integrated it."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range pi:UnifiedRun .
+
+upreg:hasRepositoryUrl
+  a owl:DatatypeProperty ;
+  rdfs:label "Has Repository URL"@en ;
+  rdfs:comment "GitHub or git repository URL for the project."@en ;
+  rdfs:domain upreg:ReferencedProject ;
+  rdfs:range xsd:anyURI ;
+  skos:example "https://github.com/seanchatmangpt/process-intelligence"@en .
+
+# ============================================================================
+# SHAPES
+# ============================================================================
+
+upreg:ReferencedProjectShape
+  a sh:NodeShape ;
+  sh:targetClass upreg:ReferencedProject ;
+  sh:closed false ;
+  sh:property [
+    sh:path upreg:projectName ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "ReferencedProject must have exactly one project name."@en
+  ] ;
+  sh:property [
+    sh:path upreg:projectPath ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "ReferencedProject must have exactly one project path."@en
+  ] ;
+  sh:property [
+    sh:path upreg:hasProjectRole ;
+    sh:minCount 1 ;
+    sh:message "ReferencedProject must have at least one role."@en
+  ] .
+
+# ============================================================================
+# INSTANCES (All 9 Major Systems)
+# ============================================================================
+
+proj:process-intelligence
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "Process Intelligence Research Foundry"@en ;
+  dcterms:description "Canonical research authority for full-lifecycle process intelligence. Studies process evidence type law, execution architecture, public standards compliance, and board-admissible M&A claims."@en ;
+  upreg:projectName "process-intelligence"@en ;
+  upreg:projectPath "/Users/sac/process-intelligence"@en ;
+  upreg:hasProjectRole upreg:PROGRAM_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  upreg:hasRepositoryUrl "https://github.com/seanchatmangpt/process-intelligence"@en ;
+  schema:codeRepository "file:///Users/sac/process-intelligence"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en ;
+  dcterms:created "2025-01-01"^^xsd:date .
+
+proj:wasm4pm
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "WASM4PM — Process Mining Engine"@en ;
+  dcterms:description "Deterministic, branchless process mining and conformance engine. Implements mining algorithms, conformance checking, and cryptographic receipt emission."@en ;
+  upreg:projectName "wasm4pm"@en ;
+  upreg:projectPath "/Users/sac/wasm4pm"@en ;
+  upreg:hasProjectRole upreg:ENGINE_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  upreg:hasRepositoryUrl "https://github.com/seanchatmangpt/wasm4pm"@en ;
+  schema:codeRepository "file:///Users/sac/wasm4pm"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .
+
+proj:wasm4pm-compat
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "WASM4PM Compatibility Layer"@en ;
+  dcterms:description "Type law foundation for boundary conformance. Defines witness lattices and graduation pathways from declarative evidence to engine-native execution."@en ;
+  upreg:projectName "wasm4pm-compat"@en ;
+  upreg:projectPath "/Users/sac/wasm4pm-compat"@en ;
+  upreg:hasProjectRole upreg:COMPATIBILITY_LAYER_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  upreg:hasRepositoryUrl "https://github.com/seanchatmangpt/wasm4pm-compat"@en ;
+  schema:codeRepository "file:///Users/sac/wasm4pm-compat"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .
+
+proj:blue-river-dam
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "Blue River Dam — Lifecycle Authority"@en ;
+  dcterms:description "MAPE-K autonomic governance engine. Orchestrates monitor-analyze-plan-execute lifecycle loops and enforces process state transitions."@en ;
+  upreg:projectName "blue-river-dam"@en ;
+  upreg:projectPath "/Users/sac/process-intelligence/blue_river_dam"@en ;
+  upreg:hasProjectRole upreg:LIFECYCLE_AUTHORITY_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  schema:codeRepository "file:///Users/sac/process-intelligence/blue_river_dam"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .
+
+proj:ggen
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "ggen — Governance Generation Engine"@en ;
+  dcterms:description "Code generation machinery. Orchestrates SPARQL queries over TTL ontologies and renders Tera templates into artifacts (Rust code, TypeScript, YAML, Markdown)."@en ;
+  upreg:projectName "ggen"@en ;
+  upreg:projectPath "/Users/sac/process-intelligence/ggen"@en ;
+  upreg:hasProjectRole upreg:MANUFACTURING_CELL_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  schema:codeRepository "file:///Users/sac/process-intelligence/ggen"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .
+
+proj:zoeapp
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "ZOEapp — Process Intelligence Proof Cell"@en ;
+  dcterms:description "Validation and conformance proof cell. Implements OCEL mining, token replay verification, and board-admissible claim issuance."@en ;
+  upreg:projectName "zoeapp"@en ;
+  upreg:projectPath "/Users/sac/zoeapp"@en ;
+  upreg:hasProjectRole upreg:PROOF_CELL_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  upreg:hasRepositoryUrl "https://github.com/seanchatmangpt/zoeapp"@en ;
+  schema:codeRepository "file:///Users/sac/zoeapp"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .
+
+proj:otel-weaver
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "OTel Weaver — Telemetry Standardization"@en ;
+  dcterms:description "Standards-based telemetry instrumentation and event log production. Bridges observability infrastructure to OCEL proof surfaces."@en ;
+  upreg:projectName "otel-weaver"@en ;
+  upreg:projectPath "/Users/sac/process-intelligence/otel-weaver"@en ;
+  upreg:hasProjectRole upreg:RESEARCH_SUBSTRATE_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  schema:codeRepository "file:///Users/sac/process-intelligence/otel-weaver"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .
+
+proj:claude-workflow
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "Claude Workflow — Multi-Agent Orchestration"@en ;
+  dcterms:description "Workflow substrate for multi-agent AI-driven process mining tasks and research automation."@en ;
+  upreg:projectName "claude-workflow"@en ;
+  upreg:projectPath "/Users/sac/process-intelligence/claude-workflow"@en ;
+  upreg:hasProjectRole upreg:RESEARCH_SUBSTRATE_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  schema:codeRepository "file:///Users/sac/process-intelligence/claude-workflow"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .
+
+proj:prompt-manufactory
+  a upreg:ReferencedProject ;
+  a dcat:Dataset ;
+  dcterms:title "Prompt Manufactory — Research Automation"@en ;
+  dcterms:description "Manufacturing cell for reproducible AI-driven research programs. Generates checkpoint verdicts, remediation plans, and research workflows."@en ;
+  upreg:projectName "prompt-manufactory"@en ;
+  upreg:projectPath "/Users/sac/process-intelligence/research/prompt-manufactory"@en ;
+  upreg:hasProjectRole upreg:MANUFACTURING_CELL_ROLE ;
+  upreg:discoveredDate "2026-06-01"^^xsd:date ;
+  schema:codeRepository "file:///Users/sac/process-intelligence/research/prompt-manufactory"@en ;
+  prov:wasAttributedTo "Sean Chatman"@en .

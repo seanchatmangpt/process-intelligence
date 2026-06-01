@@ -1,0 +1,60 @@
+---
+# Rendered Artifact Ledger — All Generated Outputs
+# Generated: {{ generated_at }}
+# Run ID: {{ run.run_id }}
+
+artifacts:
+{% for artifact in artifacts %}
+  - artifact_id: {{ artifact.artifact_id }}
+    name: "{{ artifact.name }}"
+    type: {{ artifact.type }}
+    format: {{ artifact.format }}
+
+    generation:
+      template: "{{ artifact.generation.template }}"
+      rule_applied: {{ artifact.generation.rule_applied }}
+      source_binding: "{{ artifact.generation.source_binding }}"
+      generated_at: "{{ artifact.generation.generated_at }}"
+      duration_ms: {{ artifact.generation.duration_ms }}
+
+    output:
+      path: "{{ artifact.output.path }}"
+      absolute_path: "{{ artifact.output.absolute_path }}"
+      size_bytes: {{ artifact.output.size_bytes }}
+      line_count: {{ artifact.output.line_count }}
+      checksum_sha256: "{{ artifact.output.checksum_sha256 }}"
+
+    status:
+      render_status: {{ artifact.status.render_status }}
+      gate_status: {{ artifact.status.gate_status }}
+      conformance_status: {{ artifact.status.conformance_status }}
+      final_verdict: {{ artifact.status.final_verdict }}
+
+    validation:
+{% for validation in artifact.validation %}
+      - validator: {{ validation.validator }}
+        check_type: {{ validation.check_type }}
+        result: {{ validation.result }}
+        timestamp: "{{ validation.timestamp }}"
+{% endfor %}
+
+    dependencies:
+      upstream_artifacts: {{ artifact.dependencies.upstream_artifacts | length }}
+      downstream_artifacts: {{ artifact.dependencies.downstream_artifacts | length }}
+
+    metadata:
+      content_category: {{ artifact.metadata.content_category }}
+      authority_level: {{ artifact.metadata.authority_level }}
+      immutable: {{ artifact.metadata.immutable }}
+      indexed: {{ artifact.metadata.indexed }}
+
+{% endfor %}
+
+artifact_summary:
+  total_artifacts: {{ artifacts | length }}
+  by_status:
+    success: {{ artifacts | select(attribute='status') | select(attribute='render_status', value='success') | length }}
+    partial: {{ artifacts | select(attribute='status') | select(attribute='render_status', value='partial') | length }}
+    failed: {{ artifacts | select(attribute='status') | select(attribute='render_status', value='failed') | length }}
+  total_output_bytes: {{ artifacts | map(attribute='output') | map(attribute='size_bytes') | sum }}
+  total_lines_generated: {{ artifacts | map(attribute='output') | map(attribute='line_count') | sum }}

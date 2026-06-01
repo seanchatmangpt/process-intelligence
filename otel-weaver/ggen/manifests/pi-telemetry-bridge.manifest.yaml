@@ -1,0 +1,67 @@
+# pi-telemetry-bridge.manifest.yaml
+# Generation manifest for the Process Intelligence Telemetry Bridge
+# Authority: /Users/sac/process-intelligence/otel-weaver/ggen/manifests/pi-telemetry-bridge.manifest.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Telemetry is feedstock.
+# - Process consequence is court.
+# - Weaver diffs are not process drift.
+
+metadata:
+  name: "pi-telemetry-bridge"
+  version: "1.0.0"
+  description: "Generates the telemetry-to-evidence bridge converting OTel feedstock to Court-grade receipts"
+  author: "Process Intelligence Research Foundry"
+  created: "2026-06-01"
+  purpose: "Establish type-safe translation boundary from OTel trace spans to OCEL 2.0 process events"
+
+bridge_configuration:
+  source_crate: "wasm4pm-compat"
+  source_path: "/Users/sac/process-intelligence/sources/wasm4pm-compat/compat"
+  mapping_reference: "/Users/sac/process-intelligence/otel-weaver/mappings/otel-signal-to-process-evidence-map.yaml"
+  loss_policy_reference: "OtelToOcelLossPolicy"
+  witness_signature: "OtelSpanToOcelEventProjection"
+
+templates:
+  - source_template: "/Users/sac/process-intelligence/otel-weaver/ggen/templates/pi-witness-map.rs.ggen"
+    output_file: "/Users/sac/process-intelligence/otel-weaver/generated/pi_witness_map.rs"
+    format: "rust"
+  - source_template: "/Users/sac/process-intelligence/otel-weaver/ggen/templates/pi-otel-constants.rs.ggen"
+    output_file: "/Users/sac/process-intelligence/otel-weaver/generated/pi_otel_constants.rs"
+    format: "rust"
+
+input_schema_bindings:
+  - name: "witnesses"
+    mapping_source: "/Users/sac/process-intelligence/otel-weaver/mappings/otel-to-pi-witness-map.yaml"
+    extract_key: "witness_registry"
+  - name: "consequences"
+    mapping_source: "/Users/sac/process-intelligence/otel-weaver/mappings/live-check-finding-to-refusal-map.yaml"
+    extract_key: "refusal_mappings"
+
+generation_config:
+  emit_docs: true
+  type_safety: "strict"
+  target_rust_edition: "2021"
+
+audit:
+  enabled: true
+  script: "/Users/sac/process-intelligence/audits/audit-telemetry-bridge.sh"
+  gates:
+    - name: "witness_completeness"
+      threshold: 100
+    - name: "type_conformance"
+      threshold: 100
+    - name: "loss_policy_declaration"
+      threshold: 100
+
+compliance:
+  standards:
+    - "ISO-IEC-23894:2024"
+    - "board-admissible"
+  evidence_backing: "wasm4pm ConformanceVerdicts + Blake3 cryptographic receipts"
+  immutable: true
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "/Users/sac/process-intelligence/receipts/pi-telemetry-bridge-receipt.json"

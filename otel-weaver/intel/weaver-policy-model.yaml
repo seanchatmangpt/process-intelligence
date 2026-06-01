@@ -1,0 +1,89 @@
+model: Weaver Policy Model
+description: Structural model of the OPA Rego policy rules and input schemas evaluated by the Weaver validation engine.
+nominal_category_clarification:
+  policy_court: "Rego policies act as code-level gates defining legal requirements. In process intelligence, policy compliance guarantees that telemetry feedstock conforms to the baseline standards required for process consequence checks (the court)."
+
+policy_file:
+  extension: .rego
+  execution_phase: Run during `weaver registry check`, `generate`, and `live-check` to validate schema conformity.
+
+input_schema:
+  description: The JSON payload representation of the resolved semantic convention registry passed to the Rego engine.
+  structure:
+    type: object
+    fields:
+      - name: name
+        type: string
+        description: Name of the registry.
+      - name: groups
+        type: array
+        description: Array of all resolved semantic convention groups.
+        items:
+          type: object
+          properties:
+            - id: string
+            - type: string (e.g. span, metric, event, attribute_group, resource)
+            - brief: string
+            - note: string
+            - prefix: string
+            - stability: string
+            - attributes: array of attribute objects
+      - name: attributes
+        type: array
+        description: Flattened list of all resolved attributes across all groups.
+        items:
+          type: object
+          properties:
+            - id: string
+            - type: string
+            - brief: string
+            - note: string
+            - stability: string
+            - requirement_level: string
+            - examples: array of examples
+
+expected_policy_rules:
+  description: Weaver evaluates policies by looking for specific rule definitions. Violations trigger lint warnings or process aborts.
+  rules:
+    - name: deny
+      type: set of strings or objects
+      description: Defines critical errors. If a deny rule evaluates to true/non-empty, Weaver fails the validation check and exits with a non-zero exit code.
+      example_rego: |
+        deny[msg] {
+          group := input.groups[_]
+          group.type == "metric"
+          not group.metric_name
+          msg := sprintf("Metric group '%s' must define 'metric_name'", [group.id])
+        }
+      structured_example: |
+        deny[violation] {
+          attr := input.attributes[_]
+          not startswith(attr.id, "company.")
+          violation := {
+            "id": "ATTR-001",
+            "message": sprintf("Attribute '%s' must be prefixed with 'company.'", [attr.id]),
+            "severity": "error"
+          }
+        }
+
+    - name: warn
+      type: set of strings or objects
+      description: Defines non-fatal violations. If a warn rule evaluates to true/non-empty, Weaver prints the warning messages but still exits with a code of 0 (unless strict mode is enabled).
+      example_rego: |
+        warn[msg] {
+          attr := input.attributes[_]
+          not attr.brief
+          msg := sprintf("Attribute '%s' is missing a brief description", [attr.id])
+        }
+
+policy_execution_flow:
+  - step: 1
+    action: Resolve imports and dependencies.
+  - step: 2
+    action: Convert resolved registry to JSON.
+  - step: 3
+    action: Run OPA Rego engine passing the JSON registry as `input`.
+  - step: 4
+    action: Query `data.weaver.deny` and `data.weaver.warn` (or top-level rules).
+  - step: 5
+    action: Output violations to stderr or selected diagnostic format (ansi, json, gh_workflow_command).

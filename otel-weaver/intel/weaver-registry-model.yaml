@@ -1,0 +1,146 @@
+model: Weaver Registry Model
+description: Schema structure and constraints for Weaver Semantic Convention registries.
+nominal_category_mapping:
+  telemetry_context: "Telemetry data structures defined in this registry represent the schema of the Feedstock. Clean definitions prevent downstream errors in the Court (process consequence verification)."
+
+manifest_schema:
+  file_name: manifest.yaml
+  location: Root of the registry directory.
+  required: true
+  fields:
+    - name: name
+      type: string
+      required: true
+      description: The canonical name of this semantic convention registry.
+    - name: description
+      type: string
+      required: false
+      description: Detailed summary of the registry's scope and contents.
+    - name: schema_url
+      type: string
+      required: true
+      description: The base schema URL representing the canonical location of the versions mapped in this registry.
+    - name: dependencies
+      type: array
+      required: false
+      description: External registries that this registry depends on or extends.
+      items:
+        type: object
+        fields:
+          - name: name
+            type: string
+            required: true
+            description: Alias name for the dependency registry used in ref imports.
+          - name: registry_path
+            type: string
+            required: true
+            description: Path to the dependency. Can be a local filesystem directory, a Git URL (with optional @refspec), or an archive URL.
+
+definition_schema:
+  location: Subdirectories within the registry (usually under `groups/` or similar folders).
+  file_pattern: "*.yaml"
+  fields:
+    - name: file_format
+      type: string
+      required: true
+      description: "Syntax version of the definition schema format. Examples: 'definition/1' or 'definition/2'."
+    - name: groups
+      type: array
+      required: true
+      description: A collection of semantic convention groups defining signals or attributes.
+      items:
+        type: object
+        fields:
+          - name: id
+            type: string
+            required: true
+            description: Unique identifier of the group. Must match naming policies.
+          - name: type
+            type: string
+            required: true
+            description: The semantic category of the group.
+            enum:
+              - attribute_group  # Auxiliary group of attributes without independent signal status
+              - span             # Spans representing distributed tracing steps
+              - event            # Structured logs or span events
+              - metric           # Quantitative measurements / metrics
+              - resource         # Environmental / process context attributes
+              - entity           # Abstract entity definition
+          - name: brief
+            type: string
+            required: true
+            description: Short summary of the group's meaning and purpose.
+          - name: note
+            type: string
+            required: false
+            description: Detailed explanations or edge cases regarding the group.
+          - name: prefix
+            type: string
+            required: false
+            description: String prefix automatically prepended to the attributes defined inside this group.
+          - name: stability
+            type: string
+            required: false
+            description: Lifecycle state of the group.
+            enum: [development, alpha, beta, release_candidate, stable]
+          - name: attributes
+            type: array
+            required: false
+            description: List of attributes belonging to this group.
+            items:
+              type: object
+              properties:
+                - name: id
+                  type: string
+                  required: false
+                  description: Unique ID of the attribute within this group (concatenated with prefix if specified). Either `id` or `ref` must be present.
+                - name: ref
+                  type: string
+                  required: false
+                  description: Reference to an attribute defined elsewhere or in a dependency. Either `id` or `ref` must be present.
+                - name: type
+                  type: string
+                  required: false
+                  description: Data type of the attribute. (Required if `id` is specified).
+                  enum: [string, int, double, boolean, "string[]", "int[]", "double[]", "boolean[]"]
+                - name: brief
+                  type: string
+                  required: false
+                  description: Short description of the attribute.
+                - name: note
+                  type: string
+                  required: false
+                  description: In-depth usage notes for the attribute.
+                - name: stability
+                  type: string
+                  required: false
+                  description: Maturity level of the attribute.
+                - name: requirement_level
+                  type: string
+                  required: false
+                  description: Compliance severity for emitting this attribute.
+                  enum: [required, recommended, opt_in, conditional]
+                - name: value
+                  type: any
+                  required: false
+                  description: Static/constant value if the attribute is pinned to a fixed literal.
+                - name: examples
+                  type: array
+                  required: false
+                  description: List of example values to aid implementation.
+                  items: [string, number, boolean]
+
+          # Fields specific to type: metric
+          - name: metric_name
+            type: string
+            required: false
+            description: The formal name of the metric instrument as emitted in OTLP.
+          - name: instrument
+            type: string
+            required: false
+            description: The metric instrument class.
+            enum: [counter, upwarddeviation, gauge, histogram, exponential_histogram, integration]
+          - name: unit
+            type: string
+            required: false
+            description: The unit of measurement conforming to UCUM standards (e.g. ms, By, s, 1).

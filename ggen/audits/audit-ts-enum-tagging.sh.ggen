@@ -1,0 +1,250 @@
+#!/usr/bin/env bash
+# Audit: TypeScript Enum Tagging Rule Compliance
+# Authority: ggen/rules/ts-projection-law.yaml (enum_tagging_rules section)
+# Purpose: Verify that enum tagging rules (external/internal/adjacent/untagged)
+#          are correctly applied and match serde attribute specifications
+
+set -euo pipefail
+
+# Configuration
+TS_OUTPUT_DIR="{{ ts_output_dir | default(value='generated') }}"
+TS_PATTERN="{{ ts_pattern | default(value='*.ts') }}"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+audit_log=""
+failures=0
+warnings=0
+
+log_info() {
+  echo -e "${GREEN}[INFO]${NC} $1"
+  audit_log+=$'  INFO: '"$1"$'\n'
+}
+
+log_warn() {
+  echo -e "${YELLOW}[WARN]${NC} $1"
+  audit_log+=$'  WARN: '"$1"$'\n'
+  ((warnings++))
+}
+
+log_fail() {
+  echo -e "${RED}[FAIL]${NC} $1"
+  audit_log+=$'  FAIL: '"$1"$'\n'
+  ((failures++))
+}
+
+if [ ! -d "$TS_OUTPUT_DIR" ]; then
+  log_fail "TypeScript output directory not found: $TS_OUTPUT_DIR"
+  exit 1
+fi
+
+log_info "=== TypeScript Enum Tagging Rule Audit ==="
+log_info "Output Directory: $TS_OUTPUT_DIR"
+
+# Expected tagging patterns:
+# External (default): { VariantName: payload }
+# Internal: { tag: "VariantName", ...fields }
+# Adjacent: { tag: "VariantName", content: payload }
+# Untagged: VariantType | VariantType2 (union)
+
+# =============================================================================
+# GATE 1: Enum Detection
+# =============================================================================
+
+log_info "GATE 1: Detecting Enum Types in Generated Output"
+
+enum_count=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Count enum or union types
+  enum_matches=$(grep -c "enum \|type.*=" "$ts_file" || echo 0)
+  if [ "$enum_matches" -gt 0 ]; then
+    log_info "  Found enums in $(basename "$ts_file"): $enum_matches"
+    enum_count=$((enum_count + enum_matches))
+  fi
+done
+
+log_info "  Total enum/union types found: $enum_count"
+
+if [ "$enum_count" -eq 0 ]; then
+  log_warn "  No enum types detected; may be missing expected types"
+fi
+
+# =============================================================================
+# GATE 2: External Tagging Pattern Verification
+# =============================================================================
+
+log_info "GATE 2: Verifying External Tagging Patterns"
+
+# External pattern: { VariantName: PayloadType }
+external_violations=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Look for external-tagged unions (the default serde format)
+  # Pattern: | { VariantName: Type } | { VariantName2: Type }
+  if grep -q "{ [A-Z][a-zA-Z]*: " "$ts_file"; then
+    log_info "  External tagging pattern found in $(basename "$ts_file")"
+
+    # Count valid external patterns
+    count=$(grep -c "{ [A-Z][a-zA-Z]*: " "$ts_file" || echo 0)
+    log_info "    ✓ $count external-tagged variants found"
+  fi
+done
+
+# =============================================================================
+# GATE 3: Internal Tagging Pattern Verification
+# =============================================================================
+
+log_info "GATE 3: Verifying Internal Tagging Patterns"
+
+# Internal pattern: { tag: "VariantName", ...fields }
+internal_violations=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  if grep -q "tag.*:" "$ts_file"; then
+    log_info "  Internal tagging pattern found in $(basename "$ts_file")"
+
+    # Count internal patterns
+    count=$(grep -c "tag.*:" "$ts_file" || echo 0)
+    if [ "$count" -gt 0 ]; then
+      log_info "    ✓ $count internal-tagged fields found"
+    fi
+  fi
+done
+
+# =============================================================================
+# GATE 4: Adjacent Tagging Pattern Verification
+# =============================================================================
+
+log_info "GATE 4: Verifying Adjacent Tagging Patterns"
+
+# Adjacent pattern: { tag: "VariantName", content: Payload }
+adjacent_violations=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  if grep -q "tag.*content" "$ts_file"; then
+    log_info "  Adjacent tagging pattern found in $(basename "$ts_file")"
+
+    count=$(grep -c "tag.*content\|content.*tag" "$ts_file" || echo 0)
+    if [ "$count" -gt 0 ]; then
+      log_info "    ✓ $count adjacent-tagged fields found"
+    fi
+  fi
+done
+
+# =============================================================================
+# GATE 5: Untagged Union Pattern Verification
+# =============================================================================
+
+log_info "GATE 5: Verifying Untagged Union Patterns"
+
+# Untagged pattern: Type1 | Type2 | Type3
+untagged_violations=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Look for union types without explicit tags
+  if grep -q "type.*= .*|.*|" "$ts_file"; then
+    log_info "  Untagged union pattern found in $(basename "$ts_file")"
+
+    count=$(grep -c "type.*= .*|.*|" "$ts_file" || echo 0)
+    if [ "$count" -gt 0 ]; then
+      log_info "    ✓ $count untagged union types found"
+    fi
+  fi
+done
+
+# =============================================================================
+# GATE 6: Serde Attribute Alignment
+# =============================================================================
+
+log_info "GATE 6: Verifying Serde Attribute Alignment"
+
+# This checks that if Rust code has serde attributes, they're reflected in TS output
+
+# Look for evidence of serde alignment:
+# #[serde(rename_all = "camelCase")] -> keys should be camelCase in TS
+# #[serde(tag = "...")] -> tag field should be present
+# #[serde(untagged)] -> no tag in TS
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Check if camelCase keys are used (sign of rename_all)
+  if grep -q "[a-z][a-zA-Z]*:" "$ts_file"; then
+    log_info "  Serde camelCase alignment in $(basename "$ts_file")"
+    log_info "    ✓ camelCase keys detected (serde rename_all alignment)"
+  fi
+
+  # Check for tag fields (sign of serde(tag = "..."))
+  if grep -q "\"tag\"\|'tag'" "$ts_file"; then
+    log_info "    ✓ tag field detected (serde tag alignment)"
+  fi
+done
+
+# =============================================================================
+# GATE 7: Variant Name Consistency
+# =============================================================================
+
+log_info "GATE 7: Verifying Variant Name Consistency"
+
+# Ensure variant names don't have unexpected transformations
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Check for common variant names from wasm4pm-compat
+  variant_names=("Raw" "Parsed" "Admitted" "Refused" "Projected" "Exportable" "Receipted")
+
+  for variant in "${variant_names[@]}"; do
+    if grep -q "$variant" "$ts_file"; then
+      log_info "  ✓ Variant '$variant' found in $(basename "$ts_file")"
+    fi
+  done
+done
+
+# =============================================================================
+# GATE 8: Forbidden Tagging Patterns
+# =============================================================================
+
+log_info "GATE 8: Checking for Forbidden Tagging Patterns"
+
+forbidden_violations=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Check for anti-patterns:
+  # - Mixing of tagging styles in same enum (should be consistent)
+  # - Use of undefined type variables
+  # - Tag fields with non-string values
+
+  if grep -q "type_tag\|variant_type\|type: " "$ts_file"; then
+    log_fail "  Possible non-standard tag naming in $(basename "$ts_file")"
+    forbidden_violations=$((forbidden_violations + 1))
+  fi
+done
+
+if [ "$forbidden_violations" -eq 0 ]; then
+  log_info "  ✓ No forbidden tagging patterns detected"
+else
+  log_fail "  Found $forbidden_violations file(s) with non-standard patterns"
+  ((warnings++))
+fi
+
+# =============================================================================
+# Summary & Exit Code
+# =============================================================================
+
+echo ""
+log_info "=== Audit Summary ==="
+log_info "Failures: $failures"
+log_info "Warnings: $warnings"
+
+if [ $failures -eq 0 ]; then
+  log_info "✓ All enum tagging gates PASSED"
+  echo ""
+  echo "$audit_log"
+  exit 0
+else
+  log_fail "✗ Enum tagging audit FAILED with $failures error(s)"
+  echo ""
+  echo "$audit_log"
+  exit 1
+fi

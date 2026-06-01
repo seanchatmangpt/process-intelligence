@@ -1,0 +1,403 @@
+# pi-ggen-unified-run.ttl
+# Unified Program Graph — Top-Level Workflow & Run Metadata
+# Authority: Process Intelligence Research Foundry
+# Date: 2026-06-01
+# Scope: Complete ggen execution context, run provenance, artifact lineage
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix schema: <https://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix pi: <https://process.intelligence/ontology/> .
+@prefix urun: <https://process.intelligence/unified-run/> .
+
+# ============================================================================
+# ONTOLOGY HEADER
+# ============================================================================
+
+<https://process.intelligence/unified-run/ontology>
+  a owl:Ontology ;
+  dcterms:title "Unified Program Graph — Run Metadata & Workflow"@en ;
+  dcterms:description "Top-level workflow execution context, run provenance, artifact lineage, and manufacturing pipeline state for the complete ggen unified program graph."@en ;
+  dcterms:creator "Process Intelligence Research Foundry"@en ;
+  dcterms:created "2026-06-01"^^xsd:date ;
+  dcterms:modified "2026-06-01"^^xsd:date ;
+  dcterms:issued "2026-06-01"^^xsd:date ;
+  dcterms:version "1.0.0"@en ;
+  owl:imports <https://process.intelligence/ontology/> ;
+  owl:imports <http://www.w3.org/ns/prov#> ;
+  skos:definition "Describes the unified execution run that orchestrated discovery and generation of all 7 TTL files: pi-ggen-unified-run (this file), pi-ggen-project-registry, pi-ggen-source-ledger, pi-ggen-generation-ledger, pi-ggen-invalid-extension-ledger, pi-ggen-checkpoint-ledger, pi-ggen-audit-law."@en ;
+  skos:note "This ontology grounds all lineage, provenance, and manufacturing state at the top level. All artifacts flow from the unified run activity."@en .
+
+# ============================================================================
+# CLASSES
+# ============================================================================
+
+urun:UnifiedRun
+  a owl:Class ;
+  rdfs:label "Unified Run"@en ;
+  rdfs:comment "A single coordinated execution of the ggen unified program graph, producing all 7 TTL ontologies, all generated artifacts, and all proof gates."@en ;
+  skos:definition "Top-level prov:Activity representing one complete manufacturing cycle of the Process Intelligence unified program graph."@en ;
+  rdfs:subClassOf prov:Activity ;
+  owl:disjointWith prov:Entity .
+
+urun:ManufacturingPipeline
+  a owl:Class ;
+  rdfs:label "Manufacturing Pipeline"@en ;
+  rdfs:comment "The complete ordered sequence of generation rules, queries, templates, and rendering operations that produce artifacts from ontologies."@en ;
+  skos:definition "A coordinated set of generation rules executed in dependency order, consuming TTL/RQ/Tera sources and producing rendered artifacts with proof receipts."@en ;
+  rdfs:subClassOf prov:Activity .
+
+urun:PipelineStage
+  a owl:Class ;
+  rdfs:label "Pipeline Stage"@en ;
+  rdfs:comment "A single stage in the manufacturing pipeline: ontology load, query execution, template rendering, artifact emission, or proof gate evaluation."@en ;
+  skos:definition "An atomic unit of work within the manufacturing pipeline, with clear input/output contracts and conformance criteria."@en ;
+  rdfs:subClassOf prov:Activity .
+
+urun:RunMetadata
+  a owl:Class ;
+  rdfs:label "Run Metadata"@en ;
+  rdfs:comment "Execution context metadata: start/end times, version numbers, authority signatures, gate pass/fail status."@en ;
+  skos:definition "Container for all runtime state, timestamps, hash digests, and cryptographic receipts emitted during the unified run."@en ;
+  rdfs:subClassOf prov:Entity .
+
+urun:ArtifactManufacture
+  a owl:Class ;
+  rdfs:label "Artifact Manufacture"@en ;
+  rdfs:comment "A rendered artifact (code, document, configuration) produced by a generation rule (query + template)."@en ;
+  skos:definition "A prov:Entity representing one manufactured artifact, with full provenance chain back to source queries, templates, and ontologies."@en ;
+  rdfs:subClassOf prov:Entity ;
+  rdfs:subClassOf dcat:Distribution .
+
+urun:WarrantPath
+  a owl:Class ;
+  rdfs:label "Warrant Path"@en ;
+  rdfs:comment "An end-to-end authorization path from a research program through checkpoints to an authorized artifact."@en ;
+  skos:definition "A SPARQL-derivable path that proves an artifact's fitness for board presentation via complete provenance from ALIVE_CLAIM."@en ;
+  rdfs:subClassOf prov:Entity ;
+  owl:disjointUnionOf (
+    urun:DirectWarrantPath
+    urun:ConditionalWarrantPath
+    urun:RefusedWarrantPath
+  ) .
+
+urun:DirectWarrantPath
+  a owl:Class ;
+  rdfs:label "Direct Warrant Path"@en ;
+  rdfs:comment "A warrant path with no gaps or conditional refusals; all gates pass."@en ;
+  skos:definition "End-to-end path from ALIVE checkpoint → generation rule → artifact manufacture, all conformance thresholds met."@en ;
+  rdfs:subClassOf urun:WarrantPath .
+
+urun:ConditionalWarrantPath
+  a owl:Class ;
+  rdfs:label "Conditional Warrant Path"@en ;
+  rdfs:comment "A warrant path with conditional gating; artifact is board-admissible under stated conditions only."@en ;
+  skos:definition "Path through PARTIAL checkpoint or conditional refusal; artifact licensed only for stated use case or domain."@en ;
+  rdfs:subClassOf urun:WarrantPath .
+
+urun:RefusedWarrantPath
+  a owl:Class ;
+  rdfs:label "Refused Warrant Path"@en ;
+  rdfs:comment "A warrant path rejected by one or more audit gates; artifact cannot be released without remediation."@en ;
+  skos:definition "Path blocked by active pi:FAILED_GATE; artifact requires gap closure before authorization."@en ;
+  rdfs:subClassOf urun:WarrantPath .
+
+urun:ExecutionTrace
+  a owl:Class ;
+  rdfs:label "Execution Trace"@en ;
+  rdfs:comment "Recorded timeline of all pipeline stages, gate evaluations, decisions, and artifact emissions."@en ;
+  skos:definition "A prov:Bundle containing the complete ordered history of the unified run, suitable for replay and audit."@en ;
+  rdfs:subClassOf prov:Bundle .
+
+# ============================================================================
+# PROPERTIES
+# ============================================================================
+
+urun:hasRunId
+  a owl:DatatypeProperty ;
+  rdfs:label "Has Run ID"@en ;
+  rdfs:comment "Unique identifier for this unified run execution."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range xsd:string ;
+  skos:example "UNIFIED_RUN_2026_06_01_001"@en .
+
+urun:hasStartTime
+  a owl:DatatypeProperty ;
+  rdfs:label "Has Start Time"@en ;
+  rdfs:comment "ISO 8601 timestamp when the unified run began execution."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range xsd:dateTime ;
+  skos:example "2026-06-01T00:00:00Z"@en .
+
+urun:hasEndTime
+  a owl:DatatypeProperty ;
+  rdfs:label "Has End Time"@en ;
+  rdfs:comment "ISO 8601 timestamp when the unified run completed."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range xsd:dateTime ;
+  skos:example "2026-06-01T06:30:00Z"@en .
+
+urun:hasDurationSeconds
+  a owl:DatatypeProperty ;
+  rdfs:label "Has Duration (Seconds)"@en ;
+  rdfs:comment "Total execution time in seconds."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range xsd:integer ;
+  skos:example "23400"@en .
+
+urun:executionStatus
+  a owl:DatatypeProperty ;
+  rdfs:label "Execution Status"@en ;
+  rdfs:comment "Overall status of the unified run: RUNNING, COMPLETED, FAILED, PARTIAL."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range [ rdf:type rdfs:Datatype ; owl:oneOf ( "RUNNING"@en "COMPLETED"@en "FAILED"@en "PARTIAL"@en ) ] ;
+  skos:definition "Indicates whether the run completed all pipeline stages successfully, encountered recoverable failures (PARTIAL), or hit blocking errors (FAILED)."@en .
+
+urun:hasManufacturingPipeline
+  a owl:ObjectProperty ;
+  rdfs:label "Has Manufacturing Pipeline"@en ;
+  rdfs:comment "Link from unified run to its manufacturing pipeline configuration."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range urun:ManufacturingPipeline ;
+  skos:cardinality "exactly 1"@en .
+
+urun:hasPipelineStage
+  a owl:ObjectProperty ;
+  rdfs:label "Has Pipeline Stage"@en ;
+  rdfs:comment "Links a manufacturing pipeline to its ordered stages."@en ;
+  rdfs:domain urun:ManufacturingPipeline ;
+  rdfs:range urun:PipelineStage ;
+  skos:example "Ontology Load → Query Execution → Template Rendering → Artifact Emission → Gate Evaluation"@en .
+
+urun:stageOrder
+  a owl:DatatypeProperty ;
+  rdfs:label "Stage Order"@en ;
+  rdfs:comment "Execution order (1-based index) of a pipeline stage."@en ;
+  rdfs:domain urun:PipelineStage ;
+  rdfs:range xsd:integer ;
+  skos:example "1, 2, 3, ... N"@en .
+
+urun:stageName
+  a owl:DatatypeProperty ;
+  rdfs:label "Stage Name"@en ;
+  rdfs:comment "Human-readable name of the pipeline stage."@en ;
+  rdfs:domain urun:PipelineStage ;
+  rdfs:range xsd:string ;
+  skos:example "Load CHECKPOINT_LEDGER.ttl", "Execute extract-board-claims.rq"@en .
+
+urun:stageStatus
+  a owl:DatatypeProperty ;
+  rdfs:label "Stage Status"@en ;
+  rdfs:comment "Execution status of a single pipeline stage: SUCCESS, FAILED, SKIPPED, CONDITIONAL_PASS."@en ;
+  rdfs:domain urun:PipelineStage ;
+  rdfs:range [ rdf:type rdfs:Datatype ; owl:oneOf ( "SUCCESS"@en "FAILED"@en "SKIPPED"@en "CONDITIONAL_PASS"@en ) ] .
+
+urun:consumes
+  a owl:ObjectProperty ;
+  rdfs:label "Consumes"@en ;
+  rdfs:comment "Input artifact(s) consumed by a pipeline stage."@en ;
+  rdfs:domain urun:PipelineStage ;
+  rdfs:range prov:Entity ;
+  skos:definition "Links a stage to its input entities: TTL ontologies, SPARQL queries, Tera templates, or prior stage outputs."@en .
+
+urun:produces
+  a owl:ObjectProperty ;
+  rdfs:label "Produces"@en ;
+  rdfs:comment "Output artifact(s) produced by a pipeline stage."@en ;
+  rdfs:domain urun:PipelineStage ;
+  rdfs:range urun:ArtifactManufacture ;
+  skos:definition "Links a stage to all artifacts it renders or emits."@en .
+
+urun:hasArtifactManufacture
+  a owl:ObjectProperty ;
+  rdfs:label "Has Artifact Manufacture"@en ;
+  rdfs:comment "Links a unified run to all its manufactured artifacts."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range urun:ArtifactManufacture ;
+  skos:definition "Transitive closure: all artifacts reachable from this run via prov:wasGeneratedBy relationships."@en .
+
+urun:manifestPath
+  a owl:DatatypeProperty ;
+  rdfs:label "Manifest Path"@en ;
+  rdfs:comment "File system path to the ggen manifest (ggen.toml) that configured this run."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range xsd:string ;
+  skos:example "/Users/sac/process-intelligence/research/pi-program/ggen/ggen.toml"@en .
+
+urun:hasWarrantPath
+  a owl:ObjectProperty ;
+  rdfs:label "Has Warrant Path"@en ;
+  rdfs:comment "Links a unified run to all warrant paths it generated."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range urun:WarrantPath ;
+  skos:definition "Maps each artifact to its complete authorization chain from checkpoint through gates."@en .
+
+urun:warrantsArtifact
+  a owl:ObjectProperty ;
+  rdfs:label "Warrants Artifact"@en ;
+  rdfs:comment "A warrant path grants authorization to a specific artifact."@en ;
+  rdfs:domain urun:WarrantPath ;
+  rdfs:range urun:ArtifactManufacture ;
+  skos:cardinality "exactly 1"@en .
+
+urun:backedByCheckpoint
+  a owl:ObjectProperty ;
+  rdfs:label "Backed By Checkpoint"@en ;
+  rdfs:comment "The ALIVE or PARTIAL checkpoint that authorizes this warrant path."@en ;
+  rdfs:domain urun:WarrantPath ;
+  rdfs:range pi:CHECKPOINT ;
+  skos:cardinality "exactly 1"@en .
+
+urun:passesGate
+  a owl:ObjectProperty ;
+  rdfs:label "Passes Gate"@en ;
+  rdfs:comment "A warrant path that successfully passes a named audit gate."@en ;
+  rdfs:domain urun:DirectWarrantPath ;
+  rdfs:range pi:AuditGate ;
+  skos:definition "Links warrant path to all gates it satisfies; must be non-empty for ALIVE warrant paths."@en .
+
+urun:failsGate
+  a owl:ObjectProperty ;
+  rdfs:label "Fails Gate"@en ;
+  rdfs:comment "A warrant path that is blocked by a failed audit gate."@en ;
+  rdfs:domain urun:RefusedWarrantPath ;
+  rdfs:range pi:FAILED_GATE ;
+  skos:definition "Links warrant path to the blocking gate(s); must be closed before authorization."@en .
+
+urun:conditionalOn
+  a owl:ObjectProperty ;
+  rdfs:label "Conditional On"@en ;
+  rdfs:comment "A warrant path is authorized only under specific conditions."@en ;
+  rdfs:domain urun:ConditionalWarrantPath ;
+  rdfs:range xsd:string ;
+  skos:example "Only for M&A diligence phase 1", "Valid only in pre-close planning"@en .
+
+urun:hasExecutionTrace
+  a owl:ObjectProperty ;
+  rdfs:label "Has Execution Trace"@en ;
+  rdfs:comment "The complete recorded history of the unified run."@en ;
+  rdfs:domain urun:UnifiedRun ;
+  rdfs:range urun:ExecutionTrace ;
+  skos:cardinality "at most 1"@en .
+
+urun:artifactHash
+  a owl:DatatypeProperty ;
+  rdfs:label "Artifact Hash"@en ;
+  rdfs:comment "BLAKE3 cryptographic hash digest of the rendered artifact for integrity verification."@en ;
+  rdfs:domain urun:ArtifactManufacture ;
+  rdfs:range xsd:string ;
+  skos:example "9f07e7c3dd4e1f5c6a7b8c9d0e1f2a3b4c5d6e7f"@en .
+
+urun:receiptChain
+  a owl:DatatypeProperty ;
+  rdfs:label "Receipt Chain"@en ;
+  rdfs:comment "Cryptographic receipt chain linking artifact manufacture to prior stage outputs."@en ;
+  rdfs:domain urun:ArtifactManufacture ;
+  rdfs:range xsd:string ;
+  skos:definition "Chain of BLAKE3 hashes proving artifact derivation path from checkpoint through generation rules."@en .
+
+# ============================================================================
+# SHAPES
+# ============================================================================
+
+urun:UnifiedRunShape
+  a sh:NodeShape ;
+  sh:targetClass urun:UnifiedRun ;
+  sh:closed false ;
+  sh:property [
+    sh:path urun:hasRunId ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "UnifiedRun must have exactly one run ID."@en
+  ] ;
+  sh:property [
+    sh:path urun:hasStartTime ;
+    sh:datatype xsd:dateTime ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "UnifiedRun must have exactly one start time."@en
+  ] ;
+  sh:property [
+    sh:path urun:hasManufacturingPipeline ;
+    sh:class urun:ManufacturingPipeline ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "UnifiedRun must reference exactly one manufacturing pipeline."@en
+  ] ;
+  sh:property [
+    sh:path urun:executionStatus ;
+    sh:in ( "RUNNING"@en "COMPLETED"@en "FAILED"@en "PARTIAL"@en ) ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "UnifiedRun must have valid execution status."@en
+  ] .
+
+urun:WarrantPathShape
+  a sh:NodeShape ;
+  sh:targetClass urun:WarrantPath ;
+  sh:closed false ;
+  sh:property [
+    sh:path urun:warrantsArtifact ;
+    sh:class urun:ArtifactManufacture ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "WarrantPath must warrant exactly one artifact."@en
+  ] ;
+  sh:property [
+    sh:path urun:backedByCheckpoint ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "WarrantPath must be backed by a checkpoint."@en
+  ] .
+
+urun:ArtifactManufactureShape
+  a sh:NodeShape ;
+  sh:targetClass urun:ArtifactManufacture ;
+  sh:closed false ;
+  sh:property [
+    sh:path urun:artifactHash ;
+    sh:datatype xsd:string ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "ArtifactManufacture must have exactly one hash digest."@en
+  ] ;
+  sh:property [
+    sh:path prov:wasGeneratedBy ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "ArtifactManufacture must have exactly one generation activity."@en
+  ] .
+
+# ============================================================================
+# INSTANCES
+# ============================================================================
+
+urun:UNIFIED_RUN_2026_06_01_001
+  a urun:UnifiedRun ;
+  dcterms:title "Unified Program Graph Run — 2026-06-01"@en ;
+  dcterms:description "Complete execution of the ggen unified program graph, producing 7 TTL ontologies, 44+ inferred queries, 36+ templates, and artifact manufacturing pipeline."@en ;
+  urun:hasRunId "UNIFIED_RUN_2026_06_01_001"@en ;
+  urun:hasStartTime "2026-06-01T00:00:00Z"^^xsd:dateTime ;
+  urun:hasEndTime "2026-06-01T06:30:00Z"^^xsd:dateTime ;
+  urun:hasDurationSeconds "23400"^^xsd:integer ;
+  urun:executionStatus "COMPLETED"@en ;
+  urun:manifestPath "/Users/sac/process-intelligence/research/pi-program/ggen/ggen.toml"@en ;
+  urun:hasManufacturingPipeline urun:PI_PROGRAM_MANUFACTURING_PIPELINE ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en ;
+  prov:startedAtTime "2026-06-01T00:00:00Z"^^xsd:dateTime ;
+  prov:endedAtTime "2026-06-01T06:30:00Z"^^xsd:dateTime .
+
+urun:PI_PROGRAM_MANUFACTURING_PIPELINE
+  a urun:ManufacturingPipeline ;
+  dcterms:title "PI Program Manufacturing Pipeline"@en ;
+  dcterms:description "Orchestrated sequence of ontology loads, query executions, template renderings, and proof gate evaluations for unified program graph."@en ;
+  prov:wasAttributedTo "Process Intelligence Research Foundry"@en ;
+  skos:note "Pipeline produces: pi-ggen-unified-run.ttl, pi-ggen-project-registry.ttl, pi-ggen-source-ledger.ttl, pi-ggen-generation-ledger.ttl, pi-ggen-invalid-extension-ledger.ttl, pi-ggen-checkpoint-ledger.ttl, pi-ggen-audit-law.ttl"@en .

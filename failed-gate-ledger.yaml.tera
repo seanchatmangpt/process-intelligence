@@ -1,0 +1,120 @@
+---
+# Failed Gate Ledger
+# Generated: {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+# Authority: Process Intelligence Research Foundry
+
+version: "1.0"
+generated_by: "process-intelligence/ggen"
+
+summary:
+  total_failed_gates: {{ failed_gates | length }}
+  total_programs_affected: {{ affected_programs | length }}
+  critical_blockers: {{ failed_gates | filter(attribute="severity", value="CRITICAL") | length }}
+  high_priority: {{ failed_gates | filter(attribute="severity", value="HIGH") | length }}
+  medium_priority: {{ failed_gates | filter(attribute="severity", value="MEDIUM") | length }}
+
+failed_gates:
+{% for gate in failed_gates | sort(attribute="severity") | sort(attribute="date_discovered") | reverse %}
+  - id: "{{ gate.id }}"
+    gap_id: "{{ gate.gap_id }}"
+    program: "{{ gate.program }}"
+    checkpoint: "{{ gate.checkpoint_id }}"
+    gate_name: "{{ gate.gate_name }}"
+    severity: {{ gate.severity }}
+    date_discovered: "{{ gate.date_discovered }}"
+    date_due: "{{ gate.date_due }}"
+    status: {{ gate.status }}
+
+    failure_reason: |
+      {{ gate.failure_reason | safe }}
+
+    root_cause: |
+      {{ gate.root_cause | safe }}
+
+    owner: "{{ gate.owner }}"
+    owner_email: "{{ gate.owner_email }}"
+
+    blocks_programs:
+{% for prog in gate.blocks_programs %}
+      - {{ prog }}
+{% endfor %}
+
+    remediation:
+      required_actions:
+{% for action in gate.remediation_actions %}
+        - action: "{{ action.description | safe }}"
+          assigned_to: "{{ action.assigned_to }}"
+          due_date: "{{ action.due_date }}"
+          status: {{ action.status }}
+{% endfor %}
+
+      estimated_effort: "{{ gate.estimated_effort }}"
+      estimated_completion: "{{ gate.estimated_completion }}"
+      next_checkpoint_target: "{{ gate.next_checkpoint_target }}"
+      alternate_path_available: {{ gate.alternate_path_available }}
+
+    dependencies:
+{% for dep in gate.blocking_dependencies %}
+      - gap_id: "{{ dep.gap_id }}"
+        description: "{{ dep.description | safe }}"
+        must_resolve_before: {{ dep.must_resolve_before }}
+{% endfor %}
+
+    history:
+{% for event in gate.history | sort(attribute="date") | reverse %}
+      - date: "{{ event.date }}"
+        event: "{{ event.event }}"
+        actor: "{{ event.actor }}"
+        details: "{{ event.details | safe }}"
+{% endfor %}
+
+affected_programs:
+{% for program in affected_programs %}
+  - name: "{{ program.name }}"
+    total_failed_gates: {{ program.failed_gate_count }}
+    critical_count: {{ program.critical_count }}
+    phase_blocked: {{ program.phase_blocked }}
+    owner: "{{ program.owner }}"
+    gates:
+{% for gate_ref in program.gate_refs %}
+      - "{{ gate_ref }}"
+{% endfor %}
+{% endfor %}
+
+remediation_roadmap:
+  phase_1:
+    target_completion: "{{ roadmap.phase_1.target_date }}"
+    priority: "CRITICAL"
+    gates_to_close:
+{% for gate in roadmap.phase_1.gates %}
+      - "{{ gate }}"
+{% endfor %}
+    estimated_effort_weeks: {{ roadmap.phase_1.effort_weeks }}
+    success_criteria: "{{ roadmap.phase_1.success_criteria | safe }}"
+
+  phase_2:
+    target_completion: "{{ roadmap.phase_2.target_date }}"
+    priority: "HIGH"
+    gates_to_close:
+{% for gate in roadmap.phase_2.gates %}
+      - "{{ gate }}"
+{% endfor %}
+    estimated_effort_weeks: {{ roadmap.phase_2.effort_weeks }}
+    success_criteria: "{{ roadmap.phase_2.success_criteria | safe }}"
+
+  phase_3:
+    target_completion: "{{ roadmap.phase_3.target_date }}"
+    priority: "MEDIUM"
+    gates_to_close:
+{% for gate in roadmap.phase_3.gates %}
+      - "{{ gate }}"
+{% endfor %}
+    estimated_effort_weeks: {{ roadmap.phase_3.effort_weeks }}
+    success_criteria: "{{ roadmap.phase_3.success_criteria | safe }}"
+
+metrics:
+  gates_failed_this_month: {{ metrics.gates_failed_this_month }}
+  gates_resolved_this_month: {{ metrics.gates_resolved_this_month }}
+  avg_time_to_resolution_days: {{ metrics.avg_time_to_resolution_days }}
+  gates_overdue: {{ metrics.gates_overdue }}
+  estimated_total_remediation_weeks: {{ metrics.total_remediation_weeks }}

@@ -1,0 +1,136 @@
+# WASM Projection Manifest
+# wasm-bindgen code generation for ABI-safe type projections
+# Authority: wasm4pm-compat type law surface
+
+metadata:
+  name: "wasm-projection"
+  version: "1.0.0"
+  description: "WASM projection from wasm4pm-compat ABI-safe types"
+  author: "Process Intelligence Research Foundry"
+  created: "2026-06-01"
+  purpose: "Generate board-admissible WASM bindings for M&A runtime"
+
+projection:
+  name: "wasm"
+  target_platform: "WebAssembly"
+  source_crate: "wasm4pm-compat"
+  source_path: "../sources/wasm4pm-compat/compat"
+  feature: "wasm"
+  toolchain:
+    - tool: "tsify"
+      version: ">=0.9.0"
+      purpose: "Serialize Rust types to TypeScript types"
+    - tool: "wasm-bindgen"
+      version: ">=0.2.90"
+      purpose: "Generate JavaScript bindings to WASM"
+
+module_allowlist:
+  - "evidence"
+  - "admission"
+  - "refusal"
+  - "loss"
+  - "graduation"
+
+module_blocklist:
+  - "discovery"
+  - "replay_execution"
+  - "conformance_execution"
+  - "ocpq_execution"
+  - "benchmark_execution"
+  - "engine_receipt_minting"
+
+abi_safe_types:
+  - name: "Evidence"
+    generic_params: ["T", "State", "W"]
+    serializable: true
+    jsify: true
+  - name: "RefusalReason"
+    serializable: true
+    jsify: true
+  - name: "LossReport"
+    serializable: true
+    jsify: true
+  - name: "GraduationReason"
+    serializable: true
+    jsify: true
+  - name: "AdmissionVerdict"
+    serializable: true
+    jsify: true
+
+abi_unsafe_types:
+  - name: "EventLog"
+    reason: "High-order collection type, pointer semantics"
+    alternative: "Evidence-based log derivation"
+  - name: "ProcessModel"
+    reason: "Petri net graph structures, non-portable semantics"
+    alternative: "Model conformance queries"
+  - name: "AlignmentCost"
+    reason: "Floating point matrix types, precision concerns"
+    alternative: "Verdict comparisons"
+
+export_rules:
+  - path: "**/evidence/**"
+    export_as: "public"
+  - path: "**/admission/**"
+    export_as: "public"
+  - path: "**/refusal/**"
+    export_as: "public"
+  - path: "**/loss/**"
+    export_as: "public"
+  - path: "**/graduation/**"
+    export_as: "public"
+
+output:
+  directory: "generated"
+  declarations_file: "wasm4pm-compat.d.ts"
+  wasm_file: "wasm4pm-compat.wasm"
+  package_directory: "pkg/"
+  format: "umd"
+
+generation_config:
+  target_nodejs: false
+  target_browser: true
+  emit_docs: true
+  emit_typescript_definitions: true
+  split_linked_modules: true
+  web: true
+  nodejs: false
+
+binding_config:
+  wasm_bindgen_version: ">=0.2.90"
+  tsify_serde_impl: true
+  js_module_name: "wasm4pm_compat"
+  console_error_panic: true
+
+audit:
+  enabled: true
+  script: "audits/audit-wasm-projection.sh"
+  gates:
+    - name: "abi_safety"
+      threshold: 100
+    - name: "unsafe_type_banishment"
+      threshold: 0
+    - name: "serialization_coverage"
+      threshold: 100
+    - name: "typescript_definition_completeness"
+      threshold: 100
+
+packaging:
+  npm_package_name: "@process-intelligence/wasm4pm-compat"
+  npm_scope: "process-intelligence"
+  include_license: true
+  include_readme: true
+  include_package_json: true
+
+compliance:
+  standards:
+    - "WebAssembly"
+    - "WASI"
+    - "board-admissible"
+  evidence_backing: "ABI safety lattice + conformance verdicts"
+  immutable: true
+
+receipt:
+  format: "cryptographic-chain"
+  algorithm: "blake3"
+  store_location: "../receipts/wasm-projection-receipt.json"

@@ -1,0 +1,276 @@
+# Next Workflow Plan
+
+**Generated:** {{ now | date(format="%Y-%m-%d %H:%M:%S") }}
+**Authority:** Process Intelligence Research Foundry
+**Planning Horizon:** {{ planning_horizon_days }} days
+
+This document describes the recommended next workflow step and justification based on program state.
+
+---
+
+## Current Program State
+
+| Metric | Value | Trend |
+|--------|-------|-------|
+| Last Checkpoint | `{{ last_checkpoint_id }}` | {{ last_checkpoint_status }} |
+| Checkpoint Date | {{ last_checkpoint_date }} | {{ days_since_checkpoint }}d ago |
+| Open Gaps | {{ open_gaps_count }} | {{ gap_trend }} |
+| Failed Gates | {{ failed_gates_count }} | {{ gate_trend }} |
+| Programs ALIVE | {{ alive_programs }} | {{ alive_trend }} |
+| Programs PARTIAL | {{ partial_programs }} | {{ partial_trend }} |
+| Program Health | {{ current_health }}/100 | {{ health_trend }} |
+
+---
+
+## Recommended Next Workflow
+
+### Primary Workflow: `{{ primary_workflow.id }}`
+
+**Name:** {{ primary_workflow.name }}
+
+**Objective:**
+> {{ primary_workflow.objective | safe }}
+
+**Justification:**
+{{ primary_workflow.justification | safe }}
+
+**Expected Outcomes:**
+{% for outcome in primary_workflow.outcomes %}
+- {{ outcome | safe }}
+{% endfor %}
+
+**Success Criteria:**
+1. {{ primary_workflow.success_criteria_1 }}
+2. {{ primary_workflow.success_criteria_2 }}
+3. {{ primary_workflow.success_criteria_3 }}
+
+**Input Requirements:**
+{% for input_req in primary_workflow.input_requirements %}
+- `{{ input_req.artifact_id }}` ({{ input_req.type }})
+{% endfor %}
+
+**Resource Requirements:**
+- Owner: {{ primary_workflow.owner }}
+- Team: {{ primary_workflow.team | join(", ") }}
+- Estimated Effort: {{ primary_workflow.effort_weeks }} weeks
+- Estimated Duration: {{ primary_workflow.duration_days }} calendar days
+
+**Blocking Dependencies:**
+{% if primary_workflow.blockers | length > 0 %}
+{% for blocker in primary_workflow.blockers %}
+- `{{ blocker.id }}` — {{ blocker.description | safe }} (Due: {{ blocker.due_date }})
+{% endfor %}
+{% else %}
+None — can start immediately.
+{% endif %}
+
+**Parallel Work (can proceed independently):**
+{% for parallel in primary_workflow.parallel_work %}
+- {{ parallel }}
+{% endfor %}
+
+**Output Artifacts:**
+{% for output in primary_workflow.outputs %}
+- `{{ output.name }}` ({{ output.type }})
+  - Destination: {{ output.path }}
+  - Authority Level: {{ output.authority_level }}
+{% endfor %}
+
+**Target Checkpoint:**
+- ID: `{{ primary_workflow.target_checkpoint }}`
+- Expected Status: {{ primary_workflow.target_status }}
+- Verdict Criteria: {{ primary_workflow.verdict_criteria | safe }}
+
+---
+
+### Secondary Workflow: `{{ secondary_workflow.id }}`
+
+**Name:** {{ secondary_workflow.name }}
+
+**Objective:**
+> {{ secondary_workflow.objective | safe }}
+
+**When to Start:** {{ secondary_workflow.start_condition }}
+**Effort:** {{ secondary_workflow.effort_weeks }} weeks
+**Parallel With:** {{ secondary_workflow.parallel_with }}
+
+---
+
+### Tertiary Workflow: `{{ tertiary_workflow.id }}`
+
+**Name:** {{ tertiary_workflow.name }}
+
+**Objective:**
+> {{ tertiary_workflow.objective | safe }}
+
+**When to Start:** {{ tertiary_workflow.start_condition }}
+**Effort:** {{ tertiary_workflow.effort_weeks }} weeks
+**Prerequisite:** {{ tertiary_workflow.prerequisite }}
+
+---
+
+## Why This Order?
+
+### Critical Path Analysis
+
+The critical path to ALIVE status is:
+1. {{ critical_path_step_1 | safe }}
+2. {{ critical_path_step_2 | safe }}
+3. {{ critical_path_step_3 | safe }}
+4. {{ critical_path_step_4 | safe }}
+
+**Estimated Time to ALIVE:** {{ weeks_to_alive }} weeks ({{ days_to_alive }} calendar days)
+
+### Bottleneck Analysis
+
+**Top 3 Blockers:**
+1. **{{ blocker_1.id }}** — {{ blocker_1.description | safe }}
+   - Impact: Blocks {{ blocker_1.blocks_count }} programs
+   - Current Owner: {{ blocker_1.owner }}
+   - Action: {{ blocker_1.recommended_action | safe }}
+
+2. **{{ blocker_2.id }}** — {{ blocker_2.description | safe }}
+   - Impact: Blocks {{ blocker_2.blocks_count }} programs
+   - Current Owner: {{ blocker_2.owner }}
+   - Action: {{ blocker_2.recommended_action | safe }}
+
+3. **{{ blocker_3.id }}** — {{ blocker_3.description | safe }}
+   - Impact: Blocks {{ blocker_3.blocks_count }} programs
+   - Current Owner: {{ blocker_3.owner }}
+   - Action: {{ blocker_3.recommended_action | safe }}
+
+### Opportunity Analysis
+
+**Quick Wins (< 1 week effort, > 10% health impact):**
+{% for quick_win in quick_wins %}
+- **{{ quick_win.title }}** ({{ quick_win.effort_days }}d effort, +{{ quick_win.health_impact }}% health)
+  - Owner: {{ quick_win.owner }}
+  - Path: {{ quick_win.workflow_path }}
+{% endfor %}
+
+---
+
+## Execution Roadmap
+
+### Week 1–2: {{ week1_name }}
+
+```
+{{ week1_2_plan | safe }}
+```
+
+**Deliverables:**
+{% for deliverable in week1_2_deliverables %}
+- {{ deliverable }}
+{% endfor %}
+
+**Success Measure:** {{ week1_2_success_measure }}
+
+### Week 3–4: {{ week3_name }}
+
+```
+{{ week3_4_plan | safe }}
+```
+
+**Deliverables:**
+{% for deliverable in week3_4_deliverables %}
+- {{ deliverable }}
+{% endfor %}
+
+**Success Measure:** {{ week3_4_success_measure }}
+
+### Week 5+: {{ week5_name }}
+
+**Conditional Start:** {{ week5_start_condition }}
+
+**Deliverables:**
+{% for deliverable in week5_deliverables %}
+- {{ deliverable }}
+{% endfor %}
+
+---
+
+## Contingencies
+
+### If Primary Workflow Fails
+
+**Fallback Workflow:** {{ fallback_workflow_id }}
+- **Rationale:** {{ fallback_rationale | safe }}
+- **Effort:** {{ fallback_effort_weeks }} weeks
+- **New ALIVE Target:** {{ fallback_alive_date }}
+
+### If Blocker Cannot Resolve
+
+**Bypass Available:** {{ bypass_available }}
+- **Strategy:** {{ bypass_strategy | safe }}
+- **Cost:** {{ bypass_cost_weeks }} weeks additional effort
+- **Recovery Plan:** {{ recovery_plan | safe }}
+
+### If Unexpected Gap Discovered
+
+**Investigation Protocol:**
+1. Document in `gaps/`
+2. Assess impact on {{ primary_workflow.id }}
+3. Re-plan if blocker
+4. Continue or escalate per protocol
+
+---
+
+## Resource Checklist
+
+Before starting {{ primary_workflow.id }}, ensure:
+
+- [ ] Owner assigned: `{{ primary_workflow.owner }}`
+- [ ] Team onboarded: {{ primary_workflow.team | join(", ") }}
+- [ ] Input artifacts reviewed: {{ primary_workflow.input_requirements | length }} items
+- [ ] Blockers resolved: {{ primary_workflow.blockers | length }} items
+- [ ] Parallel team notified
+- [ ] Calendar blocked: {{ primary_workflow.duration_days }} calendar days
+- [ ] Stakeholders aligned
+- [ ] Success criteria documented
+
+---
+
+## Decision Framework
+
+| Scenario | Decision | Action |
+|----------|----------|--------|
+| Primary workflow blocks | Escalate | Contact {{ escalation_contact }} |
+| Resource unavailable | Replan | Move start by {{ replan_slip_weeks }} weeks |
+| New blocker discovered | Assess | Add to blocked list, re-evaluate critical path |
+| Quick win opportunity | Prioritize | Run parallel to primary workflow |
+| Health score drops < 40 | Halt | Pause workflow, investigate root cause |
+
+---
+
+## Approval & Authorization
+
+**Planned By:** {{ planner_name }}
+**Date:** {{ plan_date }}
+
+**Approved By:** {{ approver_name }}
+**Authority:** {{ approver_authority }}
+**Approval Date:** {{ approval_date }}
+
+**Authorization Statement:**
+> {{ authorization_statement | safe }}
+
+---
+
+## Feedback & Adjustments
+
+**Plan Review Schedule:**
+- Initial Review: {{ initial_review_date }} ({{ initial_review_days }}d after start)
+- Midpoint Review: {{ midpoint_review_date }} ({{ midpoint_review_days }}d after start)
+- Final Review: {{ final_review_date }} ({{ final_review_days }}d after start)
+
+**Adjustment Thresholds:**
+- If effort variance > 20%: Replans required
+- If health score drops > 10%: Escalate to steering committee
+- If blocker discovered: Immediate critical path re-evaluation
+
+---
+
+**Next Workflow Start Date:** {{ next_workflow_start_date }}
+**Estimated Completion:** {{ estimated_completion_date }}
+
+**Questions?** Contact {{ primary_workflow.owner }} or review `checkpoint-ledger.md` for recent milestone context.

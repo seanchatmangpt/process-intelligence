@@ -1,0 +1,218 @@
+#!/usr/bin/env bash
+# Audit: TypeScript Monomorphization Verification
+# Authority: ggen/rules/ts-projection-law.yaml (monomorphization_rules section)
+# Purpose: Verify that all generic Evidence<T,State,W> instances are properly
+#          monomorphized to concrete DTO types in generated TypeScript
+
+set -euo pipefail
+
+# Configuration
+TS_OUTPUT_DIR="{{ ts_output_dir | default(value='generated') }}"
+TS_PATTERN="{{ ts_pattern | default(value='*.ts') }}"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+audit_log=""
+failures=0
+warnings=0
+
+log_info() {
+  echo -e "${GREEN}[INFO]${NC} $1"
+  audit_log+=$'  INFO: '"$1"$'\n'
+}
+
+log_warn() {
+  echo -e "${YELLOW}[WARN]${NC} $1"
+  audit_log+=$'  WARN: '"$1"$'\n'
+  ((warnings++))
+}
+
+log_fail() {
+  echo -e "${RED}[FAIL]${NC} $1"
+  audit_log+=$'  FAIL: '"$1"$'\n'
+  ((failures++))
+}
+
+# Verify output directory exists
+if [ ! -d "$TS_OUTPUT_DIR" ]; then
+  log_fail "TypeScript output directory not found: $TS_OUTPUT_DIR"
+  exit 1
+fi
+
+log_info "=== TypeScript Monomorphization Audit ==="
+log_info "Output Directory: $TS_OUTPUT_DIR"
+log_info "Pattern: $TS_PATTERN"
+
+# =============================================================================
+# GATE 1: Generic Evidence Detection
+# =============================================================================
+
+log_info "GATE 1: Detecting Generic Evidence<T,State,W> References"
+
+# Search for unmonomorphized generic Evidence references
+generic_evidence_found=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  # Pattern: Evidence<...> where not followed by Dto or concrete type
+  if grep -n "Evidence<" "$ts_file" | grep -v "EvidenceDto\|Evidence<EventPayload\|Evidence<string\|Evidence<{" > /dev/null; then
+    log_fail "  Generic Evidence<T,State,W> found in $ts_file"
+    grep -n "Evidence<" "$ts_file" | grep -v "Dto\|<EventPayload\|<string\|<{" | while read -r line; do
+      log_fail "    Line: $line"
+    done
+    generic_evidence_found=$((generic_evidence_found + 1))
+  fi
+done
+
+if [ $generic_evidence_found -eq 0 ]; then
+  log_info "  ✓ No generic Evidence<T,State,W> found; all monomorphized"
+else
+  log_fail "  Found $generic_evidence_found file(s) with generic Evidence references"
+  ((failures++))
+fi
+
+# =============================================================================
+# GATE 2: DTO Type Availability Verification
+# =============================================================================
+
+log_info "GATE 2: Verifying Required DTO Types Exist"
+
+required_dtos=(
+  "EvidenceDto"
+  "AdmissionDto"
+  "RefusalDto"
+  "ReceiptDto"
+  "LossReportDto"
+  "GraduationCandidateDto"
+)
+
+for dto_name in "${required_dtos[@]}"; do
+  if grep -r "interface $dto_name\|type $dto_name\|export.*$dto_name" "$TS_OUTPUT_DIR" > /dev/null 2>&1; then
+    log_info "  ✓ DTO type found: $dto_name"
+  else
+    log_warn "  ✗ DTO type missing: $dto_name"
+  fi
+done
+
+# =============================================================================
+# GATE 3: Monomorphization Pattern Verification
+# =============================================================================
+
+log_info "GATE 3: Verifying Monomorphization Patterns"
+
+# Expected patterns for concrete DTOs
+expected_patterns=(
+  "payload: string|payload: EventPayload|payload: any"
+  "state_tag: EvidenceState|state_tag: string"
+  "witness_tag: WitnessKey|witness_tag: string"
+  "timestamp_ns: bigint|timestamp_ns: number"
+)
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  log_info "  Checking: $ts_file"
+
+  # Check EvidenceDto has concrete fields
+  if grep -q "interface EvidenceDto\|type EvidenceDto" "$ts_file"; then
+    if grep -A 5 "EvidenceDto" "$ts_file" | grep -q "payload\|state_tag\|witness_tag"; then
+      log_info "    ✓ EvidenceDto has expected fields"
+    else
+      log_warn "    ✗ EvidenceDto missing expected fields"
+    fi
+  fi
+done
+
+# =============================================================================
+# GATE 4: Generic Type Parameter Elimination
+# =============================================================================
+
+log_info "GATE 4: Verifying Generic Type Parameter Elimination"
+
+# Check that <T>, <State>, <W> type parameters are not in generated output
+generic_params_found=0
+
+find "$TS_OUTPUT_DIR" -name "$TS_PATTERN" | while read -r ts_file; do
+  if grep -n "<T>\|<State>\|<W>" "$ts_file" > /dev/null; then
+    log_fail "  Generic type parameters found in $ts_file"
+    grep -n "<T>\|<State>\|<W>" "$ts_file" | while read -r line; do
+      log_fail "    $line"
+    done
+    generic_params_found=$((generic_params_found + 1))
+  fi
+done
+
+if [ $generic_params_found -eq 0 ]; then
+  log_info "  ✓ No generic type parameters (<T>, <State>, <W>) in output"
+else
+  log_fail "  Found generic type parameters in generated TypeScript"
+  ((failures++))
+fi
+
+# =============================================================================
+# GATE 5: Evidence State Enum Projection
+# =============================================================================
+
+log_info "GATE 5: Verifying Evidence State Enum Projection"
+
+if grep -r "enum EvidenceState\|type EvidenceState\|EvidenceState =" "$TS_OUTPUT_DIR" > /dev/null 2>&1; then
+  log_info "  ✓ EvidenceState enum defined"
+
+  # Verify all expected state variants
+  expected_states=("Raw" "Parsed" "Admitted" "Refused" "Projected" "Exportable" "Receipted")
+  for state in "${expected_states[@]}"; do
+    if grep -r "| \"$state\"\|= \"$state\"\|'$state'" "$TS_OUTPUT_DIR" > /dev/null 2>&1; then
+      log_info "    ✓ State variant: $state"
+    else
+      log_warn "    ✗ State variant missing: $state"
+    fi
+  done
+else
+  log_fail "  EvidenceState enum not found in generated TypeScript"
+  ((failures++))
+fi
+
+# =============================================================================
+# GATE 6: Witness Key Enum Projection
+# =============================================================================
+
+log_info "GATE 6: Verifying Witness Key Enum Projection"
+
+if grep -r "enum WitnessKey\|type WitnessKey\|WitnessKey =" "$TS_OUTPUT_DIR" > /dev/null 2>&1; then
+  log_info "  ✓ WitnessKey enum defined"
+
+  # Verify all expected witness variants
+  expected_witnesses=("Raw" "Admitted" "Ocel20" "Xes1849" "WfNetSoundness" "Strict")
+  for witness in "${expected_witnesses[@]}"; do
+    if grep -r "| \"$witness\"\|= \"$witness\"\|'$witness'" "$TS_OUTPUT_DIR" > /dev/null 2>&1; then
+      log_info "    ✓ Witness variant: $witness"
+    else
+      log_warn "    ✗ Witness variant missing: $witness"
+    fi
+  done
+else
+  log_fail "  WitnessKey enum not found in generated TypeScript"
+  ((failures++))
+fi
+
+# =============================================================================
+# Summary & Exit Code
+# =============================================================================
+
+echo ""
+log_info "=== Audit Summary ==="
+log_info "Failures: $failures"
+log_info "Warnings: $warnings"
+
+if [ $failures -eq 0 ]; then
+  log_info "✓ All monomorphization gates PASSED"
+  echo ""
+  echo "$audit_log"
+  exit 0
+else
+  log_fail "✗ Monomorphization audit FAILED with $failures error(s)"
+  echo ""
+  echo "$audit_log"
+  exit 1
+fi

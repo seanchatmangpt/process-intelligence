@@ -1,0 +1,16 @@
+# Selection Query: All Generation Rules
+# Returns all rule definitions with their inputs, outputs, and conditions
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?rule ?label ?ruleType ?input ?output ?condition
+WHERE {
+  ?rule a ggen:GenerationRule .
+  OPTIONAL { ?rule rdfs:label ?label }
+  OPTIONAL { ?rule ggen:ruleType ?ruleType }
+  OPTIONAL { ?rule ggen:input ?input }
+  OPTIONAL { ?rule ggen:output ?output }
+  OPTIONAL { ?rule ggen:condition ?condition }
+}
+ORDER BY ?rule

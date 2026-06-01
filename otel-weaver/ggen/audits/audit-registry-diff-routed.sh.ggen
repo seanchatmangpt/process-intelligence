@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# audit-registry-diff-routed.sh.ggen
+# Verifies that Weaver registry diff reports and metrics are routed exclusively to schema/metadata telemetry topics/handlers,
+# and NEVER routed to operational runtime alert handlers or process drift alerts.
+
+set -euo pipefail
+
+echo "=== Running Audit: Registry Diff Routing ==="
+echo "Target Source Directory: {{ target_src_dir }}"
+
+violations=0
+
+# Search for invalid routing of registry diffs
+# e.g., mapping a weaver diff to an operational alert hook or drift alarm
+if grep -rn "route_drift.*weaver" "{{ target_src_dir }}"; then
+    echo "FAIL: Weaver schema diff routed to runtime process drift handler."
+    violations=$((violations + 1))
+fi
+
+if grep -rn "raise_alert.*weaver_diff" "{{ target_src_dir }}"; then
+    echo "FAIL: Weaver diff triggering operational runtime alerts instead of metadata updates."
+    violations=$((violations + 1))
+fi
+
+if [ $violations -eq 0 ]; then
+    echo "PASS: Registry diffs are properly routed to schema metadata handlers."
+    exit 0
+else
+    echo "FAIL: Found $violations incorrect routing configurations."
+    exit 1
+fi

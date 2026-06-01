@@ -1,0 +1,19 @@
+=== AUDIT 2: NO TOOLS IN COMPAT ===
+Timestamp: 2026-06-01T17:17:34Z
+Target: /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/src
+Principle: Graduation signals must not be smuggled into compat
+
+Forbidden Tools & Graduation Mapping:
+
+[OK] simulate_replay (GraduationReason: NeedsReplay)
+[OK] compute_alignment (GraduationReason: NeedsConformanceExecution)
+[OK] discover_model (GraduationReason: NeedsDiscovery)
+[OK] execute_ocpq (GraduationReason: NeedsObjectCentricQueryExecution)
+[OK] run_conformance (GraduationReason: NeedsConformanceExecution)
+[OK] mint_receipt (GraduationReason: NeedsReceipts)
+[OK] benchmark_gate_run (GraduationReason: NeedsBenchmarkGate)
+
+RESULT: PASS
+No forbidden tool functions detected.
+
+Audit complete: 2026-06-01T17:17:34Z

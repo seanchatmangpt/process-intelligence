@@ -1,0 +1,389 @@
+{# WIT World Template (Tera)
+   Generates WebAssembly Interface Types (WIT) definitions for Component Model boundaries
+   Authority: component-boundary-law.yaml
+
+   Input Variables:
+   - compat_world_name: "wasm4pm-compat"
+   - engine_world_name: "wasm4pm-engine"
+   - compat_interfaces: List of interface definitions from component-projection-manifest.yaml
+   - engine_interfaces: List of engine interface definitions
+   - module_mappings: Map of modules to WIT packages
+   - validation_enabled: true if strict WIT validation required
+#}
+
+// ============================================================================
+// WebAssembly Interface Types (WIT) World Definition
+// Authority: ggen/rules/component-boundary-law.yaml
+// Generated: {{ now() }}
+//
+// This file defines two distinct WIT worlds:
+// 1. compat-world: Structure-only exports from wasm4pm-compat
+// 2. engine-world: Execution-allowed exports from wasm4pm engine
+//
+// DOCTRINE: No raw data laundering between worlds. All engine functions
+// must consume evidence certified by compat-world validators.
+// ============================================================================
+
+package {{ organization }}:{{ package_name }};
+
+// ============================================================================
+// COMPAT-WORLD: Structural Type Definitions Only
+// Stability: STABLE (semver versioning)
+// Exports: Evidence, Admission, Refusal, Loss, Graduation types
+// Exports: Structural validators only (no discovery, replay, conformance)
+// ============================================================================
+
+interface evidence-types {
+  use types.{evidence-dto, evidence-state, witness-key};
+
+  /// Retrieves the catalog of witness markers supported by this version.
+  get-witness-catalog: func() -> list<witness-key>;
+
+  /// Retrieves all valid evidence state transitions.
+  get-state-catalog: func() -> list<evidence-state>;
+
+  /// Validates that evidence payload structure conforms to expected log format.
+  /// Returns: ok(true) if structural validation passes; err(refusal-reason) if fails.
+  validate-evidence-structure: func(payload: string) -> result<bool, refusal-reason>;
+}
+
+interface admission-gate {
+  use types.{evidence-dto, admission-dto, refusal-reason};
+
+  /// Validates admission preconditions for a raw evidence payload.
+  /// Authority: admission-law from doctrine/
+  /// Performs 11 named law checks (hash mismatch, temporal anomaly, causal disconnect, etc.)
+  validate-admission-preconditions: func(
+    payload: string,
+    expected-schema: string
+  ) -> result<admission-dto, refusal-reason>;
+
+  /// Certifies that an admitted evidence has passed all boundary gates.
+  admit-evidence: func(
+    subject-id: string,
+    evidence-id: string,
+    witness-tag: witness-key
+  ) -> result<admission-dto, refusal-reason>;
+}
+
+interface refusal-gate {
+  use types.{refusal-dto, refusal-reason};
+
+  /// Documents a named refusal reason from the type-law-atlas.
+  /// Allowed reasons: HashMismatch, TemporalAnomaly, CausalDisconnect, TypeViolation,
+  /// InvalidSignature, LatticeViolation, DanglingEventObjectLink, MissingFinalMarking,
+  /// EmptyTrace, MissingCaseId, InvalidTimestampOrder, UnsoundWfNet, ProjectionNameRequired
+  create-refusal: func(
+    reason: refusal-reason,
+    message: string,
+    timestamp-ns: u64
+  ) -> refusal-dto;
+
+  /// Maps a refusal reason to its human-readable explanation.
+  explain-refusal: func(reason: refusal-reason) -> string;
+}
+
+interface loss-accounting {
+  use types.{loss-report};
+
+  /// Documents accepted data loss from a lossy projection.
+  /// Captures synchronization moves, log-only moves, model-only moves.
+  create-loss-report: func(
+    projection-name: string,
+    alignment-weight: f64,
+    move-percentage: f64,
+    fitness-bound: f64
+  ) -> loss-report;
+
+  /// Validates that a loss report conforms to acceptable thresholds.
+  validate-loss-policy: func(
+    report: loss-report,
+    max-move-percentage: f64,
+    min-fitness: f64
+  ) -> bool;
+}
+
+interface graduation-state {
+  use types.{graduation-candidate, graduation-reason};
+
+  /// Creates a graduation candidate for downstream wasm4pm engine execution.
+  /// Requirement: is-grounded must be true (non-empty subject_id and evidence_ref).
+  create-graduation-candidate: func(
+    candidate-id: string,
+    subject-id: string,
+    payload: string,
+    reason: graduation-reason,
+    evidence-ref: string
+  ) -> graduation-candidate;
+
+  /// Validates that a graduation candidate is properly grounded.
+  /// Returns true if subject_id and evidence_ref are both non-empty.
+  is-grounded: func(candidate: graduation-candidate) -> bool;
+
+  /// Certifies that a graduation candidate is ready for downstream engine consumption.
+  authorize-graduation: func(candidate: graduation-candidate) -> result<string, string>;
+}
+
+// ============================================================================
+// COMPAT-WORLD: Exported World Definition
+// ============================================================================
+
+world {{ compat_world_name }} {
+  {%- for interface in compat_interfaces %}
+  export {{ interface.name }};
+  {%- endfor %}
+}
+
+// ============================================================================
+// ENGINE-WORLD: Execution Engine Interfaces
+// Stability: EVOLVING (internal versioning)
+// Imports: compat-world structures as dependencies
+// Exports: Discovery, Replay, Conformance, OCPQ, Receipt generation engines
+//
+// BOUNDARY RULE: All engine functions MUST consume evidence certified by
+// compat-world validators. No raw logs accepted directly.
+// ============================================================================
+
+interface discovery-engine {
+  use types.{event-log, process-model, admission-dto};
+
+  /// Discovers a process model from an object-centric event log.
+  /// Precondition: event-log must be validated by compat-world admission-gate.
+  /// Algorithm: Inductive Miner, Alpha Miner, or Heuristic Miner (configurable).
+  discover-model: func(
+    log: event-log,
+    admission: admission-dto
+  ) -> result<process-model, string>;
+}
+
+interface replay-engine {
+  use types.{execution-trace, process-model, alignment-cost, admission-dto};
+
+  /// Replays an execution trace through a process model using token game simulation.
+  /// Precondition: admission-dto certifies the trace structure.
+  /// Returns: Alignment cost (synchronization moves, log-only moves, model-only moves).
+  replay-log: func(
+    trace: execution-trace,
+    model: process-model,
+    admission: admission-dto
+  ) -> result<alignment-cost, string>;
+}
+
+interface conformance-engine {
+  use types.{event-log, process-model, conformance-verdict, admission-dto};
+
+  /// Computes conformance (fitness + precision) between event log and model.
+  /// Precondition: admission-dto certifies log and model soundness.
+  /// Algorithm: A* alignment solver with soundness-aware cost functions.
+  /// Returns: ConformanceVerdict (fitness, precision, aligned-traces, quality-dimensions).
+  compute-conformance: func(
+    log: event-log,
+    model: process-model,
+    admission: admission-dto
+  ) -> result<conformance-verdict, string>;
+}
+
+interface ocpq-engine {
+  use types.{ocpq-query, ocpq-result};
+
+  /// Executes an Object-Centric Process Query (OCPQ) against RDF/SPARQL store.
+  /// Query must be properly formed OWL/RDF conforming to process-intelligence ontology.
+  execute-ocpq: func(query: ocpq-query) -> result<ocpq-result, string>;
+}
+
+interface receipt-engine {
+  use types.{cryptographic-receipt, process-model, conformance-verdict};
+
+  /// Mints a cryptographic receipt certifying a conformance verdict.
+  /// Hash algorithm: BLAKE3
+  /// Receipt includes: timestamp-ns, produced_by, model_hash, verdict_hash, signature.
+  mint-receipt: func(
+    verdict: conformance-verdict,
+    model: process-model,
+    producer-id: string
+  ) -> result<cryptographic-receipt, string>;
+
+  /// Verifies a cryptographic receipt against its backing conformance verdict.
+  /// Returns true if receipt hash and signature are valid.
+  verify-receipt: func(receipt: cryptographic-receipt) -> bool;
+}
+
+// ============================================================================
+// ENGINE-WORLD: Exported World Definition
+// ============================================================================
+
+world {{ engine_world_name }} {
+  import {{ compat_world_name }};
+
+  {%- for interface in engine_interfaces %}
+  export {{ interface.name }};
+  {%- endfor %}
+}
+
+// ============================================================================
+// TYPE DEFINITIONS (Shared across both worlds)
+// ============================================================================
+
+interface types {
+  /// Evidence state tags: Raw -> Parsed -> Admitted | Refused
+  /// Final states: Projected, Exportable, Receipted
+  enum evidence-state {
+    raw,
+    parsed,
+    admitted,
+    refused,
+    projected,
+    exportable,
+    receipted,
+  }
+
+  /// Witness markers (brand tokens) certifying compliance with standards.
+  enum witness-key {
+    raw,                  // Unvalidated external telemetry
+    admitted,             // Passed boundary validation gates
+    ocel-2-0,             // Object-Centric Event Log 2.0 standard
+    xes-1849,             // XES IEEE 1849 standard
+    wf-net-soundness,     // Petri net soundness proof attached
+    strict,               // Stricter compile-time enforcement applied
+  }
+
+  /// Named refusal reasons from type-law-atlas.
+  enum refusal-reason {
+    hash-mismatch,
+    temporal-anomaly,
+    causal-disconnect,
+    type-violation,
+    invalid-signature,
+    lattice-violation,
+    dangling-event-object-link,
+    missing-final-marking,
+    empty-trace,
+    missing-case-id,
+    invalid-timestamp-order,
+    unsound-wf-net,
+    projection-name-required,
+  }
+
+  /// Monomorphic Evidence DTO (generic Evidence<T,State,W> projection).
+  record evidence-dto {
+    id: string,
+    payload: string,
+    state-tag: evidence-state,
+    witness-tag: witness-key,
+    timestamp-ns: u64,
+  }
+
+  /// Admission gate verdict DTO.
+  record admission-dto {
+    subject-id: string,
+    evidence-id: string,
+    witness-tag: witness-key,
+    admitted-at-ns: u64,
+    integrity-hash: string,
+  }
+
+  /// Refusal documentation DTO.
+  record refusal-dto {
+    reason: refusal-reason,
+    message: string,
+    timestamp-ns: u64,
+  }
+
+  /// Loss policy and reporting DTO.
+  record loss-report {
+    projection-name: string,
+    alignment-weight: f64,
+    move-percentage: f64,
+    fitness-bound: f64,
+    timestamp-ns: u64,
+  }
+
+  /// Graduation candidate for downstream engine consumption.
+  record graduation-candidate {
+    candidate-id: string,
+    subject-id: string,
+    payload: string,
+    reason-tag: string,
+    evidence-ref: string,
+    is-grounded: bool,
+  }
+
+  /// Cryptographic receipt certifying conformance verdict.
+  record cryptographic-receipt {
+    receipt-id: string,
+    produced-by: string,
+    model-hash: string,
+    verdict-hash: string,
+    timestamp-ns: u64,
+    signature: list<u8>,
+  }
+
+  /// Process model (Petri net or other).
+  record process-model {
+    id: string,
+    format: string,
+    payload: list<u8>,
+  }
+
+  /// Event log structure.
+  record event-log {
+    id: string,
+    format: string,
+    payload: list<u8>,
+  }
+
+  /// Execution trace (aligned sequence of events and transitions).
+  record execution-trace {
+    id: string,
+    events: list<string>,
+    transitions: list<string>,
+  }
+
+  /// Alignment cost (fitness metrics).
+  record alignment-cost {
+    sync-moves: u32,
+    log-only-moves: u32,
+    model-only-moves: u32,
+    total-cost: f64,
+  }
+
+  /// Conformance verdict (fitness + precision).
+  record conformance-verdict {
+    fitness: f64,
+    precision: f64,
+    aligned-trace-count: u32,
+    total-trace-count: u32,
+  }
+
+  /// Object-Centric Process Query.
+  record ocpq-query {
+    query-id: string,
+    sparql-body: string,
+  }
+
+  /// OCPQ result set.
+  record ocpq-result {
+    bindings: list<record {
+      var-name: string,
+      value: string,
+    }>,
+  }
+}
+
+// ============================================================================
+// VALIDATION & COMPLIANCE
+// ============================================================================
+
+// Validation Rules (enabled when validation_enabled = true):
+// 1. wit-syntax: All WIT tokens must be syntactically valid
+// 2. interface-compatibility: All imported interfaces must exist in source world
+// 3. world-closure: Transitive imports must be closed (no dangling dependencies)
+// 4. type-safety: All record fields and function returns must be typed
+// 5. boundary-separation: compat-world must not import engine-world (prevents cycles)
+// 6. naming-convention: All identifiers in kebab-case (not snake_case or camelCase)
+
+// Compliance:
+// - Standards: WebAssembly Component Model, WIT Specification 1.0, WASI
+// - Authority: process-intelligence/ggen/rules/component-boundary-law.yaml
+// - Evidence: Type law lattice + boundary enforcement matrix
+// - Immutable: true (WIT definitions are canonical contracts)

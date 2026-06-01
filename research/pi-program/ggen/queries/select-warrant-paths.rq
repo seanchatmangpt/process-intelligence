@@ -1,0 +1,16 @@
+# Selection Query: Warrant Paths
+# Returns provenance chains from checkpoints to source evidence through receipts
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?checkpoint ?artifact ?receipt ?sourceRule ?sourceEvidence ?chainLength
+WHERE {
+  ?checkpoint a ggen:Checkpoint .
+  ?checkpoint ggen:grounded ?artifact .
+  ?artifact ggen:receipt ?receipt .
+  ?receipt ggen:traces ?sourceRule .
+  OPTIONAL { ?sourceRule ggen:evidenceSource ?sourceEvidence }
+  OPTIONAL { ?receipt ggen:chainLength ?chainLength }
+}
+ORDER BY DESC(?chainLength)

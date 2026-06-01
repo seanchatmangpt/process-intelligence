@@ -1,0 +1,261 @@
+# Process Intelligence Program Project Registry
+# Authority: Research Foundry (PROCESS_INTELLIGENCE_ALIVE_001)
+# Generated: 2026-06-01
+# Source: project-registry.ttl + audit-results.yaml
+
+program:
+  id: "process-intelligence"
+  name: "Process Intelligence Research Foundry"
+  role: "PROGRAM"
+  location: "/Users/sac/process-intelligence"
+  status: "ALIVE"
+  checkpoint: "PROCESS_INTELLIGENCE_ALIVE_001"
+  commits: 570
+  gates_passed: 11
+  gates_failed: 0
+
+projects:
+
+  # SECTION 1: THE PROOF CELL
+  zoeapp:
+    name: "ZOEapp"
+    location: "/Users/sac/zoeapp"
+    role: "PROOF_CELL"
+    status: "ACTIVE"
+    description: "Expo SDK 56 + React Native 0.85 + Supabase mobile application for Zoe Community Church. Demonstrates full-lifecycle process intelligence capability."
+    surfaces:
+      admission: "Route admission gates (identity boundary checks)"
+      refusal: "Named refusal codes (UNAUTHENTICATED, INSUFFICIENT_BOUNDARY, etc.)"
+      receipt: "BLAKE3-signed cryptographic receipts via Supabase Edge Functions"
+      replay: "Deterministic replay verification via truex-hook-replay"
+    evidence_artifacts: 516
+    test_suites: 268
+    language: "TypeScript/React Native"
+
+  # SECTION 2: EXECUTION ENGINE
+  wasm4pm:
+    name: "wasm4pm"
+    location: "/Users/sac/process-intelligence/sources/wasm4pm"
+    role: "ENGINE"
+    status: "ALIVE"
+    checkpoint: "PROCESS_INTELLIGENCE_ALIVE_001"
+    description: "Pure-Rust WASM execution court. 10,098 source lines. Implements discovery, conformance, replay, OCPQ, cryptography."
+    source_lines: 10098
+    algorithms:
+      - "Inductive Miner"
+      - "Heuristics Miner"
+      - "Alpha Miner"
+      - "DFG Mining"
+    execution_surfaces:
+      discovery: "Three discovery algorithms outputting Evidence<T, Admitted, W>"
+      conformance: "Token replay with fitness/precision metrics"
+      replay: "Full token game + StepSimulator"
+      receipts: "BLAKE3/Ed25519 cryptographic proof"
+      admission: "Evidence lifecycle (Raw→Parsed→Validated→Replayed)"
+      refusals: "ConformanceRefusal, ReplayRefusal, OcelError"
+    cryptography:
+      - "BLAKE3"
+      - "Ed25519"
+      - "SHA-256"
+      - "Curve25519"
+    language: "Rust"
+
+  # SECTION 3: COMPATIBILITY LAYER
+  wasm4pm-compat:
+    name: "wasm4pm-compat"
+    location: "/Users/sac/wasm4pm-compat"
+    role: "COMPATIBILITY_LAYER"
+    status: "PARTIAL"
+    description: "Nightly-only, paper-complete, structure-only Rust process-evidence standard. Enforces one-way lifecycle via typestate."
+    lifecycle: "Raw→Parsed→Admitted→{Projected|Exportable|Receipted}"
+    features: 5
+    documented_features: 3
+    undocumented_features: 2
+    fixtures:
+      compile_pass: 46
+      compile_fail: 46
+    surfaces:
+      admission: "Admit trait with named Reason types"
+      refusals: "DanglingEventObjectLink, MissingFinalMarking, etc."
+      graduation: "GraduateToWasm4pm bridge (requires wasm4pm feature)"
+    violations:
+      forbidden_collapse: "JSON serialization via receipt_json() and to_json_string()"
+      severity: "CRITICAL"
+      remediation_class: "BOUNDARY_LAW_VIOLATION"
+      effort_estimate: "4 hours"
+    language: "Rust"
+
+  # SECTION 4: MANUFACTURING CELLS
+  ggen-primary:
+    name: "ggen Primary Manufacturing Cell"
+    location: "/Users/sac/process-intelligence/ggen"
+    role: "MANUFACTURING_CELL"
+    status: "ALIVE"
+    description: "Manufactures board-admissible M&A assets and autonomic governance engines. SPARQL→Tera→output pipelines."
+    ontology_files: 1
+    sparql_queries: 3
+    templates: 3
+    board_admissible_gate: "fitness >= 0.95 AND precision >= 0.90"
+    artifacts:
+      - "ma-deck.tera"
+      - "ma-diligence.tera"
+      - "blue-river.tera"
+
+  ggen-telemetry:
+    name: "ggen Telemetry Bridge Manufacturing Cell"
+    location: "/Users/sac/process-intelligence/otel-weaver/ggen"
+    role: "MANUFACTURING_CELL"
+    status: "ALIVE"
+    description: "Generates OTel Weaver intake validation code and court consequence routing."
+    parent: "ggen-primary"
+    manifests: 2
+
+  # SECTION 5: TELEMETRY FEEDSTOCK
+  otel-weaver:
+    name: "OTel Weaver Integration Layer"
+    location: "/Users/sac/process-intelligence/otel-weaver"
+    role: "TELEMETRY_FEEDSTOCK"
+    status: "ALIVE"
+    checkpoint: "GGEN_OTEL_WEAVER_PI_ALIVE_001"
+    description: "Validates OTel schema compliance. Routes findings to refusal codes. Enforces feedstock/court separation."
+    conformance: "OpenTelemetry 1.25.0"
+    doctrine_laws: 6
+    experiments: 5
+    surfaces:
+      admission: "Admit boundary via OtelSpanToOcelEventProjection"
+      refusals: "Finding-to-refusal codex (6 refusal types)"
+
+  # SECTION 6: MOBILE SUBSTRATE
+  expo-supabase:
+    name: "Expo/Supabase Mobile Framework"
+    location: "Extracted from ZOEapp"
+    role: "MOBILE_SUBSTRATE"
+    status: "ACTIVE"
+    description: "Reusable authentication, protected routing, RLS policies, Realtime CDC, governance patterns."
+    components:
+      - "Expo Router navigation"
+      - "Supabase Auth (SessionProvider)"
+      - "RLS deny-by-default"
+      - "Realtime CDC channels"
+      - "Edge Functions"
+      - "Identity boundary hierarchy"
+
+  # SECTION 7: WORKFLOW SUBSTRATE
+  claude-workflow:
+    name: "Claude Code Research Orchestration"
+    role: "WORKFLOW_SUBSTRATE"
+    status: "ALIVE"
+    description: "Phase-gated, receipt-bearing, adversarial audit loop."
+    phases: 12
+    gate_criteria: 13
+    gates_passed: 13
+    gates_failed: 0
+    commits: 570
+    checkpoints: 4
+    receipt_categories: 6
+    subagent_roles: 13
+    adversarial_swarm_size: 20
+    version: "v30.1.1"
+
+  # SECTION 8: SOURCE COURTS
+  source-court:
+    name: "PI Source Courts"
+    role: "SOURCE_COURT"
+    status: "ALIVE"
+    description: "Papers, PM4Py atlas, type-law mappings, public standards"
+    artifacts:
+      papers: 9
+      pm4py_functions: 140
+      standards: 39
+      comparisons: 5
+      crosswalks: 4
+
+  paper-canon:
+    name: "Paper Canon"
+    role: "SOURCE_COURT"
+    status: "ALIVE"
+    description: "9 classified process mining papers with formal object mappings"
+    location: "/Users/sac/process-intelligence/sources/papers"
+    papers: 9
+    authors:
+      - "van der Aalst"
+      - "Adriansyah"
+      - "Leemans"
+      - "Ghahfarokhi"
+      - "Murata"
+
+  pm4py-atlas:
+    name: "PM4Py Capability Atlas"
+    role: "SOURCE_COURT"
+    status: "ALIVE"
+    location: "/Users/sac/process-intelligence/sources/pm4py"
+    functions_mapped: 140
+    coverage_status:
+      covered: "multiple"
+      gap: "multiple"
+      partial: "multiple"
+
+  # SECTION 9: AUTHORIZATION COURTS
+  blue-river-dam:
+    name: "Blue River Dam Orchestrator"
+    location: "/Users/sac/process-intelligence/blue_river_dam"
+    role: "AUTHORIZATION_COURT"
+    also_role: "EXECUTION_COURT"
+    status: "ALIVE"
+    checkpoint: "ORCHESTRATOR_ALIVE"
+    description: "Safe Rust MAPE-K orchestrator with 5 authority components."
+    lines_of_code: 629
+    components: 5
+    lifecycle_quality_gates: 6
+    actuation_protocols: 4
+    admission_pathways: 11
+    cryptography: "SHA-256 blockchain"
+    language: "Rust"
+    surfaces:
+      admission: "11-pathway refusal boundary (temporal, schema, causal, memory, crypto, soundness, fitness, identity, BPMN, declare, dedup)"
+      refusals: "TemporalAnomaly, SchemaViolation, CausalDisconnect, MemoryBoundsViolation, HashMismatch, etc."
+      receipts: "Cryptographic governance ledger with SHA-256 blocks"
+      conformance: "LCS-based alignment with fitness threshold gates"
+
+# Surface Separation Matrix
+surface_separation:
+  admission_surfaces: 5
+    - zoeapp-admission-surface
+    - wasm4pm-admission-surface
+    - compat-admission-surface
+    - otel-weaver-admission-surface
+    - blue-river-admission-surface
+
+  refusal_surfaces: 5
+    - zoeapp-refusal-surface
+    - wasm4pm-refusal-surface
+    - compat-refusal-surface
+    - otel-weaver-refusal-surface
+    - blue-river-refusal-surface
+
+  receipt_surfaces: 5
+    - zoeapp-receipt-surface
+    - wasm4pm-receipt-surface
+    - wasm4pm-receipts (not in compat)
+    - blue-river-receipt-surface
+
+  replay_surfaces: 4
+    - zoeapp-replay-surface
+    - wasm4pm-replay-surface
+    - blue-river-conformance-surface
+
+  conformance_surfaces: 2
+    - wasm4pm-conformance-surface
+    - blue-river-conformance-surface
+
+# Forbidden Collapses
+forbidden_collapses:
+  wasm4pm-compat-dto-boundary:
+    location: "sources/wasm4pm-compat"
+    violation: "JSON serialization without type law wrapper"
+    methods:
+      - "receipt_json() → String"
+      - "to_json_string() → String"
+    severity: "CRITICAL"
+    remediation_owner: "wasm4pm-compat team"
+    remediation_class: "BOUNDARY_LAW_VIOLATION"

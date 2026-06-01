@@ -1,0 +1,101 @@
+# Checkpoint Ledger — Execution Sequence Record
+
+**Generated:** {{ generated_at }}
+**Run ID:** {{ run.run_id }}
+**Program:** {{ run.program_name }}
+
+## Overview
+
+This ledger records every checkpoint in the execution sequence, from start through termination. Each checkpoint captures the state of the generation pipeline at a specific moment.
+
+**Total Checkpoints:** {{ checkpoints | length }}
+**Execution Duration:** {{ run.duration_seconds }}s
+
+---
+
+## Checkpoint Timeline
+
+{% for checkpoint in checkpoints %}
+### Checkpoint {{ checkpoint.sequence_number }}: {{ checkpoint.name }}
+
+**Timestamp:** {{ checkpoint.timestamp }}
+**Duration Since Previous:** {{ checkpoint.delta_ms }}ms
+**Status:** {{ checkpoint.status }}
+
+#### State Summary
+
+- **Artifacts Generated So Far:** {{ checkpoint.artifacts_generated }}
+- **Rules Applied:** {{ checkpoint.rules_applied }}
+- **Gates Evaluated:** {{ checkpoint.gates_evaluated }}
+- **Conformance Score:** {{ checkpoint.conformance_score }}%
+
+#### Generation Pipeline State
+
+{% for stage in checkpoint.pipeline_stages %}
+- **{{ stage.name }}:** {{ stage.status }}
+  - Processed: {{ stage.processed }} / {{ stage.total }}
+  - Duration: {{ stage.duration_ms }}ms
+{% endfor %}
+
+#### Artifact Status Distribution
+
+- Success: {{ checkpoint.artifact_distribution.success }}
+- Partial: {{ checkpoint.artifact_distribution.partial }}
+- Failed: {{ checkpoint.artifact_distribution.failed }}
+- Pending: {{ checkpoint.artifact_distribution.pending }}
+
+#### Gate Status
+
+{% for gate in checkpoint.gates %}
+- **{{ gate.name }}:** {{ gate.status }}
+  - Verdict: {{ gate.verdict }}
+  - Criteria Met: {{ gate.criteria_met }}/{{ gate.total_criteria }}
+{% endfor %}
+
+#### Notable Events
+
+{% if checkpoint.events %}
+{% for event in checkpoint.events %}
+- `{{ event.event_type }}`: {{ event.description }}
+{% endfor %}
+{% else %}
+- No notable events at this checkpoint.
+{% endif %}
+
+#### Conformance Evidence
+
+- **Fitness:** {{ checkpoint.conformance.fitness }}
+- **Precision:** {{ checkpoint.conformance.precision }}
+- **Generalization:** {{ checkpoint.conformance.generalization }}
+- **Simplicity:** {{ checkpoint.conformance.simplicity }}
+
+{% if checkpoint.decisions %}
+#### Decisions Made
+
+{% for decision in checkpoint.decisions %}
+- {{ decision }}
+{% endfor %}
+{% endif %}
+
+---
+
+{% endfor %}
+
+## Execution Path
+
+```
+{{ execution_flow_diagram }}
+```
+
+## Checkpoint Integrity
+
+| Checkpoint | Integrity Hash | Verified |
+|---|---|---|
+{% for checkpoint in checkpoints %}
+| {{ checkpoint.sequence_number }} | `{{ checkpoint.integrity_hash }}` | {{ checkpoint.verified }} |
+{% endfor %}
+
+## Conclusion
+
+Final checkpoint state recorded at {{ final_checkpoint.timestamp }}.
+Execution path is complete and recorded for audit.

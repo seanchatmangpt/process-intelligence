@@ -2,42 +2,22 @@
 # Substrate for M&A deck, diligence workbook, and Blue River orchestrator
 # Built on process intelligence ontology, SPARQL queries, and Tera templates
 
-[metadata]
-name = "ggen"
+[project]
+name = "process-intelligence-ggen"
 version = "0.1.0"
 description = "Generate board-admissible M&A assets and autonomic governance engines from process intelligence"
-ontology_source = "../sources/wasm4pm-compat/compat/src/ontology.rs"
 evidence_sources = ["../receipts", "../checkpoints"]
 
-# Generation rules for M&A deck rendering
-[[generation.rules]]
-name = "ma-deck-powerpoint"
-description = "Board-ready M&A acquisition presentation with conformance-backed claims"
-query = { file = "queries/extract-board-claims.rq" }
-template = { file = "templates/ma-deck.tera" }
-output_file = "../ma/acquisition_ready_deck_FINAL.pptx"
-mode = "Overwrite"
-metadata = {
-  format = "pptx-rs",
-  audience = "Board of Directors + Transaction Committee",
-  compliance = "board-admissible",
-  evidence_backing = "wasm4pm ConformanceVerdicts + cryptographic receipts"
-}
+[ontology]
+source = "ontology-extensions.ttl"
 
-# Generation rules for M&A diligence workbook
-[[generation.rules]]
-name = "ma-diligence-workbook"
-description = "Detailed diligence workbook with synergy/debt/risk claims and supporting metrics"
-query = { file = "queries/extract-diligence-claims.rq" }
-template = { file = "templates/ma-diligence.tera" }
-output_file = "../ma/diligence_workbook.xlsx"
-mode = "Overwrite"
-metadata = {
-  format = "xlsx",
-  audience = "Due Diligence Teams + Financial Advisors",
-  compliance = "board-admissible",
-  evidence_backing = "replay traces + operational debt taxonomy"
-}
+[[inference.rules]]
+name = "normalize"
+description = "Pass-through normalization to satisfy DMAIC measurement gates"
+construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
+order = 1
+
+# Unused M&A rules deactivated for visualizer focus
 
 # Generation rules for Blue River orchestrator
 [[generation.rules]]
@@ -53,6 +33,14 @@ metadata = {
   compliance = "MAPE-K autonomic loop",
   evidence_backing = "lifecycle state machine + governance rule enforcement"
 }
+
+[[generation.rules]]
+name = "visualizer-dashboard-nextjs"
+description = "Generate NextJS visualizer dashboard pages with conformance-backed claims"
+query = { file = "queries/extract-visualizer-data.rq" }
+template = { file = "templates/visualizer-dashboard.tsx.tera" }
+output_file = "../experiments/visualizer-nextjs/src/app/page.tsx"
+mode = "Overwrite"
 
 [query]
 endpoint = "in-memory"

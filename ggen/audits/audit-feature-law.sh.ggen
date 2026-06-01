@@ -1,0 +1,279 @@
+#!/usr/bin/env bash
+# Audit: Feature Law Enforcement
+# Authority: ggen/rules/feature-law.yaml
+# Purpose: Verify that Cargo features comply with the governance law:
+#   1. No features enable execution engines
+#   2. No tool smuggling through transitive dependencies
+#   3. Features only add derives and optional dependencies
+#   4. Feature unification effects are documented and tested
+
+set -euo pipefail
+
+# Configuration
+CRATE_NAME="{{ crate_name | default(value='wasm4pm-compat') }}"
+FEATURE_LAW_FILE="{{ feature_law_file | default(value='ggen/rules/feature-law.yaml') }}"
+FORBIDDEN_TRANSITIVE_DEPS=(
+  "pm4py-bindings"
+  "ocpq-engine"
+  "replay-executor"
+  "receipt-minter"
+  "conformance-solver"
+  "benchmark-harness"
+)
+
+FORBIDDEN_EXECUTION_TOOLS=(
+  "discover_model"
+  "run_conformance"
+  "simulate_replay"
+  "mint_receipt"
+  "benchmark_gate_run"
+  "execute_ocpq"
+  "rebuild_process_mining"
+)
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+audit_log=""
+failures=0
+warnings=0
+
+# Helper functions
+log_info() {
+  echo -e "${GREEN}[INFO]${NC} $1"
+  audit_log+=$'  INFO: '"$1"$'\n'
+}
+
+log_warn() {
+  echo -e "${YELLOW}[WARN]${NC} $1"
+  audit_log+=$'  WARN: '"$1"$'\n'
+  ((warnings++))
+}
+
+log_fail() {
+  echo -e "${RED}[FAIL]${NC} $1"
+  audit_log+=$'  FAIL: '"$1"$'\n'
+  ((failures++))
+}
+
+# Verify Cargo.toml exists
+if [ ! -f "Cargo.toml" ]; then
+  log_fail "Cargo.toml not found in current directory"
+  exit 1
+fi
+
+log_info "=== Feature Law Audit: $CRATE_NAME ==="
+log_info "Feature Law Authority: $FEATURE_LAW_FILE"
+
+# =============================================================================
+# GATE 1: Feature Definition Verification
+# =============================================================================
+
+log_info "GATE 1: Feature Definition Verification"
+
+# Check that all required features are defined
+REQUIRED_FEATURES=("default" "formats" "ts" "wasm" "component" "strict" "wasm4pm")
+
+for feature in "${REQUIRED_FEATURES[@]}"; do
+  if grep -q "\[\"$feature\"\]" Cargo.toml || grep -q "\"$feature\"" Cargo.toml; then
+    log_info "  ✓ Feature '$feature' is defined"
+  else
+    log_warn "  ✗ Feature '$feature' is missing (may be optional)"
+  fi
+done
+
+# =============================================================================
+# GATE 2: Execution Engine Smuggling Detection
+# =============================================================================
+
+log_info "GATE 2: Execution Engine Smuggling Detection"
+
+FOUND_SMUGGLING=false
+
+# Check Cargo.toml for direct execution engine dependencies
+for forbidden in "${FORBIDDEN_TRANSITIVE_DEPS[@]}"; do
+  if grep -q "$forbidden" Cargo.toml; then
+    log_fail "  SMUGGLING DETECTED: '$forbidden' found in Cargo.toml"
+    FOUND_SMUGGLING=true
+  fi
+done
+
+# Check Cargo.lock or dependency tree for transitive execution engines
+if cargo tree --duplicates > /dev/null 2>&1; then
+  cargo tree --depth 5 2>/dev/null | while IFS= read -r line; do
+    for forbidden in "${FORBIDDEN_TRANSITIVE_DEPS[@]}"; do
+      if echo "$line" | grep -q "$forbidden"; then
+        log_fail "  SMUGGLING DETECTED (transitive): '$forbidden' in dependency tree"
+        FOUND_SMUGGLING=true
+      fi
+    done
+  done
+fi
+
+if [ "$FOUND_SMUGGLING" = false ]; then
+  log_info "  ✓ No execution engine transitive dependencies detected"
+fi
+
+# =============================================================================
+# GATE 3: Feature Dependency Content Analysis
+# =============================================================================
+
+log_info "GATE 3: Feature Dependency Content Analysis"
+
+# Extract and verify 'ts' feature dependencies
+log_info "  Checking 'ts' feature dependencies..."
+if grep -A 10 'ts = \[' Cargo.toml | grep -q 'specta'; then
+  log_info "    ✓ specta dependency found for 'ts' feature"
+else
+  log_warn "    ✗ specta dependency missing for 'ts' feature"
+fi
+
+if grep -A 10 'ts = \[' Cargo.toml | grep -q 'wasm-bindgen'; then
+  log_info "    ✓ wasm-bindgen dependency found for 'ts' feature"
+else
+  log_warn "    ✗ wasm-bindgen dependency missing for 'ts' feature"
+fi
+
+if grep -A 10 'ts = \[' Cargo.toml | grep -q 'tsify'; then
+  log_info "    ✓ tsify dependency found for 'ts' feature"
+else
+  log_warn "    ✗ tsify dependency missing for 'ts' feature"
+fi
+
+# Extract and verify 'wasm' feature dependencies
+log_info "  Checking 'wasm' feature dependencies..."
+if grep -A 10 'wasm = \[' Cargo.toml | grep -q 'wasm-bindgen'; then
+  log_info "    ✓ wasm-bindgen dependency found for 'wasm' feature"
+else
+  log_warn "    ✗ wasm-bindgen dependency missing for 'wasm' feature"
+fi
+
+if grep -A 10 'wasm = \[' Cargo.toml | grep -q 'tsify'; then
+  log_info "    ✓ tsify dependency found for 'wasm' feature"
+else
+  log_warn "    ✗ tsify dependency missing for 'wasm' feature"
+fi
+
+# Extract and verify 'component' feature dependencies
+log_info "  Checking 'component' feature dependencies..."
+if grep -A 10 'component = \[' Cargo.toml | grep -q 'wit-bindgen'; then
+  log_info "    ✓ wit-bindgen dependency found for 'component' feature"
+else
+  log_warn "    ✗ wit-bindgen dependency missing for 'component' feature"
+fi
+
+# =============================================================================
+# GATE 4: Feature Combination Testing
+# =============================================================================
+
+log_info "GATE 4: Feature Combination Testing"
+
+if command -v cargo &> /dev/null; then
+  # Test: default features only
+  log_info "  Testing: cargo build (default features)"
+  if cargo build --lib 2>&1 | grep -q "error"; then
+    log_fail "    Build failed with default features"
+  else
+    log_info "    ✓ Default build succeeds"
+  fi
+
+  # Test: ts feature
+  log_info "  Testing: cargo build --features ts"
+  if cargo build --lib --features ts 2>&1 | grep -q "error"; then
+    log_fail "    Build failed with 'ts' feature"
+  else
+    log_info "    ✓ Build succeeds with 'ts' feature"
+  fi
+
+  # Test: wasm feature
+  log_info "  Testing: cargo build --features wasm"
+  if cargo build --lib --features wasm 2>&1 | grep -q "error"; then
+    log_fail "    Build failed with 'wasm' feature"
+  else
+    log_info "    ✓ Build succeeds with 'wasm' feature"
+  fi
+
+  # Test: component feature
+  log_info "  Testing: cargo build --features component"
+  if cargo build --lib --features component 2>&1 | grep -q "error"; then
+    log_fail "    Build failed with 'component' feature"
+  else
+    log_info "    ✓ Build succeeds with 'component' feature"
+  fi
+
+  # Test: all features
+  log_info "  Testing: cargo build --all-features"
+  if cargo build --lib --all-features 2>&1 | grep -q "error"; then
+    log_fail "    Build failed with all features"
+  else
+    log_info "    ✓ Build succeeds with all features"
+  fi
+else
+  log_warn "  cargo not available; skipping build tests"
+fi
+
+# =============================================================================
+# GATE 5: Feature Documentation & RFC Compliance
+# =============================================================================
+
+log_info "GATE 5: Feature Documentation Compliance"
+
+if [ -f "$FEATURE_LAW_FILE" ]; then
+  log_info "  ✓ Feature law file exists: $FEATURE_LAW_FILE"
+
+  # Verify all required feature definitions are documented
+  for feature in "${REQUIRED_FEATURES[@]}"; do
+    if grep -q "name: \".*$feature" "$FEATURE_LAW_FILE"; then
+      log_info "    ✓ Feature '$feature' documented in feature-law.yaml"
+    else
+      log_warn "    ✗ Feature '$feature' missing from feature-law.yaml documentation"
+    fi
+  done
+else
+  log_fail "Feature law file not found: $FEATURE_LAW_FILE"
+fi
+
+# =============================================================================
+# GATE 6: Tool Smuggling Detection (via source inspection)
+# =============================================================================
+
+log_info "GATE 6: Source Code Smuggling Detection"
+
+# Search for forbidden execution tool invocations in feature-gated code
+found_smuggling=false
+
+for tool in "${FORBIDDEN_EXECUTION_TOOLS[@]}"; do
+  # Look for #[cfg(feature = "...")] followed by tool calls
+  if grep -r "#\[cfg(feature" src/ 2>/dev/null | grep -q "$tool"; then
+    log_fail "  SMUGGLING: Tool '$tool' found in feature-gated code"
+    found_smuggling=true
+  fi
+done
+
+if [ "$found_smuggling" = false ]; then
+  log_info "  ✓ No forbidden execution tools detected in feature-gated code"
+fi
+
+# =============================================================================
+# Summary & Exit Code
+# =============================================================================
+
+echo ""
+log_info "=== Audit Summary ==="
+log_info "Failures: $failures"
+log_info "Warnings: $warnings"
+
+if [ $failures -eq 0 ]; then
+  log_info "✓ All feature law gates PASSED"
+  echo ""
+  echo "$audit_log"
+  exit 0
+else
+  log_fail "✗ Feature law audit FAILED with $failures error(s)"
+  echo ""
+  echo "$audit_log"
+  exit 1
+fi

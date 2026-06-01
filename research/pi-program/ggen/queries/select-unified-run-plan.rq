@@ -1,0 +1,17 @@
+# Selection Query: Unified Run Plan
+# Returns the complete execution plan with rule ordering, dependencies, and parallelization hints
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?step ?rule ?precedence ?dependsOn ?parallelizable ?estimatedDuration
+WHERE {
+  ?runPlan a ggen:UnifiedRunPlan .
+  ?runPlan ggen:hasStep ?step .
+  ?step ggen:rule ?rule .
+  OPTIONAL { ?step ggen:precedence ?precedence }
+  OPTIONAL { ?step ggen:dependsOn ?dependsOn }
+  OPTIONAL { ?step ggen:parallelizable ?parallelizable }
+  OPTIONAL { ?step ggen:estimatedDuration ?estimatedDuration }
+}
+ORDER BY ?precedence

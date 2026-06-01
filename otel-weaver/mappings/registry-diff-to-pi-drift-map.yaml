@@ -1,0 +1,63 @@
+# registry-diff-to-pi-drift-map.yaml
+# Weaver Semantic Registry Diff to Process Drift Isolation Map
+# Authority: /Users/sac/process-intelligence/otel-weaver/mappings/registry-diff-to-pi-drift-map.yaml
+# Status: ACTIVE
+# Nominal Category Enforcements:
+# - Weaver diffs represent schema version changes.
+# - Process drift represents operational runtime execution deviation.
+# - Weaver diffs are NOT process drift. This file explicitly maps the registry diff to its schema category and prevents it from being registered as runtime drift.
+
+version: "1.0.0"
+authority: "Process Intelligence Research Foundry"
+
+nominal_isolation_declaration:
+  statement: "Weaver schema diffs are changes in the definition or conventions of telemetry feedstock. Process drift is runtime deviation from process models. Under no circumstances shall a Weaver schema diff be registered as process drift."
+
+schema_diff_categories:
+  - diff_type: "schema_addition"
+    definition: "New telemetry feedstock attributes added to semantic registry."
+    process_drift_impact: "none"
+    reconciliation:
+      action: "extend_feedstock_parsers"
+      requires_recompile: false
+
+  - diff_type: "attribute_deprecation"
+    definition: "Telemetry feedstock attributes marked deprecated."
+    process_drift_impact: "none"
+    reconciliation:
+      action: "mark_parser_keys_optional"
+      requires_recompile: false
+
+  - diff_type: "type_change"
+    definition: "Data type conversion of a telemetry feedstock attribute."
+    process_drift_impact: "none_unless_unmapped"
+    reconciliation:
+      action: "update_codec_coercions"
+      requires_recompile: true
+
+process_drift_definitions:
+  - drift_type: "activity_skip"
+    definition: "An activity in the normative model was bypassed during runtime execution."
+    telemetry_trigger: "Missing expected span event in execution trace"
+    category: "operational_runtime_drift"
+
+  - drift_type: "sequence_violation"
+    definition: "Activities executed in an order that violates temporal constraints."
+    telemetry_trigger: "Span start timestamps violate parent-child or sequential token ordering"
+    category: "operational_runtime_drift"
+
+  - drift_type: "conformance_score_decay"
+    definition: "Aggregate conformance index drops below acceptable threshold."
+    telemetry_trigger: "Token replay fitness drops below 0.95"
+    category: "operational_runtime_drift"
+
+mapping_boundary_rules:
+  - rule_id: "drift_isolation_rule_1"
+    condition: "If a telemetry field is missing because of a 'schema_diff' (e.g. attribute_deprecation)"
+    then: "Do NOT report process drift. Route to Weaver Diff Log instead."
+    log_target: "/Users/sac/process-intelligence/checkpoints/weaver_diff_registry.json"
+
+  - rule_id: "drift_isolation_rule_2"
+    condition: "If a telemetry field is missing but is present in the current schema version"
+    then: "Report Process Drift: Activity Skip / Data Under-provisioning."
+    log_target: "/Users/sac/process-intelligence/checkpoints/process_drift_court.json"

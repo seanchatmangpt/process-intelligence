@@ -1,0 +1,13 @@
+# Audit Query: No Invalid New ggen Source
+# ASSERT: All newly created ggen files pass validation gates before registration
+
+PREFIX ggen: <http://purl.org/ggen/core#>
+
+ASK {
+  ?file a ggen:GgenFile .
+  ?file ggen:isNew true .
+  ?file ggen:hasError ?error .
+  FILTER NOT EXISTS {
+    ?file ggen:validatedAt ?timestamp .
+  }
+}
