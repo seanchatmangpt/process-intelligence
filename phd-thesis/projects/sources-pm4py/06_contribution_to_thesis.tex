@@ -1,0 +1,95 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Contribution to the Dissertation}
+\label{sec:sources-pm4py-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:sources-pm4py-contribution-prediction}
+
+The oracle atlas makes a precise contribution to the dissertation's central argument about
+prediction versus coordination. PM4Py's prediction/ML module (\texttt{pm4py.ml.*}) covers
+next-activity prediction, remaining time prediction, outcome prediction, and decision-point
+mining via decision trees --- and none of these are WASM-bridged (all \texttt{NO} in the
+capability atlas). This is not a gap; it is a design boundary. The atlas establishes that
+the wasm4pm bridge draws its boundary at the point where outputs can carry a deterministic,
+named-law receipt. Predictive outputs cannot carry such receipts because they are
+non-deterministic functions of model weights, which may not be traceable to a specific
+event log under a specific algorithm and parameterisation. Coordination outputs --- fitness
+scores, alignment costs, conformance diagnostics, soundness checks --- can carry receipts
+because they are deterministic functions of a log, a model, and an algorithm. The oracle
+atlas, by explicitly categorising the prediction capabilities as unbridged and explaining
+why (via the NOT\_TO\_COPY manifesto's treatment of LLM integration and the divergence
+matrix's treatment of LLM results as advisory-only), operationalises the thesis argument
+that process coordination requires a different evidential standard than process prediction.
+[AUTHOR THESIS / INTERPRETATION]
+
+\subsection{Contribution to Process Evidence}
+\label{sec:sources-pm4py-contribution-evidence}
+
+The atlas's most direct contribution is to the dissertation's theory of process evidence.
+It demonstrates, through the 37-algorithm crosswalk, that there is a systematic three-way
+distinction between: type surfaces that must exist in wasm4pm-compat to carry receipts
+(2 COVERED); type surfaces that exist for related structures but require additional work
+to anchor receipts for specific algorithms (16 PARTIAL); and type surfaces that are
+entirely absent, meaning no receipt is possible for the corresponding capability (19 MISSING).
+This tripartite structure is the contribution: it says that process evidence is not a
+binary property (a capability either exists or does not) but a graded property with a
+type-law criterion for what constitutes admissible evidence.
+
+The five JSON receipts provide the empirical grounding: they demonstrate that the
+wasm4pm engine can produce fitness and precision scores that match PM4Py's deterministic
+algorithms, with BLAKE3 provenance anchors and ed25519 signatures, for real enterprise
+process claims (EBITDA rework reduction, working capital, SLA compliance). The
+conformance-authority-map documents the mathematical foundations that underpin those
+scores --- TBR formula $f(\sigma,N) = \tfrac{1}{2}(1-m/c)+\tfrac{1}{2}(1-r/p)$,
+optimal alignment $\gamma^* = \operatorname{argmin}_\gamma \sum c(t,a)$, ETConformance
+precision --- ensuring that the oracle's claims are traceable to published process mining
+theory rather than to proprietary implementation choices.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:sources-pm4py-contribution-manufacturing}
+
+The atlas contributes to the dissertation's manufacturing architecture argument by
+establishing the role of PM4Py as an oracle rather than a template. The NOT\_TO\_COPY
+manifesto is the most direct formulation: ten architectural decisions that PM4Py made for
+ergonomic reasons in the Python data science context would poison the manufacturing pipeline
+if replicated in wasm4pm. DataFrame-first type erasure, mutable object construction,
+generic exception raising, and silent projection loss are not simply inconveniences ---
+they are structural incompatibilities with a manufacturing pipeline that requires every
+artifact to have a provenance chain, every refusal to carry a named law type, and every
+projection to carry a loss report.
+
+The divergence matrix's operational checklist for porting PM4Py algorithms formalises
+the manufacturing decision process: is the algorithm deterministic (must-match) or
+heuristic (may diverge)? Does it produce a conformance artifact (must emit \texttt{Evidence<T,*,Witness>})?
+Is it used downstream by other algorithms (output must be schema-locked)? Does it call
+external services (results forbidden from conformance paths)? Does it perform lossy
+conversion (must emit \texttt{LossReport})? This checklist is the manufacturing discipline
+that distinguishes the research program's approach from ad hoc porting.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:sources-pm4py-contribution-capital}
+
+The five JSON receipts connect the oracle atlas to the dissertation's capital-flow
+infrastructure argument. Each receipt certifies a financial claim: the EBITDA rework
+receipt asserts a \$1,250,000 annual EBITDA increase from Purchase Order rework reduction,
+verified at fitness 0.982 and precision 0.945. The conformance-authority-map explicitly
+addresses the role of conformance scores in M\&A diligence: fitness and precision are
+not merely metrics --- they are the evidentiary basis for claiming that a process operates
+within lawful bounds. The oracle atlas establishes that these claims are defensible only
+when the conformance scores are produced by an engine that matches PM4Py's deterministic
+algorithms exactly for the must-match capability set, with BLAKE3-anchored log and model
+hashes and ed25519 signatures. Without the oracle atlas's mapping, there is no basis for
+claiming that a wasm4pm fitness score is comparable to a PM4Py fitness score. With it,
+the claim is traceable, law-bound, and receipt-anchored --- the precondition for
+capital-flow defensibility. [AUTHOR THESIS / INTERPRETATION of receipt evidence]
+
+\bigskip
+\noindent\textit{Source authority:} CAPABILITY\_ATLAS.md (section 9: Prediction/ML, all
+NO), NOT\_TO\_COPY.md (manufacturing architecture argument), ALGORITHM\_CROSSWALK.md
+(Summary Table: 2 COVERED, 16 PARTIAL, 19 MISSING), divergence-matrix.md (section 13:
+operational checklist), receipts/rec\_ebitda\_rework\_001.json (EBITDA claim and
+verification results), conformance-authority-map.md (conformance formulas, M\&A
+diligence context).

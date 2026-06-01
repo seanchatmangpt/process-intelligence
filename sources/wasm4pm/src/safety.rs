@@ -18,7 +18,7 @@ impl FfiSafetyChecker {
         if alignment == 0 || !alignment.is_power_of_two() {
             return false;
         }
-        (ptr as usize) % alignment == 0
+        (ptr as usize).is_multiple_of(alignment)
     }
 
     /// Checks if the pointer region is completely contained within the global arena.

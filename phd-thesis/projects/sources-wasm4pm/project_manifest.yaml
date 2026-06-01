@@ -1,0 +1,30 @@
+slug: sources-wasm4pm
+absolute_path: /Users/sac/process-intelligence/sources/wasm4pm
+description: >
+  wasm4pm execution authority (v30.1.2) — high-performance cryptographically sandboxed WASM
+  execution engine for process intelligence. Rust source covering conformance, mining, replay,
+  lifecycle, LTL, crypto, graduation, OCEL v2, and OTel modules. Zero external dependencies
+  beyond wasm4pm-compat. The core execution authority.
+detected_languages:
+  - Rust
+detected_frameworks:
+  - wasm4pm
+  - WASM
+detected_research_surfaces:
+  - process-evidence
+  - conformance-checking
+  - mining-authority
+  - replay-authority
+  - lifecycle-governance
+  - receipt-chain
+  - OCEL-v2
+likely_thesis_role: core-wasm-execution-authority
+key_files:
+  - /Users/sac/process-intelligence/sources/wasm4pm/Cargo.toml
+  - /Users/sac/process-intelligence/sources/wasm4pm/src/lib.rs
+  - /Users/sac/process-intelligence/sources/wasm4pm/EXECUTION_AUTHORITY_ATLAS.md
+  - /Users/sac/process-intelligence/sources/wasm4pm/MINING_AUTHORITY_MAP.md
+  - /Users/sac/process-intelligence/sources/wasm4pm/GAP_ANALYSIS.md
+readme_present: false
+receipt_present: true
+ontology_present: false

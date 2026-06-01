@@ -1,0 +1,105 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Lineage and Context Chapter
+
+\section{Lineage and Context}
+\label{sec:otel-weaver-exp-004-registry-to-witness-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:otel-weaver-exp-004-registry-to-witness-lm-lesson}
+
+The research program begins with a 2016 experiment in local language-model text imitation.
+The operative finding from that experiment was not about the quality of the imitation but
+about its absence of consequence: a system that predicts the surface form of text does not
+thereby inherit the causal and legal obligations that the text was used to discharge. An
+imitation of a process log is not a process log. An imitation of a witness attestation is
+not a witness attestation.
+
+EXP-004 instantiates this lesson at the type-system layer. The old-regime approach to
+building telemetry bridges was textual: copy field names from a convention specification
+document into source code files, relying on developer vigilance to keep the two in sync.
+This approach is structurally analogous to text imitation --- the code copies the shape of
+the convention without being causally bound to it. When the convention changes, the code
+does not change, and the failure mode is silent.
+
+The code-generation pipeline in EXP-004 replaces textual imitation with causal derivation.
+The materialized \texttt{ActivityWitness} struct is not copied from a document --- it is
+forged from the same source artifact (the resolved schema JSON) that the Weaver toolchain
+uses. The consequence-gap identified in the 2016 experiment is closed, at least at the
+structural boundary, by making the source of truth machine-readable and the transformation
+mechanically verified.
+
+\subsection{Enterprise Process Gap}
+\label{sec:otel-weaver-exp-004-registry-to-witness-enterprise-gap}
+
+The 2016 lesson scaled to the enterprise in a specific way: distributed systems emit
+telemetry from dozens of instrumented services, but the telemetry carries no
+process-consequence claims. A span saying \texttt{dispatch\_payment} was emitted does not
+assert that the payment was lawfully authorized. Structural validity --- all required
+fields present, types correct, schema version matched --- is an engineering metric, not a
+legal or operational assertion.
+
+The doctrine file \texttt{otel-weaver/doctrine/otel-weaver-is-feedstock.md} formalizes
+this gap. It draws a strict nominal boundary between schema validation (syntactic,
+attribute presence, type checks, authority: systems infrastructure) and conformance
+checking (temporal, activity ordering, object linkages, token replay, authority: board room
+or compliance registry). The Weaver framework, however sophisticated its convention
+resolution, operates entirely within the schema-validation column of this table.
+
+EXP-004's code-generation pipeline sits at the exact boundary where the enterprise gap
+manifests. The pipeline accepts structured convention metadata from the Weaver layer ---
+the feedstock side of the boundary --- and forges Rust types that implement the
+\texttt{Lattice} trait required by the court layer. It does not perform conformance
+checking itself; it manufactures the type infrastructure that makes compile-time-verified
+conformance checking possible. The gap between ``structurally valid telemetry'' and
+``lawful process execution'' is not closed by EXP-004, but the plumbing that allows the
+court to make that determination without hand-coded fragility is what EXP-004 provides.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:otel-weaver-exp-004-registry-to-witness-chatman-equation}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that an autonomous agent $A$ is the measure
+$\mu$ applied to the open star $O^*$ --- the totality of evidence available in a process
+context. For $A$ to be a valid measure rather than an imitation, the evidence surface
+$O^*$ must be structured, typed, and causally grounded. Raw telemetry is not $O^*$; it is
+feedstock that must pass through a typed admission boundary before entering the evidence
+surface.
+
+EXP-004 contributes to the Chatman Equation by ensuring that the feedstock-to-evidence
+projection is not a hand-written approximation. The \texttt{ActivityWitness} struct
+materialized by the generator carries three fields --- \texttt{instance\_id},
+\texttt{witness\_id}, and \texttt{witness\_hash} --- that correspond directly to the
+attributes declared as \texttt{required} in the \texttt{process.pi.activity} group of
+\texttt{process\_pi.yaml}. These are not arbitrary fields; they are the minimum typed
+assertions that a process execution event must carry to be admissible as evidence in a
+conformance court. The generator enforces this minimum at compile time.
+
+The BLAKE3 hash field (\texttt{process.pi.witness.hash}) is particularly significant in
+the equation. A witness hash seals a specific transition trace, making it tamper-evident.
+Without this seal, the evidence surface is mutable and the measure $\mu$ is undefined.
+EXP-004 ensures that every materialized witness type carries this seal as a required,
+typed field, not an optional annotation.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:otel-weaver-exp-004-registry-to-witness-receipts}
+
+The receipt chain in this research program provides cryptographic provenance for
+manufacturing steps: a receipt attests that a specific artifact was produced by a specific
+process at a specific time. EXP-004 both depends on and contributes to this infrastructure.
+
+The \texttt{generated\_witnesses.rs} artifact carries an embedded timestamp comment
+(\texttt{Generated at: 2026-06-01T10:10:51-07:00}) as its sole provenance record. This is
+a weak form of receipt --- it attests \emph{when} the file was materialized but not
+\emph{how} (which generator version, which input schema, which operator). The absence of a
+cryptographic receipt file specific to EXP-004 is a documented gap
+(Section~\ref{sec:otel-weaver-exp-004-registry-to-witness-gaps}).
+
+The replay relationship operates in the other direction: the \texttt{Lattice} trait
+implementation in the materialized code is itself a replay mechanism. The
+\texttt{partial\_cmp} method defines a partial order over witness states where an empty
+\texttt{witness\_hash} is the bottom element (no evidence) and a non-empty 64-character
+BLAKE3 hex string is the top element (sealed evidence). The \texttt{join} operation
+resolves compatible witnesses by identity and resolves incompatible witnesses (distinct
+non-empty hashes representing divergent execution paths) by returning the lattice top ---
+a convention that signals contradiction rather than silently selecting one path. This
+lattice structure is what allows \texttt{wasm4pm} to replay conformance decisions over
+a partial order of witness states rather than over a flat sequence of events.

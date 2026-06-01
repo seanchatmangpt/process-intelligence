@@ -191,8 +191,8 @@ impl PetriNet {
                 if self.places.contains(&curr) {
                     // Current node is a place. Neighbors are transitions in its preset or postset.
                     for t in &self.transitions {
-                        let is_neighbor = self.pre.get(t).map_or(false, |inputs| inputs.contains_key(&curr))
-                            || self.post.get(t).map_or(false, |outputs| outputs.contains_key(&curr));
+                        let is_neighbor = self.pre.get(t).is_some_and(|inputs| inputs.contains_key(&curr))
+                            || self.post.get(t).is_some_and(|outputs| outputs.contains_key(&curr));
                         if is_neighbor && !visited.contains(t) {
                             visited.insert(t.clone());
                             queue.push_back(t.clone());
@@ -350,11 +350,9 @@ impl PetriNet {
 
         while let Some(curr) = queue.pop_front() {
             for (src_m, _, dest_m) in &edges {
-                if dest_m == &curr {
-                    if !reach_back.contains(src_m) {
-                        reach_back.insert(src_m.clone());
-                        queue.push_back(src_m.clone());
-                    }
+                if dest_m == &curr && !reach_back.contains(src_m) {
+                    reach_back.insert(src_m.clone());
+                    queue.push_back(src_m.clone());
                 }
             }
         }

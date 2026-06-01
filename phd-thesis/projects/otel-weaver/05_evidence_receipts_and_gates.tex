@@ -1,0 +1,119 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+% Note: Project status is PARTIAL — reflected accurately below.
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:otel-weaver-evidence}
+
+\subsection{Tests}
+\label{sec:otel-weaver-evidence-tests}
+
+Three test surfaces are documented for the \texttt{otel-weaver} project, at varying levels of
+materialization:
+
+\paragraph{Inline unit tests (exp-002 and exp-003).}
+The experiment README files for \texttt{exp-002} and \texttt{exp-003} contain fully specified
+inline test cases. \texttt{exp-002} specifies \texttt{test\_bridge\_translation\_equivalence},
+which verifies that applying \texttt{BridgeRx} to a schema diff $\Delta W$ yields a zero
+conformance residual $R_\Delta = 0$. \texttt{exp-003} specifies two tests:
+\texttt{test\_successful\_admission} (a well-formed span produces \texttt{Admission<T,\,W>})
+and \texttt{test\_refusal\_missing\_id} (a span with missing \texttt{instance\_id} produces
+\texttt{Refusal} with \texttt{RefusalCode::MissingRequiredField} and a BLAKE3 digest). These
+tests are specified in \texttt{src/bridge.rs} and \texttt{src/validator.rs} respectively, but
+their compilation and execution status cannot be confirmed from disk artifacts alone: no
+\texttt{target/} directory or test output files were found in the experiment directories.
+
+\paragraph{Integration tests (weaver\_integration\_tests.rs).}
+The \texttt{RUNTIME\_001} checkpoint narrative cites a file
+\texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs} and quotes a test execution
+result of 1 passed / 0 failed. This file was referenced but not directly read during evidence
+extraction. The checkpoint further claims 62 total tests passing across \texttt{wasm4pm},
+\texttt{wasm4pm-compat}, and \texttt{blue\_river\_dam} packages. These claims are narrated
+within the checkpoint text; no compiled binary, test runner output file, or CI artifact
+was found on disk to corroborate them independently.
+
+\paragraph{Audit script.}
+The file \texttt{ggen/audits/audit-no-telemetry-equals-process.sh.ggen} specifies a
+\texttt{ggen}-auditable shell script that enforces the boundary between telemetry and
+process evidence in the repository's file corpus. The \texttt{.ggen} suffix indicates this
+is a \texttt{ggen} audit template; its execution status is not independently verified.
+
+\subsection{Receipts}
+\label{sec:otel-weaver-evidence-receipts}
+
+Two manifest-referenced receipt files are declared for this project:
+
+\begin{description}
+  \item[\texttt{receipts/otel-weaver-source-receipt.json}] Referenced in
+    \texttt{ggen/manifests/otel-weaver-source.manifest.yaml}. Not verified on disk during
+    evidence extraction. Contains the BLAKE3 chain for the source asset manufacturing run.
+  \item[\texttt{receipts/pi-telemetry-bridge-receipt.json}] Referenced in
+    \texttt{ggen/manifests/pi-telemetry-bridge.manifest.yaml}. Not verified on disk. Contains
+    the BLAKE3 chain for the PI telemetry bridge manufacturing run.
+\end{description}
+
+Additionally, \texttt{Refusal} objects emitted by the admission gate each carry a
+\texttt{blake3\_digest} field binding the refusal to the rejected feedstock payload. These
+per-refusal digests are ephemeral (produced at runtime) rather than stored in the receipt chain,
+but they provide an auditable anchor for any refused span.
+
+\subsection{Checkpoints}
+\label{sec:otel-weaver-evidence-checkpoints}
+
+Three \texttt{ggen}-signed checkpoint files exist in \texttt{checkpoints/}:
+
+\paragraph{PARTIAL\_001.}
+File: \texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md}.
+SHA-256: \texttt{d4b844c48811199b21d2746af484456d9b2d8643c154988cfcf35fe310efc35a}.
+This is the design gate checkpoint. It certifies that all six doctrine files have been authored,
+all five mapping tables are ACTIVE, and the \texttt{process.pi} registry is defined. The
+PARTIAL designation reflects the status at the time of signing: conceptual completeness without
+runtime verification.
+
+\paragraph{ALIVE\_001.}
+File: \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}.
+SHA-256: \texttt{e6bc59b8d210e309228d4bf09c0fa4db55fe310efc35ad1a89b3f021e85a67f1}.
+This checkpoint certifies full asset completion: all five experiment READMEs are complete with
+inline Rust implementation specifications, the \texttt{ggen} manifests have manufactured the
+BLAKE3 receipt chain references, and the Ingestion Covenant is formally declared. The ALIVE
+designation in the checkpoint name reflects the completion of the design and specification
+phase, not runtime execution.
+
+\paragraph{RUNTIME\_001.}
+File: \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}.
+SHA-256: \texttt{86ef45b3c63ae38007701169bcf0abbda2694a43160f3f8d3695c6255b02cb44}.
+This checkpoint is the runtime integration gate. It cites a passing test result (1 passed /
+0 failed in \texttt{weaver\_integration\_tests.rs}) and claims 62 total tests passing across
+dependent packages. The checkpoint narrative is the sole materialized form of this evidence;
+no compiled artifacts or test runner output files were found on disk.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:otel-weaver-evidence-status}
+
+\textbf{Current project status: PARTIAL.}
+
+The PARTIAL designation reflects a specific evidentiary gap: the \texttt{RUNTIME\_001}
+checkpoint's runtime execution claims are narrated but not materialized. Per foundry doctrine,
+an ALIVE verdict requires that receipt, tests, and checkpoint \emph{all} exist as independently
+verifiable artifacts. The following conditions must be satisfied before an ALIVE verdict is
+admissible:
+
+\begin{enumerate}
+  \item The \texttt{ggen} templates (\texttt{pi-live-check-intake.rs.ggen},
+    \texttt{pi-witness-map.rs.ggen}, \texttt{pi-otel-constants.rs.ggen}) must be actuated,
+    producing a \texttt{generated/} directory with materialized Rust source files on disk.
+  \item The \texttt{Cargo.toml} path dependency in \texttt{exp-003} must resolve correctly
+    to \texttt{wasm4pm-compat} and the \texttt{Admission}/\texttt{Refusal} types must
+    compile against the declared interface.
+  \item The unit tests in \texttt{exp-002/src/bridge.rs} and \texttt{exp-003/src/validator.rs}
+    must compile and pass, with test runner output materialized to disk.
+  \item The integration test \texttt{weaver\_integration\_tests.rs} must be directly readable
+    and its execution must produce a materialized test result artifact, not only a narrated
+    transcript within a checkpoint file.
+  \item The receipt files \texttt{otel-weaver-source-receipt.json} and
+    \texttt{pi-telemetry-bridge-receipt.json} must be verified to exist at the declared paths.
+\end{enumerate}
+
+Until these conditions are met, the project's evidentiary status remains PARTIAL, and no
+downstream M\&A or conformance claim may cite \texttt{otel-weaver} as an ALIVE component.

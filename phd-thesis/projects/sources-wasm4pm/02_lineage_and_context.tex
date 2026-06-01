@@ -1,0 +1,64 @@
+\section{Lineage and Context}
+\label{sec:sources-wasm4pm-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:sources-wasm4pm-lineage-2016}
+
+The dissertation's lineage originates in a 2016 language-model experiment in which local text
+imitation was observed not to conserve consequence. A model could produce text that \emph{looked}
+like an outcome — surface structure, vocabulary, even argument shape — without any mechanism
+ensuring that the output \emph{followed} from the premises. That observation is the root of the
+process-evidence program: prediction without consequence-preservation is noise dressed as
+signal. The lesson applies directly to process mining. A fitness score of 0.97 produced by
+a Python function is indistinguishable, to any downstream consumer, from a score that was
+simply written into a field. Without a cryptographic receipt binding the score to the algorithm's
+execution over a specific log, the score is \emph{text imitation of a measurement}, not a
+measurement. \texttt{wasm4pm}'s receipt chain architecture is the direct technical response to
+that 2016 lesson: every algorithm output must be bound to its provenance or it does not count.
+
+\subsection{Enterprise Process Gap}
+\label{sec:sources-wasm4pm-lineage-enterprise}
+
+The enterprise process gap is the observation that organizations deploy process-automation
+systems without a formal mechanism to verify that the declared process is the executed process.
+The gap was apparent from process-intelligence research showing that real event logs, when mined,
+reveal variant explosion, hidden loops, retries, and rework that the declared process model never
+acknowledged. The Van der Aalst Constitution (\texttt{\textasciitilde/.claude/rules/process-mining-chicago-tdd.md})
+formulates this as a hostile assumption: ``The declared manufacturing pipeline is not the real
+runtime process.'' \texttt{wasm4pm} addresses the enterprise process gap by making conformance
+checking an admission-gate mechanism rather than a reporting tool: a trace that does not meet the
+fitness threshold is refused with a typed refusal, not merely flagged in a report. The
+\texttt{ConformanceVerdict} enum (\texttt{FullyConforming} / \texttt{PartiallyConforming} /
+\texttt{NonConforming}) and the 0.8 admission threshold in \texttt{src/conformance.rs} are the
+direct technical instantiation of that enterprise-gap remediation.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:sources-wasm4pm-lineage-chatman-equation}
+
+The Chatman Equation \(A = \mu(O^*)\) asserts that enterprise value is a function of the
+orchestrated process: value accrues when a correctly-specified process executes conformingly, and
+erodes when the executed process deviates from the declared one. \texttt{wasm4pm} is the
+executable substrate that makes $\mu$ computable. The Mining Authority discovers the process
+model from the log (materializing $O^*$ from evidence); the Conformance Authority measures
+$\mu$ as a fitness score; the Lifecycle Authority governs transitions across the six proof gates
+that condition advancement on $\mu$ exceeding documented thresholds. Without \texttt{wasm4pm} as
+the execution layer, the Chatman Equation remains a conceptual claim. With it, every evaluation
+of $\mu$ is cryptographically receipted, append-only, and verifiable by a spot-audit framework.
+[INTERPRETATION]
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:sources-wasm4pm-lineage-receipts-replay}
+
+The receipt-and-replay strand of the dissertation lineage holds that every meaningful computation
+must produce a cryptographic receipt that binds the output to the input, and that the receipt must
+be replayable — a verifier must be able to re-run the computation and confirm the receipt. In
+\texttt{wasm4pm}, this strand manifests at two levels. At the token level, the BLAKE3 receipt
+implementation (\texttt{src/crypto.rs}, self-implemented with Merkle-tree chaining, zero external
+dependencies) computes rolling \texttt{Blake3Hash([u8;~32])} fields that bind each
+\texttt{Evidence<T,~S,~W>} container to the prior chain state. At the algorithm level, the
+\texttt{TokenReplayEngine} (van der Aalst fitness equation $f = 0.5(1-m/c) + 0.5(1-r/p)$ with
+source/sink token accounting) and the \texttt{AlignmentEngine} (A* search in synchronous product
+space, 5000-iteration cap, \texttt{BinaryHeap}) both emit \texttt{ConformanceVerdicts} that carry
+aggregate fitness and per-case verdict histories. The open gap (documented as GAP\_009) is that
+BLAKE3 receipt fields in \texttt{Evidence} are currently initialized to all-zero hashes: the
+infrastructure is present but the hash computation over algorithm inputs is not yet wired end-to-end.

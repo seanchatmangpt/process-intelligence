@@ -1,0 +1,44 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Architecture and Primitives}
+\label{sec:research-pi-program-arch}
+
+\subsection{Core Objects}
+\label{sec:research-pi-program-arch-objects}
+
+The pi-program's ontological surface is organized into five principal ontology files, each defining a named law surface:
+
+\textbf{pi-program.ttl} defines the top-level structural ontology. Its root class \texttt{pi:ProgramRole} is the superclass for 31 OWL subclasses that classify every artifact in the research program. The directly instantiated subclasses include: \texttt{pi:PROGRAM} (the research foundry itself), \texttt{pi:ENGINE} (the wasm4pm execution court), \texttt{pi:COMPATIBILITY\_LAYER} (the wasm4pm-compat type-law crate), \texttt{pi:MANUFACTURING\_CELL} (ggen surfaces), \texttt{pi:PROOF\_CELL} (customer-domain reference implementations), \texttt{pi:TELEMETRY\_FEEDSTOCK} (OTel Weaver integration), \texttt{pi:MOBILE\_SUBSTRATE} (ZOEapp), \texttt{pi:WORKFLOW\_SUBSTRATE} (orchestration layer), \texttt{pi:SOURCE\_COURT}, \texttt{pi:EXECUTION\_COURT}, \texttt{pi:AUTHORIZATION\_COURT}, \texttt{pi:ADMISSION\_SURFACE}, \texttt{pi:REFUSAL\_SURFACE}, \texttt{pi:RECEIPT\_SURFACE}, \texttt{pi:REPLAY\_SURFACE}, \texttt{pi:CONFORMANCE\_SURFACE}, \texttt{pi:GRADUATION\_SIGNAL}, \texttt{pi:RESEARCH\_ARTIFACT}, \texttt{pi:CHECKPOINT}, \texttt{pi:ALIVE\_CLAIM}, \texttt{pi:PARTIAL\_CLAIM}, \texttt{pi:FAILED\_GATE}, \texttt{pi:REMEDIATION\_CANDIDATE}, and \texttt{pi:FORBIDDEN\_COLLAPSE}, among others. SHACL constraints assert that every \texttt{pi:ALIVE\_CLAIM} must be cryptographically backed and every \texttt{pi:FORBIDDEN\_COLLAPSE} must carry a documented remediation path.
+
+\textbf{autonomic-law.ttl} defines the MAPE-K infrastructure classes: \texttt{mape:MAPEKLoop} with Monitor, Analyze, Plan, Execute, and Knowledge components. It distinguishes \texttt{aka:ElasticTransition} (no GovToken required) from \texttt{aka:ComplianceTransition} (requires HSM-signed GovToken), and specifies \texttt{aka:SandboxIsolation} with a GasMeter (10M cycles), RecursionGuard (100 frames), and MemoryShredding (ChaCha20 3-pass).
+
+\textbf{governance-policy.ttl} encodes the \texttt{gov:GovernancePolicy} surface with \texttt{gov:LTLSafetyInvariant} individuals. The primary invariant is the \texttt{gov:PrimaryContainmentInvariant}: \( G(\lnot\mathrm{Compliant}(s) \Rightarrow X(\lnot\mathrm{Actuated}(s))) \). The default compliance boundary is fitness $\geq$ 0.85. The authority chain is \texttt{ostar-governor} $\to$ \texttt{ostar-auditor} $\to$ \texttt{ostar-doctor}.
+
+\textbf{forbidden-collapse-law.ttl} defines eight collapse subtypes, each with \texttt{pi:collapseLocation}, \texttt{pi:collapseStatus} (ACTIVE, MITIGATED, or REMEDIATED), and \texttt{pi:collapseAuditResult}: \texttt{StateTagCollapse}, \texttt{RefusalLawCollapse}, \texttt{EvidenceRefCollapse}, \texttt{LossItemCollapse}, \texttt{WitnessKeyCollapse}, \texttt{JSONSerializationCollapse}, \texttt{SilentFlatteningCollapse}, and \texttt{RawEvidenceExportCollapse}. The Van der Aalst Constitution appears verbatim in the file's \texttt{skos:editorialNote}.
+
+\textbf{graduation-boundary.ttl} defines the \texttt{pi:GraduationReason} taxonomy governing when a project must graduate from COMPATIBILITY\_LAYER to ENGINE: \texttt{NeedsDiscovery}, \texttt{NeedsConformanceExecution}, \texttt{NeedsReplay}, \texttt{NeedsObjectCentricQueryExecution}, and \texttt{RebuildingProcessMiningLocally} (designated a critical tripwire).
+
+\subsection{Admissible Transitions}
+\label{sec:research-pi-program-arch-transitions}
+
+The autonomic governance framework distinguishes two transition types. An \texttt{aka:ElasticTransition} is a state change that the autonomic loop may execute autonomously, without requiring a governance token. In the MAPE-K deployment (\texttt{AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml}), the only auto-repairable drift rule is \texttt{drift-performance-bottleneck}: when process activity latency exceeds baseline $+ 3\sigma$, the auto-repair playbook \texttt{repair-performance-bottleneck-001} executes a four-step resource-scaling sequence (measure, compute, apply, verify) with a rollback capability and an estimated latency of PT500MS.
+
+An \texttt{aka:ComplianceTransition} requires an HSM-signed GovToken before actuation. The five Andon gates registered in Blue River Dam enforce this requirement for high-severity events: fitness violation ($\mathrm{Fitness}(\sigma, W) < 0.85$, escalated to ostar-auditor), dead transition detection (halted), compliance override requests (GovToken required), policy mutation (\texttt{gov:GovernancePolicy} $\to$ \texttt{gov:GovernancePolicy'}, HSM signature required), and model hot-swap (soundness verification required). All five gates evaluated synchronously on conformance violation events, in priority-cascade order.
+
+\subsection{Boundaries}
+\label{sec:research-pi-program-arch-boundaries}
+
+Three boundary types are formally encoded. The \textbf{evidence boundary} separates telemetry feedstock (OTel signals, Supabase realtime events) from admitted process evidence. Raw signals are feedstock until they pass through the Blue River Dam admission gate, which emits an \texttt{Admission<T, W>} or \texttt{Refusal} typed response. This boundary is enforced by audit\_007 (No Telemetry as Receipt) and audit\_008 (No Realtime as Evidence), both of which PASS in the current audit record.
+
+The \textbf{execution boundary} separates the COMPATIBILITY\_LAYER from the ENGINE. The \texttt{wasm4pm-compat} crate may define types and structure-only evidence lifecycles (Raw $\to$ Parsed $\to$ Admitted $\to$ \{Projected $|$ Exportable $|$ Receipted\}), but may not execute discovery algorithms, token replay, alignment computation, OCPQ queries, or cryptographic receipt minting. Violation of this boundary is classified as \texttt{JSONSerializationCollapse} or \texttt{SilentFlatteningCollapse} and is the subject of the critical FAIL in audit\_005.
+
+The \textbf{admissibility boundary} operationalizes the Chatman Equation: \( R \vdash P_i = \mu(O^{*}, T, L) \). A manufacturing claim $P_i$ is board-admissible only if the proof system $R$ can derive it from the declared ontology, template, and log. This boundary passed its gate in the PROCESS\_INTELLIGENCE\_ALIVE\_001 parent checkpoint (11/11 gates, audit\_003 PASS).
+
+\subsection{Failure Modes Refused}
+\label{sec:research-pi-program-arch-failures}
+
+The \texttt{pi:FORBIDDEN\_COLLAPSE} taxonomy names the failure modes that this architecture refuses to permit. Each collapse subtype is an OWL individual with a documented location, status, and audit result. The eight subtypes address the full spectrum of governance failures: type-system erosion (\texttt{StateTagCollapse}, \texttt{WitnessKeyCollapse}), law-surface erosion (\texttt{RefusalLawCollapse}, \texttt{EvidenceRefCollapse}), data-boundary erosion (\texttt{JSONSerializationCollapse}, \texttt{SilentFlatteningCollapse}), and evidence-chain erosion (\texttt{LossItemCollapse}, \texttt{RawEvidenceExportCollapse}).
+
+The \texttt{drift-watch-001.sparql} drift detection system operationalizes these refusals at runtime. Six SPARQL CONSTRUCT queries execute on a 1-second schedule against an RDF quad store populated by the MAPE-K monitor output. Each query targets one drift classification: concept drift (fitness degradation), behavior drift (rare pattern emergence), structural drift (P-invariant violation), performance drift (latency bottleneck), compliance drift (Declare constraint violation), and model drift (process tree degradation). Detection of a structural drift triggers an immediate halt (\texttt{halt-execution}) via the dead-transition Andon gate; all other drift types escalate to the auditor queue.

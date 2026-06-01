@@ -1,0 +1,85 @@
+% FILE: 00_project_identity.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Project Identity}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-identity}
+
+\subsection{Purpose}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-identity-purpose}
+
+EXP-001 establishes the entry-layer schema contract for process intelligence telemetry ingestion.
+Its primary artifact is \texttt{process\_pi.yaml}, a custom OTel Weaver semantic convention
+registry that formalizes eight span attributes under the \texttt{process.pi.activity} group.
+The experiment does not discover or replay processes; it defines the feedstock schema that all
+downstream experiments and conformance courts must consume. Without this schema boundary, spans
+arriving at the conformance court (\texttt{wasm4pm}/\texttt{wasm4pm-compat}) carry no guaranteed
+structural invariants, and the court cannot lawfully distinguish process evidence from
+instrumentation noise.
+
+The registry is bound to OTel \texttt{file\_format: 1.2.0} and
+\texttt{schema\_url: https://opentelemetry.io/schemas/1.25.0}.
+These pins are not cosmetic. They establish the external standard against which Weaver's
+\texttt{registry validate} command audits the YAML, making schema compliance machine-verifiable
+rather than author-asserted. The seven doctrine files in the \texttt{otel-weaver/doctrine/}
+directory articulate why this boundary must exist at the feedstock layer rather than inside the
+court itself: telemetry is not process evidence until it has passed through a schema-validated and
+witness-sealed admission gate.
+
+\subsection{Repository Surface}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-identity-surface}
+
+The experiment lives at
+\texttt{/Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/}.
+Its principal source files are the \texttt{semconv/process\_pi.yaml} registry definition and the
+\texttt{README.md} that specifies the Weaver CLI invocations required to validate and resolve the
+registry. Adjacent experiments occupy the same \texttt{experiments/} tree: EXP-002 contains
+\texttt{bridge.rs} (the \texttt{BridgeRx} Rust struct), EXP-003 contains \texttt{validator.rs}
+(the \texttt{validate\_and\_project} function and \texttt{RefusalCode} enum), EXP-004 covers
+witness code manufacture, and EXP-005 configures the collector-to-intake pipeline. The five
+experiments together constitute the OTel Weaver integration suite for process intelligence.
+
+Governance artifacts reside in \texttt{otel-weaver/checkpoints/}: three checkpoint files
+(\texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md}, \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md},
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}) record the progression from design-gate passage
+through COMPLETE/ACTIVE status to runtime integration confirmation.
+Mapping files at \texttt{otel-weaver/mappings/} translate OTel span fields to process intelligence
+witness attributes, providing the crosswalk between the telemetry standard and the process-evidence
+type system.
+
+\subsection{Primary Research Role}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-identity-role}
+
+Within the five-experiment suite, EXP-001 plays the role of \emph{otel-semconv-evidence-surface-experiment}.
+It is the schema authority: every downstream experiment assumes that spans arriving for bridging,
+refusal-routing, witness manufacture, or pipeline ingestion have already been validated against the
+\texttt{process.pi.activity} group defined here. The experiment instantiates in YAML form the
+nominal boundary invariants that the seven doctrine files articulate in prose.
+
+In the dissertation's broader argument, EXP-001 provides the empirical entry point for the claim
+that telemetry-based process intelligence requires a machine-verifiable feedstock contract. It is the
+first concrete artifact in the chain: schema definition precedes schema bridging, which precedes
+admission gating, which precedes process replay. Without EXP-001, the chain has no defined
+origin surface.
+
+\subsection{Key Artifacts}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-identity-artifacts}
+
+\begin{itemize}
+  \item \texttt{semconv/process\_pi.yaml} --- the custom OTel Weaver registry; eight attributes
+        under \texttt{process.pi.activity}; \texttt{file\_format: 1.2.0};
+        \texttt{schema\_url: https://opentelemetry.io/schemas/1.25.0}.
+  \item \texttt{README.md} --- specifies \texttt{weaver registry init},
+        \texttt{weaver registry resolve}, and \texttt{weaver registry validate} CLI invocations.
+  \item \texttt{otel-weaver/checkpoints/GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md} --- COMPLETE and
+        ACTIVE status, SHA-256 sealed by the ggen manufacturing authority.
+  \item \texttt{otel-weaver/checkpoints/GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} --- runtime
+        integration gate PASSED, citing 62 passing tests across \texttt{wasm4pm},
+        \texttt{wasm4pm-compat}, and \texttt{blue\_river\_dam}.
+  \item \texttt{otel-weaver/mappings/otel-to-pi-witness-map.yaml} and
+        \texttt{otel-signal-to-process-evidence-map.yaml} --- crosswalk artifacts from OTel span
+        fields to process-evidence witness attributes.
+  \item \texttt{otel-weaver/ggen/manifests/otel-weaver-source.manifest.yaml} --- receipt manifest
+        declaring BLAKE3 cryptographic chaining with declared store at
+        \texttt{receipts/otel-weaver-source-receipt.json}.
+\end{itemize}

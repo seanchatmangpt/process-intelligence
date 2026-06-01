@@ -1,0 +1,66 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:research-pi-program-evidence}
+
+\subsection{Tests}
+\label{sec:research-pi-program-evidence-tests}
+
+\textbf{MAPE-K Feedback Loop Tests} (\texttt{governance/AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml}): Five feedback loop tests were executed during Phase 7 of the autonomic activation sequence (2026-06-01T16:01:00Z). All five PASSED with an average confidence of 0.96:
+
+\begin{itemize}
+  \item \textbf{Test 001 --- Fitness Degradation} (confidence 0.98): A synthetic trace with fitness 0.70 (below the 0.85 threshold) was injected. The Monitor component computed the fitness metric, the \texttt{drift-fitness-degradation} SPARQL rule fired, the \texttt{andon-gate-fitness} gate triggered escalation to ostar-auditor, and the approval requirement was enforced (\texttt{auto\_repair=false}). All 6 verification steps: PASS.
+  \item \textbf{Test 002 --- Performance Bottleneck Auto-Repair} (confidence 0.92): A synthetic activity with inter-arrival time $= \text{baseline} + 4\sigma$ was injected. The \texttt{drift-performance-bottleneck} rule fired, auto-repair eligibility was confirmed (\texttt{auto\_repair=true, approval\_required=false}), and the 4-step repair playbook (measure, compute, apply, verify) executed with compliance verification. All 7 verification steps: PASS. This is the only auto-repairable drift class in the current deployment.
+  \item \textbf{Test 003 --- Declare Constraint Violation} (confidence 0.98): A trace violating the \texttt{Response(A, B)} Declare constraint was injected. The \texttt{drift-declare-violation} rule matched ($\sigma \not\models \varphi_{\mathrm{declare}}$), and escalation was queued for auditor review. All 3 verification steps: PASS.
+  \item \textbf{Test 004 --- P-Invariant Structural Violation} (confidence 1.0): A synthetic marking violating the P-invariant $y^T \cdot M \neq y^T \cdot M_0$ was injected. The \texttt{drift-invariant-violation} rule fired at CRITICAL severity, and execution was immediately halted with state preserved. All 4 verification steps: PASS.
+  \item \textbf{Test 005 --- Model Degradation Detection} (confidence 0.92): A process tree discovery with complexity reduced by $> 5$ units was detected. The \texttt{drift-model-degradation} rule fired, and re-discovery with stricter generalization bounds was recommended. All 3 verification steps: PASS.
+\end{itemize}
+
+\textbf{Van der Aalst Conformance Audit} (\texttt{audits/audit-results.yaml}): A 12-gate conformance audit was executed against the process intelligence program structure. 10 gates PASS, 2 gates FAIL:
+\begin{itemize}
+  \item \textit{audit\_005 (No DTO Flattening): FAIL --- CRITICAL/BLOCKING.} Two violations found in \texttt{sources/wasm4pm-compat}: \texttt{receipt\_json() $\to$ String} (CRITICAL) and \texttt{to\_json\_string() $\to$ String} (CRITICAL). Both return opaque JSON strings without boundary classification, violating the Evidence<T, State, Witness> type law. Remediation estimate: 4 hours.
+  \item \textit{audit\_012 (Remediation Routed): FAIL --- non-blocking.} The meta-audit routing for audit\_012's own failure lacks a documented owner and remediation class. Recommend adding \texttt{audit-routing-law.yaml}.
+\end{itemize}
+
+\textbf{Policy Enforcement Verification} (\texttt{governance/POLICY\_ENFORCEMENT\_VERIFICATION\_20260601.yaml}): Five Andon gate trigger conditions were verified for correctness of threshold encoding and authority routing.
+
+\textbf{Deployment Gate Verification} (\texttt{AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml}, Phase 8): 4/4 deployment gates PASS: all components deployed, all test loops successful, governance chain valid (HSM signatures verified), and monitoring schedules active.
+
+\subsection{Receipts}
+\label{sec:research-pi-program-evidence-receipts}
+
+The receipt infrastructure is documented across three authoritative files:
+
+\textbf{MANUFACTURING\_SUMMARY.md} claims 123/123 BLAKE3 receipts for Phase 2 manufacturing across 6 sub-projects. The three manufacturing gates (receipt completeness, hash algorithm validity, source rule documentation) all report PASS. Each receipt is structured as: \texttt{artifact\_path}, \texttt{blake3\_hash}, \texttt{source\_rule}, \texttt{source\_query}, \texttt{source\_template}, \texttt{timestamp}, and \texttt{chained\_to\_prior}.
+
+\textbf{RECEIPT\_CHAIN\_VERIFICATION\_20260601.yaml} (independent chain verifier, 2026-06-01T16:12:18Z): This report audits 28 receipts and 10 artifact hashes. It finds: 8 chain breaks due to missing parent hashes across 5 distinct receipt chains; 10/10 artifact hash mismatches, attributed to receipts containing template hashes rather than actual BLAKE3 hashes of emitted artifacts; 0 orphaned artifacts. The report's own gate criterion states: \texttt{chain\_integrity\_status == VALID AND hash\_mismatches == 0 AND orphaned\_artifacts == 0}. This gate is \textit{not met} as of 2026-06-01.
+
+The internal inconsistency between the MANUFACTURING\_SUMMARY's claim of 100\% receipt coverage and the chain verifier's finding of 10 hash mismatches is an open gap documented in the \texttt{Open Questions} section. Both documents are included in the evidence record without redaction.
+
+\textbf{Phase-2-index.json} (\texttt{.ggen/receipts/phase-2-index.json}): Records 81 artifacts manufactured for pi-program root, api, governance, and m-and-a subprojects. This index is the machine-readable counterpart to the MANUFACTURING\_SUMMARY narrative.
+
+API manufacturing receipts: Five receipt files at \texttt{emitted/ggen-api-manufacturing/receipts/} cover the API guide, API examples, authentication spec, rate-limit configuration, and OpenAPI specification (\texttt{receipt\_api\_guide\_20260601.json}, \texttt{receipt\_api\_examples\_20260601.json}, \texttt{receipt\_api\_auth\_20260601.json}, \texttt{receipt\_api\_ratelimit\_20260601.json}, \texttt{receipt\_api\_openapi\_20260601.json}).
+
+\subsection{Checkpoints}
+\label{sec:research-pi-program-evidence-checkpoints}
+
+Five checkpoints exist in the pi-program's record:
+
+\begin{enumerate}
+  \item \textbf{PROCESS\_INTELLIGENCE\_ALIVE\_001} (parent level, sealed 2026-06-01): 11/11 gates PASS. This is the authoritative ALIVE seal for the research program. The admissibility boundary gate ($R \vdash P_i = \mu(O^{*}, T, L)$) passes. The pi-program's ontology authority derives from this checkpoint.
+  \item \textbf{PI\_GGEN\_UNIFIED\_RUN\_PARTIAL\_001} (2026-06-01): 4/14 gates PASS. Five critical blockers (A through E) documented with a 12-hour remediation path to ALIVE. Zero of three ggen pipelines executed successfully.
+  \item \textbf{PI\_GGEN\_VALIDATOR\_RECOVERY\_PARTIAL\_001}: PARTIAL verdict from a validator recovery effort. Preceded the FAILED checkpoint below.
+  \item \textbf{PI\_GGEN\_VALIDATOR\_RECOVERY\_FINAL\_FAILED\_001}: FAILED verdict, 5/15 gates. This is the honest record of the validator recovery effort's terminal state. No path to reversal is documented; subsequent work pivoted to the manufacturing branch rather than resolving validator recovery blockers.
+  \item \textbf{PI\_GGEN\_UNIFIED\_RUN\_CONFORMANCE\_AUDIT\_001}: Conformance audit checkpoint. Documents the Van der Aalst audit results.
+\end{enumerate}
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:research-pi-program-evidence-status}
+
+The current status of the \texttt{research-pi-program} project is \textbf{PARTIAL}.
+
+The PARTIAL verdict is grounded in the following evidence. The parent checkpoint PROCESS\_INTELLIGENCE\_ALIVE\_001 (11/11 gates) authorizes the program's research claims and the pi-program ontology surfaces. The MAPE-K autonomic infrastructure is deployed and verified (5/5 feedback loop tests PASS, 4/4 deployment gates PASS). The 12-gate Van der Aalst conformance audit yields 10/12 PASS. The Phase 2 manufacturing claim reports 123 artifacts with BLAKE3 coverage.
+
+However, three critical defects prevent an ALIVE verdict. First, the receipt chain integrity is broken: the independent chain verifier finds 8 chain breaks and 10 hash mismatches, which means the claim of cryptographically verifiable provenance is not met. Second, the ggen-002 manifest (pi-program's own manufacturing pipeline) has never successfully executed, as evidenced by the empty \texttt{ggen/audit.json} (\texttt{total\_duration\_ms: 0}). Third, audit\_005 (DTO boundary violation in wasm4pm-compat) remains a CRITICAL BLOCKING defect with no merged remediation as of the record date. Until all three defects are resolved, no ALIVE claim is warranted for this project.

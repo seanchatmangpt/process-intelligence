@@ -1,0 +1,105 @@
+% FILE: 02_lineage_and_context.tex
+% PROJECT: sources-papers
+% ROLE: academic-paper-classification-and-evidence-grounding
+
+\section{Lineage and Context}
+\label{sec:sources-papers-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:sources-papers-lineage-2016}
+
+The lineage of this project begins with a 2016 language-model experiment whose
+lesson was unambiguous: local text imitation does not conserve consequence.
+A model that reproduces the surface form of a published paper --- its notation,
+its claim structure, its citation apparatus --- does not thereby enforce the
+invariants the paper asserts. This is not a failure of the model; it is a
+structural property of text generation. Text that resembles a soundness proof
+is not a soundness proof.
+
+The implication for a research program grounded in process mining literature
+is direct. A system that cites van der Aalst (1998) for WF-net soundness,
+Pesic and van der Aalst (2006) for DECLARE constraint templates, and Adriansyah
+et al.\ (2011) for alignment-based conformance does not thereby enforce any of
+those results. The citation is surface form. The enforcement is a compile-time
+type constraint or a verifiable execution boundary --- and the two are
+categorically distinct.
+
+The paper corpus in \texttt{sources/papers} is the direct institutional
+response to this lesson. Its purpose is not to summarize the literature but to
+convert it: each paper's formal invariants become obligations in the type
+system, and each paper's algorithms become graduation requirements for the
+execution engine. The academic citation is the starting point; the Rust
+compile-fail fixture is the terminal artifact.
+
+\subsection{Enterprise Process Gap}
+\label{sec:sources-papers-lineage-enterprise}
+
+The enterprise process gap that motivates the broader research program is the
+gap between declared process models and observable process behavior. In
+enterprise deployments, process models are maintained in documentation systems,
+BPMN editors, or ERP workflow configurations. Event logs accumulate in
+transactional databases, message queues, and OTel trace stores. The declared
+model and the observable behavior are rarely reconciled, and when they
+diverge --- as the Van der Aalst Constitution requires us to treat as a
+\emph{defect}, not a discrepancy --- the divergence is structurally invisible
+to any system that does not perform model-vs-log comparison.
+
+The 81-paper classification in \texttt{sources/papers} maps the academic
+response to this gap across three decades of process mining research. Alpha
+Miner (van der Aalst, Weijters, Maruster 2004) discovers Petri nets from event
+logs. Inductive Miner (Leemans, Fahland, van der Aalst 2013) guarantees
+soundness by inductive synthesis. Alignment-based conformance (Adriansyah
+et al.\ 2011) quantifies the cost-optimal deviation between log behavior and
+model behavior. OCEL 2.0 (van der Aalst et al.\ 2023) extends the log model
+to object-centric traces to capture the multi-object reality of enterprise
+processes. Each of these represents a formal response to the enterprise process
+gap; the paper corpus documents what wasm4pm must implement to make those
+responses machine-enforceable in production.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:sources-papers-lineage-chatman}
+
+The Chatman Equation, $A = \mu(O^*)$, states that autonomy is a function of
+the process-intelligence operating system. For this equation to be
+interpretable, $\mu$ must be a measurable process-intelligence function ---
+not a declared one. The paper corpus provides the theoretical foundation for
+what a measurable $\mu$ requires: a discovery algorithm that produces a typed
+model from a typed event log; a conformance algorithm that produces a
+$[0,1]$-bounded fitness metric; a receipt chain that binds the model, the log,
+and the fitness score into a non-forgeable evidence artifact.
+
+Specifically, the \texttt{Between01<NUM, DEN>} const-generic fraction type
+documented in \texttt{PAPER\_TO\_TYPE\_LAW.md} --- which bounds all
+conformance metrics in $[0,1]$ --- is the direct Rust encoding of the
+measurement requirement in the Chatman Equation. A system that reports fitness
+as a floating-point number without a compile-time bound is not producing a
+measurement in the sense the equation requires; it is producing an assertion.
+The paper corpus establishes what the type-level distinction between measurement
+and assertion looks like in practice.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:sources-papers-lineage-receipts}
+
+Receipts and replay are the enforcement mechanism that converts paper-derived
+type laws into operational evidence. The PAPER\_CANON\_RECEIPT documents the
+classified paper inventory and is the first link in the lawful evidence chain.
+Subsequent receipts --- PM4PY\_ORACLE\_RECEIPT, COMPAT\_LAW\_RECEIPT,
+WASM4PM\_EXECUTION\_RECEIPT --- depend on the paper corpus having been
+completed first.
+
+The core\_lifecycle\_algorithms.md formalizes the Receipt-Bearing Execution
+algorithm as the fourth of four core lifecycle algorithms: after Paper-to-Law
+mapping, PM4Py Oracle mapping, and Admission Gate enforcement, every
+board-admissible claim must pass through receipt-bearing execution that
+cryptographically binds the evidence chain. The \texttt{Admitted<T, W>} type
+prevents raw event laundering by requiring that any event log entering the
+execution pipeline carry an admission witness --- itself grounded in the
+type-law obligations derived from the paper corpus.
+
+The adversarial-canon.md extends this to a Byzantine threat model: BLAKE3
+cryptographic receipts replace case-ID correlation as the provenance mechanism,
+making Sybil attacks detectable at the type level rather than the algorithmic
+level. This extension is documented in the paper corpus as a research
+requirement; its implementation in wasm4pm remains an open gate
+(\textit{AUTHOR THESIS}: this gap between documented requirement and
+implementation evidence is a primary finding of the PARTIAL status assessment).

@@ -1,6 +1,5 @@
 use std::collections::{HashMap, HashSet};
 use std::cmp::Ordering;
-use crate::crypto::Sha256;
 
 // =========================================================================
 // 1. Evidence Generic Container and Serialization
@@ -135,9 +134,9 @@ where
     State: SerializeBytes,
     Witness: SerializeBytes + Lattice,
 {
-    /// Calculate the SHA-256 hash of the Evidence fields (wrapped in Blake3Hash)
+    /// Calculate the BLAKE3 hash of the Evidence fields (wrapped in Blake3Hash)
     pub fn calculate_hash(&self) -> Blake3Hash {
-        let mut hasher = Sha256::new();
+        let mut hasher = crate::crypto::Blake3::new();
         
         let mut buf = Vec::new();
         self.payload.serialize_bytes(&mut buf);
@@ -708,6 +707,12 @@ pub struct Sha512 {
     len: u64,
 }
 
+impl Default for Sha512 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Sha512 {
     pub fn new() -> Self {
         Self {
@@ -850,6 +855,7 @@ impl Sha512 {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct FieldElement(pub [u64; 4]);
 
+#[allow(clippy::should_implement_trait, clippy::needless_range_loop)]
 impl FieldElement {
     pub const P: Self = FieldElement([
         0xffffffffffffffed, 0xffffffffffffffff,
@@ -937,6 +943,7 @@ fn res_gte_p(res: [u64; 4]) -> bool {
     true
 }
 
+#[allow(clippy::needless_range_loop)]
 fn reduce_512(product: [u64; 8]) -> FieldElement {
     // Pass 1: split the 512-bit product into lower 255 bits and upper bits,
     // multiply the upper bits by 19, and add.
@@ -1021,6 +1028,7 @@ pub struct CurvePoint {
     pub t: FieldElement,
 }
 
+#[allow(clippy::should_implement_trait, clippy::needless_range_loop)]
 impl CurvePoint {
     pub const D: FieldElement = FieldElement([
         0x75eb4dca135978a3, 0x00700a4d4141d8ab,

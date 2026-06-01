@@ -1,0 +1,24 @@
+slug: comparisons
+absolute_path: /Users/sac/process-intelligence/comparisons
+description: >
+  Cross-system capability comparisons. Contains pm4py vs wasm4pm architecture, conformance
+  metric surfaces, type safety comparison, WASM vs native PM performance, declarative vs
+  imperative conformance, lattice vs trace compliance checking, algorithm coverage matrix,
+  and admission-refusal vs pm4py errors comparison.
+detected_languages: []
+detected_frameworks:
+  - pm4py
+  - wasm4pm
+detected_research_surfaces:
+  - comparative-oracle
+  - conformance-checking
+  - type-law
+likely_thesis_role: cross-system-capability-comparison-corpus
+key_files:
+  - /Users/sac/process-intelligence/comparisons/PM4PY_VS_WASM4PM_CONFORMANCE.md
+  - /Users/sac/process-intelligence/comparisons/ALGORITHM_COVERAGE_MATRIX.md
+  - /Users/sac/process-intelligence/comparisons/TYPE_SAFETY_COMPARISON.md
+  - /Users/sac/process-intelligence/comparisons/CONFORMANCE_METRIC_SURFACES.md
+readme_present: false
+receipt_present: false
+ontology_present: false

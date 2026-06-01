@@ -1,0 +1,25 @@
+slug: phd-thesis
+absolute_path: /Users/sac/process-intelligence/phd-thesis
+description: >
+  PhD thesis corpus manufacturing workspace. Manufactures the full artifact corpus for the
+  dissertation grounded in Van der Aalst Constitution and full-lifecycle process intelligence
+  doctrine. Contains chapters, frontmatter, project artifacts, ledgers
+  (WORKFLOW_RECEIPT.yaml, DO_NOT_CLAIM_LEDGER.md, PROJECT_INDEX.yaml), and manufacturing
+  scripts.
+detected_languages:
+  - YAML
+detected_frameworks:
+  - ggen
+detected_research_surfaces:
+  - receipt-chain
+  - manufacturing-pipeline
+  - proof-gate
+likely_thesis_role: dissertation-corpus-manufacturing-workspace
+key_files:
+  - /Users/sac/process-intelligence/phd-thesis/README.md
+  - /Users/sac/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+  - /Users/sac/process-intelligence/phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+  - /Users/sac/process-intelligence/phd-thesis/ledgers/PROJECT_INDEX.yaml
+readme_present: true
+receipt_present: true
+ontology_present: false

@@ -1,0 +1,130 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: ggen — Governance Generation Engine
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:ggen-evidence}
+
+\subsection{Tests}
+\label{sec:ggen-evidence-tests}
+
+ggen's test evidence takes the form of embedded Rust test modules within the manufactured
+artifacts. These tests are materialized into the output files by the Tera template rendering
+process and are therefore a property of the manufactured artifact, not of ggen's own codebase.
+
+\textbf{Witness Marker Test Suite} (in \texttt{templates/witness-marker.tera}): The rendered
+Rust file contains three passing test functions:
+\begin{itemize}
+  \item \texttt{test\_witness\_lattice\_monotonicity} --- verifies idempotency ($a \sqcup a = a$),
+    absorption ($a \sqcup b = b$ when $a \leq b$), and commutativity ($a \sqcup b = b \sqcup a$)
+    of the \texttt{witness\_join()} operation across the eight lattice positions.
+  \item \texttt{test\_witness\_partial\_order} --- verifies reflexivity ($a \leq a$) and
+    transitivity ($a \leq b \land b \leq c \Rightarrow a \leq c$) of the \texttt{witness\_leq()}
+    relation.
+  \item Two additional test functions covering idempotency and absorption for the full lattice.
+\end{itemize}
+
+\textbf{Blue River Orchestrator Test Suite} (in \texttt{templates/blue-river.tera}): The
+rendered Rust file contains two test functions:
+\begin{itemize}
+  \item \texttt{test\_orchestrator\_initialization} --- asserts that a newly constructed
+    \texttt{BlueRiverOrchestrator} begins in \texttt{LifecycleState::DESIGN}, confirming the
+    state machine's initial condition.
+  \item \texttt{test\_mape\_k\_cycle} --- exercises the full Monitor $\to$ Analyze $\to$ Plan
+    $\to$ Execute loop, verifying that each method executes without panic and that the
+    orchestrator remains in a valid state after one complete MAPE-K iteration.
+\end{itemize}
+
+\textbf{Audit Gate Scripts}: Seven shell scripts in \texttt{audits/} define named proof gates
+over the manufactured TypeScript and Rust projection surfaces. The 42 or more gates cover: feature
+definition completeness (6 gates in \texttt{audit-feature-law.sh.ggen}), TypeScript projection
+surface correctness (3 gates in \texttt{audit-ts-projection-surface.sh.ggen}), monomorphization
+completeness (6 gates in \texttt{audit-ts-monomorphization.sh.ggen}), brand token consistency (6
+gates in \texttt{audit-ts-brand-tokens.sh.ggen}), enum tagging compliance (8 gates in
+\texttt{audit-ts-enum-tagging.sh.ggen}), WASM feature isolation (in
+\texttt{audit-no-engine-in-wasm-feature.sh.ggen}), and component boundary separation (in
+\texttt{audit-component-boundary.sh.ggen}). \textit{(PARTIAL: the audit scripts exist as
+manufactured artifacts; whether they have been executed against the actual wasm4pm-compat
+source and produced passing results is not documented in the available receipt chain.)}
+
+\subsection{Receipts}
+\label{sec:ggen-evidence-receipts}
+
+The BLAKE3 receipt chain consists of four JSON files in \texttt{.ggen/receipts/}. The chain forms
+an immutable provenance sequence:
+
+\textbf{Receipt 1 (chain root):} \texttt{sync-20260601-175316.json}
+\begin{itemize}
+  \item \texttt{operation\_id}: \texttt{de2ad19f-4b06-4116-a7eb-a98aa33071f9}
+  \item \texttt{timestamp}: \texttt{2026-06-01T17:53:16.567747Z}
+  \item \texttt{input\_hashes}: \texttt{ggen.toml:b88d67693a04bd38\ldots}
+  \item \texttt{output\_hashes}: \texttt{../blue\_river\_dam/src/lib.rs:4e341f5a08c1fd35\ldots}
+  \item \texttt{previous\_receipt\_hash}: \texttt{null} (chain root)
+  \item \texttt{signature}: \texttt{22e24e8f8256b7f8\ldots}
+\end{itemize}
+
+\textbf{Receipt 2:} \texttt{sync-20260601-203853.json}
+\begin{itemize}
+  \item \texttt{operation\_id}: \texttt{95a9448c}
+  \item \texttt{timestamp}: \texttt{2026-06-01T20:38:53Z}
+  \item \texttt{previous\_receipt\_hash}: \texttt{612d222\ldots}
+  \item \texttt{output\_hashes}: \texttt{[]} (empty --- no new artifact output)
+\end{itemize}
+
+\textbf{Receipt 3 (latest):} \texttt{sync-20260601-230600.json} (also \texttt{latest.json})
+\begin{itemize}
+  \item \texttt{operation\_id}: \texttt{09084e1e-b0ce-44fc-8da7-5e279fa7d3bb}
+  \item \texttt{timestamp}: \texttt{2026-06-01T23:06:00.226467Z}
+  \item \texttt{previous\_receipt\_hash}: \texttt{057521e5e4b30ef9991180c06d9892e448cdca64\ldots}
+  \item \texttt{output\_hashes}: \texttt{[]} (empty --- no new artifact output)
+  \item \texttt{signature}: \texttt{0091f18656cdbad605af20762dccef79a435952ab5e1e74db97df9ea68b4\ldots}
+\end{itemize}
+
+\textbf{Phase Index Receipt:} \texttt{phase-2-index.json} documents ggen as a Phase 3 consumer
+with \texttt{artifacts\_manufactured: 0} at Phase 2, confirming that ggen does not produce Phase
+2 artifacts.
+
+The chain is cryptographically intact: each receipt references its predecessor by hash. However,
+receipts 2 and 3 record empty \texttt{output\_hashes} arrays, indicating that the second and
+third manufacturing runs did not produce new output files. Only the first manufacturing run
+produced a verifiable output artifact.
+
+\subsection{Checkpoints}
+\label{sec:ggen-evidence-checkpoints}
+
+\texttt{GGEN\_MANUFACTURING\_SUMMARY.md} and \texttt{audit.json} both reference
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} as the pending checkpoint. The manufacturing summary
+declares \texttt{Status: MANUFACTURED} for Phase 3, and \texttt{audit.json} records
+\texttt{validation\_passed: true} at version \texttt{26.5.21}. However, neither document
+constitutes the ALIVE checkpoint itself, as no checkpoint file named
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} has been located in the receipt store or checkpoints
+directory.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:ggen-evidence-status}
+
+\textbf{Status: PARTIAL.}
+
+The evidence for PARTIAL rather than ALIVE is specific:
+
+\begin{enumerate}
+  \item The BLAKE3 receipt chain is intact and the chain-root receipt records a verifiable output
+    hash for \texttt{blue\_river\_dam/src/lib.rs}, satisfying the receipt requirement for that
+    artifact.
+  \item \texttt{audit.json} records \texttt{validation\_passed: true}, satisfying the audit
+    requirement.
+  \item The embedded test suites exist in the template files and define lawful algebraic proof
+    obligations, but their execution against the compiled manufactured artifact is not documented
+    in the receipt chain.
+  \item Receipts 2 and 3 record \texttt{output\_hashes: []}, meaning the second and third
+    manufacturing runs produced no new output artifacts. The cause is unknown.
+  \item The \texttt{visualizer-dashboard-nextjs} generation rule is explicitly disabled in
+    \texttt{ggen.toml} with a comment citing a Tera template parse error deferred to Phase 6
+    recovery. No Phase 6 recovery plan is documented in the available artifacts.
+  \item The \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} checkpoint referenced in the manufacturing
+    summary is described as ``pending final audit'' and does not exist as a committed checkpoint
+    artifact.
+\end{enumerate}
+
+ALIVE status requires: the receipt chain intact (satisfied for receipt 1), all tests passing
+(not confirmed), all audit gates passing (not confirmed), and no disabled generation rules
+(not satisfied). The verdict stands as PARTIAL.

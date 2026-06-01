@@ -1,0 +1,83 @@
+% FILE: 01_research_question.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+
+\section{Research Question}
+\label{sec:gaps-research-question}
+
+\subsection{Problem Statement}
+\label{sec:gaps-rq-problem}
+
+The central problem documented by the gap registry is this: \emph{two parallel type
+universes exist within the same notional execution stack, and no bridge connects them.}
+wasm4pm-compat defines a rich type-law enforcement surface — lifecycle-typed evidence
+wrappers (\texttt{Evidence<T, Raw|Admitted, W>}), named law refusal types
+(\texttt{Refusal<R, W>}), a graduation bridge trait (\texttt{GraduateToWasm4pm}),
+and sealed non-forgeable Petri-net types (\texttt{WfNetConst<SOUNDNESS>}). wasm4pm,
+the execution engine that is supposed to receive admitted process evidence from compat,
+does not import wasm4pm-compat at all. The \texttt{wasm4pm/Cargo.toml} dependency block
+reproduced in GAP\_001 contains no reference to \texttt{wasm4pm-compat}.
+
+The consequence is that every algorithm function in wasm4pm (\texttt{discover\_ilp\_petri\_net\_from\_log},
+\texttt{discover\_performance\_dfg\_from\_log}, \texttt{discover\_simple\_process\_tree\_from\_log},
+and at least three others) accepts raw, unvalidated \texttt{EventLog} with no admission
+gate, no lifecycle state, and no witness tag. Process evidence that wasm4pm-compat has
+formally refused can still be passed to wasm4pm algorithms without any compile-time or
+runtime objection. The type-law enforcement promise of the compat layer has zero runtime
+effect at the wasm4pm boundary.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:gaps-rq-old-regime}
+
+The old-regime assumption challenged by this registry is that \emph{type safety at the
+layer boundary is sufficient to guarantee law-conformant execution}. Classical process
+mining implementations treat input validation as a pre-processing step, often implemented
+as runtime checks that produce string-typed error messages. The wasm4pm error enum
+exemplifies this pattern: every variant — \texttt{ValidationError(String)},
+\texttt{ParseError(String)}, \texttt{ExecutionError(String)}, and seven others —
+carries a \texttt{String} reason. No variant carries a named law type. No variant carries
+a witness marker. This means that when an algorithm rejects an input, the refusal cannot
+be traced to a specific structural law, cannot be mechanically linked to the compat
+type-law covenant that was supposed to prevent the invalid input from reaching the
+algorithm in the first place, and cannot participate in the receipt chain that would
+make the refusal a verifiable artifact.
+
+The gap registry documents that this is not a configuration defect or an integration
+oversight — it is a foundational assumption mismatch between the enforcement surface and
+the execution surface.
+
+\subsection{Hypothesis}
+\label{sec:gaps-rq-hypothesis}
+
+\textbf{AUTHOR THESIS:} The hypothesis motivating the gap registry design is that
+type-law enforcement can only be meaningful when enforcement and execution share a
+single type universe. A compat layer that speaks a different type language from the
+execution engine it is meant to protect is architecturally equivalent to a doorman who
+checks credentials but never communicates with the building he guards. The research
+program hypothesizes that closing GAP\_001 — adding wasm4pm-compat as a dependency in
+wasm4pm and threading \texttt{Admitted} types into algorithm function signatures — will
+produce a measurable change in the receipt chain: compat admission receipts will appear
+as causal predecessors of wasm4pm execution receipts, making the full provenance chain
+auditable for the first time.
+
+\subsection{Success Criteria}
+\label{sec:gaps-rq-success}
+
+Success for the gap registry component of the research program is defined by the
+following criteria, each of which maps to a specific gap record:
+
+\begin{enumerate}
+  \item \textbf{GAP\_001 closed:} Five conditions all met — wasm4pm-compat appears in
+        \texttt{wasm4pm/Cargo.toml}; at least one algorithm function accepts
+        \texttt{Evidence<EventLog, Admitted, W>}; \texttt{GraduateToWasm4pm} is
+        implemented in wasm4pm; at least one error variant carries a named law type; and
+        wasm4pm execution receipts reference compat admission receipts.
+  \item \textbf{GAP\_002 formally closed in the register:} The v30.1.1 Smart-Completion
+        Policy resolution recorded in \texttt{GAP\_002\_OR\_JOIN\_AMBIGUITY.md} is
+        reflected by a matching status update in \texttt{GAP\_REGISTER.md}, eliminating
+        the current discrepancy.
+  \item \textbf{GAP\_007 closed:} \texttt{WfNet::attest\_witnessed()} is removed or
+        gated behind \texttt{pub(crate)}, ending the WfNet forgeability split-brain.
+  \item \textbf{Board-level claims unblocked:} Every claim in the blocking-claims table
+        of \texttt{GAP\_PRIORITY\_MATRIX.md} can be asserted because the gap it depends
+        on is formally closed with a resolution addendum.
+\end{enumerate}

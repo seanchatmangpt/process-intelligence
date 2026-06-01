@@ -1,0 +1,93 @@
+% FILE: 01_research_question.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+
+\section{Research Question}
+\label{sec:sources-wasm4pm-compat-question}
+
+\subsection{Problem Statement}
+\label{sec:sources-wasm4pm-compat-question-problem}
+
+Process execution engines face a structural problem at their admission layer: they cannot,
+by construction, prevent the intake of structurally invalid evidence without either
+(a)~encoding admissibility rules as runtime checks that can be bypassed or
+(b)~rejecting all evidence wholesale. The conventional approach---runtime validation with
+conditional error returns---leaves the critical invariant that ``evidence is admissible''
+as a dynamic property, not a type-level guarantee. This means that a caller can construct
+an \texttt{Evidence} block, skip the validation step, and pass it directly to a downstream
+function without a compile error.
+
+The problem is compounded at the boundary between a compatibility layer and an execution
+engine. When two components are separated by a WebAssembly component boundary, the only
+guarantees that survive the crossing are those encoded in the WIT interface type system.
+If the Rust type system has enforced an admissibility invariant, but the WIT boundary
+definition does not reflect that invariant, the guarantee evaporates at the crossing.
+
+The research question is therefore: \emph{Can the admissibility boundaries of process
+evidence be encoded as compile-time type laws that are non-forgeable, receipted, and
+preserved across WebAssembly component boundaries?}
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:sources-wasm4pm-compat-question-oldregime}
+
+The assumption being challenged is that admissibility validation belongs in the execution
+engine's runtime path. Under the old regime, an execution engine receives a raw event log,
+runs a suite of validation functions, and either proceeds or returns an error. The validation
+is decoupled from the type of the data: the same \texttt{EventLog} type is passed to the
+engine regardless of whether it has been validated. There is no structural distinction
+between a validated log and an unvalidated one.
+
+This assumption is operationally expedient but epistemologically weak. Under the Van der
+Aalst constitution---if the code says it worked but the event log cannot prove a lawful
+process happened, then it did not work---a runtime validation path that is not itself
+receipted is not evidence. It is an unwitnessed claim.
+
+\texttt{wasm4pm-compat} challenges this assumption by asserting that the type system is
+the validation layer, that compile-fail fixtures are the receipts, and that the WIT
+boundary definition is the contract that makes the guarantee portable across component
+boundaries.
+
+\subsection{Hypothesis}
+\label{sec:sources-wasm4pm-compat-question-hypothesis}
+
+The hypothesis is threefold. First, a triadic cryptographic container
+\texttt{Evidence<T, State, Witness>} binding a payload, a process-model state, and a
+lattice-monotonic witness via BLAKE3 hash and Ed25519 signature can serve as the
+sole admissibility unit for process evidence, making non-admissible evidence
+inexpressible at the type level. Second, a bounded join-semilattice \texttt{(W, \(\sqsubseteq\),
+\(\sqcup\), \(\bot\), \(\top\))} over the eight \texttt{WitnessMarker} algebraic proof
+structures can enforce replay soundness (Axiom~2) such that a non-monotonic witness
+transition is rejected at the type boundary, not at runtime. Third, these guarantees
+can be materialized as WebAssembly Interface Type boundary definitions that survive
+component model crossings intact.
+
+The hypothesis is AUTHOR THESIS: it is grounded in the architecture described in
+\texttt{type-law-atlas.md} (v30.1.1) and \texttt{research-verdict.md} (v30.1.2), but
+full integration with the \texttt{wasm4pm} execution engine remains a downstream obligation
+as of 2026-06-01.
+
+\subsection{Success Criteria}
+\label{sec:sources-wasm4pm-compat-question-criteria}
+
+The success criteria as defined in \texttt{research-verdict.md} (v30.1.2, 2026-05-31)
+across five audit categories are:
+
+\begin{enumerate}
+  \item \textbf{Witness Lattice Completeness}: The algebraic structure is sound across
+    all five modeled process family domains (Petri Nets, BPMN~2.0, POWL~2.0, Process
+    Trees, Declare constraints). Status: \textbf{PASS}.
+  \item \textbf{Evidence Triadic Container Admissibility}: The container is cryptographically
+    non-forgeable and enforces valid state transitions. Status: \textbf{PASS}.
+  \item \textbf{Admission/Refusal Law Enforcement}: Boundary control operates under
+    default-deny; all refusal pathways are documented and logged. Status: \textbf{PASS}.
+  \item \textbf{Loss Policy Thermodynamics}: Permissible and absolute loss boundaries
+    are mathematically defined with self-halt semantics on terminal loss. Status: \textbf{PASS}.
+  \item \textbf{Non-Forgeability Guarantees}: Cryptographic binding (Axiom~1), lattice
+    monotonicity (Axiom~2), and signature admissibility (Axiom~3) are fully specified.
+    Status: \textbf{COMPLETE}.
+\end{enumerate}
+
+The ALIVE gate is defined by \texttt{config.toml} as 406 compile-pass fixtures and
+398 compile-fail fixtures (804 total). Two structural defects remain open---the WfNet
+split-brain and zero multi-step pipeline witness-consistency fixtures---placing the
+overall project status at \textbf{PARTIAL} rather than ALIVE.

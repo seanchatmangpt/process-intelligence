@@ -1,0 +1,131 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Open Questions and Next Work Chapter
+
+\section{Open Questions and Next Work}
+\label{sec:otel-weaver-exp-004-registry-to-witness-gaps}
+
+\subsection{Known Gaps}
+\label{sec:otel-weaver-exp-004-registry-to-witness-known-gaps}
+
+\textbf{GAP-004-A: Missing Cargo.toml.} No \texttt{Cargo.toml} manifest exists in the
+EXP-004 directory. The generator source (\texttt{codegen/generator.rs}) uses
+\texttt{serde} and \texttt{serde\_json} as dependencies via \texttt{use} declarations, but
+these crates cannot be resolved by a bare \texttt{rustc} invocation without a Cargo
+workspace context providing compiled dependency artifacts. The compilation command stated
+in the README (\texttt{rustc --crate-type bin -O codegen/generator.rs}) is therefore
+insufficient to produce a working binary from a clean checkout. The actual path by which
+the generator was executed to produce the current \texttt{generated\_witnesses.rs} artifact
+is unverified.
+
+\textbf{GAP-004-B: Inlined resolved schema.} The generator reads its input not from a
+file produced by the Weaver CLI but from a raw string literal inlined in the Rust source.
+This means that the Weaver registry resolution step (\texttt{weaver registry resolve
+--registry process\_pi.yaml}) has not been verified to have been executed against the
+actual \texttt{process\_pi.yaml} file. The inlined JSON covers only three of the eight
+attributes declared in \texttt{process\_pi.yaml}: \texttt{process.pi.instance\_id},
+\texttt{process.pi.witness.id}, and \texttt{process.pi.witness.hash}. The remaining five
+attributes (\texttt{process.pi.activity.name}, \texttt{process.pi.activity.type},
+\texttt{process.pi.lifecycle}, \texttt{process.pi.token.state\_before},
+\texttt{process.pi.token.state\_after}) are not materialized in the output.
+
+\textbf{GAP-004-C: No EXP-004-specific receipt.} The \texttt{project\_manifest.yaml}
+records \texttt{receipt\_present: false}. The provenance of \texttt{generated\_witnesses.rs}
+is attested only by the embedded timestamp comment. No cryptographic receipt chain entry
+covers the specific generator execution step, making it impossible to audit \emph{who}
+ran the generator, \emph{with what inputs}, or \emph{from which code version}.
+
+\textbf{GAP-004-D: Lattice top() convention is unspecified.} The \texttt{top()} element
+of \texttt{ActivityWitness} is implemented as \texttt{"f".repeat(64)}, a 64-character
+string of the character \texttt{f}. This is a convention chosen by the generator author
+to represent the maximal BLAKE3 hex value (\texttt{0xffffffffffffffff...}). However, no
+formal specification establishes this as the canonical encoding of the lattice top for
+the wasm4pm process-mining domain. The soundness of returning \texttt{top()} from
+\texttt{join()} when two distinct non-empty witnesses conflict --- interpreting hash
+collision as a contradiction rather than a merge --- is asserted by implementation but
+not formally justified. The dissertation chapter must address whether this is a sound
+lattice operation or a theoretical approximation.
+
+\subsection{Deferred Gates}
+\label{sec:otel-weaver-exp-004-registry-to-witness-deferred-gates}
+
+The following gates are required to elevate EXP-004 from PARTIAL to ALIVE status:
+
+\begin{enumerate}
+  \item \textbf{Standalone Cargo.toml gate.} A \texttt{Cargo.toml} file must be authored
+    for the EXP-004 directory, declaring \texttt{serde} and \texttt{serde\_json}
+    dependencies and a \texttt{[[bin]]} target for \texttt{codegen/generator.rs}. The
+    generator must compile and execute successfully from a clean \texttt{cargo build} in
+    the EXP-004 directory.
+  \item \textbf{Weaver CLI invocation gate.} The Weaver CLI must be invoked against the
+    actual \texttt{semconv/process\_pi.yaml} file to produce a \texttt{resolved\_schema.json}
+    artifact. The generator must be modified to read this file from disk via
+    \texttt{std::fs::read\_to\_string} rather than from an inline string literal.
+  \item \textbf{Full attribute coverage gate.} The materialized \texttt{ActivityWitness}
+    must include all eight \texttt{required} and \texttt{recommended} attributes from the
+    \texttt{process.pi.activity} group in \texttt{process\_pi.yaml}, not only the three
+    currently inlined.
+  \item \textbf{Receipt chain gate.} A cryptographic receipt file for the EXP-004
+    generator execution must be authored, recording the input hash of
+    \texttt{process\_pi.yaml}, the generator version, and the output hash of
+    \texttt{generated\_witnesses.rs}.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:otel-weaver-exp-004-registry-to-witness-risks}
+
+\textbf{Risk 1: Lattice join() semantics.} The decision to return \texttt{Lattice::top()}
+for conflicting witnesses may not be the correct lattice operation for the process-mining
+domain. In standard lattice theory, the join of two elements returns their least upper
+bound. If two distinct non-empty witnesses represent concurrent, non-conflicting execution
+paths in a parallel process fragment, returning \texttt{top()} would incorrectly classify
+a valid concurrent execution as a contradiction. The current implementation is sound only
+if the domain assumption holds that any two distinct non-empty witnesses are by definition
+incompatible. This assumption must be formally justified or the \texttt{join()} semantics
+must be revised to handle concurrent-path witnesses distinctly from contradictory-evidence
+witnesses.
+
+\textbf{Risk 2: Thesis lineage gap.} EXP-004 is architecturally positioned at the
+codegen-to-type-court bridge in the lineage chain
+(ggen $\to$ wasm4pm $\to$ process-evidence $\to$ receipts $\to$ capital-flow). However,
+no artifact within the EXP-004 directory explicitly draws this causal chain. The connection
+is asserted at the broader program level but not within the experiment boundary. If the
+dissertation examiner requests artifact-level evidence for the capital-flow contribution,
+the current EXP-004 artifact set cannot independently substantiate it.
+
+\textbf{Risk 3: Five-attribute gap.} The materialized \texttt{ActivityWitness} covers
+only 3 of 8 attributes in the full \texttt{process.pi.activity} group. If the wasm4pm
+conformance court requires \texttt{process.pi.lifecycle} (the transactional lifecycle
+phase) or \texttt{process.pi.token.state\_before}/\texttt{state\_after} (Petri net
+markings) for process replay, the current materialized types are insufficient. The missing
+lifecycle and token state fields are the fields most directly relevant to process-mining
+conformance checking.
+
+\subsection{Next Receipted Work}
+\label{sec:otel-weaver-exp-004-registry-to-witness-next-work}
+
+The following items constitute the next receipted work for EXP-004, in priority order:
+
+\begin{enumerate}
+  \item Author \texttt{Cargo.toml} for EXP-004 with \texttt{serde}, \texttt{serde\_json},
+    and \texttt{serde\_derive} dependencies. Confirm \texttt{cargo build} succeeds. Issue
+    receipt \texttt{EXP\_004\_BUILD\_001}.
+  \item Invoke the Weaver CLI: \texttt{weaver registry resolve --registry semconv/ --output
+    codegen/resolved\_schema.json}. Verify the output JSON contains the
+    \texttt{process.pi.activity} group. Update the generator to read from
+    \texttt{codegen/resolved\_schema.json}. Issue receipt \texttt{EXP\_004\_WEAVER\_CLI\_001}.
+  \item Extend the generator to materialize all eight attributes from the full group
+    definition, including \texttt{lifecycle}, \texttt{token.state\_before}, and
+    \texttt{token.state\_after} as appropriately typed Rust fields. Issue receipt
+    \texttt{EXP\_004\_FULL\_COVERAGE\_001}.
+  \item Author a formal justification for the \texttt{join()} top-escalation convention
+    in the dissertation theory chapter, or implement a revised \texttt{join()} that
+    distinguishes concurrent-path witnesses from contradictory-evidence witnesses.
+    Issue receipt \texttt{EXP\_004\_LATTICE\_THEORY\_001}.
+  \item Author the EXP-004 cryptographic receipt file recording input and output hashes,
+    generator version, and operator identity. Chain to the parent
+    \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001} checkpoint. Issue receipt
+    \texttt{EXP\_004\_RECEIPT\_001}.
+\end{enumerate}
+
+Upon completion of all five receipted items, EXP-004 may be re-evaluated for ALIVE
+status.

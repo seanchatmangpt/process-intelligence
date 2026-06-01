@@ -1,0 +1,59 @@
+\section{Project Identity}
+\label{sec:sources-wasm4pm-identity}
+
+\subsection{Purpose}
+\label{sec:sources-wasm4pm-identity-purpose}
+
+\texttt{wasm4pm} v30.1.2 is the core execution authority for the process intelligence stack described
+in this dissertation. Its purpose is to provide a high-performance, cryptographically sandboxed
+WebAssembly execution engine capable of manufacturing process evidence from raw event logs.
+The library compiles to both \texttt{cdylib} and \texttt{rlib} targets, making it deployable as a
+standalone WASM module or linked into a Rust host. It is the boundary at which abstract
+process-intelligence doctrine becomes executable law: discovery algorithms run, conformance is
+computed, receipts are emitted, and the lifecycle typestate machine enforces admission conditions
+that no caller can bypass.
+
+The crate carries a single external dependency: \texttt{wasm4pm-compat} (a path dependency to the
+type-law compatibility layer). Every other capability — BLAKE3, SHA-256, SHA-512, ChaCha20,
+Twisted-Edwards Ed25519, OCEL~v2 parsing, and OTel span verification — is self-implemented inside
+the crate boundary. This zero-external-dependency posture prevents supply-chain substitution and
+ensures that the cryptographic receipt chain is auditable without trusting any upstream crate.
+
+\subsection{Repository Surface}
+\label{sec:sources-wasm4pm-identity-surface}
+
+The repository lives at \texttt{sources/wasm4pm} within the process-intelligence foundry.
+It is organized as a single Rust crate exposing 17 public modules via \texttt{src/lib.rs}:
+\texttt{allocator}, \texttt{crypto}, \texttt{ocel}, \texttt{query}, \texttt{sandbox}, \texttt{ffi},
+\texttt{otel}, \texttt{evidence}, \texttt{petri}, \texttt{safety}, \texttt{replay},
+\texttt{conformance}, \texttt{mining}, \texttt{zeroize}, \texttt{controllers}, \texttt{ltl},
+\texttt{ocel\_v2}, and \texttt{graduation}. Supporting documentation includes
+\texttt{EXECUTION\_AUTHORITY\_ATLAS.md} (authoritative audit of the live \texttt{\textasciitilde/wasm4pm/} codebase),
+\texttt{GAP\_ANALYSIS.md} (ten structural gaps, GAP\_001 through GAP\_010), \texttt{MINING\_RENDER\_RECEIPT.md}
+(sealed manufacturing receipt for \texttt{src/mining/mod.rs}), \texttt{research-verdict.md}
+(doctoral-level execution authority classification), and \texttt{mining-authority-ontology.md}.
+Integration, end-to-end, and weaver test suites reside in \texttt{tests/}.
+
+\subsection{Primary Research Role}
+\label{sec:sources-wasm4pm-identity-role}
+
+Within the dissertation, \texttt{wasm4pm} occupies the role of \emph{core WASM execution authority}.
+It is not a prototype or a demonstration: it is the execution stratum that runs process-mining
+algorithms inside a WASM sandbox, enforces admission gates via Rust typestates, and emits
+cryptographically bound receipts for every significant computation. The four authorities it must
+instantiate — Mining, Conformance, Replay, and Lifecycle — map directly to the four research
+questions the dissertation poses: Can process discovery be made cryptographically provable? Can
+conformance checking be enforced at the type level? Can the replay token game produce an
+append-only receipt chain? Can a 13-state lifecycle typestate machine serve as a governance
+substrate for process models from Design through Decommissioning?
+
+\subsection{Key Artifacts}
+\label{sec:sources-wasm4pm-identity-artifacts}
+
+The primary artifacts are: the compiled \texttt{wasm4pm} library (v30.1.2, 31 tests passing in
+10.60 seconds); the sealed \texttt{MINING\_RENDER\_RECEIPT.md} (SHA-256 content hash
+\texttt{08a067d1ee19ea67150c194e9a2db7d86dfd994223b922de7e8606f45fbdf8e5}, status SEALED,
+timestamp 2026-06-01T00:00:00Z); the \texttt{Evidence<T, Admitted, W>} carrier type binding
+payload, admission state, witness marker, epoch, Ed25519 signature, and BLAKE3 hash; and the
+\texttt{GAP\_ANALYSIS.md} documenting the ten known structural gaps that represent open research
+findings rather than implementation failures in this codebase.

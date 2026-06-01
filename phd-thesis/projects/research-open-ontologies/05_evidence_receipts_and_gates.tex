@@ -1,0 +1,142 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:research-open-ontologies-evidence}
+
+\subsection{Tests}
+\label{sec:research-open-ontologies-tests}
+
+The primary test harness is the \texttt{OntologyAuditor} class in
+\path{run-ontology-audit.py}. It performs three categories of validation:
+
+\paragraph{TTL Load Validation.}
+Each TTL file is loaded individually via rdflib~2.0.9 and tested for parse success.
+The Phase~7 roundtrip report confirms 14/14 files passed (\texttt{VALIDATE\_PASSED}).
+Aggregate statistics for the unified graph: 3{,}684 total triples, 661 unique subjects,
+278 unique predicates, 1{,}941 unique objects.
+
+\paragraph{Namespace Conflict Detection.}
+The auditor checks for namespace prefix collisions across files. No collisions were
+reported in the Phase~7 run, consistent with the Phase~4 federated dependency graph
+finding of zero dangling references.
+
+\paragraph{SPARQL Smoke Queries.}
+Four queries were run against the unified graph, all passing (\texttt{4/4 QUERY\_PASSED}):
+\begin{itemize}
+  \item \texttt{count\_all\_instances} --- returned 3{,}684 (the triple count,
+        confirming the graph loaded completely).
+  \item \texttt{count\_checkpoints} --- returned 0 (a known gap: the SPARQL prefix
+        for checkpoints does not match the IRIs used in the TTL files).
+  \item \texttt{count\_artifacts} --- returned 0 (same prefix mismatch issue).
+  \item \texttt{sample\_subjects} --- returned 5 rows, including subjects at
+        \texttt{https://process.intelligence/source/PROJ\_3\_ONTOLOGY\_6},
+        \texttt{https://process.intelligence/checkpoint/SUBSTRATE\_COMPLETE\_001},
+        and \texttt{https://process.intelligence/ggen-unified-run/PHASE\_SHACL\_VALIDATION}.
+\end{itemize}
+
+\paragraph{Adversarial Tests.}
+Three adversarial test scripts are available:
+\begin{itemize}
+  \item \path{adversarial/validate\_standards.py} --- validates standards compliance claims.
+  \item \path{adversarial/simulate\_laundering\_spoofing.py} --- tests that the receipt
+        chain cannot be forged by injecting non-conforming event logs.
+  \item \path{experiments/validate\_ocpq\_refinement.py} --- validates OCPQ query
+        refinement against the ontology corpus.
+\end{itemize}
+
+\subsection{Receipts}
+\label{sec:research-open-ontologies-receipts}
+
+Seven canonical receipts are registered in \path{receipts/RECEIPT\_REGISTRY.md}
+(version~001, produced 2026-05-31):
+
+\begin{description}
+  \item[PAPER\_CANON\_RECEIPT]
+        Produced by the \texttt{sources/papers/} inventory workflow. Witness: van der Aalst
+        corpus + IEEE/ACM process mining bibliography. Certifies 14+ papers classified with
+        formal object mappings. No open gaps.
+
+  \item[PM4PY\_ORACLE\_RECEIPT]
+        Produced by the \texttt{sources/pm4py/} mapping workflow. Witness: pm4wasm.d.ts
+        TypeScript interface definitions. Certifies 14+ PM4Py functions mapped to wasm4pm
+        gap status. Open gap: 8 CRITICAL/HIGH gaps tracked in \texttt{gaps/}.
+
+  \item[WASM4PM\_GAP\_RECEIPT]
+        Certifies the gap inventory is complete (8 gap entries with severity, priority, and
+        compat path). Gaps are open by definition; the receipt certifies the inventory.
+
+  \item[LIFECYCLE\_RECEIPT]
+        Certifies 42+ lifecycle phase definitions with compat/wasm4pm coverage per phase.
+        No open gaps.
+
+  \item[MA\_RECEIPT]
+        Certifies 40+ M\&A claim files across 8 categories with board admissibility
+        criteria. Open gap: monetization receipts (\path{rec\_ebitda\_rework\_001.json},
+        \path{rec\_wc\_ar\_002.json}, \path{rec\_risk\_sla\_003.json},
+        \path{rec\_risk\_compliance\_004.json}, \path{rec\_residual\_standard\_005.json})
+        are samples; production receipts require live data.
+
+  \item[STANDARDS\_RECEIPT]
+        Certifies 52+ standards files placed with board claim mapping. Standards covered:
+        XES (IEEE~1849), OCEL~2.0, BPMN~2.0, PNML, WfMC workflow standards. No open gaps.
+
+  \item[ADVERSARIAL\_RECEIPT]
+        Certifies 3 adversarial challenges (raw laundering, metric fabrication, conformance
+        theater) under the Chicago TDD hostile assumptions doctrine. Open gap: additional
+        M\&A-specific adversarial challenges may be warranted.
+\end{description}
+
+ggen pipeline receipts are recorded in \path{ggen/.ggen/receipts/}:
+\texttt{latest.json}, \texttt{sync-20260601-203853.json},
+\texttt{sync-20260601-230600.json}, \texttt{sync-20260601-175316.json}.
+Five API manufacturing receipts exist in
+\path{research/pi-program/emitted/ggen-api-manufacturing/receipts/}.
+
+\subsection{Checkpoints}
+\label{sec:research-open-ontologies-checkpoints}
+
+\paragraph{PI\_RESEARCH\_PROGRAM\_ALIVE\_001 (Parent Program).}
+Emitted 2026-06-01. Status: ALIVE. 12/12 audit gates PASS. Sealed with BLAKE3 signature
+\texttt{e7c8f2d94a71b5c3e9f1d6a4b2c8e5f7a1d3c5b7e9f2d4a6c8e0f1a3b5c7d9}.
+This checkpoint authorizes board-level claim delivery and downstream manufacturing workflows.
+
+\paragraph{PI\_GGEN\_UNIFIED\_RUN\_CONFORMANCE\_AUDIT\_001 (Manufacturing Conformance).}
+Emitted 2026-06-01. Status: PARTIAL. 9/15 gates PASS; 6/15 gates FAIL; 101 total violations.
+Gates passing: Project Registry Complete, All ggen Manifests Classified, Tera Templates Render,
+Generation Rules Complete, Artifact Traceability, No Invalid .ggen Source, No Forced ALIVE,
+Checkpoint Can Emit PARTIAL, Receipts Present or Explicitly Missing.
+Gates failing: TTL Graphs Parse (23 violations --- \texttt{rapper} not installed),
+RQ Queries Parse (61 violations --- no \texttt{.rq} parser installed), Legacy .ggen
+Classified (13 violations), No File-Count ALIVE (1 violation), No Hand-Written Warrant
+(2 violations), No Commit-Count Gate (1 violation).
+Critical path gates blocking ALIVE reissue: Gates~3 (TTL syntax), 4 (SPARQL syntax), 9
+(legacy .ggen classification).
+
+\paragraph{Open-Ontologies Roundtrip (Phase~7).}
+Verdict: AVAILABLE. Not a named checkpoint file; produced by \texttt{run-ontology-audit.py}
+as a timestamped report (2026-06-01T13:15:45.878195). Classification \texttt{AVAILABLE}
+confirms the ontology surface is operational for query purposes.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:research-open-ontologies-status}
+
+\textbf{Current status: PARTIAL.}
+
+The open-ontologies project satisfies the dependency consistency gate (Phase~4 ACYCLIC/CONSISTENT)
+and the rdflib load gate (14/14 files, Phase~7 AVAILABLE). It does not yet satisfy:
+\begin{itemize}
+  \item TTL syntax validation via \texttt{rapper}/\texttt{librdf-utils} (tooling not installed;
+        23 assumed violations in conformance audit Gate~3).
+  \item SPARQL prefix alignment between ontology IRIs and query prefixes (causing
+        \texttt{count\_checkpoints=0} and \texttt{count\_artifacts=0} despite 3{,}684 triples
+        loaded).
+  \item Receipt TTL manufacture --- a self-describing provenance graph in RDF form for the
+        ontology corpus does not yet exist (\texttt{RECEIPT\_NOT\_FOUND} in Phase~7 report).
+\end{itemize}
+
+PARTIAL is not failure. Per the COVENANT: ``PARTIAL is the bill of materials for the next
+transition.'' The open-ontologies project has a clear remediation path: install \texttt{rapper},
+fix SPARQL prefix alignment, and manufacture a receipt TTL. None of these gaps are
+architectural defects in the ontology itself.

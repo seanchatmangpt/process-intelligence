@@ -1,0 +1,107 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:sources-pm4py-evidence}
+
+\subsection{Tests}
+\label{sec:sources-pm4py-evidence-tests}
+
+The oracle atlas does not contain executable test suites. Its validation is structural:
+the conformance-authority-map (v30.1.1) defines a seven-method validation workflow that
+specifies which PM4Py conformance techniques must be applied in sequence, and in what
+order their results should be compared. The protocol begins with Token-Based Replay as
+the fast baseline (if fitness $< 0.8$, stop --- the model is fundamentally non-conformant);
+proceeds to alignment-based conformance (if alignment fitness $< $ TBR fitness by $> 10\%$,
+investigate state explosion); validates structurally via footprints; checks constraint
+violations via DECLARE conformance; assesses SLA violations via temporal profile; detects
+drift via log skeleton; and, for object-centric logs, validates object lifecycle and
+interactions via OCEL conformance. Acceptance thresholds are: 0.95--1.0, accept
+(high confidence); 0.85--0.94, accept with investigation; 0.70--0.84, reject unless
+justified; $<0.70$, reject outright. The conformance-authority-map also defines four
+negative test cases with injected impossible traces (activity not in model, reverse order,
+duplicate activity rework, missing critical activity) to verify that conformance methods
+do not give false positives. The ALGORITHM\_CROSSWALK.md documents the arithmetic safety
+requirements for the WASM-mirrored heuristics miner: maximum 1,000 unique activities,
+maximum 10,000,000 events, checked arithmetic (\texttt{checked\_add}, \texttt{checked\_mul}),
+and deterministic tie-breaking via SHA-256 hashes of activity label names.
+
+\subsection{Receipts}
+\label{sec:sources-pm4py-evidence-receipts}
+
+Five JSON receipts provide the primary empirical evidence for the oracle atlas's claims.
+All five follow the canonical receipt schema and carry ed25519 validator signatures.
+
+\texttt{rec\_ebitda\_rework\_001.json} (slide\_id: 8a3e811c-2290-482a-a5f1-3215903b41fa):
+fitness 0.982, precision 0.945, throughput 4.12 days. Query: \texttt{ebitda\_rework\_reduction.wasm},
+rework activities \{Change Price, Modify Order, Re-enter Order\}, projected annual volume
+500,000 cases, labor cost \$2.00/event, baseline rework intensity 1.45, target 0.20.
+Defensibility verification confirms: Invoice Approval follows Goods Receipt at compliance
+rate 1.0. BLAKE3 log hash: \texttt{ee9ab7234bcaf5e1613ab7d5f45af28229552e9327880cc2d4b97f193df4971a}.
+BLAKE3 model hash: \texttt{81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9}.
+
+The four remaining receipts cover working capital accounts receivable
+(\texttt{rec\_wc\_ar\_002.json}), risk SLA (\texttt{rec\_risk\_sla\_003.json}), risk
+compliance (\texttt{rec\_risk\_compliance\_004.json}), and residual standard
+(\texttt{rec\_residual\_standard\_005.json}). All five are certified by the PM4PY\_ORACLE\_RECEIPT
+entry in \texttt{receipts/RECEIPT\_REGISTRY.md}, which is itself witnessed by
+\texttt{pm4wasm.d.ts} TypeScript interface definitions.
+
+The PM4PY\_ORACLE\_RECEIPT formally states: every pm4py function has a signature, a wasm4pm
+equivalent, or a GAP status entry; gap severity is classified as CRITICAL / HIGH / MEDIUM
+/ LOW; 8 CRITICAL/HIGH gaps remain and are tracked in the \texttt{gaps/} directory.
+
+An open question regarding receipts: the signing infrastructure (key management, signature
+verification workflow) is not documented in the \texttt{sources/pm4py} corpus. The receipts
+assert defensibility via their ed25519 signatures, but the verification chain from signature
+to wasm4pm engine execution to PM4Py oracle comparison is not closed in this corpus. This
+is a known open question (see Section~\ref{sec:sources-pm4py-open-deferred}).
+
+\subsection{Checkpoints}
+\label{sec:sources-pm4py-evidence-checkpoints}
+
+The \texttt{sources/pm4py} corpus contributes to a single checkpoint: PROCESS\_INTELLIGENCE\_ALIVE\_001,
+sealed 2026-05-31. The ALIVE gate has twelve criteria; criterion 4 is:
+\texttt{sources/pm4py} file count $\geq 4$ (actual: 14 --- MET). All 12 of 12 criteria
+were met. The threshold for ALIVE certification is $\geq 10$ of 12 criteria. The ALIVE gate
+assessment is documented in \texttt{checkpoints/ALIVE\_GATE\_ASSESSMENT.md} and sealed in
+\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md}.
+
+Sealing PROCESS\_INTELLIGENCE\_ALIVE\_001 authorised five downstream actions: board-level
+claim delivery for claims traceable to a receipt in the registry; M\&A diligence package
+assembly; wasm4pm graduation initiation; PAPERLAW\_ALIVE workflows; and standards-based
+conformance claims for XES, OCEL 2.0, BPMN 2.0, and Petri net soundness. It explicitly
+did not authorise claims based on unadmitted event logs, conformance scores without a
+named witness, M\&A claims without corresponding receipts, or wasm4pm integration without
+\texttt{Admission<T, W>} typing at the API boundary.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:sources-pm4py-evidence-status}
+
+\textbf{Status: ALIVE.}
+
+The \texttt{sources/pm4py} corpus satisfies all conditions for the ALIVE verdict:
+\begin{itemize}
+  \item Receipt exists: PM4PY\_ORACLE\_RECEIPT in \texttt{receipts/RECEIPT\_REGISTRY.md},
+    witnessed by \texttt{pm4wasm.d.ts}.
+  \item Tests (structural): conformance-authority-map validation protocol, negative test
+    cases, arithmetic safety requirements.
+  \item Checkpoint: PROCESS\_INTELLIGENCE\_ALIVE\_001, sealed 2026-05-31, criterion 4
+    MET (14 files).
+  \item Five JSON receipts with ed25519 signatures and BLAKE3 hashes confirming
+    engine-level fitness and precision computations.
+\end{itemize}
+
+Eight CRITICAL/HIGH gaps remain open (POWL 2.0 DecisionGraph type surface, streaming
+conformance type surface, HeuristicsNet type, temporal profile surface, log skeleton
+surface, OC-DFG type, variant types, performance spectrum type). These gaps are tracked
+in the \texttt{gaps/} directory and do not affect the ALIVE verdict, which certifies
+corpus completeness, not gap closure. Gap closure is future work.
+
+\bigskip
+\noindent\textit{Source authority:} receipts/rec\_ebitda\_rework\_001.json (full receipt
+schema), receipts/RECEIPT\_REGISTRY.md (PM4PY\_ORACLE\_RECEIPT), checkpoints/ALIVE\_GATE\_ASSESSMENT.md
+(criterion 4: MET, all 12/12 criteria), checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md,
+conformance-authority-map.md (validation protocol, acceptance thresholds, negative tests),
+ALGORITHM\_CROSSWALK.md (arithmetic safety requirements).

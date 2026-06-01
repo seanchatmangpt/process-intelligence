@@ -1,0 +1,78 @@
+% FILE: 01_research_question.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Research Question}
+\label{sec:research-open-ontologies-question}
+
+\subsection{Problem Statement}
+\label{sec:research-open-ontologies-problem}
+
+Process intelligence claims --- fitness scores, conformance verdicts, M\&A board projections,
+lifecycle governance decisions --- are only as trustworthy as the ontology layer that defines
+what each term means and what evidence is required to assert it. Prior work in process mining
+produces claims in natural language or ad hoc data structures without a machine-readable,
+dependency-validated knowledge graph that an auditor can inspect, replay, or challenge.
+
+The specific problem this project addresses is: \emph{how can a distributed RDF corpus, spanning
+multiple research sub-programs and using both public standard vocabularies and local extension
+namespaces, be validated as acyclic, dependency-consistent, and queryable without requiring all
+TTL files to live in a single directory?} A secondary problem is how that corpus can then
+serve as the input to a code manufacturing pipeline that emits type-safe, receipted artifacts
+rather than ad hoc text.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:research-open-ontologies-old-regime}
+
+The old regime assumes that process intelligence claims are self-evident from algorithm output.
+A fitness score of 0.97 from a token replay is taken as proof of conformance without asking: What
+named witness grounds this threshold? What ontology defines \texttt{fitness} as a typed property?
+What receipt chain connects this score to the event log that produced it? What LTL safety
+invariant prevents a non-compliant process from being actuated?
+
+The assumption challenged here is that natural-language documentation of process evidence is
+sufficient for board-level or regulatory purposes. This project asserts the contrary: every
+claim must be backed by a machine-readable ontology triple, a named witness marker, and a
+BLAKE3-receipted artifact. A claim that cannot be expressed as a SPARQL query against a
+validated RDF graph is not an admissible process intelligence claim under this program's
+COVENANT.
+
+\subsection{Hypothesis}
+\label{sec:research-open-ontologies-hypothesis}
+
+The hypothesis is that a federated RDF corpus --- distributed across multiple sub-programs,
+validated for dependency acyclicity and triple consistency, and grounded in public standard
+vocabularies --- can serve as a reliable authority surface for manufacturing board-admissible
+process intelligence artifacts via SPARQL-to-Tera pipelines.
+
+Specifically: if the federated dependency graph reports \texttt{ACYCLIC}/\texttt{CONSISTENT}
+with zero circular dependencies and zero dangling references, then SPARQL queries against the
+merged graph will return results that can be transformed via Tera templates into typed Rust
+enums, WIT boundary definitions, and Markdown documentation --- each with a verifiable BLAKE3
+receipt. The hypothesis is PARTIAL at the time of this writing because the manufacturing
+pipeline has not yet been validated end-to-end against a receipted ALIVE checkpoint for the
+ontology project itself (as distinct from the parent program checkpoint).
+
+\subsection{Success Criteria}
+\label{sec:research-open-ontologies-success}
+
+Success for this project is defined by the following gates, derived from the parent program
+COVENANT and the Van der Aalst Constitution (process-mining-chicago-tdd):
+
+\begin{enumerate}
+  \item The federated dependency graph reports \texttt{gate\_pass: true} with zero circular
+        dependencies and zero dangling references. \textbf{[MET --- Phase~4, 2026-06-01]}
+  \item All TTL files in the corpus load successfully via rdflib with no parse errors.
+        \textbf{[MET --- 14/14 files, Phase~7 roundtrip report]}
+  \item SPARQL smoke queries return non-empty results against the unified graph.
+        \textbf{[PARTIALLY MET --- 4/4 queries pass, but \texttt{count\_checkpoints=0} and
+        \texttt{count\_artifacts=0} due to namespace prefix mismatch]}
+  \item TTL syntax validation via \texttt{rapper}/\texttt{librdf-utils} passes for all 23
+        TTL files. \textbf{[NOT MET --- tooling not installed; Gate~3 FAIL in conformance audit]}
+  \item A receipt TTL exists in the ontology corpus providing RDF-native audit trail for the
+        ontology layer itself. \textbf{[NOT MET --- RECEIPT\_NOT\_FOUND in Phase~7 report]}
+  \item The ggen manufacturing pipeline emits at least one receipted artifact from a SPARQL
+        query against this corpus. \textbf{[PARTIALLY MET --- ggen.toml rules defined,
+        receipts present in \texttt{.ggen/receipts/}, ALIVE reissue blocked pending
+        Gates~3 and~4]}
+\end{enumerate}

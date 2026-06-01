@@ -1,0 +1,105 @@
+\section{Architecture and Primitives}
+\label{sec:otel-weaver-exp-005-collector-to-intake-architecture}
+
+\subsection{Core Objects}
+\label{sec:otel-weaver-exp-005-collector-to-intake-architecture-objects}
+
+EXP-005 defines five core objects in its pipeline architecture:
+
+\begin{description}
+  \item[\texttt{filter/pi} OTTL processor] The namespace gatekeeper. Drops any span for which
+        \texttt{attributes["process.pi.instance\_id"]} is nil or absent. Operates silently:
+        no error is emitted, no refusal record is produced. This is the first law-enforcing
+        membrane in the intake pipeline, operating below the conformance court level.
+
+  \item[\texttt{transform/pi} OTTL processor] The normalisation operator. Lowercases the
+        activity name field to canonical form, injects \texttt{pi.intake.ingested\_at} as an
+        ISO~8601 timestamp (collector clock, not emitter clock), and injects
+        \texttt{pi.intake.collector\_version} to record the collector image version
+        (\texttt{otel/opentelemetry-collector-contrib:0.98.0}). The transform runs only on
+        spans that survived the \texttt{filter/pi} stage.
+
+  \item[\texttt{file/pi\_json} exporter] The OCEL~2.0 JSON writer. Flushes admitted,
+        transformed spans to \texttt{output/pi\_intake\_events.json} as a structured JSON
+        stream compatible with the OCEL~2.0 object-centric event log schema.
+
+  \item[\texttt{process.pi.instance\_id}] The mandatory namespace gatekeeper attribute. A
+        string value that binds a span to a named process instance. Its presence is the sole
+        admission criterion at the collector boundary. Its absence causes silent drop. Its
+        value is not validated at this stage --- only presence is checked.
+
+  \item[\texttt{process.pi.witness.hash}] A 64-character BLAKE3 hash required by the
+        downstream live-check gate (\texttt{validator.rs} in EXP-003). Not enforced by the
+        collector: the \texttt{filter/pi} processor does not check for witness hash presence.
+        This is intentional --- the collector enforces only the minimal namespace binding law;
+        full schema conformance is delegated to the downstream court.
+\end{description}
+
+\subsection{Admissible Transitions}
+\label{sec:otel-weaver-exp-005-collector-to-intake-architecture-transitions}
+
+The EXP-005 pipeline defines three admissible span lifecycle transitions, corresponding to
+the Span~A/B/C taxonomy manufactured by \texttt{harness.py}:
+
+\begin{enumerate}
+  \item \textbf{Span A (fully compliant):} Carries \texttt{process.pi.instance\_id} and
+        \texttt{process.pi.witness.hash}. Admitted by \texttt{filter/pi}, normalised by
+        \texttt{transform/pi}, written to \texttt{pi\_intake\_events.json}, and expected to
+        pass the downstream live-check gate. Transition: \textsc{Received} $\to$
+        \textsc{Filtered} $\to$ \textsc{Transformed} $\to$ \textsc{Written} $\to$
+        \textsc{Admitted}.
+
+  \item \textbf{Span B (missing instance ID):} Lacks \texttt{process.pi.instance\_id}.
+        Dropped at \texttt{filter/pi}. No record in \texttt{pi\_intake\_events.json}.
+        Transition: \textsc{Received} $\to$ \textsc{Dropped}.
+
+  \item \textbf{Span C (missing witness hash):} Carries \texttt{process.pi.instance\_id} but
+        lacks \texttt{process.pi.witness.hash}. Admitted by \texttt{filter/pi}, normalised by
+        \texttt{transform/pi}, written to \texttt{pi\_intake\_events.json}, but expected to
+        fail the downstream live-check gate and produce a sealed refusal record. Transition:
+        \textsc{Received} $\to$ \textsc{Filtered} $\to$ \textsc{Transformed} $\to$
+        \textsc{Written} $\to$ \textsc{Refused} (downstream).
+\end{enumerate}
+
+\subsection{Boundaries}
+\label{sec:otel-weaver-exp-005-collector-to-intake-architecture-boundaries}
+
+The collector pipeline defines two legal boundaries:
+
+\textbf{Collector boundary (upstream):} The \texttt{filter/pi} processor is the upstream
+boundary. It enforces only attribute presence, not attribute value validity or schema
+completeness. The collector image is
+\texttt{otel/opentelemetry-collector-contrib:0.98.0}. Receiver endpoints are OTLP gRPC
+on port~\texttt{4317} and OTLP HTTP on port~\texttt{4318} (dual-protocol to support both
+gRPC and HTTP/JSON emitters).
+
+\textbf{Conformance court boundary (downstream):} The \texttt{validator.rs} in EXP-003 is the
+downstream boundary. It enforces full schema conformance, including BLAKE3 witness hash
+presence and validity. The \texttt{BridgeRx} schema-version translation bridge protects the
+conformance court from Weaver schema diffs by translating span attributes to the canonical
+court-internal representation before validation. The \texttt{Admission\textless T,W\textgreater}
+/ \texttt{Refusal} pattern is the type-law court boundary enforced by \texttt{validator.rs}.
+
+\subsection{Failure Modes Refused}
+\label{sec:otel-weaver-exp-005-collector-to-intake-architecture-failures}
+
+EXP-005 documents two active failure modes as open questions (PARTIAL status):
+
+\begin{enumerate}
+  \item \textbf{Config field name mismatch:} The collector config uses \texttt{max\_megabytes}
+        in the file rotation block, but the README documents \texttt{max\_size\_megabytes}.
+        The \texttt{otel/opentelemetry-collector-contrib:0.98.0} image may reject the config
+        at startup if the wrong field name is used. This mismatch has not been resolved by a
+        live Docker run. \textit{[AUTHOR THESIS: this is a fabrication-stage gap, not a
+        design flaw; the correct field name must be confirmed against the 0.98.0 release
+        notes.]}
+
+  \item \textbf{Metrics pipeline gap:} \texttt{harness.py} emits the
+        \texttt{pi.feedstock.operation\_count} cumulative sum metric tagged with
+        \texttt{process.pi.instance\_id}. The collector config declares only a
+        \texttt{traces/pi\_intake} pipeline; no metrics pipeline is defined. Metrics are
+        received on port~\texttt{4318} but have no matching exporter, meaning the metrics
+        payload is silently dropped. Whether this is intentional (metrics are out of scope
+        for EXP-005) or a gap requiring a \texttt{metrics/pi\_intake} pipeline is an open
+        question.
+\end{enumerate}

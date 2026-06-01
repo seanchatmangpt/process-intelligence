@@ -3,6 +3,9 @@
 
 
 pub mod manufacturing;
+pub mod graduation;
+
+pub use graduation::{GraduateToWasm4pm, GraduationCandidate, GraduationReason};
 
 pub use manufacturing::{
     RenderEngine, RenderError, TemplateContext, ModuleSpec, RenderContext,

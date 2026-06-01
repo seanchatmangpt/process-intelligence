@@ -1,0 +1,44 @@
+% FILE: 01_research_question.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Research Question}
+\label{sec:research-pi-program-rq}
+
+\subsection{Problem Statement}
+\label{sec:research-pi-program-rq-problem}
+
+Enterprise process intelligence systems routinely conflate four distinct activities that must remain separated: (1) declaring a governance policy, (2) enforcing it at runtime, (3) manufacturing board-admissible evidence of enforcement, and (4) propagating authority from the governance layer to downstream execution artifacts. In practice, these activities are collapsed into ad hoc pipelines where policy declarations are stored as comments, enforcement is asserted by code paths rather than event logs, and provenance is either absent or circular.
+
+The pi-program poses the following research question: \textit{Can a formal, machine-readable governance authority layer---grounded in OWL ontologies, SHACL constraints, and deterministic SPARQL$\to$Tera manufacturing pipelines---produce board-admissible process intelligence artifacts whose provenance is independently verifiable without trusting any code path?}
+
+This question is motivated by the Van der Aalst Constitution encoded verbatim in \texttt{forbidden-collapse-law.ttl}: ``If the code says it worked but the event log cannot prove a lawful process happened, then it did not work.'' The research program tests whether this constitution can be operationalized not merely as a quality maxim but as a machine-enforced invariant that blocks actuation whenever compliance cannot be proved from an event log.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:research-pi-program-rq-oldregime}
+
+The old-regime assumption is that governance is a human-readable policy document that informs development but does not participate in manufacturing. Under this assumption, a process intelligence system may declare that all artifacts are receipted and all claims are board-admissible, yet the declaration lives in a PDF or wiki page with no formal link to the artifacts themselves. Quality gates are implemented as CI assertions that pass when code compiles and tests pass, not when event logs confirm conforming execution.
+
+The pi-program challenges this assumption on three fronts. First, it asserts that governance policies must be OWL ontology triples with SHACL constraints, not prose. Every \texttt{gov:GovernancePolicy} in \texttt{governance-policy.ttl} is a named individual with a \texttt{gov:LTLSafetyInvariant} property encoding the invariant in temporal logic. Second, it asserts that manufacturing pipelines must be declared in a machine-executable manifest (\texttt{ggen.toml}) where each rule specifies a SPARQL query, a Tera template, and an output path---leaving no room for undocumented shortcuts. Third, it asserts that receipt chains must be cryptographic (BLAKE3), not narrative: a claim of 100\% receipt coverage is only valid if an independent verifier can traverse the chain without trusting the system's own assertions.
+
+\subsection{Hypothesis}
+\label{sec:research-pi-program-rq-hypothesis}
+
+\textbf{Hypothesis:} A governance authority layer structured as (OWL ontologies + SHACL constraints + SPARQL$\to$Tera manufacturing rules + BLAKE3 receipt chains) is sufficient to manufacture board-admissible process intelligence artifacts and to detect, classify, and route governance failures without human intervention, provided that the MAPE-K autonomic loop can exercise feedback from the event log back to the governance policy within a bounded response time.
+
+The hypothesis has three testable components. The first is structural: the ontology must enumerate all program-role classes, forbidden-collapse subtypes, and graduation reasons in machine-readable form such that a SPARQL query can enumerate any subset without reading source code. The second is manufacturing: the \texttt{ggen.toml} pipeline must execute end-to-end, producing BLAKE3-receipted artifacts for all registered rules. The third is autonomic: the MAPE-K loop must detect fitness violations, Declare constraint violations, and structural P-invariant violations, and route each to the correct authority (ostar-auditor or ostar-doctor) within the bounds enforced by the Andon gate policy.
+
+\subsection{Success Criteria}
+\label{sec:research-pi-program-rq-success}
+
+Success is defined by the following gate criteria, drawn directly from the audit framework in \texttt{audits/audit-results.yaml}:
+
+\begin{enumerate}
+  \item \textbf{Ontology completeness:} All 31 \texttt{pi:ProgramRole} subclasses, all 8 \texttt{pi:FORBIDDEN\_COLLAPSE} subtypes, and all \texttt{pi:GraduationReason} individuals are enumerable via SPARQL without reading source code.
+  \item \textbf{Manufacturing execution:} At least one complete ggen pipeline (\texttt{ggen.toml} $\to$ SPARQL $\to$ Tera $\to$ artifact $\to$ BLAKE3 receipt) executes end-to-end with no gaps in the provenance chain.
+  \item \textbf{Receipt chain integrity:} Zero chain breaks and zero hash mismatches in the BLAKE3 receipt ledger, as verified by an independent chain verifier (\texttt{RECEIPT\_CHAIN\_VERIFICATION\_20260601.yaml}).
+  \item \textbf{MAPE-K verification:} All five MAPE-K feedback loop tests pass with confidence $\geq$ 0.90 on average, covering fitness degradation, performance bottleneck auto-repair, Declare constraint violation, P-invariant structural violation, and model degradation.
+  \item \textbf{Conformance audit:} 12/12 Van der Aalst conformance gates pass, including the DTO boundary law gate (audit\_005) and the remediation routing gate (audit\_012).
+\end{enumerate}
+
+As of 2026-06-01, criteria 1, 4, and partial elements of 2 are satisfied. Criteria 3 and 5 are not satisfied: the receipt chain has 8 breaks and 10 hash mismatches, and 2 of 12 audit gates fail. The overall status is therefore \textbf{PARTIAL}.

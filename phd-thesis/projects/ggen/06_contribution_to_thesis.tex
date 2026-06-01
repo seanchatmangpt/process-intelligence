@@ -1,0 +1,102 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: ggen — Governance Generation Engine
+
+\section{Contribution to the Dissertation}
+\label{sec:ggen-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:ggen-contribution-prediction-coordination}
+
+The central claim of this dissertation is that process intelligence must shift from the
+prediction paradigm---in which machine learning models produce point forecasts of process
+outcomes---to the coordination paradigm, in which process evidence is used to coordinate
+capital-market actors, autonomic runtimes, and governance bodies around a shared, verifiable
+account of process behavior.
+
+ggen is the most direct instantiation of this shift. It is not a prediction engine. It does not
+forecast future process states or produce probabilistic outputs. It is a coordination artifact
+manufacturer: it takes process measurements that have already been produced (conformance verdicts,
+replay traces, witness lattice positions) and manufactures the artifacts that allow capital-market
+actors to coordinate around those measurements. The board admissibility contract encoded in
+\texttt{extract-board-claims.rq}---fitness $\geq 0.95$, precision $\geq 0.90$, BLAKE3 receipt
+chain intact, log format IEEE 1849-2016 or OCEL 2.0---is a coordination protocol, not a
+prediction protocol. It specifies the conditions under which a process claim is admissible as a
+basis for capital allocation decisions.
+
+The Tera template layer makes the coordination role explicit: \texttt{ma-deck.tera} manufactures
+a Board Sign-Off Slide with five admissibility declarations and a UUID timestamp. This slide is
+not a forecast; it is a coordination artifact that aligns the board, the financial advisors, the
+technical team, and the audit function around a single claim backed by a verifiable receipt. The
+dissertation argues that this form of coordination is what process intelligence is for, and ggen
+is the engineering proof.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:ggen-contribution-process-evidence}
+
+Process evidence, in this dissertation, is not merely a measurement but a typed, receipt-sealed,
+independently verifiable record that links a process claim to the event log from which it was
+derived. ggen contributes to the theory of process evidence by demonstrating that evidence can be
+\emph{manufactured} in multiple artifact formats without loss of its evidentiary character,
+provided the manufacturing pipeline preserves the chain of provenance.
+
+The specific mechanism is the \texttt{compat:Evidence<T, State, W>} type defined in
+\texttt{ontology-extensions.ttl}. This type encodes three orthogonal dimensions of evidence: the
+claim content \texttt{T} (a board claim, a synergy projection, a lifecycle state), the process
+state marker \texttt{State} (which lifecycle phase the evidence pertains to), and the cryptographic
+witness \texttt{W} (the lattice position reached by the manufacturing process). The witness marker
+lattice, with eight positions from \texttt{VanDerAalst1989} at the bottom to
+\texttt{BlueRiverDam} at the top, provides a total order on the strength of process evidence.
+
+The manufactured \texttt{WitnessMarker} Rust enum, rendered from \texttt{witness-marker.tera},
+expresses this lattice as a compilable type-level constraint. The embedded algebraic test proofs
+verify that the manufactured type satisfies the join-semilattice axioms. This is evidence as a
+typed artifact: not just a number, but a Rust type whose algebraic properties are proven at
+manufacture time and verifiable at compile time.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:ggen-contribution-manufacturing}
+
+ggen establishes the manufacturing architecture of the research foundry. Its three-layer pipeline
+(SPARQL extraction, Tera rendering, BLAKE3 receipt sealing) is the template against which all
+other artifact manufacturing in the foundry is measured. The \texttt{GenerationRule} primitive
+defines a reusable contract for any transformation from ontological knowledge to output artifact:
+a query, a template, an output path, a mode, and a metadata record linking the artifact to its
+evidence backing and compliance standard.
+
+The 17 artifacts manufactured by ggen in Phase 3---five governance rule files, five Tera
+templates, and seven audit scripts with 42 or more named gates---constitute the fullest expression
+of the manufacturing architecture in the foundry to date. Each artifact is traceable to a source
+manifest (e.g., \texttt{ts-projection-manifest.yaml}), and each manifest is traceable to the
+authority chain documented in \texttt{GGEN\_MANUFACTURING\_SUMMARY.md}. The authority chain runs
+from the Process Intelligence Research Foundry root through feature manifests to individual rule
+files to templates to audit scripts, forming a directed acyclic graph of manufacturing provenance.
+
+The feature law doctrine---features enable derives and dependencies only; no feature enables an
+execution engine; tool smuggling produces \texttt{ERR\_TOOL\_SMUGGLING\_INTO\_COMPAT}---is a
+manufacturing constraint expressed at the Cargo feature level. It is the foundry's answer to a
+general problem in software manufacturing: how to enforce architectural boundaries across a
+heterogeneous build graph where transitive dependencies can silently introduce forbidden
+capabilities. The six-gate audit script is the proof gate that enforces this constraint.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:ggen-contribution-capital-flow}
+
+The research lineage from 2016 language-model experiment through enterprise process gap to
+Chatman Equation to receipts-and-replay converges on a capital-flow thesis: process intelligence
+evidence, properly manufactured and receipted, can serve as the evidentiary basis for capital
+allocation decisions in M\&A transactions, operational audits, and governance filings.
+
+ggen is the capital-flow infrastructure layer of the research foundry. The M\&A acquisition deck
+manufactured by \texttt{ma-deck.tera} is not a research artifact; it is a board deliverable. The
+seven-sheet diligence workbook manufactured by \texttt{ma-diligence.tera} is not a research
+summary; it is a due-diligence instrument. Both artifacts carry BLAKE3 receipt hashes that a
+financial advisor can use to verify the underlying conformance verdicts in the ontology.
+
+The Blue River orchestrator, manufactured by \texttt{blue-river.tera} and sealed as output hash
+\texttt{4e341f5a\ldots} in the chain-root receipt, is the autonomic runtime that enforces the
+governance contracts embedded in the M\&A artifacts. When the board approves an acquisition based
+on a synergy projection backed by a fitness $\geq 0.95$ verdict, the Blue River orchestrator is
+the mechanism that monitors post-close process behavior and triggers remediation when the process
+drifts below the contracted threshold. The capital-flow infrastructure is therefore not merely an
+artifact formatter; it is a closed-loop governance system that links board-level claims to
+runtime-level enforcement through a shared ontological provenance chain.

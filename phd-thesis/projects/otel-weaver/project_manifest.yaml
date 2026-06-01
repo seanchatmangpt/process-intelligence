@@ -1,0 +1,31 @@
+slug: otel-weaver
+absolute_path: /Users/sac/process-intelligence/otel-weaver
+description: >
+  OpenTelemetry Weaver integration and doctrines. Bridges raw distributed software telemetry
+  to high-assurance Process Intelligence. Establishes formal doctrines governing OTel data
+  ingestion, enforcing separation between observability and business-legal reality. Contains
+  five experiments mapping Weaver schemas to process-evidence types.
+detected_languages:
+  - Rust
+  - Python
+  - YAML
+detected_frameworks:
+  - otel-weaver
+  - OpenTelemetry
+  - ggen
+detected_research_surfaces:
+  - process-evidence
+  - telemetry-ingestion
+  - semconv-mapping
+  - refusal-policy
+  - receipt-chain
+likely_thesis_role: telemetry-to-process-evidence-ingestion-layer
+key_files:
+  - /Users/sac/process-intelligence/otel-weaver/README.md
+  - /Users/sac/process-intelligence/otel-weaver/mappings/otel-signal-to-process-evidence-map.yaml
+  - /Users/sac/process-intelligence/otel-weaver/mappings/otel-to-pi-witness-map.yaml
+  - /Users/sac/process-intelligence/otel-weaver/doctrine/otel-weaver-is-feedstock.md
+  - /Users/sac/process-intelligence/otel-weaver/ggen/ggen.toml
+readme_present: true
+receipt_present: false
+ontology_present: false

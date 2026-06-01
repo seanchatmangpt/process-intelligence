@@ -1,0 +1,12 @@
+workflow_name: phd-thesis-corpus-manufacture-001
+branch: phd-thesis-corpus-manufacture-001
+root: /Users/sac/process-intelligence
+thesis_output: /Users/sac/process-intelligence/phd-thesis
+working_directory: /Users/sac/process-intelligence
+git_commit_before: b4279892881e5a8ff83f31b273219a0740fead0b
+tools_available:
+  pdflatex: "pdfTeX 3.141592653-2.6-1.40.26 (TeX Live 2024)"
+  python3: "Python 3.14.3"
+  git: "git version 2.51.2"
+  rg: "ripgrep 15.1.0"
+phase: SETUP_COMPLETE

@@ -1,0 +1,76 @@
+\section{Architecture and Primitives}
+\label{sec:sources-wasm4pm-architecture}
+
+\subsection{Core Objects}
+\label{sec:sources-wasm4pm-arch-core-objects}
+
+The central carrier type is \texttt{Evidence<T,~State,~W>}: a cryptographic container binding a
+payload of type \texttt{T}, an admission state \texttt{State}, a witness marker \texttt{W}, a
+monotonic epoch \texttt{u64}, an Ed25519 signature (\texttt{IdentitySignature}), and a
+\texttt{Blake3Hash([u8;~32])}. The state parameter enforces that evidence can only move upward in
+the admission lattice. Witness types implement the \texttt{Lattice<T>} trait (bottom, top, join,
+\texttt{partial\_cmp}), ensuring monotonicity: \texttt{AlphaWitness} (activity \texttt{HashSet},
+directly-follows pairs, causality count), \texttt{InductiveWitness} (tree depth, activity count,
+XOR/AND/sequence/loop block counts), and \texttt{HeuristicsWitness} (dependency threshold
+\texttt{u8}, edge count, variant count, self-loop count).
+
+Process model types form a union: \texttt{ProcessModel} (\texttt{Net(PetriNet)} /
+\texttt{Tree(ProcessTree)} / \texttt{DFG(DirectlyFollowsGraph)}). \texttt{PetriNet} carries
+places, transitions, and weighted pre/post maps with \texttt{Marking}. \texttt{ProcessTree}
+encodes block-structured Inductive Miner output (Activity / Sequence / XOR / AND / Loop).
+\texttt{DirectlyFollowsGraph} carries activities, directed edges with frequency counts, and
+variant sets. Metric types enforce [0,1] bounds: \texttt{Between01<NUM,DEN>} at compile time via
+const generics (\texttt{VALID: bool} assertion), \texttt{Metric<KIND,NUM,DEN>} for typed
+fitness/precision/F1, and \texttt{RuntimeBetween01} for runtime \texttt{f64} with NaN/Inf/bounds
+guards. \texttt{GasMeter} enforces a 10M-cycle budget with checked-add overflow protection.
+\texttt{RecursionGuard} enforces a maximum call-stack depth of 100.
+
+\subsection{Admissible Transitions}
+\label{sec:sources-wasm4pm-arch-transitions}
+
+Admission follows a lattice path documented in the \texttt{EXECUTION\_AUTHORITY\_ATLAS.md} and
+implemented through the \texttt{Admitted} enum (\texttt{Initial} $\to$ \texttt{Discovered} $\to$
+\texttt{Sealed}) in the mining module and the 13-state MAPE-K typestate machine in
+\texttt{src/lifecycle/mod.rs}. The typestate machine carries proof witness types at each
+transition boundary: \texttt{SoundnessProof}, \texttt{SimulationProof}, \texttt{ConformanceProof},
+\texttt{RepairReceipt}, and \texttt{DecommissioningReceipt}. The four execution authorities
+coordinate transitions: Mining Authority materializes a \texttt{ProcessModel} and advances state
+to \texttt{Discovered}; Conformance Authority runs the A* \texttt{AlignmentEngine} or
+\texttt{TokenReplayEngine} and emits \texttt{ConformanceVerdicts}; Replay Authority executes
+token game moves and chains BLAKE3 receipts; Lifecycle Authority enforces the six Blue River Dam
+proof gates and rejects any caller attempting an illegal transition. The graduation seam is
+implemented in \texttt{src/graduation.rs} via the \texttt{GraduateToWasm4pm} trait, which
+consumes \texttt{wasm4pm-compat} \texttt{GraduationCandidate} types and bridges them into the
+execution engine.
+
+\subsection{Boundaries}
+\label{sec:sources-wasm4pm-arch-boundaries}
+
+The WASM sandbox boundary is enforced by the \texttt{sandbox} module. Memory limits documented in
+the research verdict specify a 4~GB pre-allocated linear memory heap partitioned into: 1.5~GB for
+log data, 1~GB for model graph, 1.5~GB for computation scratch, and 64~MB for receipt
+accumulation. The \texttt{ffi} module provides the FFI boundary between host and guest: the host
+supplies log and model pointers; the guest returns receipt pointers and status codes; a
+\texttt{catch\_unwind} boundary prevents Rust panics from crossing the WASM ABI. The
+\texttt{ZeroCopyOcelV2} parser enforces zero-allocation OCEL~2.0 binary parsing with
+magic/version/offset validation, remaining inside the guest boundary without heap promotion.
+The \texttt{execute\_oblivion\_protocol} function in the sandbox module performs memory shredding
+for WASM sandbox decommissioning, zeroing all sensitive fields before the guest exits.
+
+\subsection{Failure Modes Refused}
+\label{sec:sources-wasm4pm-arch-failure-modes}
+
+The architecture actively refuses four classes of failure. First, \emph{raw-laundering}: a model
+submitted without a discovery receipt fails admission with error code \texttt{0xFC02} per the
+research verdict specification. Second, \emph{fitness forgery}: fitness receipts are
+cryptographically signed; an audit ledger is append-only; spot-audit re-alignments detect
+spliced receipts. Third, \emph{illegal lifecycle transitions}: the Lifecycle Authority's
+deterministic transition function rejects gate-bypass attempts with refusal codes in the
+\texttt{0xGT**} range; attempted illegal transitions are recorded in the audit trail. Fourth,
+\emph{cycle-budget exhaustion without attestation}: \texttt{GasMeter} enforces the 10M-cycle cap
+with \texttt{checked\_add} overflow guards, ensuring that cycle consumption cannot be
+silently zero-reported. The \texttt{ConformanceVerdict::NonConforming} variant carries a typed
+\texttt{ConformanceRefusal} reason, preventing string-typed catch-all errors from escaping the
+conformance boundary — though GAP\_002 documents that the live \texttt{\textasciitilde/wasm4pm/}
+codebase still uses \texttt{String}-typed errors at the top-level \texttt{wasm4pm\_types::Error}
+surface.

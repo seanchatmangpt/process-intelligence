@@ -1,0 +1,118 @@
+% FILE: 07_open_questions_and_next_work.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Open Questions and Next Work}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-questions}
+
+\subsection{Known Gaps}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-questions-gaps}
+
+The following gaps are identified from the evidence audit and marked by epistemic status:
+
+\textbf{GAP-OW-001: Receipt not materialized.}
+The BLAKE3 receipt declared in \texttt{otel-weaver-source.manifest.yaml} points to
+\texttt{/Users/sac/process-intelligence/receipts/otel-weaver-source-receipt.json}. This file
+has not been confirmed to exist on disk. A declared receipt and a materialized receipt are
+structurally distinct: the former is an aspiration; the latter is evidence. The PARTIAL status
+of EXP-001 is primarily attributable to this gap.
+
+\textbf{GAP-OW-002: Registry directory not confirmed.}
+The \texttt{weaver registry validate} command requires a \texttt{registry/} directory. The
+\texttt{otel-weaver/registry/} path does not appear to exist in the confirmed evidence.
+Without this directory, the Weaver CLI cannot validate \texttt{process\_pi.yaml}, and the
+machine-verifiability claim is unconfirmed (FUTURE WORK).
+
+\textbf{GAP-OW-003: Test scope ambiguity.}
+The integration test \texttt{test\_weaver\_integration\_synthesis} in
+\texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs} may validate only the Rust
+bridge/validator logic independently of \texttt{process\_pi.yaml}. If the test does not
+exercise the schema attributes directly --- by constructing spans with required fields
+present or absent and verifying the corresponding \texttt{Admission}/\texttt{Refusal} outcome
+--- then the test suite does not provide evidence for EXP-001's feedstock schema claim.
+
+\textbf{GAP-OW-004: \texttt{process.pi.activity.type} not enforced.}
+The \texttt{process.pi.activity.type} attribute is recommended, not required. The current
+\texttt{validator.rs} \texttt{RefusalCode} enum does not include a
+\texttt{MissingActivityType} variant, which means a span without an architectural category
+tag can pass the admission gate and reach the conformance court without being classified
+by activity type. Whether this is a design choice or an oversight is not determinable from
+the evidence corpus alone (INTERPRETATION).
+
+\textbf{GAP-OW-005: No pm4py-layer validation.}
+The ALIVE checkpoint was self-certified by the ggen manufacturing authority. No independent
+pm4py-based fitness or precision check has been run against event logs produced from
+\texttt{process.pi.activity}-instrumented spans. Schema compliance at the feedstock layer
+has not been demonstrated to propagate to conformance quality at the replay layer.
+
+\subsection{Deferred Gates}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-questions-deferred}
+
+The following gates are declared in the architecture but deferred pending resolution of the
+known gaps:
+
+\begin{itemize}
+  \item \textbf{Weaver CLI validation gate} --- requires materialization of the
+        \texttt{registry/} directory and confirmed execution of \texttt{weaver registry validate}
+        without errors. Blocks machine-verifiability claim for \texttt{process\_pi.yaml}.
+  \item \textbf{Receipt materialization gate} --- requires the BLAKE3 receipt file to exist at
+        the declared store location and for its contents to be verifiable against the
+        \texttt{process\_pi.yaml} artifact. Blocks full ALIVE status.
+  \item \textbf{Schema-to-replay propagation gate} --- requires a pm4py conformance check
+        against an event log produced from live spans. Blocks the claim that feedstock schema
+        compliance propagates to process-mining-layer conformance quality.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-questions-risks}
+
+\textbf{Risk 1: Schema version lock.}
+The registry is pinned to \texttt{schema\_url: https://opentelemetry.io/schemas/1.25.0}. If the
+OTel standard evolves in ways that deprecate or rename required attribute types, the registry
+will require update, and the BLAKE3 receipt chain will need to be re-sealed. The \texttt{BridgeRx}
+invariant (no residual from bridging) may not hold across breaking OTel schema changes.
+
+\textbf{Risk 2: Recommended-field gap exploitation.}
+The recommended attributes (\texttt{process.pi.token.state\_before},
+\texttt{process.pi.token.state\_after}, \texttt{process.pi.activity.type}) are not enforced
+by the admission gate. A span that omits all three can pass the gate and reach the conformance
+court. For Petri net replay, a span without token state information provides weaker evidence
+than one with it. The court may still replay the span, but with lower precision and possibly
+inflated fitness. The degree of degradation has not been quantified (FUTURE WORK).
+
+\textbf{Risk 3: Self-certification circularity.}
+All three checkpoints were issued by the ggen manufacturing authority. The authority that
+manufactured the registry is the same authority that certified its ALIVE status. An independent
+verifier --- a human auditor, a CI pipeline, or a pm4py replay --- has not confirmed any of the
+gateway assertions. This circularity is the primary research risk for the dissertation's
+evidence-chain integrity claim as it applies to EXP-001.
+
+\subsection{Next Receipted Work}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-questions-next}
+
+The following work items, if completed and receipted, would advance EXP-001 from PARTIAL to
+ALIVE status:
+
+\begin{enumerate}
+  \item Materialize the \texttt{registry/} directory from \texttt{process\_pi.yaml} and run
+        \texttt{weaver registry resolve} and \texttt{weaver registry validate}. Record the
+        output in a new checkpoint file. Seal the checkpoint with a BLAKE3 receipt at
+        \texttt{receipts/otel-weaver-source-receipt.json}.
+  \item Extend \texttt{test\_weaver\_integration\_synthesis} or add a new test that constructs
+        spans with each required attribute absent in turn, verifies the corresponding
+        \texttt{RefusalCode} is returned, and verifies that spans with all required attributes
+        present produce a valid \texttt{Admission} value. Commit the test with a
+        \texttt{research-pm4py} scope commit and record the test run receipt.
+  \item Run a pm4py conformance check: instrument a minimal process (at minimum: a two-activity
+        sequence with a scheduled and a completed lifecycle event) using spans that satisfy the
+        \texttt{process.pi.activity} schema, project the spans to OCEL using
+        \texttt{OtelSpanToOcelEventProjection}, and measure fitness and precision against the
+        declared Petri net model. Record the pm4py output in a \texttt{checkpoint} file and
+        seal it. A fitness $> 0.8$ and precision $> 0.8$ against a simple reference model
+        would constitute sufficient evidence for the propagation claim.
+  \item Add a \texttt{MissingActivityType} variant to the \texttt{RefusalCode} enum in
+        \texttt{validator.rs} and make \texttt{process.pi.activity.type} required rather than
+        recommended, if the process intelligence court requires architectural category
+        classification for all admitted spans. Document the decision in a doctrine addendum
+        (FUTURE WORK / AUTHOR THESIS).
+\end{enumerate}

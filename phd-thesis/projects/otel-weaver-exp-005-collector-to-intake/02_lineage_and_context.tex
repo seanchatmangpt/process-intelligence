@@ -1,0 +1,79 @@
+\section{Lineage and Context}
+\label{sec:otel-weaver-exp-005-collector-to-intake-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:otel-weaver-exp-005-collector-to-intake-lineage-2016}
+
+The 2016 language-model experiment established the foundational negative result that underlies
+the entire dissertation: local text imitation does not conserve consequence. A model that
+reproduces surface-level linguistic patterns cannot be tested against the real-world outcomes
+those patterns were intended to produce. Prediction without coordination is observationally
+indistinguishable from prediction with coordination until a process log is examined. EXP-005
+is a direct descendant of this lesson. The OTel Collector pipeline is the mechanism that
+converts raw telemetry emissions --- which are, like language-model outputs, surface-level
+signals --- into process evidence that can be tested for consequence-conservation. Specifically,
+the \texttt{pi.intake.ingested\_at} timestamp injected by \texttt{transform/pi} anchors the
+event to a clock that is independent of the emitting model, making the temporal ordering of
+events auditable by a process mining engine rather than inferred from model internals.
+
+Without the collector boundary, the dissertation cannot distinguish between a process that
+emitted spans in the correct causal order and a process that emitted spans in any order ---
+the same failure mode the 2016 experiment exposed at the language level.
+
+\subsection{Enterprise Process Gap}
+\label{sec:otel-weaver-exp-005-collector-to-intake-lineage-enterprise-gap}
+
+The enterprise process gap identified in the dissertation lineage is the structural absence of
+a lawful event log in production systems that nonetheless emit rich observability data. Modern
+enterprises running OpenTelemetry-instrumented services produce millions of spans per hour.
+Those spans encode timing, causality, and resource attribution --- the raw material of process
+intelligence. Yet no standard pipeline converts OTLP spans into OCEL~2.0-structured process
+logs. The gap is not a data-availability gap; it is a law-enforcement gap. Spans are emitted
+without mandatory binding to a process instance identifier, without BLAKE3 witness sealing,
+and without conformance-court-compatible structure.
+
+EXP-005 is the first experiment in the dissertation to directly address this gap at the
+infrastructure layer. Rather than proposing new instrumentation obligations for application
+developers, it demonstrates that the gap can be closed at the collector boundary using
+standard OTTL processor composition. The \texttt{filter/pi} processor enforces
+\texttt{process.pi.instance\_id} presence as a namespace gatekeeper, silently dropping spans
+that cannot be bound to a process instance. This is the minimal law-enforcement intervention
+that converts an enterprise observability pipeline into a process intelligence intake pipeline.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:otel-weaver-exp-005-collector-to-intake-lineage-chatman-equation}
+
+The Chatman Equation ($A = \mu(O^*)$) states that autonomous action is a function of an
+ontological substrate. In the context of EXP-005, the ontological substrate is the process
+instance binding enforced by \texttt{process.pi.instance\_id}. A span without an instance
+binding cannot be placed within an object-centric event log; it has no substrate. The
+\texttt{filter/pi} processor is the operational implementation of the Chatman Equation's
+substrate requirement: it enforces that only spans with a lawful ontological binding are
+admitted to the intake pipeline. Spans that lack this binding are not rejected with an error;
+they are silently dropped, reflecting the doctrine that unbound telemetry is not refusable ---
+it is simply not process evidence.
+
+The \texttt{transform/pi} processor operationalises the $\mu$ (manufacturing) operator of the
+equation: it normalises raw spans into the canonical form required by the process intelligence
+conformance court, lowercasing activity names and injecting provenance metadata.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:otel-weaver-exp-005-collector-to-intake-lineage-receipts}
+
+The receipt-and-replay architecture of the dissertation requires that every process intelligence
+artifact be sealed with a cryptographic receipt that can be used to replay the manufacturing
+pipeline and verify the artifact's provenance. EXP-005 is the upstream boundary of this
+architecture: it is where raw OTLP spans are converted into the OCEL~2.0 JSON records that
+downstream receipt-manufacturing stages can hash and seal. The \texttt{live-check-intake.manifest.yaml}
+references a BLAKE3 receipt store at
+\texttt{/Users/sac/process-intelligence/receipts/live-check-intake-receipt.json}. This
+receipt does not yet exist --- it is the PARTIAL gap documented in the experiment status.
+When the receipt is materialised by a live collector run, EXP-005 will be the first
+experiment in the OTel Weaver series to produce a receipt-sealed OCEL~2.0 artifact from live
+OTLP traffic, completing the upstream end of the receipt chain.
+
+The Span~C test class (admitted by the collector, rejected by the downstream live-check gate)
+is specifically designed to verify that the receipt chain correctly records refusals: a span
+that passes the collector boundary but fails the conformance court must produce a sealed
+refusal record, not a silent drop. This distinguishes the collector law (admission by
+attribute presence) from the court law (admission by full schema conformance).

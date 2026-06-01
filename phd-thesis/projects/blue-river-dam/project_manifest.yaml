@@ -1,0 +1,27 @@
+slug: blue-river-dam
+absolute_path: /Users/sac/process-intelligence/blue_river_dam
+description: >
+  Synthesized (not hand-coded) lifecycle orchestrator implementing the Blue River Dam doctrine
+  with full MAPE-K loop closure. Generated Rust library (cdylib/rlib) with zero unsafe code
+  serving as the upstream closure layer, governance bounds, and autonomic actuation authority
+  for the entire research foundry.
+detected_languages:
+  - Rust
+detected_frameworks:
+  - MAPE-K
+  - Blue River Dam doctrine
+detected_research_surfaces:
+  - lifecycle-governance
+  - autonomic-actuation
+  - receipt-chain
+  - petri-net-formalism
+  - LTL-invariants
+likely_thesis_role: lifecycle-authority-and-governance-engine
+key_files:
+  - /Users/sac/process-intelligence/blue_river_dam/Cargo.toml
+  - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+  - /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+  - /Users/sac/process-intelligence/blue_river_dam/README.md
+readme_present: true
+receipt_present: true
+ontology_present: false

@@ -1,0 +1,88 @@
+\section{Project Identity}
+\label{sec:otel-weaver-exp-005-collector-to-intake-identity}
+
+\subsection{Purpose}
+\label{sec:otel-weaver-exp-005-collector-to-intake-identity-purpose}
+
+EXP-005 defines and partially validates the OTel Collector ingestion boundary that routes live
+telemetry feedstock into the process intelligence intake pipeline. Its purpose is to demonstrate
+that raw OpenTelemetry spans emitted by arbitrary instrumented services can be gatekept,
+normalized, and written as OCEL~2.0-structured JSON by a production-grade collector without
+any modification to the upstream service. The experiment operationalises the doctrine that OTel
+Weaver output is feedstock, not process evidence: feedstock is admitted or refused at the
+collector boundary before it is ever allowed to enter the process intelligence conformance court.
+The collector is therefore the first law-enforcing membrane in the full-lifecycle stack.
+
+EXP-005 was listed as component~E in the \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}
+checkpoint (SHA-256 sealed). Its PARTIAL status reflects a complete specification and a fully
+manufactured harness, but the absence of a live Docker collector run and a materialised
+\texttt{pi\_intake\_events.json} artifact.
+
+\subsection{Repository Surface}
+\label{sec:otel-weaver-exp-005-collector-to-intake-identity-repository}
+
+All experiment artifacts reside under:
+\begin{verbatim}
+/Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/
+\end{verbatim}
+Primary files are:
+\begin{itemize}
+  \item \texttt{README.md} --- full pipeline diagram, OCEL~2.0 JSON event schema, Docker launch
+        command, and admissibility rules.
+  \item \texttt{config/otel-collector-config.yaml} --- production-ready OTTL transform rules
+        for the three-stage collector pipeline.
+  \item \texttt{harness.py} --- synthetic load generator manufacturing three deliberately
+        differentiated spans (Span~A, Span~B, Span~C) covering the full
+        admission/rejection surface.
+  \item \texttt{output/} --- intended destination of \texttt{pi\_intake\_events.json};
+        currently empty because no live collector run has been executed.
+\end{itemize}
+
+Supporting doctrine and checkpoint files are found in:
+\begin{verbatim}
+/Users/sac/process-intelligence/otel-weaver/
+  doctrine/otel-weaver-is-feedstock.md
+  checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+  checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+  checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+  intel/collector-integration-model.yaml
+  mappings/otel-to-pi-witness-map.yaml
+  ggen/manifests/live-check-intake.manifest.yaml
+\end{verbatim}
+
+\subsection{Primary Research Role}
+\label{sec:otel-weaver-exp-005-collector-to-intake-identity-role}
+
+Within the dissertation, EXP-005 occupies the thesis role
+\textit{live-telemetry-to-pi-intake-experiment}. It is the empirical counterpart to the
+theoretical claim that a standards-compliant observability collector can serve as the
+admission membrane for a process intelligence intake pipeline without requiring custom
+middleware. EXP-005 is the first experiment in the OTel Weaver series to operate on live
+OTLP traffic rather than static schema fixtures: EXP-001 through EXP-004 operate offline
+(registry diff, residual typing, refusal manufacturing, witness lattice). EXP-005 is the
+boundary where offline schema law meets online telemetry traffic.
+
+The experiment contributes three specific research primitives: (1)~the filter/pi OTTL
+processor pattern that enforces the \texttt{process.pi.instance\_id} namespace gatekeeper;
+(2)~the transform/pi OTTL processor pattern that injects conformance metadata
+(\texttt{pi.intake.ingested\_at}, \texttt{pi.intake.collector\_version}) without modifying
+the upstream span; and (3)~the Span~A/B/C feedstock taxonomy that partitions live telemetry
+into three legally distinct classes for downstream process mining.
+
+\subsection{Key Artifacts}
+\label{sec:otel-weaver-exp-005-collector-to-intake-identity-artifacts}
+
+\begin{description}
+  \item[\texttt{config/otel-collector-config.yaml}] The authoritative collector configuration
+        specifying the OTLP gRPC (\texttt{:4317}) and HTTP (\texttt{:4318}) dual-protocol
+        receiver endpoints, the \texttt{filter/pi} and \texttt{transform/pi} OTTL processors,
+        and the \texttt{file/pi\_json} exporter writing to \texttt{output/pi\_intake\_events.json}.
+  \item[\texttt{harness.py}] Python synthetic load generator that fires Span~A (fully
+        compliant), Span~B (missing \texttt{process.pi.instance\_id}, dropped at filter),
+        and Span~C (missing \texttt{process.pi.witness.hash}, admitted by collector but
+        expected to fail the downstream live-check gate).
+  \item[\texttt{output/pi\_intake\_events.json}] The OCEL~2.0 JSON intake artifact.
+        PARTIAL: this file has not been materialised by a live run.
+  \item[\texttt{live-check-intake.manifest.yaml}] ggen manifest referencing a BLAKE3 receipt
+        store at \texttt{receipts/live-check-intake-receipt.json} that does not yet exist.
+\end{description}

@@ -1,0 +1,123 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Open Questions and Next Work}
+\label{sec:sources-pm4py-open}
+
+\subsection{Known Gaps}
+\label{sec:sources-pm4py-open-gaps}
+
+Eight gaps are classified as CRITICAL or HIGH priority in the PM4PY\_ORACLE\_RECEIPT and
+tracked in the \texttt{gaps/} directory. In descending priority:
+
+\textbf{Gap 1: POWL 2.0 DecisionGraph type surface (CRITICAL).} The
+\texttt{DecisionGraph} class (Kourani, Park, van der Aalst, arXiv:2505.07052, 2025) is
+implemented in PM4Py at \texttt{pm4py/objects/powl/obj.py} (line 576) and represents
+non-block-structured choices via a \texttt{BinaryRelation} over child sub-models with
+start/end sentinels and an acyclicity invariant. The wasm4pm-compat \texttt{src/powl.rs}
+has no \texttt{DecisionGraph} type. Without it, choice-graph-based process discovery
+(via \texttt{InductiveMinerChoiceGraph}) cannot produce a named-law receipt, and the
+POWL 2.0 paper cannot achieve conformance under the witness lattice. The
+\texttt{ChoiceGraphPaper2025} witness enum proposed in the POWL analysis has status
+MISSING.
+
+\textbf{Gap 2: Streaming conformance type surface (HIGH).} The WASM bridge exposes a
+stateful streaming conformance API (\texttt{streaming\_create}, \texttt{streaming\_push\_trace},
+\texttt{streaming\_snapshot}) with no Rust type equivalent in wasm4pm-compat. Real-time
+conformance checking on live event streams cannot carry a receipt without this surface.
+
+\textbf{Gap 3: HeuristicsNet type (HIGH).} The heuristics miner is fully WASM-bridged
+(\texttt{discover\_heuristics\_miner(log\_json, dep\_threshold)}) but has no corresponding
+type surface in wasm4pm-compat. The dependency formula $\text{dep}(a,b) = (|a \to b| -
+|b \to a|) / (|a \to b| + |b \to a| + 1)$ is mathematically precise and deterministic,
+placing the heuristics miner in the must-match category of the divergence matrix.
+
+\textbf{Gaps 4--8: Temporal Profile/Conformance, Log Skeleton, OC-DFG, Variant types,
+Performance Spectrum} --- all WASM-bridged but with MISSING type surfaces in wasm4pm-compat.
+Each prevents the corresponding capability from producing a named-law receipt.
+
+\subsection{Deferred Gates}
+\label{sec:sources-pm4py-open-deferred}
+
+Two gates are explicitly deferred as open questions in the oracle atlas corpus.
+
+\textbf{Deferred gate 1: Receipt verification chain closure.} The five JSON receipts
+carry ed25519 validator signatures, but the signing infrastructure --- key management,
+signature verification workflow, the path from signature to wasm4pm engine execution to
+PM4Py oracle comparison --- is not documented in the \texttt{sources/pm4py} corpus. The
+receipts assert defensibility but the verification chain is not closed. This gap must be
+resolved before any receipt is presented in an M\&A context; an auditor who cannot
+independently verify the ed25519 signature against a published public key has no means
+to confirm the receipt's claims.
+
+\textbf{Deferred gate 2: OCEL 2.0 end-to-end exercise.} OCEL 2.0 support is entirely
+absent from the WASM bridge (all \texttt{NO}) despite \texttt{src/ocel.rs} existing in
+wasm4pm-compat. The gap between type surface present and WASM bridge absent means
+object-centric conformance claims (OC-DFG, OCPN) cannot be exercised end-to-end.
+The conformance-authority-map documents the mathematical foundations for OCEL conformance
+(including \texttt{conformance\_ocdfg}, \texttt{conformance\_etot},
+\texttt{conformance\_otg}), but none of these can produce a receipt until the WASM bridge
+exposes them.
+
+\subsection{Research Risks}
+\label{sec:sources-pm4py-open-risks}
+
+\textbf{Risk 1: Adversarial oracle framing tension.} The \texttt{oracle-vulnerability.md}
+adversarial assessment concludes that PM4Py ``fails to provide the cryptographic
+guarantees, typestate enforcement, and zero-copy performance required for secure process
+intelligence.'' Yet the research program uses PM4Py as the baseline truth for
+deterministic divergence checks. The tension between treating PM4Py as an adversarially
+vulnerable system and simultaneously treating it as the authoritative oracle for
+conformance score comparison is not resolved in the corpus. If PM4Py's DataFrame-based
+computation produces subtly different results than the wasm4pm engine due to floating-point
+ordering, NumPy broadcasting rules, or Pandas NaN coercion, the oracle comparison is
+compromised. [AUTHOR THESIS / open question]
+
+\textbf{Risk 2: Gap count ambiguity.} The ALGORITHM\_CROSSWALK.md records 19 MISSING
+of 37 algorithms, with a note that the COVERED count is intentionally low because
+wasm4pm-compat is a type-law-only crate. However, the crosswalk annotations do not
+consistently distinguish between ``type surface missing'' (a genuine wasm4pm-compat gap)
+and ``engine logic not ported'' (correctly absent from compat, belongs in the wasm4pm
+engine). This ambiguity means the gap count may overstate the compat crate's deficiency.
+
+\textbf{Risk 3: POWL 2.0 paper non-conformance.} Until the \texttt{DecisionGraph} type
+surface is added to \texttt{src/powl.rs}, the wasm4pm-compat crate cannot claim
+conformance with the Kourani-Park-van der Aalst 2025 paper (arXiv:2505.07052). This
+affects the research program's ability to name that paper as a witness in receipts for
+any POWL 2.0 discovery output.
+
+\subsection{Next Receipted Work}
+\label{sec:sources-pm4py-open-next}
+
+The following units of work are the highest-priority next receipted actions for the
+oracle atlas corpus.
+
+\textbf{Next work 1:} Add \texttt{DecisionGraph<W>} type to \texttt{src/powl.rs} with
+acyclicity invariant carried in a \texttt{StrictPartialOrderWitness<W>} and construction
+exclusively via \texttt{DecisionGraph::from\_valid\_cut()}. Add \texttt{ChoiceGraphCut}
+as an admitted type with \texttt{DecisionGraphCutLaw} naming specific violations
+(acyclicity, start-node requirement, end-node requirement, empty-trace mismatch). Add
+\texttt{ChoiceGraphPaper2025} witness enum to \texttt{src/witness.rs}. This closes the
+POWL 2.0 gap and enables paper-conformance receipts.
+
+\textbf{Next work 2:} Document the ed25519 signing infrastructure: publish the
+verification public key, write the signature verification workflow, and close the
+receipt verification chain. This is prerequisite to any board-level or M\&A presentation
+of the five existing receipts.
+
+\textbf{Next work 3:} Establish the OCEL 2.0 WASM bridge path: expose at minimum
+\texttt{parse\_ocel2\_json} and \texttt{discover\_ocdfg} in \texttt{pm4wasm.d.ts},
+backed by the existing \texttt{src/ocel.rs} type surface, enabling the first
+object-centric conformance receipt.
+
+\textbf{Next work 4:} Add \texttt{HeuristicsNet} type to wasm4pm-compat, closing the
+gap between the fully-bridged heuristics miner WASM function and the missing compat type
+surface, and enabling a receipt for heuristics-miner-based process discovery.
+
+\bigskip
+\noindent\textit{Source authority:} ALGORITHM\_CROSSWALK.md (Critical Gaps section,
+Summary Table), POWL\_CHOICEGRAPH\_ANALYSIS.md (gap summary table, proposed type sketches),
+receipts/RECEIPT\_REGISTRY.md (PM4PY\_ORACLE\_RECEIPT gaps\_remaining), oracle-vulnerability.md
+(adversarial assessment), CAPABILITY\_ATLAS.md (OCEL 2.0 section, all NO), divergence-matrix.md
+(section 11.2: safe divergence categories).

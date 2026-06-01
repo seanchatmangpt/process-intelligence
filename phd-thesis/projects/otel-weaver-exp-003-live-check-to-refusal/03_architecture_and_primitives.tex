@@ -1,0 +1,136 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: otel-weaver-exp-003-live-check-to-refusal
+% Thesis Role: live-check-refusal-enforcement-experiment
+
+\section{Architecture and Primitives}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-architecture}
+
+\subsection{Core Objects}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-architecture-objects}
+
+All core objects are defined in \texttt{src/validator.rs} and serializable via
+\texttt{serde}. The type hierarchy is as follows.
+
+\textbf{\texttt{RawTelemetryFeedstock}} is the entry type: a struct with four
+\texttt{Option<String>} fields (\texttt{instance\_id}, \texttt{activity\_name},
+\texttt{witness\_id}, \texttt{witness\_hash}). All fields are optional at construction,
+reflecting the reality that telemetry arrives from distributed emitters with no
+guaranteed completeness. The \texttt{validate\_and\_project} gate is the only
+mechanism for promoting this struct to a non-optional form.
+
+\textbf{\texttt{AdmittedPayload}} is the non-optional projection of the feedstock
+into a verified form: a struct with \texttt{String} fields \texttt{instance\_id}
+and \texttt{activity\_name}. These fields are guaranteed non-empty and non-null
+by the gate function; they carry no \texttt{Option} wrapper.
+
+\textbf{\texttt{AlphaWitness}} is the compilation witness that accompanies every
+admitted payload: a struct with \texttt{witness\_id} and \texttt{verified\_hash}
+fields, both non-optional \texttt{String}s. The \texttt{verified\_hash} is required
+to be exactly 64 characters (a BLAKE3 hex digest). The name ``Alpha'' designates the
+first-tier witness in the type-law lattice; future experiments may introduce higher-tier
+witnesses for multi-stage verification. \textbf{(AUTHOR THESIS / INTERPRETATION)}
+
+\textbf{\texttt{Admission<T, W>}} is the generic admission wrapper. It holds a
+\texttt{payload: T} and a \texttt{witness: W}, parameterized so that downstream
+algorithms can constrain their inputs to specific payload and witness type combinations.
+In the current implementation, the instantiation is
+\texttt{Admission<AdmittedPayload, AlphaWitness>}.
+
+\textbf{\texttt{Refusal}} is the immutable diagnostic artifact emitted on gate failure.
+It carries: a \texttt{code: RefusalCode} enum variant, a \texttt{violated\_rule: String}
+naming the specific law violated, the \texttt{raw\_feedstock: RawTelemetryFeedstock}
+(the original, unmodified input), and a \texttt{blake3\_digest: String}. In the
+standalone \texttt{validator.rs}, the digest is manufactured using a mock format
+(\texttt{format!("{:064x}", raw\_str.len())}), which is deterministic but not
+cryptographically secure. In the integration test \texttt{weaver\_integration\_tests.rs},
+the \texttt{build\_refusal} function calls \texttt{wasm4pm::crypto::Blake3} directly,
+producing a genuine 64-character BLAKE3 hex digest.
+
+\textbf{\texttt{RefusalCode}} is the enum governing the four implemented refusal
+variants: \texttt{MissingInstanceId}, \texttt{MissingActivityName},
+\texttt{MissingWitnessId}, and \texttt{InvalidWitnessSignature}. It derives
+\texttt{Copy}, \texttt{PartialEq}, \texttt{Eq}, \texttt{Serialize}, and
+\texttt{Deserialize}.
+
+\subsection{Admissible Transitions}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-architecture-transitions}
+
+The gate function \texttt{validate\_and\_project} enforces a strict sequential
+check sequence. The order is not arbitrary: each check addresses a more specific
+structural requirement than the preceding one.
+
+\begin{enumerate}
+  \item \textbf{Instance ID check}: \texttt{feedstock.instance\_id} must be
+        \texttt{Some(s)} where \texttt{s.trim()} is non-empty. Failure emits
+        \texttt{RefusalCode::MissingInstanceId} with violated rule
+        \texttt{"process.pi.instance\_id must be provided and non-empty"}.
+  \item \textbf{Activity name check}: \texttt{feedstock.activity\_name} must be
+        \texttt{Some(s)} where \texttt{s.trim()} is non-empty. In the integration
+        test variant (\texttt{weaver\_integration\_tests.rs}), this field maps from
+        \texttt{transition\_name} via the \texttt{BridgeRx} schema translation bridge,
+        which maps \texttt{process.pi.transition.name} to
+        \texttt{process.pi.activity.name}.
+  \item \textbf{Witness ID check}: \texttt{feedstock.witness\_id} must be
+        \texttt{Some(s)} where \texttt{s.trim()} is non-empty. Failure emits
+        \texttt{RefusalCode::MissingWitnessId}.
+  \item \textbf{Witness hash check}: \texttt{feedstock.witness\_hash} must be
+        \texttt{Some(h)} where \texttt{h.len() == 64}. Failure emits
+        \texttt{RefusalCode::InvalidWitnessSignature}. This check enforces the
+        BLAKE3 hex digest format without parsing the bytes; length verification
+        is the structural gate, not cryptographic verification.
+\end{enumerate}
+
+The only admissible transition to \texttt{Ok(Admission)} is passage through all
+four checks in sequence. Any \texttt{Err(Refusal)} is a terminal branch; the function
+returns immediately and the remaining checks are not evaluated.
+
+\subsection{Boundaries}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-architecture-boundaries}
+
+EXP-003 operates at the telemetry ingestion frontier, which is the boundary between
+the OTel Collector pipeline and the \texttt{wasm4pm} conformance court. Upstream of
+this boundary: raw telemetry spans arriving from instrumented services, processed by
+OTel Weaver for schema alignment, and forwarded to the ingestion endpoint. Downstream:
+the \texttt{wasm4pm} engine, which accepts only \texttt{Admission}-wrapped payloads
+for conformance checking, replay, and receipt manufacture.
+
+The experiment is connected to the upstream EXP-002 \texttt{BridgeRx} boundary via
+the integration test. The \texttt{BridgeRx} struct in \texttt{weaver\_integration\_tests.rs}
+translates \texttt{process.pi.transition.name} (Schema Version 2) to
+\texttt{process.pi.activity.name} (Schema Version 1) before feedstock reaches the
+\texttt{validate\_and\_project} gate. This means EXP-003 in its integration form
+assumes that schema version translation has already occurred; it enforces field
+presence and witness integrity, not schema version compatibility.
+
+\subsection{Failure Modes Refused}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-architecture-failures}
+
+The four \texttt{RefusalCode} variants address four distinct failure modes at the
+type level. Six named laws are specified in
+\texttt{live-check-finding-to-refusal-map.yaml}; the mapping between the six YAML
+laws and the four Rust variants is as follows:
+
+\begin{itemize}
+  \item \textbf{EmptyTrace} (YAML: \texttt{find\_empty\_payload}, verdict:
+        \texttt{violation\_halt}) --- Not yet encoded as a \texttt{RefusalCode} variant.
+        Closest existing code is \texttt{MissingInstanceId}, which would catch a trace
+        with no instance identifier. \textbf{(PARTIAL: no dedicated variant)}
+  \item \textbf{MissingCaseId} (YAML: \texttt{find\_missing\_trace\_id}) --- Encoded
+        as \texttt{RefusalCode::MissingInstanceId}. Violated rule:
+        \texttt{"process.pi.instance\_id must be provided and non-empty"}.
+  \item \textbf{InvalidTimestampOrder} (YAML: \texttt{find\_non\_monotone\_timestamps},
+        verdict: \texttt{reject\_and\_quarantine\_trace}) --- Not encoded as a
+        \texttt{RefusalCode} variant. No timestamp ordering check exists in the
+        current Rust implementation. \textbf{(PARTIAL: no implementation)}
+  \item \textbf{DanglingEventObjectLink} (YAML: \texttt{find\_dangling\_span\_parent},
+        verdict: \texttt{admit\_with\_quarantine\_warning}) --- Not encoded; the
+        quarantine-warning admission path has no corresponding Rust type.
+        \textbf{(PARTIAL: no implementation)}
+  \item \textbf{ProjectionNameRequired} (YAML: \texttt{find\_schema\_url\_missing}) ---
+        Encoded as \texttt{RefusalCode::MissingActivityName} (after \texttt{BridgeRx}
+        translation, an absent schema URL results in a missing activity name).
+  \item \textbf{SchemaVersionMismatch} (YAML: \texttt{find\_strict\_schema\_mismatch},
+        verdict: \texttt{admit\_and\_route\_to\_weaver\_diff\_log}) --- Not encoded;
+        the routing-to-diff-log admission path has no corresponding Rust type.
+        \textbf{(PARTIAL: no implementation)}
+\end{itemize}

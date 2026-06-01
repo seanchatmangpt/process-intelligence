@@ -1,0 +1,33 @@
+slug: research-pi-program
+absolute_path: /Users/sac/process-intelligence/research/pi-program
+description: >
+  Process Intelligence Program governance and manufacturing authority. Contains 19 TTL
+  ontology files, 60+ SPARQL audit queries, Tera templates, governance policy enforcement,
+  autonomic activation logs, API specification, deployment records, manufacturing receipts,
+  and self-repair artifacts. The program governance layer overseeing all downstream
+  manufacturing.
+detected_languages:
+  - Turtle
+  - SPARQL
+  - Tera
+  - YAML
+detected_frameworks:
+  - ggen
+  - SPARQL/RDF
+detected_research_surfaces:
+  - ontology
+  - governance-policy
+  - receipt-chain
+  - audit-suite
+  - manufacturing-pipeline
+  - autonomic-actuation
+likely_thesis_role: pi-program-governance-and-ontology-authority
+key_files:
+  - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl
+  - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/governance-policy.ttl
+  - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/autonomic-law.ttl
+  - /Users/sac/process-intelligence/research/pi-program/ggen/ggen.toml
+  - /Users/sac/process-intelligence/research/pi-program/manufacturing/RECEIPT_LEDGER_20260601.yaml
+readme_present: false
+receipt_present: true
+ontology_present: true

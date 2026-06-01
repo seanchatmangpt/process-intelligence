@@ -1,0 +1,87 @@
+% FILE: 02_lineage_and_context.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Lineage and Context}
+\label{sec:sources-pm4py-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:sources-pm4py-lineage-2016}
+
+The 2016 language-model experiment demonstrated that local text imitation does not conserve
+consequence: a model that reproduces the surface form of a process description does not
+thereby reproduce the causal and evidentiary structure that would make the described process
+auditable. This finding bears directly on the PM4Py oracle atlas in two ways. First, the
+atlas explicitly excludes LLM-produced outputs from all conformance-critical paths. The
+Process Intelligence Solutions GmbH fork integrates DSPy plus Groq \texttt{gpt-oss-20b}
+as a first-class discovery path (\texttt{pm4py.algo.dspy.powl.natural\_language.PowlPredictor}),
+producing POWL models from natural language descriptions. The WASM bridge exposes this as
+\texttt{get\_demos\_for\_domain(domain)}. The NOT\_TO\_COPY manifesto (anti-pattern 9)
+identifies this as an architectural boundary: LLM outputs are non-deterministic, carry no
+provenance chain traceable to a specific event log, and cannot carry a named law receipt.
+They may function as advisory suggestions at the application layer, but must never be
+admitted as evidence. Second, the lesson motivates the entire divergence-matrix structure:
+the question of which PM4Py capabilities must be exactly replicated is precisely the
+question of which capabilities produce auditable consequences, as distinguished from those
+that merely produce plausible-looking results. [AUTHOR THESIS / INTERPRETATION]
+
+\subsection{Enterprise Process Gap}
+\label{sec:sources-pm4py-lineage-enterprise}
+
+PM4Py's architecture reflects the enterprise data science context in which it was built.
+The dominant internal representation is the Pandas DataFrame, with Polars LazyFrame added
+in the 2026 fork via runtime \texttt{is\_polars\_lazyframe()} dispatch. All conformance,
+discovery, and filtering functions accept \texttt{Union[EventLog, pd.DataFrame]}, performing
+runtime \texttt{isinstance} checks throughout. This design maximises accessibility for
+data scientists but creates an enterprise process gap: when a conformance score is produced
+by a library with no provenance tracking and no cryptographic anchoring, the score cannot
+serve as defensible evidence in an M\&A due diligence context. The EBITDA rework receipt
+(\texttt{rec\_ebitda\_rework\_001.json}) illustrates the gap: it records fitness $= 0.982$
+and precision $= 0.945$ computed by the wasm4pm engine against a Purchase Order rework
+log, with BLAKE3 log and model hashes and an ed25519 validator signature. PM4Py can
+produce numerically identical fitness and precision scores; it cannot produce the receipt.
+The oracle atlas maps the boundary between what PM4Py computes and what the research
+program requires as evidence.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:sources-pm4py-lineage-chatman}
+
+The Chatman Equation $A = \mu(O)$ asserts that actuation is a function of a structured
+object representation. The oracle atlas operationalises this equation at the type level.
+PM4Py's \texttt{Evidence<T, State, Witness>} antithesis is the mutable Python object:
+a \texttt{PetriNet} that can have transitions added after construction, a \texttt{POWL}
+model whose \texttt{BinaryRelation} is a mutable dict, and an \texttt{EventLog} that can
+be projected silently without recording what was lost. The wasm4pm-compat type surface
+\texttt{Evidence<T, State, Witness>} carries its invariants in Rust const generics.
+The \texttt{WfNetConst<SOUNDNESS>} type in \texttt{src/petri.rs} provides a non-forgeable
+soundness witness: you cannot construct a \texttt{WfNetConst<true>} without satisfying
+the soundness conditions at compile time. This is the only COVERED conformance type in
+the algorithm crosswalk, and its significance is precisely that it represents the Chatman
+Equation applied to workflow net soundness: actuation of a sound workflow net is a
+function of a typed, witnessed, non-forgeable object, not a runtime assertion. [AUTHOR
+THESIS / INTERPRETATION of crosswalk evidence]
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:sources-pm4py-lineage-receipts}
+
+The receipt and replay architecture of the research program is the positive counterpart
+to PM4Py's absence of provenance. PM4Py's discovery is stateless: there is no record
+of which log produced which model. The five JSON receipts in the program's
+\texttt{receipts/} directory demonstrate the alternative. Each receipt carries a
+\texttt{target\_log\_hash}, a \texttt{process\_model\_hash}, a \texttt{query\_definition}
+with engine identifier and parameter list, verification results including fitness and
+precision scores, and an ed25519 validator signature. The PM4PY\_ORACLE\_RECEIPT in the
+registry, witnessed by the TypeScript declarations in \texttt{pm4wasm.d.ts}, certifies
+the surface against which each of those verification results was computed. The oracle
+atlas is therefore the document that makes the receipt chain interpretable: it establishes
+the claim that the wasm4pm engine's fitness and precision computations are faithful
+replications of PM4Py's deterministic algorithms, diverging only where divergence is
+explicitly permitted by the divergence matrix. Without the oracle atlas, a receipt score
+is a number; with it, the score is a law-bound claim.
+
+\bigskip
+\noindent\textit{Source authority:} NOT\_TO\_COPY.md (anti-pattern 9, DSPy/LLM),
+oracle-vulnerability.md (adversarial breakdown, cryptographic guarantees),
+divergence-matrix.md (sections 1.1--1.4, must-match categories),
+receipts/rec\_ebitda\_rework\_001.json (fitness 0.982, precision 0.945, ed25519
+signature), receipts/RECEIPT\_REGISTRY.md (PM4PY\_ORACLE\_RECEIPT).

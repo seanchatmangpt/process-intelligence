@@ -1,0 +1,115 @@
+% FILE: 01_research_question.tex
+% PROJECT: sources-papers
+% ROLE: academic-paper-classification-and-evidence-grounding
+
+\section{Research Question}
+\label{sec:sources-papers-rq}
+
+\subsection{Problem Statement}
+\label{sec:sources-papers-rq-problem}
+
+The process mining literature has, over three decades, accumulated a corpus of
+formal results --- soundness criteria for Workflow nets, discovery algorithms
+for Petri nets and process trees, conformance metrics bounded in $[0,1]$,
+object-centric log specifications, declarative constraint templates --- each
+stated in academic notation. None of these results, by themselves, prevent an
+implementation from violating the invariants they define. A codebase may claim
+to produce a ``sound'' WF-net while its return type is indistinguishable from
+an unsound one. A system may claim ``alignment-based fitness $\geq 0.95$''
+while never executing an alignment algorithm at all.
+
+The problem this project addresses is the \emph{formalization gap}: the
+distance between a published invariant and a compiler-enforced guarantee. The
+paper corpus in \texttt{sources/papers} exists precisely to close this gap by
+deriving, from each paper's formal objects and algorithms, a precise set of
+obligations that must exist in the Rust type system and the wasm4pm execution
+engine before any downstream claim can be treated as evidence rather than
+assertion.
+
+A secondary problem is the \emph{adversarial gap}: canonical process mining
+algorithms structurally fail when event logs are manipulated by Sybil
+attackers. Case ID forgery causes state-space explosion and yields incorrectly
+permissive discovered models. Non-deterministic reality receipts cause
+canonical discovery algorithms to misinterpret adversarial traces as noise or
+novel process deviants. No existing published algorithm provides
+Byzantine-fault-tolerant discovery; this gap is formally documented in
+\texttt{adversarial-canon.md}.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:sources-papers-rq-old-regime}
+
+The old-regime assumption challenged by this project is that \emph{academic
+citation is sufficient for claim substantiation}. Under the old regime, a
+system vendor may cite van der Aalst (1998) to support a claim of WF-net
+soundness without demonstrating that the implementation enforces the
+three-condition soundness criterion (option to complete, proper completion,
+no dead transitions) at any verifiable boundary. The citation acts as social
+proof, not as a compiler-enforced invariant.
+
+A related old-regime assumption is that \emph{PM4Py coverage implies wasm4pm
+coverage}. Because PM4Py implements Alpha Miner, Inductive Miner,
+alignment-based conformance, and dozens of other algorithms in Python, a
+system that wraps or mirrors PM4Py's API surface is presumed to inherit those
+capabilities. This project falsifies that assumption directly: all 29
+algorithms enumerated in \texttt{PAPER\_TO\_EXECUTION\_LAW.md} carry
+\texttt{NO} in the wasm4pm coverage column as of 2026-05-31. PM4Py coverage
+is documented as an \emph{oracle reference}, not as an implementation
+substitute.
+
+A third old-regime assumption is that \emph{deterministic event logs are the
+normal case}. The adversarial-canon analysis demonstrates that this assumption
+is a security vulnerability, not a reasonable operating condition.
+
+\subsection{Hypothesis}
+\label{sec:sources-papers-rq-hypothesis}
+
+The central hypothesis of this project is:
+
+\begin{quotation}
+\noindent\textbf{Hypothesis SP-1.} Every formal invariant stated in a canonical
+process mining paper can be translated into a zero-cost Rust type law such that
+programs violating the invariant fail to compile, and such that the compilation
+failure message names the invariant and cites the originating paper. This
+translation is possible for all \emph{structural} invariants; invariants
+requiring dynamic graph reachability computation are translatable to a named
+graduation boundary that defers computation to the execution engine without
+abandoning compile-time safety.
+\end{quotation}
+
+A corollary hypothesis governs the adversarial domain:
+
+\begin{quotation}
+\noindent\textbf{Hypothesis SP-2.} Byzantine-fault-tolerant process discovery
+requires replacing case-ID correlation with BLAKE3 cryptographic receipt
+verification. Any discovery algorithm that accepts an event log without first
+verifying receipt provenance is structurally vulnerable to Sybil attack,
+regardless of algorithmic sophistication.
+\end{quotation}
+
+\subsection{Success Criteria}
+\label{sec:sources-papers-rq-success}
+
+Success for this project is defined by the following measurable criteria,
+derived from the ALIVE gate assessment (2026-05-31):
+
+\begin{enumerate}
+  \item \textbf{File count}: \texttt{sources/papers} $\geq 7$ files. Actual:
+    15. \emph{MET.}
+  \item \textbf{Classification completeness}: Every paper in the 81-paper
+    corpus carries one of the five coverage statuses with a stated reason.
+    \emph{MET} (documented in \texttt{PAPER\_TO\_TYPE\_LAW.md}).
+  \item \textbf{Type-law coverage}: 18 papers fully covered with named Rust
+    types in \texttt{wasm4pm-compat}. \emph{MET.}
+  \item \textbf{Obligation backlog}: All missing types named explicitly, not
+    left implicit. 22 named missing types and 14 named missing output shapes
+    on record. \emph{MET.}
+  \item \textbf{Board-claim traceability}: Each Tier-1 board claim carries an
+    evidence path naming specific source files and compile-fail fixtures.
+    \emph{MET} for Tier-1 structural completeness claims.
+  \item \textbf{Receipt}: PAPER\_CANON\_RECEIPT issued with zero gaps
+    remaining. \emph{MET.}
+  \item \textbf{Adversarial coverage}: Byzantine threat model documented with
+    named attack vectors (Sybil, non-deterministic reality receipts) and
+    corresponding required defences (BLAKE3, typestate progression).
+    \emph{MET} at documentation level; implementation evidence absent (PARTIAL).
+\end{enumerate}

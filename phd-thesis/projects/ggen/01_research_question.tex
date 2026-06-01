@@ -1,0 +1,100 @@
+% FILE: 01_research_question.tex
+% Project: ggen — Governance Generation Engine
+
+\section{Research Question}
+\label{sec:ggen-rq}
+
+\subsection{Problem Statement}
+\label{sec:ggen-rq-problem}
+
+Process intelligence research produces conformance verdicts, witness lattice positions, and
+lifecycle state machines. These outputs are valuable within a laboratory context but are
+disconnected from the capital-market and autonomic-runtime consumers that must ultimately act on
+them. A board of directors cannot read a SPARQL result set. An autonomic orchestrator cannot
+execute an ontology triple. A TypeScript visualizer cannot consume a Petri net proof directly.
+
+The problem ggen addresses is: \emph{how can process intelligence findings be reliably
+materialized into the artifact formats required by capital-market consumers and autonomic runtimes,
+while preserving an unbroken, cryptographically verifiable chain of provenance from the underlying
+ontological evidence to the board-ready deliverable?}
+
+This problem has three dimensions. First, the \emph{format gap}: conformance verdicts must be
+rendered into PowerPoint slides, Excel workbooks, and Rust source code without loss of the
+evidentiary basis. Second, the \emph{admissibility gap}: capital-market artifacts must satisfy
+explicit thresholds---fitness $\geq 0.95$, precision $\geq 0.90$, BLAKE3 receipt chain
+intact---before they can be presented to a board. Third, the \emph{repeatability gap}: any claim
+in the deck must be independently verifiable by re-executing the originating SPARQL query against
+the ontology and comparing the computed fitness to the slide assertion.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:ggen-rq-old-regime}
+
+The old-regime assumption is that capital-market artifacts---acquisition decks, due-diligence
+workbooks, integration risk assessments---are prepared by human analysts who translate technical
+findings into prose and slides. Under this assumption, the chain of custody from measurement to
+board presentation is mediated by human judgment, subject to selection bias, and not independently
+verifiable.
+
+A secondary old-regime assumption concerns code generation: that autonomic runtime code is
+hand-authored by engineers who read specification documents and translate their intent into Rust
+structs and methods. Under this assumption, the correspondence between a governance specification
+and the runtime behavior it is supposed to enforce is a matter of discipline rather than
+mechanical derivation.
+
+ggen challenges both assumptions simultaneously. It posits that capital-market artifacts and
+autonomic runtime code can both be \emph{manufactured} from a shared ontological source through
+a deterministic, receipt-sealed pipeline. Under this posture, the board deck is not a human
+translation of a conformance verdict; it is a Tera template rendered against a SPARQL result set
+whose inputs and outputs are both hash-chained. The claim on the slide and the query that produced
+it are the same artifact, separated only by the rendering step.
+
+\subsection{Hypothesis}
+\label{sec:ggen-rq-hypothesis}
+
+The hypothesis is that a configuration-driven manufacturing pipeline---in which SPARQL queries
+extract typed facts from an RDF knowledge base and Tera templates render those facts into output
+artifacts, with each output sealed by a BLAKE3 cryptographic receipt---can satisfy three
+conditions simultaneously:
+
+\begin{enumerate}
+  \item \textbf{Format completeness}: The pipeline can manufacture artifacts in all formats
+    required by capital-market consumers (PowerPoint JSON, Excel JSON, Rust source, WIT interface
+    definitions, TypeScript bindings) from a single ontological source.
+  \item \textbf{Admissibility enforcement}: The pipeline can enforce board admissibility
+    thresholds (fitness $\geq 0.95$, precision $\geq 0.90$, log format \texttt{ocel:2.0} or
+    \texttt{xes:1849-2016}) as SPARQL \texttt{FILTER} conditions, ensuring that no
+    non-conforming claim reaches the output artifact.
+  \item \textbf{Provenance completeness}: Every output artifact can be traced back to its
+    originating SPARQL query, ontology facts, and conformance verdicts through a BLAKE3
+    hash-chained receipt sequence, enabling independent verification by any party with access to
+    the ontology.
+\end{enumerate}
+
+\subsection{Success Criteria}
+\label{sec:ggen-rq-success}
+
+Success requires all three conditions to hold simultaneously, with receipt evidence for each:
+
+\begin{itemize}
+  \item The manufacturing pipeline executes without error across all active generation rules, with
+    \texttt{validation\_passed: true} recorded in \texttt{audit.json}.
+  \item The BLAKE3 receipt chain is unbroken: each receipt records the hash of its predecessor,
+    from the chain root (operation \texttt{de2ad19f}, \texttt{previous\_receipt\_hash: null})
+    through the final receipt (operation \texttt{09084e1e},
+    \texttt{previous\_receipt\_hash: 057521e5\ldots}).
+  \item All 42 or more proof gates in the seven audit scripts pass, covering feature law,
+    TypeScript projection surface, monomorphization, brand tokens, enum tagging, WASM boundary
+    isolation, and component boundary separation.
+  \item The embedded test suites in the manufactured Rust artifacts pass: \texttt{test\_witness\_lattice\_monotonicity},
+    \texttt{test\_witness\_partial\_order}, \texttt{test\_orchestrator\_initialization}, and
+    \texttt{test\_mape\_k\_cycle}.
+  \item The visualizer-dashboard-nextjs generation rule is recovered from its disabled state and
+    produces a deployable TypeScript artifact, closing the Phase 6 recovery gap documented in
+    \texttt{ggen.toml}.
+\end{itemize}
+
+The current status is PARTIAL: the receipt chain is intact, the audit.json records
+\texttt{validation\_passed: true}, and the Blue River orchestrator artifact is hash-sealed, but
+the later receipts record \texttt{output\_hashes: []} indicating that the second and third
+manufacturing runs did not produce new output artifacts. The visualizer rule remains disabled.
+Full ALIVE status requires resolving both of these gaps.

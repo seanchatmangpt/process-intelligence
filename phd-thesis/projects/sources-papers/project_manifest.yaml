@@ -1,0 +1,27 @@
+slug: sources-papers
+absolute_path: /Users/sac/process-intelligence/sources/papers
+description: >
+  Academic paper analysis and classification corpus. Contains paper-to-type-law mappings,
+  paper-to-execution-law mappings, paper-to-board-claim mappings, and adversarial canon
+  analysis. Covers Alpha Miner, Inductive Miner, DECLARE, OCEL 2.0, POWL, YAWL, BPMN
+  or-join, and runtime verification analyses. The academic grounding for all downstream
+  claims.
+detected_languages: []
+detected_frameworks:
+  - pm4py
+  - wasm4pm
+detected_research_surfaces:
+  - paper-canon
+  - type-law
+  - execution-law
+  - board-claims
+likely_thesis_role: academic-paper-classification-and-evidence-grounding
+key_files:
+  - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+  - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+  - /Users/sac/process-intelligence/sources/papers/PAPER_TO_BOARD_CLAIM.md
+  - /Users/sac/process-intelligence/sources/papers/PAPER_CANON_SCOPE.md
+  - /Users/sac/process-intelligence/sources/papers/OCEL_2_0_ANALYSIS.md
+readme_present: false
+receipt_present: false
+ontology_present: false

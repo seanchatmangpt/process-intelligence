@@ -1,0 +1,112 @@
+% FILE: 04_implementation_surface.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Implementation Surface}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-implementation}
+
+\subsection{Source Files}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-implementation-sources}
+
+The implementation surface of EXP-001 is intentionally narrow: the experiment defines a schema,
+not a runtime. Its primary source file is:
+
+\begin{itemize}
+  \item \texttt{semconv/process\_pi.yaml} --- the custom OTel Weaver registry. Declares the
+        \texttt{process.pi.activity} group with \texttt{file\_format: 1.2.0} and
+        \texttt{schema\_url: https://opentelemetry.io/schemas/1.25.0}. Contains eight named
+        attribute definitions with types, cardinalities, and brief descriptions. This file is the
+        only artifact that EXP-001 is solely responsible for; all adjacent files are either
+        documentation, governance, or downstream experiment artifacts.
+\end{itemize}
+
+Adjacent source files that consume EXP-001's schema definition:
+
+\begin{itemize}
+  \item \texttt{experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs} --- defines
+        \texttt{BridgeRx}, a Rust struct that translates schema-version diffs. The struct's
+        input contract is the attribute set defined in \texttt{process\_pi.yaml}; its invariant
+        is that bridging produces no residual state in the conformance court.
+  \item \texttt{experiments/exp-003-live-check-to-refusal/src/validator.rs} --- defines
+        \texttt{validate\_and\_project}, a Rust function that takes a span and produces
+        \texttt{Admission<T,W>} or \texttt{Refusal(RefusalCode)}. The \texttt{RefusalCode} enum
+        enumerates violations of EXP-001's required-attribute constraints:
+        \texttt{MissingInstanceId}, \texttt{MissingActivityName}, \texttt{MissingWitnessId},
+        \texttt{InvalidWitnessSignature}. The validator also references
+        \texttt{OtelSpanToOcelEventProjection} (zero-sized witness type),
+        \texttt{LossReport}, and \texttt{LossPolicy}.
+  \item \texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs} --- the integration test
+        file cited in the RUNTIME checkpoint as containing \texttt{test\_weaver\_integration\_synthesis}
+        (1 passed). Whether this test exercises \texttt{process\_pi.yaml} attributes directly or
+        validates only the Rust bridge/validator logic is an open question (FUTURE WORK).
+\end{itemize}
+
+\subsection{Commands}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-implementation-commands}
+
+The \texttt{README.md} specifies three Weaver CLI invocations for operating the registry:
+
+\begin{enumerate}
+  \item \texttt{weaver registry init} --- initializes the registry directory structure under a
+        \texttt{registry/} path. The registry directory does not appear to exist at
+        \texttt{otel-weaver/registry/} as of the evidence audit date; this is an open gap.
+  \item \texttt{weaver registry resolve} --- resolves the registry against the OTel standard,
+        expanding attribute references and producing a resolved attribute set. This command is
+        the machine-readable equivalent of ``what does the schema actually define after
+        inheritance and aliasing?''
+  \item \texttt{weaver registry validate} --- validates the registry for structural correctness,
+        attribute type consistency, and schema-URL compliance. This command is the primary
+        machine-verification step for EXP-001's success criterion.
+\end{enumerate}
+
+All three commands operate on the \texttt{registry/} directory, not directly on
+\texttt{process\_pi.yaml}. The relationship between the YAML file and the registry directory
+is that the YAML is the source definition; the registry directory is the resolved, Weaver-ready
+form. Until the registry directory is materialized, the validate command cannot be run, and the
+experiment's machine-verification success criterion cannot be met.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-implementation-data}
+
+Two mapping files translate the OTel span vocabulary to the process intelligence witness vocabulary:
+
+\begin{itemize}
+  \item \texttt{otel-weaver/mappings/otel-to-pi-witness-map.yaml} --- maps OTel span fields to
+        process intelligence witness attributes. This crosswalk is the formal declaration of how
+        an OTel span becomes a process-evidence witness candidate.
+  \item \texttt{otel-weaver/mappings/otel-signal-to-process-evidence-map.yaml} --- maps OTel
+        signal types (spans, metrics, logs) to process-evidence categories. Establishes which
+        OTel signal types are in scope for the \texttt{process.pi.activity} schema.
+\end{itemize}
+
+Seven doctrine files in \texttt{otel-weaver/doctrine/} define the boundary invariants that the
+schema instantiates:
+\texttt{otel-weaver-is-feedstock.md},
+\texttt{telemetry-is-not-process-evidence.md}, and
+\texttt{registry-diff-is-not-process-drift.md} are the three directly confirmed by the evidence
+audit. The remaining four doctrine files are referenced in the overall \texttt{README.md} but
+were not individually verified in this audit (INTERPRETATION).
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-implementation-templates}
+
+The ggen manufacturing layer provides a template for registry manufacture:
+
+\begin{itemize}
+  \item \texttt{otel-weaver/ggen/templates/pi-weaver-registry.yaml.ggen} --- the ggen template
+        from which the \texttt{process\_pi.yaml} registry was manufactured. The \texttt{.ggen}
+        extension identifies this as a CodeManufactory template file; the \texttt{pi-weaver-registry.yaml}
+        stem names the target artifact type.
+  \item \texttt{otel-weaver/ggen/manifests/otel-weaver-source.manifest.yaml} --- the ggen
+        manifest governing the manufacturing pipeline. Declares \texttt{receipt.format: cryptographic-chain},
+        \texttt{algorithm: blake3}, and \texttt{store\_location: receipts/otel-weaver-source-receipt.json}.
+        The manifest is the authority document for the receipt chain; the receipt file at the
+        declared store location has not been confirmed to exist on disk as of the evidence audit,
+        placing the cryptographic chain in PARTIAL status.
+\end{itemize}
+
+The template-to-artifact relationship confirms that \texttt{process\_pi.yaml} is not a
+hand-authored configuration file: it is an artifact manufactured from a template under a declared
+pipeline with a declared receipt chain. This manufacturing provenance is what distinguishes
+EXP-001's registry from an ad hoc YAML file and makes it a legitimate entry in the dissertation's
+evidence chain.

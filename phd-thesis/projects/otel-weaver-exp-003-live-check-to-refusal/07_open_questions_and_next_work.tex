@@ -1,0 +1,135 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: otel-weaver-exp-003-live-check-to-refusal
+% Thesis Role: live-check-refusal-enforcement-experiment
+
+\section{Open Questions and Next Work}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-open}
+
+\subsection{Known Gaps}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-open-gaps}
+
+The following gaps are documented from direct inspection of the source artifacts.
+Each gap is a structural defect in the current experiment state, not a design choice
+or a deferred feature.
+
+\textbf{Gap 1: Mock BLAKE3 digest in standalone validator.}
+The \texttt{build\_refusal} function in \texttt{src/validator.rs} uses
+\texttt{format!("{:064x}", raw\_str.len())} as the \texttt{blake3\_digest} value.
+This is a deterministic length-based integer padded to 64 hex characters, not a
+BLAKE3 hash. The \texttt{blake3 1.3} crate is declared as a dependency in
+\texttt{Cargo.toml} but is not invoked. The production fidelity of the standalone
+artifact is therefore unverified. The integration test \texttt{weaver\_integration\_tests.rs}
+uses the real \texttt{wasm4pm::crypto::Blake3} hasher and verifies
+\texttt{blake3\_digest.len() == 64}, but this test runs in the \texttt{wasm4pm}
+workspace, not in the standalone crate.
+
+\textbf{Gap 2: Four of six named laws lack Rust implementation.}
+The \texttt{live-check-finding-to-refusal-map.yaml} defines six named laws.
+\texttt{EmptyTrace} and \texttt{InvalidTimestampOrder} have no corresponding
+\texttt{RefusalCode} variant. \texttt{DanglingEventObjectLink} (verdict:
+\texttt{admit\_with\_quarantine\_warning}) and \texttt{SchemaVersionMismatch}
+(verdict: \texttt{admit\_and\_route\_to\_weaver\_diff\_log}) require a non-\texttt{Err}
+branch that carries quarantine or routing metadata --- neither the type structure
+nor the test case exists for these two admission-with-condition paths.
+
+\textbf{Gap 3: No standalone Cargo.lock; workspace-only compilation.}
+The experiment directory contains no \texttt{Cargo.lock}, indicating it has not been
+compiled in isolation. The \texttt{wasm4pm-compat} path dependency at
+\texttt{../../../../wasm4pm-compat} requires the full parent workspace to resolve.
+It is unclear from the existing artifacts whether \texttt{exp-003-live-check-to-refusal}
+can be published as a standalone crate without restructuring the dependency tree.
+
+\textbf{Gap 4: \texttt{refusals.json} persistence layer unimplemented.}
+The README specifies: ``If \texttt{Err}, the \texttt{Refusal} is archived to the
+local auditing ledger (\texttt{refusals.json}), triggering a MAPE-K Loop correction
+or alert.'' No such file, no file I/O code, and no MAPE-K loop integration exists
+in the current implementation.
+
+\textbf{Gap 5: No formal type binding to upstream thesis lineage.}
+The connection from \texttt{Admission<T,W>} to the Chatman Equation measure operator
+$\mu(O^*)$, and from there to the capital-flow settlement and DAO infrastructure,
+is asserted in checkpoint prose but has no corresponding Rust type binding, trait
+bound, or receipt in the current codebase.
+
+\subsection{Deferred Gates}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-open-deferred}
+
+The following proof gates are deferred; they must pass before EXP-003 can be
+promoted from PARTIAL to ALIVE:
+
+\begin{enumerate}
+  \item \textbf{Genuine BLAKE3 gate}: The standalone \texttt{validator.rs} must
+        invoke \texttt{blake3::Hasher} (the declared dependency) and produce a
+        genuine 64-byte hex digest in \texttt{build\_refusal}. The mock format must
+        be removed. A test asserting the digest is not the mock format (i.e., not
+        equal to a zero-padded length integer) must be added.
+  \item \textbf{Full named-law coverage gate}: All six named laws in
+        \texttt{live-check-finding-to-refusal-map.yaml} must have corresponding
+        \texttt{RefusalCode} or \texttt{AdmissionVariant} Rust types and dedicated
+        test cases. The quarantine-warning and diff-log-routing paths require new
+        type variants.
+  \item \textbf{Refusal persistence gate}: A \texttt{refusals.json} file must be
+        written, read, and tested within the experiment or the integration test suite.
+        The file must be append-only and BLAKE3-sealed per entry.
+  \item \textbf{Standalone compilation gate}: A \texttt{Cargo.lock} must be
+        manufactures by compiling the experiment in isolation (not within the parent
+        workspace), confirming that the path dependency resolves correctly.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-open-risks}
+
+\textbf{Risk 1: Quarantine-warning admission type design.}
+The \texttt{DanglingEventObjectLink} law specifies \texttt{admit\_with\_quarantine\_warning}
+as its refusal action. This is not a refusal; it is a conditional admission that
+carries a warning flag. Encoding this in the \texttt{Result<Admission, Refusal>}
+type requires either a third branch or a wrapper type on \texttt{Admission} that
+carries quarantine metadata. Neither design has been prototyped; the correct type
+encoding is an open design question with implications for all downstream code that
+consumes \texttt{Admission} values.
+
+\textbf{Risk 2: Mock digest creates false confidence in standalone tests.}
+The \texttt{test\_successful\_admission} and \texttt{test\_refusal\_missing\_id}
+tests in the standalone \texttt{validator.rs} pass because they do not assert on
+the \texttt{blake3\_digest} field. A reader of the standalone tests could conclude
+the BLAKE3 hashing is verified when it is not. This creates a documentation and
+audit risk: the standalone artifact appears complete but is not.
+
+\textbf{Risk 3: Integration test dependency on workspace structure.}
+The integration test passes within the \texttt{wasm4pm} workspace because
+\texttt{wasm4pm::crypto::Blake3} is available. If the workspace structure changes
+(e.g., if \texttt{wasm4pm-compat} is extracted to a separate repository), the
+integration test may break without warning. There is no CI artifact or lock file
+that pins the integration test to a specific version of the workspace.
+
+\subsection{Next Receipted Work}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-open-next}
+
+The following items constitute the minimum receipted work required to advance
+EXP-003 from PARTIAL to ALIVE:
+
+\begin{enumerate}
+  \item \textbf{Manufacture EXP-003-BLAKE3-001}: Replace the mock digest in
+        \texttt{build\_refusal} with a genuine \texttt{blake3::Hasher} invocation.
+        Add a test asserting the digest hex string length is 64 and the value is
+        not the mock format. Manufacture a receipt sealed with the test output hash.
+  \item \textbf{Manufacture EXP-003-LAWS-001}: Add \texttt{RefusalCode::EmptyTrace}
+        and \texttt{RefusalCode::InvalidTimestampOrder} variants. Design and implement
+        the quarantine-warning admission type for \texttt{DanglingEventObjectLink}.
+        Design and implement the diff-log routing type for \texttt{SchemaVersionMismatch}.
+        Add dedicated test cases for all four new code paths. Manufacture a receipt
+        confirming all six named laws have passing tests.
+  \item \textbf{Manufacture EXP-003-PERSISTENCE-001}: Implement the
+        \texttt{refusals.json} append-only ledger in \texttt{validator.rs}. Add a
+        test that writes a refusal, reads it back, and verifies the BLAKE3 digest.
+        Manufacture a receipt confirming the persistence layer is operational.
+  \item \textbf{Manufacture EXP-003-STANDALONE-001}: Generate \texttt{Cargo.lock}
+        by compiling the experiment in isolation. Record the compilation output as
+        a checkpoint. Manufacture a receipt confirming standalone compilation
+        succeeds without the parent workspace.
+\end{enumerate}
+
+Upon completion of all four receipted items, a new checkpoint
+\texttt{GGEN\_OTEL\_WEAVER\_EXP003\_ALIVE\_001} should be manufactured with a
+SHA-256 audit seal covering all four receipts. Only after that checkpoint may the
+experiment status be promoted to ALIVE in thesis documentation.

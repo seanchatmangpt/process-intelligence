@@ -1,0 +1,84 @@
+% FILE: 02_lineage_and_context.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Lineage and Context}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-lineage-2016}
+
+The 2016 language-model experiment in the dissertation's lineage established that local text
+imitation does not conserve consequence: a model that reproduces the statistical surface of a
+corpus does not thereby reproduce the causal structure that produced that corpus. Applied to
+telemetry, the lesson is structurally identical. An OTel span that reproduces the surface
+appearance of a process event --- a timestamp, a service name, a status code --- does not thereby
+reproduce the process-evidence structure required for conformance replay. The span is an imitation
+of an event, not a lawful encoding of it.
+
+EXP-001 is a direct response to this lesson. By requiring that admissible spans carry
+\texttt{process.pi.witness.hash} (a BLAKE3 64-character hexadecimal seal),
+\texttt{process.pi.token.state\_before} and \texttt{state\_after} (JSON-serialized Petri net
+markings), and \texttt{process.pi.lifecycle} (one of: \texttt{schedule}, \texttt{start},
+\texttt{suspend}, \texttt{resume}, \texttt{complete}, \texttt{abort}), the registry enforces that
+the span carries not merely the surface of a process event but the causal state required to
+reconstruct the event in a conformance court. The schema boundary is the technical implementation
+of the 2016 lesson: consequence must be conserved at the feedstock layer or not at all.
+
+\subsection{Enterprise Process Gap}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-lineage-enterprise}
+
+Enterprise observability stacks produce high-volume span data that is structurally insufficient for
+process mining. The gap is not a tooling deficiency: pm4py, \texttt{wasm4pm}, and related
+conformance engines are capable of replaying process models against event logs with measurable
+fitness and precision. The gap is a schema deficiency. Standard OTel spans carry no case
+identifier that maps to a process instance, no Petri net token state, no lifecycle phase
+constrained to a lawful transition set, and no witness seal that can be independently verified.
+
+EXP-001 addresses the enterprise process gap at its root: the feedstock layer. By defining
+\texttt{process.pi.instance\_id} as a required attribute (the case identifier in OCEL terms),
+the registry ensures that every admissible span can be grouped into a process instance. By requiring
+\texttt{process.pi.activity.name} to carry a Petri net transition label rather than an
+application-layer string, the registry ensures that the span's activity maps to a declared process
+model node. Without these constraints, process mining against enterprise OTel data produces
+spaghetti models with low fitness and unmeasurable precision --- the diagnostic signature of
+a feedstock schema gap.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-lineage-chatman-equation}
+
+The Chatman Equation \(A = \mu(O^{*})\) (AUTHOR THESIS) states that architecture is a function
+of the manufacturing process applied to the open ontology surface. In EXP-001's context,
+\(\mu\) is the Weaver manufacturing pipeline: it takes a YAML registry as input, resolves it
+against the OTel standard, and validates that the defined attributes satisfy the schema contract.
+\(O^{*}\) is the process intelligence ontology surface --- the set of process-evidence concepts
+(instance identity, activity naming, lifecycle state, witness sealing, token state) that must
+appear in the feedstock schema. The architecture \(A\) is the \texttt{process.pi.activity} span
+group: eight named attributes organized to carry the process-evidence ontology into the telemetry
+layer.
+
+The registry is therefore not a configuration file. It is the manufactured form of the process
+intelligence ontology, expressed in a standard-conforming schema language that an external
+toolchain can validate without consulting the author's intent. The Chatman Equation predicts that
+the quality of the architecture is bounded by the quality of the manufacturing process applied to
+the ontology; EXP-001 tests whether the Weaver toolchain constitutes a sufficiently rigorous
+\(\mu\) for the process intelligence case.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-lineage-receipts}
+
+The receipt chain is the mechanism by which process claims become auditable. In the dissertation's
+architecture, a receipt is a cryptographic artifact that seals a manufacturing event: it records
+what was manufactured, from what inputs, under what pipeline version, at what time. EXP-001's
+receipt chain is declared in \texttt{otel-weaver-source.manifest.yaml}, which specifies
+\texttt{receipt.format: cryptographic-chain}, \texttt{algorithm: blake3}, and
+\texttt{store\_location: receipts/otel-weaver-source-receipt.json}.
+
+The relationship to replay is direct: a span that carries \texttt{process.pi.witness.hash} and
+\texttt{process.pi.token.state\_before}/\texttt{state\_after} is a span that can be independently
+verified and then projected into an OCEL event log for pm4py replay. The schema attributes are
+not decorative; they are the fields that the \texttt{OtelSpanToOcelEventProjection} zero-sized
+witness type (defined in EXP-003's type system) uses to perform the OTel-to-OCEL translation
+without information loss exceeding the \texttt{LossPolicy} threshold. The receipt seals the
+manufacturing act; the schema attributes enable the replay act; the two together constitute the
+evidence chain that the dissertation's conformance architecture requires.

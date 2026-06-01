@@ -1,0 +1,105 @@
+% FILE: 02_lineage_and_context.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Lineage and Context}
+\label{sec:research-prompt-manufactory-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:research-prompt-manufactory-lineage-2016}
+
+The thesis lineage begins with a 2016 experiment in local language-model text imitation:
+a model trained to reproduce text does not conserve the consequences of that text. A
+language model that has seen a conformance-checking specification does not thereby
+implement conformance checking. The gap between linguistic surface and operational
+consequence is irreducible by training alone.
+
+The Prompt Manufactory is a direct descendant of this lesson applied to the command
+surface of multi-agent systems. A hand-written prompt that describes a subagent's role
+in natural language is, at its core, a text-imitation act: it states a behavior without
+binding that behavior to any formal structure that could be audited, replayed, or
+compared against a declared law. The 2016 lesson predicts that such prompts will drift
+from their intended semantics as the research program evolves, because the prompts have
+no formal tether to the ontology they claim to reflect.
+
+The Prompt Manufactory resolves this by treating prompt manufacture as a formal
+production act. The subagent warrant for a Census role is not written to describe what
+Census agents do; it is manufactured from the \texttt{pm:SubagentRole} instance in
+\texttt{subagent-role-law.ttl} that defines what Census agents are permitted to inspect,
+what surfaces they are forbidden from touching, and what output contract they must
+satisfy. The warrant is a rendering of law, not a description of intent.
+
+\subsection{Enterprise Process Gap}
+\label{sec:research-prompt-manufactory-lineage-enterprise}
+
+The enterprise process gap identified in the thesis lineage is the absence of a
+verifiable bridge between declared process models and actual executed behavior. In
+enterprise settings, process documentation is authored separately from execution
+infrastructure. Process maps describe what should happen; execution logs record what
+did happen. The gap between them is the terrain where conformance defects accumulate
+invisibly.
+
+The same gap exists in multi-agent AI systems. A research workflow documented in a
+CLAUDE.md or a hand-written prompt file is process documentation with no execution
+binding. When a subagent executes, it reads the prompt and produces behavior; but the
+prompt itself carries no receipt, no provenance, and no derivation from the formal
+process model. Whether the subagent's actual behavior conforms to the declared workflow
+is unverifiable from the prompt alone.
+
+The Prompt Manufactory closes this gap at the command-surface layer. By manufacturing
+warrants from the same ontology that governs the workflow (specifically,
+\texttt{workflow-law.ttl} defining INTEL and REMEDIATE workflow structures with
+8 phases each), the Manufactory creates a traceable chain from declared law to
+operational instruction. A subagent executing under a manufactured warrant is executing
+under a command that is provably derived from the workflow law it is supposed to
+implement.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:research-prompt-manufactory-lineage-equation}
+
+% AUTHOR THESIS / INTERPRETATION
+The Chatman Equation $A = \mu(O^*)$ asserts that an artifact is the manufacturing
+function $\mu$ applied to an ontology $O^*$. In this framing, the Prompt Manufactory
+instantiates the equation at the command-surface layer: each manufactured warrant $A_i$
+is $\mu_i(O^*)$, where $\mu_i$ is the composition of a SPARQL SELECT query with a Tera
+template, and $O^*$ is the union of the 8 ontology files loaded into the RDF graph.
+
+The critical property the equation confers is that the manufacturing function $\mu$ is
+inspectable. Given the ontology hash recorded in
+\texttt{ggen/.ggen/sync-state.json} (\texttt{01b52b81...}), the manifest hash, and the
+generation rules in \texttt{ggen.toml}, any auditor can reconstruct the manufacturing
+pipeline and verify that a given warrant $A_i$ is indeed $\mu_i(O^*)$ and not a
+hand-written artifact inserted into the emission directory without provenance.
+
+This reproducibility property is what distinguishes the Manufactory from a prompt
+library. A prompt library stores artifacts; the Manufactory stores the manufacturing
+function and emits artifacts as its outputs. The artifacts are replaceable; the function
+is the authority.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:research-prompt-manufactory-lineage-receipts}
+
+The receipt chain is the evidentiary spine of the Process Intelligence research program.
+Every manufacturing act that produces a consequential artifact must emit a receipt ---
+a proof-of-execution record that can later be replayed to verify the artifact's
+provenance. The Prompt Manufactory implements this doctrine at the warrant layer.
+
+The \texttt{prompt-receipt-ledger.md} documents the receipt chain for each emitted
+warrant. For the proof-specimen warrant
+\texttt{PI\_RESEARCH\_PROGRAM\_INTEL\_001.md}, the ledger records: source ontology
+(\texttt{research-program-law.ttl}), source instance URI
+(\texttt{https://pi-research.dev/programs\#PI\_RESEARCH\_PROGRAM\_INTEL\_001}),
+manufacturing timestamp (\texttt{2026-06-01T00:00:00Z}), manufacture method (fallback
+manual due to ggen v5 template rendering failure on empty SPARQL result set), and
+proof status (PARTIAL).
+
+The \texttt{.ggen/receipts/phase-2-index.json} extends this to the batch level:
+42 artifacts manufactured across 5 artifact types, with a ledger reference to
+the full RECEIPT\_LEDGER for the manufacturing phase. The manufacturing manifest
+\texttt{manufacturing-manifest-20260601.yaml} independently records 41 artifacts
+emitted across 6 rules with receipts-equal-artifacts gate PASS --- a 1-artifact
+discrepancy with the phase-2-index that has not been reconciled (see open questions).
+
+Together these receipts form a replay surface: given the receipts, the manufacturing
+pipeline can be re-executed to verify that the emitted artifacts match their declared
+provenance. This is the receipt-and-replay doctrine instantiated at the prompt layer.

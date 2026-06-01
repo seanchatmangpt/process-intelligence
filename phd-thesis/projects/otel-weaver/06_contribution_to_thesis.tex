@@ -1,0 +1,97 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+
+\section{Contribution to the Dissertation}
+\label{sec:otel-weaver-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:otel-weaver-contribution-prediction}
+
+The dissertation's central tension between prediction and coordination surfaces acutely at the
+ingestion boundary. Prediction-mode systems---those that produce probabilistic outputs from
+statistical models over historical data---can operate adequately on raw telemetry. A latency
+anomaly predictor does not need court-grade evidence; it needs sufficient signal. Coordination-mode
+systems---those that assert, route, settle, or certify process outcomes---require evidence that
+can survive independent replay and adversarial audit.
+
+The \texttt{otel-weaver} ingestion layer is the architectural mechanism that enforces this
+distinction at the data boundary. By requiring every span to traverse an \texttt{Admission<T,\,W>}
+gate before entering the coordination layer, the project prevents prediction-grade feedstock
+from contaminating coordination-grade claims. This is not a performance optimization; it is a
+correctness requirement. A process conformance verdict computed over admitted feedstock is a
+different epistemic object than a verdict computed over raw telemetry, even if the underlying
+span data is identical. The typed gate makes this difference structural and auditable.
+
+The doctrine constant \texttt{OBSERVABILITY\_VS\_PROCESS\_INTELLIGENCE\_001} articulates this
+distinction for the dissertation record: observability captures what the system emitted;
+process intelligence certifies what the process did. The \texttt{otel-weaver} project provides
+the formal mechanism---not merely the conceptual vocabulary---for enforcing this distinction
+at the ingestion layer of a live distributed system.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:otel-weaver-contribution-evidence}
+
+The project's most direct contribution to the dissertation's process-evidence framework is the
+formalization of the feedstock-to-evidence promotion path and the typed naming of its failure
+modes. Prior to this formalization, the Process Intelligence Research Foundry could assert that
+telemetry is not evidence, but had no type-system enforcement of that assertion. The
+\texttt{Admission<T,\,W>} / \texttt{Refusal} gate architecture provides that enforcement.
+
+The \texttt{LossReport} / \texttt{OtelToOcelLossPolicy} apparatus contributes a second layer:
+the formal acknowledgment that projection from OTel spans to OCEL events is \emph{necessarily
+lossy} and that the losses must be declared, not concealed. This is a contribution to the
+dissertation's treatment of evidence chain integrity. An event log derived through a declared
+\texttt{LossReport} is epistemically superior to one derived silently, even if both logs contain
+identical data, because the declared log's analyst knows what was discarded.
+
+The Replay Test criterion---requiring independent third-party replayability without
+visualization---operationalizes the dissertation's evidence standard for the ingestion layer.
+It establishes that the \texttt{otel-weaver} pipeline's output must be sufficient for replay,
+not merely for display. This criterion anchors the project's success condition to a
+falsifiable, third-party-verifiable standard rather than to internal consistency alone.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:otel-weaver-contribution-manufacturing}
+
+Within the foundry's manufacturing architecture, \texttt{otel-weaver} occupies the stratum
+immediately upstream of the \texttt{wasm4pm} execution engine. Its contribution is to ensure
+that the \texttt{wasm4pm} execution engine receives only typed, witnessed, loss-declared payloads.
+This enables the manufacturing pipeline to reason about its inputs with full type safety: every
+\texttt{Admission<T,\,W>} that reaches \texttt{wasm4pm} is known to have passed the
+\texttt{process.pi} registry live-check, to carry an \texttt{ActivityWitness}, and to be
+accompanied by a \texttt{LossReport}.
+
+The \texttt{BridgeRx} artifact contributes schema-version stability to the manufacturing pipeline.
+By ensuring $R_\Delta = 0$ across schema migrations, it prevents schema evolution from
+introducing measurement error into the conformance checking layer. This is a manufacturing
+quality gate: it certifies that the pipeline's conformance fitness scores are attributable to
+process behavior rather than to schema drift.
+
+The \texttt{ggen} receipt chain manufactured by the two project manifests contributes to the
+foundry's BLAKE3 chain integrity. Each receipt anchors a manufacturing run, providing an
+immutable record of what was ingested, when, and under which schema version. This chain is
+the cryptographic backbone of the project's contribution to the foundry's audit surface.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:otel-weaver-contribution-capital}
+
+The capital-flow and settlement layer of the dissertation's architecture requires process evidence
+that can withstand adversarial audit: a counterparty challenging a settlement claim must be unable
+to argue that the underlying process evidence was derived from observability signal rather than
+from a conforming process execution. The \texttt{otel-weaver} ingestion layer provides the
+first line of defense against this challenge.
+
+By enforcing that every piece of process evidence entering the downstream pipeline has passed
+through a typed gate backed by a BLAKE3-chained receipt, the project ensures that capital-flow
+claims can trace their evidentiary provenance to the ingestion boundary. A claim that cites
+a process receipt can, in principle, be traced back through the receipt chain to the
+\texttt{Admission<T,\,W>} gate that admitted the underlying feedstock, to the
+\texttt{weaver registry live-check} that validated its schema, and to the raw OTel span
+that entered the pipeline.
+
+This provenance chain is a prerequisite for the dissertation's capital-flow infrastructure
+to operate without the enterprise process gap. Without \texttt{otel-weaver}'s ingestion
+boundary, the capital-flow layer would be built on observability signal dressed as process
+evidence---the exact failure mode that motivated the 2016 language-model lineage observation
+and the foundry's foundational design.

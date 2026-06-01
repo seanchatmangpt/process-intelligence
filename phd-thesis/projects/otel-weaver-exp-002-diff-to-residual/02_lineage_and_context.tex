@@ -1,0 +1,116 @@
+% FILE: 02_lineage_and_context.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Lineage and Context}
+\label{sec:otel-weaver-exp-002-diff-to-residual-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:otel-weaver-exp-002-diff-to-residual-lineage-2016}
+
+The 2016 language-model experiment established a foundational finding that is
+directly ancestral to EXP-002: local text imitation does not conserve consequence.
+A model can reproduce the surface structure of an utterance---its vocabulary,
+syntax, and statistical patterns---without capturing the causal chain that gives
+the utterance its meaning in a process context. The model ``knows'' the words; it
+does not know what must have happened before those words could be lawfully spoken.
+
+EXP-002 is the 2016 lesson applied to telemetry engineering. OTel Weaver is, in
+this analogy, a surface-structure validator: it confirms that a span contains the
+expected field names and value types. It is a sophisticated schema-imitation check.
+What it cannot do---and was never designed to do---is assert that the activity
+those fields describe occurred in a lawful sequence relative to other activities.
+The doctrine file \texttt{otel-weaver-is-feedstock.md} states this precisely:
+``Structural alignment is merely the verification that our instruments are recording
+within expected parameters. It is an engineering metric.''
+
+The schema rename from \texttt{process.pi.activity.name} to
+\texttt{process.pi.transition.name} is a surface-structure change. It changes the
+labels on the instruments without altering a single execution path in the underlying
+process. The 2016 lesson predicts that any system which treats surface structure as
+consequence will misread this rename as a consequence-level event---a process
+violation. EXP-002 manufactures the architectural mechanism that prevents this
+misreading by ensuring surface-structure changes are resolved before they reach the
+consequence-evaluation layer.
+
+\subsection{Enterprise Process Gap}
+\label{sec:otel-weaver-exp-002-diff-to-residual-lineage-enterprise-gap}
+
+The enterprise process gap that motivates the broader research program is the absence
+of a full-lifecycle process intelligence stack in commercial observability tooling.
+Existing telemetry platforms---including those built on OTel Weaver---are designed for
+infrastructure monitoring: latency histograms, error rates, service dependency maps.
+They are not designed to answer the question: ``Did this business process execute
+in accordance with its normative model, and can that execution be proven to an
+auditor?''
+
+EXP-002 addresses a specific manifestation of this gap: when a telemetry schema is
+updated during normal platform maintenance, commercial observability tools will either
+silently accept the new schema (losing conformance signal) or flag every new-schema
+record as malformed (generating false compliance alerts). Neither response is lawful
+under a full-lifecycle process intelligence doctrine.
+
+The gap is structural rather than incidental. It arises because the telemetry layer
+and the conformance layer are not architecturally separated in commercial stacks. The
+\texttt{BridgeRx} pattern is an explicit proposal for how to close this gap at the
+ingestion boundary: place a typed, testable, auditable translation layer between the
+feedstock plane and the court plane, so that schema evolution in one plane never
+contaminates the other. The YAML boundary rules in
+\texttt{mappings/registry-diff-to-pi-drift-map.yaml} formalize this as
+\texttt{drift\_isolation\_rule\_1} and \texttt{drift\_isolation\_rule\_2}, routing
+schema-diff events to a Weaver Diff Log rather than to the process drift court.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:otel-weaver-exp-002-diff-to-residual-lineage-chatman-equation}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that organizational authority is a
+function of the observable state of the organization's process artifacts. Authority
+can only be computed over lawful, receipt-backed process evidence; it cannot be
+computed over raw telemetry. \textsc{[AUTHOR THESIS / INTERPRETATION]}
+
+EXP-002's contribution to this equation is categorical: it ensures that what enters
+the $O^*$ observable surface is process evidence, not schema noise. If the
+\texttt{BridgeRx} translation layer is absent, a schema rename event contaminates
+the observable surface with false conformance failures, causing $\mu$ to compute
+a degraded authority value from a polluted evidence set. The bridge enforces the
+purity of the observable surface by resolving schema-layer noise before it can
+reach the authority computation layer.
+
+Put differently: the Chatman Equation assumes that its input $O^*$ contains only
+lawful process evidence. EXP-002 is one of the engineering mechanisms that maintains
+that assumption under real-world schema evolution pressure. Every schema version
+transition that \texttt{BridgeRx} handles correctly is a boundary enforcement that
+keeps $O^*$ clean.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:otel-weaver-exp-002-diff-to-residual-lineage-receipts}
+
+The receipt-and-replay pattern, central to the research program's verifiability
+doctrine, requires that every process state transition be cryptographically
+sealed and replayable. EXP-002 interacts with this pattern at the field-preservation
+level: the \texttt{BridgeRx} \texttt{translate()} method explicitly preserves the
+\texttt{witness\_hash} field through the S2-to-S1 translation.
+
+The \texttt{src/bridge.rs} implementation assigns
+\texttt{witness\_hash: input.witness\_hash} directly, with no transformation. This
+ensures that the BLAKE3 cryptographic hash emitted by the instrumentation layer
+survives the schema normalization step intact. A conformance court auditing the
+translated record can verify the BLAKE3 hash against the original emission without
+re-deriving it through the translation path.
+
+The inline test \texttt{test\_bridge\_translation\_equivalence} asserts this
+preservation explicitly:
+\begin{verbatim}
+assert_eq!(s1_telemetry.witness_hash, "blake3_signature_data_here");
+\end{verbatim}
+This assertion treats witness hash preservation as a first-class correctness
+property of the bridge, not an incidental side effect. The design decision reflects
+the broader research program's principle that audit integrity must be maintained
+across every transformation boundary, even transformations that exist only to
+resolve schema naming conventions.
+
+The connection to \texttt{Admission<T,W>} and \texttt{Refusal} in the upstream
+type-law patterns (documented in exp-003 and exp-004) means that a record
+successfully translated by \texttt{BridgeRx} carries a preserved witness hash that
+can be checked at the \texttt{Admission} gate, ensuring no hash forgery occurred
+between emission and court evaluation.

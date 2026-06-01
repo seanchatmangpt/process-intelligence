@@ -1,0 +1,86 @@
+% FILE: 02_lineage_and_context.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+
+\section{Lineage and Context}
+\label{sec:sources-wasm4pm-compat-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:sources-wasm4pm-compat-lineage-2016}
+
+The 2016 language-model experiment established a foundational negative result for this
+research program: local text imitation does not conserve consequence. A model that
+produces text indistinguishable from expert output can simultaneously fail to preserve
+the causal structure that made the expert output meaningful. In the process intelligence
+context, this translates directly: a system that emits conformance scores, fitness values,
+or alignment costs without binding those values to a receipted, non-forgeable evidence
+chain is performing imitation, not measurement.
+
+The type-law foundry is the architectural response to this lesson. The
+\texttt{Evidence<T, State, Witness>} container is designed so that a conformance score
+cannot be emitted without simultaneously being bound to the event-log payload
+that produced it (type parameter \texttt{T}), the process-model state at the point of
+measurement (\texttt{State}), and the lattice-monotonic proof of how that state was reached
+(\texttt{Witness}). The BLAKE3 hash over all three fields, plus the epoch nonce and
+Ed25519 signature, makes it cryptographically impossible to separate the score from its
+evidence chain post-construction. The 2016 lesson---that imitation without consequence
+preservation is epistemologically void---is encoded as a compile-time type law.
+
+\subsection{Enterprise Process Gap}
+\label{sec:sources-wasm4pm-compat-lineage-enterprise}
+
+Enterprise process intelligence systems face a structural gap between the process models
+they declare and the processes they actually execute. This gap is not primarily a tooling
+problem; it is an evidence problem. When an organization claims that its order-to-cash
+process has a fitness of 0.94 against a BPMN model, that claim is only as strong as the
+provenance chain connecting the claim to the raw event log, the process model, the
+conformance checking algorithm, and the authority that signed the result.
+
+Without a cryptographic binding between those components, the claim is a narrative, not
+a receipt. Under M\&A due diligence conditions---where the claim may be worth millions
+in synergy projections---a narrative is not board-admissible. The \texttt{wasm4pm-compat}
+type-law foundry was designed specifically to make board-admissible claims manufacturable:
+claims that carry a BLAKE3 hash, an Ed25519 signature from an auditor role, a fitness
+value proven to be in $[0, 1]$ via the \texttt{Between01<N,D>} const-generic rational
+bound, and a \texttt{WitnessMarker} at or above the threshold for the claimed process
+family.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:sources-wasm4pm-compat-lineage-chatman}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that autonomic actuation $A$ is a function
+of the measurement operator $\mu$ applied to an observed process trace $O^*$.
+\texttt{wasm4pm-compat} provides the type-law infrastructure that makes $\mu$ computable
+in a non-forgeable way. The \texttt{WitnessMarker::BlueRiverDam} lattice position---the
+top element \texttt{\(\top\)} of the witness lattice, carrying an \texttt{AutonomicMarking}
+with MAPE-K enforcement---is the typed representation of the moment when $\mu(O^*)$
+has been computed, receipted, and is ready to drive actuation.
+
+Critically, the lattice structure ensures that \texttt{BlueRiverDam} cannot be reached
+without passing through the lower lattice positions. A caller cannot mint a
+\texttt{WitnessMarker::BlueRiverDam} evidence block without first establishing that the
+trace has been parsed (bottom), validated and replayed (middle), and signed by an auditor
+role. The join-to-top condition---where \texttt{witness\_join} reaches the top element and
+triggers execution halt---is the type-level expression of the equation's boundary condition:
+when the measurement process has consumed all available evidence, autonomous action begins.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:sources-wasm4pm-compat-lineage-receipts}
+
+The receipt machinery in \texttt{wasm4pm-compat} is the operational embodiment of the
+research program's claim that every authoritative assertion must be receipted. The
+\texttt{ArtifactReceipt} struct in \texttt{compat/manufacturing/receipt\_ledger.rs}
+binds a BLAKE3 content hash, a \texttt{WitnessMarker}, a lifecycle state (always
+\texttt{Sealed} at time of recording), a Unix timestamp, and a compliance audit result.
+The \texttt{ReceiptLedger} maintains a \texttt{HashMap}-backed provenance registry with
+\texttt{verify\_all()} and \texttt{count\_by\_witness()} methods.
+
+The manufacturing manifest \texttt{manufacturing-manifest-20260601.yaml} records that
+three receipts were issued on 2026-06-01: \texttt{witness-markers-20260601-receipt}
+(witness: BlueRiverDam), \texttt{process-forms-20260601-receipt} (witness: VanDerAalst1998),
+and \texttt{boundary-law-20260601-receipt} (witness: BlueRiverDam). All three carry
+Ed25519 signature status ISSUED. The concept of a receipt-shaped object---an
+\texttt{Evidence} block where \texttt{State} is terminal, \texttt{Witness} carries
+fitness $\geq$ threshold, and the hash is signed by an auditor role---directly connects
+the type-law architecture to the downstream replay and conformance checking operations
+that produce the fitness values those receipts attest to.

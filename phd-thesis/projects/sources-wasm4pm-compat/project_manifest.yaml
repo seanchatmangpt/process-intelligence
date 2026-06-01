@@ -1,0 +1,30 @@
+slug: sources-wasm4pm-compat
+absolute_path: /Users/sac/process-intelligence/sources/wasm4pm-compat
+description: >
+  wasm4pm-compat type law atlas and witness lattice foundry. Contains type law atlas, witness
+  lattice definitions, loss policy maps, admission-refusal maps, graduation boundary maps,
+  and manufactured Rust witness markers. The type foundry — paper-complete doorway and
+  process-evidence type law authority.
+detected_languages:
+  - Rust
+  - Turtle
+  - Tera
+detected_frameworks:
+  - wasm4pm-compat
+  - ggen
+detected_research_surfaces:
+  - type-law
+  - witness-lattice
+  - loss-policy
+  - admission-refusal
+  - graduation-boundary
+likely_thesis_role: type-foundry-and-witness-lattice-authority
+key_files:
+  - /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/Cargo.toml
+  - /Users/sac/process-intelligence/sources/wasm4pm-compat/TYPE_LAW_ATLAS.md
+  - /Users/sac/process-intelligence/sources/wasm4pm-compat/WITNESS_LATTICE.md
+  - /Users/sac/process-intelligence/sources/wasm4pm-compat/GRADUATION_BOUNDARY_MAP.md
+  - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs
+readme_present: false
+receipt_present: false
+ontology_present: false

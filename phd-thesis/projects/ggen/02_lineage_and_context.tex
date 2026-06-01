@@ -1,0 +1,91 @@
+% FILE: 02_lineage_and_context.tex
+% Project: ggen — Governance Generation Engine
+
+\section{Lineage and Context}
+\label{sec:ggen-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:ggen-lineage-2016}
+
+The research program's 2016 language-model experiment established that local text imitation does
+not conserve consequence: a system that reproduces the surface form of an utterance does not
+thereby reproduce the causal structure that gave rise to that utterance. Applied to capital-market
+artifacts, this lesson is sharp. A system that generates acquisition deck slides by imitating
+prior deck language may reproduce the persuasive register of board communication without
+reproducing the evidentiary grounding that legitimizes the claims. The result is an artifact that
+looks board-admissible but is not independently verifiable.
+
+ggen is the engineering response to this lesson. Rather than generating artifact text by
+imitation, ggen manufactures artifacts by \emph{derivation}: each output is a deterministic
+function of SPARQL query results applied to a template with strict variable mode enabled
+(\texttt{strict\_variables = true} in \texttt{ggen.toml}). A slide asserting fitness $\geq 0.95$
+is not an imitation of a claim about fitness; it is the rendered output of a SPARQL
+\texttt{FILTER (?verdictFitness >= 0.95)} clause applied to actual conformance verdicts in the
+ontology. The 2016 lesson---that consequence cannot be recovered from surface form---is encoded
+directly into the pipeline's architecture.
+
+\subsection{Enterprise Process Gap}
+\label{sec:ggen-lineage-enterprise-gap}
+
+The enterprise process gap is the structural disconnect between the process measurements an
+organization produces (event logs, conformance scores, replay traces) and the governance
+artifacts it must present to external parties (boards, regulators, acquirers). In the conventional
+enterprise, this gap is bridged by human intermediaries who translate technical findings into
+business language. The translation is lossy, non-repeatable, and cannot be audited against the
+original measurements.
+
+ggen's contribution to closing this gap is the introduction of a \emph{manufacturing contract}:
+a declared set of generation rules that specify, for each output artifact, the exact SPARQL query
+that extracts its evidentiary basis and the exact Tera template that renders it. The contract is
+public, versioned, and machine-executable. Any party with access to the ontology can re-execute
+the contract and verify that the manufactured artifact faithfully represents the underlying
+measurements.
+
+The board admissibility contract documented in \texttt{README.md} formalizes this through four
+pillars: event log integrity and provenance (IEEE 1849-2016 or OCEL 2.0 format, BLAKE3 hash
+chain, W3C PROV-O provenance model); mathematical conformance bounds (fitness $\geq 0.95$,
+precision $\geq 0.90$); structural model soundness (workflow net soundness under van der Aalst
+1998); and cryptographic slide-to-receipt mapping (every slide references a unique BLAKE3 receipt
+that can be used to re-run the originating query).
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:ggen-lineage-chatman-equation}
+
+The Chatman Equation, $A = \mu(O^*)$, asserts that admissible artifacts are a function of the
+manufacturing process applied to the open ontology. ggen is the most literal instantiation of
+this equation in the research foundry. The symbol $\mu$ denotes a manufacturing function; in
+ggen's architecture, that function is implemented as the three-layer pipeline: SPARQL extraction
+from the ontology, Tera template rendering, and BLAKE3 receipt sealing. The symbol $O^*$ denotes
+the open ontology; in ggen's architecture, that ontology is the process intelligence knowledge
+base queried through the SPARQL endpoint configured in \texttt{ggen.toml} as
+\texttt{endpoint = "in-memory"} with namespaces \texttt{ma:}, \texttt{lifecycle:},
+\texttt{wasm4pm:}, and \texttt{compat:}.
+
+The admissibility of the output artifact $A$---whether a board deck slide or a Rust enum
+variant---is enforced not by human judgment but by the mathematical properties of the SPARQL
+\texttt{FILTER} conditions and the type-law gates in the audit scripts. This is the equation
+operating as engineering doctrine: the open ontology is the input, the manufacturing function is
+the pipeline, and the admissible artifact is the output.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:ggen-lineage-receipts-replay}
+
+The receipts-and-replay doctrine holds that every claim must be sealed by a cryptographic receipt
+that enables independent verification through replay. ggen implements this doctrine at two levels.
+
+At the \emph{manufacturing level}, each execution of ggen's pipeline is sealed by a BLAKE3 receipt
+recording the operation UUID, input hashes, output hashes, and previous receipt hash. The three
+receipts in \texttt{.ggen/receipts/} form a hash-chained sequence: the root receipt
+(\texttt{sync-20260601-175316.json}, operation \texttt{de2ad19f}) records no predecessor;
+the second receipt (\texttt{sync-20260601-203853.json}, operation \texttt{95a9448c}) records
+predecessor hash \texttt{612d222\ldots}; the third receipt (\texttt{sync-20260601-230600.json},
+operation \texttt{09084e1e}) records predecessor hash \texttt{057521e5\ldots}. This chain makes
+the manufacturing history tamper-evident.
+
+At the \emph{artifact level}, every slide in the manufactured M\&A deck references the BLAKE3
+receipt hash of the conformance verdict that backs the claim on that slide. A board member who
+wishes to verify a synergy projection can take the receipt hash from the slide, locate the
+corresponding conformance verdict in the ontology, re-execute the SPARQL query for that verdict,
+and confirm that the fitness score and precision score match the values asserted on the slide.
+Replay is not a future capability; it is a structural property of the artifact format as declared
+in \texttt{ma-deck.tera} and enforced by \texttt{extract-board-claims.rq}.

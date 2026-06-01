@@ -1,0 +1,76 @@
+% FILE: 01_research_question.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Research Question}
+\label{sec:sources-pm4py-rq}
+
+\subsection{Problem Statement}
+\label{sec:sources-pm4py-rq-problem}
+
+Process mining libraries have long served as reference implementations for conformance
+checking, process discovery, and fitness evaluation. PM4Py is the most widely adopted
+open-source process mining library in the Python ecosystem. When building a WebAssembly
+process intelligence bridge intended to operate in browser and edge environments, a
+precise mapping is required: which PM4Py capabilities must be replicated exactly, which
+may be approximated, and which would introduce structural defects if ported? This question
+cannot be answered by reading API documentation alone. It requires a systematic capability
+enumeration, a formal divergence classification, a type-law analysis of what PM4Py's
+runtime assumptions would mean if adopted in a Rust/WASM type-enforced context, and a
+gap inventory that separates missing type surfaces from missing engine logic. The
+\texttt{sources/pm4py} corpus is the research program's answer to this problem: a
+complete oracle atlas that defines the boundary between the Python process mining world
+and the Rust/WASM process evidence world.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:sources-pm4py-rq-oldregime}
+
+The old-regime assumption is that a process mining library is a template: any new
+implementation should replicate the existing library's function signatures, data structures,
+and runtime patterns. PM4Py accepts \texttt{Union[EventLog, pd.DataFrame]} at nearly every
+function boundary, performs runtime \texttt{isinstance} checks, and branches silently into
+DataFrame-specific code paths. Discovery results carry no lineage: a Petri net manufactured
+by \texttt{pm4py.discover\_petri\_net\_inductive()} carries no record of which log version,
+which timestamp, or which algorithm parameters produced it. Validation errors are raised as
+generic Python \texttt{Exception} with string messages rather than named law types. Silent
+attribute projection loss occurs when \texttt{pm4py.project\_log()} drops columns not in
+the requested set. These patterns represent a specific architectural philosophy: maximise
+ergonomic flexibility at the cost of type safety and provenance. The research question is
+whether this philosophy transfers to a Rust/WASM context, or whether it would destroy the
+type-law covenant that makes cryptographic process receipts possible.
+
+\subsection{Hypothesis}
+\label{sec:sources-pm4py-rq-hypothesis}
+
+The hypothesis of this corpus is that PM4Py's 120 capabilities divide into three
+structurally distinct groups that require different handling in wasm4pm. First, approximately
+75 deterministic capabilities (those bridged in \texttt{pm4wasm.d.ts}) require exact
+algorithmic equivalence: any divergence would break the audit chain. Second, approximately
+40 heuristic or rendering capabilities admit safe divergence as long as output semantics
+are preserved and the divergence is documented in \texttt{Evidence} metadata. Third,
+ten architectural patterns --- most prominently DataFrame mutability, generic exception
+raising, silent projection loss, provenance-free discovery, and LLM chain-of-thought
+as a discovery path --- must never be replicated, because they would render the
+\texttt{Evidence<T, State, Witness>} type surface meaningless. This tripartite division
+is the structural finding of the corpus. [AUTHOR THESIS]
+
+\subsection{Success Criteria}
+\label{sec:sources-pm4py-rq-criteria}
+
+Success for the \texttt{sources/pm4py} corpus is defined by three measurable outcomes.
+First, every PM4Py function appearing in the WASM bridge (\texttt{pm4wasm.d.ts}) must
+have a documented wasm4pm type surface or a GAP status entry with severity classification.
+This is certified by the PM4PY\_ORACLE\_RECEIPT in \texttt{receipts/RECEIPT\_REGISTRY.md},
+which records 8 CRITICAL/HIGH gaps remaining and tracked in the \texttt{gaps/} directory.
+Second, the ALIVE gate criterion 4 must be met: $\geq 4$ files in \texttt{sources/pm4py}
+(actual: 14 at assessment, confirmed by \texttt{ALIVE\_GATE\_ASSESSMENT.md}). Third, the
+divergence matrix must provide a binary classification for every algorithm --- must-match
+or safe-divergence --- with an explicit rationale tied to whether the algorithm produces a
+deterministic output that enters the proof chain. The divergence matrix v2.0
+(2026-05-31) satisfies this criterion for all 37 assessed algorithms.
+
+\bigskip
+\noindent\textit{Source authority:} NOT\_TO\_COPY.md (anti-patterns 1--10),
+divergence-matrix.md (sections 11.1--11.3), ALGORITHM\_CROSSWALK.md (Summary Table),
+receipts/RECEIPT\_REGISTRY.md (PM4PY\_ORACLE\_RECEIPT), ALIVE\_GATE\_ASSESSMENT.md
+(criterion 4).

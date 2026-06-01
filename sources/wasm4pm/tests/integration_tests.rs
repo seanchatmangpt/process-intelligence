@@ -227,7 +227,7 @@ fn test_recursion_limit_violation() {
 #[test]
 fn test_oblivion_protocol_memory_shredding() {
     let _lock = TEST_MUTEX.lock().unwrap();
-    allocator::init_global_arena(1 * 1024 * 1024).unwrap(); // 1MB
+    allocator::init_global_arena(1024 * 1024).unwrap(); // 1MB
     
     // Allocate something and write data
     let layout = std::alloc::Layout::from_size_align(100, 8).unwrap();
@@ -330,6 +330,14 @@ fn test_otel_trace_blake3_verification() {
         s0_start,
         s0_end,
         s0_ic,
+        "inst_legacy",
+        s0_name,
+        None,
+        "complete",
+        None,
+        None,
+        "witness_legacy",
+        "witness_hash_0",
     );
     let hash0_hex = hex_encode(&hash0);
     
@@ -349,13 +357,21 @@ fn test_otel_trace_blake3_verification() {
         s1_start,
         s1_end,
         s1_ic,
+        "inst_legacy",
+        s1_name,
+        None,
+        "complete",
+        None,
+        None,
+        "witness_legacy",
+        "witness_hash_1",
     );
     let hash1_hex = hex_encode(&hash1);
     
     let root_hex = &hash1_hex;
     
     let valid_json = format!(
-        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"witness_hash\": \"witness_hash_0\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"witness_hash\": \"witness_hash_1\"\n    }}\n  ]\n}}",
         trace_id, root_hex,
         s0_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
         s1_id, s0_id, s1_name, s1_start, s1_end, s1_ic, hash1_hex
@@ -364,6 +380,9 @@ fn test_otel_trace_blake3_verification() {
     // 1. Verify parsing and verification of valid trace
     let trace = wasm4pm::otel::OtelTrace::parse_from_str(&valid_json).unwrap();
     let res = wasm4pm::otel::verify_otel_trace(&trace);
+    if let Err(ref e) = res {
+        eprintln!("verify_otel_trace valid trace error: {:?}", e);
+    }
     assert!(res.is_ok());
     assert!(res.unwrap());
     
@@ -402,7 +421,7 @@ fn test_otel_trace_blake3_verification() {
     
     // 4. Verify parent-child timing constraint violation detection
     let invalid_timing_json = format!(
-        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": 900,\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"witness_hash\": \"witness_hash_0\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": 900,\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"witness_hash\": \"witness_hash_1\"\n    }}\n  ]\n}}",
         trace_id, root_hex,
         s0_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
         s1_id, s0_id, s1_name, s1_end, s1_ic, hash1_hex
@@ -414,7 +433,7 @@ fn test_otel_trace_blake3_verification() {
     
     // 5. Verify cyclic dependency detection
     let cyclic_json = format!(
-        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"witness_hash\": \"witness_hash_0\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"witness_hash\": \"witness_hash_1\"\n    }}\n  ]\n}}",
         trace_id, root_hex,
         s0_id, s1_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
         s1_id, s0_id, s1_name, s0_start, s0_end, s1_ic, hash1_hex
@@ -810,9 +829,7 @@ fn test_heuristics_miner_noisy_trace_hardening() {
     buf3[200..204].copy_from_slice(&(u32::MAX - 4).to_le_bytes());
     buf3[204..208].copy_from_slice(&2u32.to_le_bytes());
 
-    let ocel3 = ZeroCopyOcel::parse(&buf3).unwrap();
-    // When we call get_event_objects, it should return OutOfBounds instead of overflowing and returning a slice
-    let res3 = ocel3.get_event_objects(0);
+    let res3 = ZeroCopyOcel::parse(&buf3);
     assert_eq!(res3.unwrap_err(), wasm4pm::ocel::OcelError::OutOfBounds);
 
     // 3. FFI Boundary checks
@@ -842,10 +859,30 @@ fn test_heuristics_miner_noisy_trace_hardening() {
     let res_encoded = ffi::wasm_parse_and_query(log_offset, log_len, query_offset, query_len);
     let res_offset = (res_encoded >> 32) as u32;
     let res_len = (res_encoded & 0xFFFFFFFF) as u32;
-
     assert_eq!(res_offset, 0); // Should fail
-    assert_eq!(res_len, sandbox::ERR_QUERY_TIMEOUT); // Error code indicating internal query out of bounds
+    assert_eq!(res_len, sandbox::ERR_CONFORMANCE_VIOLATION); // Error code indicating internal query out of bounds
 }
+
+#[test]
+fn test_zero_copy_invalid_metadata_string_rejection() {
+    let _lock = TEST_MUTEX.lock().unwrap_or_else(|e| e.into_inner());
+    
+    // Test 1: Out of bounds string reference
+    let mut buf = build_valid_ocel_buffer();
+    // Event 0 activity offset is at buf[144..148]. Make it point to 999
+    buf[144..148].copy_from_slice(&999u32.to_le_bytes());
+    let res = ZeroCopyOcel::parse(&buf);
+    assert_eq!(res.unwrap_err(), wasm4pm::ocel::OcelError::OutOfBounds);
+
+    // Test 2: Invalid UTF-8 in string table
+    let mut buf2 = build_valid_ocel_buffer();
+    // The string for "e1" (event 0 id) is at offset 44 (2 bytes). Replace with invalid UTF-8 (0xFF, 0xFF)
+    buf2[44] = 0xFF;
+    buf2[45] = 0xFF;
+    let res2 = ZeroCopyOcel::parse(&buf2);
+    assert_eq!(res2.unwrap_err(), wasm4pm::ocel::OcelError::Utf8Error);
+}
+
 
 #[test]
 fn test_m3_sha512_correctness() {

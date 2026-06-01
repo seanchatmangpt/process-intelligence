@@ -1,0 +1,24 @@
+slug: sources-pm4py
+absolute_path: /Users/sac/process-intelligence/sources/pm4py
+description: >
+  PM4Py capability atlas and comparative oracle analysis. Contains capability atlas, oracle
+  map, divergence matrix, algorithm crosswalk, process form crosswalk, and NOT-to-copy list.
+  PM4Py serves as the comparative oracle for conformance checking, process discovery, and
+  fitness/precision evaluation.
+detected_languages:
+  - Python
+detected_frameworks:
+  - pm4py
+detected_research_surfaces:
+  - conformance-checking
+  - mining-authority
+  - comparative-oracle
+likely_thesis_role: pm4py-comparative-oracle-atlas
+key_files:
+  - /Users/sac/process-intelligence/sources/pm4py/CAPABILITY_ATLAS.md
+  - /Users/sac/process-intelligence/sources/pm4py/ORACLE_MAP.md
+  - /Users/sac/process-intelligence/sources/pm4py/NOT_TO_COPY.md
+  - /Users/sac/process-intelligence/sources/pm4py/algorithm-crosswalk.md
+readme_present: false
+receipt_present: false
+ontology_present: false

@@ -1,0 +1,36 @@
+% FILE: 02_lineage_and_context.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Lineage and Context}
+\label{sec:research-pi-program-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:research-pi-program-lineage-2016}
+
+The Process Intelligence research program originates in a 2016 language-model experiment that demonstrated a fundamental limitation: local text imitation does not conserve consequence. A model trained to reproduce surface patterns of enterprise documents---process descriptions, audit reports, governance policies---can produce outputs that are locally fluent and globally incoherent. The model reproduces the vocabulary of accountability without the structure of accountability. This finding is not a limitation of any particular architecture; it is a property of imitation learning when the training signal is textual form rather than causal structure.
+
+The lesson is directly relevant to the pi-program's design. Every artifact produced by a governance system that relies solely on language-model generation or human narrative is subject to the same failure mode: the output may read as if it certifies a lawful process while the underlying process was never executed, never logged, and never replayable. The pi-program's response to this lesson is architectural: replace narrative governance with machine-executable ontological law, replace human-asserted receipts with BLAKE3 cryptographic chains, and replace code-path trust with event-log proof. The Van der Aalst Constitution encoded in \texttt{forbidden-collapse-law.ttl}---``If the code says it worked but the event log cannot prove a lawful process happened, then it did not work''---is the formal statement of the 2016 lesson applied to governance manufacturing.
+
+\subsection{Enterprise Process Gap}
+\label{sec:research-pi-program-lineage-enterprise-gap}
+
+The enterprise process gap motivating this work has two dimensions. The first is epistemic: enterprise systems accumulate process knowledge in informal repositories (wikis, Confluence pages, PowerPoint decks) that are disconnected from the event logs that record actual process execution. When an auditor asks whether a governance policy was enforced last quarter, the answer is typically a narrative assertion backed by dashboard screenshots rather than a replayable event log with cryptographic provenance. The second dimension is structural: even organizations that collect event logs (via OpenTelemetry, Splunk, or similar) treat telemetry as monitoring feedstock rather than process evidence. Telemetry is not process evidence; it is feedstock that must be admitted through a structured pipeline before it earns evidentiary status. This distinction is formalized in \texttt{audit-results.yaml} audit\_007 (No Telemetry as Receipt: PASS) and in the \texttt{otel-weaver} doctrine boundary enforced by the pi-program ontology.
+
+The pi-program addresses both dimensions. The epistemic gap is closed by the \texttt{pi-program.ttl} ontology, which classifies every artifact in the research program into a formal \texttt{pi:ProgramRole} and requires that every \texttt{pi:ALIVE\_CLAIM} be backed by a cryptographic receipt. The structural gap is closed by the MAPE-K governance loop, which treats every process intelligence system as a managed object whose conformance fitness is continuously monitored and whose deviation from the declared model triggers a governed escalation path rather than a silent failure.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:research-pi-program-lineage-chatman-eq}
+
+The Chatman Equation \( A = \mu(O^{*}, T, L) \) asserts that a board-admissible artifact $A$ is a function $\mu$ of the governing ontology $O^{*}$, the Tera template $T$, and the event log $L$. The pi-program is the institutional instantiation of $O^{*}$ in this equation. Without the pi-program's ontology layer, the equation has no formal substrate: $\mu$ would be an ad hoc script, $O^{*}$ would be an informal specification, and $A$ would be a narrative document with no machine-verifiable provenance.
+
+The connection is made explicit in \texttt{audits/audit-results.yaml}, gate audit\_003: ``Admissibility Boundary ($R \vdash P_i = \mu(O^{*}, T, L)$): PASS.'' This gate certifies that the PROCESS\_INTELLIGENCE\_ALIVE\_001 checkpoint was authorized by a formal admissibility boundary---that is, that the governing proof system $R$ derived the manufacturing claim $P_i$ as an instance of the Chatman Equation from the ontology, template, and event log. The pi-program's ontology is therefore not merely a documentation artifact; it is a constituent of the Chatman Equation's formal semantics.
+
+The \texttt{pi:GraduationReason} taxonomy further operationalizes the equation by specifying the conditions under which execution must graduate from the COMPATIBILITY\_LAYER to the ENGINE. Among these reasons is \texttt{RebuildingProcessMiningLocally}---designated a critical tripwire---which fires when a downstream project attempts to implement discovery or conformance checking inside the compatibility layer rather than delegating to the ENGINE. This tripwire is the mechanism by which the governance authority layer enforces the architectural boundary encoded in the Chatman Equation.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:research-pi-program-lineage-receipts}
+
+The receipt-and-replay architecture is the implementation of the Chatman Equation's $L$ term. An event log $L$ earns evidentiary status only if it is replayable---that is, if a Petri net token game can traverse the log's traces and produce a fitness score that either confirms or refutes the declared process model. A BLAKE3 receipt certifies that a specific artifact was manufactured from a specific (query, template, ontology) triplet at a specific timestamp. The receipt chain certifies that the manufacturing sequence was lawful---that no artifact was substituted, backdated, or produced outside the declared pipeline.
+
+The pi-program contributes three elements to this architecture. First, it defines the \texttt{pi:RECEIPT\_SURFACE} OWL class, which classifies the receipt-emitting subsystem as a named program role with formal semantics. Second, it manufactures the receipt ledger and chain verification documents (\texttt{RECEIPT\_LEDGER\_20260601.yaml}, \texttt{RECEIPT\_CHAIN\_VERIFICATION\_20260601.yaml}) via the ggen pipeline, so that the receipt infrastructure itself has a receipted provenance. Third, it encodes the \texttt{pi:FORBIDDEN\_COLLAPSE} subtypes \texttt{EvidenceRefCollapse}, \texttt{WitnessKeyCollapse}, and \texttt{RawEvidenceExportCollapse}, which define the structural failure modes that invalidate the receipt-and-replay guarantee. These collapse subtypes ensure that the architecture's claims cannot be eroded by future engineering decisions that substitute opaque serialization for structured evidence.

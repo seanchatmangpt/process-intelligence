@@ -1,0 +1,109 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Architecture and Primitives}
+\label{sec:sources-pm4py-arch}
+
+\subsection{Core Objects}
+\label{sec:sources-pm4py-arch-objects}
+
+The oracle atlas defines ten categories of PM4Py capability. The core object primitives
+that span those categories are enumerated here with their wasm4pm-compat counterparts.
+
+\textbf{Process discovery primitives.} The inductive miner (\texttt{pm4py.discover\_petri\_net\_inductive()})
+produces a sound workflow net by construction, satisfying the three soundness conditions:
+option to complete ($\forall M \in [N, M_0\rangle, M_f \in [N, M\rangle$), proper
+completion ($M \geq M_f \Rightarrow M = M_f$), and no dead transitions ($\forall t \in T,
+\exists M \in [N, M_0\rangle, M \xrightarrow{t}$). The wasm4pm-compat counterpart is
+\texttt{WfNetConst<SOUNDNESS>} in \texttt{src/petri.rs}, the only COVERED algorithm in
+the crosswalk, providing a non-forgeable compile-time soundness witness. The heuristics
+miner (\texttt{pm4py.discover\_heuristics\_net()}) uses the dependency formula
+$\text{dep}(a, b) = (|a \to b| - |b \to a|) / (|a \to b| + |b \to a| + 1)$; its
+wasm4pm-compat type surface is MISSING --- no \texttt{HeuristicsNet} type exists in the
+compat crate.
+
+\textbf{Conformance primitives.} Token-based replay (TBR) fitness is:
+$f(\sigma, N) = \tfrac{1}{2}(1 - m/c) + \tfrac{1}{2}(1 - r/p)$,
+where $m$ is missing tokens and $r$ is remaining tokens. Alignment-based conformance
+finds the optimal alignment $\gamma^* = \operatorname{argmin}_{\gamma} \sum c(t,a)$,
+with synchronous moves at cost 0 and log/model deviations at cost $\geq 1$.
+ETConformance precision (\texttt{pm4py.precision\_etconformance()}) is the oracle for
+precision measurement in the wasm4pm bridge (\texttt{precision\_etconformance(pn\_json, log\_json)}).
+
+\textbf{POWL primitives.} The POWL 2.0 extension introduces \texttt{DecisionGraph} ---
+a non-block-structured choice graph (Kourani, Park, van der Aalst, arXiv:2505.07052, 2025)
+with a \texttt{BinaryRelation} over child sub-models, start/end sentinels, and an acyclicity
+invariant enforced by the \texttt{mine\_dg} partition algorithm. This type is MISSING from
+\texttt{src/powl.rs}.
+
+\textbf{Admission and evidence primitives.} The wasm4pm-compat antithesis to PM4Py's
+mutable object construction is \texttt{Admit::admit()} --- the only lawful admission path.
+\texttt{Evidence<T, State, Witness>} carries its invariants in const generics.
+\texttt{LossReport} / \texttt{LossPolicy} are mandatory on any lossy projection, in direct
+opposition to PM4Py's silent column drop in \texttt{pm4py.project\_log()}.
+
+\subsection{Admissible Transitions}
+\label{sec:sources-pm4py-arch-transitions}
+
+The divergence matrix defines an evidence state machine with three states:
+\texttt{Parsed} (raw data admitted, schema validated),
+\texttt{Validated*} (structural constraints checked, including soundness, consistency, and integrity),
+and \texttt{Replayed/Analyzed} (execution evidence collected, including conformance,
+fitness, and alignment). State transitions are monotonic: \texttt{ValidatedSound} cannot
+revert to \texttt{Parsed}. Every state transition must produce auditable evidence (hash,
+proof, or diagnostic). The \texttt{Parsed} to \texttt{ValidatedSound} transition requires
+a soundness certificate; the wasm4pm engine must emit a cryptographic proof token at this
+transition. The \texttt{ValidatedSound} to \texttt{Replayed} transition requires a fitness
+diagnostic attached to the evidence. These constraints are enforced at the type level in
+wasm4pm-compat; PM4Py enforces none of them.
+
+The WASM bridge exposes streaming conformance as a stateful handle:
+\texttt{streaming\_create(model\_str)} returns a numeric handle,
+\texttt{streaming\_push\_trace(handle, trace\_json)} accumulates evidence incrementally,
+and \texttt{streaming\_snapshot(handle)} returns a fitness, drift alerts, and a
+perfect-rate summary. This streaming surface has no Rust type equivalent in wasm4pm-compat
+(classified as MISSING in the crosswalk), representing a gap in the type law surface for
+real-time conformance.
+
+\subsection{Boundaries}
+\label{sec:sources-pm4py-arch-boundaries}
+
+The oracle atlas defines boundaries along three axes. The WASM boundary separates the 75
+YES-bridged functions from the 45 capabilities that exist only in the Python library. The
+most significant unbridged categories are: all object-centric process mining (OC-DFG,
+OCPN, OCEL 2.0 import/export --- all \texttt{NO}); all prediction and ML capabilities
+(next-activity prediction, remaining time, outcome prediction --- all \texttt{NO}); and
+all organizational mining (handover-of-work network, roles discovery, subcontracting ---
+all \texttt{NO}). The type-law boundary separates what belongs in wasm4pm-compat (type
+surfaces and admission paths) from what belongs in the wasm4pm engine (algorithm
+implementations). The \texttt{mine\_dg} algorithm and the \texttt{InductiveMinerChoiceGraph}
+variant are correctly absent from wasm4pm-compat --- they are engine logic. The
+\texttt{DecisionGraph} type surface is incorrectly absent, because it is the output
+type that engine logic writes into. The anti-pattern boundary separates PM4Py patterns
+that may be consumed from those that must never be replicated (see NOT\_TO\_COPY).
+
+\subsection{Failure Modes Refused}
+\label{sec:sources-pm4py-arch-failures}
+
+The NOT\_TO\_COPY manifesto enumerates ten failure modes that the oracle atlas formally
+refuses. The ten are: DataFrame-first runtime type erasure; mutable state throughout the
+object lifecycle; generic string-typed exception raising without named law types; silent
+attribute projection loss without \texttt{LossReport}; provenance-free discovery with no
+lineage from log to model; treating the TypeScript WASM bridge's JSON-string API as a
+template for Rust types; Pandas-Polars dual-format runtime dispatch that creates untested
+code paths; embedding algorithm engine logic in the compatibility crate; DSPy LLM
+integration as core infrastructure in the type-law layer; and treating OCEL 2.0 I/O as a
+file-path API rather than an admission-surface type. Each refusal is grounded in a specific
+wasm4pm-compat law that would be violated. For example, anti-pattern 3 (generic exception
+raising) is refused because wasm4pm-compat requires every refusal to carry a specific
+named law reason type --- such as \texttt{MissingFinalMarking} or
+\texttt{DanglingEventObjectLink} --- enabling proof gates and conformance diagnostics to
+name exactly what went wrong, rather than catching a bare string.
+
+\bigskip
+\noindent\textit{Source authority:} CAPABILITY\_ATLAS.md (sections 1--10, summary),
+ALGORITHM\_CROSSWALK.md (Summary Table: 2 COVERED, 16 PARTIAL, 19 MISSING),
+NOT\_TO\_COPY.md (anti-patterns 1--10), divergence-matrix.md (sections 10.1--10.2,
+evidence state machine), POWL\_CHOICEGRAPH\_ANALYSIS.md (DecisionGraph type sketch,
+mine\_dg algorithm), conformance-authority-map.md (TBR formula, alignment formula).

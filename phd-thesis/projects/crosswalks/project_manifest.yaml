@@ -1,0 +1,25 @@
+slug: crosswalks
+absolute_path: /Users/sac/process-intelligence/crosswalks
+description: >
+  Type-law crosswalk mappings between standards and execution surfaces. Covers
+  BPMN-to-WF-net, OCEL-to-XES, Process Tree-to-WF-net, WF-net-to-POWL,
+  DECLARE-to-WASM mapping, pm4py-to-wasm4pm data types, and alive-001 ISO compliance
+  crosswalk.
+detected_languages: []
+detected_frameworks:
+  - wasm4pm
+  - pm4py
+detected_research_surfaces:
+  - type-law
+  - conformance-checking
+  - standards-compliance
+likely_thesis_role: type-law-crosswalk-between-standards-and-execution
+key_files:
+  - /Users/sac/process-intelligence/crosswalks/BPMN_TO_WFNET.md
+  - /Users/sac/process-intelligence/crosswalks/OCEL_TO_XES.md
+  - /Users/sac/process-intelligence/crosswalks/declare_to_wasm_mapping.md
+  - /Users/sac/process-intelligence/crosswalks/pm4py_to_wasm4pm_data_types.md
+  - /Users/sac/process-intelligence/crosswalks/alive_001_to_iso_compliance.md
+readme_present: false
+receipt_present: false
+ontology_present: false

@@ -1,0 +1,101 @@
+% FILE: 00_project_identity.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Project Identity}
+\label{sec:research-open-ontologies-identity}
+
+\subsection{Purpose}
+\label{sec:research-open-ontologies-purpose}
+
+The \texttt{research-open-ontologies} project is the federated ontology authority layer for the
+Process Intelligence research program. Its purpose is to provide a single, validated, acyclic
+RDF corpus that grounds all process intelligence claims in public vocabularies: PROV-O
+(\texttt{http://www.w3.org/ns/prov\#}), SKOS (\texttt{http://www.w3.org/2004/02/skos/core\#}),
+DCTERMS (\texttt{http://purl.org/dc/terms/}), SHACL (\texttt{http://www.w3.org/ns/shacl\#}),
+DCAT (\texttt{http://www.w3.org/ns/dcat\#}), and OWL
+(\texttt{http://www.w3.org/2002/07/owl\#}).
+
+Without a validated, dependency-consistent ontology corpus, M\&A claims cannot be board-admissible,
+conformance verdicts cannot carry named witnesses, and the ggen manufacturing pipeline cannot emit
+BLAKE3-receipted artifacts. The open-ontologies surface is therefore a prerequisite gate, not a
+secondary concern. The COVENANT governing this program states: ``Whoever controls admissible
+process truth controls downstream data, audit, governance, automation, intelligence.'' The
+open-ontologies project is the enforcement point for that covenant at the RDF layer.
+
+\subsection{Repository Surface}
+\label{sec:research-open-ontologies-surface}
+
+The \texttt{research-open-ontologies} directory at
+\path{/Users/sac/process-intelligence/research/open-ontologies} acts as governance surface,
+not storage surface. Its primary artifact is a single YAML file in the \texttt{federated/}
+subdirectory: \path{CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml}. This file records the
+Phase~4 analysis (2026-06-01) of the entire distributed TTL corpus.
+
+The actual TTL files are distributed across two sub-programs:
+\begin{itemize}
+  \item \path{research/pi-program/ggen/ontology/} --- 14 TTL files covering the PI program
+        structural ontology, autonomic law, checkpoint ledger, governance policy, and
+        manufacturing ledgers.
+  \item \path{research/prompt-manufactory/ggen/ontology/} --- additional TTL files covering
+        the prompt manufacturing surface.
+  \item \path{ggen/} --- root-level \texttt{ontology-extensions.ttl} and
+        \texttt{wasm4pm-compat.ttl} encoding the witness lattice and compat type laws.
+\end{itemize}
+
+The federated dependency graph validates this entire distributed corpus as a single coherent
+graph, confirming 24 TTL files loaded, 4{,}622 total triples, 871 unique entities, zero
+circular dependencies, and zero dangling references.
+
+\subsection{Primary Research Role}
+\label{sec:research-open-ontologies-role}
+
+The thesis role of this project is \textbf{open-ontology-research-and-rdf-authority}. In the
+full-lifecycle process intelligence architecture, this project occupies the governance layer
+between raw evidence (OTel traces, event logs) and board-admissible claims (M\&A projections,
+conformance verdicts). Every class, property, and named individual defined in the corpus
+either derives from a public open standard or is explicitly declared as a local extension
+with a \texttt{process-intelligence.local} or \texttt{https://process.intelligence/} base URI.
+
+The project does not manufacture artifacts directly. Instead, it certifies that the ontology
+graph is in a valid state, enabling downstream ggen SPARQL-to-Tera rules to manufacture Rust
+witness-marker enums, Markdown process-form documentation, and WIT boundary definitions from
+a trustworthy knowledge base.
+
+\subsection{Key Artifacts}
+\label{sec:research-open-ontologies-artifacts}
+
+\begin{description}
+  \item[\texttt{federated/CROSS\_PROJECT\_DEPENDENCY\_GRAPH\_20260601.yaml}]
+        Phase~4 federated dependency analysis. Records \texttt{ACYCLIC}/\texttt{CONSISTENT}
+        status, \texttt{gate\_pass: true}, 24 TTL files, 4{,}622 triples, 871 entities, zero
+        violations. This is the primary gate artifact for the ontology layer.
+
+  \item[\texttt{open-ontologies-roundtrip-report.md} (Phase~7)]
+        Produced by \texttt{run-ontology-audit.py} using rdflib~2.0.9. Reports 14/14 TTL
+        files loaded, 3{,}684 total triples in unified graph, 661 unique subjects, 4/4 SPARQL
+        smoke queries passing, classification \texttt{AVAILABLE}.
+
+  \item[\texttt{ggen/wasm4pm-compat.ttl}]
+        Witness lattice ontology. Defines 8 named \texttt{compat:WitnessMarker} instances
+        (VanDerAalst1989, VanDerAalst1998, VanDerAalst2016, Murata1989, Weijters2011,
+        Leemans2013, Adriansyah2011, BlueRiverDam) as the algebraic structure grounding
+        conformance claims.
+
+  \item[\texttt{ggen/ggen.toml}]
+        Manufacturing pipeline manifest. Declares 3 SPARQL-to-Tera generation rules:
+        witness marker enum manufacturing, process form documentation, and WIT boundary
+        law. Checksums via BLAKE3.
+
+  \item[\texttt{research/pi-program/ggen/ontology/pi-program.ttl}]
+        Top-level structural ontology. Imports PROV-O, SKOS, DCTERMS, DCAT, SHACL, OWL.
+        Defines \texttt{pi:ProgramRole} taxonomy: PROGRAM, PROOF\_CELL, ENGINE,
+        COMPATIBILITY\_LAYER, MANUFACTURING\_CELL, TELEMETRY\_FEEDSTOCK,
+        MOBILE\_SUBSTRATE, WORKFLOW\_SUBSTRATE.
+
+  \item[\texttt{research/pi-program/ggen/ontology/autonomic-law.ttl}]
+        MAPE-K loop ontology. Defines \texttt{mape:MAPEKLoop} with Monitor, Analyze, Plan,
+        Execute, Knowledge subclasses; \texttt{aka:AutonomicPolicy} with
+        \texttt{ElasticTransition} (no governance token required) and
+        \texttt{ComplianceTransition} (governance token required).
+\end{description}

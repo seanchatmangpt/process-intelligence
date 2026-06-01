@@ -1,0 +1,94 @@
+% Blue River Dam — Lineage and Context
+% PhD Thesis Chapter: Lifecycle Authority and Governance Engine
+
+\section{Lineage and Context}
+\label{sec:blue-river-dam-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:blue-river-dam-lineage-2016}
+
+The thesis lineage opens in 2016 with a language-model experiment whose
+conclusion is foundational to every subsequent architectural decision: local
+text imitation does not conserve consequence. A system trained to predict the
+next token in a process log can reproduce the surface form of the log without
+encoding anything about the causal obligations the log records. Predicted tokens
+resemble process events; they do not \emph{commit} to the process invariants
+those events carry.
+
+This lesson has a direct structural implication for governance. If a prediction
+model cannot conserve the consequences encoded in a process, then governance
+expressed as a policy document that a prediction model might interpret is
+governance in name only. The only form of governance that conserves consequence
+is governance encoded in a system that cannot execute without satisfying the
+constraint. Blue River Dam is the materialization of this conclusion: its
+governance rules are forged into the Rust type system at manufacture time,
+making the consequence non-bypassable by any runtime decision.
+
+\subsection{Enterprise Process Gap}
+\label{sec:blue-river-dam-lineage-gap}
+
+The 2016 lesson surfaces as an enterprise problem in the following decade.
+Enterprise process management depends on humans to observe, document, and
+enforce process norms. When process volume outpaces human attention span, the
+gap between declared process and actual process grows without bound. Process
+logs accumulate evidence of this gap, but the logs are rarely mined against the
+declared model in real time. The gap becomes the baseline; the declared model
+becomes aspirational fiction.
+
+Blue River Dam addresses this gap structurally. The MAPE-K loop implemented
+in \texttt{BlueRiverDamOrchestrator} is not a human-facing dashboard; it is an
+autonomic controller that continuously compares observed event streams against
+the reference model stored in \texttt{Knowledge.reference\_model}, computes
+alignment fitness via the Longest Common Subsequence algorithm implemented in
+\texttt{Auditor::compute\_fitness()}, and triggers deviation protocols when
+fitness falls below 0.85 (critical) or 0.95 (warning). The enterprise gap is
+not eliminated, but its detection is reduced to the latency of a single MAPE-K
+cycle rather than the latency of a human audit.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:blue-river-dam-lineage-chatman}
+
+The Chatman Equation $A = \mu(O^*)$ defines the thesis claim that process
+authority $A$ is the application of the manufacturing operator $\mu$ to the
+ontological substrate $O^*$. Blue River Dam is the instantiation of this
+equation in executable Rust. The \texttt{Governor} struct carries
+\texttt{authority\_id: "ostar-governor"}, a string that is not incidental: it
+is the programmatic assertion that this library's root authority is the
+$O^*$ governor role defined by the Chatman Equation.
+
+The manufacturing operator $\mu$ is realized by the render operation documented
+in \texttt{receipts/blue\_river\_generation.md}: five governance doctrine sources
+were consumed (\texttt{doctrine/blue-river-dam.md},
+\texttt{lifecycle/MAPE\_K\_MAP.md},
+\texttt{lifecycle/define\_blue\_river\_dam\_lifecycle\_gate\_map.md},
+\texttt{lifecycle/checkpoint\_\_lifecycle\_model\_complete.md},
+\texttt{lifecycle/define\_autonomic\_knowledge\_actuation\_map.md}) and
+the Rust library was synthesized from them. The library is not a translation of
+the doctrine; it is the doctrine in executable form. The formal bridge from
+the 2016 LM experiment through the ggen template infrastructure to this
+synthesized artifact is implicit in the render operation and in the
+\texttt{authority\_id} string; the full chain lives in the upstream
+\texttt{doctrine/} and \texttt{ggen/} layers, not in this project directory.
+[AUTHOR THESIS: the formal proof that this render operation satisfies $\mu$
+is deferred to the dissertation's methods chapter.]
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:blue-river-dam-lineage-receipts}
+
+The thesis establishes that every governance act must produce a
+cryptographically identified receipt that can be replayed to reconstruct the
+act's provenance. Blue River Dam implements this doctrine at the MAPE-K
+Execute stage: \texttt{Executor::execute\_plan()} returns a
+\texttt{Receipt\{action\_id, timestamp, outcome\}} for every executed plan.
+The decommissioning protocol emits a specific cryptographic receipt with
+\texttt{action\_id: 0xDEC0FFEE}, marking the terminal lifecycle transition with
+an identifier that is unique in the source and therefore unambiguously
+identifiable in any audit replay.
+
+The \texttt{Knowledge} struct stores \texttt{repair\_success\_count} and
+\texttt{repair\_failure\_count}, providing a persistent record of MAPE-K cycle
+outcomes that can be replayed to reconstruct the system's repair history. This
+is the minimal viable replay surface required by the Van der Aalst Constitution
+(see \texttt{$\sim$/.claude/rules/process-mining-chicago-tdd.md}): every
+governance act must leave evidence that can be mined into a conforming
+object-centric process.

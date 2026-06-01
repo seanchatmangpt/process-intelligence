@@ -1,0 +1,26 @@
+slug: doctrine
+absolute_path: /Users/sac/process-intelligence/doctrine
+description: >
+  Immutable process law definitions — the foundational doctrine corpus. Contains canonical
+  doctrine files: Blue River Dam, Autonomic Knowledge Actuation, Full-Lifecycle Process
+  Intelligence, M&A-Ready Process Intelligence, Conformance as Law, Evidence Chain, Van der
+  Aalst Canon, Object-Centric Supremacy, Algorithm Taxonomy, Receipt Doctrine, and Downstream
+  Authorization Law. May only be appended, never rebased.
+detected_languages: []
+detected_frameworks: []
+detected_research_surfaces:
+  - process-law
+  - receipt-doctrine
+  - conformance-law
+  - lifecycle-governance
+  - m-and-a-claims
+likely_thesis_role: immutable-process-law-foundation
+key_files:
+  - /Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md
+  - /Users/sac/process-intelligence/doctrine/CONFORMANCE_AS_LAW.md
+  - /Users/sac/process-intelligence/doctrine/RECEIPT_DOCTRINE.md
+  - /Users/sac/process-intelligence/doctrine/VAN_DER_AALST_CANON.md
+  - /Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_DEFINED.md
+readme_present: false
+receipt_present: false
+ontology_present: false

@@ -1,0 +1,109 @@
+% FILE: 00_project_identity.tex
+% PROJECT: sources-papers
+% ROLE: academic-paper-classification-and-evidence-grounding
+
+\section{Project Identity}
+\label{sec:sources-papers-identity}
+
+\subsection{Purpose}
+\label{sec:sources-papers-identity-purpose}
+
+The \texttt{sources/papers} directory is the academic grounding layer of the
+process-intelligence research foundry. Its governing purpose is to translate
+formal results published in the process mining and workflow literature into
+compile-time obligations --- Rust type laws, execution graduation boundaries,
+and board-admissible evidence claims --- that downstream components
+(\texttt{wasm4pm-compat} and \texttt{wasm4pm}) must satisfy before any
+certification claim can be issued.
+
+The corpus does not merely catalogue papers. Each paper is assessed along
+three independent obligation axes: (1) what formal objects it introduces that
+must exist as zero-cost Rust types in \texttt{wasm4pm-compat}; (2) what
+algorithms it mandates that must execute in the \texttt{wasm4pm} engine with
+typed input/output boundaries; and (3) what board-admissible claims it enables
+when both type obligations and execution obligations are met. A paper for which
+axis~(1) is satisfied but axis~(2) is absent carries the status
+\texttt{COVERED\_BY\_GRADUATION\_BOUNDARY}, not \texttt{COVERED\_BY\_TYPE}.
+The distinction is precise and consequential: no claim graduates to
+board-admissible until the execution boundary is crossed.
+
+This layer was the authority source for all downstream refactors of
+\texttt{wasm4pm} and \texttt{wasm4pm-compat}. The commitment documented in
+\texttt{CLAUDE.md} is explicit: no downstream \texttt{wasm4pm} refactor may
+proceed until the research program speaks; no M\&A claim may be manufactured
+without research program grounding.
+
+\subsection{Repository Surface}
+\label{sec:sources-papers-identity-surface}
+
+The paper corpus consists of 15 files at assessment date (2026-05-31), against
+a gate target of 7 --- the surplus representing depth rather than mere
+compliance. The primary inventory document is
+\texttt{paper-canon.md} (version 30.1.2, status COMPLETE), which provides
+conformance claims for 9 papers with 150+ formal objects, 75+ algorithms
+catalogued, 120+ failure conditions, and 25+ board claim archetypes.
+
+Three mapping documents partition the obligation surface:
+\texttt{PAPER\_TO\_TYPE\_LAW.md} enumerates the zero-cost Rust type surface
+required by each paper; \texttt{PAPER\_TO\_EXECUTION\_LAW.md} enumerates
+algorithm graduation requirements with input/output type shapes;
+\texttt{PAPER\_TO\_BOARD\_CLAIM.md} identifies which claims are board-admissible
+now versus which are blocked by missing types or missing execution coverage.
+
+Seven individual deep-analysis files cover the most consequential algorithms:
+Alpha Miner, Inductive Miner, OCEL 2.0, DECLARE, POWL, YAWL, and
+Alignment-Based Conformance. Two working papers formalize mathematical
+foundations: \texttt{runtime-verification-wasm.md} (Petri net soundness,
+optimal alignment cost minimization, LTLf semantics for WASM execution) and
+\texttt{declare-satisfaction-lattice.md} (5-valued dynamic valuation lattice
+for streaming constraint checking). The \texttt{adversarial-canon.md} file
+introduces Byzantine-fault-tolerant requirements that no existing canonical
+process mining algorithm satisfies without modification.
+
+\subsection{Primary Research Role}
+\label{sec:sources-papers-identity-role}
+
+The primary research role of this project within the dissertation is
+\emph{academic-paper-classification-and-evidence-grounding}. It performs three
+functions that no other component of the research foundry replicates. First, it
+establishes the authoritative classification of 81 canonical process mining
+and workflow papers across five mutually exclusive coverage statuses:
+\texttt{COVERED\_BY\_TYPE}, \texttt{COVERED\_BY\_GRADUATION\_BOUNDARY},
+\texttt{PARTIAL\_WITH\_REASON}, \texttt{DUPLICATE\_OR\_BACKGROUND}, and
+\texttt{OUT\_OF\_SCOPE\_WITH\_REASON}. Second, it formalizes the Paper-to-Law
+mapping algorithm $\mathcal{M}: I_P \to (\mathcal{T}_{\text{Rust}},
+\mathcal{W})$, which converts formal structural invariants from published
+literature into compile-time type-safety guarantees and non-forgeable witness
+markers. Third, it documents the complete type-law obligation backlog --- 22
+named missing types across 10 \texttt{PARTIAL} papers and 14 named missing
+output shapes blocking algorithm graduation --- which drives the research
+program's open work queue.
+
+\subsection{Key Artifacts}
+\label{sec:sources-papers-identity-artifacts}
+
+The key artifacts manufactured by this project are:
+
+\begin{itemize}
+  \item \textbf{paper-canon.md} (v30.1.2, COMPLETE) --- the conformance
+    registry for 9 core papers, each with formal objects, algorithms, failure
+    conditions, compat type-law obligations, and board claim relevance.
+  \item \textbf{PAPER\_TO\_TYPE\_LAW.md} --- 18 papers fully covered with Rust
+    types; 39 at graduation boundary; 10 partial with named missing types.
+  \item \textbf{PAPER\_TO\_EXECUTION\_LAW.md} --- 29 algorithms enumerated
+    with input/output type shapes; all 29 currently carry \texttt{NO} in the
+    \texttt{wasm4pm Coverage} column, documenting the graduation obligation.
+  \item \textbf{PAPER\_TO\_BOARD\_CLAIM.md} --- 5+ Tier-1 structural
+    completeness claims with named evidence paths into \texttt{wasm4pm-compat}
+    source files and compile-fail fixtures.
+  \item \textbf{PAPER\_CANON\_RECEIPT} --- cryptographic receipt certifying
+    the 81-paper classification workflow, witnessed by the van der Aalst corpus
+    and IEEE/ACM process mining bibliography, with zero gaps remaining.
+  \item \textbf{declare-satisfaction-lattice.md} --- the 5-valued dynamic
+    valuation lattice $\mathcal{V} = \{\bot, \text{PossiblySatisfied},
+    \text{Satisfied}, \text{Violated}, \top\}$ with a verified join-semilattice
+    structure for streaming DECLARE constraint evaluation.
+  \item \textbf{core\_lifecycle\_algorithms.md} --- LaTeX-formatted mathematical
+    foundations for four core lifecycle algorithms governing compilation,
+    verification, admission, and cryptographic auditing.
+\end{itemize}

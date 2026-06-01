@@ -1,0 +1,123 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+
+\section{Architecture and Primitives}
+\label{sec:otel-weaver-arch}
+
+\subsection{Core Objects}
+\label{sec:otel-weaver-arch-objects}
+
+The \texttt{otel-weaver} architecture is defined by six core typed objects, each with a precise
+role in the ingestion pipeline. These objects are specified in experiment README files and
+\texttt{Cargo.toml} dependency declarations; they are not yet fully materialized as compiled
+artifacts (see Section~\ref{sec:otel-weaver-evidence-status}).
+
+\paragraph{Admission\texttt{<T,\,W>}.}
+A generic Rust struct parameterized over a verified feedstock payload type \texttt{T} and a
+witness type \texttt{W}. \texttt{Admission} can only be constructed by the gate function in
+\texttt{exp-003-live-check-to-refusal/src/validator.rs} after all \texttt{process.pi} field
+requirements are satisfied. It is the sole type that downstream process-intelligence consumers
+are permitted to accept as input.
+
+\paragraph{Refusal.}
+An immutable structured diagnostic emitted when an ingestion gate check fails. Contains four
+mandatory fields: \texttt{RefusalCode} (an enum identifying the failure category),
+\texttt{violated\_rule} (a string referencing the doctrine constant or mapping rule that was
+violated), \texttt{raw\_feedstock} (the rejected span payload in its original form), and
+\texttt{blake3\_digest} (a BLAKE3 hash of the raw feedstock, providing an auditable anchor
+for the refused payload). \texttt{Refusal} is never recoverable: there is no retry or partial
+admission path.
+
+\paragraph{BridgeRx.}
+A Rust schema translation bridge specified in \texttt{exp-002-weaver-diff-to-pi-residual}.
+Its formal property is that it maps a schema version diff $\Delta W = W_{\text{new}} \ominus
+W_{\text{old}}$ to a zero PI conformance residual: $R_\Delta = 0$. This means that a schema
+migration handled by \texttt{BridgeRx} introduces no new conformance measurement error in the
+downstream process-intelligence layer. The test case \texttt{test\_bridge\_translation\_equivalence}
+verifies this property inline.
+
+\paragraph{ActivityWitness.}
+A lattice-bounded Rust struct materialized from a resolved OTel Weaver registry JSON. Its fields
+correspond to the \texttt{process.pi} semantic convention group: \texttt{instance\_id},
+\texttt{activity\_name}, \texttt{lifecycle\_state}, token states, \texttt{witness\_id}, and
+\texttt{witness\_hash}. The lattice ordering is currently implemented using witness hash emptiness
+as the partial order criterion, with the join operation defined for the \texttt{ActivityWitness}
+meet-semilattice (see Section~\ref{sec:otel-weaver-open-lattice} for the open question regarding
+soundness of this join).
+
+\paragraph{OtelSpanToOcelEventProjection.}
+A zero-sized witness type that seals the telemetry-to-OCEL transformation. Its presence in a
+type signature certifies that the OCEL event was derived from an OTel span through a declared
+projection path, not fabricated or inferred. It is the type-system equivalent of a chain-of-custody
+declaration.
+
+\paragraph{LossReport.}
+A mandatory output of every \texttt{OtelSpanToOcelEventProjection}. The \texttt{OtelToOcelLossPolicy}
+names three required loss categories that must be explicitly declared: temporal precision loss,
+scope hierarchy collapse, and causal-to-correlational degradation. A projection that omits a
+\texttt{LossReport} is refused at the type boundary.
+
+\subsection{Admissible Transitions}
+\label{sec:otel-weaver-arch-transitions}
+
+The ingestion pipeline defines four admissible state transitions for a span:
+
+\begin{enumerate}
+  \item \textbf{Feedstock arrival}: A raw OTel span enters the pipeline. It carries no
+    process-intelligence type until it passes a gate check. Its status is \emph{unverified feedstock}.
+  \item \textbf{Live-check validation}: The \texttt{weaver registry live-check} command validates
+    the span's schema against the \texttt{process.pi} registry. A passing check does not promote
+    the span; it certifies structural conformance only, per doctrine constant
+    \texttt{OTEL\_WEAVER\_FEEDSTOCK\_001}.
+  \item \textbf{Admission or Refusal}: The typed gate function either wraps the span in
+    \texttt{Admission<T,\,W>} with a materialized \texttt{ActivityWitness}, or emits a
+    \texttt{Refusal} with a BLAKE3 digest. No other outcomes are permitted.
+  \item \textbf{Projection with loss declaration}: An admitted payload may be projected to an
+    OCEL event via \texttt{OtelSpanToOcelEventProjection}, producing a \texttt{LossReport}
+    as a mandatory co-output. The OCEL event and its \texttt{LossReport} together constitute
+    the ingestion layer's deliverable to the process-intelligence layer.
+\end{enumerate}
+
+Schema version transitions are handled orthogonally by \texttt{BridgeRx} (experiment
+\texttt{exp-002}), which intercepts schema diffs before they reach the admission gate.
+
+\subsection{Boundaries}
+\label{sec:otel-weaver-arch-boundaries}
+
+The project enforces three formal boundaries, each corresponding to a doctrine constant:
+
+\begin{description}
+  \item[\texttt{TELEMETRY\_NOT\_EVIDENCE\_001}] The upstream boundary: OTel telemetry may not
+    be referenced as process evidence by any foundry component. It must first pass through the
+    ingestion gate.
+  \item[\texttt{WEAVER\_FINDING\_NOT\_RECEIPT\_001}] The internal boundary: A Weaver live-check
+    finding is a schema-validation instrument reading, not a foundry receipt. These two artifacts
+    must not appear in the same claim chain.
+  \item[\texttt{REGISTRY\_DIFF\_NOT\_DRIFT\_001}] The schema-vs-behavior boundary: A Weaver
+    registry diff $\Delta R = R_{\text{new}} \ominus R_{\text{old}}$ is a schema transition
+    operator. Process drift $\Delta L = \text{Drift}(L_{\text{current}}, L_{\text{baseline}}, M)$
+    is a runtime behavioral deviation measured against a process model. These are not the same
+    measurement and must never be substituted for one another.
+\end{description}
+
+\subsection{Failure Modes Refused}
+\label{sec:otel-weaver-arch-failures}
+
+The architecture explicitly names and refuses five failure modes:
+
+\begin{enumerate}
+  \item \textbf{Dashboard truth}: Treating a visualization of telemetry as a process verdict.
+    Refused by doctrine \texttt{NO\_DASHBOARD\_TRUTH\_001}.
+  \item \textbf{Schema-as-compliance}: Treating a Weaver schema validation pass as a compliance
+    finding. Refused by the \texttt{Admission<T,\,W>} gate requirement and
+    \texttt{OTEL\_WEAVER\_FEEDSTOCK\_001}.
+  \item \textbf{Undeclared loss}: Projecting OTel spans to OCEL events without a
+    \texttt{LossReport}. Refused at the type boundary by the
+    \texttt{OtelSpanToOcelEventProjection} zero-sized type requirement.
+  \item \textbf{Drift conflation}: Reporting a schema registry diff as process drift.
+    Refused by \texttt{REGISTRY\_DIFF\_NOT\_DRIFT\_001} and the five YAML mapping tables.
+  \item \textbf{Unwitnessed admission}: Admitting a payload without a lattice-bounded
+    \texttt{ActivityWitness}. Refused by the generic type parameter \texttt{W} in
+    \texttt{Admission<T,\,W>}, which cannot be instantiated without a witness value.
+\end{enumerate}

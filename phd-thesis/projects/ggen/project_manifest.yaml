@@ -1,0 +1,35 @@
+slug: ggen
+absolute_path: /Users/sac/process-intelligence/ggen
+description: >
+  Governance Generation Engine — configuration-driven artifact manufacturing system built on
+  SPARQL queries and Tera templates. Transforms process intelligence ontology into
+  board-admissible M&A decks, diligence workbooks, Blue River orchestrators, wasm4pm-compat
+  law, and TypeScript visualizer dashboards. The manufacturing machinery of the entire
+  research foundry.
+detected_languages:
+  - SPARQL
+  - Turtle
+  - Tera
+  - Rust
+  - TOML
+detected_frameworks:
+  - ggen
+  - SPARQL/RDF
+  - Tera templates
+detected_research_surfaces:
+  - ontology
+  - command-grammar
+  - receipt-chain
+  - manufacturing-pipeline
+  - board-claims
+  - witness-lattice
+likely_thesis_role: manufacturing-machinery-and-code-generation-engine
+key_files:
+  - /Users/sac/process-intelligence/ggen/ggen.toml
+  - /Users/sac/process-intelligence/ggen/ontology-extensions.ttl
+  - /Users/sac/process-intelligence/ggen/wasm4pm-compat.ttl
+  - /Users/sac/process-intelligence/ggen/queries/extract-board-claims.rq
+  - /Users/sac/process-intelligence/ggen/templates/blue-river.tera
+readme_present: true
+receipt_present: true
+ontology_present: true

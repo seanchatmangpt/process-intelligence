@@ -1,0 +1,25 @@
+slug: prompts
+absolute_path: /Users/sac/process-intelligence/prompts
+description: >
+  Downstream implementation prompts and execution plans. Contains prompts for wasm4pm
+  refactor, M&A deck manufacture, paper fixture manufacturing, public standards expansion,
+  ggen projection integration, Blue River Dam lifecycle authority, compat gap close, and
+  v30 execution mandate.
+detected_languages:
+  - SPARQL
+  - Tera
+detected_frameworks:
+  - ggen
+detected_research_surfaces:
+  - command-grammar
+  - manufacturing-pipeline
+likely_thesis_role: downstream-manufacturing-prompt-corpus
+key_files:
+  - /Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md
+  - /Users/sac/process-intelligence/prompts/downstream_m&a_deck_manufacturing.md
+  - /Users/sac/process-intelligence/prompts/v30-execution-mandate.md
+  - /Users/sac/process-intelligence/queries/extract-pcp-types.rq
+  - /Users/sac/process-intelligence/templates/pcp-types.ts.tera
+readme_present: false
+receipt_present: false
+ontology_present: false

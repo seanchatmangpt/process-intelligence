@@ -78,6 +78,12 @@ pub struct ConformanceVerdicts {
     pub total_cases: usize,
 }
 
+impl Default for ConformanceVerdicts {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ConformanceVerdicts {
     /// Create empty conformance verdicts
     pub fn new() -> Self {
@@ -688,11 +694,7 @@ impl AlignmentEngine {
                 }
             }
         }
-        if log_remaining >= model_remaining {
-            log_remaining - model_remaining
-        } else {
-            model_remaining - log_remaining
-        }
+        log_remaining.abs_diff(model_remaining)
     }
 
     /// Align entire event log and compute aggregate conformance verdicts
@@ -823,6 +825,175 @@ impl Lattice for AlignmentWitness {
     }
     fn partial_cmp(&self, _other: &Self) -> Option<std::cmp::Ordering> {
         Some(std::cmp::Ordering::Equal)
+    }
+}
+
+// =========================================================================
+// RATIONAL METRICS & COMPILE-TIME/RUNTIME VALIDATION
+// =========================================================================
+
+/// Quality metric kind values
+pub const METRIC_KIND_FITNESS: u8 = 0;
+pub const METRIC_KIND_PRECISION: u8 = 1;
+pub const METRIC_KIND_F1: u8 = 2;
+pub const METRIC_KIND_GENERALIZATION: u8 = 3;
+pub const METRIC_KIND_SIMPLICITY: u8 = 4;
+
+/// A rational metric provably in [0,1] at compile time.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Between01<const NUM: u64, const DEN: u64>;
+
+impl<const NUM: u64, const DEN: u64> Default for Between01<NUM, DEN> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<const NUM: u64, const DEN: u64> Between01<NUM, DEN> {
+    pub const VALID: () = {
+        assert!(DEN > 0, "Denominator must be greater than 0");
+        assert!(NUM <= DEN, "Between01 metric must be in [0, 1] (NUM <= DEN)");
+    };
+
+    /// Create a new compile-time validated Between01 metric.
+    /// This will trigger a compile-time check when monomorphized.
+    #[allow(path_statements)]
+    pub fn new() -> Self {
+        Self::VALID;
+        Between01
+    }
+
+    /// Convert to f64
+    pub fn value(&self) -> f64 {
+        NUM as f64 / DEN as f64
+    }
+}
+
+/// Generic Metric type parameterised by MetricKind and rational bounds
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Metric<const KIND: u8, const NUM: u64, const DEN: u64>;
+
+impl<const KIND: u8, const NUM: u64, const DEN: u64> Default for Metric<KIND, NUM, DEN> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<const KIND: u8, const NUM: u64, const DEN: u64> Metric<KIND, NUM, DEN> {
+    pub const VALID: () = {
+        assert!(DEN > 0, "Denominator must be greater than 0");
+        assert!(NUM <= DEN, "Metric must be in [0, 1] (NUM <= DEN)");
+    };
+
+    /// Create a new compile-time validated Metric.
+    /// This will trigger a compile-time check when monomorphized.
+    #[allow(path_statements)]
+    pub fn new() -> Self {
+        Self::VALID;
+        Metric
+    }
+
+    pub fn value(&self) -> f64 {
+        NUM as f64 / DEN as f64
+    }
+}
+
+pub type FitnessConst<const NUM: u64, const DEN: u64> = Metric<METRIC_KIND_FITNESS, NUM, DEN>;
+pub type PrecisionConst<const NUM: u64, const DEN: u64> = Metric<METRIC_KIND_PRECISION, NUM, DEN>;
+pub type F1Const<const NUM: u64, const DEN: u64> = Metric<METRIC_KIND_F1, NUM, DEN>;
+
+// =========================================================================
+// RUNTIME MATHEMATICAL VALIDATION
+// =========================================================================
+
+/// Errors returned during fractional metric validation
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MetricError {
+    NaNValue,
+    InfiniteValue,
+    OutOfBounds,
+    DivisionByZero,
+}
+
+impl std::fmt::Display for MetricError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::NaNValue => write!(f, "Metric value cannot be NaN"),
+            Self::InfiniteValue => write!(f, "Metric value cannot be Infinite"),
+            Self::OutOfBounds => write!(f, "Metric value must be in [0.0, 1.0]"),
+            Self::DivisionByZero => write!(f, "Denominator cannot be zero"),
+        }
+    }
+}
+
+/// Runtime-validated fractional metric bounded in [0.0, 1.0]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct RuntimeBetween01 {
+    value: f64,
+}
+
+impl RuntimeBetween01 {
+    /// Create a new RuntimeBetween01 with mathematical validation
+    pub fn new(value: f64) -> Result<Self, MetricError> {
+        if value.is_nan() {
+            return Err(MetricError::NaNValue);
+        }
+        if value.is_infinite() {
+            return Err(MetricError::InfiniteValue);
+        }
+        if !(0.0..=1.0).contains(&value) {
+            return Err(MetricError::OutOfBounds);
+        }
+        Ok(RuntimeBetween01 { value })
+    }
+
+    /// Create from a ratio (numerator / denominator) with mathematical validation
+    pub fn from_ratio(num: usize, den: usize) -> Result<Self, MetricError> {
+        if den == 0 {
+            return Err(MetricError::DivisionByZero);
+        }
+        let val = num as f64 / den as f64;
+        Self::new(val)
+    }
+
+    pub fn value(&self) -> f64 {
+        self.value
+    }
+}
+
+/// Runtime-validated typed fitness metric
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct FitnessMetric(pub RuntimeBetween01);
+
+impl FitnessMetric {
+    pub fn new(value: f64) -> Result<Self, MetricError> {
+        Ok(FitnessMetric(RuntimeBetween01::new(value)?))
+    }
+
+    pub fn from_ratio(num: usize, den: usize) -> Result<Self, MetricError> {
+        Ok(FitnessMetric(RuntimeBetween01::from_ratio(num, den)?))
+    }
+
+    pub fn value(&self) -> f64 {
+        self.0.value()
+    }
+}
+
+/// Runtime-validated typed precision metric
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
+pub struct PrecisionMetric(pub RuntimeBetween01);
+
+impl PrecisionMetric {
+    pub fn new(value: f64) -> Result<Self, MetricError> {
+        Ok(PrecisionMetric(RuntimeBetween01::new(value)?))
+    }
+
+    pub fn from_ratio(num: usize, den: usize) -> Result<Self, MetricError> {
+        Ok(PrecisionMetric(RuntimeBetween01::from_ratio(num, den)?))
+    }
+
+    pub fn value(&self) -> f64 {
+        self.0.value()
     }
 }
 
@@ -1000,5 +1171,59 @@ mod tests {
         assert_eq!(alignment3.moves[1], (Some("Audit".to_string()), None));
         assert_eq!(alignment3.moves[2], (Some("Approve".to_string()), Some("Approve".to_string())));
         assert_eq!(alignment3.moves[3], (Some("Ship".to_string()), Some("Ship".to_string())));
+    }
+
+    #[test]
+    fn test_compile_time_metrics() {
+        // Compile-time checks: these must compile and execute successfully
+        let m1 = Between01::<3, 4>::new();
+        assert_eq!(m1.value(), 0.75);
+
+        let m2 = Between01::<1, 1>::new();
+        assert_eq!(m2.value(), 1.0);
+
+        let m3 = Between01::<0, 5>::new();
+        assert_eq!(m3.value(), 0.0);
+
+        let f = FitnessConst::<8, 10>::new();
+        assert_eq!(f.value(), 0.8);
+
+        let p = PrecisionConst::<9, 10>::new();
+        assert_eq!(p.value(), 0.9);
+
+        let f1 = F1Const::<5, 10>::new();
+        assert_eq!(f1.value(), 0.5);
+    }
+
+    #[test]
+    fn test_runtime_metric_validation() {
+        // Valid values
+        assert!(RuntimeBetween01::new(0.0).is_ok());
+        assert!(RuntimeBetween01::new(0.5).is_ok());
+        assert!(RuntimeBetween01::new(1.0).is_ok());
+        assert_eq!(RuntimeBetween01::new(0.75).unwrap().value(), 0.75);
+
+        // Out of bounds
+        assert_eq!(RuntimeBetween01::new(-0.1).unwrap_err(), MetricError::OutOfBounds);
+        assert_eq!(RuntimeBetween01::new(1.01).unwrap_err(), MetricError::OutOfBounds);
+
+        // NaN & Infinite
+        assert_eq!(RuntimeBetween01::new(f64::NAN).unwrap_err(), MetricError::NaNValue);
+        assert_eq!(RuntimeBetween01::new(f64::INFINITY).unwrap_err(), MetricError::InfiniteValue);
+        assert_eq!(RuntimeBetween01::new(f64::NEG_INFINITY).unwrap_err(), MetricError::InfiniteValue);
+
+        // Ratio creation
+        assert!(RuntimeBetween01::from_ratio(3, 4).is_ok());
+        assert_eq!(RuntimeBetween01::from_ratio(5, 4).unwrap_err(), MetricError::OutOfBounds);
+        assert_eq!(RuntimeBetween01::from_ratio(3, 0).unwrap_err(), MetricError::DivisionByZero);
+
+        // Typed wrappers
+        assert!(FitnessMetric::new(0.85).is_ok());
+        assert_eq!(FitnessMetric::new(1.5).unwrap_err(), MetricError::OutOfBounds);
+        assert_eq!(FitnessMetric::from_ratio(4, 5).unwrap().value(), 0.8);
+
+        assert!(PrecisionMetric::new(0.95).is_ok());
+        assert_eq!(PrecisionMetric::new(-0.5).unwrap_err(), MetricError::OutOfBounds);
+        assert_eq!(PrecisionMetric::from_ratio(9, 10).unwrap().value(), 0.9);
     }
 }

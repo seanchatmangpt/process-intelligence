@@ -1,0 +1,112 @@
+% FILE: 01_research_question.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Research Question}
+\label{sec:otel-weaver-exp-002-diff-to-residual-rq}
+
+\subsection{Problem Statement}
+\label{sec:otel-weaver-exp-002-diff-to-residual-rq-problem}
+
+Process intelligence systems that consume OpenTelemetry telemetry feedstock face a
+class of false-positive conformance violation that arises not from actual behavioral
+deviation but from schema version misalignment. When an OTel Weaver registry is
+updated---for example, to rename an attribute from \texttt{process.pi.activity.name}
+to \texttt{process.pi.transition.name} in order to align with Petri net
+nomenclature---the conformance court receives telemetry records whose field names no
+longer match the court's parser expectations. If no translation layer exists between
+the ingestion boundary and the conformance algorithm, the court will compute a reduced
+fitness score for those records, interpreting the missing \texttt{process.pi.activity.name}
+field as evidence of an unlawful activity omission.
+
+This problem is documented in \texttt{doctrine/registry-diff-is-not-process-drift.md}
+(anchored at \texttt{REGISTRY\_DIFF\_NOT\_DRIFT\_001}) as the ``false positive'' hazard:
+an organization updates its telemetry schema and the process mining dashboard reports
+a sudden compliance failure because the expected activity label has ``disappeared.''
+The process is unchanged; only the telemetry label structure drifted. Without an
+architectural mechanism to intercept and correct this, the conformance court becomes
+polluted by measurement theater---schema noise masquerading as operational risk.
+
+The problem is further sharpened by the addition case: when schema S2 introduces
+a new field (\texttt{process.pi.token.color} for Colored Petri Net token tracking),
+the translation layer must also decide whether to pass the new field downstream, drop
+it with a recorded \texttt{LossReport}, or map it to a corresponding S1 concept. The
+current implementation in \texttt{src/bridge.rs} drops \texttt{token\_color} silently
+during \texttt{translate()}, which is an open question the experiment has not yet
+resolved with documented intent.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:otel-weaver-exp-002-diff-to-residual-rq-old-regime}
+
+The old-regime assumption challenged by EXP-002 is: \emph{telemetry schema
+compliance is a sufficient proxy for process conformance}. This assumption manifests
+in architectures that route OTel validation results directly into compliance
+dashboards without a separate process mining layer. Under this assumption, if the
+telemetry collector accepts a span without error, the process it describes is assumed
+to have executed lawfully.
+
+The doctrine file \texttt{otel-weaver-is-feedstock.md} (anchored at
+\texttt{OTEL\_WEAVER\_FEEDSTOCK\_001}) articulates the refutation: schema validation
+verifies that instruments are recording within expected structural parameters, not that
+the recorded process followed its normative model. A \texttt{dispatch\_payment} span
+can pass every OTel Weaver validation rule while describing a payment dispatched
+before a credit check was completed---a causal ordering violation that Weaver has no
+concept of. The old regime conflates the engineering metric (structural field
+presence) with the legal assertion (lawful execution order).
+
+EXP-002 operationalizes this refutation at the specific juncture where schema evolution
+makes the conflation most dangerous: a Weaver registry update that renames fields
+will cause the old regime's combined schema-plus-conformance check to fire a false
+compliance alert on every record emitted under the new schema, until the parser is
+manually updated.
+
+\subsection{Hypothesis}
+\label{sec:otel-weaver-exp-002-diff-to-residual-rq-hypothesis}
+
+\textbf{Hypothesis:} A \texttt{BridgeRx} translation layer placed at the ingestion
+boundary, which maps S2 telemetry feedstock back to S1-compatible structures before
+the conformance algorithm fires, will drive the PI Conformance Residual to zero:
+\[
+    \mathcal{R}_{\Delta} = |f_{S_1}(\mathcal{L}_2, M) - f_{S_2}(\mathcal{L}_2, M)| = 0
+\]
+
+This hypothesis claims that the architectural placement of the translation bridge is
+sufficient to neutralize schema-evolution noise in the conformance signal, without
+requiring any modification to the normative process model $M$ or to the conformance
+algorithm itself. The bridge operates purely on the feedstock before it reaches the
+court, preserving the court's independence from ingestion concerns.
+
+A secondary hypothesis is that this translation can be implemented using Rust's type
+system such that the compiler enforces the categorical separation at compile time:
+\texttt{TelemetryFeedstockS2} and \texttt{TelemetryFeedstockS1} are distinct types,
+and the \texttt{translate()} method is the only lawful path from one to the other.
+
+\subsection{Success Criteria}
+\label{sec:otel-weaver-exp-002-diff-to-residual-rq-success}
+
+Success for EXP-002 requires all of the following, as defined in the broader
+checkpoint framework at \texttt{otel-weaver/checkpoints/}:
+
+\begin{enumerate}
+    \item \textbf{Compilation}: The \texttt{bridge} library target must compile without
+          errors under \texttt{cargo build}.
+    \item \textbf{Unit test passage}: \texttt{test\_bridge\_translation\_equivalence}
+          must pass, asserting that an S2 record with
+          \texttt{transition\_name = "approve\_loan"} is translated to an S1 record
+          with \texttt{activity\_name = "approve\_loan"} and that the BLAKE3
+          witness hash is preserved through translation.
+    \item \textbf{Integration test passage}: The \texttt{BridgeRx} translation path
+          must pass within the \texttt{wasm4pm} integration suite referenced in
+          \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}.
+    \item \textbf{Documented loss semantics}: The \texttt{token\_color} field drop
+          during \texttt{translate()} must be documented as either intentional lossy
+          projection with a \texttt{LossReport} receipt, or remediated by a downstream
+          mapping.
+    \item \textbf{Ontology surface}: A TTL/RDF surface defining the S1/S2 schema types
+          and the \texttt{BridgeRx} translation must exist to connect this experiment
+          to the OCEL/process-intelligence ontology layer. (\emph{As of the current
+          status this criterion is unmet --- see Section~\ref{sec:otel-weaver-exp-002-diff-to-residual-open}.})
+\end{enumerate}
+
+Criteria 1 and 2 are partially satisfied by existing evidence. Criteria 3, 4, and 5
+remain open, placing the experiment's current status at PARTIAL rather than ALIVE.

@@ -1,0 +1,24 @@
+slug: experiments-visualizer-nextjs
+absolute_path: /Users/sac/process-intelligence/experiments/visualizer-nextjs
+description: >
+  Next.js process intelligence visualizer dashboard. TypeScript/React application (Next.js
+  16, React 19) providing the full web-based process intelligence visualization surface with
+  Tailwind CSS styling.
+detected_languages:
+  - TypeScript
+  - JavaScript
+detected_frameworks:
+  - Next.js
+  - React
+detected_research_surfaces:
+  - process-evidence
+  - manufacturing-pipeline
+likely_thesis_role: web-based-pi-visualization-surface
+key_files:
+  - /Users/sac/process-intelligence/experiments/visualizer-nextjs/package.json
+  - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/page.tsx
+  - /Users/sac/process-intelligence/experiments/visualizer-nextjs/README.md
+  - /Users/sac/process-intelligence/experiments/visualizer-nextjs/CLAUDE.md
+readme_present: true
+receipt_present: false
+ontology_present: false

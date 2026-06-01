@@ -1,0 +1,106 @@
+% Blue River Dam — Implementation Surface
+% PhD Thesis Chapter: Lifecycle Authority and Governance Engine
+
+\section{Implementation Surface}
+\label{sec:blue-river-dam-implementation}
+
+\subsection{Source Files}
+\label{sec:blue-river-dam-implementation-sources}
+
+The implementation surface is intentionally minimal. The entire library is
+contained in a single source file:
+
+\begin{description}
+  \item[\texttt{blue\_river\_dam/src/lib.rs}] 965 lines as of 2026-06-01
+    (post-receipt state). Organized into five sections delimited by comment
+    banners: (1) Governance Authority Hierarchy, (2) MAPE-K Loop
+    Implementation, (3) Lifecycle State Machine, (4) Orchestrator root struct
+    with \texttt{mape\_k\_cycle()}, and (5) Test suite. The file carries the
+    module-level docstring citing the three primary governance doctrine sources
+    from which it was synthesized, and the declaration
+    \texttt{License: Executable only under wasm4pm graduation bridge}.
+  \item[\texttt{blue\_river\_dam/Cargo.toml}] Minimal Cargo manifest: package
+    name \texttt{blue\_river\_dam}, version 0.1.0, edition 2021. Empty
+    \texttt{[dependencies]} and \texttt{[dev-dependencies]} sections, confirming
+    zero external dependencies.
+  \item[\texttt{blue\_river\_dam/README.md}] Project-level documentation
+    (content not cited in receipt).
+  \item[\texttt{blue\_river\_dam/GENERATION\_RECEIPT.md}] The render
+    certification document. Records 5/5 tests passing, zero unsafe code, zero
+    warnings, and full MAPE-K loop closure verification.
+\end{description}
+
+A root-level artifact, \texttt{liblib.rlib} (95{,}336 bytes, dated
+2026-06-01T00:09), also exists in the project directory. This appears to be a
+pre-Cargo compilation artifact from a direct \texttt{rustc} invocation
+(as documented in \texttt{GENERATION\_RECEIPT.md}'s compilation trace), predating
+the Cargo-based build. Its relationship to the Cargo-built rlibs is
+undocumented; see Section~\ref{sec:blue-river-dam-questions-gaps}.
+
+\subsection{Commands}
+\label{sec:blue-river-dam-implementation-commands}
+
+The project follows the global \texttt{cargo make} preference documented in
+\texttt{$\sim$/.claude/CLAUDE.md}. However, because the \texttt{Cargo.toml}
+contains no \texttt{[workspace]} declaration and no \texttt{Makefile.toml},
+the following standard Cargo commands are the authoritative build surface:
+
+\begin{itemize}
+  \item \texttt{cargo build --release} --- produces
+    \texttt{target/release/libblue\_river\_dam.rlib} and
+    \texttt{target/release/libblue\_river\_dam.dylib} (cdylib target).
+  \item \texttt{cargo test --lib} --- compiles and runs all 8 test functions
+    in the \texttt{\#[cfg(test)] mod tests} block.
+  \item \texttt{cargo check} --- type-checks without linking; the fastest
+    way to verify that no \texttt{unsafe} block has been introduced.
+  \item \texttt{rustc --crate-type lib src/lib.rs --edition 2021 -W unsafe-code}
+    --- the direct-invocation form used during initial synthesis, as recorded
+    in \texttt{GENERATION\_RECEIPT.md}.
+\end{itemize}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:blue-river-dam-implementation-data}
+
+Blue River Dam does not expose an RDF or SPARQL surface directly. Its data
+model is expressed entirely in Rust types. The key data-bearing types are:
+
+\begin{itemize}
+  \item \texttt{PetriNetTopology\{places: Vec<String>, transitions: Vec<String>,
+    flow: Vec<(String, String)>\}} --- the input type to WF-net soundness
+    validation.
+  \item \texttt{EventStream\{events: Vec<ProcessEvent>, window\_size: usize\}} ---
+    the runtime event input type consumed by \texttt{Monitor::ingest\_stream()}.
+  \item \texttt{ProcessEvent\{timestamp: u64, activity: u32, case\_id: u64\}} ---
+    the atomic unit of process evidence.
+  \item \texttt{ConformanceMetric\{fitness: f64, trace\_id: u64, alignment\_moves: u32,
+    threshold: f64\}} --- the primary conformance output type.
+  \item \texttt{Knowledge\{reference\_model: String, historical\_metrics: String,
+    violation\_patterns: String, successful\_repairs: String,
+    repair\_success\_count: u32, repair\_failure\_count: u32\}} --- the
+    persistent MAPE-K knowledge store.
+\end{itemize}
+
+The autonomic activation layer extends this surface with YAML-format governance
+artifacts: \texttt{AndonGatePolicy} (5 gates), \texttt{DriftDetectionMonitor}
+(6 SPARQL-based rules), and a \texttt{MAPEKLoop} manifest --- all recorded in
+\texttt{AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml}.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:blue-river-dam-implementation-templates}
+
+Blue River Dam is itself a rendered artifact, not the renderer. The
+\texttt{GENERATION\_RECEIPT.md} documents that the library was synthesized
+by the Lifecycle Orchestrator Renderer consuming five governance doctrine
+sources. The rendering strategy is documented in the receipt under four
+headings: Authority Hierarchy, MAPE-K Loop, Lifecycle State Machine, and
+Governance Enforcement.
+
+The 11 Jinja2 templates that make downstream rendering possible are housed in
+\texttt{wasm4pm-compat/templates/} rather than in this project directory.
+The lifecycle state machine template
+(\texttt{templates/lifecycle/state\_machine.rs.j2}) and the actuation template
+(\texttt{templates/lifecycle/actuation.rs.j2}) are the upstream templates
+whose logical structure is instantiated by the Blue River Dam library.
+[AUTHOR THESIS: the formal correspondence between the Jinja2 templates and the
+synthesized Rust source has not been mechanically verified in this project
+directory; it is asserted by the render receipt.]

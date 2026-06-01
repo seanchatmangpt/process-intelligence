@@ -719,7 +719,7 @@ pub fn heuristics_miner(
     let unique_variants: HashSet<Vec<String>> = cases.into_values().collect();
 
     let witness = HeuristicsWitness {
-        dependency_threshold: ((dependency_threshold * 255.0) as u8).min(255),
+        dependency_threshold: (dependency_threshold * 255.0) as u8,
         edge_count: net.flow.len(),
         variant_count: unique_variants.len(),
         self_loop_count,
@@ -808,13 +808,11 @@ pub fn alpha_miner(
         flow.push(("source".to_string(), start_act.clone()));
     }
 
-    let mut place_counter = 0;
-    for (a, b) in &causal_relations {
+    for (place_counter, (a, b)) in causal_relations.iter().enumerate() {
         let p_name = format!("p_c_{}", place_counter);
         places.push(p_name.clone());
         flow.push((a.clone(), p_name.clone()));
         flow.push((p_name, b.clone()));
-        place_counter += 1;
     }
 
     for end_act in &end_activities {

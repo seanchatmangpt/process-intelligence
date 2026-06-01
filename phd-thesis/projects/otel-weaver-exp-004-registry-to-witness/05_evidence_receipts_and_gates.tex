@@ -1,0 +1,130 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Evidence, Receipts, and Gates Chapter
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:otel-weaver-exp-004-registry-to-witness-evidence}
+
+\subsection{Tests}
+\label{sec:otel-weaver-exp-004-registry-to-witness-tests}
+
+The primary test surface for EXP-004's runtime behavior is
+\texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs}. This file contains a single
+comprehensive test function \texttt{test\_weaver\_integration\_synthesis} that exercises
+the full feedstock-to-court pipeline across five cases:
+
+\begin{enumerate}
+  \item \textbf{Valid admission.} A nominally correct Schema~V2 feedstock record with all
+    required fields present and a valid 64-character BLAKE3 hash is admitted. The test
+    asserts that \texttt{admission.payload.instance\_id == "inst-abc-123"}, that
+    \texttt{transition\_name} is translated to \texttt{activity\_name} via \texttt{BridgeRx},
+    and that the witness fields are preserved unmodified through the \texttt{validate\_and\_project}
+    boundary.
+  \item \textbf{Missing instance ID.} Feedstock with \texttt{instance\_id: None} is
+    refused with \texttt{RefusalCode::MissingInstanceId}. The refusal carries the original
+    feedstock and a 64-character BLAKE3 digest of the failure context.
+  \item \textbf{Missing activity name.} Feedstock with \texttt{transition\_name: None} is
+    refused with \texttt{RefusalCode::MissingActivityName}.
+  \item \textbf{Missing witness ID.} Feedstock with \texttt{witness\_id: None} is refused
+    with \texttt{RefusalCode::MissingWitnessId}.
+  \item \textbf{Invalid witness signature.} Feedstock carrying a \texttt{witness\_hash}
+    of fewer than 64 characters (\texttt{"short\_hash"}) is refused with
+    \texttt{RefusalCode::InvalidWitnessSignature}.
+\end{enumerate}
+
+The runtime checkpoint \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} records the
+following test execution output:
+\begin{verbatim}
+   Compiling wasm4pm v30.1.2
+    Finished test profile [unoptimized + debuginfo] in 0.17s
+     Running tests/weaver_integration_tests.rs
+running 1 test
+test test_weaver_integration_synthesis ... ok
+test result: ok. 1 passed; 0 failed
+\end{verbatim}
+The same checkpoint records 62 total tests passing across the \texttt{wasm4pm},
+\texttt{wasm4pm-compat}, and \texttt{blue\_river\_dam} packages with zero side effects.
+
+No unit tests specific to \texttt{codegen/generator.rs} exist. The generator's correctness
+is attested only by the existence of the \texttt{generated\_witnesses.rs} output artifact
+and its correspondence to the README specification.
+
+\subsection{Receipts}
+\label{sec:otel-weaver-exp-004-registry-to-witness-receipts-section}
+
+\textbf{No cryptographic receipt file specific to EXP-004 exists.} This is a documented
+gap. The project \texttt{project\_manifest.yaml} records \texttt{receipt\_present: false}.
+
+The only provenance record for the materialized \texttt{generated\_witnesses.rs} artifact
+is the embedded timestamp comment in its header:
+\begin{verbatim}
+//! Generated at: 2026-06-01T10:10:51-07:00
+\end{verbatim}
+This comment attests when the file was materialized but does not attest which version of
+the generator was executed, which input schema was used, or which operator initiated the
+generation. It cannot serve as a cryptographic receipt in the sense required by the
+research program's receipt-chain doctrine.
+
+The parent ecosystem checkpoints carry SHA-256 seals:
+\begin{itemize}
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}: seal hash
+    \texttt{e6bc59b8d210e309228d4bf09c0fa4db55fe310efc35ad1a89b3f021e85a67f1}
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}: seal hash
+    \texttt{86ef45b3c63ae38007701169bcf0abbda2694a43160f3f8d3695c6255b02cb44}
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md}: seal hash
+    \texttt{d4b844c48811199b21d2746af484456d9b2d8643c154988cfcf35fe310efc35a}
+\end{itemize}
+These seals cover the broader OTel Weaver integration suite but do not individually attest
+the EXP-004 code-generation step. A dedicated receipt for the generator execution step
+is required before this experiment can be elevated from PARTIAL to a fully receipted
+research finding.
+
+\subsection{Checkpoints}
+\label{sec:otel-weaver-exp-004-registry-to-witness-checkpoints}
+
+Three checkpoints are directly relevant to EXP-004:
+
+\textbf{\texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md}} (Design Gate, 2026-06-01) ---
+Records the initial design phase: vocabulary translation protocols established, categorical
+boundary invariants defined (\textit{Rule~1}: telemetry is feedstock; \textit{Rule~2}:
+conformance is court; \textit{Rule~3}: schema diffs are not process drift), and scaffold
+directories verified. Status: \texttt{PARTIAL / COMPLETED DESIGN}.
+
+\textbf{\texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}} (Full Suite, 2026-06-01) ---
+Records the complete five-experiment suite as specified, verified, and complete. EXP-004
+is listed in section D (Automated Witness Generation) with generator and materialized
+output confirmed. Status: \texttt{COMPLETE \& ACTIVE}. This checkpoint covers the suite
+but does not individually verify the generator execution.
+
+\textbf{\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}} (Runtime Integration Gate,
+2026-06-01) --- Records the synthesis integration test passing and 62 total tests passing.
+Status: \texttt{COMPLETE \& ACTIVE / PASSED RUNTIME INTEGRATION GATE}.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:otel-weaver-exp-004-registry-to-witness-status}
+
+\textbf{EXP-004 status: PARTIAL.}
+
+The experiment satisfies two of its five success criteria fully:
+\begin{enumerate}
+  \item The materialized file \texttt{src/generated\_witnesses.rs} exists on disk and
+    matches the README specification --- \textbf{confirmed}.
+  \item The integration test \texttt{test\_weaver\_integration\_synthesis} passes and 62
+    ecosystem tests pass --- \textbf{confirmed}.
+\end{enumerate}
+
+Three success criteria are not fully satisfied:
+\begin{enumerate}
+  \setcounter{enumi}{2}
+  \item No \texttt{Cargo.toml} exists in the EXP-004 directory; the stated \texttt{rustc}
+    compilation command is insufficient without a crate context --- \textbf{PARTIAL}.
+  \item The resolved schema is inlined as a string literal rather than read from a
+    Weaver-produced file; genuine Weaver CLI invocation against \texttt{process\_pi.yaml}
+    has not been verified --- \textbf{PARTIAL}.
+  \item No cryptographic receipt attests the generator execution step --- \textbf{PARTIAL}.
+\end{enumerate}
+
+Per the research program's ALIVE doctrine: ``ALIVE verdicts require all gate criteria to
+be met --- never declare ALIVE on partial evidence.'' EXP-004 therefore remains PARTIAL.
+The parent suite checkpoints (\texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001}) carry ALIVE
+status for the five-experiment suite as a whole; that ecosystem verdict does not
+retroactively close the EXP-004-specific gaps identified above.

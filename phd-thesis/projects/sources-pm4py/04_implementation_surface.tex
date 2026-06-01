@@ -1,0 +1,107 @@
+% FILE: 04_implementation_surface.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Implementation Surface}
+\label{sec:sources-pm4py-impl}
+
+\subsection{Source Files}
+\label{sec:sources-pm4py-impl-source}
+
+The fourteen source files in \texttt{sources/pm4py} at assessment date are organised into
+three functional groups.
+
+\textbf{Primary oracle documents} (four files): \texttt{CAPABILITY\_ATLAS.md} enumerates
+all capabilities in ten sections (Event Log I/O, Process Discovery, Conformance Checking,
+Performance Analysis, Filtering, Variants, Visualization, Organizational Mining, Prediction/ML,
+Object-Centric Process Mining) with WASM-bridge status per capability.
+\texttt{ORACLE\_MAP.md} (from \texttt{pm4wasm.d.ts}) lists every WASM function with its
+PM4Py counterpart, input types, output type, and required wasm4pm type surface across
+six function categories (Discovery, Conformance, I/O, POWL Model, Model Conversion,
+Filtering, Statistics). \texttt{ALGORITHM\_CROSSWALK.md} provides the formal gap count
+across 37 algorithms. \texttt{NOT\_TO\_COPY.md} provides the ten-item anti-pattern
+manifesto.
+
+\textbf{Matrix and analysis documents} (five files): \texttt{divergence-matrix.md}
+(v2.0, 2026-05-31) covers nine capability categories with must-match versus safe-divergence
+classification and evidence binding types. \texttt{POWL\_CHOICEGRAPH\_ANALYSIS.md}
+analyses the Kourani-Park-van der Aalst 2025 paper (arXiv:2505.07052) and traces the
+\texttt{DecisionGraph} type gap to specific lines in \texttt{src/powl.rs}.
+\texttt{conformance-authority-map.md} (v30.1.1, 2026-05-31) provides formal mathematical
+definitions of all seven conformance techniques with failure modes, scalability profiles,
+and a multi-metric validation workflow. \texttt{oracle-vulnerability.md} is the adversarial
+red-team assessment documenting PM4Py's architectural vulnerabilities as a comparative
+oracle. \texttt{process-form-crosswalk.md} maps PM4Py structural representations (Petri
+net, DFG, OCEL) to their process-intelligence foundry counterparts.
+
+\textbf{Supporting authority documents} (five files): \texttt{mining-authority-map.md},
+\texttt{oracle-map.md} (lower-case variant), \texttt{algorithm-crosswalk.md} (lower-case
+variant), and two additional analysis files complete the corpus.
+
+\subsection{Commands}
+\label{sec:sources-pm4py-impl-commands}
+
+The oracle atlas does not define executable commands directly; it is a research corpus of
+classification documents. The PM4Py functions it catalogues are invoked via the Python
+library or, where WASM-bridged, via the \texttt{pm4wasm.d.ts} TypeScript interface. Key
+WASM-bridge function signatures documented in the oracle map include:
+\begin{itemize}
+  \item \texttt{align\_log(petri\_net\_json: string, log\_json: string): string} --- alignment-based conformance, mirroring \texttt{pm4py.conformance\_diagnostics\_alignments()}
+  \item \texttt{token\_replay\_fitness(petri\_net\_json: string, log\_json: string): string} --- TBR fitness, mirroring \texttt{pm4py.conformance\_diagnostics\_token\_based\_replay()}
+  \item \texttt{precision\_etconformance(petri\_net\_json: string, log\_json: string): string} --- ETConformance precision oracle
+  \item \texttt{discover\_petri\_net\_inductive(log\_json: string): string} --- inductive miner with soundness guarantee
+  \item \texttt{discover\_heuristics\_miner(log\_json: string, dependency\_threshold: f64): string} --- heuristics miner with dependency threshold parameter
+  \item \texttt{streaming\_create(model\_str: string): number} / \texttt{streaming\_push\_trace} / \texttt{streaming\_snapshot} --- stateful streaming conformance handle
+\end{itemize}
+The \texttt{BinaryRelationJs} class exposed to JavaScript clients provides adjacency-matrix
+operations: \texttt{is\_irreflexive()}, \texttt{is\_strict\_partial\_order()},
+\texttt{is\_transitive()}, \texttt{edges\_flat()}, \texttt{start\_nodes()},
+\texttt{end\_nodes()}, and per-edge predicate \texttt{is\_edge(i, j)}.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:sources-pm4py-impl-data}
+
+The atlas documents two distinct data surfaces. The Python data surface uses
+Pandas DataFrames and mutable Python objects as the primary representation. The WASM data
+surface uses JSON strings at every FFI boundary: all WASM functions accept and return
+\texttt{string} in TypeScript, with \texttt{PowlModel} as an opaque arena handle and
+\texttt{BinaryRelationJs} as a \texttt{Uint32Array}-backed adjacency matrix.
+
+The wasm4pm-compat Rust surface, as documented by the crosswalk, uses typed const-generic
+structures: \texttt{Evidence<T, State, W>} with compile-time state tags, \texttt{Metric<KIND, NUM, DEN>}
+with \texttt{Between01} bounds for conformance scores, and \texttt{WfNetConst<SOUNDNESS>}
+with a const-generic soundness flag. The divergence matrix defines the required evidence
+binding type for each capability --- for example,
+\texttt{Evidence<PetriNet, ValidatedSound, SoundnessCertificate>} for the inductive miner
+and \texttt{Evidence<ConformanceResult, Replayed, FitnessDiagnostics>} for TBR.
+
+OCEL 2.0 types (\texttt{OcelLog}, \texttt{OcelEvent}, \texttt{EventObjectLink},
+\texttt{ObjectObjectLink}, \texttt{ObjectChange}) exist in \texttt{src/ocel.rs} but are
+entirely absent from the WASM bridge (all OCEL capabilities are \texttt{NO}), creating
+the object-centric type-surface-present but WASM-bridge-absent gap documented in the
+atlas.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:sources-pm4py-impl-templates}
+
+The oracle atlas does not define rendering templates. Its primary rendered artifacts are
+the five JSON receipts in \texttt{receipts/}: \texttt{rec\_ebitda\_rework\_001.json},
+\texttt{rec\_wc\_ar\_002.json}, \texttt{rec\_risk\_sla\_003.json},
+\texttt{rec\_risk\_compliance\_004.json}, and \texttt{rec\_residual\_standard\_005.json}.
+Each follows a canonical schema: \texttt{\$schema}, \texttt{slide\_id},
+\texttt{slide\_title}, \texttt{assertion\_text}, \texttt{target\_log\_hash} (BLAKE3),
+\texttt{process\_model\_hash} (BLAKE3), \texttt{query\_definition} (engine, query\_uri,
+parameters), \texttt{verification\_results} (fitness, precision, throughput\_days,
+defensibility\_verification), and \texttt{validator\_signature} (ed25519). The
+\texttt{rec\_ebitda\_rework\_001.json} receipt asserts an annual EBITDA increase of
+\$1,250,000 from reducing Purchase Order rework from 1.45 to 0.20 occurrences per case,
+verified at fitness 0.982 and precision 0.945 by the wasm4pm engine. The receipt format
+is itself a template that the oracle atlas validates: no receipt is admissible without a
+\texttt{target\_log\_hash}, a \texttt{validator\_signature}, and a \texttt{query\_definition}
+that names the wasm4pm engine as executor.
+
+\bigskip
+\noindent\textit{Source authority:} CAPABILITY\_ATLAS.md (ten sections), ORACLE\_MAP.md
+(six function categories), ALGORITHM\_CROSSWALK.md (source file list),
+divergence-matrix.md (evidence binding types), receipts/rec\_ebitda\_rework\_001.json
+(canonical receipt schema), POWL\_CHOICEGRAPH\_ANALYSIS.md (WASM bridge gap table).

@@ -1,0 +1,126 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Implementation Surface Chapter
+
+\section{Implementation Surface}
+\label{sec:otel-weaver-exp-004-registry-to-witness-implementation}
+
+\subsection{Source Files}
+\label{sec:otel-weaver-exp-004-registry-to-witness-source-files}
+
+EXP-004 comprises three substantive source files and relies on two ecosystem-level files
+for registry input and integration testing.
+
+\textbf{\texttt{codegen/generator.rs}} is the executable Rust generator. It declares four
+\texttt{serde}-derived structs for schema parsing (\texttt{ResolvedSchema},
+\texttt{SchemaGroup}, \texttt{SchemaAttribute}), a \texttt{main} function that deserializes
+the resolved schema JSON, filters for the \texttt{process.pi.activity} group, and writes
+\texttt{generated\_witnesses.rs} to disk. Field name derivation uses Rust string replacement:
+\texttt{attr.id.replace("process.pi.", "").replace(".", "\_")}. Attribute type mapping
+converts \texttt{"string"} to \texttt{String} and \texttt{"int"} to \texttt{i64}, with
+all other types defaulting to \texttt{String}. The generator also materializes the
+\texttt{Lattice} trait definition and the full \texttt{PartialOrd} and \texttt{Lattice}
+implementations for \texttt{ActivityWitness} as literal string pushes into the output
+buffer.
+
+The generator uses \texttt{std::fs::File::create} and \texttt{file.write\_all} to write
+the output, creating parent directories via \texttt{fs::create\_dir\_all} if absent. The
+\texttt{main} function signature is \texttt{fn main() -> Result<(), Box<dyn std::error::Error>>},
+making all I/O failures explicit rather than panic-inducing.
+
+\textbf{\texttt{src/generated\_witnesses.rs}} is the materialized output artifact. Its
+header comments read:
+\begin{verbatim}
+//! Generated from OTel Weaver resolved registry. DO NOT EDIT HAND-CODED.
+//! Generated at: 2026-06-01T10:10:51-07:00
+\end{verbatim}
+The file contains the \texttt{Lattice} trait, the \texttt{ActivityWitness} struct with
+three public \texttt{String} fields carrying \texttt{serde rename} annotations, the
+\texttt{PartialOrd} implementation, and the \texttt{Lattice} implementation. It exists on
+disk and matches the README specification exactly.
+
+\textbf{\texttt{README.md}} documents the full architectural pipeline as an ASCII art
+diagram and contains the complete generator source listing as a Markdown code block.
+Section~4 specifies the intended compilation command.
+
+\textbf{\texttt{semconv/process\_pi.yaml}} (EXP-001) is the upstream source registry. It
+declares \texttt{process.pi.activity} as a span group with eight attributes including
+\texttt{process.pi.instance\_id}, \texttt{process.pi.activity.name},
+\texttt{process.pi.lifecycle}, \texttt{process.pi.token.state\_before},
+\texttt{process.pi.token.state\_after}, \texttt{process.pi.witness.id}, and
+\texttt{process.pi.witness.hash}. The generator currently processes only the three
+attributes inlined in its embedded JSON (instance\_id, witness.id, witness.hash); the
+remaining five attributes from the full YAML are not reflected in the materialized output.
+
+\textbf{\texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs}} provides the
+integration test surface that exercises the complete feedstock-to-court pipeline including
+\texttt{BridgeRx}, \texttt{validate\_and\_project}, \texttt{Admission}, and \texttt{Refusal}.
+
+\subsection{Commands}
+\label{sec:otel-weaver-exp-004-registry-to-witness-commands}
+
+The README specifies the following compilation and execution sequence for the generator:
+\begin{verbatim}
+rustc --crate-type bin -O codegen/generator.rs -o codegen/generator \
+    --edition 2021
+./codegen/generator
+\end{verbatim}
+This command is architecturally incomplete as stated: \texttt{generator.rs} carries
+\texttt{use serde::\{Deserialize, Serialize\}} and \texttt{use serde\_json} dependencies
+that \texttt{rustc} cannot resolve without a \texttt{Cargo.toml} and compiled dependency
+tree. The actual build path within the broader \texttt{wasm4pm} workspace is unverified.
+This gap is documented in Section~\ref{sec:otel-weaver-exp-004-registry-to-witness-gaps}.
+
+The integration tests are invoked via the standard Cargo test runner:
+\begin{verbatim}
+cargo test --test weaver_integration_tests
+\end{verbatim}
+The runtime checkpoint \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} records the output
+of this invocation: \texttt{test test\_weaver\_integration\_synthesis ... ok}, with all
+62 tests across the ecosystem passing.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:otel-weaver-exp-004-registry-to-witness-data}
+
+The convention registry \texttt{process\_pi.yaml} is the primary data surface. It is
+authored in OTel Weaver YAML format (file format version 1.2.0, schema URL
+\texttt{https://opentelemetry.io/schemas/1.25.0}) and defines the authoritative attribute
+vocabulary for process-intelligence telemetry.
+
+The mapping file \texttt{otel-weaver/mappings/otel-to-pi-witness-map.yaml} provides the
+operational translation rules from OTel resource attributes to process-intelligence
+feedstock keys. It defines three witness mapping rules: service identity to
+\texttt{pi.feedstock.witness.id} (via format string \texttt{wit\_\{service.namespace\}\_\{service.name\}}),
+SDK identity to \texttt{pi.feedstock.source}, and payload size coalescing. The file also
+declares three witness registry entries for eBPF system call, database audit, and API
+gateway contexts. Its conformance isolation rule states: ``Never map feedstock directly to
+court consequences. A witness only asserts observations of feedstock, not conformity
+verdicts.''
+
+The generator's inline JSON schema is a subset of the full \texttt{process\_pi.yaml}
+definition, containing only the three attributes (\texttt{process.pi.instance\_id},
+\texttt{process.pi.witness.id}, \texttt{process.pi.witness.hash}) that the generator
+currently materializes. This inlining is the primary evidence for the open question about
+whether genuine Weaver CLI resolution was ever executed against the full registry.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:otel-weaver-exp-004-registry-to-witness-templates}
+
+The generator does not use an external template engine. Template logic is embedded directly
+in the \texttt{generator.rs} source as \texttt{String::push\_str} calls and
+\texttt{format!} macro invocations. The output structure is fixed: header comment block,
+\texttt{use} declarations, \texttt{Lattice} trait definition, one \texttt{ActivityWitness}
+struct per matching group, and one \texttt{Lattice} implementation block per struct.
+
+The rendered artifact \texttt{src/generated\_witnesses.rs} carries the instruction
+\texttt{DO NOT EDIT HAND-CODED} in its header, establishing the generator as the sole
+authoritative source for its content. Any hand-edit to the materialized file violates the
+provenance contract implied by this header and should be treated as a manufacturing defect.
+
+The \texttt{top()} element for \texttt{ActivityWitness} is materialized as:
+\begin{verbatim}
+witness_hash: "f".repeat(64)
+\end{verbatim}
+This produces a 64-character string of the character \texttt{f}, representing the maximal
+BLAKE3 hex value. This encoding is a convention chosen by the generator author and is not
+derived from any external specification; it is noted as a theoretical approximation
+requiring formal justification (see Section~\ref{sec:otel-weaver-exp-004-registry-to-witness-gaps}).

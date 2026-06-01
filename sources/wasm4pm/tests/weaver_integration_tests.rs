@@ -24,6 +24,12 @@ pub struct BridgeRx {
     pub rename_map: HashMap<String, String>,
 }
 
+impl Default for BridgeRx {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BridgeRx {
     pub fn new() -> Self {
         let mut rename_map = HashMap::new();
@@ -86,6 +92,7 @@ pub struct Admission<T, W> {
 }
 
 /// Validates raw telemetry feedstock and projects it into either an Admission or a Refusal (Live-Check & Refusal Mapping)
+#[allow(clippy::result_large_err)]
 pub fn validate_and_project(
     feedstock: TelemetryFeedstockS2,
     bridge: &BridgeRx,

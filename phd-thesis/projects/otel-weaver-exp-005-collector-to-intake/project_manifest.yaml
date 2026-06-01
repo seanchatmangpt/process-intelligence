@@ -1,0 +1,22 @@
+slug: otel-weaver-exp-005-collector-to-intake
+absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake
+description: >
+  OTel Weaver experiment 005: Python harness with YAML OTel collector config that routes
+  live collector output into process intelligence intake pipeline.
+detected_languages:
+  - Python
+  - YAML
+detected_frameworks:
+  - OpenTelemetry
+  - otel-weaver
+detected_research_surfaces:
+  - telemetry-ingestion
+  - process-evidence
+likely_thesis_role: live-telemetry-to-pi-intake-experiment
+key_files:
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/harness.py
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/README.md
+readme_present: true
+receipt_present: false
+ontology_present: false

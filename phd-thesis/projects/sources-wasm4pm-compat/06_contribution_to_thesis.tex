@@ -1,0 +1,95 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+
+\section{Contribution to the Dissertation}
+\label{sec:sources-wasm4pm-compat-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:sources-wasm4pm-compat-contribution-prediction}
+
+The dissertation's central claim is that process intelligence is fundamentally about
+coordination---producing receipted, non-forgeable evidence that a lawful process
+occurred---rather than prediction of what a process is likely to do. The
+\texttt{wasm4pm-compat} type-law foundry provides the formal infrastructure that
+makes this distinction operational.
+
+A prediction system produces a probability distribution over future states. A coordination
+system produces an \texttt{Evidence<T, State, Witness>} block: a cryptographically bound,
+lattice-monotonic, authority-signed record that a specific state transition was observed
+in a specific process execution with a specific witness. These are not interchangeable.
+A fitness score of 0.94 emitted without a BLAKE3 hash binding it to its trace, its model,
+and its alignment witness is a prediction about process quality. The same fitness score
+emitted inside an \texttt{Evidence} block with an \texttt{ArtifactReceipt} at witness
+level \texttt{Adriansyah2011} is a coordination fact.
+
+The type-law foundry makes the structural distinction between these two kinds of claims
+inexpressible in the opposite direction: the Rust type system prevents a coordination
+fact from being minted without the required cryptographic and lattice structure. This is
+the type-foundry's primary contribution to the prediction-vs-coordination argument.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:sources-wasm4pm-compat-contribution-evidence}
+
+The \texttt{wasm4pm-compat} project contributes the formal definition of what constitutes
+process evidence at the type level. Prior to this work, process evidence in the research
+program was described in prose: event logs, conformance scores, alignment costs. The
+type-law foundry operationalizes that prose as a Rust type system enforced at compile time.
+
+The specific contribution is the five-domain type-law surface documented in
+\texttt{type-law-atlas.md}: (1) the \texttt{Evidence<T, State, Witness>} type law
+with three admissibility axioms, (2) the witness lattice $(W, \sqsubseteq, \sqcup,
+\bot, \top)$ with idempotency, commutativity, associativity, and absorption properties,
+(3) the admission/refusal law with default-deny semantics and four refusal classes,
+(4) the loss policy thermodynamics with permissible and absolute loss boundaries,
+and (5) the graduation boundary with seven trigger signals. Together these five domains
+constitute a complete formal specification of what process evidence is, what it may
+contain, and when it must be rejected.
+
+The \texttt{WitnessMarker} lattice also contributes a citation map: each marker
+names a specific publication (Van der Aalst 1989, Murata 1989, Van der Aalst 1998,
+Van der Aalst 2016, Weijters 2011, Leemans 2013, Adriansyah 2011) as the authority
+for its algebraic proof structure, grounding the type system in the published literature.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:sources-wasm4pm-compat-contribution-manufacturing}
+
+The project demonstrates that a type-law system can itself be manufactured from an
+ontological source of truth. The \texttt{ggen/wasm4pm-compat.ttl} RDF ontology is the
+authoritative declaration of the type system; the three SPARQL queries and three Tera
+templates are the manufacturing pipeline; the three sealed artifacts are the manufactured
+artifacts. This is not code generation in the conventional sense---it is ontology-driven
+law manufacturing, where the ontology encodes the type laws and the templates materialize
+them as Rust, Markdown, and WIT.
+
+This architecture establishes a pattern that other projects in the research program can
+follow: declare the law in RDF, manufacture the enforcement surface via SPARQL and Tera,
+receipt the artifacts via the \texttt{ReceiptLedger}, and verify the manufacturing via
+the compliance auditor. The pattern is receipted end-to-end in the
+\texttt{manufacturing-manifest-20260601.yaml}, which records the ontology source, query
+results, template rendering statistics, compliance audit results, and receipt ledger
+entries in a single authority document.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:sources-wasm4pm-compat-contribution-capital}
+
+The capital-flow and M\&A tier of the dissertation requires board-admissible evidence:
+claims about process quality that can withstand due diligence scrutiny because they are
+cryptographically bound to the event logs and process models that produced them.
+\texttt{wasm4pm-compat} contributes the type-level infrastructure that makes
+board-admissible evidence manufacturable.
+
+The specific mechanism is the receipt-shaped object: an \texttt{Evidence} block where
+\texttt{State} is terminal (the process has completed), \texttt{Witness} carries fitness
+$\geq$ threshold (the conformance measurement is above the admissibility floor), and the
+hash is signed by an auditor role (the signing authority has been verified). This
+receipt-shaped object is the primitive from which M\&A claims are built. The
+\texttt{GraduationCandidate<T, W>} struct carries the reviewed case that bridges from
+the type-law layer to the M\&A claim layer: a named \texttt{GraduationReason}, a
+\texttt{subject} identifying the process under review, an \texttt{evidence\_ref} pointing
+to the receipt, and the preserved witness.
+
+The downstream obligation to align receipt-shaped object schemas with the M\&A slide-to-receipt
+map (recorded in \texttt{research-verdict.md} Section~2.3 as a gap) confirms that the
+connection to capital-flow infrastructure is architecturally intended and structurally
+prepared, even if the final alignment is a future work item.

@@ -7,7 +7,13 @@ pub enum OcelError {
     OutOfBounds,
     Utf8Error,
     NullPointer,
+    DanglingReference,
+    EmptyEventObjects,
+    CycleDetected,
+    TemporalAnomaly,
+    UnknownObjectType,
 }
+
 
 #[derive(Debug)]
 pub struct ZeroCopyOcel<'a> {
@@ -63,17 +69,24 @@ impl<'a> ZeroCopyOcel<'a> {
         };
 
         // Events section size: 24 bytes per event
-        check_bound(events_offset, events_count as usize * 24)?;
+        let events_size = (events_count as usize).checked_mul(24).ok_or(OcelError::OutOfBounds)?;
+        check_bound(events_offset, events_size)?;
+        
         // Objects section size: 12 bytes per object
-        check_bound(objects_offset, objects_count as usize * 12)?;
+        let objects_size = (objects_count as usize).checked_mul(12).ok_or(OcelError::OutOfBounds)?;
+        check_bound(objects_offset, objects_size)?;
+        
         // String table size
         check_bound(string_table_offset, string_table_size as usize)?;
 
         // Index tables contain entry arrays first (8 bytes per entry)
-        check_bound(e2o_offset, events_count as usize * 8)?;
-        check_bound(o2o_offset, objects_count as usize * 8)?;
+        let e2o_size = (events_count as usize).checked_mul(8).ok_or(OcelError::OutOfBounds)?;
+        check_bound(e2o_offset, e2o_size)?;
+        
+        let o2o_size = (objects_count as usize).checked_mul(8).ok_or(OcelError::OutOfBounds)?;
+        check_bound(o2o_offset, o2o_size)?;
 
-        Ok(Self {
+        let ocel = Self {
             data,
             events_count,
             events_offset,
@@ -83,7 +96,11 @@ impl<'a> ZeroCopyOcel<'a> {
             o2o_offset,
             string_table_offset,
             string_table_size,
-        })
+        };
+
+        ocel.validate()?;
+
+        Ok(ocel)
     }
 
     pub fn events_count(&self) -> u32 {
@@ -252,7 +269,7 @@ impl<'a> ZeroCopyOcel<'a> {
         let ptr = slice.as_ptr() as *const u32;
         
         // Ensure proper alignment for safe dereferencing
-        if (ptr as usize) % 4 != 0 {
+        if !(ptr as usize).is_multiple_of(4) {
             // If the buffer is not u32 aligned, we must not transmute.
             // Since we enforce strict zero-copy alignment layout, the host must align it,
             // otherwise we could trigger undefined behavior on some hardware.
@@ -294,7 +311,7 @@ impl<'a> ZeroCopyOcel<'a> {
         let slice = &self.data[abs_start..abs_end];
         let ptr = slice.as_ptr() as *const u32;
         
-        if (ptr as usize) % 4 != 0 {
+        if !(ptr as usize).is_multiple_of(4) {
             return Err(OcelError::InvalidMagic);
         }
 
@@ -489,4 +506,84 @@ impl<'a> ZeroCopyOcel<'a> {
 
         Ok(())
     }
+
+    /// Validates all OCEDO/OCPQ structural and semantic invariants.
+    pub fn validate(&self) -> Result<(), OcelError> {
+        // 1. Metadata String Validity Check:
+        // Ensure all events and objects have valid string metadata.
+        for event_idx in 0..self.events_count {
+            let _ = self.get_event_id(event_idx)?;
+            let _ = self.get_event_activity(event_idx)?;
+            let _ = self.get_event_type(event_idx)?;
+        }
+        for object_idx in 0..self.objects_count {
+            let _ = self.get_object_id(object_idx)?;
+            let _ = self.get_object_type(object_idx)?;
+        }
+
+        // 2. E2O Integrity & Cardinality Check:
+        // Every event must link to at least one object (EmptyEventObjects check)
+        // Every link must reference a valid object (DanglingReference check)
+        for event_idx in 0..self.events_count {
+            let related_objs = self.get_event_objects(event_idx)?;
+            if related_objs.is_empty() {
+                return Err(OcelError::EmptyEventObjects);
+            }
+            for &obj_idx in related_objs {
+                if obj_idx >= self.objects_count {
+                    return Err(OcelError::DanglingReference);
+                }
+            }
+        }
+
+        // 3. O2O Referential Integrity Check:
+        // Every link must reference a valid object (DanglingReference check)
+        for object_idx in 0..self.objects_count {
+            let related_objs = self.get_object_related_objects(object_idx)?;
+            for &related_idx in related_objs {
+                if related_idx >= self.objects_count {
+                    return Err(OcelError::DanglingReference);
+                }
+            }
+        }
+
+        // 4. Graph Acyclicity Check (O2O DAG):
+        let mut visited = vec![0u8; self.objects_count as usize]; // 0=unvisited, 1=visiting, 2=visited
+        for object_idx in 0..self.objects_count {
+            if visited[object_idx as usize] == 0 {
+                self.check_o2o_cycle(object_idx, &mut visited)?;
+            }
+        }
+
+        // 5. Temporal Monotonicity Check:
+        // For any sequence of events acting on a shared object, event timestamps must be non-decreasing.
+        let mut last_event_time = vec![i64::MIN; self.objects_count as usize];
+        for event_idx in 0..self.events_count {
+            let time = self.get_event_timestamp(event_idx)?;
+            let related_objs = self.get_event_objects(event_idx)?;
+            for &obj_idx in related_objs {
+                if last_event_time[obj_idx as usize] > time {
+                    return Err(OcelError::TemporalAnomaly);
+                }
+                last_event_time[obj_idx as usize] = time;
+            }
+        }
+
+        Ok(())
+    }
+
+    fn check_o2o_cycle(&self, obj_idx: u32, visited: &mut [u8]) -> Result<(), OcelError> {
+        visited[obj_idx as usize] = 1;
+        let related = self.get_object_related_objects(obj_idx)?;
+        for &rel_idx in related {
+            match visited[rel_idx as usize] {
+                1 => return Err(OcelError::CycleDetected),
+                0 => self.check_o2o_cycle(rel_idx, visited)?,
+                _ => {}
+            }
+        }
+        visited[obj_idx as usize] = 2;
+        Ok(())
+    }
 }
+

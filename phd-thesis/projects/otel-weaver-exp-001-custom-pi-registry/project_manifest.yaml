@@ -1,0 +1,21 @@
+slug: otel-weaver-exp-001-custom-pi-registry
+absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry
+description: >
+  OTel Weaver experiment 001: Custom process intelligence semantic convention registry.
+  Defines semconv YAML for process intelligence spans and attributes to drive
+  Weaver-validated telemetry ingestion.
+detected_languages:
+  - YAML
+detected_frameworks:
+  - otel-weaver
+  - OpenTelemetry
+detected_research_surfaces:
+  - semconv-mapping
+  - process-evidence
+likely_thesis_role: otel-semconv-evidence-surface-experiment
+key_files:
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/semconv/process_pi.yaml
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/README.md
+readme_present: true
+receipt_present: false
+ontology_present: false

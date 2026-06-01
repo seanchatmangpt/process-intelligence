@@ -1,0 +1,78 @@
+\section{Implementation Surface}
+\label{sec:sources-wasm4pm-implementation}
+
+\subsection{Source Files}
+\label{sec:sources-wasm4pm-impl-source-files}
+
+The crate root is \texttt{src/lib.rs}, declaring 17 public modules. The conformance module
+(\texttt{src/conformance.rs}, 1,229 lines) is the largest single file and implements: the
+\texttt{ConformanceVerdict} enum with \texttt{FullyConforming} / \texttt{PartiallyConforming} /
+\texttt{NonConforming} variants; \texttt{ConformanceVerdicts} aggregate container with
+\texttt{aggregate\_fitness}, \texttt{aggregate\_precision}, \texttt{admitted\_cases}, and
+\texttt{total\_cases}; \texttt{TokenReplayEngine} with source/sink token accounting and the van
+der Aalst fitness equation $f = 0.5(1 - m/c) + 0.5(1 - r/p)$; \texttt{AlignmentEngine} with
+real A* search using \texttt{BinaryHeap}, a 5000-iteration cap, and compile-time metric
+validation via \texttt{Between01<NUM,DEN>} and \texttt{Metric<KIND,NUM,DEN>} const generics; and
+\texttt{RuntimeBetween01} with NaN/Inf/bounds guards for runtime \texttt{f64} values.
+
+The mining module (\texttt{src/mining/mod.rs}, 847 lines, sealed receipt
+\texttt{MINING\_RENDER\_RECEIPT.md}) was manufactured by the ggen manufacturing machinery and
+implements: \texttt{ProcessModel} union type; three witness structs (\texttt{AlphaWitness},
+\texttt{InductiveWitness}, \texttt{HeuristicsWitness}) each implementing \texttt{Lattice<T>};
+\texttt{Admitted} state enum; and four public API functions returning
+\texttt{Evidence<ProcessModel,~Admitted,~W>} containers. The crypto module
+(\texttt{src/crypto.rs}) self-implements BLAKE3 with Merkle-tree chaining, SHA-256, SHA-512,
+ChaCha20, Twisted-Edwards Curve25519 field arithmetic (\texttt{CurvePoint},
+\texttt{FieldElement}), Ed25519 signature verification (\texttt{verify\_ed25519\_signature}, RFC
+8032 compliant with cofactor-cleared equation check), and \texttt{verify\_jcs\_receipt\_signature}
+(JCS RFC 8785 canonicalization + Ed25519 verification). The graduation module
+(\texttt{src/graduation.rs}) implements the \texttt{GraduateToWasm4pm} trait, bridging
+\texttt{wasm4pm-compat} \texttt{GraduationCandidate} types into the execution engine.
+
+Additional modules: \texttt{src/evidence.rs} (Evidence carrier and lattice infrastructure),
+\texttt{src/ltl.rs} (LTL/Declare constraint evaluation: \texttt{DeclareRule} with
+\texttt{Precedence}/\texttt{Response} variants), \texttt{src/sandbox.rs} (\texttt{GasMeter},
+\texttt{RecursionGuard}, \texttt{execute\_oblivion\_protocol}), \texttt{src/otel.rs}
+(\texttt{OtelTrace} / \texttt{OtelSpan} with \texttt{blake3\_receipt}, \texttt{witness\_id},
+\texttt{token\_state} lifecycle metadata), \texttt{src/ocel\_v2.rs}
+(\texttt{ZeroCopyOcelV2} zero-allocation binary parser), and \texttt{src/lifecycle/mod.rs}
+(\texttt{ProcessIntelligence<S>} 13-state MAPE-K typestate machine with all five transition proof
+witness types).
+
+\subsection{Commands}
+\label{sec:sources-wasm4pm-impl-commands}
+
+The crate builds with \texttt{cargo build -{}-release} and all 31 tests pass via \texttt{cargo
+test} in 10.60 seconds. The mining module was manufactured and compiled in isolation in 1.73
+seconds (\texttt{cargo build -{}-release}, wasm4pm v30.1.2). No other build tooling is required
+beyond the Rust toolchain and the \texttt{wasm4pm-compat} path dependency. The research verdict
+specifies a WASM runtime spine with a 4~GB linear memory layout; deployment to a WASM host
+requires the \texttt{cdylib} artifact linked into a WASM runtime (host-side integration is not
+part of this crate).
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:sources-wasm4pm-impl-data-ontology}
+
+The \texttt{mining-authority-ontology.md} documents the evidence type registry: four evidence
+types (Inductive, Heuristics, Alpha, DFG), all lattice-compliant. The
+\texttt{OBJECT\_CENTRIC\_RUNTIME.md} documents the object-centric runtime design. The
+\texttt{ZeroCopyOcelV2} parser in \texttt{src/ocel\_v2.rs} enforces OCEL~2.0 binary format
+compliance with magic/version/offset validation. \texttt{OtelTrace} and \texttt{OtelSpan} in
+\texttt{src/otel.rs} implement the OpenTelemetry span model augmented with process-intelligence
+fields (\texttt{blake3\_receipt}, \texttt{witness\_id}, \texttt{token\_state}).
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:sources-wasm4pm-impl-templates}
+
+The mining module (\texttt{src/mining/mod.rs}) was materialized by the ggen manufacturing
+machinery from templates sourced at
+\texttt{sources/wasm4pm-compat/compat/templates/mining/}: \texttt{alpha\_miner.rs.j2},
+\texttt{inductive\_miner.rs.j2}, and \texttt{heuristics\_miner.rs.j2}, with bound template
+variables \texttt{module\_name}~=~``mining'', \texttt{witness\_markers}~=~[``VanDerAalst1989'',
+``Leemans2013'', ``Weijters2011''], \texttt{evidence\_carriers}~=~[``ProcessModel'',
+``Admitted''], and \texttt{lifecycle\_states}~=~[``Initial'', ``Discovered'', ``Sealed''].
+The sealed receipt (\texttt{MINING\_RENDER\_RECEIPT.md}, status SEALED,
+2026-06-01T00:00:00Z) documents the complete manufacturing chain from specification extraction
+through template application, artifact materialization, zero-warning compilation verification,
+and authority sealing. This receipt is the primary evidence artifact demonstrating that the mining
+module was not hand-coded but manufactured from an authoritative specification.

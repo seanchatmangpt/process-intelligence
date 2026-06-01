@@ -1,0 +1,122 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+
+\section{Architecture and Primitives}
+\label{sec:sources-wasm4pm-compat-architecture}
+
+\subsection{Core Objects}
+\label{sec:sources-wasm4pm-compat-architecture-objects}
+
+The core primitive is \texttt{Evidence<T, State, Witness>}, a triadic cryptographic
+container defined in \texttt{type-law-atlas.md} (v30.1.1) and enforced in
+\texttt{compat/src/lib.rs}:
+
+\begin{itemize}
+  \item \textbf{\texttt{T}}: implements \texttt{Serialize}; must be a valid event-log
+    payload (\texttt{XesTrace}, \texttt{OcelEventLog}, \texttt{BpmnInstanceData}, or
+    \texttt{ProcessTree}).
+  \item \textbf{\texttt{State}}: implements \texttt{Serialize}; represents a deterministic
+    marking or configuration (\texttt{PetriNetMarking}, \texttt{BpmnTokenConfiguration}).
+  \item \textbf{\texttt{Witness}}: implements \texttt{Serialize + Lattice}; carries alignment
+    progress or token-game replay proof.
+  \item \textbf{\texttt{epoch}}: a monotonic \texttt{u64} counter preventing replay attacks
+    across execution contexts.
+  \item \textbf{\texttt{signature}}: an Ed25519 \texttt{IdentitySignature} from an
+    authorized role.
+  \item \textbf{\texttt{hash}}: \texttt{BLAKE3(Serialize(T) \(\parallel\) Serialize(State)
+    \(\parallel\) Serialize(Witness) \(\parallel\) epoch \(\parallel\) sig)}.
+\end{itemize}
+
+The \texttt{WitnessMarker} enum defines eight algebraic proof structures in the lattice
+$(W, \sqsubseteq, \sqcup, \bot, \top)$ as materialized in
+\texttt{witness-markers-20260601.rs}: \texttt{VanDerAalst1989} (bottom,
+\texttt{PetriNetMarking}), \texttt{Murata1989} (bottom, \texttt{PetriNetSemantics}),
+\texttt{VanDerAalst1998} (middle, \texttt{SoundnessProof}), \texttt{VanDerAalst2016}
+(middle, \texttt{ObjectCentricEventLog}), \texttt{Weijters2011} (middle,
+\texttt{CausalNetMarking}), \texttt{Leemans2013} (middle, \texttt{ProcessTreeNode}),
+\texttt{Adriansyah2011} (middle, \texttt{AlignmentStep}), and
+\texttt{BlueRiverDam} (top, \texttt{AutonomicMarking}).
+
+The \texttt{GraduationCandidate<T, W>} struct in \texttt{graduation.rs} is the typed
+reviewable case carrying a \texttt{GraduationReason}, a \texttt{subject} string, an
+\texttt{evidence\_ref} string, and a preserved witness. The \texttt{GraduationReason}
+enum defines seven named trigger signals: \texttt{NeedsDiscovery},
+\texttt{NeedsConformanceExecution}, \texttt{NeedsReplay}, \texttt{NeedsReceipts},
+\texttt{NeedsBenchmarkGate}, \texttt{NeedsObjectCentricQueryExecution}, and
+\texttt{RebuildingProcessMiningLocally}. Five of these are hard signals (mandatory graduation).
+
+Additional type-law primitives include: \texttt{Between01<N,D>} (const-generic rational
+bounds enforcing fitness metrics in $[0, 1]$ via \texttt{Require<n \(\leq\) d>: IsTrue})
+and \texttt{ConditionCell<BITS>} (enforces \texttt{BITS \(\leq\) 8} at compile time;
+a Need-9 condition means split law).
+
+\subsection{Admissible Transitions}
+\label{sec:sources-wasm4pm-compat-architecture-transitions}
+
+Three admissibility axioms govern all \texttt{Evidence} transitions, as defined in
+\texttt{type-law-atlas.md} Section~1.2 and verified in \texttt{research-verdict.md}
+Section~2.2:
+
+\textbf{Axiom~1 (Cryptographic Binding)}: $\mathcal{H} = \text{BLAKE3}(\text{Serialize}(T)
+\parallel \text{Serialize}(State) \parallel \text{Serialize}(Witness) \parallel
+\text{epoch} \parallel \text{sig})$. The hash is computed at construction time. Any
+post-construction mutation invalidates the hash. Status: IMPLEMENTED AND VERIFIED.
+
+\textbf{Axiom~2 (Replay Soundness / Lattice Monotonicity)}: For sequential evidence blocks
+$E_1$ and $E_2$ with transition $t$: $S_1 \xrightarrow{t} S_2 \wedge W_1 \sqsubseteq W_2
+\wedge \text{witness}_2.\text{join}(\text{witness}_1) = \text{witness}_2$. If the join
+produces $\top$ (contradiction), $E_2$ is rejected and execution halts with a
+\texttt{RefusalReport}. A runtime monitor interceptor verifies this after every state
+transition. Status: COMPLETE.
+
+\textbf{Axiom~3 (Signature Admissibility)}: $\text{VerifySignature}(\text{PublicKey}_{\text{Authority}},
+\text{sig}, \mathcal{H}) \equiv \text{True}$. An authorized key registry, role-based
+signature verification, and epoch-based replay prevention are all specified. Status: IMPLEMENTED.
+
+A receipt-shaped object is an \texttt{Evidence} block where \texttt{State} is terminal,
+\texttt{Witness} carries fitness $\geq$ threshold (the production threshold between 0.85
+and 0.95 is a downstream obligation not yet pinned), and the hash is signed by an auditor
+role.
+
+\subsection{Boundaries}
+\label{sec:sources-wasm4pm-compat-architecture-boundaries}
+
+The graduation boundary separating what may enter the compat layer from what must never
+enter is defined in \texttt{GRADUATION\_BOUNDARY\_MAP.md} and receipted in the
+manufacturing manifest. Admissible inputs include: sound WF-nets with fitness $\geq 0.95$,
+schema-validated OCEL~2.0 logs, IEEE~1849-2016 compliant XES logs, BPMN models with
+AND/XOR gateways (OR-Join policy documented as Smart-Completion), POWL~2.0 block-structured
+models, well-formed process trees, and token-game alignments.
+
+The WebAssembly boundary is defined in \texttt{boundary-law-20260601.wit} as 12 component
+model crossings, including: Log to Petri Net Discovery (Alpha Miner), Log to Process Tree
+Discovery (Inductive Miner), OCEL to Object-Centric Analysis, Constraint Evaluation
+(Declare), Token Replay Conformance, Process-Log Alignment (Optimal), Receipt Graduation,
+Autonomic Actuation (MAPE-K), WIT World Export, Replay Soundness Verification, Signature
+Admissibility Check, and JCS Canonicalization (RFC~8785).
+
+\subsection{Failure Modes Refused}
+\label{sec:sources-wasm4pm-compat-architecture-failures}
+
+The admission/refusal law operates under default-deny semantics. The following are
+structurally refused per \texttt{ADMISSION\_REFUSAL\_MAP.md}:
+
+\begin{itemize}
+  \item \textbf{Temporal Anomalies}: events with out-of-order timestamps within case scope.
+  \item \textbf{Type Violations}: payload type mismatches; buffer overflows caught by WASM
+    linear memory bounds.
+  \item \textbf{Causal Disconnects}: events referencing non-existent object identifiers.
+  \item \textbf{Schema Violations}: XES or OCEL malformedness caught by strict schema parsers.
+  \item \textbf{Unsound Petri Nets}: deadlocks, unbounded places, dead transitions.
+  \item \textbf{Sub-threshold fitness}: fitness $< 0.85$ without a board-signed override.
+  \item \textbf{Non-cryptographically signed evidence}: no receipt signature equals refusal.
+  \item \textbf{Unbounded loops}: cycles without explicit bounds or counters.
+\end{itemize}
+
+Loss boundaries are governed by the \texttt{LossPolicy} struct. Permissible loss
+includes metadata attrition at 90\% memory saturation and trace decimation via
+probabilistic sampling of rapid repetitive transitions. Absolute loss boundaries
+triggering self-halt include: loss of the START-END causal link, and cryptographic
+signature corruption. These are thermodynamically justified: permissible losses preserve
+the causal spine and cryptographic integrity; absolute losses destroy them.

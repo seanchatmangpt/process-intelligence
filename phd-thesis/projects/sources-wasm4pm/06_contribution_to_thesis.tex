@@ -1,0 +1,72 @@
+\section{Contribution to the Dissertation}
+\label{sec:sources-wasm4pm-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:sources-wasm4pm-contrib-prediction-coordination}
+
+The dissertation's central organizing distinction is between prediction and coordination:
+prediction answers ``what will happen'' while coordination answers ``what must happen and did it.''
+Process-mining tools in the old regime are primarily predictive instruments — they discover
+models and compute fitness scores, but those scores are advisory rather than enforceable.
+\texttt{wasm4pm} shifts the register from prediction to coordination. The 0.8 admission threshold
+in the \texttt{ConformanceVerdict::admits()} method is not a recommendation; it is a gate. A
+trace that does not meet the threshold is refused with a typed \texttt{ConformanceRefusal} and
+cannot advance to the next lifecycle state. The six Blue River Dam proof gates in the Lifecycle
+Authority make this coordination role explicit: advancement from Design to Simulation requires a
+passing \texttt{SoundnessProof}; advancement from Simulation to MonitoringOps requires a passing
+\texttt{ConformanceProof}. The typestate machine enforces these conditions at compile time where
+possible and at runtime where the proof must be computed. This is the dissertation's primary
+claim instantiated in executable Rust: coordination requires proof, and proof requires receipts.
+[AUTHOR THESIS]
+
+\subsection{Contribution to Process Evidence}
+\label{sec:sources-wasm4pm-contrib-process-evidence}
+
+\texttt{wasm4pm} makes two concrete contributions to the process-evidence strand of the
+dissertation. First, it demonstrates that the \texttt{Evidence<T,~State,~W>} lattice can be
+implemented in a zero-external-dependency Rust crate with compile-time enforcement of
+monotonicity: witness markers implement \texttt{Lattice<T>} with provably monotone \texttt{join}
+operations, and admission state transitions are enforced by the \texttt{Admitted} enum (no
+transition from \texttt{Sealed} back to \texttt{Initial} is possible at the type level). Second,
+it demonstrates that the four mining algorithms (Alpha, Inductive, Heuristics, DFG) can each
+emit typed, lattice-compliant witnesses rather than untyped floating-point outputs. The seven
+inline unit tests in \texttt{src/mining/mod.rs} — verified by the sealed
+\texttt{MINING\_RENDER\_RECEIPT.md} — constitute the first receipted proof that this evidence
+lattice is both constructible and testable in the process-intelligence context. The A* alignment
+engine's use of a 5000-iteration cap and \texttt{BinaryHeap} demonstrates that optimal alignment
+is achievable within a bounded computational budget, addressing the scalability concern raised in
+the conformance-checking literature.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:sources-wasm4pm-contrib-manufacturing}
+
+The mining module's provenance demonstrates the dissertation's manufacturing architecture
+end-to-end. The module was not written by hand; it was materialized by the ggen manufacturing
+machinery from templates bound to authoritative specifications. The sealed receipt
+(\texttt{MINING\_RENDER\_RECEIPT.md}) documents the complete manufacturing chain, and the
+SHA-256 content hash \texttt{08a067d1ee19ea67150c194e9a2db7d86dfd994223b922de7e8606f45fbdf8e5}
+binds the artifact to that chain. This demonstrates that the manufacturing architecture is not
+merely a documentation claim: it produces verifiable, compilable, tested Rust source. The
+\texttt{verify\_jcs\_receipt\_signature} function in \texttt{src/crypto.rs} (JCS RFC 8785
+canonicalization + Ed25519 verification) provides the cryptographic primitive for verifying that
+receipt JSON envelopes were not tampered with after issuance. Together, these contributions
+establish that the manufacturing architecture can produce receipted artifacts whose provenance is
+auditable without trusting any external party.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:sources-wasm4pm-contrib-capital-flow}
+
+The dissertation's capital-flow strand — connecting process evidence to settlement, DAO
+governance, and capital allocation decisions — requires that process fitness scores be
+tamper-evident and attributable. \texttt{wasm4pm}'s Conformance Authority contribution is that
+every fitness score, once signed and chained, cannot be retroactively modified without invalidating
+the receipt chain. The spot-audit framework (specified in \texttt{research-verdict.md}) provides
+probabilistic tamper detection: a verifier can re-replay any archived trace against the model
+snapshot and confirm the receipt. In a capital-flow context, this means that a claim of
+``process fitness $\geq 0.95$'' can be backed by a verifiable receipt chain rather than an
+assertion. The \texttt{DecommissioningReceipt} type and the \texttt{execute\_oblivion\_protocol}
+function contribute the archival finality layer: once a process model is decommissioned, the
+receipt chain is closed and the final archival proof links backward through the complete history.
+[INTERPRETATION] This positions \texttt{wasm4pm} as a foundational primitive for
+process-evidence-backed capital allocation decisions, where settlement conditions can be
+conditioned on verifiable process conformance rather than self-reported metrics.

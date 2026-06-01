@@ -1,0 +1,89 @@
+% FILE: 00_project_identity.tex
+% Project: standards
+% Thesis Role: public-standards-compliance-and-gravity-field-mapping
+
+\section{Project Identity: Public Standards Compliance Registry}
+\label{sec:standards-identity}
+
+\subsection{Purpose}
+\label{sec:standards-identity-purpose}
+
+The \texttt{standards} project is the formal compliance registry of the Process Intelligence
+Research Foundry. Its mandate is to map 16 public process standards---13 core process
+standards and 3 metadata standards---to the foundry's cryptographic ledger, establishing
+type-law bounds, validation thresholds, and M\&A claim surfaces for each. The project
+treats these standards not as compliance checkboxes but as what it calls a \emph{gravity
+field}: a gravitational center around which every process intelligence capability orbits.
+
+The registry is the authority layer that permits downstream artifacts---wasm4pm execution
+receipts, ggen projections, M\&A slide-to-receipt bridges---to claim grounding in publicly
+documented, independently implementable specifications. Without this registry, every claim
+about process fitness, soundness, or audit completeness would be an assertion without a
+named referent. With it, every claim resolves to a named standard, a named academic
+foundation, and a cryptographic receipt chain.
+
+\subsection{Repository Surface}
+\label{sec:standards-identity-surface}
+
+The project resides at \texttt{/Users/sac/process-intelligence/standards/} and contains
+52 fully realized files as of the checkpoint timestamp \texttt{2026-05-31T23:59:59Z}. The
+checkpoint file \texttt{checkpoint\_\_public\_standards\_crosswalk\_complete.md} explicitly
+confirms zero stubs or placeholder content across all placement files.
+
+The directory surface includes:
+\begin{itemize}
+  \item \textbf{Placement files} for each of the 16 standards, defining type-law surface,
+        mathematical formulations, Blue River Dam validation thresholds, and trans-standard
+        conversion loss policies.
+  \item \textbf{Strategic doctrine files} covering the Gravity Field model, Reverse Lock-In,
+        Reverse Porter's Five Forces, and MAPE-K integration.
+  \item \textbf{M\&A integration files} mapping standards metrics to board-admissible claims
+        and defining the Slide-to-Receipt bridge formula.
+  \item \textbf{Adversarial test reports} probing XES and OCEL 2.0 vulnerabilities (phantom
+        object injection, hash-chain paradox, cryptographic tombstone deficiencies).
+  \item \textbf{The OTel trace integration schema} (\texttt{otel\_trace\_integration\_schema.json}),
+        a machine-validatable JSON Schema defining the \texttt{blake3\_receipt} field per
+        OTel span and the \texttt{event\_chain\_root} as the BLAKE3 hash of the entire trace.
+\end{itemize}
+
+\subsection{Primary Research Role}
+\label{sec:standards-identity-role}
+
+Within the dissertation, this project fulfills the role of
+\textbf{public-standards-compliance-and-gravity-field-mapping}. It answers the question of
+what formal anchors license the foundry's cryptographic receipt chain to claim mathematical
+validity. Each standard contributes a named mathematical formulation---WF-net soundness
+criteria (van der Aalst 1998), the OCEL 2.0 bipartite graph invariants
+$\mathcal{L}=(\mathcal{E}, \mathcal{O}, \text{E2O}, \text{O2O}, \Delta)$, and the 21
+LTL$_f$ Declare templates formalized as finite-state automaton trace acceptance---that the
+Evidence lattice \texttt{Evidence<T, State, Witness>} must satisfy before any claim is
+admitted to the ledger.
+
+The standards project is also the strategic positioning layer for the reverse lock-in
+doctrine: by grounding every capability in open, independently verifiable standards, the
+foundry simultaneously eliminates customer lock-in risk and installs a Nash equilibrium
+cage that forces competitors to conform to $W_{\text{std}}$ or face cryptographic
+nullification via the Blue River Dam.
+
+\subsection{Key Artifacts}
+\label{sec:standards-identity-artifacts}
+
+The key artifacts produced by this project are:
+
+\begin{enumerate}
+  \item \textbf{Checkpoint \texttt{chk-public-standards-crosswalk-001}} (status PASSED,
+        timestamp \texttt{2026-05-31T23:59:59Z}, \texttt{standards\_count\_verified: 16},
+        witness signature \texttt{SIG\_ED25519\_...}): the graduation certificate for the
+        entire crosswalk.
+  \item \textbf{Audit matrix} \texttt{audit\_\_standards\_coverage.md}: an independent
+        completeness check confirming all 16 entries carry VERIFIED status, with absolute
+        paths to each placement file.
+  \item \textbf{Reverse Lock-In specification} \texttt{reverse-lock-in.md}: formal
+        mathematical treatment of $W_{\text{std}}$ as a Nash equilibrium cage, including
+        competitor payoff matrix and nullification event ledger schema.
+  \item \textbf{OTel trace integration schema} \texttt{otel\_trace\_integration\_schema.json}:
+        machine-validatable JSON Schema for span-level BLAKE3 receipt chaining.
+  \item \textbf{WF-net verification specification v30.1.2}: Karp-Miller Coverability Graph
+        construction algorithm and production-grade Rust engine blueprint for soundness
+        certification.
+\end{enumerate}
