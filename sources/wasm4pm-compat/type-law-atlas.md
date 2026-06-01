@@ -67,3 +67,6 @@
 
 * **Step: map cross-witness gaps**
   - Evaluating type safety and witness validations.
+
+* **Step: map absence-proof fixture failures**
+  - Evaluating type safety and witness validations.
