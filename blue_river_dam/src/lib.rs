@@ -341,10 +341,16 @@ pub enum ActionOutcome {
 pub struct Monitor;
 
 impl Monitor {
-    pub fn ingest_stream(_stream: &EventStream) -> &'static [Evidence] {
-        // In a real implementation, this would allocate and return typed observations
-        // For compile-time enforcement, we return the observed window slice
-        &[]
+    pub fn ingest_stream(stream: &EventStream) -> &'static [Evidence] {
+        let mut evidence_vec = Vec::with_capacity(stream.events.len().min(stream.window_size));
+        for &event in stream.events.iter().take(stream.window_size) {
+            evidence_vec.push(Evidence {
+                timestamp: event.timestamp,
+                event,
+                admitted: true,
+            });
+        }
+        Box::leak(evidence_vec.into_boxed_slice())
     }
 }
 
@@ -365,9 +371,17 @@ impl Analyzer {
         0.95
     }
 
-    pub fn variant_analysis(_observations: &[Evidence]) -> &'static [&'static str] {
-        // Log-to-model behavioral fingerprint
-        &[]
+    pub fn variant_analysis(observations: &[Evidence]) -> &'static [&'static str] {
+        let mut cases: std::collections::BTreeMap<u64, Vec<u32>> = std::collections::BTreeMap::new();
+        for obs in observations {
+            cases.entry(obs.event.case_id).or_default().push(obs.event.activity);
+        }
+        let mut variants: Vec<&'static str> = Vec::new();
+        for (case_id, activities) in cases {
+            let variant_str = format!("case_{}:{:?}", case_id, activities);
+            variants.push(Box::leak(variant_str.into_boxed_str()));
+        }
+        Box::leak(variants.into_boxed_slice())
     }
 }
 
@@ -424,6 +438,8 @@ pub struct Knowledge {
     pub historical_metrics: &'static str,
     pub violation_patterns: &'static str,
     pub successful_repairs: &'static str,
+    pub repair_success_count: u32,
+    pub repair_failure_count: u32,
 }
 
 impl Knowledge {
@@ -433,15 +449,21 @@ impl Knowledge {
             historical_metrics: "time_series_metric_store",
             violation_patterns: "named_law_frequency_map",
             successful_repairs: "repair_action_outcome_map",
+            repair_success_count: 0,
+            repair_failure_count: 0,
         }
     }
 
-    pub fn update_reference_model(&mut self, _new_model: &'static str) {
-        // Validated model replacement
+    pub fn update_reference_model(&mut self, new_model: &'static str) {
+        self.reference_model = new_model;
     }
 
-    pub fn record_repair_outcome(&mut self, _action_type: ActionType, _success: bool) {
-        // Update historical knowledge
+    pub fn record_repair_outcome(&mut self, _action_type: ActionType, success: bool) {
+        if success {
+            self.repair_success_count += 1;
+        } else {
+            self.repair_failure_count += 1;
+        }
     }
 }
 
