@@ -8,3 +8,6 @@
 
 ### Paper: leemans_2013_inductive_miner
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: ghahfarokhi_2021_ocel2
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
