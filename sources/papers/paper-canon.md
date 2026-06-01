@@ -23,3 +23,6 @@
 
 ### Paper: rosenberg_2020_cloud_lifecycle
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: aalst_2016_process_mining_action
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
