@@ -88,3 +88,6 @@
 
 * **Step: write compat research verdict**
   - Evaluating type safety and witness validations.
+
+* **Step: audit: compat research completeness**
+  - Evaluating type safety and witness validations.
