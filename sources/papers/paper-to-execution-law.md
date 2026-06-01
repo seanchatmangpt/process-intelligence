@@ -32,3 +32,6 @@
 
 ### Fixtures for weidlich_2011_profile_conformance
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for de_medeiros_2007_genetic_miner
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
