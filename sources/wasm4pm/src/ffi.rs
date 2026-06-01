@@ -468,4 +468,14 @@ pub extern "C" fn wasm_verify_jcs_signature(
     })
 }
 
+// 8. Get absolute pointer for relative offset (used by FFI/ctypes clients)
+#[no_mangle]
+pub extern "C" fn wasm_get_absolute_ptr(offset: u32) -> *mut u8 {
+    let result = std::panic::catch_unwind(|| {
+        allocator::get_absolute_ptr(offset).unwrap_or(std::ptr::null_mut())
+    });
+    result.unwrap_or(std::ptr::null_mut())
+}
+
+
 

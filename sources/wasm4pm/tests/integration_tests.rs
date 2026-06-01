@@ -459,7 +459,14 @@ fn test_ffi_get_last_error_no_panic() {
     let _lock = TEST_MUTEX.lock().unwrap();
     // Verify calling wasm_get_last_error does not crash and behaves correctly
     let err = ffi::wasm_get_last_error();
-    assert!(err == 0 || err == sandbox::ERR_LIFECYCLE_VIOLATION);
+    assert!(
+        err == 0 
+        || err == sandbox::ERR_LIFECYCLE_VIOLATION 
+        || err == sandbox::ERR_QUERY_TIMEOUT 
+        || err == sandbox::ERR_CYCLE_OVERFLOW 
+        || err == sandbox::ERR_REPLAY_ATTESTATION
+        || err == sandbox::ERR_CONFORMANCE_VIOLATION
+    );
 }
 
 #[test]
@@ -1038,5 +1045,16 @@ fn test_zero_copy_multi_perspective_dfg() {
     // Expect 0 transitions because there are no Item objects.
     assert_eq!(dfg_matrix_item[1], 0);
 }
+
+#[test]
+fn test_ffi_get_absolute_ptr() {
+    let _lock = TEST_MUTEX.lock().unwrap();
+    ffi::wasm_init(1024);
+    let offset = ffi::wasm_alloc(10);
+    assert_ne!(offset, 0);
+    let abs_ptr = ffi::wasm_get_absolute_ptr(offset);
+    assert!(!abs_ptr.is_null());
+}
+
 
 

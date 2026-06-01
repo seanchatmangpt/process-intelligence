@@ -10,8 +10,84 @@ import hashlib
 import hmac
 import uuid
 import sys
+import os
+import ctypes
 import pandas as pd
 from datetime import datetime, timedelta
+
+def locate_library():
+    possible_paths = [
+        "/Users/sac/process-intelligence/sources/wasm4pm/target/debug/libwasm4pm.dylib",
+        "/Users/sac/process-intelligence/sources/wasm4pm/target/debug/libwasm4pm.so",
+        os.path.join(os.path.dirname(__file__), "../sources/wasm4pm/target/debug/libwasm4pm.dylib"),
+        os.path.join(os.path.dirname(__file__), "../sources/wasm4pm/target/debug/libwasm4pm.so"),
+    ]
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+    raise FileNotFoundError("Could not locate compiled libwasm4pm dylib/so.")
+
+class Wasm4pmBridge:
+    ERR_CYCLE_OVERFLOW = 0xFB01
+    ERR_QUERY_TIMEOUT = 0xFB02
+    ERR_CONFORMANCE_VIOLATION = 0xFB03
+    ERR_REPLAY_ATTESTATION = 0xFB04
+    ERR_LIFECYCLE_VIOLATION = 0xFB05
+
+    def __init__(self):
+        lib_path = locate_library()
+        self.lib = ctypes.CDLL(lib_path)
+        
+        self.lib.wasm_init.argtypes = [ctypes.c_uint32]
+        self.lib.wasm_init.restype = ctypes.c_uint32
+        
+        self.lib.wasm_alloc.argtypes = [ctypes.c_uint32]
+        self.lib.wasm_alloc.restype = ctypes.c_uint32
+        
+        self.lib.wasm_parse_and_query.argtypes = [
+            ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32, ctypes.c_uint32
+        ]
+        self.lib.wasm_parse_and_query.restype = ctypes.c_uint64
+        
+        self.lib.wasm_shred_heap.argtypes = [ctypes.c_uint32]
+        self.lib.wasm_shred_heap.restype = ctypes.c_uint32
+
+        self.lib.wasm_get_last_error.argtypes = []
+        self.lib.wasm_get_last_error.restype = ctypes.c_uint32
+
+        self.lib.wasm_get_absolute_ptr.argtypes = [ctypes.c_uint32]
+        self.lib.wasm_get_absolute_ptr.restype = ctypes.c_void_p
+        
+    def init(self, ceiling):
+        return self.lib.wasm_init(ceiling)
+        
+    def alloc(self, length):
+        return self.lib.wasm_alloc(length)
+        
+    def parse_and_query(self, log_offset, log_len, query_offset, query_len):
+        return self.lib.wasm_parse_and_query(log_offset, log_len, query_offset, query_len)
+        
+    def shred_heap(self, seed_offset):
+        return self.lib.wasm_shred_heap(seed_offset)
+
+    def get_last_error(self):
+        return self.lib.wasm_get_last_error()
+
+    def get_absolute_ptr(self, offset):
+        return self.lib.wasm_get_absolute_ptr(offset)
+
+    def write_to_heap(self, offset, data: bytes):
+        ptr = self.get_absolute_ptr(offset)
+        if not ptr:
+            raise RuntimeError(f"Null pointer returned for offset {offset}")
+        ctypes.memmove(ptr, data, len(data))
+
+    def read_from_heap(self, offset, length):
+        ptr = self.get_absolute_ptr(offset)
+        if not ptr:
+            raise RuntimeError(f"Null pointer returned for offset {offset}")
+        return ctypes.string_at(ptr, length)
+
 
 # Genuine cryptographic authority key (simulating ERP system secret)
 GENUINE_SYSTEM_KEY = b"genuine-erp-authority-secret-key-v30.1.1"
@@ -339,7 +415,117 @@ def run_simulation_tests():
     assert res5["verdict"] == "REJECTED"
     assert res5["refusal_reason"]["rule_failed"] == "check_impossible_velocity"
     
+    # ----------------------------------------------------
+    # Scenario 6: Rejection of forged signature at the FFI boundary
+    # ----------------------------------------------------
+    print("\n--- Running Scenario 6: Rejection of forged signature at the FFI boundary ---")
+    bridge = Wasm4pmBridge()
+    # Initialize arena with 10MB memory ceiling
+    res_init = bridge.init(10 * 1024 * 1024)
+    assert res_init == 0, f"wasm_init failed with {res_init}"
+
+    # Genuine signature details from tests
+    pk_hex = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"
+    genuine_sig_hex = "e64662bc41e52be887b4b40c14e367c11fc25b725e0ae6472b39a91342e66e69b4c7de0fcd3e8496a86140bca869f3deec2801b62cbe531d3e4f091137513605"
+    # Forged signature: change last byte from 05 to 00
+    forged_sig_hex = "e64662bc41e52be887b4b40c14e367c11fc25b725e0ae6472b39a91342e66e69b4c7de0fcd3e8496a86140bca869f3deec2801b62cbe531d3e4f091137513600"
+    
+    raw_json_receipt = r'{"assertion_text":"conforms","process_model_hash":"ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a","query_definition":"create_order","slide_id":"8c83e135-7eef-b8bd-f154-2850d66d8007","slide_title":"EBITDA","target_log_hash":"cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce","validator_signature":"e64662bc41e52be887b4b40c14e367c11fc25b725e0ae6472b39a91342e66e69b4c7de0fcd3e8496a86140bca869f3deec2801b62cbe531d3e4f091137513605","verification_results":{"status":"verified"}}'
+
+    pk_bytes = bytes.fromhex(pk_hex)
+    genuine_sig_bytes = bytes.fromhex(genuine_sig_hex)
+    forged_sig_bytes = bytes.fromhex(forged_sig_hex)
+    json_bytes = raw_json_receipt.encode('utf-8')
+
+    pk_offset = bridge.alloc(len(pk_bytes))
+    sig_offset = bridge.alloc(len(forged_sig_bytes))
+    json_offset = bridge.alloc(len(json_bytes))
+
+    # Write genuine data
+    bridge.write_to_heap(pk_offset, pk_bytes)
+    bridge.write_to_heap(json_offset, json_bytes)
+
+    # First verify that genuine signature passes
+    bridge.write_to_heap(sig_offset, genuine_sig_bytes)
+    res_genuine = bridge.lib.wasm_verify_jcs_signature(pk_offset, sig_offset, json_offset, len(json_bytes))
+    print(f"Genuine receipt verification result: {res_genuine}")
+    assert res_genuine == 0, f"Genuine signature failed with {res_genuine}"
+
+    # Now write forged signature
+    bridge.write_to_heap(sig_offset, forged_sig_bytes)
+    res_forged = bridge.lib.wasm_verify_jcs_signature(pk_offset, sig_offset, json_offset, len(json_bytes))
+    print(f"Forged receipt verification result: {res_forged}")
+    assert res_forged == Wasm4pmBridge.ERR_CONFORMANCE_VIOLATION
+    assert bridge.get_last_error() == Wasm4pmBridge.ERR_CONFORMANCE_VIOLATION
+
+    # ----------------------------------------------------
+    # Scenario 7: Rejection of unhashed/unstructured data
+    # ----------------------------------------------------
+    print("\n--- Running Scenario 7: Rejection of unhashed/unstructured data ---")
+    unstructured_data = b"This is some unstructured plain text data without a valid OCEL header."
+    query_str = b"create_order,approve_order,10000"
+
+    log_offset = bridge.alloc(len(unstructured_data))
+    query_offset = bridge.alloc(len(query_str))
+
+    bridge.write_to_heap(log_offset, unstructured_data)
+    bridge.write_to_heap(query_offset, query_str)
+
+    res_parse = bridge.parse_and_query(log_offset, len(unstructured_data), query_offset, len(query_str))
+    res_offset = (res_parse >> 32) & 0xFFFFFFFF
+    res_len = res_parse & 0xFFFFFFFF
+
+    print(f"Parse result: offset={res_offset}, len/err={res_len}")
+    assert res_offset == 0
+    assert res_len == Wasm4pmBridge.ERR_CONFORMANCE_VIOLATION
+    assert bridge.get_last_error() == Wasm4pmBridge.ERR_CONFORMANCE_VIOLATION
+
+    # ----------------------------------------------------
+    # Scenario 8: Sandbox heap out-of-bounds pointer safety checks
+    # ----------------------------------------------------
+    print("\n--- Running Scenario 8: Sandbox heap out-of-bounds pointer safety checks ---")
+    # Requesting query execution at out-of-bounds offset or length
+    res_oob = bridge.parse_and_query(0xFFFFFFFF, 100, query_offset, len(query_str))
+    res_offset_oob = (res_oob >> 32) & 0xFFFFFFFF
+    res_len_oob = res_oob & 0xFFFFFFFF
+
+    print(f"OOB result: offset={res_offset_oob}, len/err={res_len_oob}")
+    assert res_offset_oob == 0
+    assert res_len_oob == Wasm4pmBridge.ERR_LIFECYCLE_VIOLATION
+    assert bridge.get_last_error() == Wasm4pmBridge.ERR_LIFECYCLE_VIOLATION
+
+    # ----------------------------------------------------
+    # Scenario 9: Post-decommissioning residual memory zeroization
+    # ----------------------------------------------------
+    print("\n--- Running Scenario 9: Post-decommissioning residual memory zeroization ---")
+    # Allocate a buffer, write sentinel bytes
+    sentinel_bytes = b"COMPLIANCE_SENTINEL_DATA_MUST_BE_SHREDDED_AND_ZEROED_v30.1.1!!!"
+    test_len = len(sentinel_bytes)
+
+    data_offset = bridge.alloc(test_len)
+    bridge.write_to_heap(data_offset, sentinel_bytes)
+
+    # Read back to verify sentinel exists in memory
+    read_before = bridge.read_from_heap(data_offset, test_len)
+    assert read_before == sentinel_bytes, "Sentinel data was not correctly written or read before shredding"
+    print("Sentinel bytes successfully verified in heap before decommissioning.")
+
+    # Call shredding
+    seed_offset = bridge.alloc(32)
+    bridge.write_to_heap(seed_offset, b"\x00" * 32)
+    res_shred = bridge.shred_heap(seed_offset)
+    assert res_shred == 0, f"shred_heap failed with {res_shred}"
+
+    # Read memory after decommissioning
+    # Since shredding completely scrubs the global arena buffer (Pass 4 zeroization),
+    # there should be no sentinel bytes remaining (it should be all zeros).
+    read_after = bridge.read_from_heap(data_offset, test_len)
+    print(f"Heap content at data offset after shredding (hex): {read_after.hex()}")
+    assert read_after == b"\x00" * test_len, "Residual sentinel data still remains in memory after shredding!"
+    print("Residual memory zeroization verified: Sentinel wiped.")
+
     print("\n=== ALL ADVERSARIAL SIMULATION SCENARIOS SUCCESSFULLY VERIFIED ===")
 
 if __name__ == "__main__":
     run_simulation_tests()
+

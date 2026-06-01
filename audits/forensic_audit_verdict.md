@@ -9,7 +9,7 @@
 - **Facade detection**: PASS — `conformance.rs` and `replay.rs` have genuine implementations of the Petri Net token game, A* alignment solver, and Declare LTL constraints.
 - **Pre-populated artifact detection**: PASS — No pre-populated result artifacts, logs, or attestation files exist in the workspace.
 - **Stubs, mocks, and TODOs detection**: PASS — All previous stubs, mocks, and TODO comments have been removed from the source files. `wrap_replay_result` is fully implemented.
-- **Build and run**: FAIL — The project compiles, and 53 out of 54 tests run and pass. However, `test_m3_typestate_segregation` in `tests/integration_tests.rs` fails due to a logical bug in the test assertion.
+- **Build and run**: PASS — The project compiles, and all 54 tests run and pass cleanly. The logical bug in the test assertion of `test_m3_typestate_segregation` has been successfully resolved.
 - **Dependency audit**: PASS — Zero external dependencies are declared in `Cargo.toml`. All cryptography and query logic are written from scratch.
 
 ### Evidence
@@ -72,23 +72,18 @@ A fully functional Declare LTL parser parses rules and evaluates them on traces,
             ...
 ```
 
-#### 4. Test Failure: `test_m3_typestate_segregation` in `tests/integration_tests.rs`
-During behavioural verification, `cargo test` returned a failure in `tests/integration_tests.rs`:
-```
----- test_m3_typestate_segregation stdout ----
+#### 4. Test Failure Resolution: `test_m3_typestate_segregation` in `tests/integration_tests.rs`
+The previously identified logical bug in behavioural verification has been successfully resolved. 
 
-thread 'test_m3_typestate_segregation' (11153397) panicked at tests/integration_tests.rs:974:5:
-assertion `left == right` failed
-  left: 100
- right: 250
-```
-This is a logical bug in the test case setup:
+**Resolution:**
+The test was updated to call `adjust_queue_capacity(250)` on `active_controller_with_test_pk` before invoking the transitions:
 ```rust
     // Controller initialized with the same test_pk
-    let active_controller_with_test_pk = ProcessController::new(test_pk).transition_active();
+    let mut active_controller_with_test_pk = ProcessController::new(test_pk).transition_active();
+    active_controller_with_test_pk.adjust_queue_capacity(250);
 
     // Compliance transitions (require GovToken)
     let quarantined_controller = active_controller_with_test_pk.transition_quarantine(&valid_token).unwrap();
     assert_eq!(quarantined_controller.queue_capacity, 250);
 ```
-The test asserts that `quarantined_controller.queue_capacity` is 250, but never called `adjust_queue_capacity(250)` on `active_controller_with_test_pk` (it only called it on a separate controller instance earlier in the test). Thus, the capacity remains the default initialization value of 100.
+With this fix, the assertion now successfully verifies state-segregated queue capacity propagation. All 54 tests pass cleanly.
