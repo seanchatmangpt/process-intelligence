@@ -7,3 +7,7 @@
 ### Classify: adriansyah_2014_alignment_conformance
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: leemans_2013_inductive_miner
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
