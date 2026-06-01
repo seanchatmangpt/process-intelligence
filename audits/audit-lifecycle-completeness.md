@@ -396,3 +396,16 @@ The lifecycle framework is **structurally sound and mathematically rigorous**. P
 
 **Audit Date:** 2026-05-31  
 **Auditor Signature:** Conformance Auditor
+
+---
+
+## Section 9: The PARTIAL Checkpoint Pattern (v30.1.1 Spec)
+
+A PARTIAL checkpoint is a tagged commit recording:
+1. Satisfied gates: $\{i \mid G_i(\mathcal{R}) = \top\}$
+2. Residual gates: $\{i \mid G_i(\mathcal{R}) = \bot\}$
+3. Bill of Materials (BOM) specifying the exact backlog of receipt-bearing commits required to close the residuals:
+$$\text{BOM}(G_i) = \{ n \text{ commits of class } \rho \}$$
+The workflow is: $\text{PARTIAL} \to \text{residual inventory} \to \text{targeted closure} \to \text{recomputed gate} \to \text{ALIVE}$.
+The PARTIAL checkpoint pattern provides an auditable, honest repository state, avoiding hand-waving claims by naming residuals explicitly.
+

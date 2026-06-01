@@ -407,3 +407,22 @@ impl Lattice for UnifiedWitnessState {
 *   For the core evidence structure enclosing this lattice, see [Evidence Structures](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/evidence-structures.md).
 *   For how loss and alignment cost are computed, see [Loss Policies](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/loss-policies.md).
 *   To review the master type-law mapping, see [Type Law Atlas](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md).
+
+---
+
+## Section 2: The Witness Marker System (v30.1.1 Spec)
+
+A witness marker is an uninhabited type (an empty enum) representing a specific named authority. Witnesses carry no data and do no work; their sole function is to thread a named authority through the type signature.
+A witness marker $W \in \mathcal{W}$ implements the sealed `Witness` trait:
+$$\text{Witness} \implies \begin{cases}
+\texttt{KEY}: \&'\text{static str} \\
+\texttt{FAMILY}: \text{WitnessFamily} \\
+\texttt{TITLE}: \&'\text{static str} \\
+\texttt{YEAR}: \text{Option}\langle u16 \rangle
+\end{cases}$$
+
+Let $\iota: \mathcal{W} \times \mathcal{W} \to \{0, 1\}$ be the compile-time nominal type identity:
+$$\iota(W_1, W_2) = \begin{cases} 1 & \text{if } W_1 \equiv W_2 \text{ as Rust types} \\ 0 & \text{otherwise} \end{cases}$$
+Because generic type constructors are nominal and injective:
+$$\iota(W_1, W_2) = 0 \implies \text{Admission}\langle T, W_1 \rangle \not\equiv \text{Admission}\langle T, W_2 \rangle$$
+

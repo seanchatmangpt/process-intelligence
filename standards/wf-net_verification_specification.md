@@ -722,3 +722,11 @@ During this specification audit, several **algebraic and conceptual inconsistenc
 - [Conformance Authority Map](file:///Users/sac/process-intelligence/sources/wasm4pm/conformance-authority-map.md) — execution alignment rules.
 - [WF-Net placement ledger](file:///Users/sac/process-intelligence/standards/wf-net_placement.md) — structural ledger registration.
 - [Downstream Refactoring Directive](file:///Users/sac/process-intelligence/prompts/downstream-wasm4pm-refactor.md) — wasm4pm implementation guidelines.
+
+---
+
+## Section 22: Witness Markers as a Free Monoid (v30.1.1 Spec)
+
+Let $\mathcal{W}$ be the set of types implementing the `Witness` trait. The nominal type system ensures that:
+$$\iota(W_1, W_2) = 0 \implies \text{Admission}\langle T, W_1 \rangle \not\equiv \text{Admission}\langle T, W_2 \rangle$$
+This nominal separation means witness markers act as unique coordinates in the type-level authority space. No coercion exists between different witness coordinates.

@@ -420,3 +420,12 @@ Institute for Process Mining
 - [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md) — M&A receipt schema
 - [define_blue_river_dam_lifecycle_gate_map.md](file:///Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md) — Operational gates
 - [blue-river-dam.md](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md) — Executive authority framework
+
+---
+
+## Section 24: WF-Net Soundness as a Reachability Decision Problem (v30.1.1 Spec)
+
+Deciding whether an arbitrary Petri net is sound is PSPACE-complete.
+Block-structured nets are certified statically via their construction invariants. The incidence matrix $C$ is used to compute place invariants $A$:
+$$A \in \ker(C^\top) \implies A \cdot \mathbf{m} = A \cdot M_0 \quad \text{for all reachable markings } \mathbf{m}$$
+Soundness is verified by checking that the minimal $P$-invariants cover all places in $P$.

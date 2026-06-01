@@ -101,3 +101,13 @@ Let $\sigma = e_1 e_2 \dots e_m$ be a trace of length $m$. For any constraint $\
 To prevent false-positive compliance audits, the verification system explicitly logs `is_vacuously_satisfied: true` when a constraint is satisfied vacuously, distinguishing it from active compliance.
 
 For the concrete mapping of lifecycle stages to these transition classes, see [Autonomic Knowledge Actuation Map](file:///Users/sac/process-intelligence/lifecycle/define_autonomic_knowledge_actuation_map.md).
+
+---
+
+## Section 7: Commits as Receipts (v30.1.1 Spec)
+
+A git commit is treated as a manufacturing transition $\tau = (c, \rho)$ where $c$ is the commit hash and $\rho$ is a receipt class:
+$$\rho \in \mathcal{R} = \{\texttt{paper-ledger}, \texttt{paper-law}, \texttt{type-law}, \texttt{fixture-pass}, \texttt{fixture-fail}, \texttt{stderr}, \texttt{ledger}, \texttt{audit}, \texttt{docs-law}, \texttt{checkpoint}, \texttt{tag}\}$$
+Commit validity is structural, meaning the changes in $c$ must exactly produce the type surface or compiler diagnostic claimed by the receipt class $\rho$.
+Unlike procedural compliance, a `fixture-fail` commit is valid only if it fails for the intended named law, verified by the exact `.stderr` diagnostic text.
+

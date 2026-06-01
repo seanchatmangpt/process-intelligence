@@ -56,3 +56,12 @@ To verify abstraction integrity during due diligence:
 1.  All activity taxonomies used to aggregate low-level events for presentation slides must map to a registered SKOS scheme.
 2.  The SKOS scheme hash is registered in the [Slide-to-Receipt Map](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md).
 3.  The buyer due diligence team verifies that the activity abstraction is mathematically sound and consistent across all logs, matching the standards in [Buyer Reliance Requirements](file:///Users/sac/process-intelligence/ma/define_buyer_reliance_requirements.md).
+
+---
+
+## Section 18: Conformance Metrics (v30.1.1 Spec)
+
+The four quality dimensions (fitness, precision, generalization, simplicity) and F1 score are represented as rational numbers $\frac{p}{q} \in [0, 1]$.
+This is compile-enforced via the where-bounds:
+$$\text{Metric}\langle\text{const KIND: QualityMetricKind, const NUM: u64, const DEN: u64}\rangle \quad \text{where} \quad \text{Between01}\langle\text{NUM, DEN}\rangle: \text{IsTrue}$$
+This ensures that no invalid conformance score (e.g. fitness > 1.0 or division-by-zero) can compile, establishing a static safety boundary for all reported metrics.

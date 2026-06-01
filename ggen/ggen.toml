@@ -1,0 +1,76 @@
+# ggen — Governance Generation Engine
+# Substrate for M&A deck, diligence workbook, and Blue River orchestrator
+# Built on process intelligence ontology, SPARQL queries, and Tera templates
+
+[metadata]
+name = "ggen"
+version = "0.1.0"
+description = "Generate board-admissible M&A assets and autonomic governance engines from process intelligence"
+ontology_source = "../sources/wasm4pm-compat/compat/src/ontology.rs"
+evidence_sources = ["../receipts", "../checkpoints"]
+
+# Generation rules for M&A deck rendering
+[[generation.rules]]
+name = "ma-deck-powerpoint"
+description = "Board-ready M&A acquisition presentation with conformance-backed claims"
+query = { file = "queries/extract-board-claims.rq" }
+template = { file = "templates/ma-deck.tera" }
+output_file = "../ma/acquisition_ready_deck_FINAL.pptx"
+mode = "Overwrite"
+metadata = {
+  format = "pptx-rs",
+  audience = "Board of Directors + Transaction Committee",
+  compliance = "board-admissible",
+  evidence_backing = "wasm4pm ConformanceVerdicts + cryptographic receipts"
+}
+
+# Generation rules for M&A diligence workbook
+[[generation.rules]]
+name = "ma-diligence-workbook"
+description = "Detailed diligence workbook with synergy/debt/risk claims and supporting metrics"
+query = { file = "queries/extract-diligence-claims.rq" }
+template = { file = "templates/ma-diligence.tera" }
+output_file = "../ma/diligence_workbook.xlsx"
+mode = "Overwrite"
+metadata = {
+  format = "xlsx",
+  audience = "Due Diligence Teams + Financial Advisors",
+  compliance = "board-admissible",
+  evidence_backing = "replay traces + operational debt taxonomy"
+}
+
+# Generation rules for Blue River orchestrator
+[[generation.rules]]
+name = "blue-river-orchestrator"
+description = "Autonomic MAPE-K governance engine with lifecycle state transitions"
+query = { file = "queries/extract-lifecycle-governance.rq" }
+template = { file = "templates/blue-river.tera" }
+output_file = "../blue_river_dam/src/lib.rs"
+mode = "Overwrite"
+metadata = {
+  format = "rust",
+  audience = "Process Intelligence Runtime",
+  compliance = "MAPE-K autonomic loop",
+  evidence_backing = "lifecycle state machine + governance rule enforcement"
+}
+
+[query]
+endpoint = "in-memory"
+format = "sparql-11"
+ontology_namespace = {
+  ma = "https://process.intelligence/ma/",
+  lifecycle = "https://process.intelligence/lifecycle/",
+  wasm4pm = "https://process.intelligence/wasm4pm/",
+  compat = "https://process.intelligence/compat/"
+}
+
+[template]
+engine = "tera"
+base_dir = "templates"
+autoescape = true
+strict_variables = true
+
+[output]
+checksum_algorithm = "blake3"
+receipt_format = "json"
+proof_format = "cryptographic-chain"

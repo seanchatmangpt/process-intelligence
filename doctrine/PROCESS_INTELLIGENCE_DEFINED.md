@@ -146,3 +146,21 @@ This is the central law of process intelligence.
 - van der Aalst et al. (2023). OCEL 2.0 Standard Specification.
 - wasm4pm-compat/docs/BLUE_RIVER_DAM.md — Five maturity levels, law stack, upstream dam principle.
 - wasm4pm-compat/docs/MATURITY.md — Full 7×5 maturity matrix.
+
+---
+
+## Section 10: Anti-Regression Audit Mesh (v30.1.1 Spec)
+
+The repository enforces invariants via a mesh of 23 audit scripts divided into:
+* **Hard Audits**: Immediate blockers (e.g. no engine creep, feature boundaries).
+* **Soft Audits**: Quality metrics and coverage warning thresholds.
+
+**Algorithm: Crown Audit Protocol (`audit\_crown\_gate\_all.sh`):**
+1. Let $\mathcal{S} = \{s_1, \ldots, s_{22}\}$ be the subordinate audit scripts.
+2. Initialize $\text{FAIL} \leftarrow 0$, $\text{defects} \leftarrow \emptyset$.
+3. For each $s_i \in \mathcal{S}$:
+   * If $\text{exit}(s_i(\mathcal{R})) \neq 0$:
+     * $\text{FAIL} \leftarrow \text{FAIL} + 1$
+     * $\text{defects} \leftarrow \text{defects} \cup \{s_i\}$
+4. If $\text{FAIL} = 0$, return exit 0. Else, print defects and return exit 1.
+

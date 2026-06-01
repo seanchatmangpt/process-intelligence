@@ -179,89 +179,63 @@ impl PetriNet {
 
         if is_wf_net {
             let src = source_place.as_ref().unwrap();
-            let snk = sink_place.as_ref().unwrap();
 
-            // Check weak path connectivity: every place/transition must lie on a path from src to snk.
-            // 1. Forward reachability from src using BFS
-            let mut visited_from_src = BTreeSet::new();
+            // Check weak path connectivity: every place/transition must lie on an undirected path.
+            // We run an undirected BFS starting from the source place.
+            let mut visited = BTreeSet::new();
             let mut queue = VecDeque::new();
-            visited_from_src.insert(src.clone());
+            visited.insert(src.clone());
             queue.push_back(src.clone());
 
             while let Some(curr) = queue.pop_front() {
                 if self.places.contains(&curr) {
+                    // Current node is a place. Neighbors are transitions in its preset or postset.
                     for t in &self.transitions {
-                        if let Some(inputs) = self.pre.get(t) {
-                            if inputs.get(&curr).copied().unwrap_or(0) > 0 {
-                                if !visited_from_src.contains(t) {
-                                    visited_from_src.insert(t.clone());
-                                    queue.push_back(t.clone());
-                                }
-                            }
+                        let is_neighbor = self.pre.get(t).map_or(false, |inputs| inputs.contains_key(&curr))
+                            || self.post.get(t).map_or(false, |outputs| outputs.contains_key(&curr));
+                        if is_neighbor && !visited.contains(t) {
+                            visited.insert(t.clone());
+                            queue.push_back(t.clone());
                         }
                     }
                 } else {
-                    if let Some(outputs) = self.post.get(&curr) {
-                        for (p, &weight) in outputs {
-                            if weight > 0 {
-                                if !visited_from_src.contains(p) {
-                                    visited_from_src.insert(p.clone());
-                                    queue.push_back(p.clone());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // 2. Backward reachability to snk using BFS
-            let mut visited_to_snk = BTreeSet::new();
-            let mut queue_back = VecDeque::new();
-            visited_to_snk.insert(snk.clone());
-            queue_back.push_back(snk.clone());
-
-            while let Some(curr) = queue_back.pop_front() {
-                if self.places.contains(&curr) {
-                    for t in &self.transitions {
-                        if let Some(outputs) = self.post.get(t) {
-                            if outputs.get(&curr).copied().unwrap_or(0) > 0 {
-                                if !visited_to_snk.contains(t) {
-                                    visited_to_snk.insert(t.clone());
-                                    queue_back.push_back(t.clone());
-                                }
-                            }
-                        }
-                    }
-                } else {
+                    // Current node is a transition. Neighbors are places in its preset or postset.
                     if let Some(inputs) = self.pre.get(&curr) {
-                        for (p, &weight) in inputs {
-                            if weight > 0 {
-                                if !visited_to_snk.contains(p) {
-                                    visited_to_snk.insert(p.clone());
-                                    queue_back.push_back(p.clone());
-                                }
+                        for p in inputs.keys() {
+                            if !visited.contains(p) {
+                                visited.insert(p.clone());
+                                queue.push_back(p.clone());
+                            }
+                        }
+                    }
+                    if let Some(outputs) = self.post.get(&curr) {
+                        for p in outputs.keys() {
+                            if !visited.contains(p) {
+                                visited.insert(p.clone());
+                                queue.push_back(p.clone());
                             }
                         }
                     }
                 }
             }
 
-            // All places and transitions must be in both sets
+            // Check if all places and transitions are weakly connected
+            let mut weakly_connected = true;
             for p in &self.places {
-                if !visited_from_src.contains(p) || !visited_to_snk.contains(p) {
-                    is_wf_net = false;
+                if !visited.contains(p) {
+                    weakly_connected = false;
                     break;
                 }
             }
-
-            if is_wf_net {
+            if weakly_connected {
                 for t in &self.transitions {
-                    if !visited_from_src.contains(t) || !visited_to_snk.contains(t) {
-                        is_wf_net = false;
+                    if !visited.contains(t) {
+                        weakly_connected = false;
                         break;
                     }
                 }
             }
+            is_wf_net = weakly_connected;
         }
 
         // If it's not a WF-net, or we don't have source/sink, we can't complete full reachability analysis properly.

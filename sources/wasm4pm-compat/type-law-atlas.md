@@ -509,3 +509,23 @@ For implementation details and code examples, refer to the supporting documents:
 - [loss-policies.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/loss-policies.md)
 - [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md)
 - [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md)
+
+---
+
+## Section 3: Const-Generic Law Machinery (v30.1.1 Spec)
+
+We map boolean const-generic expressions to compile-time proof obligations via:
+$$\text{Assert}\langle\text{const OK: bool}\rangle; \qquad \text{IsTrue for Assert}\langle\text{true}\rangle; \qquad \text{Require}\langle\text{const OK: bool}\rangle = \text{Assert}\langle\text{OK}\rangle$$
+A where-bound $\text{Require}\langle\text{EXPR}\rangle: \text{IsTrue}$ compiles successfully if and only if $\text{EXPR}$ evaluates to $\text{true}$.
+
+The type-level rational metric bounds $\text{Between01}\langle n, d \rangle$ is defined as:
+$$\text{Between01}\langle\text{const NUM: u64, const DEN: u64}\rangle \quad \text{where} \quad d > 0 \land n \leq d$$
+Its soundness is stated as:
+$$\forall n, d \in \mathbb{N}, \quad \text{Between01}\langle n, d \rangle \text{ is well-formed} \iff d > 0 \land n \leq d$$
+
+**Proof of Between01 Soundness:**
+The type definition carries two where-bounds: $\text{Require}\langle d > 0\rangle : \text{IsTrue}$ and $\text{Require}\langle n \leq d\rangle : \text{IsTrue}$. By the $\text{Assert}/\text{IsTrue}$ machinery, each bound reduces to $\text{Assert}\langle b \rangle : \text{IsTrue}$ where $b$ is the boolean value of the bracketed expression evaluated at compile time. The trait $\text{IsTrue}$ is implemented only for $\text{Assert}\langle\text{true}\rangle$. Therefore, well-formedness holds if and only if both $d > 0$ and $n \leq d$ evaluate to $\text{true}$, which is equivalent to $d > 0$ and $n \leq d$. $\square$
+
+The "Need-9 means split" law enforces that a single condition cell holds at most 8 primary bits:
+$$\text{ConditionCell}\langle\text{const BITS: usize}\rangle \quad \text{where} \quad \text{Require}\langle\text{BITS} \leq 8\rangle: \text{IsTrue}$$
+

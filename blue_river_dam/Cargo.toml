@@ -1,0 +1,12 @@
+[package]
+name = "blue_river_dam"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "blue_river_dam"
+path = "src/lib.rs"
+
+[dependencies]
+
+[dev-dependencies]

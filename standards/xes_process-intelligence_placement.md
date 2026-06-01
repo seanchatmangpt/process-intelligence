@@ -97,4 +97,21 @@ When a multi-object OCEL 2.0 log is flattened to fit a single-perspective XES tr
       },
       "witness_signature": "SIG_ED25519_..."
     }
-    ```
+
+---
+
+## Section 13: OCEL 2.0 Formal Objects (v30.1.1 Spec)
+
+An OCEL 2.0 log is defined as a bipartite directed graph:
+$$\mathcal{L} = (\mathcal{E}, \mathcal{O}, \text{E2O}, \text{O2O}, \Delta)$$
+where:
+* $\mathcal{E}$ is the set of events.
+* $\mathcal{O}$ is the set of objects.
+* $\text{E2O} \subseteq \mathcal{E} \times \mathcal{O} \times \mathcal{Q}$ are event-to-object links.
+* $\text{O2O} \subseteq \mathcal{O} \times \mathcal{O} \times \mathcal{Q}$ are object-to-object links.
+* $\Delta \subseteq \mathcal{O} \times \text{Attr} \times \text{Val} \times \mathbb{T}$ tracks attribute evolution.
+
+A log $\mathcal{L}$ is valid if and only if:
+$$\forall (e, o, q) \in \text{E2O}, \quad e \in \mathcal{E} \land o \in \mathcal{O} \qquad \text{and} \qquad \forall (o_1, o_2, q) \in \text{O2O}, \quad o_1, o_2 \in \mathcal{O}$$
+The dimensional schema is defined as a triple $(\mathcal{OT}, \mathcal{AT}, \lambda)$ where $\lambda: \mathcal{AT} \to 2^{\mathcal{OT}}$ maps activity types to allowed object types.
+Structural validity is enforced via `OcelLog::validate`, which refuses dangling links as `OcelRefusal::DanglingEventObjectLink` or `OcelRefusal::DanglingObjectObjectLink`.

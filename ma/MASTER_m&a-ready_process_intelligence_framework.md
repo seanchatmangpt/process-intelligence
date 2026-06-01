@@ -596,3 +596,15 @@ All taxonomies, validation protocols, and stakeholder requirements are:
 **Last Updated:** 2026-05-31
 **Status:** COMPLETE & VERIFIED
 **Certification:** Chief Process Officer + External Auditor Review
+
+---
+
+## Section 26: Loss-Policy Algebra (v30.1.1 Spec)
+
+The three loss policies form a semiring $(\mathcal{L}, \oplus, \otimes)$ ordered by permissiveness:
+$$\text{RefuseLoss} \leq \text{AllowNamedProjection} \leq \text{AllowLossWithReport}$$
+where $p_1 \oplus p_2 = \max(p_1, p_2)$ and $p_1 \otimes p_2 = \min(p_1, p_2)$.
+
+A loss report is a signed measure $\ell: \mathcal{I} \to \mathbb{N}_0$ over the item universe $\mathcal{I}$ of dropped structures. Total loss is the $L_1$ norm:
+$$\|\ell\|_1 = \sum_{x \in \mathcal{I}} \ell(x) \in \mathbb{N}_0$$
+A projection is lossless if and only if $\|\ell\|_1 = 0$.

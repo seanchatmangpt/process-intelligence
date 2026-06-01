@@ -204,3 +204,16 @@ Knowledge that actuates with receipt and replay is ALIVE.
 - `doctrine/BLUE_RIVER_DAM.md` — Upstream closure law that bounds autonomic authority
 - `doctrine/PROCESS_INTELLIGENCE_DEFINED.md` — Five maturity levels including Level 5 actuation
 - `gaps/GAP_001_COMPAT_WASM_BRIDGE.md` — Current gap blocking full actuation chain
+
+---
+
+## Section 6: The Three-Layer Summary (v30.1.1 Spec)
+
+The compile-time checks of the type system are structured into three distinct layers:
+
+| Layer | Mechanism | Invariant Enforced |
+| :--- | :--- | :--- |
+| **State Tokens** | Empty enums as `PhantomData` | Cross-stage substitution is a type error |
+| **Witness Markers** | Uninhabited enums + sealed `Witness` trait | Cross-authority substitution is a type error |
+| **Const-Generic Law** | `Require<{EXPR}>: IsTrue` bounds | Out-of-bound metric or arity parameters do not compile |
+

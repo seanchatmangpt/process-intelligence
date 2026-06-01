@@ -158,3 +158,25 @@ This is followed by re-executing the specified WebAssembly query module on the t
 * For detail on process assets, see [Process Asset Claim Taxonomy](file:///Users/sac/process-intelligence/ma/define_process_asset_claim_taxonomy.md).
 * For detail on process liabilities, see [Process Liability Claim Taxonomy](file:///Users/sac/process-intelligence/ma/define_process_liability_claim_taxonomy.md).
 * For the mathematical definitions of residual risk, see [Slide-to-Residual Map](file:///Users/sac/process-intelligence/ma/define_slide-to-residual_map.md).
+
+---
+
+## Section 27: Algorithm: Admission Gate and the Graduation Functor (v30.1.1 Spec)
+
+The structural admission gate maps:
+$$\text{Admit}(v, W) \to \text{Result}\langle\text{Admission}\langle T, W \rangle, \text{Refusal}\langle R, W \rangle\rangle$$
+where $R$ is a named structural law. The validation check runs in $O(|\Lambda_W| \cdot |v|)$ time.
+
+The graduation map is a functor $\mathcal{G}: \mathbf{Struct} \to \mathbf{Exec}$ mapping structural types in $\mathbf{Struct}$ to their corresponding runtime representations in $\mathbf{Exec}$.
+
+**Algorithm: Receipt-Bearing Commit Validation:**
+1. Given range $[c_1, c_2]$ in repository $\mathcal{R}$, initialize $\text{violations} \leftarrow [ ]$.
+2. For each commit $c \in [c_1, c_2]$:
+   * Let $msg \leftarrow \text{CommitMessage}(c)$.
+   * If "Law:" $\notin msg$ or the class prefix is not in $\{\texttt{type-law}, \texttt{fixture-pass}, \texttt{fixture-fail}, \texttt{paper-ledger}, \texttt{audit}\}$, add $c$ to $\text{violations}$.
+3. Return $\text{violations}$.
+
+**Differential Analysis of Certification State:**
+Let $\mathbf{g} = (g_1, \dots, g_{10}) \in \mathbb{N}^{10}$ be the gate counts. The certification step is monotone if:
+$$\Delta\mathbf{g}^{(k)} = \mathbf{g}^{(k+1)} - \mathbf{g}^{(k)} \geq \mathbf{0}$$
+which ensures that counts of fixtures, papers, and audits never decrease during development.

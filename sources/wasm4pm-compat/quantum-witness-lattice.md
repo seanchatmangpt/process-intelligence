@@ -16,3 +16,19 @@ Historically, process evidence admission relied on elliptic curve factorization 
 ## 4. wasm4pm-compat Architecture Impacts
 *   **Memory Footprint Expansion:** Transitioning to lattice primitives expands signature payloads. The compatibility layer implements memory-mapped witness offloading to prevent WASM instance memory exhaustion during verification.
 *   **Verification Cycles:** Verification latency is optimized via vectorization at the host level, bridging WASM SIMD limits.
+
+---
+
+## Section 20: The Process Canon Surface Summary (v30.1.1 Spec)
+
+The formal objects of the process mining canon are summarized in the following table:
+
+| Canon Object | Paper Authority | Rust Type | Law Enforced |
+| :--- | :--- | :--- | :--- |
+| **OCEL 2.0** | Berti & van der Aalst (2023) | `OcelLog` | Bipartite graphs, typed links |
+| **XES** | IEEE 1849 (2016) | `XesLog` | Single-case notion, non-empty prefix |
+| **Petri Net** | Murata (1989) | `WfNetConst<S>` | Disjoint sets $P, T$; bipartite arcs |
+| **WF-Net** | van der Aalst (1998) | `WfNetConst<S>` | Non-forgeable soundness witness |
+| **POWL** | Kourani (2024) | `ProcessTreeProjectable` | Irreducible partial order check |
+| **Metrics** | Carmona (2018) | `FitnessConst<N,D>` | Value in $[0,1]$ via `Between01` |
+| **Lifecycle** | Berti (2023) | `LifecycledObject<T,P>` | Phase-transition DAG |

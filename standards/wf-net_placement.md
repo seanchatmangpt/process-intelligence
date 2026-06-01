@@ -85,3 +85,15 @@ To secure operational claims during mergers and acquisitions:
 1.  Target process flows must map to a verified WF-Net registered in the Virtual Data Room.
 2.  Any slide assertion of process flow soundness must map to a cryptographic receipt.
 3.  These receipts are registered in the [Slide-to-Receipt Map](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md) and verified against the thresholds in [Board-Admissible Claim Requirements](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md).
+
+---
+
+## Section 15: Petri Net Bipartite Arc Law (v30.1.1 Spec)
+
+A Petri net is a tuple $N = (P, T, F, W, M_0)$ where $P$ and $T$ are disjoint finite sets of places and transitions.
+The flow relation $F$ must satisfy:
+$$F \subseteq (P \times T) \cup (T \times P) \qquad \text{and} \qquad F \cap (P \times P) = \emptyset \land F \cap (T \times T) = \emptyset$$
+In `wasm4pm-compat`, this is structurally guaranteed because the only arc constructors are:
+$$\text{PlaceToTransitionArc}\langle P, T, Weight \rangle \qquad \text{and} \qquad \text{TransitionToPlaceArc}\langle T, P, Weight \rangle$$
+No place-to-place arc can be constructed in the type system.
+This structural restriction ensures that bipartite graph invariants cannot be violated, rejecting any invalid net representation at compile time.

@@ -166,3 +166,16 @@ pub enum EvidenceError {
 *   For details on witness lattices and their join properties, see [Witness Lattices](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md).
 *   For the alignment loss policies and fitness checks, see [Loss Policies](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/loss-policies.md).
 *   To review the master type-law mapping, see [Type Law Atlas](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md).
+
+---
+
+## Section 4: Non-Forgeability via Sealed Constructors (v30.1.1 Spec)
+
+A workflow net soundness state is tracked via the enum:
+$$\text{SoundnessState} = \{\texttt{Unknown}, \texttt{Claimed}, \texttt{Witnessed}\}$$
+The non-forgeability of the $\texttt{Witnessed}$ state is enforced by a private constructor seal:
+$$\text{WfNetConst}\langle\text{const SOUNDNESS: SoundnessState}\rangle$$
+Only the function `witness_soundness`, requiring a `SoundnessProof` token generated inside the engine, can produce $\text{WfNetConst}\langle\texttt{Witnessed}\rangle$.
+
+The single-type design prevents the forgery surface introduced by conversion functions in a two-type design (e.g., separating parameterized and unparameterized nets).
+

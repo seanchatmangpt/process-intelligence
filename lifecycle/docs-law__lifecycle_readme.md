@@ -78,3 +78,24 @@ All stages, taxonomies, and audit protocols are detailed in the following docume
 * [define_false-claim_taxonomy.md](file:///Users/sac/process-intelligence/lifecycle/define_false-claim_taxonomy.md) - Identifying and refusing hand-waving M&A assertions.
 * [audit__lifecycle_completeness.md](file:///Users/sac/process-intelligence/lifecycle/audit__lifecycle_completeness.md) - Complete audit checklist.
 * [checkpoint__lifecycle_model_complete.md](file:///Users/sac/process-intelligence/lifecycle/checkpoint__lifecycle_model_complete.md) - State-specific validation assertions.
+
+---
+
+## Section 1: The Evidence Lifecycle (v30.1.1 Spec)
+
+The central structural invariant of the process-evidence lifecycle is a typed, one-way door. The lifecycle is a directed state machine over the set of stage tokens:
+$$\mathcal{S} = \{\texttt{Raw}, \texttt{Parsed}, \texttt{Admitted}, \texttt{Refused}, \texttt{Projected}, \texttt{Exportable}, \texttt{Receipted}\}$$
+with initial state $\texttt{Raw}$ and terminal states $\{\texttt{Refused}, \texttt{Receipted}\}$.
+
+The lawful transitions are:
+$$\texttt{Raw} \xrightarrow{\texttt{into\_parsed}} \texttt{Parsed} \xrightarrow{\texttt{Admit::admit}} \texttt{Admitted} \to \begin{cases} 
+\texttt{Projected} \xrightarrow{\texttt{into\_receipted}} \texttt{Receipted} \\ 
+\texttt{Exportable} \xrightarrow{\texttt{into\_receipted}} \texttt{Receipted} \\ 
+\texttt{Receipted} \quad \text{(terminal)} 
+\end{cases}$$
+
+Refuse paths are available before admission:
+$$\texttt{Raw} \xrightarrow{\texttt{refuse}} \texttt{Refused}, \qquad \texttt{Parsed} \xrightarrow{\texttt{into\_refused}} \texttt{Refused}$$
+
+Type-level safety enforces that cross-state substitution is a compiler error:
+$$\forall T, S_1, S_2, W. \quad S_1 \neq S_2 \implies \text{Evidence}\langle T, S_1, W \rangle \not\leq \text{Evidence}\langle T, S_2, W \rangle$$

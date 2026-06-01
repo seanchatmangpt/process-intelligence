@@ -82,3 +82,19 @@ The 2026-05-31 re-seal confirms all criteria remain met with expanded counts and
 ## SPR Thesis Anchored
 
 See `doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md` for the canonical research program manifesto.
+
+---
+
+## Section 25: Algorithm: The ALIVE Certification Protocol (v30.1.1 Spec)
+
+Let $\mathcal{C}$ be the codebase, $\mathcal{F}^+$ compile-pass fixtures, $\mathcal{F}^-$ compile-fail fixtures, and $\mathcal{D}$ expected stderr diagnostics.
+
+**Algorithm: ALIVE Protocol:**
+1. Initialize $R \leftarrow \emptyset$.
+2. For each $f^+ \in \mathcal{F}^+$:
+   * If $\text{Compile}(\mathcal{C} \cup \{f^+\}) \neq \text{Ok}$, then $R \leftarrow R \cup \{(\text{PASS\_FAIL}, f^+)\}$.
+3. For each $(f^-, d) \in \mathcal{F}^- \times \mathcal{D}$:
+   * Let $res \leftarrow \text{Compile}(\mathcal{C} \cup \{f^-\})$.
+   * If $res = \text{Ok}$, $R \leftarrow R \cup \{(\text{FAIL\_PASS}, f^-)\}$.
+   * Else if $\text{diagnostic}(res) \neq d$, $R \leftarrow R \cup \{(\text{WRONG\_LAW}, f^-, d)\}$.
+4. If $R = \emptyset$, return $\text{ALIVE}$. Else, return $\text{PARTIAL}(R)$.

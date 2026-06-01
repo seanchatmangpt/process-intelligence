@@ -72,4 +72,16 @@ When compiling a hierarchical Partial Order Workflow Language (POWL) tree to an 
       },
       "witness_signature": "SIG_ED25519_..."
     }
-    ```
+
+---
+
+## Section 16: WF-Net Soundness (v30.1.1 Spec)
+
+A workflow net (WF-net) is sound if and only if it satisfies three properties:
+1. **Option to complete**: from any reachable marking $M$ there is a transition sequence leading to the final marking $M_f = [o]$.
+2. **Proper completion**: if marking $M$ is reachable and marks $o$, then no other place is marked: $M \ge [o] \implies M = [o]$.
+3. **No dead transitions**: every transition is enabled in at least one reachable marking.
+
+Soundness states are tracked at the type level:
+$$\text{SoundnessState} \in \{\texttt{Unknown}, \texttt{Claimed}, \texttt{Witnessed}\}$$
+The `WfNetConst<SOUNDNESS>` type restricts execution capabilities based on this parameter, requiring a cryptographically signed `SoundnessProof` from the engine to promote to $\texttt{Witnessed}$.

@@ -166,3 +166,24 @@ impl LossPolicy {
 *   For details on witness lattices and their join properties, see [Witness Lattices](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md).
 *   For the core evidence structure enclosing this lattice, see [Evidence Structures](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/evidence-structures.md).
 *   To review the master type-law mapping, see [Type Law Atlas](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md).
+
+---
+
+## Section 5: The LossPolicy Chain (v30.1.1 Spec)
+
+Loss policies determine how information loss during translation is handled:
+$$\text{LossPolicy} = \{\texttt{RefuseLoss}, \texttt{AllowNamedProjection}, \texttt{AllowLossWithReport}\}$$
+They form a lattice under permissiveness.
+A static name is defined by $\text{ProjectionName}(\&'\text{static str})$.
+A $\text{LossReport}\langle\text{From, To, Items}\rangle$ is emitted. The `Project` trait is defined as:
+$$\text{Project}(e, p) \to \text{Result}\langle\text{LossReport}\langle\text{From, To, Lost}\rangle, \text{Reason}\rangle$$
+
+**Algorithm: Lawful Lossy Projection Protocol:**
+1. Let $e$ be the source evidence of type $\text{Evidence}\langle T, \texttt{Admitted}, W \rangle$.
+2. Let $p$ be the target $\text{LossPolicy}$ and $n$ the $\text{ProjectionName}$.
+3. Identify dropped items: $\text{dropped} \leftarrow \text{Identify\_Loss}(e)$.
+4. If $p = \texttt{RefuseLoss}$ and $\text{dropped} \neq \emptyset$, return $\text{Err}(\text{RefusalReason})$.
+5. Otherwise, project: $e' \leftarrow \text{Apply\_Projection}(e, n)$.
+6. Construct report: $r \leftarrow \text{LossReport::new}(n, p, \text{dropped})$.
+7. Return $\text{Ok}(e'.\text{into\_projected}(), r)$.
+

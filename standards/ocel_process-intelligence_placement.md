@@ -111,4 +111,13 @@ When converting a flat trace-based XES log into an Object-Centric Event Log (OCE
       },
       "witness_signature": "SIG_ED25519_..."
     }
-    ```
+
+---
+
+## Section 12: Paper as Law (v30.1.1 Spec)
+
+Every paper in the process mining corpus is mapped to one of five classifications:
+$$\text{Classification} \in \{\texttt{COVERED\_BY\_TYPE}, \texttt{COVERED\_BY\_GRADUATION\_BOUNDARY}, \texttt{PARTIAL\_WITH\_REASON}, \texttt{DUPLICATE\_OR\_BACKGROUND}, \texttt{OUT\_OF\_SCOPE\_WITH\_REASON}\}$$
+The status $\texttt{MISSING\_TYPE\_LAW}$ is strictly forbidden. Gate $G_2$ ensures that:
+$$|\{m \in \text{modules} \mid \text{MISSING\_TYPE\_LAW}(m)\}| = 0$$
+This ensures that every research paper in the corpus is either covered by a structural type, an execution capability, a documented partial, a duplicate status, or a specific out-of-scope reason, preventing unclassified compliance gaps.

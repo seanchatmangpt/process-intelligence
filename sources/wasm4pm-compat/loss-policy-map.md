@@ -505,3 +505,19 @@ All permissible loss classes are justified and implementable. All terminal loss 
 - [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md) — Implementation gaps
 - [research-verdict.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md) — Conformance audit verdict
 - [xes_loss-policy_sample.md](file:///Users/sac/process-intelligence/experiments/xes_loss-policy_sample.md) — XES loss-policy validation example
+
+---
+
+## Section 23: The Between01 Lattice and Conformance Arithmetic (v30.1.1 Spec)
+
+Let $\mathbb{Q}_{01} = \{ \frac{p}{q} \in \mathbb{Q} \mid 0 \leq \frac{p}{q} \leq 1, q > 0 \}$. $\mathbb{Q}_{01}$ is a bounded lattice under:
+$$\frac{p_1}{q_1} \wedge \frac{p_2}{q_2} = \min\left(\frac{p_1}{q_1}, \frac{p_2}{q_2}\right), \qquad \frac{p_1}{q_1} \vee \frac{p_2}{q_2} = \max\left(\frac{p_1}{q_1}, \frac{p_2}{q_2}\right)$$
+with bounds $0/1$ and $1/1$.
+
+For trace token-replay fitness of $\tau_i$ against WF-net $N$:
+$$f(\tau_i, N) = \frac{1}{2}\left(1 - \frac{m_i}{c_i}\right) + \frac{1}{2}\left(1 - \frac{r_i}{p_i}\right) \in [0, 1]$$
+Aggregate fitness of $L = \{\tau_1, \ldots, \tau_n\}$ is:
+$$F(L, N) = \frac{\sum_{i=1}^n |\tau_i| \cdot f(\tau_i, N)}{\sum_{i=1}^n |\tau_i|}$$
+
+Precision via the escaping-edges estimator is:
+$$\text{prec}(L, N) = \frac{\sum_{\hat\sigma \in \text{Pref}(L)} | \text{EN}(N, \hat\sigma) \cap A(L) |}{\sum_{\hat\sigma \in \text{Pref}(L)} | \text{EN}(N, \hat\sigma) |} \in [0, 1]$$

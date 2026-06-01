@@ -50,3 +50,13 @@ graph TD
 *   **Fitness Gate ($f$)**: The aggregate replay fitness of any ingested log against its corresponding model must satisfy $f \ge 0.95$. Under no circumstances shall a transaction run be admitted if fitness falls below $0.85$, even with a Board override, as defined in [Blue River Dam Doctrine](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md).
 *   **Precision Gate ($p$)**: The process model's precision must satisfy $p \ge 0.90$ to prevent under-specified models from hiding deviations.
 *   **Boundedness Gate**: The execution core automatically freezes and aborts any transaction that violates 1-boundedness of control places.
+
+---
+
+## Section 17: POWL Projection Law (v30.1.1 Spec)
+
+A Partially Ordered Workflow Language (POWL) model $M$ is process-tree projectable if and only if:
+$$\mathcal{L}(M) = \mathcal{L}(T) \quad \text{for some block-structured process tree } T$$
+If $M$ contains irreducible partial orders, it exceeds the process tree language. The `TreeProjectable` trait is sealed and implemented only for `ProcessTreeProjectable`.
+Acyclic partial orders are verified using the `AcyclicPartialOrder` witness.
+This ensures that a non-projectable POWL model cannot be projected onto a process tree without triggering a compile-time type check error, making silent behavioral loss impossible.

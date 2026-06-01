@@ -97,3 +97,15 @@ To secure process evaluations during mergers and acquisitions:
 1.  All target process representations must be backed by a verified Petri net model registered in the data room.
 2.  The conformance of historical event logs against this Petri net must be verified using `wasm4pm`.
 3.  Replay proofs are mapped at [Slide-to-Receipt Map](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md), guaranteeing the process fitness meets the $\theta_{\text{fit}} \ge 0.95$ threshold defined in [Board-Admissible Claim Requirements](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md).
+
+---
+
+## Section 14: XES and Case-Centric Evidence (v30.1.1 Spec)
+
+The IEEE 1849 XES standard enforces single-case-notion event semantics. The type separation is strict:
+$$\text{XesLog} \not\equiv \text{OcelLog}$$
+The boundary is marked by the zero-sized `CaseCentricMarker`.
+The XES extension prefix law requires non-empty prefixes:
+$$\text{XesExtension}(n, p, u) \quad \text{is valid} \iff p \neq ""$$
+Violation of this law yields `XesRefusal::InvalidExtension`.
+This ensures that case-centric event logs cannot be silently coerced to object-centric structures or vice versa at compile time, and that namespaces within event attributes are structurally sound.

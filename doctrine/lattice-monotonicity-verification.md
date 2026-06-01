@@ -150,3 +150,18 @@ Any modification of the log or the model post-execution will invalidate the cryp
 
 - **van der Aalst, W. M. P.**: *Process Mining: Data Science in Action*. Springer, 2016. Cited in [paper-to-type-law.md](file:///Users/sac/process-intelligence/sources/papers/paper-to-type-law.md).
 - **Chatman, S.**: *Workflow Ledgers and Trustless Alignment Verification*. Journal of Process Compliance, 2025. Cited in [workflow-ledger.md](file:///Users/sac/process-intelligence/sources/papers/workflow-ledger.md).
+
+---
+
+## Section 21: The Evidence Lifecycle as a Partial Order (v30.1.1 Spec)
+
+The set of stage tokens $S = \{\mathtt{Raw},\, \mathtt{Parsed},\, \mathtt{Admitted},\, \mathtt{Projected},\, \mathtt{Exportable},\, \mathtt{Receipted},\, \mathtt{Refused}\}$ forms a partially ordered set $(S, \preceq)$ where:
+$$s_1 \preceq s_2 \iff \text{there exists a lawful transition sequence } s_1 \to \dots \to s_2 \text{ in the evidence lifecycle.}$$
+The relation is reflexive, antisymmetric, and transitive.
+
+**Theorem: Monotonicity of Evidence Transitions:**
+Let $f: \text{Evidence}\langle T, s_1, W \rangle \to \text{Evidence}\langle T, s_2, W \rangle$ be any lawful transition. Then:
+$$s_1 \preceq s_2$$
+**Proof:**
+By exhaustive inspection of the public constructors of `Evidence`. Transition methods are strictly one-way (e.g. `into_parsed`, `into_projected`, `into_receipted`), mapping from an earlier stage to a later stage. The constructors for advanced states are `pub(crate)` or sealed, meaning external callers cannot bypass the order. Hence, $s_1 \preceq s_2$. $\square$
+

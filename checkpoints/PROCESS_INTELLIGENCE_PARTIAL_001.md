@@ -19,3 +19,21 @@ To transition from `PARTIAL_001` to `ALIVE_001`, the following steps must be com
 
 ## 3. Transition Verdict
 - **Status**: **TRANSITIONED**. The transition steps have been completed. All downstream prompts are fully expanded and actionable. The repository is ready for evaluation against the final status criteria in [PROCESS_INTELLIGENCE_ALIVE_001.md](file:///Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md).
+
+---
+
+## Section 8: The ALIVE Gate (v30.1.1 Spec)
+
+A codebase state $\mathcal{R}$ satisfies the ALIVE certification level if and only if:
+$$\text{ALIVE}_{004}(\mathcal{R}) \iff \bigwedge_{i=1}^{10} G_i(\mathcal{R})$$
+where:
+* $G_1(\mathcal{R})$: Paper Coverage ($\geq 80$ paper families ledgered).
+* $G_2(\mathcal{R})$: No Missing Type Law.
+* $G_3(\mathcal{R})$: Compile-Pass Fixtures ($\geq 200$).
+* $G_4(\mathcal{R})$: Compile-Fail Fixtures ($\geq 160$).
+* $G_5(\mathcal{R})$: Stderr Parity ($|\text{compile\_fail}| = |\text{.stderr}|$).
+* $G_6(\mathcal{R})$: Audit Script Coverage ($\geq 20$).
+* $G_7(\mathcal{R})$: Master Audit Gate (exit 0).
+* $G_8(\mathcal{R})$: Cargo Tests (exit 0).
+* $G_9(\mathcal{R})$: Clippy Warnings (exit 0).
+* $G_{10}(\mathcal{R})$: Format check (exit 0).

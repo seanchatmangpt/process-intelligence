@@ -84,3 +84,18 @@ $$\operatorname{status}(N) = \text{DECOMMISSIONED} \iff \operatorname{assert\_de
 ## Related Documents
 * Review the completeness checklist in [Audit Lifecycle Completeness](file:///Users/sac/process-intelligence/lifecycle/audit__lifecycle_completeness.md).
 * Back to [Lifecycle README](file:///Users/sac/process-intelligence/lifecycle/docs-law__lifecycle_readme.md).
+
+---
+
+## Section 19: New Modules (v30.1.1 Spec)
+
+We formalize three additional modules:
+1. **Process Cube**: Dimensions are encoded as distinct types using const-strings:
+$$\text{CubeDimension}\langle\text{const NAME: \&'static str}\rangle$$
+2. **Temporal Ordering**: Four-valued temporal ordering relation:
+$$\text{TemporalOrder} = \{\texttt{Before}, \texttt{After}, \texttt{Concurrent}, \texttt{Unknown}\}$$
+3. **Object Lifecycle**: Phase transitions enforced through typestate methods:
+$$\text{PHASE} \in \{\texttt{Created}, \texttt{Active}, \texttt{Modified}, \texttt{Archived}, \texttt{Deleted}\}$$
+To prevent the nightly Rust compiler E0391 variance cycle when using enums in const generic bounds, intermediate type aliases are introduced:
+$$\text{type ActiveToModified}\langle T \rangle = \text{LifecycledObject}\langle T, \texttt{Modified} \rangle$$
+This preserves readability and compiles correctly under nightly rules by avoiding direct evaluation of where-bound constraints during variance inference.
