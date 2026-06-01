@@ -34,23 +34,24 @@ Auditors must follow this exact step-by-step verification pathway for every cont
 * **Output**: Verification that event timestamps match database commit timestamps within a synchronization tolerance ($\Delta t \le 1$ second).
 
 ### Step 3: Cryptographic Integrity Verification
-* **Action**: Re-calculate the SHA-256 hash of the target XES or OCEL log file.
-* **Math Check**: Verify that:
+* **Action**: Re-calculate the SHA-256 hash and Merkle root of the target event log.
+* **Math Check**: Verify that the file hash and Merkle root of the event hash chains match the closing agreement:
   $$\operatorname{SHA-256}(L_{\text{local}}) == \text{target\_log\_hash}$$
+  $$M_{\text{root, local}} == M_{\text{root, receipt}}$$
 * **Output**: Tamper-proof validation of the event log data.
 
 ### Step 4: Model Soundness and Liveness Audit
-* **Action**: Load the process model (Petri net) and verify its structural correctness.
-* **Math Check**: Verify soundness (van der Aalst 1998) by checking that:
-  1. The net has a single source place $i$ and sink place $o$.
-  2. For any reachable marking $m$, the sink place is reachable ($m \xrightarrow{*} m_f$).
-  3. No transition is dead.
+* **Action**: Load the process model (Petri net Workflow Net) and verify structural soundness.
+* **Math Check**: Formally verify soundness (van der Aalst 1998):
+  1. **Option to Complete**: $\forall M \in [M_0\rangle, \quad [o] \in [M\rangle$
+  2. **Liveness**: $\forall M \in [M_0\rangle, \forall t \in T, \exists M', M'' \in [P\rangle : M \xrightarrow{*} M' \xrightarrow{t} M''$
+  3. **Boundedness**: $\exists k \in \mathbb{N}^+ : \forall M \in [M_0\rangle, \forall p \in P, \quad M(p) \le k$
 * **Output**: A certified sound process model.
 
 ### Step 5: Conformance Replay and Alignment Audit
 * **Action**: Execute the optimal alignment conformance algorithm (Adriansyah 2014) on the verified log and model using the parameters specified in the receipt.
-* **Math Check**: Re-calculate fitness ($f$) and precision ($p$), verifying that:
-  $$f_{\text{audited}} \ge f_{\text{claimed}} \quad \text{and} \quad p_{\text{audited}} \ge p_{\text{claimed}}$$
+* **Math Check**: Re-calculate fitness ($f$) and precision ($p$) using alignment-driven state space analysis, verifying that the difference lies within the replication tolerance:
+  $$\left| f_{\text{audited}} - f_{\text{claimed}} \right| < 10^{-6} \quad \text{and} \quad \left| p_{\text{audited}} - p_{\text{claimed}} \right| < 10^{-6}$$
 * **Output**: The final audit verdict.
 
 ## 2. Auditing Toolchain Requirements

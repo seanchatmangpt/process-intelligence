@@ -59,16 +59,26 @@ Every receipt must be stored in the VDR under `/process-intelligence/receipts/` 
 }
 ```
 
-## 3. Verification Workflow
+## 3. Verification Workflow (Anti-Spoofing and Cryptographic Integrity Protocol)
 
-To validate a slide claim using the Slide-to-Receipt Map:
+To validate a slide claim using the Slide-to-Receipt Map, the auditing system must execute the following cryptographic checks:
 
-1. **Assertion Lookup**: Identify the `slide_id` on the M&A slide notes.
-2. **Receipt Retrieval**: Locate the corresponding receipt `receipt_<slide_id>.json` in the VDR.
-3. **Log Hashing**: Re-hash the target event log file. Verify that:
-   $$\operatorname{SHA-256}(L_{\text{actual}}) == \text{target\_log\_hash}$$
-4. **Signature Verification**: Verify the `validator_signature` against the public key of the target's audited `wasm4pm` execution core.
-5. **Replay Validation**: Execute the query using the `query_definition.query_uri` on the validated log and compare the resulting metrics to `verification_results`.
+1. **Assertion Lookup**: Retrieve the `slide_id` (UUIDv4) from the metadata of the target slide.
+2. **Receipt Retrieval**: Locate `receipt_<slide_id>.json` within the Virtual Data Room under `/process-intelligence/receipts/`.
+3. **Canonical Serialization and Signature Verification**:
+   * Let $R_{\text{unsigned}}$ be the receipt JSON object with the `validator_signature` field removed.
+   * Serialize $R_{\text{unsigned}}$ using the **JSON Canonicalization Scheme (JCS - RFC 8785)** to ensure a deterministic byte sequence:
+     $$B_{\text{receipt}} = \operatorname{JCS}(R_{\text{unsigned}})$$
+   * Verify the `validator_signature` (an Ed25519 signature) against the pinned auditor public key $\operatorname{PK}_{\text{validator}}$:
+     $$\operatorname{Ed25519-Verify}(\operatorname{PK}_{\text{validator}}, B_{\text{receipt}}, \text{validator\_signature}) == \text{True}$$
+4. **Log Hash and Merkle Root Audit**:
+   * Calculate the SHA-256 hash of the target log file $L$ and verify it matches the receipt:
+     $$\operatorname{SHA-256}(L) == \text{target\_log\_hash}$$
+   * To prevent event-level insertion or omission, construct a Merkle Tree over the event hash chains. Let $H_k = h(e_{\text{end}})$ be the final hash of trace $k$. The Merkle root $M_{\text{root}}$ is computed as:
+     $$M_{\text{root}} = \operatorname{Merkle-Root}(H_1, H_2, \dots, H_N)$$
+     Verify that $M_{\text{root}}$ matches the audited Merkle root hash pinned in the transaction's smart contract or signed closing agreement.
+5. **Deterministic Replay**: Load the WASM module specified in `query_definition.query_uri`, execute it on the event log $L$ using the query `parameters`, and verify that the re-calculated fitness ($f_{\text{calc}}$) and precision ($p_{\text{calc}}$) match the receipt's values:
+   $$\left| f_{\text{calc}} - f_{\text{receipt}} \right| < 10^{-6} \quad \text{and} \quad \left| p_{\text{calc}} - p_{\text{receipt}} \right| < 10^{-6}$$
 
 ## 4. Related M&A Validation Documents
 

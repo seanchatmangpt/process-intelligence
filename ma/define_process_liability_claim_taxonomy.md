@@ -25,22 +25,33 @@ Process liabilities are divided into four critical quadrants: Compliance Violati
 | **Fraud Vulnerability** | Deficiencies in internal controls, allowing unauthorized actions. | Asset theft, financial misstatement. | Absence of four-eyes verification steps in approval traces. |
 | **Rework Cost Loops** | High frequencies of redundant manual operations and data correction. | Excess SG&A costs, low resource efficiency. | Rework loop count and cost allocation. |
 
-## 2. Mathematical Cost of Process Liabilities
+## 2. Mathematical Cost of Process Liabilities (Anti-Leakage Calculations)
 
-To calculate the valuation adjustment required for a process liability:
+To calculate the required valuation haircut for process liabilities, auditors must quantify rework costs, SLA penalties, and compliance leakage risks:
 
 ### A. Rework Cost Liability ($L_{\text{rework}}$)
-The annual financial drain caused by redundant manual correction steps is:
+The annual cost of manual corrections and system overrides is:
 $$L_{\text{rework}} = \sum_{a \in A_{\text{rework}}} V_a \times C_a$$
-* Where $A_{\text{rework}}$ is the set of manual rework activities (e.g., "Change Invoice Price", "Correct Shipping Address").
-* $V_a$ is the annual frequency of activity $a$ in the log.
-* $C_a$ is the fully loaded cost of human labor per execution of activity $a$.
+* Where $A_{\text{rework}}$ is the set of manual rework activities identified in the event log (e.g., "Change Invoice Price", "Modify Shipping Address").
+* $V_a$ is the verified annual frequency of activity $a$ in the log.
+* $C_a$ is the fully loaded cost of human labor per execution of activity $a$, including overheads.
 
 ### B. SLA Penalty Risk ($L_{\text{SLA}}$)
-The total liability from late deliveries or delayed services is:
-$$L_{\text{SLA}} = \sum_{c \in C_{\text{late}}} P_{\text{penalty}}(c)$$
-* Where $C_{\text{late}}$ is the set of cases where the throughput time $T(c) > T_{\text{SLA}}$.
+The total liability from late deliveries or delayed service levels is:
+$$L_{\text{SLA}} = \sum_{c \in C_{\text{late}}} P_{\text{penalty}}(c) + \sum_{c \in C_{\text{active}}} \operatorname{Pr}(T(c) > T_{\text{SLA}} \mid \sigma_c) \times P_{\text{penalty}}(c)$$
+* Where $C_{\text{late}}$ is the set of completed cases where the throughput time $T(c) > T_{\text{SLA}}$.
+* $C_{\text{active}}$ is the set of active (incomplete) cases in the log.
+* $\operatorname{Pr}(T(c) > T_{\text{SLA}} \mid \sigma_c)$ is the conditional probability that active case $c$ with prefix trace $\sigma_c$ will exceed the SLA, computed using historical transition latency distributions.
 * $P_{\text{penalty}}(c)$ is the contractually mandated penalty for case $c$.
+
+### C. Compliance Leakage Liability ($L_{\text{compliance}}$)
+The financial liability resulting from regulatory infractions (e.g., SOX controls, GDPR data retention violations, AML segregation failures) is modeled as:
+$$L_{\text{compliance}} = \sum_{r \in \mathcal{R}} \left( N_{\text{violations}}(r, L) \times F_{\text{statutory}}(r) + \operatorname{Pr}(\text{Audit}_{\text{ext}}) \times F_{\text{systemic}}(r) \right)$$
+* Where $\mathcal{R}$ is the set of compliance rules modeled as LTL formulas.
+* $N_{\text{violations}}(r, L)$ is the count of traces in the log $L$ that violate LTL formula $r$.
+* $F_{\text{statutory}}(r)$ is the statutory or regulatory fine per individual infraction.
+* $\operatorname{Pr}(\text{Audit}_{\text{ext}})$ is the estimated probability of external regulatory discovery.
+* $F_{\text{systemic}}(r)$ is the systemic corporate fine (e.g., percentage of revenue) triggered by structural control failures.
 
 ## 3. Related M&A Validation Documents
 

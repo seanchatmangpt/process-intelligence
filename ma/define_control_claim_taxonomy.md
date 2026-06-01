@@ -25,16 +25,19 @@ Controls are classified based on their execution mode (automated vs. manual) and
 | **Segregation of Duties (SoD)** | Rule requiring distinct actors to execute different steps. | Internal fraud, collusion. | LTL constraint checks on resource attributes in event logs. |
 | **Manual Authorization** | Human sign-off steps on critical transition paths. | Lack of oversight. | Event attribute analysis confirming valid signing authority. |
 
-## 2. Mathematical Validation via LTL Formulas
+## 2. Mathematical Validation via LTL Formulas (Anti-Leakage Constraints)
 
-Process mining engines (e.g., wasm4pm) evaluate control effectiveness by checking if the entire event log $L$ satisfies specific Linear Temporal Logic (LTL) properties:
+Process mining engines (e.g., wasm4pm) evaluate control effectiveness by checking if the entire event log $L$ satisfies specific Linear Temporal Logic (LTL) properties.
 
 ### A. Segregation of Duties (SoD) Rule
-To verify that the creator of a purchase order ($t_1$) is never the approver ($t_2$):
-* Let $u_1$ be the user executing $t_1$ and $u_2$ be the user executing $t_2$.
-* The LTL formula is:
-  $$\Box \left( \left( t_1 \land \operatorname{user}(t_1) = u \right) \implies \Box \left( t_2 \implies \operatorname{user}(t_2) \ne u \right) \right)$$
-* **Audit Requirement**: The control is deemed "highly effective" only if the number of violations in $L$ is exactly 0.
+To verify that the creator of a purchase order ($t_1$) is never the approver ($t_2$) for the same case:
+* Let $u$ represent any user identifier.
+* **Vulnerability Fix**: A unidirectional LTL formula (e.g., checking only future states after $t_1$) allows compliance leakage if $t_2$ occurs chronologically before $t_1$. To ensure absolute protection, the constraint must be bidirectional.
+* The formal constraint on any trace $\sigma \in L$ is defined as:
+  $$\forall u \in \operatorname{Users}(\sigma), \quad \neg \left( \Diamond (A_1 \land \operatorname{user} = u) \land \Diamond (A_2 \land \operatorname{user} = u) \right)$$
+  In standard future-only LTL, this is verified by the conjunction:
+  $$\Box \left( (A_1 \land \operatorname{user} = u) \implies \Box (A_2 \implies \operatorname{user} \ne u) \right) \land \Box \left( (A_2 \land \operatorname{user} = u) \implies \Box (A_1 \implies \operatorname{user} \ne u) \right)$$
+* **Audit Requirement**: The control is deemed "highly effective" only if the number of violations in $L$ is exactly 0. Any trace where the same user executes both $t_1$ and $t_2$ represents a compliance leakage violation.
 
 ### B. Lead Time Bound (SLA Control)
 To verify that an invoice approval ($t_2$) always occurs within 10 days of invoice receipt ($t_1$):

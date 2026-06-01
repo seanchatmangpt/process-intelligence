@@ -25,16 +25,27 @@ Process assets are categorized into four core classes: Highly Standardized, Prop
 | **Optimized Resources** | Efficient collaboration networks and low handover delay. | Higher labor productivity, low team friction. | Resource handover latency $T_{\text{handover}} < 12$ hours (Song 2008). |
 | **Straight-Through (STP)** | High rate of fully automated, touchless event execution. | Minimal variable costs, high transaction velocity. | Automated event ratio $> 85\%$ in OCEL log. |
 
-## 2. Mathematical Definition of Process Asset Efficiency
+## 2. Mathematical Definition of Process Asset Value and Efficiency
 
-To defend the valuation of a process asset, the seller computes the **Asset Efficiency Score ($A_E$)**:
+To defend the valuation of a process asset and prevent synergy miscalculations, the seller must compute the volume-scaled and compliance-discounted **Process Asset Value ($V_{\text{asset}}$)** alongside a standardized **Asset Efficiency Score ($A_E$)**:
 
-* Let $f(L, M)$ be the fitness of log $L$ on model $M$.
-* Let $p(L, M)$ be the precision of log $L$ on model $M$.
-* Let $\bar{T}$ be the mean throughput time of all conforming traces in the log.
-* The Asset Efficiency Score ($A_E$) is defined as:
-  $$A_E = f(L, M) \times p(L, M) \times \frac{1}{\bar{T}}$$
-* **Audit Rule**: To claim a process as a core operational asset, $A_E$ must exceed a baseline industry threshold, and $f$ must be verified via optimal alignments (Adriansyah 2014) to be free of significant deviation costs.
+### A. Standardized Asset Efficiency Score ($A_E$)
+To prevent scale distortions from raw throughput time, the efficiency score is normalized against a target service level agreement time $T_{\text{SLA}}$:
+$$A_E = f(L, M) \times p(L, M) \times e^{-\frac{\bar{T}}{T_{\text{SLA}}}}$$
+where:
+* $f(L, M)$ is the alignment-based fitness of log $L$ on model $M$.
+* $p(L, M)$ is the state-space precision of log $L$ on model $M$.
+* $\bar{T}$ is the mean throughput time of conforming traces in the log.
+* $T_{\text{SLA}}$ is the contractually mandated target cycle time. The term $e^{-\frac{\bar{T}}{T_{\text{SLA}}}}$ acts as a latency penalty function bounded in $(0, 1]$.
+
+### B. Process Asset Valuation ($V_{\text{asset}}$)
+The financial value contributed by a proprietary standardized process is the volume-weighted operational cost savings, discounted by the process deviation rate:
+$$V_{\text{asset}} = V_{\text{annual}} \times f(L, M) \times p(L, M) \times \left( C_{\text{industry}} - C_{\text{actual}} \right)$$
+where:
+* $V_{\text{annual}}$ is the annual transaction volume processed through model $M$.
+* $C_{\text{industry}}$ is the industry-standard benchmark cost per transaction.
+* $C_{\text{actual}}$ is the target's actual fully loaded transaction execution cost.
+* **Audit Rule**: To claim a process as a core operational asset, $V_{\text{asset}}$ must be positive, $A_E \ge 0.80$, and the log must pass the cryptographic provenance and anti-spoofing checks defined in [Board-Admissible Claim Requirements](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md). Any deviations ($f < 1.0$) act as a direct haircut on the claimed asset value.
 
 ## 3. Related M&A Validation Documents
 

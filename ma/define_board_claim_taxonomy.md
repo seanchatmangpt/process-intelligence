@@ -25,20 +25,30 @@ Board claims are categorized into four core strategic domains: EBITDA Impact, Wo
 | **GRC Defensibility** | Mitigation of class-action, regulatory, or tax liabilities. | Automated audit trails, segregation of duties enforcement. | [Control Claim Taxonomy](file:///Users/sac/process-intelligence/ma/define_control_claim_taxonomy.md) |
 | **Integration Velocity** | Post-Merger Integration (PMI) schedule and synergy capture. | System similarity, process model behavioral equivalence. | [Synergy Claim Taxonomy](file:///Users/sac/process-intelligence/ma/define_synergy_claim_taxonomy.md) |
 
-## 2. EBITDA and Working Capital Formulas
+## 2. EBITDA and Working Capital Formulas (Verification Standards)
 
-To maintain board admissibility, financial assertions must be linked to operational process metrics using formal valuation formulas:
+To maintain board admissibility, financial assertions must be linked to operational process metrics using formal, verifiable mathematical valuation models:
 
 ### A. EBITDA Impact from Process Rework
-* **Formula**: The EBITDA impact ($E$) is a function of the rework rate ($r$), transaction volume ($V$), and average cost per manual rework event ($C_r$):
-  $$E = V \times (r_{\text{baseline}} - r_{\text{target}}) \times C_r$$
-* **Verification**: The rework rate $r$ must be computed by counting self-loops and redundant transitions in the event log (e.g., "Re-enter Order Data") using the wasm4pm execution core.
+To prevent synergy miscalculations, the rework metric is modeled as an average execution intensity rather than a binary trace flag:
+* Let $L$ be the event log of the target process.
+* Let $A_{\text{rework}}$ be the set of activities classified as manual rework (e.g., "Change Price", "Re-enter Order").
+* Let $N_{\text{rework}}(\sigma, A_{\text{rework}})$ be the count of occurrences of activities from $A_{\text{rework}}$ in trace $\sigma$.
+* The baseline and target rework rates ($r$) are defined as the mean rework events per case:
+  $$r = \frac{\sum_{\sigma \in L} L(\sigma) \cdot N_{\text{rework}}(\sigma, A_{\text{rework}})}{\sum_{\sigma \in L} L(\sigma)}$$
+* The annual EBITDA impact ($E$) is calculated as:
+  $$E = V_{\text{annual}} \times (r_{\text{baseline}} - r_{\text{target}}) \times \bar{C}_{\text{rework}}$$
+  where $V_{\text{annual}}$ is the projected annual transaction volume, and $\bar{C}_{\text{rework}}$ is the fully-burdened average labor cost per manual rework event.
 
-### B. Days Sales Outstanding (DSO) Reduction
-* **Formula**: DSO is reduced by accelerating the Order-to-Cash (O2C) billing cycle. The working capital release ($WC$) is:
-  $$WC = \text{Revenue}_{\text{daily}} \times (T_{\text{baseline}} - T_{\text{target}})$$
-  where $T$ represents the average throughput time from "Deliver Goods" to "Receive Payment".
-* **Verification**: Calculated directly from timestamp deltas in the XES/OCEL event logs.
+### B. Days Sales Outstanding (DSO) and Working Capital Release
+Working capital release projections must not conflate delivery latency with credit terms. DSO reduction is mapped strictly to the accounts receivable (AR) processing window:
+* Let $T_{\text{AR}}$ be the average throughput time (in days) from "Invoice Creation" ($e_{\text{inv}}$) to "Payment Confirmation" ($e_{\text{pay}}$):
+  $$T_{\text{AR}} = \frac{\sum_{\sigma \in L_{\text{O2C}}} L(\sigma) \cdot \left[ t(e_{\text{pay}}(\sigma)) - t(e_{\text{inv}}(\sigma)) \right]}{\sum_{\sigma \in L_{\text{O2C}}} L(\sigma)}$$
+  where $t(e)$ is the timestamp of event $e$.
+* The Working Capital Release ($WC$) resulting from process acceleration is:
+  $$WC = \left( \frac{\text{Revenue}_{\text{credit\_annual}}}{365} \right) \times (T_{\text{AR, baseline}} - T_{\text{AR, target}})$$
+  where $\text{Revenue}_{\text{credit\_annual}}$ represents the annual credit-based sales revenue of the entity.
+* **Verification**: Calculated by the Ostar Auditor running wasm4pm queries verifying the timestamp deltas between invoice and payment receipt objects in the OCEL 2.0 log.
 
 ## 3. Related M&A Validation Documents
 

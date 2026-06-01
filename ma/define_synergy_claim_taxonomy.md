@@ -25,21 +25,28 @@ Synergy claims are classified into four categories: Process Harmonization, Opera
 | **System Rationalization** | Retiring overlapping IT systems and consolidation. | Reduced software license fees and maintenance overhead. | System-to-activity object mapping using OCEL 2.0 (Ghahfarokhi 2021). |
 | **Best-Practice Adoption** | Porting the most efficient process flow from one entity to the other. | Immediate margin uplift on the lower-performing entity. | Cross-entity performance replay against a unified reference model. |
 
-## 2. Mathematical Synergy Formulation
+## 2. Mathematical Synergy Formulation (Anti-Miscalculation Protocols)
 
-### A. Process Harmonization (Behavioral Similarity)
-To prove that target and buyer processes can be harmonized with minimal friction, we compute their behavioral profile similarity:
-* Let $P_1$ be the behavioral profile of target process model $M_1$.
-* Let $P_2$ be the behavioral profile of buyer process model $M_2$.
-* The similarity index ($\operatorname{Sim}(M_1, M_2)$) is calculated as:
-  $$\operatorname{Sim}(M_1, M_2) = \frac{\left| P_1 \cap P_2 \right|}{\left| P_1 \cup P_2 \right|}$$
-* **Admissibility Boundary**: A harmonization synergy claim is only valid if $\operatorname{Sim}(M_1, M_2) \ge 0.70$. Lower similarity indicates significant integration friction and high customization risk.
+To prevent synergy miscalculations and post-merger value leakage, financial projections must be grounded in formal process compatibility and risk-adjusted cost models.
 
-### B. System Rationalization Potential
-* When consolidations occur (e.g., migrating target's CRM transactions to buyer's CRM), the cost reduction is proven by locating system-specific object linkages in the OCEL 2.0 event log.
-* The system license saving $S_L$ is:
-  $$S_L = \sum (C_{\text{target\_sys}} - C_{\text{migration\_overhead}})$$
-  where the active usage of target systems is verified by checking the frequency of system-triggered events in the log.
+### A. Process Harmonization (Behavioral Profile Similarity under Semantic Mapping)
+To prove that target process model $M_1 = (P_1, T_1, F_1)$ and buyer process model $M_2 = (P_2, T_2, F_2)$ can be harmonized, we calculate their behavioral similarity. A naive Jaccard index fails due to differing activity labels. We define:
+* Let $\mathcal{C} \subseteq T_1 \times T_2$ be a verified semantic correspondence mapping (based on shared ontology and transaction types).
+* Let $r_M(a, b) \in \{\rightarrow, \leftarrow, \parallel, +\}$ be the behavioral relation (strict order, reverse order, interleaving/concurrency, or exclusivity) between transitions $a$ and $b$ in model $M$ as defined in Weidlich 2011.
+* We define the similarity index $\operatorname{Sim}(M_1, M_2, \mathcal{C})$ over the mapped pairs as:
+  $$\operatorname{Sim}(M_1, M_2, \mathcal{C}) = \frac{\sum_{((a_1, a_2), (b_1, b_2)) \in \mathcal{C} \times \mathcal{C}} \delta(r_{M_1}(a_1, b_1), r_{M_2}(a_2, b_2))}{|\mathcal{C} \times \mathcal{C}|}$$
+  where $\delta(x, y) = 1$ if $x = y$, and $0$ otherwise.
+* **Admissibility Boundary**: A harmonization synergy claim is only valid if $\operatorname{Sim}(M_1, M_2, \mathcal{C}) \ge 0.75$. Values below this threshold indicate extreme structural divergence, which historically triggers costly custom software workarounds.
+
+### B. Risk-Adjusted System Rationalization NPV
+Migrating the target's IT transactions to the buyer's systems (e.g., ERP consolidation) is verified by querying system attributes in the OCEL 2.0 log. To prevent overestimating synergies, the system license saving must be calculated as a Net Present Value (NPV) adjusted for migration delays:
+* Let $C_{\text{target\_sys}}(t)$ be the target's annual maintenance and license costs for the legacy system.
+* Let $C_{\text{buyer\_incremental}}(t)$ be the buyer's incremental license and hosting cost to support the target's transaction volume.
+* Let $C_{\text{migration}}(t)$ be the capital expenditure and labor cost for database migration in year $t$.
+* Let $\beta_t \in [0, 1]$ be the compliance leakage and timeline overrun probability (derived from historical process drift and migration bottlenecks).
+* The Net Present Value of the synergy savings ($NPV(S_L)$) over a horizon of $T$ years at discount rate $r$ is:
+  $$NPV(S_L) = \sum_{t=1}^{T} \frac{(1 - \beta_t) \cdot C_{\text{target\_sys}}(t) - C_{\text{buyer\_incremental}}(t) - C_{\text{migration}}(t)}{(1 + r)^t}$$
+  where the active transaction volume and legacy system-triggered events are verified directly from event log metrics.
 
 ## 3. Related M&A Validation Documents
 
