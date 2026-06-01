@@ -58,3 +58,6 @@
 
 * **Step: map POWL runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map Declare runtime obligations**
+  - Defining engine execution requirements.
