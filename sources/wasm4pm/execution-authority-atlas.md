@@ -22,3 +22,6 @@
 
 * **Step: map optimization authority**
   - Defining engine execution requirements.
+
+* **Step: map simulation authority**
+  - Defining engine execution requirements.
