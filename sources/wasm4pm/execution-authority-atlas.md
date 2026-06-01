@@ -10,3 +10,6 @@
 
 * **Step: map discovery authority**
   - Defining engine execution requirements.
+
+* **Step: map conformance authority**
+  - Defining engine execution requirements.
