@@ -82,3 +82,6 @@
 
 * **Step: identify replay gaps**
   - Defining engine execution requirements.
+
+* **Step: identify decommissioning gaps**
+  - Defining engine execution requirements.
