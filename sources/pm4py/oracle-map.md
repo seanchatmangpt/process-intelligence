@@ -83,3 +83,6 @@
 
 * **Step: identify decommissioning gaps**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: write PM4Py not-to-copy memo**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
