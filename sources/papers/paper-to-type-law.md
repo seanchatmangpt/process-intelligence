@@ -23,3 +23,7 @@
 ### Classify: kuesters_2024_ocpq_tree
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: weske_2019_bpm_principles
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
