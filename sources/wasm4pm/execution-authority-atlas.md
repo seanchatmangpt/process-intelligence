@@ -55,3 +55,6 @@
 
 * **Step: map Petri runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map POWL runtime obligations**
+  - Defining engine execution requirements.
