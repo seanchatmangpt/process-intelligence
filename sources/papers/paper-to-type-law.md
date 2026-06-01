@@ -43,3 +43,7 @@
 ### Classify: weidlich_2011_profile_conformance
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: de_medeiros_2007_genetic_miner
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
