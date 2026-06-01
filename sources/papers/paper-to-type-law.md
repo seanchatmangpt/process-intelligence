@@ -31,3 +31,7 @@
 ### Classify: rosenberg_2020_cloud_lifecycle
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: aalst_2016_process_mining_action
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
