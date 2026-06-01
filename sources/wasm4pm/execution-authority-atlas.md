@@ -7,3 +7,6 @@
 
 * **Step: map mining authority**
   - Defining engine execution requirements.
+
+* **Step: map discovery authority**
+  - Defining engine execution requirements.
