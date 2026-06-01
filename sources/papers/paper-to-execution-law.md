@@ -14,3 +14,6 @@
 
 ### Fixtures for verbeek_2021_log_trie
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for kuesters_2024_ocpq_tree
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
