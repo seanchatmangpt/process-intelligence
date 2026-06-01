@@ -1,96 +1,133 @@
+# Execution Authority Atlas
 
-* Execution Atlas 1: Mapping WASM FFI bindings to the raw execution boundaries.
-* Execution Atlas 2: Mapping WASM FFI bindings to the raw execution boundaries.
-* Execution Atlas 3: Mapping WASM FFI bindings to the raw execution boundaries.
-* Execution Atlas 4: Mapping WASM FFI bindings to the raw execution boundaries.
-* Execution Atlas 5: Mapping WASM FFI bindings to the raw execution boundaries.
+This atlas defines the formal mapping of WebAssembly (WASM) FFI boundaries, execution authorities, standards compliance pipelines, and risk-identification policies for the `wasm4pm` process intelligence engine.
+
+## Execution Atlases: FFI and Boundary Mappings
+
+* **Execution Atlas 1: FFI Memory Layout and Arena Allocator**
+  - Defines the zero-copy buffer sharing model. The engine manages linear memory in 64KB pages, exposing raw offset pointers to the host runtime to write serialized IEEE XES or OCEL 2.0 binary chunks.
+* **Execution Atlas 2: Type Boundary Marshalling and Error Gates**
+  - Maps native Rust result types (e.g., `Result<T, E>`) to flat 64-bit integer values returned across the FFI, encoding offset and length, or specialized error codes for panics and validations.
+* **Execution Atlas 3: Graph Traversal and Index Mapping**
+  - Establishes how object-centric graphs are represented in linear memory using contiguous vectors of structures, avoiding pointer indirection to optimize cache locality inside the WASM sandbox.
+* **Execution Atlas 4: Replay Token Registry**
+  - Specifies the registry structure tracking produced, consumed, missing, and remaining tokens for concurrent execution paths.
+* **Execution Atlas 5: Verification Receipt Signatures**
+  - Defines the Ed25519 signature scheme and public key registry embedded within the WASM binary to generate non-forgeable execution receipts.
+
+---
+
+## Core Execution Authority Maps
 
 * **Step: map mining authority**
-  - Defining engine execution requirements.
+  - Defines the requirements for process discovery and model synthesis inside the WASM engine.
+  - Complete specifications are defined in [mining-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/mining-authority-map.md).
+  - Key executions: Alpha Miner footprints, Heuristics Miner dependency graphs, and Inductive Miner block cuts.
 
 * **Step: map discovery authority**
-  - Defining engine execution requirements.
+  - Defines how raw logs are synthesized into process representations (BPMN, Petri Nets, DFGs).
+  - Handles the translation of discovered structures into host-consumable serialized layouts.
 
 * **Step: map conformance authority**
-  - Defining engine execution requirements.
+  - Defines the rules for replaying trace logs against process models to calculate fitness and alignments.
+  - Complete specifications are defined in [conformance-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/conformance-authority-map.md).
+  - Key executions: Token game replay bookkeeping and optimal alignments via A* state space search.
 
 * **Step: map replay authority**
-  - Defining engine execution requirements.
+  - Details the step-by-step firing rules of the Petri Net engine during trace simulation, tracking place markings and enabling transitions.
 
 * **Step: map query authority**
-  - Defining engine execution requirements.
+  - Defines the execution of object-centric process querying (OCPQ) and temporal graph matching.
+  - Complete specifications are defined in [query-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/query-authority-map.md).
+  - Key executions: Event-to-object and object-to-object temporal queries, and slide-to-receipt cryptographic mapping.
 
 * **Step: map optimization authority**
-  - Defining engine execution requirements.
+  - Specifies the execution of bottleneck analysis and resource optimization queries. Calculates queuing delays and identifies path delays using temporal event data.
 
 * **Step: map simulation authority**
-  - Defining engine execution requirements.
+  - Defines Monte Carlo simulation capabilities. The WASM engine generates synthetic logs by executing stochastic token game walks based on transition probabilities.
 
 * **Step: map visualization preparation authority**
-  - Defining engine execution requirements.
+  - Computes coordinates and layout parameters (e.g., node positioning for DFGs and Petri Nets) inside WASM, returning pre-calculated graphics data to prevent rendering latency on the host.
+
+---
+
+## Runtime and Interface Authorities
 
 * **Step: map WASM runtime authority**
-  - Defining engine execution requirements.
+  - Defines the runtime isolation environment. The engine runs under strict WASI constraints, restricting file system access, network calls, and arbitrary sys-calls.
 
 * **Step: map CLI authority**
-  - Defining engine execution requirements.
+  - Specifies the command-line interface entry points for command execution, allowing direct ingestion of logs and generation of audit receipts.
 
 * **Step: map receipt validation authority**
-  - Defining engine execution requirements.
+  - Details how downstream validation engines parse and verify cryptographic query receipts, verifying the Ed25519 signature against the engine's public key.
 
 * **Step: map lifecycle state authority**
-  - Defining engine execution requirements.
+  - Enforces the transition states of process assets through the lifecycle: Parsed -> ValidatedSound -> Replayed -> Archived.
+
+---
+
+## Structural and Standards Mappings
 
 * **Step: map object-centric runtime spine**
-  - Defining engine execution requirements.
+  - Specifies the core data layout in WASM linear memory representing the multi-perspective relations of OCEL 2.0 without data flattening.
 
 * **Step: map OCEL runtime obligations**
-  - Defining engine execution requirements.
+  - Enforces schema constraints for OCEL 2.0 JSON and XML inputs, verifying type safety for object attributes.
 
 * **Step: map XES runtime obligations**
-  - Defining engine execution requirements.
+  - Validates lifecycle events and standard extensions (Concept, Time, Org) for IEEE XES inputs.
 
 * **Step: map BPMN runtime obligations**
-  - Defining engine execution requirements.
+  - Standardizes the compilation of BPMN gateways (AND/XOR/OR) into equivalent Petri Net models.
 
 * **Step: map Petri runtime obligations**
-  - Defining engine execution requirements.
+  - Verifies workflow net structure and coverability properties (liveness, boundedness).
 
 * **Step: map POWL runtime obligations**
-  - Defining engine execution requirements.
+  - Manages Partial Order Workflow Language structures, verifying block soundness.
 
 * **Step: map Declare runtime obligations**
-  - Defining engine execution requirements.
+  - Evaluates Linear Temporal Logic (LTL) formulas representing Declare rules (e.g., Response, Precedence).
 
 * **Step: map process tree runtime obligations**
-  - Defining engine execution requirements.
+  - Validates hierarchical process trees, ensuring sound block structures.
 
 * **Step: map DFG runtime obligations**
-  - Defining engine execution requirements.
+  - Calculates transition matrices and frequency counts for directly-follows graphs.
 
 * **Step: map OCPQ runtime obligations**
-  - Defining engine execution requirements.
+  - Enforces resource boundaries and step limits on object-centric process queries.
+
+---
+
+## Risk and Gap Identification Policies
 
 * **Step: identify duplicated compat law**
-  - Defining engine execution requirements.
+  - Identifies overlapping validation checks between the pre-flight `wasm4pm-compat` type layer and the core `wasm4pm` execution engine, optimizing out redundant parsing.
 
 * **Step: identify missing execution law**
-  - Defining engine execution requirements.
+  - Identifies processes that cannot be executed in the current WASM runtime (e.g., non-local OR-joins) and maps fallback handlers.
 
 * **Step: identify raw-laundering risks**
-  - Defining engine execution requirements.
+  - Detects paths where raw logs might bypass the `wasm4pm-compat` validation layer, enforcing compile-time type-safety constraints.
 
 * **Step: identify replay gaps**
-  - Defining engine execution requirements.
+  - Addresses state-space explosion during A* search by dynamically switching to beam search when trace length or transition counts exceed safe thresholds.
 
 * **Step: identify decommissioning gaps**
-  - Defining engine execution requirements.
+  - Establishes rules for model archiving and final receipt generation when decommissioning process assets.
+
+---
+
+## Strategic and Thesis Alignment
 
 * **Step: write execution-authority thesis**
-  - Defining engine execution requirements.
+  - Articulates why WASM-based process mining is the ultimate authority for board-level audits. By decoupling the execution engine from volatile Python/Pandas environments, it guarantees reproducibility, security, and cryptographic auditability.
 
 * **Step: audit: wasm4pm research completeness**
-  - Defining engine execution requirements.
+  - Verification check confirming that all maps (mining, conformance, query) are fully defined and linked, and all stubs have been eliminated.
 
 * **Step: checkpoint: wasm4pm research pass complete**
-  - Defining engine execution requirements.
+  - Final verification that the WASM execution authority atlas is structurally complete.

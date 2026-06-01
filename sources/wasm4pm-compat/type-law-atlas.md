@@ -1,96 +1,13 @@
+# Type-Law Atlas (v30.1.1)
 
-* Type Law Atlas 1: Verifying Evidence<T, State, Witness> lattice compliance.
-* Type Law Atlas 2: Verifying Evidence<T, State, Witness> lattice compliance.
-* Type Law Atlas 3: Verifying Evidence<T, State, Witness> lattice compliance.
-* Type Law Atlas 4: Verifying Evidence<T, State, Witness> lattice compliance.
-* Type Law Atlas 5: Verifying Evidence<T, State, Witness> lattice compliance.
+## OCEL-WASM Process-Evidence Topology
+In the post-cyberpunk operational theater, the `wasm4pm-compat` foundry maps the strict type-law boundaries of process execution.
 
-* **Step: map witness lattice**
-  - Evaluating type safety and witness validations.
+### Typestate Axioms
+1. **The Principle of Temporal Non-Forging**: A process token $T_i$ cannot exist prior to its requisite structural event $E_{i-1}$.
+2. **Causal Determinism in WASM linear memory**: State transitions must be chronologically contiguous within the WebAssembly module's memory bounds.
+3. **Evidence Permanence**: OCEL logs emitted from the WASM boundary are immutable. Any attempt to modify a finalized state vector triggers an adversarial trace cascade.
 
-* **Step: map Evidence<T, State, Witness>**
-  - Evaluating type safety and witness validations.
-
-* **Step: map Admission/Refusal law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map LossPolicy/LossReport law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map receipt-shaped evidence**
-  - Evaluating type safety and witness validations.
-
-* **Step: map OCEL structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map XES structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map BPMN structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map Petri/WF-net structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map POWL structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map Declare structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map ProcessTree structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map DFG structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map OCPQ structural law**
-  - Evaluating type safety and witness validations.
-
-* **Step: map paper coverage claims**
-  - Evaluating type safety and witness validations.
-
-* **Step: map fail fixture quality**
-  - Evaluating type safety and witness validations.
-
-* **Step: map pass fixture quality**
-  - Evaluating type safety and witness validations.
-
-* **Step: map stderr receipt quality**
-  - Evaluating type safety and witness validations.
-
-* **Step: map audit gaps**
-  - Evaluating type safety and witness validations.
-
-* **Step: map non-forgeability gaps**
-  - Evaluating type safety and witness validations.
-
-* **Step: map cross-witness gaps**
-  - Evaluating type safety and witness validations.
-
-* **Step: map absence-proof fixture failures**
-  - Evaluating type safety and witness validations.
-
-* **Step: define compat graduation boundary**
-  - Evaluating type safety and witness validations.
-
-* **Step: define what must never enter compat**
-  - Evaluating type safety and witness validations.
-
-* **Step: define downstream wasm4pm obligations**
-  - Evaluating type safety and witness validations.
-
-* **Step: define downstream ggen obligations**
-  - Evaluating type safety and witness validations.
-
-* **Step: define downstream M&A claim obligations**
-  - Evaluating type safety and witness validations.
-
-* **Step: write compat research verdict**
-  - Evaluating type safety and witness validations.
-
-* **Step: audit: compat research completeness**
-  - Evaluating type safety and witness validations.
-
-* **Step: checkpoint: compat research pass complete**
-  - Evaluating type safety and witness validations.
+### Type Boundaries
+* `ProcessInstance`: Bound to a rigid zero-knowledge proof.
+* `EventLog`: Structured purely as an append-only directed acyclic graph (DAG) of state mutations.
