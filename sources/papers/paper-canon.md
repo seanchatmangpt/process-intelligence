@@ -2,3 +2,6 @@
 
 ### Paper: van_der_aalst_1998_workflow_nets
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: adriansyah_2014_alignment_conformance
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
