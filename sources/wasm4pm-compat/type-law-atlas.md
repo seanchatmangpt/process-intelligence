@@ -73,3 +73,6 @@
 
 * **Step: define compat graduation boundary**
   - Evaluating type safety and witness validations.
+
+* **Step: define what must never enter compat**
+  - Evaluating type safety and witness validations.
