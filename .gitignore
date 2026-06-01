@@ -1,7 +1,49 @@
-.agents/
-ORIGINAL_REQUEST.md
-*.log
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Generated PDFs (keep source documents, ignore rendered output)
+# Note: source .pdf papers in sources/papers/ are NOT ignored — they are evidence
+# This ignores only generated/rendered PDFs in output directories
+output/*.pdf
+rendered/*.pdf
+generated/*.pdf
+
+# Rust build artifacts
 target/
 sources/wasm4pm/target/
 Cargo.lock
+
+# Logs
+*.log
+*.log.*
+
+# Editor
+.agents/
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Temporary files
+ORIGINAL_REQUEST.md
+*.tmp
+*.bak
