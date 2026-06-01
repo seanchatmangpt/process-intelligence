@@ -1,0 +1,24 @@
+analysis_date: '2026-06-01'
+phase: 4
+analysis_type: Federated Cross-Project Dependency
+projects: 1
+total_artifacts: 70
+total_dependencies: 4
+circular_dependencies: 0
+dangling_references: 0
+dependency_graph_status: ACYCLIC
+status: CONSISTENT
+queries_executed:
+  q1_artifacts_depending_on_research_program: 0
+  q2_ma_claims_referencing_wasm4pm_compat: 13
+  q3_governance_rules_blue_river: 2
+  q4_api_endpoints_otel_metrics: 0
+gate_criteria:
+  circular_dependencies_zero: true
+  dangling_references_zero: true
+  gate_pass: true
+ontology_metadata:
+  ttl_files_loaded: 24
+  total_triples: 4622
+  unique_entities: 871
+  checkpoints_found: 1
