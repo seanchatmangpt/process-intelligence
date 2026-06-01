@@ -75,3 +75,32 @@ To verify operational claims during due diligence:
 1.  All slide claims (e.g., "bottlenecks resolved, invoice cycle times cut by 4 days") must list the compiling OCPQ query hash.
 2.  The buyer re-runs the OCPQ query against the event log in the virtual data room.
 3.  The results must match the seller's registered ledger output, satisfying the [Board-Admissible Claim Requirements](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md).
+
+---
+
+## 5. Trans-Standard Conversions and Loss Policy
+
+### 5.1 Conversion: OCPQ to SQL/Cypher (Query Compilation)
+When executing Object-Centric Process Queries (OCPQ) on relational or graph-based database layers, the OCPQ AST is compiled into equivalent SQL or Cypher query strings.
+
+*   **Structural Loss Policy**:
+    1.  **Zero Semantic Loss Mandate**: The query compiler enforces that the translation must preserve the complete execution path semantics. The compiled query must return a mathematically identical result set. Any translation that changes path-matching boundaries is refused.
+    2.  **Unsupported Property Filter Pruning**: If the target storage database does not model specific object/event attributes used in the query's `WHERE` clauses, the compiler may prune these filters and issue a warning. If they are critical for correctness, compilation is refused.
+    3.  **Path Refusal**: If temporal constraints in OCPQ require look-ahead execution patterns that are not supported deterministically on the target database, the compiler refuses the compilation.
+*   **Signed LossReport Output Schema**:
+    Every compilation generates a `LossReport` signed by the compiler witness:
+    ```json
+    {
+      "loss_report_id": "lr-ocpq-sql-uuid",
+      "timestamp": "2026-06-01T00:00:00Z",
+      "source_format": "OCPQ",
+      "target_format": "SQL/Cypher",
+      "structural_changes": {
+        "ast_nodes_translated": 14,
+        "pruned_where_expressions": 0,
+        "inferred_join_paths": 3,
+        "unsupported_attribute_filters_pruned": 1
+      },
+      "witness_signature": "SIG_ED25519_..."
+    }
+    ```

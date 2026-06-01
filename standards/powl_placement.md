@@ -46,3 +46,30 @@ Process trees represent structurally sound targets. Diligencing an optimized pro
 1.  Verifying the POWL tree's structural completeness and its alignment fitness.
 2.  Mapping the POWL model hash to slide claims under [Slide-to-Receipt Map](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md).
 3.  Ensuring that all structural modifications are logged as transactions signed by the engine witness.
+
+---
+
+## 5. Trans-Standard Conversions and Loss Policy
+
+### 5.1 Conversion: POWL to Petri Net (Sound Compilation)
+When compiling a hierarchical Partial Order Workflow Language (POWL) tree to an executable Petri Net, the compiler maps operators and leaf nodes to place-transition structures.
+
+*   **Structural Loss Policy**:
+    1.  **Block-Structure Flattening**: The hierarchical block-structured nesting of operators (e.g., sequences, loops, concurrency, exclusive choices) is completely flattened into a flat place-transition network. The parent-child operator scopes and structural boundary nodes are lost.
+    2.  **Partial Order Graph Mapping**: The Partial Order (PO) operator's directed acyclic graph (DAG) of activities is compiled into fork-join parallel subnets. If the PO DAG contains cycles or is not reducible to a single source-sink block, compilation is refused.
+*   **Signed LossReport Output Schema**:
+    Every compilation generates a `LossReport` signed by the compiler witness:
+    ```json
+    {
+      "loss_report_id": "lr-powl-petri-uuid",
+      "timestamp": "2026-06-01T00:00:00Z",
+      "source_format": "POWL",
+      "target_format": "PetriNet",
+      "structural_changes": {
+        "flattened_operators_count": 8,
+        "partial_order_synchronizations_created": 4,
+        "tree_nesting_levels_flattened": 3
+      },
+      "witness_signature": "SIG_ED25519_..."
+    }
+    ```

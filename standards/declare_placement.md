@@ -84,3 +84,30 @@ To verify compliance claims for unstructured processes (e.g., "all financial aud
 1.  The segregation rules are modeled as Declare precedence/response constraints.
 2.  Every violation-free state must be backed by a wasm4pm execution proof.
 3.  The results are linked in [Slide-to-Receipt Map](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md) and verified against the rules in [Board-Admissible Claim Requirements](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md).
+
+---
+
+## 5. Trans-Standard Conversions and Loss Policy
+
+### 5.1 Conversion: Declare to Finite State Automaton (FSA)
+When evaluating declarative Linear Temporal Logic ($\text{LTL}_f$) constraints, each rule is compiled into a Deterministic Finite Automaton (DFA). The system composes these individual automata into a single execution monitor.
+
+*   **Structural Loss Policy**:
+    1.  **Composition State Space Refusal**: State-space composition can lead to state explosion. If the combined automaton exceeds 10,000 states, the compiler refuses the conversion.
+    2.  **Redundancy Pruning**: Overlapping or logically redundant constraints are simplified. The structural loss policy permits the removal of redundant constraints if they are proven to be subsumed (e.g., `Succession(A, B)` subsumes `Response(A, B)`).
+*   **Signed LossReport Output Schema**:
+    Every compilation generates a `LossReport` signed by the compiler witness:
+    ```json
+    {
+      "loss_report_id": "lr-declare-fsa-uuid",
+      "timestamp": "2026-06-01T00:00:00Z",
+      "source_format": "Declare",
+      "target_format": "FSA",
+      "structural_changes": {
+        "compiled_constraints_count": 6,
+        "total_fsa_states": 128,
+        "pruned_redundant_constraints": 1
+      },
+      "witness_signature": "SIG_ED25519_..."
+    }
+    ```
