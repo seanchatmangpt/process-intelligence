@@ -15,3 +15,7 @@
 ### Classify: ghahfarokhi_2021_ocel2
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: verbeek_2021_log_trie
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
