@@ -1,0 +1,25 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX arch: <https://process.intelligence/ecosystem/>
+
+SELECT DISTINCT
+  ?component_id
+  ?component_name
+  ?component_type
+  ?description
+  ?dependencies
+  ?capability_level
+  ?integration_points
+  ?risk_assessment
+WHERE {
+  ?component a arch:EcosystemComponent ;
+    arch:id ?component_id ;
+    arch:name ?component_name ;
+    arch:type ?component_type ;
+    arch:description ?description ;
+    arch:capabilityLevel ?capability_level .
+
+  OPTIONAL { ?component arch:dependencies ?dependencies . }
+  OPTIONAL { ?component arch:integrationPoints ?integration_points . }
+  OPTIONAL { ?component arch:riskAssessment ?risk_assessment . }
+}
+ORDER BY ?component_type ?component_name

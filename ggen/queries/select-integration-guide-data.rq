@@ -1,0 +1,27 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX integ: <https://process.intelligence/integration/>
+
+SELECT DISTINCT
+  ?guide_id
+  ?system_name
+  ?target_system
+  ?integration_type
+  ?prerequisites
+  ?step_count
+  ?estimated_effort
+  ?risk_level
+  ?validation_method
+WHERE {
+  ?guide a integ:IntegrationGuide ;
+    integ:id ?guide_id ;
+    integ:systemName ?system_name ;
+    integ:targetSystem ?target_system ;
+    integ:integrationType ?integration_type ;
+    integ:stepCount ?step_count ;
+    integ:estimatedEffort ?estimated_effort ;
+    integ:riskLevel ?risk_level .
+
+  OPTIONAL { ?guide integ:prerequisites ?prerequisites . }
+  OPTIONAL { ?guide integ:validationMethod ?validation_method . }
+}
+ORDER BY ?system_name ?target_system

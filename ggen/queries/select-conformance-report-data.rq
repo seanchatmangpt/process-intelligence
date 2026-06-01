@@ -1,0 +1,27 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX conform: <https://process.intelligence/conformance/>
+PREFIX ocel: <https://ocel.io/2.0/metamodel/>
+
+SELECT DISTINCT
+  ?model_type
+  ?event_log_source
+  ?fitness_score
+  ?precision_score
+  ?generalization_score
+  ?simplicity_score
+  ?conformance_violations
+  ?timestamp
+WHERE {
+  ?analysis a conform:ConformanceAnalysis ;
+    conform:modelType ?model_type ;
+    conform:eventLogSource ?event_log_source ;
+    conform:fitnessScore ?fitness_score ;
+    conform:precisionScore ?precision_score ;
+    conform:generalizationScore ?generalization_score ;
+    conform:simplicityScore ?simplicity_score ;
+    conform:timestamp ?timestamp .
+
+  OPTIONAL { ?analysis conform:violations ?conformance_violations . }
+}
+ORDER BY DESC(?timestamp)
+LIMIT 10

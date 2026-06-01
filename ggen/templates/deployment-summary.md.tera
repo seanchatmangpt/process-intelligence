@@ -1,0 +1,30 @@
+# Deployment Summary — Phase {{ phase }}
+
+**Authority:** {{ authority }}
+**Date:** {{ now() | date(format="%Y-%m-%d") }}
+**Status:** {{ status }}
+**Verdict:** {{ verdict }}
+
+## Objective
+
+{{ objective }}
+
+## Deliverables Completed
+
+{% for item in deliverables %}
+- ✅ {{ item }}
+{% endfor %}
+
+## Generation Statistics
+
+- **Rules Applied:** {{ rule_count }}
+- **Queries Executed:** {{ query_count }}
+- **Templates Rendered:** {{ template_count }}
+
+## Authority & Compliance
+
+All artifacts generated from SPARQL queries and Tera templates with cryptographic receipt verification.
+
+**Status:** ✅ PHASE {{ phase }} COMPLETE
+
+All deliverables met and verified.

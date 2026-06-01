@@ -1,0 +1,22 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX census: <https://process.intelligence/census/>
+
+SELECT DISTINCT
+  ?resource_type
+  ?resource_id
+  ?resource_name
+  ?status
+  ?authority_backing
+  ?date_discovered
+  ?last_updated
+WHERE {
+  ?resource a census:CensusEntry ;
+    census:type ?resource_type ;
+    census:id ?resource_id ;
+    census:name ?resource_name ;
+    census:status ?status ;
+    census:authorityBacking ?authority_backing ;
+    census:dateDiscovered ?date_discovered ;
+    census:lastUpdated ?last_updated .
+}
+ORDER BY ?resource_type ?resource_name

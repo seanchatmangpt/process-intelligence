@@ -1,0 +1,27 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX risk: <https://process.intelligence/risk/>
+
+SELECT DISTINCT
+  ?risk_id
+  ?risk_category
+  ?risk_statement
+  ?severity_level
+  ?likelihood
+  ?impact
+  ?mitigation_strategy
+  ?owner
+  ?discovery_date
+WHERE {
+  ?risk_item a risk:Disclosure ;
+    risk:id ?risk_id ;
+    risk:category ?risk_category ;
+    risk:statement ?risk_statement ;
+    risk:severityLevel ?severity_level ;
+    risk:likelihood ?likelihood ;
+    risk:impact ?impact ;
+    risk:owner ?owner ;
+    risk:discoveryDate ?discovery_date .
+
+  OPTIONAL { ?risk_item risk:mitigationStrategy ?mitigation_strategy . }
+}
+ORDER BY ?risk_category DESC(?severity_level)
