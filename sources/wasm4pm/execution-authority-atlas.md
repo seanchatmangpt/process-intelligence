@@ -88,3 +88,6 @@
 
 * **Step: write execution-authority thesis**
   - Defining engine execution requirements.
+
+* **Step: audit: wasm4pm research completeness**
+  - Defining engine execution requirements.
