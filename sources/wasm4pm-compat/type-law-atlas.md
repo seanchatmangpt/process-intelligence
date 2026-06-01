@@ -40,3 +40,6 @@
 
 * **Step: map ProcessTree structural law**
   - Evaluating type safety and witness validations.
+
+* **Step: map DFG structural law**
+  - Evaluating type safety and witness validations.
