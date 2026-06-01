@@ -1,18 +1,21 @@
-# Selection Query: All Rendered Artifacts
-# Returns all manufactured artifacts with their sources and proof gates
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
+# SELECT: All Rendered Artifacts
+# Returns artifacts produced by code generation rules (output files from READY rules)
+# Date: 2026-06-01
 
-SELECT ?artifact ?label ?artifactType ?source ?sourceRule ?status ?receipt
+SELECT ?rule ?title ?outputFile ?outputMode ?targetFormat ?audience ?evidence ?status
 WHERE {
-  ?artifact a ggen:RenderedArtifact .
-  OPTIONAL { ?artifact rdfs:label ?label }
-  OPTIONAL { ?artifact ggen:artifactType ?artifactType }
-  OPTIONAL { ?artifact ggen:source ?source }
-  OPTIONAL { ?artifact ggen:sourceRule ?sourceRule }
-  OPTIONAL { ?artifact ggen:status ?status }
-  OPTIONAL { ?artifact ggen:receipt ?receipt }
+    ?rule a pi:GenerationRule .
+    ?rule pi:status "READY" .
+    ?rule dcterms:title ?title .
+    ?rule pi:outputFile ?outputFile .
+
+    OPTIONAL { ?rule pi:outputMode ?outputMode }
+    OPTIONAL { ?rule pi:targetFormat ?targetFormat }
+    OPTIONAL { ?rule pi:audience ?audience }
+    OPTIONAL { ?rule pi:evidence ?evidence }
+    OPTIONAL { ?rule pi:status ?status }
 }
-ORDER BY ?artifact
+ORDER BY ?outputFile

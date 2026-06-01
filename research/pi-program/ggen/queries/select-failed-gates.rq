@@ -1,17 +1,24 @@
-# Selection Query: Failed Proof Gates
-# Returns all proof gates that failed validation with their artifacts and failure reasons
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX chk: <https://process.intelligence/checkpoint/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# SELECT: Failed Gates
+# Returns checkpoints with failed proof gates and remediation details
+# Date: 2026-06-01
 
-SELECT ?gate ?artifact ?gateType ?failureReason ?failedAssertion ?timestamp
+SELECT ?checkpoint ?title ?failingGate ?failureLocation ?failureIssue ?failureImpact ?remediationNote ?estimatedFixHours
 WHERE {
-  ?gate a ggen:ProofGate .
-  ?gate ggen:status ggen:Failed .
-  OPTIONAL { ?gate ggen:artifact ?artifact }
-  OPTIONAL { ?gate ggen:gateType ?gateType }
-  OPTIONAL { ?gate ggen:failureReason ?failureReason }
-  OPTIONAL { ?gate ggen:failedAssertion ?failedAssertion }
-  OPTIONAL { ?gate ggen:evaluatedAt ?timestamp }
+    ?checkpoint a pi:Checkpoint .
+    ?checkpoint dcterms:title ?title .
+    ?checkpoint pi:gateFail ?gateFail .
+
+    FILTER (?gateFail > 0)
+
+    OPTIONAL { ?checkpoint pi:failingGate ?failingGate }
+    OPTIONAL { ?checkpoint pi:failureLocation ?failureLocation }
+    OPTIONAL { ?checkpoint pi:failureIssue ?failureIssue }
+    OPTIONAL { ?checkpoint pi:failureImpact ?failureImpact }
+    OPTIONAL { ?checkpoint pi:failureRemediationNote ?remediationNote }
+    OPTIONAL { ?checkpoint pi:estimatedFixHours ?estimatedFixHours }
 }
-ORDER BY DESC(?timestamp)
+ORDER BY ?checkpoint

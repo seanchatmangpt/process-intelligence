@@ -1,489 +1,440 @@
-# pi-ggen-audit-law.ttl
-# Unified Program Graph — Audit Law & 15 Gate Definitions
-# Authority: Process Intelligence Research Foundry
-# Date: 2026-06-01
-# Scope: Complete specification of 15 audit gates with pass/fail rules, evidence requirements, and remediation paths
-
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix pi: <https://process.intelligence/ontology/> .
-@prefix ual: <https://process.intelligence/unified-audit-law/> .
+@prefix sh:     <http://www.w3.org/ns/shacl#> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+@prefix pi:     <https://process.intelligence/ontology/> .
+@prefix audit:  <https://process.intelligence/audit-law/> .
 
-# ============================================================================
-# ONTOLOGY HEADER
-# ============================================================================
+# Audit Law — 15 Audit Gates with SHACL Pass/Fail Constraints
+# Date: 2026-06-01
+# Authority: PI Research Program
+# Purpose: SHACL-enforced proof gates constraining manufacturing and deployment
 
-<https://process.intelligence/unified-audit-law/ontology>
-  a owl:Ontology ;
-  dcterms:title "Unified Program Graph — Audit Law (15 Gates)"@en ;
-  dcterms:description "Definitive specification of 15 audit gates that govern ALIVE verdict issuance. Each gate has explicit pass/fail rules, evidence requirements, automated detection criteria, and remediation paths."@en ;
-  dcterms:creator "Process Intelligence Research Foundry"@en ;
-  dcterms:created "2026-06-01"^^xsd:date ;
-  dcterms:modified "2026-06-01"^^xsd:date ;
-  owl:imports <https://process.intelligence/ontology/> ;
-  owl:imports <http://www.w3.org/ns/prov#> ;
-  skos:definition "Authoritative law governing which audit gates must pass (all 15) before an ALIVE verdict can be issued. Each gate is independently verifiable via SPARQL, shell audit, or file system inspection. No gate is advisory; all are mandatory."@en ;
-  skos:note "Gates fall into 5 categories: Source Surface (3), Evidence Requirement (3), Conformance (3), Immutability (3), Blocking Issues (3). Gates are applied in order; failure of any gate blocks ALIVE verdict, necessitating remediation and new checkpoint."@en .
+audit:AUDIT_LAW a owl:NamedIndividual, pi:AuditLaw ;
+    dcterms:title "Process Intelligence Audit Law" ;
+    dcterms:description "15 SHACL proof gates with pass/fail criteria for manufacturing pipeline conformance" ;
+    dcterms:issued "2026-06-01"^^xsd:date ;
+    pi:totalGates 15 ;
+    pi:shaclConstraints 15 ;
+    pi:gateCategories "Component Boundary (3), Feature Law (3), Projection Safety (3), DTO/Serialization (2), Tool Smuggling (1), Telemetry Separation (3)" ;
+    .
 
-# ============================================================================
-# CLASSES
-# ============================================================================
+# GATE 1: No DTO Flattening (wasm4pm-compat)
+audit:GATE_001_NO_DTO_FLATTENING a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "No DTO Flattening" ;
+    dcterms:description "Prevent JSON serialization in wasm4pm-compat; enforce separation of concerns from wasm4pm engine" ;
+    pi:gateNumber 1 ;
+    pi:category "DTO/Serialization" ;
+    pi:scope "wasm4pm-compat codebase" ;
+    pi:criterion "Zero instances of to_json_string(), receipt_json(), or JSON serialization methods in src/manufacturing/" ;
+    pi:failureExample "to_json_string() method in mod.rs; receipt_json() method in traits.rs" ;
+    pi:expectedAction "Move JSON serialization to wasm4pm engine only" ;
+    pi:shaclShape audit:SHAPE_001 ;
+    pi:blockingStatus "YES (blocks manufacturing if fails)" ;
+    pi:estimatedRemediationHours "4-6" ;
+    .
 
-ual:AuditGate
-  a owl:Class ;
-  rdfs:label "Audit Gate"@en ;
-  rdfs:comment "A single deterministic criterion that must be satisfied for ALIVE verdict issuance."@en ;
-  skos:definition "A verifiable gate with explicit PASS/FAIL rules, evidence requirement(s), and automated detection mechanism. All 15 gates must PASS for ALIVE; failure of any blocks verdict."@en ;
-  rdfs:subClassOf prov:Activity .
+audit:SHAPE_001 a sh:NodeShape ;
+    sh:targetClass pi:SerializationCheck ;
+    sh:property [
+        sh:path pi:serializationMethod ;
+        sh:in () ;
+        sh:message "JSON serialization methods forbidden in compat layer" ;
+    ] ;
+    .
 
-ual:GateCategory
-  a owl:Class ;
-  rdfs:label "Gate Category"@en ;
-  rdfs:comment "Functional category of audit gate."@en ;
-  owl:disjointUnionOf (
-    ual:SOURCE_SURFACE_GATE
-    ual:EVIDENCE_REQUIREMENT_GATE
-    ual:CONFORMANCE_GATE
-    ual:IMMUTABILITY_GATE
-    ual:BLOCKING_ISSUES_GATE
-  ) .
+# GATE 2: No Tool Smuggling (Feature Isolation)
+audit:GATE_002_NO_TOOL_SMUGGLING a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "No Tool Smuggling" ;
+    dcterms:description "Verify Cargo feature isolation: no execution tools (mining, conformance, replay) in compat feature flags" ;
+    pi:gateNumber 2 ;
+    pi:category "Feature Law" ;
+    pi:scope "wasm4pm-compat Cargo.toml and feature definitions" ;
+    pi:criterion "7 forbidden tools blocked: mining, conformance, replay, state_transitions, normalization, petri_net, witness_projection" ;
+    pi:shaclShape audit:SHAPE_002 ;
+    pi:blockingStatus "YES (blocks feature compilation if fails)" ;
+    .
 
-ual:SOURCE_SURFACE_GATE a owl:Class ; rdfs:label "Source Surface Gate" .
-ual:EVIDENCE_REQUIREMENT_GATE a owl:Class ; rdfs:label "Evidence Requirement Gate" .
-ual:CONFORMANCE_GATE a owl:Class ; rdfs:label "Conformance Gate" .
-ual:IMMUTABILITY_GATE a owl:Class ; rdfs:label "Immutability Gate" .
-ual:BLOCKING_ISSUES_GATE a owl:Class ; rdfs:label "Blocking Issues Gate" .
+audit:SHAPE_002 a sh:NodeShape ;
+    sh:targetClass pi:FeatureDefinition ;
+    sh:property [
+        sh:path pi:forbiddenTools ;
+        sh:in (
+            "pi:mining"
+            "pi:conformance"
+            "pi:replay"
+            "pi:state_transitions"
+            "pi:normalization"
+            "pi:petri_net"
+            "pi:witness_projection"
+        ) ;
+        sh:message "Execution tools forbidden in compat feature flags" ;
+    ] ;
+    .
 
-ual:GateResult
-  a owl:Class ;
-  rdfs:label "Gate Result"@en ;
-  rdfs:comment "Outcome of gate evaluation."@en ;
-  owl:disjointUnionOf (
-    ual:PASS
-    ual:FAIL
-    ual:CONDITIONAL_PASS
-  ) .
+# GATE 3: Component Boundary Enforcement (WIT World Segregation)
+audit:GATE_003_COMPONENT_BOUNDARY a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Component Boundary Enforcement" ;
+    dcterms:description "Verify WIT world segregation: compat-world (structure-only) vs engine-world (execution) with strict boundaries" ;
+    pi:gateNumber 3 ;
+    pi:category "Component Boundary" ;
+    pi:scope "WIT interface definitions and world declarations" ;
+    pi:criterion "Two distinct WIT worlds with zero cross-contamination; exported types in compat-world must be structure-only (no execution functions)" ;
+    pi:shaclShape audit:SHAPE_003 ;
+    pi:blockingStatus "YES (blocks WASM compilation if fails)" ;
+    .
 
-ual:PASS a owl:Class ; rdfs:label "PASS" .
-ual:FAIL a owl:Class ; rdfs:label "FAIL" .
-ual:CONDITIONAL_PASS a owl:Class ; rdfs:label "CONDITIONAL_PASS" .
+audit:SHAPE_003 a sh:NodeShape ;
+    sh:targetClass pi:WITWorld ;
+    sh:property [
+        sh:path pi:worldType ;
+        sh:in ("structure-only" "execution") ;
+        sh:message "WIT world must be classified as structure-only or execution" ;
+    ] ;
+    sh:property [
+        sh:path pi:exportedFunctions ;
+        sh:minCount 0 ;
+        sh:message "Compat-world must not export execution functions" ;
+    ] ;
+    .
 
-ual:DetectionMechanism
-  a owl:Class ;
-  rdfs:label "Detection Mechanism"@en ;
-  rdfs:comment "How the gate condition is automatically verified."@en ;
-  owl:disjointUnionOf (
-    ual:FILE_SYSTEM_INSPECTION
-    ual:SHELL_AUDIT
-    ual:SPARQL_QUERY
-    ual:MANUAL_CODE_REVIEW
-    ual:AUTOMATED_TEST
-  ) .
+# GATE 4: Type-Law Boundary (Evidence<T, State, W> Monomorphization)
+audit:GATE_004_TYPELAWBOUNDARY a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Type-Law Boundary Verification" ;
+    dcterms:description "Validate Evidence<T, State, W> monomorphization completeness in TypeScript projections" ;
+    pi:gateNumber 4 ;
+    pi:category "Projection Safety" ;
+    pi:scope "TypeScript type definitions and brand tokens" ;
+    pi:criterion "All Evidence<T, State, W> instances fully monomorphized; zero generic T placeholders leaked to TypeScript surface" ;
+    pi:shaclShape audit:SHAPE_004 ;
+    pi:blockingStatus "YES (blocks TypeScript export if fails)" ;
+    .
 
-ual:FILE_SYSTEM_INSPECTION a owl:Class ; rdfs:label "File System Inspection" .
-ual:SHELL_AUDIT a owl:Class ; rdfs:label "Shell Audit" .
-ual:SPARQL_QUERY a owl:Class ; rdfs:label "SPARQL Query" .
-ual:MANUAL_CODE_REVIEW a owl:Class ; rdfs:label "Manual Code Review" .
-ual:AUTOMATED_TEST a owl:Class ; rdfs:label "Automated Test" .
+audit:SHAPE_004 a sh:NodeShape ;
+    sh:targetClass pi:EvidenceType ;
+    sh:property [
+        sh:path pi:monomorphized ;
+        sh:hasValue true ;
+        sh:message "Evidence<T, State, W> must be fully monomorphized before TypeScript export" ;
+    ] ;
+    .
 
-ual:RemediationPath
-  a owl:Class ;
-  rdfs:label "Remediation Path"@en ;
-  rdfs:comment "Steps to remediate a gate failure."@en ;
-  owl:disjointUnionOf (
-    ual:CREATE_MISSING_ARTIFACT
-    ual:FIX_SOURCE_CODE
-    ual:RESOLVE_COLLAPSE
-    ual:UPDATE_DOCUMENTATION
-    ual:DECOMPOSE_FILE
-  ) .
+# GATE 5: Brand Token Enforcement (DTO Tags)
+audit:GATE_005_BRAND_TOKENS a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Brand Token Enforcement" ;
+    dcterms:description "Verify all TypeScript board claim DTOs carry witness brand tokens for type safety" ;
+    pi:gateNumber 5 ;
+    pi:category "Projection Safety" ;
+    pi:scope "TypeScript DTO definitions (board claims, synergy projections, debt claims)" ;
+    pi:criterion "100% of board claim DTOs tagged with brand token; zero untagged DTOs in public surface" ;
+    pi:shaclShape audit:SHAPE_005 ;
+    pi:blockingStatus "YES (blocks TypeScript compilation if fails)" ;
+    .
 
-ual:CREATE_MISSING_ARTIFACT a owl:Class ; rdfs:label "Create Missing Artifact" .
-ual:FIX_SOURCE_CODE a owl:Class ; rdfs:label "Fix Source Code" .
-ual:RESOLVE_COLLAPSE a owl:Class ; rdfs:label "Resolve Collapse" .
-ual:UPDATE_DOCUMENTATION a owl:Class ; rdfs:label "Update Documentation" .
-ual:DECOMPOSE_FILE a owl:Class ; rdfs:label "Decompose File" .
+audit:SHAPE_005 a sh:NodeShape ;
+    sh:targetClass pi:BoardClaimDTO ;
+    sh:property [
+        sh:path pi:brandToken ;
+        sh:minCount 1 ;
+        sh:message "All board claim DTOs must carry a witness brand token" ;
+    ] ;
+    .
 
-ual:FailedGate
-  a owl:Class ;
-  rdfs:label "Failed Gate"@en ;
-  rdfs:comment "Record of a gate failure event."@en ;
-  skos:definition "A prov:Entity documenting a single gate failure, its detection time, evidence, and remediation status."@en ;
-  rdfs:subClassOf prov:Entity .
+# GATE 6: Enum Tagging (Classification Isolation)
+audit:GATE_006_ENUM_TAGGING a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Enum Tagging" ;
+    dcterms:description "Verify all TypeScript enums tagged with brand tokens for nominal typing" ;
+    pi:gateNumber 6 ;
+    pi:category "Projection Safety" ;
+    pi:scope "TypeScript enum definitions (verdict types, lifecycle states, claim categories)" ;
+    pi:criterion "100% of exported enums tagged; zero bare enums in public API" ;
+    pi:shaclShape audit:SHAPE_006 ;
+    pi:blockingStatus "YES (blocks compilation if fails)" ;
+    .
 
-# ============================================================================
-# PROPERTIES
-# ============================================================================
+audit:SHAPE_006 a sh:NodeShape ;
+    sh:targetClass pi:TypeScriptEnum ;
+    sh:property [
+        sh:path pi:tagged ;
+        sh:hasValue true ;
+        sh:message "All TypeScript enums must be tagged with nominal type markers" ;
+    ] ;
+    .
 
-ual:gateNumber
-  a owl:DatatypeProperty ;
-  rdfs:label "Gate Number"@en ;
-  rdfs:comment "Sequential number (1-15) of the gate."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range xsd:integer .
+# GATE 7: Projection Surface Safety (No Internal Leakage)
+audit:GATE_007_PROJECTION_SURFACE a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Projection Surface Safety" ;
+    dcterms:description "Ensure TypeScript projection surface is safe: zero internal/private types exposed in FFI boundary" ;
+    pi:gateNumber 7 ;
+    pi:category "Projection Safety" ;
+    pi:scope "FFI boundary between Rust (wasm4pm-compat) and TypeScript" ;
+    pi:criterion "All exported types are projection-safe; zero internal type references in public exports" ;
+    pi:shaclShape audit:SHAPE_007 ;
+    pi:blockingStatus "YES (blocks wasm-bindgen if fails)" ;
+    .
 
-ual:gateName
-  a owl:DatatypeProperty ;
-  rdfs:label "Gate Name"@en ;
-  rdfs:comment "Human-readable name of the gate."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range xsd:string .
+audit:SHAPE_007 a sh:NodeShape ;
+    sh:targetClass pi:FFIExport ;
+    sh:property [
+        sh:path pi:projectionSafe ;
+        sh:hasValue true ;
+        sh:message "All FFI exports must be projection-safe (no internal types exposed)" ;
+    ] ;
+    .
 
-ual:gateCategory
-  a owl:ObjectProperty ;
-  rdfs:label "Gate Category"@en ;
-  rdfs:comment "Functional category of the gate."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range ual:GateCategory ;
-  skos:cardinality "exactly 1"@en .
+# GATE 8: Graduation Boundary Verification
+audit:GATE_008_GRADUATION_BOUNDARY a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Graduation Boundary Verification" ;
+    dcterms:description "Verify wasm4pm-compat graduation boundary: 87/87 public items (classes, traits, functions, constants) conform to graduation interface" ;
+    pi:gateNumber 8 ;
+    pi:category "Component Boundary" ;
+    pi:scope "wasm4pm-compat public API surface" ;
+    pi:criterion "87/87 public items implement GraduateToWasm4pm trait or export through graduation interface" ;
+    pi:expectedCount 87 ;
+    pi:shaclShape audit:SHAPE_008 ;
+    pi:blockingStatus "YES (blocks engine integration if fails)" ;
+    .
 
-ual:passCondition
-  a owl:DatatypeProperty ;
-  rdfs:label "Pass Condition"@en ;
-  rdfs:comment "The condition that must be true for the gate to PASS."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range xsd:string .
+audit:SHAPE_008 a sh:NodeShape ;
+    sh:targetClass pi:PublicItem ;
+    sh:property [
+        sh:path pi:graduationReady ;
+        sh:hasValue true ;
+        sh:message "All public items must implement graduation interface for engine integration" ;
+    ] ;
+    .
 
-ual:failCondition
-  a owl:DatatypeProperty ;
-  rdfs:label "Fail Condition"@en ;
-  rdfs:comment "The condition that triggers gate FAILURE."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range xsd:string .
+# GATE 9: No Client-Only Authentication
+audit:GATE_009_NO_CLIENT_AUTH a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "No Client-Only Authentication" ;
+    dcterms:description "Detect and reject client-only authentication patterns violating server-authority principle" ;
+    pi:gateNumber 9 ;
+    pi:category "Feature Law" ;
+    pi:scope "Entire codebase" ;
+    pi:criterion "Zero client-only auth implementations; all authentication decisions must be server-verified" ;
+    pi:shaclShape audit:SHAPE_009 ;
+    pi:blockingStatus "YES (security gate)" ;
+    .
 
-ual:detectionMechanism
-  a owl:ObjectProperty ;
-  rdfs:label "Detection Mechanism"@en ;
-  rdfs:comment "How the gate is automatically verified."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range ual:DetectionMechanism ;
-  skos:cardinality "exactly 1"@en .
+audit:SHAPE_009 a sh:NodeShape ;
+    sh:targetClass pi:AuthenticationMethod ;
+    sh:property [
+        sh:path pi:serverVerified ;
+        sh:hasValue true ;
+        sh:message "All authentication must be server-verified (no client-only auth)" ;
+    ] ;
+    .
 
-ual:evidenceRequirement
-  a owl:DatatypeProperty ;
-  rdfs:label "Evidence Requirement"@en ;
-  rdfs:comment "What evidence is required to verify this gate passes."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range xsd:string .
+# GATE 10: No Dashboard Truth-Source Violations
+audit:GATE_010_NO_DASHBOARD_TRUTH a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "No Dashboard Truth-Source Violations" ;
+    dcterms:description "Prevent dashboard/UI from being source of truth for process state or verdicts" ;
+    pi:gateNumber 10 ;
+    pi:category "Feature Law" ;
+    pi:scope "UI/dashboard code" ;
+    pi:criterion "Zero instances where UI makes process state decisions; UI only displays server-computed verdicts" ;
+    pi:shaclShape audit:SHAPE_010 ;
+    pi:blockingStatus "YES (architecture gate)" ;
+    .
 
-ual:remediationPath
-  a owl:ObjectProperty ;
-  rdfs:label "Remediation Path"@en ;
-  rdfs:comment "Steps to fix a gate failure."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range ual:RemediationPath ;
-  skos:cardinality "at least 1"@en .
+audit:SHAPE_010 a sh:NodeShape ;
+    sh:targetClass pi:DashboardState ;
+    sh:property [
+        sh:path pi:truthSourceVerified ;
+        sh:hasValue true ;
+        sh:message "Dashboard must not be truth-source for process state (display-only)" ;
+    ] ;
+    .
 
-ual:blockingVerdicts
-  a owl:DatatypeProperty ;
-  rdfs:label "Blocking Verdicts"@en ;
-  rdfs:comment "Which verdicts (ALIVE, PARTIAL, FAILED) are blocked by failure of this gate."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range xsd:string ;
-  skos:example "ALIVE, PARTIAL, FAILED"@en .
+# GATE 11: No Telemetry-as-Receipt Violations
+audit:GATE_011_NO_TELEMETRY_AS_RECEIPT a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "No Telemetry-as-Receipt Violations" ;
+    dcterms:description "Enforce strict separation: telemetry (observability) ≠ cryptographic receipts (process proof)" ;
+    pi:gateNumber 11 ;
+    pi:category "Telemetry Separation" ;
+    pi:scope "Telemetry and receipt emission code" ;
+    pi:criterion "Zero telemetry spans/events used as process receipts; receipts are separate, cryptographically signed artifacts" ;
+    pi:shaclShape audit:SHAPE_011 ;
+    pi:blockingStatus "YES (boundaries gate)" ;
+    .
 
-ual:automatedDetection
-  a owl:DatatypeProperty ;
-  rdfs:label "Automated Detection"@en ;
-  rdfs:comment "Shell command, SPARQL query, or test script to automatically verify this gate."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range xsd:string .
+audit:SHAPE_011 a sh:NodeShape ;
+    sh:targetClass pi:TelemetryEvent ;
+    sh:property [
+        sh:path pi:notUsedAsReceipt ;
+        sh:hasValue true ;
+        sh:message "Telemetry must not be conflated with cryptographic receipts" ;
+    ] ;
+    .
 
-ual:failureEvent
-  a owl:ObjectProperty ;
-  rdfs:label "Failure Event"@en ;
-  rdfs:comment "Links a gate to its failure records."@en ;
-  rdfs:domain ual:AuditGate ;
-  rdfs:range ual:FailedGate .
+# GATE 12: No Realtime-as-Evidence Violations
+audit:GATE_012_NO_REALTIME_EVIDENCE a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "No Realtime-as-Evidence Violations" ;
+    dcterms:description "Prevent realtime metrics/measurements from being used as process event evidence" ;
+    pi:gateNumber 12 ;
+    pi:category "Telemetry Separation" ;
+    pi:scope "Event log and evidence capture" ;
+    pi:criterion "Zero realtime telemetry used as process event log entries; evidence must be immutable, post-hoc verified" ;
+    pi:shaclShape audit:SHAPE_012 ;
+    pi:blockingStatus "YES (evidence integrity gate)" ;
+    .
 
-# ============================================================================
-# SHAPES
-# ============================================================================
+audit:SHAPE_012 a sh:NodeShape ;
+    sh:targetClass pi:EventLogEntry ;
+    sh:property [
+        sh:path pi:immutableEvidence ;
+        sh:hasValue true ;
+        sh:message "Event log entries must be immutable evidence (not realtime telemetry)" ;
+    ] ;
+    .
 
-ual:AuditGateShape
-  a sh:NodeShape ;
-  sh:targetClass ual:AuditGate ;
-  sh:closed false ;
-  sh:property [
-    sh:path ual:gateNumber ;
-    sh:datatype xsd:integer ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "AuditGate must have exactly one gate number."@en
-  ] ;
-  sh:property [
-    sh:path ual:gateName ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "AuditGate must have exactly one gate name."@en
-  ] ;
-  sh:property [
-    sh:path ual:passCondition ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "AuditGate must define pass condition."@en
-  ] ;
-  sh:property [
-    sh:path ual:detectionMechanism ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "AuditGate must specify detection mechanism."@en
-  ] .
+# GATE 13: Live Check Findings Routed Correctly
+audit:GATE_013_LIVE_CHECK_ROUTING a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Live Check Findings Routed Correctly" ;
+    dcterms:description "Verify OTel live check intake verdicts route only to court consequence (governance), not to process mining" ;
+    pi:gateNumber 13 ;
+    pi:category "Telemetry Separation" ;
+    pi:scope "otel-weaver live check intake socket" ;
+    pi:criterion "100% of live check findings route to governance court; zero misrouted to process mining" ;
+    pi:shaclShape audit:SHAPE_013 ;
+    pi:blockingStatus "YES (routing gate)" ;
+    .
 
-# ============================================================================
-# INSTANCES (15 Gates: Source, Evidence, Conformance, Immutability, Issues)
-# ============================================================================
+audit:SHAPE_013 a sh:NodeShape ;
+    sh:targetClass pi:LiveCheckFinding ;
+    sh:property [
+        sh:path pi:routedToCourt ;
+        sh:hasValue true ;
+        sh:message "Live check findings must route to governance court (not process mining)" ;
+    ] ;
+    .
 
-# ===== SOURCE SURFACE GATES (3) =====
+# GATE 14: Schema Diff Routed to Observability, Not Receipt
+audit:GATE_014_SCHEMA_DIFF_ROUTING a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Schema Diff Routed Correctly" ;
+    dcterms:description "Verify OTel schema diffs route to observability channel, not to receipt/proof channel" ;
+    pi:gateNumber 14 ;
+    pi:category "Telemetry Separation" ;
+    pi:scope "otel-weaver schema diff handling" ;
+    pi:criterion "100% of weaver schema diffs route to observability; zero misrouted to receipt chain" ;
+    pi:shaclShape audit:SHAPE_014 ;
+    pi:blockingStatus "YES (routing gate)" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-1-ontology-present>
-  a ual:AuditGate ;
-  dcterms:title "Gate 1: Ontology Present"@en ;
-  ual:gateNumber "1"^^xsd:integer ;
-  ual:gateName "Ontology Present"@en ;
-  ual:gateCategory ual:SOURCE_SURFACE_GATE ;
-  ual:passCondition "At least one .ttl file exists in ontology directory and parses without syntax error."@en ;
-  ual:failCondition "No .ttl files found OR all .ttl files contain syntax errors."@en ;
-  ual:detectionMechanism ual:FILE_SYSTEM_INSPECTION ;
-  ual:evidenceRequirement ".ttl files with valid Turtle syntax (N3 parser conformant)"@en ;
-  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
-  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
-  ual:automatedDetection "find . -name '*.ttl' -exec ttl-lint {} \\;"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+audit:SHAPE_014 a sh:NodeShape ;
+    sh:targetClass pi:SchemaDiff ;
+    sh:property [
+        sh:path pi:routedToObservability ;
+        sh:hasValue true ;
+        sh:message "Schema diffs must route to observability channel (not receipt chain)" ;
+    ] ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-2-queries-present>
-  a ual:AuditGate ;
-  dcterms:title "Gate 2: Queries Present"@en ;
-  ual:gateNumber "2"^^xsd:integer ;
-  ual:gateName "Queries Present"@en ;
-  ual:gateCategory ual:SOURCE_SURFACE_GATE ;
-  ual:passCondition "At least one .rq (SPARQL) file exists in queries directory and parses without syntax error."@en ;
-  ual:failCondition "No .rq files found OR all .rq files contain SPARQL syntax errors."@en ;
-  ual:detectionMechanism ual:FILE_SYSTEM_INSPECTION ;
-  ual:evidenceRequirement ".rq files with valid SPARQL 1.1 syntax"@en ;
-  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
-  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
-  ual:automatedDetection "find . -name '*.rq' -exec sparql-lint {} \\;"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+# GATE 15: Schema URL Present in All Diffs
+audit:GATE_015_SCHEMA_URL_VERIFICATION a owl:NamedIndividual, pi:AuditGate ;
+    dcterms:title "Schema URL Verification" ;
+    dcterms:description "Verify all OTel schema diffs include OpenTelemetry schema URL for version tracking and drift detection" ;
+    pi:gateNumber 15 ;
+    pi:category "Telemetry Separation" ;
+    pi:scope "OTel schema metadata" ;
+    pi:criterion "100% of schema diffs include schema:url field with valid OTel schema version URL" ;
+    pi:shaclShape audit:SHAPE_015 ;
+    pi:blockingStatus "YES (metadata gate)" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-3-templates-present>
-  a ual:AuditGate ;
-  dcterms:title "Gate 3: Templates Present"@en ;
-  ual:gateNumber "3"^^xsd:integer ;
-  ual:gateName "Templates Present"@en ;
-  ual:gateCategory ual:SOURCE_SURFACE_GATE ;
-  ual:passCondition "At least one .tera file exists in templates directory and parses without syntax error."@en ;
-  ual:failCondition "No .tera files found OR all .tera files contain Tera syntax errors."@en ;
-  ual:detectionMechanism ual:FILE_SYSTEM_INSPECTION ;
-  ual:evidenceRequirement ".tera files with valid Jinja2-compatible Tera syntax"@en ;
-  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
-  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
-  ual:automatedDetection "find . -name '*.tera' -exec tera-lint {} \\;"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+audit:SHAPE_015 a sh:NodeShape ;
+    sh:targetClass pi:OTelSchema ;
+    sh:property [
+        sh:path pi:schemaUrl ;
+        sh:minCount 1 ;
+        sh:message "All OTel schemas must include schema URL for version tracking" ;
+    ] ;
+    .
 
-# ===== EVIDENCE REQUIREMENT GATES (3) =====
+# Vocabulary Classes
+pi:AuditLaw a owl:Class ;
+    rdfs:label "Audit Law" ;
+    skos:definition "Comprehensive set of SHACL-enforced proof gates constraining manufacturing and deployment" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-4-ggen-toml-valid>
-  a ual:AuditGate ;
-  dcterms:title "Gate 4: ggen.toml Valid"@en ;
-  ual:gateNumber "4"^^xsd:integer ;
-  ual:gateName "ggen.toml Valid"@en ;
-  ual:gateCategory ual:EVIDENCE_REQUIREMENT_GATE ;
-  ual:passCondition "ggen.toml file is present, parses as valid TOML, and references existing ontology, query, and template files."@en ;
-  ual:failCondition "ggen.toml missing, invalid TOML syntax, OR references non-existent source files."@en ;
-  ual:detectionMechanism ual:SHELL_AUDIT ;
-  ual:evidenceRequirement "Valid ggen.toml with [ontology], [generation.rules], [query], [template] sections"@en ;
-  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "toml-lint ggen.toml && cargo make check"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:AuditGate a owl:Class ;
+    rdfs:label "Audit Gate" ;
+    skos:definition "Individual SHACL proof gate with pass/fail criteria and enforcement rules" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-5-seed-programs-encoded>
-  a ual:AuditGate ;
-  dcterms:title "Gate 5: Seed Programs Encoded"@en ;
-  ual:gateNumber "5"^^xsd:integer ;
-  ual:gateName "Seed Programs Encoded"@en ;
-  ual:gateCategory ual:EVIDENCE_REQUIREMENT_GATE ;
-  ual:passCondition "All known research programs are explicitly listed in ontology as pm:ResearchProgram or pi:PROGRAM instances."@en ;
-  ual:failCondition "Any known program is missing from ontology OR ontology has undocumented program instances."@en ;
-  ual:detectionMechanism ual:SPARQL_QUERY ;
-  ual:evidenceRequirement "SPARQL result showing all research programs with program IDs, missions, prompt classes"@en ;
-  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
-  ual:blockingVerdicts "PARTIAL"@en ;
-  ual:automatedDetection "sparql --query list-programs.rq --data ontology/*.ttl"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+# Vocabulary Properties
+pi:gateNumber a owl:DatatypeProperty ;
+    rdfs:label "gate number" ;
+    rdfs:range xsd:integer ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-6-warrant-path-end-to-end>
-  a ual:AuditGate ;
-  dcterms:title "Gate 6: Warrant Path End-to-End"@en ;
-  ual:gateNumber "6"^^xsd:integer ;
-  ual:gateName "Warrant Path End-to-End"@en ;
-  ual:gateCategory ual:EVIDENCE_REQUIREMENT_GATE ;
-  ual:passCondition "A complete chain exists from checkpoint (ALIVE/PARTIAL) → generation rule → artifact production → receipt emission."@en ;
-  ual:failCondition "Chain is broken: missing checkpoint link, generation rule not executable, artifact not produced, OR receipt missing."@en ;
-  ual:detectionMechanism ual:SPARQL_QUERY ;
-  ual:evidenceRequirement "SPARQL urun:WarrantPath results showing connected prov:wasGeneratedBy chain from checkpoint through artifact"@en ;
-  ual:remediationPath ual:FIX_SOURCE_CODE ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "sparql --query warrant-path-closure.rq --data unified-run.ttl"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:category a owl:DatatypeProperty ;
+    rdfs:label "category" ;
+    rdfs:range xsd:string ;
+    skos:definition "Gate category: Component Boundary, Feature Law, Projection Safety, DTO/Serialization, Tool Smuggling, or Telemetry Separation" ;
+    .
 
-# ===== CONFORMANCE GATES (3) =====
+pi:scope a owl:DatatypeProperty ;
+    rdfs:label "scope" ;
+    rdfs:range xsd:string ;
+    skos:definition "Which part of the codebase or system this gate covers" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-7-warrant-is-receipted>
-  a ual:AuditGate ;
-  dcterms:title "Gate 7: Warrant Is Receipted"@en ;
-  ual:gateNumber "7"^^xsd:integer ;
-  ual:gateName "Warrant Is Receipted"@en ;
-  ual:gateCategory ual:CONFORMANCE_GATE ;
-  ual:passCondition "Each artifact has a corresponding cryptographic receipt (BLAKE3 hash) in receipt chain."@en ;
-  ual:failCondition "One or more artifacts lack receipt hashes OR hashes do not match artifact contents."@en ;
-  ual:detectionMechanism ual:SHELL_AUDIT ;
-  ual:evidenceRequirement "Receipt files with BLAKE3 digests matching artifact hash values"@en ;
-  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "for file in $(find . -name 'artifact*'); do b3sum $file; done"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:criterion a owl:DatatypeProperty ;
+    rdfs:label "criterion" ;
+    rdfs:range xsd:string ;
+    skos:definition "Specific measurable criterion for gate pass/fail" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-8-no-new-ggen-source-files>
-  a ual:AuditGate ;
-  dcterms:title "Gate 8: No New ggen Source Files"@en ;
-  ual:gateNumber "8"^^xsd:integer ;
-  ual:gateName "No New ggen Source Files"@en ;
-  ual:gateCategory ual:CONFORMANCE_GATE ;
-  ual:passCondition "No .ggen files have been added that are not in the historical .ggen source registry."@en ;
-  ual:failCondition "New .ggen files exist outside expected source subdirectories (templates, audits, queries, manifests)."@en ;
-  ual:detectionMechanism ual:SHELL_AUDIT ;
-  ual:evidenceRequirement "Git diff showing no new .ggen files in source areas, or inventoried .ggen classification"@en ;
-  ual:remediationPath ual:DECOMPOSE_FILE ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "git diff --name-only | grep '\\.ggen$' | sort"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:failureExample a owl:DatatypeProperty ;
+    rdfs:label "failure example" ;
+    rdfs:range xsd:string ;
+    skos:definition "Real example of what failure looks like" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-9-legacy-ggen-classified>
-  a ual:AuditGate ;
-  dcterms:title "Gate 9: Legacy ggen Classified"@en ;
-  ual:gateNumber "9"^^xsd:integer ;
-  ual:gateName "Legacy ggen Classified"@en ;
-  ual:gateCategory ual:CONFORMANCE_GATE ;
-  ual:passCondition "All legacy .ggen files are inventoried in pi-ggen-invalid-extension-ledger.ttl with explicit classification and remediation route."@en ;
-  ual:failCondition "Unclassified .ggen files exist OR remediation routes are missing."@en ;
-  ual:detectionMechanism ual:SPARQL_QUERY ;
-  ual:evidenceRequirement "uiel:InvalidGgenFile instances covering all .ggen files with classification and remediationRoute properties"@en ;
-  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "sparql --query list-legacy-ggen-files.rq --data invalid-extension-ledger.ttl"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:expectedAction a owl:DatatypeProperty ;
+    rdfs:label "expected action" ;
+    rdfs:range xsd:string ;
+    skos:definition "Remediation or corrective action if gate fails" ;
+    .
 
-# ===== IMMUTABILITY GATES (3) =====
+pi:shaclShape a owl:ObjectProperty ;
+    rdfs:label "SHACL shape" ;
+    skos:definition "SHACL node shape enforcing this gate constraint" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-10-audits-pass>
-  a ual:AuditGate ;
-  dcterms:title "Gate 10: Audits Pass"@en ;
-  ual:gateNumber "10"^^xsd:integer ;
-  ual:gateName "Audits Pass"@en ;
-  ual:gateCategory ual:IMMUTABILITY_GATE ;
-  ual:passCondition "All automated audit scripts (.sh.ggen or shell) execute without error and produce PASS results."@en ;
-  ual:failCondition "Any audit script exits with non-zero status OR produces FAIL result."@en ;
-  ual:detectionMechanism ual:AUTOMATED_TEST ;
-  ual:evidenceRequirement "Audit log output showing all scripts executed and PASS status"@en ;
-  ual:remediationPath ual:FIX_SOURCE_CODE ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "for audit in $(find . -name '*.sh.ggen'); do bash $audit; done"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:blockingStatus a owl:DatatypeProperty ;
+    rdfs:label "blocking status" ;
+    rdfs:range xsd:string ;
+    skos:definition "YES or NO: whether gate failure blocks downstream processes" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-11-no-active-forbidden-collapses>
-  a ual:AuditGate ;
-  dcterms:title "Gate 11: No Active Forbidden Collapses"@en ;
-  ual:gateNumber "11"^^xsd:integer ;
-  ual:gateName "No Active Forbidden Collapses"@en ;
-  ual:gateCategory ual:IMMUTABILITY_GATE ;
-  ual:passCondition "No pi:FORBIDDEN_COLLAPSE instances have collapseStatus = ACTIVE and collapseAuditResult = FAIL."@en ;
-  ual:failCondition "One or more active collapses with failed audit result exist."@en ;
-  ual:detectionMechanism ual:SPARQL_QUERY ;
-  ual:evidenceRequirement "SPARQL query showing all collapses with status ACTIVE/FAIL filtered out"@en ;
-  ual:remediationPath ual:RESOLVE_COLLAPSE ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "sparql --query active-forbidden-collapses.rq --data forbidden-collapse-law.ttl"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:estimatedRemediationHours a owl:DatatypeProperty ;
+    rdfs:label "estimated remediation hours" ;
+    rdfs:range xsd:string ;
+    skos:definition "Estimated effort to fix gate failure" ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-12-evidence-backing-sufficient>
-  a ual:AuditGate ;
-  dcterms:title "Gate 12: Evidence Backing Sufficient"@en ;
-  ual:gateNumber "12"^^xsd:integer ;
-  ual:gateName "Evidence Backing Sufficient"@en ;
-  ual:gateCategory ual:IMMUTABILITY_GATE ;
-  ual:passCondition "All doctrine claims cite at least one source (paper, experiment, prior checkpoint, or audit finding)."@en ;
-  ual:failCondition "Doctrine claim exists without dcterms:source reference OR dcterms:source points to non-existent artifact."@en ;
-  ual:detectionMechanism ual:MANUAL_CODE_REVIEW ;
-  ual:evidenceRequirement "Manual audit confirming all doctrine/claims in markdown files have citation trail"@en ;
-  ual:remediationPath ual:UPDATE_DOCUMENTATION ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "grep -r 'claims' doctrine/ | grep -v 'dcterms:source' || true"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:expectedCount a owl:DatatypeProperty ;
+    rdfs:label "expected count" ;
+    rdfs:range xsd:integer ;
+    skos:definition "Expected number of items/entities for quantified gates" ;
+    .
 
-# ===== BLOCKING ISSUES GATES (3) =====
+pi:totalGates a owl:DatatypeProperty ;
+    rdfs:label "total gates" ;
+    rdfs:range xsd:integer ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-13-no-open-blocking-gaps>
-  a ual:AuditGate ;
-  dcterms:title "Gate 13: No Open Blocking Gaps"@en ;
-  ual:gateNumber "13"^^xsd:integer ;
-  ual:gateName "No Open Blocking Gaps"@en ;
-  ual:gateCategory ual:BLOCKING_ISSUES_GATE ;
-  ual:passCondition "No pi:Gap instances exist with pi:blockingStatus = TRUE."@en ;
-  ual:failCondition "One or more open blocking gaps are documented."@en ;
-  ual:detectionMechanism ual:SPARQL_QUERY ;
-  ual:evidenceRequirement "SPARQL result showing all gaps have blockingStatus = FALSE or are resolved"@en ;
-  ual:remediationPath ual:CREATE_MISSING_ARTIFACT ;
-  ual:blockingVerdicts "ALIVE"@en ;
-  ual:automatedDetection "sparql --query blocking-gaps.rq --data gaps/*.md"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
+pi:shaclConstraints a owl:DatatypeProperty ;
+    rdfs:label "SHACL constraints" ;
+    rdfs:range xsd:integer ;
+    .
 
-<https://process.intelligence/unified-audit-law/gate-14-checkpoint-immutability>
-  a ual:AuditGate ;
-  dcterms:title "Gate 14: Checkpoint Immutability"@en ;
-  ual:gateNumber "14"^^xsd:integer ;
-  ual:gateName "Checkpoint Immutability"@en ;
-  ual:gateCategory ual:BLOCKING_ISSUES_GATE ;
-  ual:passCondition "All prior checkpoint files are unchanged (hash mismatch detected if modified)."@en ;
-  ual:failCondition "A prior checkpoint file has been modified OR deleted."@en ;
-  ual:detectionMechanism ual:SHELL_AUDIT ;
-  ual:evidenceRequirement "Git history showing no commits that modify checkpoint files"@en ;
-  ual:remediationPath ual:FIX_SOURCE_CODE ;
-  ual:blockingVerdicts "ALIVE, PARTIAL, FAILED"@en ;
-  ual:automatedDetection "git log --oneline checkpoints/ | wc -l"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
-
-<https://process.intelligence/unified-audit-law/gate-15-no-forced-alive>
-  a ual:AuditGate ;
-  dcterms:title "Gate 15: No Forced ALIVE Verdicts"@en ;
-  ual:gateNumber "15"^^xsd:integer ;
-  ual:gateName "No Forced ALIVE Verdicts"@en ;
-  ual:gateCategory ual:BLOCKING_ISSUES_GATE ;
-  ual:passCondition "No checkpoint is marked with internal flag or comment indicating it was forced ALIVE without gate verification."@en ;
-  ual:failCondition "Manual audit discovers forced ALIVE verdict OR code comment reveals gate bypass."@en ;
-  ual:detectionMechanism ual:MANUAL_CODE_REVIEW ;
-  ual:evidenceRequirement "Manual review of all ALIVE checkpoints confirming each passed all 13-15 gates"@en ;
-  ual:remediationPath ual:FIX_SOURCE_CODE ;
-  ual:blockingVerdicts "ALIVE, PARTIAL"@en ;
-  ual:automatedDetection "grep -r 'forced' checkpoints/*.md || true"@en ;
-  prov:wasAttributedTo "Process Intelligence Research Foundry"@en .
-
-# ============================================================================
-# STATISTICS
-# ============================================================================
-
-<https://process.intelligence/unified-audit-law/statistics>
-  a prov:Entity ;
-  dcterms:title "Audit Law Statistics"@en ;
-  dcterms:description "Summary of all audit gates"@en ;
-  rdf:value "Total gates: 15, Source Surface gates: 3 (ontology, queries, templates), Evidence gates: 3 (ggen.toml, programs, warrant), Conformance gates: 3 (receipts, ggen files, classification), Immutability gates: 3 (audits, collapses, evidence), Blocking gates: 3 (gaps, checkpoint, forced), Detection mechanisms: FILE_SYSTEM_INSPECTION (3), SHELL_AUDIT (3), SPARQL_QUERY (5), MANUAL_REVIEW (3), AUTOMATED_TEST (1)"@en ;
-  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en .
+pi:gateCategories a owl:DatatypeProperty ;
+    rdfs:label "gate categories" ;
+    rdfs:range xsd:string ;
+    .

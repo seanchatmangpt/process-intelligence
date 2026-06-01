@@ -1,29 +1,22 @@
-# Selection Query: Remediation Candidates
-# Returns artifacts and rules requiring remediation based on failed gates
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX gen: <https://process.intelligence/generation-rule/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# SELECT: Remediation Candidates
+# Returns blocked and deactivated rules requiring remediation (missing templates/queries)
+# Date: 2026-06-01
 
-SELECT ?candidate ?candidateType ?failedGate ?remedyPath ?priority
+SELECT ?rule ?title ?program ?status ?blockingIssue ?query ?template
 WHERE {
-  {
-    ?artifact a ggen:RenderedArtifact .
-    ?artifact ggen:status ggen:Invalid .
-    ?gate a ggen:ProofGate .
-    ?gate ggen:artifact ?artifact .
-    ?gate ggen:status ggen:Failed .
-    BIND(?artifact AS ?candidate)
-    BIND("artifact" AS ?candidateType)
-    BIND(?gate AS ?failedGate)
-  }
-  UNION
-  {
-    ?rule a ggen:GenerationRule .
-    ?rule ggen:status ggen:Invalid .
-    BIND(?rule AS ?candidate)
-    BIND("rule" AS ?candidateType)
-  }
-  OPTIONAL { ?candidate ggen:remedyPath ?remedyPath }
-  OPTIONAL { ?candidate ggen:priority ?priority }
+    ?rule a pi:GenerationRule .
+    ?rule pi:program ?program .
+    ?rule dcterms:title ?title .
+    ?rule pi:status ?status .
+
+    FILTER (?status IN ("BLOCKED", "DEACTIVATED"))
+
+    OPTIONAL { ?rule pi:blockingIssue ?blockingIssue }
+    OPTIONAL { ?rule pi:query ?query }
+    OPTIONAL { ?rule pi:template ?template }
 }
-ORDER BY ?priority DESC(?candidate)
+ORDER BY ?program ?status ?title

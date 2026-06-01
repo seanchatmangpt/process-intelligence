@@ -1,16 +1,21 @@
-# Selection Query: All Generation Rules
-# Returns all rule definitions with their inputs, outputs, and conditions
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX gen: <https://process.intelligence/generation-rule/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# SELECT: All Generation Rules (15 total)
+# Returns all generation rules across all 3 programs with complete metadata
+# Date: 2026-06-01
 
-SELECT ?rule ?label ?ruleType ?input ?output ?condition
+SELECT ?rule ?title ?program ?query ?template ?outputFile ?status ?blockingIssue
 WHERE {
-  ?rule a ggen:GenerationRule .
-  OPTIONAL { ?rule rdfs:label ?label }
-  OPTIONAL { ?rule ggen:ruleType ?ruleType }
-  OPTIONAL { ?rule ggen:input ?input }
-  OPTIONAL { ?rule ggen:output ?output }
-  OPTIONAL { ?rule ggen:condition ?condition }
+    ?rule a pi:GenerationRule .
+    ?rule pi:program ?program .
+
+    OPTIONAL { ?rule dcterms:title ?title }
+    OPTIONAL { ?rule pi:query ?query }
+    OPTIONAL { ?rule pi:template ?template }
+    OPTIONAL { ?rule pi:outputFile ?outputFile }
+    OPTIONAL { ?rule pi:status ?status }
+    OPTIONAL { ?rule pi:blockingIssue ?blockingIssue }
 }
-ORDER BY ?rule
+ORDER BY ?status ?rule

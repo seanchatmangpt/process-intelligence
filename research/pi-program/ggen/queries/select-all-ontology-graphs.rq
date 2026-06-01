@@ -1,15 +1,19 @@
-# Selection Query: All Ontology Graphs
-# Returns all ontology definitions with their namespaces and definitions
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX grun: <https://process.intelligence/ggen-unified-run/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
+# SELECT: All Ontology Graphs (7 TTL artifacts)
+# Returns manufactured artifact ontologies with artifact roles, paths, and metadata
+# Date: 2026-06-01
 
-SELECT ?ontology ?label ?namespace ?version
+SELECT ?artifact ?title ?role ?outputPath ?artifactType ?description
 WHERE {
-  ?ontology a ggen:Ontology .
-  OPTIONAL { ?ontology rdfs:label ?label }
-  OPTIONAL { ?ontology ggen:namespace ?namespace }
-  OPTIONAL { ?ontology owl:versionInfo ?version }
+    ?artifact a pi:ManufacturedArtifact .
+    ?artifact dcterms:title ?title .
+    ?artifact pi:artifactRole ?role .
+    ?artifact pi:outputPath ?outputPath .
+    ?artifact pi:artifactType ?artifactType .
+
+    OPTIONAL { ?artifact dcterms:description ?description }
 }
-ORDER BY ?ontology
+ORDER BY ?outputPath

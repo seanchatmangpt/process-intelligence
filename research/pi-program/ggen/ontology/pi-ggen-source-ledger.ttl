@@ -1,332 +1,562 @@
-# pi-ggen-source-ledger.ttl
-# Unified Program Graph — All TTL, RQ, Tera Source Inventory
-# Authority: Process Intelligence Research Foundry
-# Date: 2026-06-01
-# Scope: Complete ledger of 92 valid source files across all ggen projects
-
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix schema: <https://schema.org/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix pi: <https://process.intelligence/ontology/> .
-@prefix usl: <https://process.intelligence/unified-source-ledger/> .
-@prefix proj: <https://process.intelligence/project/> .
+@prefix dcat:   <http://www.w3.org/ns/dcat#> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+@prefix pi:     <https://process.intelligence/ontology/> .
+@prefix src:    <https://process.intelligence/source/> .
 
-# ============================================================================
-# ONTOLOGY HEADER
-# ============================================================================
+# Source Ledger — 92 Sources Across 3 ggen Projects
+# Date: 2026-06-01
+# Authority: PI Research Program — ggen-source-census.md
 
-<https://process.intelligence/unified-source-ledger/ontology>
-  a owl:Ontology ;
-  dcterms:title "Unified Program Graph — Source Ledger"@en ;
-  dcterms:description "Complete inventory of all 92 valid TTL ontologies, SPARQL queries, and Tera templates consumed and produced by ggen manufacturing pipelines across all projects."@en ;
-  dcterms:creator "Process Intelligence Research Foundry"@en ;
-  dcterms:created "2026-06-01"^^xsd:date ;
-  dcterms:modified "2026-06-01"^^xsd:date ;
-  owl:imports <https://process.intelligence/ontology/> ;
-  owl:imports <http://www.w3.org/ns/dcat#> ;
-  owl:imports <http://www.w3.org/ns/prov#> ;
-  skos:definition "Authoritative ledger of ggen source surfaces: 22 TTL ontologies, 36 SPARQL queries, 34 Tera templates. Tracks parse status, project ownership, dependencies, and manufacturing state."@en ;
-  skos:note "All 92 sources parse successfully. 51 (55.4%) are referenced in generation rules; 41 (44.6%) are unreferenced (candidates for future integration or legacy artifacts)."@en .
+# Project 1: process-intelligence-ggen (1 TTL + 4 RQ + 4 Tera = 9 sources)
+src:PROJ_1_ONTOLOGY_1 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "ontology-extensions.ttl" ;
+    dcterms:description "Primary ontology extension layer for M&A and lifecycle domains" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "18.5 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:role "Domain specification for M&A claims and lifecycle governance" ;
+    .
 
-# ============================================================================
-# CLASSES
-# ============================================================================
+src:PROJ_1_QUERY_1 a owl:NamedIndividual, pi:Source, pi:Query ;
+    dcterms:title "extract-lifecycle-governance.rq" ;
+    pi:sourceType "rq" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "3.7 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:queryType "Extraction" ;
+    pi:role "Lifecycle governance extraction (ACTIVE)" ;
+    pi:purpose "Extracts lifecycle state definitions with MAPE-K rules" ;
+    .
 
-usl:OntologyGraph
-  a owl:Class ;
-  rdfs:label "Ontology Graph"@en ;
-  rdfs:comment "A valid RDF/Turtle ontology file (.ttl) with parse-verified structure."@en ;
-  skos:definition "A prov:Entity representing a single TTL file consumed by ggen queries or produced as intermediate representation."@en ;
-  rdfs:subClassOf dcat:Distribution ;
-  rdfs:subClassOf prov:Entity .
+src:PROJ_1_QUERY_2 a owl:NamedIndividual, pi:Source, pi:Query ;
+    dcterms:title "extract-visualizer-data.rq" ;
+    pi:sourceType "rq" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "1.7 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:queryType "Extraction" ;
+    pi:role "Visualizer data extraction (ACTIVE)" ;
+    .
 
-usl:QuerySurface
-  a owl:Class ;
-  rdfs:label "Query Surface"@en ;
-  rdfs:comment "A SPARQL 1.1 query file (.rq) with verified syntax and ontology binding."@en ;
-  skos:definition "A prov:Entity representing a SELECT/CONSTRUCT/ASK query that extracts facts from ontologies for template rendering."@en ;
-  rdfs:subClassOf dcat:Distribution ;
-  rdfs:subClassOf prov:Entity .
+src:PROJ_1_QUERY_3 a owl:NamedIndividual, pi:Source, pi:Query ;
+    dcterms:title "extract-board-claims.rq" ;
+    pi:sourceType "rq" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "2.2 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    pi:queryType "Extraction" ;
+    pi:role "M&A board claim extraction (deactivated)" ;
+    .
 
-usl:TemplateSurface
-  a owl:Class ;
-  rdfs:label "Template Surface"@en ;
-  rdfs:comment "A Tera template file (.tera) with verified Jinja2-compatible syntax."@en ;
-  skos:definition "A prov:Entity representing a template that renders Tera artifacts from SPARQL query results."@en ;
-  rdfs:subClassOf dcat:Distribution ;
-  rdfs:subClassOf prov:Entity .
+src:PROJ_1_QUERY_4 a owl:NamedIndividual, pi:Source, pi:Query ;
+    dcterms:title "extract-diligence-claims.rq" ;
+    pi:sourceType "rq" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "3.1 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    pi:queryType "Extraction" ;
+    pi:role "Diligence claim extraction (deactivated)" ;
+    .
 
-usl:SourceClassification
-  a owl:Class ;
-  rdfs:label "Source Classification"@en ;
-  rdfs:comment "Type classification for source surfaces: Ontology, Query, or Template."@en ;
-  owl:disjointUnionOf (
-    usl:ONTOLOGY_CLASS
-    usl:QUERY_CLASS
-    usl:TEMPLATE_CLASS
-  ) .
+src:PROJ_1_TEMPLATE_1 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "blue-river.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "14.4 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:templateRole "Code Generation" ;
+    pi:purpose "MAPE-K autonomic loop Rust code generation" ;
+    .
 
-usl:ONTOLOGY_CLASS a owl:Class ; rdfs:label "Ontology" .
-usl:QUERY_CLASS a owl:Class ; rdfs:label "Query" .
-usl:TEMPLATE_CLASS a owl:Class ; rdfs:label "Template" .
+src:PROJ_1_TEMPLATE_2 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "visualizer-dashboard.tsx.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "76.0 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:templateRole "Code Generation" ;
+    pi:purpose "NextJS React component generation" ;
+    .
 
-usl:SourceRole
-  a owl:Class ;
-  rdfs:label "Source Role"@en ;
-  rdfs:comment "Functional role of a source: Knowledge Base, Extraction, Document Generation, Code Generation."@en ;
-  owl:disjointUnionOf (
-    usl:KNOWLEDGE_BASE
-    usl:EXTRACTION
-    usl:DOCUMENT_GENERATION
-    usl:CODE_GENERATION
-  ) .
+src:PROJ_1_TEMPLATE_3 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "ma-deck.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "7.7 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    pi:templateRole "Document Generation" ;
+    pi:purpose "M&A deck generation (deactivated)" ;
+    .
 
-usl:KNOWLEDGE_BASE a owl:Class ; rdfs:label "Knowledge Base" .
-usl:EXTRACTION a owl:Class ; rdfs:label "Extraction" .
-usl:DOCUMENT_GENERATION a owl:Class ; rdfs:label "Document Generation" .
-usl:CODE_GENERATION a owl:Class ; rdfs:label "Code Generation" .
+src:PROJ_1_TEMPLATE_4 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "ma-diligence.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "11.3 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    pi:templateRole "Document Generation" ;
+    pi:purpose "M&A diligence workbook (deactivated)" ;
+    .
 
-usl:ParseStatus
-  a owl:Class ;
-  rdfs:label "Parse Status"@en ;
-  rdfs:comment "Validation result for source file syntax."@en ;
-  owl:disjointUnionOf (
-    usl:VALID
-    usl:SUSPICIOUS
-    usl:ERROR
-  ) .
+# Project 1 Root-Level Templates (9 additional templates)
+src:PROJ_1_ROOT_TEMPLATE_1 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "alive-partial-matrix.md.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "4.4 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    pi:purpose "Checkpoint status matrix generation" ;
+    .
 
-usl:VALID a owl:Class ; rdfs:label "VALID" .
-usl:SUSPICIOUS a owl:Class ; rdfs:label "SUSPICIOUS" .
-usl:ERROR a owl:Class ; rdfs:label "ERROR" .
+src:PROJ_1_ROOT_TEMPLATE_2 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "checkpoint-ledger.md.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "4.4 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-# ============================================================================
-# PROPERTIES
-# ============================================================================
+src:PROJ_1_ROOT_TEMPLATE_3 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "checkpoint.md.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "8.4 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-usl:filePath
-  a owl:DatatypeProperty ;
-  rdfs:label "File Path"@en ;
-  rdfs:comment "Absolute file system path to the source file."@en ;
-  rdfs:domain [ rdf:type owl:Class ; owl:unionOf ( usl:OntologyGraph usl:QuerySurface usl:TemplateSurface ) ] ;
-  rdfs:range xsd:string .
+src:PROJ_1_ROOT_TEMPLATE_4 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "failed-gate-ledger.yaml.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "4.0 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-usl:sourceClass
-  a owl:ObjectProperty ;
-  rdfs:label "Source Class"@en ;
-  rdfs:comment "Classification of the source type."@en ;
-  rdfs:range usl:SourceClassification ;
-  skos:cardinality "exactly 1"@en .
+src:PROJ_1_ROOT_TEMPLATE_5 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "next-workflow-plan.md.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "8.0 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-usl:sourceRole
-  a owl:ObjectProperty ;
-  rdfs:label "Source Role"@en ;
-  rdfs:comment "Functional role of the source in the manufacturing pipeline."@en ;
-  rdfs:range usl:SourceRole ;
-  skos:cardinality "exactly 1"@en .
+src:PROJ_1_ROOT_TEMPLATE_6 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "program-surface-map.yaml.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "5.2 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-usl:parseStatus
-  a owl:ObjectProperty ;
-  rdfs:label "Parse Status"@en ;
-  rdfs:comment "Validation result for the source file."@en ;
-  rdfs:range usl:ParseStatus ;
-  skos:cardinality "exactly 1"@en .
+src:PROJ_1_ROOT_TEMPLATE_7 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "project-registry.yaml.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "2.0 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-usl:isReferencedInRule
-  a owl:DatatypeProperty ;
-  rdfs:label "Is Referenced In Rule"@en ;
-  rdfs:comment "Whether the source is referenced by a ggen generation rule (true) or unreferenced (false)."@en ;
-  rdfs:range xsd:boolean ;
-  skos:cardinality "exactly 1"@en .
+src:PROJ_1_ROOT_TEMPLATE_8 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "remediation-plan.md.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "6.3 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-usl:fileSizeBytes
-  a owl:DatatypeProperty ;
-  rdfs:label "File Size (Bytes)"@en ;
-  rdfs:comment "Size in bytes of the source file."@en ;
-  rdfs:range xsd:integer .
+src:PROJ_1_ROOT_TEMPLATE_9 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "research-artifact-index.md.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "process-intelligence-ggen" ;
+    pi:fileSize "8.5 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    .
 
-usl:fileHash
-  a owl:DatatypeProperty ;
-  rdfs:label "File Hash"@en ;
-  rdfs:comment "BLAKE3 digest of the file contents."@en ;
-  rdfs:range xsd:string .
+# Project 2: PI_RESEARCH_PROGRAM_INTEL_001 (7 TTL + 32 RQ + 1 Tera = 40 sources)
+src:PROJ_2_ONTOLOGY_1 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "pi-program.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "13.6 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Research program structure definition" ;
+    .
 
-usl:ownedByProject
-  a owl:ObjectProperty ;
-  rdfs:label "Owned By Project"@en ;
-  rdfs:comment "The project that owns and maintains this source file."@en ;
-  rdfs:domain [ rdf:type owl:Class ; owl:unionOf ( usl:OntologyGraph usl:QuerySurface usl:TemplateSurface ) ] ;
-  rdfs:range pi:ReferencedProject ;
-  skos:cardinality "exactly 1"@en .
+src:PROJ_2_ONTOLOGY_2 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "project-registry.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "21.9 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Project registry and metadata" ;
+    .
 
-usl:consumedByRule
-  a owl:ObjectProperty ;
-  rdfs:label "Consumed By Rule"@en ;
-  rdfs:comment "Generation rule(s) that consume this source."@en ;
-  rdfs:domain [ rdf:type owl:Class ; owl:unionOf ( usl:OntologyGraph usl:QuerySurface usl:TemplateSurface ) ] ;
-  rdfs:range pi:GenerationRule .
+src:PROJ_2_ONTOLOGY_3 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "checkpoint-ledger.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "17.0 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Checkpoint state and verdict ontology" ;
+    .
 
-usl:producedByRule
-  a owl:ObjectProperty ;
-  rdfs:label "Produced By Rule"@en ;
-  rdfs:comment "Generation rule(s) that produce this source (as intermediate artifacts)."@en ;
-  rdfs:domain [ rdf:type owl:Class ; owl:unionOf ( usl:OntologyGraph usl:QuerySurface usl:TemplateSurface ) ] ;
-  rdfs:range pi:GenerationRule .
+src:PROJ_2_ONTOLOGY_4 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "conformance-ledger.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "14.1 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Process conformance tracking" ;
+    .
 
-usl:dependsOn
-  a owl:ObjectProperty ;
-  rdfs:label "Depends On"@en ;
-  rdfs:comment "Other source files this file imports or references."@en ;
-  rdfs:domain [ rdf:type owl:Class ; owl:unionOf ( usl:OntologyGraph usl:QuerySurface usl:TemplateSurface ) ] ;
-  rdfs:range [ rdf:type owl:Class ; owl:unionOf ( usl:OntologyGraph usl:QuerySurface usl:TemplateSurface ) ] .
+src:PROJ_2_ONTOLOGY_5 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "forbidden-collapse-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "18.2 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Collapse prevention rules" ;
+    .
 
-usl:containsNamespace
-  a owl:DatatypeProperty ;
-  rdfs:label "Contains Namespace"@en ;
-  rdfs:comment "RDF namespace URIs defined or used in this source."@en ;
-  rdfs:domain usl:OntologyGraph ;
-  rdfs:range xsd:string ;
-  skos:example "https://process.intelligence/ma/, http://www.w3.org/ns/prov#"@en .
+src:PROJ_2_ONTOLOGY_6 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "graduation-boundary.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "13.8 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Graduation and maturity boundaries" ;
+    .
 
-usl:classCount
-  a owl:DatatypeProperty ;
-  rdfs:label "Class Count"@en ;
-  rdfs:comment "Number of RDF classes defined in this ontology."@en ;
-  rdfs:domain usl:OntologyGraph ;
-  rdfs:range xsd:integer .
+src:PROJ_2_ONTOLOGY_7 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "research-artifact-ledger.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "18.8 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Research artifact tracking" ;
+    .
 
-usl:propertyCount
-  a owl:DatatypeProperty ;
-  rdfs:label "Property Count"@en ;
-  rdfs:comment "Number of RDF properties defined in this ontology."@en ;
-  rdfs:domain usl:OntologyGraph ;
-  rdfs:range xsd:integer .
+# Project 2: Audit Queries (17)
+src:PROJ_2_AUDIT_QUERIES a owl:NamedIndividual, pi:Source, pi:QuerySet ;
+    dcterms:title "Audit Query Set" ;
+    pi:sourceType "rq" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:queryCount 17 ;
+    pi:parseStatus "VALID (all)" ;
+    pi:referenced "NO (research queries, not generation rules)" ;
+    pi:queries "audit-checkpoint-has-receipts.rq", "audit-closure-invariant.rq", "audit-commitment-integrity.rq", "audit-compliance-ledger.rq", "audit-evidence-traceability.rq", "audit-gates-complete.rq", "audit-no-client-only-auth.rq", "audit-no-dashboard-truth.rq", "audit-no-dto-flattening.rq", "audit-no-forced-alive.rq", "audit-no-invalid-ggen-extension.rq", "audit-no-realtime-as-evidence.rq", "audit-no-telemetry-as-receipt.rq", "audit-no-tool-smuggling.rq", "audit-no-unsigned-verdicts.rq", "audit-partial-has-gaps.rq", "audit-source-court-citations.rq" ;
+    .
 
-usl:tripleCount
-  a owl:DatatypeProperty ;
-  rdfs:label "Triple Count"@en ;
-  rdfs:comment "Number of RDF triples in this ontology."@en ;
-  rdfs:domain usl:OntologyGraph ;
-  rdfs:range xsd:integer .
+# Project 2: Selection Queries (15)
+src:PROJ_2_SELECTION_QUERIES a owl:NamedIndividual, pi:Source, pi:QuerySet ;
+    dcterms:title "Selection Query Set" ;
+    pi:sourceType "rq" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:queryCount 15 ;
+    pi:parseStatus "VALID (all)" ;
+    pi:referenced "NO (research queries)" ;
+    pi:queries "select-alive-claims.rq", "select-all-projects.rq", "select-checkpoints.rq", "select-compatibility-surfaces.rq", "select-engine-surfaces.rq", "select-failed-gates.rq", "select-forbidden-collapses.rq", "select-manufacturing-surfaces.rq", "select-mobile-substrate-surfaces.rq", "select-next-workflows.rq", "select-partial-claims.rq", "select-proof-cells.rq", "select-remediation-candidates.rq", "select-telemetry-feedstock-surfaces.rq", "select-workflow-substrate-surfaces.rq" ;
+    .
 
-# ============================================================================
-# SHAPES
-# ============================================================================
+src:PROJ_2_TEMPLATE_1 a owl:NamedIndividual, pi:Source, pi:Template ;
+    dcterms:title "pi-program-walkthrough.md.tera" ;
+    pi:sourceType "tera" ;
+    pi:projectId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    pi:fileSize "4.3 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "NO" ;
+    pi:purpose "Program walkthrough documentation (candidate for future integration)" ;
+    .
 
-usl:OntologyGraphShape
-  a sh:NodeShape ;
-  sh:targetClass usl:OntologyGraph ;
-  sh:closed false ;
-  sh:property [
-    sh:path usl:filePath ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "OntologyGraph must have exactly one file path."@en
-  ] ;
-  sh:property [
-    sh:path usl:parseStatus ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "OntologyGraph must have exactly one parse status."@en
-  ] ;
-  sh:property [
-    sh:path usl:ownedByProject ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "OntologyGraph must be owned by exactly one project."@en
-  ] .
+# Project 3: prompt-manufactory (8 TTL + 3 RQ + 1 Tera = 12 sources)
+src:PROJ_3_ONTOLOGY_1 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "checkpoint-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "5.5 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Checkpoint lifecycle law" ;
+    .
 
-usl:QuerySurfaceShape
-  a sh:NodeShape ;
-  sh:targetClass usl:QuerySurface ;
-  sh:closed false ;
-  sh:property [
-    sh:path usl:filePath ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "QuerySurface must have exactly one file path."@en
-  ] ;
-  sh:property [
-    sh:path usl:parseStatus ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "QuerySurface must have exactly one parse status."@en
-  ] .
+src:PROJ_3_ONTOLOGY_2 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "forbidden-collapse-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "11.2 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Collapse prevention law" ;
+    .
 
-# ============================================================================
-# INSTANCES (Sample: 3 Ontologies to show structure)
-# ============================================================================
+src:PROJ_3_ONTOLOGY_3 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "hook-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "2.2 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Hook policy law" ;
+    .
 
-<https://process.intelligence/unified-source-ledger/ontology-extensions.ttl>
-  a usl:OntologyGraph ;
-  dcterms:title "Ontology Extensions"@en ;
-  dcterms:description "M&A and lifecycle domain specifications"@en ;
-  usl:filePath "/Users/sac/process-intelligence/ggen/ontology-extensions.ttl"@en ;
-  usl:sourceClass usl:ONTOLOGY_CLASS ;
-  usl:sourceRole usl:KNOWLEDGE_BASE ;
-  usl:parseStatus usl:VALID ;
-  usl:isReferencedInRule "true"^^xsd:boolean ;
-  usl:fileSizeBytes "18500"^^xsd:integer ;
-  usl:fileHash "b3sum_ontology_extensions_ttl"@en ;
-  usl:ownedByProject proj:process-intelligence ;
-  usl:containsNamespace "https://process.intelligence/ma/" ;
-  usl:containsNamespace "https://process.intelligence/lifecycle/" ;
-  usl:classCount "34"^^xsd:integer ;
-  usl:propertyCount "36"^^xsd:integer ;
-  usl:tripleCount "150"^^xsd:integer ;
-  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en ;
-  dcterms:created "2026-01-15"^^xsd:date .
+src:PROJ_3_ONTOLOGY_4 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "prompt-manufactory.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "7.5 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Primary prompt manufactory structure" ;
+    .
 
-<https://process.intelligence/unified-source-ledger/pi-program.ttl>
-  a usl:OntologyGraph ;
-  dcterms:title "PI Program Core Ontology"@en ;
-  dcterms:description "Top-level program role taxonomy and documentation"@en ;
-  usl:filePath "/Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl"@en ;
-  usl:sourceClass usl:ONTOLOGY_CLASS ;
-  usl:sourceRole usl:KNOWLEDGE_BASE ;
-  usl:parseStatus usl:VALID ;
-  usl:isReferencedInRule "true"^^xsd:boolean ;
-  usl:fileSizeBytes "13600"^^xsd:integer ;
-  usl:fileHash "b3sum_pi_program_ttl"@en ;
-  usl:ownedByProject proj:process-intelligence ;
-  usl:containsNamespace "https://process.intelligence/ontology/" ;
-  usl:classCount "21"^^xsd:integer ;
-  usl:propertyCount "10"^^xsd:integer ;
-  usl:tripleCount "89"^^xsd:integer ;
-  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en ;
-  dcterms:created "2026-01-20"^^xsd:date .
+src:PROJ_3_ONTOLOGY_5 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "research-program-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "6.5 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Research program law" ;
+    .
 
-<https://process.intelligence/unified-source-ledger/extract-lifecycle-governance.rq>
-  a usl:QuerySurface ;
-  dcterms:title "Extract Lifecycle Governance"@en ;
-  dcterms:description "Lifecycle governance extraction from ontologies"@en ;
-  usl:filePath "/Users/sac/process-intelligence/ggen/queries/extract-lifecycle-governance.rq"@en ;
-  usl:sourceClass usl:QUERY_CLASS ;
-  usl:sourceRole usl:EXTRACTION ;
-  usl:parseStatus usl:VALID ;
-  usl:isReferencedInRule "true"^^xsd:boolean ;
-  usl:fileSizeBytes "3700"^^xsd:integer ;
-  usl:fileHash "b3sum_extract_lifecycle_governance_rq"@en ;
-  usl:ownedByProject proj:process-intelligence ;
-  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en ;
-  dcterms:created "2026-01-25"^^xsd:date .
+src:PROJ_3_ONTOLOGY_6 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "skill-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "1.9 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Skill policy law" ;
+    .
 
-# ============================================================================
-# STATISTICS
-# ============================================================================
+src:PROJ_3_ONTOLOGY_7 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "subagent-role-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "8.3 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Subagent role law" ;
+    .
 
-<https://process.intelligence/unified-source-ledger/statistics>
-  a prov:Entity ;
-  dcterms:title "Source Ledger Statistics"@en ;
-  dcterms:description "Aggregate statistics for all 92 source files"@en ;
-  rdf:value "ggen.toml projects: 3, Total source files: 92, Valid ontologies: 22, Valid queries: 36, Valid templates: 34, Parse status VALID: 92 (100%), Referenced sources: 51 (55.4%), Unreferenced sources: 41 (44.6%)"@en ;
-  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en .
+src:PROJ_3_ONTOLOGY_8 a owl:NamedIndividual, pi:Source, pi:Ontology ;
+    dcterms:title "workflow-law.ttl" ;
+    pi:sourceType "ttl" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "4.7 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Workflow law" ;
+    .
+
+src:PROJ_3_QUERY_1 a owl:NamedIndividual, pi:Source, pi:Query ;
+    dcterms:title "select-research-programs.rq" ;
+    pi:sourceType "rq" ;
+    pi:projectId "prompt-manufactory" ;
+    pi:fileSize "0.5 KB" ;
+    pi:parseStatus "VALID" ;
+    pi:referenced "YES" ;
+    pi:purpose "Select research programs for prompt generation" ;
+    .
+
+# Summary Statistics
+src:SUMMARY_STATISTICS a owl:NamedIndividual, pi:SourceStatistics ;
+    dcterms:title "Source Census Summary" ;
+    pi:totalSources 92 ;
+    pi:ttlFiles 22 ;
+    pi:rqFiles 36 ;
+    pi:teraFiles 34 ;
+    pi:parseStatusValid 92 ;
+    pi:parseStatusSuspicious 0 ;
+    pi:parseStatusError 0 ;
+    pi:referencedByGeneration 51 ;
+    pi:unreferencedByGeneration 41 ;
+    pi:referencedPercentage "55.4%" ;
+    pi:unreferencedPercentage "44.6%" ;
+    .
+
+# Vocabulary Classes
+pi:Source a owl:Class ;
+    rdfs:label "Source" ;
+    skos:definition "A file (TTL, RQ, or Tera) in the ggen ecosystem" ;
+    .
+
+pi:Ontology a owl:Class ;
+    rdfs:label "Ontology" ;
+    skos:definition "TTL RDF/OWL ontology file" ;
+    rdfs:subClassOf pi:Source ;
+    .
+
+pi:Query a owl:Class ;
+    rdfs:label "Query" ;
+    skos:definition "SPARQL RQ query file" ;
+    rdfs:subClassOf pi:Source ;
+    .
+
+pi:QuerySet a owl:Class ;
+    rdfs:label "Query Set" ;
+    skos:definition "Grouped collection of SPARQL queries with common purpose" ;
+    .
+
+pi:Template a owl:Class ;
+    rdfs:label "Template" ;
+    skos:definition "Tera template file for code/document generation" ;
+    rdfs:subClassOf pi:Source ;
+    .
+
+pi:SourceStatistics a owl:Class ;
+    rdfs:label "Source Statistics" ;
+    skos:definition "Aggregate counts and metrics for source inventory" ;
+    .
+
+# Vocabulary Properties
+pi:sourceType a owl:DatatypeProperty ;
+    rdfs:label "source type" ;
+    rdfs:range xsd:string ;
+    skos:definition "File type: ttl, rq, or tera" ;
+    .
+
+pi:projectId a owl:DatatypeProperty ;
+    rdfs:label "project ID" ;
+    rdfs:range xsd:string ;
+    skos:definition "ggen project name or identifier" ;
+    .
+
+pi:fileSize a owl:DatatypeProperty ;
+    rdfs:label "file size" ;
+    rdfs:range xsd:string ;
+    .
+
+pi:parseStatus a owl:DatatypeProperty ;
+    rdfs:label "parse status" ;
+    rdfs:range xsd:string ;
+    skos:definition "VALID, SUSPICIOUS, or ERROR" ;
+    .
+
+pi:referenced a owl:DatatypeProperty ;
+    rdfs:label "referenced" ;
+    rdfs:range xsd:string ;
+    skos:definition "YES or NO: whether this source is used in active generation rules" ;
+    .
+
+pi:role a owl:DatatypeProperty ;
+    rdfs:label "role" ;
+    rdfs:range xsd:string ;
+    skos:definition "Functional description of source purpose" ;
+    .
+
+pi:queryType a owl:DatatypeProperty ;
+    rdfs:label "query type" ;
+    rdfs:range xsd:string ;
+    skos:definition "Extraction, Selection, Audit, or other SPARQL category" ;
+    .
+
+pi:purpose a owl:DatatypeProperty ;
+    rdfs:label "purpose" ;
+    rdfs:range xsd:string ;
+    skos:definition "Intended use of this source file" ;
+    .
+
+pi:templateRole a owl:DatatypeProperty ;
+    rdfs:label "template role" ;
+    rdfs:range xsd:string ;
+    skos:definition "Code Generation or Document Generation" ;
+    .
+
+pi:queryCount a owl:DatatypeProperty ;
+    rdfs:label "query count" ;
+    rdfs:range xsd:integer ;
+    skos:definition "Number of queries in a QuerySet" ;
+    .
+
+pi:queries a owl:DatatypeProperty ;
+    rdfs:label "queries" ;
+    rdfs:range xsd:string ;
+    skos:definition "Comma-separated list of query file names" ;
+    .
+
+pi:totalSources a owl:DatatypeProperty ;
+    rdfs:label "total sources" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:ttlFiles a owl:DatatypeProperty ;
+    rdfs:label "TTL files" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:rqFiles a owl:DatatypeProperty ;
+    rdfs:label "RQ files" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:teraFiles a owl:DatatypeProperty ;
+    rdfs:label "Tera files" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:parseStatusValid a owl:DatatypeProperty ;
+    rdfs:label "parse status valid" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:parseStatusSuspicious a owl:DatatypeProperty ;
+    rdfs:label "parse status suspicious" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:parseStatusError a owl:DatatypeProperty ;
+    rdfs:label "parse status error" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:referencedByGeneration a owl:DatatypeProperty ;
+    rdfs:label "referenced by generation" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:unreferencedByGeneration a owl:DatatypeProperty ;
+    rdfs:label "unreferenced by generation" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:referencedPercentage a owl:DatatypeProperty ;
+    rdfs:label "referenced percentage" ;
+    rdfs:range xsd:string ;
+    .
+
+pi:unreferencedPercentage a owl:DatatypeProperty ;
+    rdfs:label "unreferenced percentage" ;
+    rdfs:range xsd:string ;
+    .

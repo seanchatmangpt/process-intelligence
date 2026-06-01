@@ -1,429 +1,390 @@
-# pi-ggen-generation-ledger.ttl
-# Unified Program Graph — All Generation Rules and Their Dependencies
-# Authority: Process Intelligence Research Foundry
-# Date: 2026-06-01
-# Scope: Complete ledger of 7 active generation rules and their query/template dependencies
-
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
-@prefix dcat: <http://www.w3.org/ns/dcat#> .
-@prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
-@prefix schema: <https://schema.org/> .
-@prefix sh: <http://www.w3.org/ns/shacl#> .
-@prefix pi: <https://process.intelligence/ontology/> .
-@prefix ugl: <https://process.intelligence/unified-generation-ledger/> .
-@prefix proj: <https://process.intelligence/project/> .
+@prefix skos:   <http://www.w3.org/2004/02/skos/core#> .
+@prefix pi:     <https://process.intelligence/ontology/> .
+@prefix gen:    <https://process.intelligence/generation-rule/> .
 
-# ============================================================================
-# ONTOLOGY HEADER
-# ============================================================================
+# Generation Ledger — All Generation Rules from 3 ggen.toml Files
+# Date: 2026-06-01
+# Authority: PI Research Program — ggen-manifest-census.md
 
-<https://process.intelligence/unified-generation-ledger/ontology>
-  a owl:Ontology ;
-  dcterms:title "Unified Program Graph — Generation Ledger"@en ;
-  dcterms:description "Complete ledger of all generation rules that orchestrate ggen manufacturing: active rules, their SPARQL queries, Tera templates, output files, and proof gates."@en ;
-  dcterms:creator "Process Intelligence Research Foundry"@en ;
-  dcterms:created "2026-06-01"^^xsd:date ;
-  dcterms:modified "2026-06-01"^^xsd:date ;
-  owl:imports <https://process.intelligence/ontology/> ;
-  owl:imports <http://www.w3.org/ns/prov#> ;
-  skos:definition "Registry of all generation rules (query + template pairs) that transform ontology facts into rendered artifacts. Tracks active vs. deactivated rules, rule dependencies, execution order, and proof gate requirements."@en ;
-  skos:note "7 active generation rules across 3 ggen.toml projects. Rules produce artifacts (Rust code, NextJS TypeScript, YAML, Markdown) backed by conformance gates and receipt chains."@en .
+# File 1: process-intelligence-ggen (ggen/ggen.toml)
+gen:PROJECT_001 a owl:NamedIndividual, pi:GenerationProgram ;
+    dcterms:title "process-intelligence-ggen" ;
+    dcterms:description "Generate board-admissible M&A assets and autonomic governance engines from process intelligence" ;
+    pi:version "0.1.0" ;
+    pi:handCoding "false" ;
+    pi:evidenceSources "../receipts, ../checkpoints" ;
+    pi:ruleCount 2 ;
+    pi:activeRules 2 ;
+    pi:inactiveRules 2 ;
+    .
 
-# ============================================================================
-# CLASSES
-# ============================================================================
+gen:RULE_001 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "blue-river-orchestrator" ;
+    dcterms:description "Autonomic MAPE-K governance engine with lifecycle state transitions" ;
+    pi:program gen:PROJECT_001 ;
+    pi:ontology "ontology-extensions.ttl" ;
+    pi:query "queries/extract-lifecycle-governance.rq" ;
+    pi:template "templates/blue-river.tera" ;
+    pi:outputFile "../blue_river_dam/src/lib.rs" ;
+    pi:outputMode "Overwrite" ;
+    pi:targetFormat "Rust" ;
+    pi:audience "Process Intelligence Runtime" ;
+    pi:compliance "MAPE-K autonomic loop" ;
+    pi:evidence "lifecycle state machine + governance rule enforcement" ;
+    pi:status "READY" ;
+    .
 
-ugl:GenerationRule
-  a owl:Class ;
-  rdfs:label "Generation Rule"@en ;
-  rdfs:comment "A coordinated pair of SPARQL query and Tera template that manufactures an artifact from ontology facts."@en ;
-  skos:definition "A prov:Activity that executes a SPARQL query over loaded ontologies and renders a Tera template to produce a single artifact file."@en ;
-  rdfs:subClassOf prov:Activity .
+gen:RULE_002 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "visualizer-dashboard-nextjs" ;
+    dcterms:description "Generate NextJS visualizer dashboard pages with conformance-backed claims" ;
+    pi:program gen:PROJECT_001 ;
+    pi:query "queries/extract-visualizer-data.rq" ;
+    pi:template "templates/visualizer-dashboard.tsx.tera" ;
+    pi:outputFile "../experiments/visualizer-nextjs/src/app/page.tsx" ;
+    pi:outputMode "Overwrite" ;
+    pi:status "READY" ;
+    .
 
-ugl:RuleStatus
-  a owl:Class ;
-  rdfs:label "Rule Status"@en ;
-  rdfs:comment "Execution status of a generation rule."@en ;
-  owl:disjointUnionOf (
-    ugl:ACTIVE
-    ugl:DEACTIVATED
-    ugl:CONDITIONAL
-  ) .
+gen:RULE_003_INACTIVE a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "ma-deck" ;
+    dcterms:description "M&A pitch deck generation from board claims" ;
+    pi:program gen:PROJECT_001 ;
+    pi:query "queries/extract-board-claims.rq" ;
+    pi:template "templates/ma-deck.tera" ;
+    pi:status "DEACTIVATED" ;
+    pi:note "Template artifact exists but generation rule is disabled (commented in ggen.toml)" ;
+    .
 
-ugl:ACTIVE a owl:Class ; rdfs:label "ACTIVE" .
-ugl:DEACTIVATED a owl:Class ; rdfs:label "DEACTIVATED" .
-ugl:CONDITIONAL a owl:Class ; rdfs:label "CONDITIONAL" .
+gen:RULE_004_INACTIVE a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "ma-diligence" ;
+    dcterms:description "M&A diligence workbook generation from operational debt claims" ;
+    pi:program gen:PROJECT_001 ;
+    pi:query "queries/extract-diligence-claims.rq" ;
+    pi:template "templates/ma-diligence.tera" ;
+    pi:status "DEACTIVATED" ;
+    pi:note "Template artifact exists but generation rule is disabled (commented in ggen.toml)" ;
+    .
 
-ugl:RuleMode
-  a owl:Class ;
-  rdfs:label "Rule Mode"@en ;
-  rdfs:comment "Output mode for artifact rendering."@en ;
-  owl:disjointUnionOf (
-    ugl:OVERWRITE
-    ugl:APPEND
-    ugl:MERGE
-  ) .
+# File 2: PI_RESEARCH_PROGRAM_INTEL_001 (research/pi-program/ggen/ggen.toml)
+gen:PROJECT_002 a owl:NamedIndividual, pi:GenerationProgram ;
+    dcterms:title "PI_RESEARCH_PROGRAM_INTEL_001" ;
+    dcterms:description "Research program reconciliation analyzer with audit and selection query subsystems" ;
+    pi:version "unversioned" ;
+    pi:mode "research_program_reconciliation" ;
+    pi:ruleCount 0 ;
+    pi:queryCount 32 ;
+    pi:auditQueries 17 ;
+    pi:selectionQueries 15 ;
+    pi:activeGenerationRules "NONE (query-only, no generation rules)" ;
+    pi:note "Research mode: queries available for programmatic analysis; no code generation configured" ;
+    .
 
-ugl:OVERWRITE a owl:Class ; rdfs:label "Overwrite" .
-ugl:APPEND a owl:Class ; rdfs:label "Append" .
-ugl:MERGE a owl:Class ; rdfs:label "Merge" .
+gen:QUERY_SET_AUDIT a owl:NamedIndividual, pi:QuerySet ;
+    dcterms:title "Audit Query Set (PI_RESEARCH_PROGRAM_INTEL_001)" ;
+    dcterms:description "17 audit queries validating research program integrity constraints" ;
+    pi:program gen:PROJECT_002 ;
+    pi:queryCount 17 ;
+    pi:queries "audit-checkpoint-has-receipts", "audit-closure-invariant", "audit-commitment-integrity", "audit-compliance-ledger", "audit-evidence-traceability", "audit-gates-complete", "audit-no-client-only-auth", "audit-no-dashboard-truth", "audit-no-dto-flattening", "audit-no-forced-alive", "audit-no-invalid-ggen-extension", "audit-no-realtime-as-evidence", "audit-no-telemetry-as-receipt", "audit-no-tool-smuggling", "audit-no-unsigned-verdicts", "audit-partial-has-gaps", "audit-source-court-citations" ;
+    pi:status "AVAILABLE (not in generation rules)" ;
+    .
 
-ugl:ArtifactFormat
-  a owl:Class ;
-  rdfs:label "Artifact Format"@en ;
-  rdfs:comment "Output format of the rendered artifact."@en ;
-  owl:disjointUnionOf (
-    ugl:RUST_CODE
-    ugl:TYPESCRIPT_CODE
-    ugl:YAML_CONFIG
-    ugl:MARKDOWN_DOC
-    ugl:JSON_DATA
-  ) .
+gen:QUERY_SET_SELECTION a owl:NamedIndividual, pi:QuerySet ;
+    dcterms:title "Selection Query Set (PI_RESEARCH_PROGRAM_INTEL_001)" ;
+    dcterms:description "15 selection queries for filtering and enumeration across all PI artifacts" ;
+    pi:program gen:PROJECT_002 ;
+    pi:queryCount 15 ;
+    pi:queries "select-alive-claims", "select-all-projects", "select-checkpoints", "select-compatibility-surfaces", "select-engine-surfaces", "select-failed-gates", "select-forbidden-collapses", "select-manufacturing-surfaces", "select-mobile-substrate-surfaces", "select-next-workflows", "select-partial-claims", "select-proof-cells", "select-remediation-candidates", "select-telemetry-feedstock-surfaces", "select-workflow-substrate-surfaces" ;
+    pi:status "AVAILABLE (not in generation rules)" ;
+    .
 
-ugl:RUST_CODE a owl:Class ; rdfs:label "Rust Code" .
-ugl:TYPESCRIPT_CODE a owl:Class ; rdfs:label "TypeScript Code" .
-ugl:YAML_CONFIG a owl:Class ; rdfs:label "YAML Config" .
-ugl:MARKDOWN_DOC a owl:Class ; rdfs:label "Markdown Doc" .
-ugl:JSON_DATA a owl:Class ; rdfs:label "JSON Data" .
+# File 3: prompt-manufactory (research/prompt-manufactory/ggen/ggen.toml)
+gen:PROJECT_003 a owl:NamedIndividual, pi:GenerationProgram ;
+    dcterms:title "prompt-manufactory" ;
+    dcterms:description "Post-cyberpunk layer: research warrants manufactured from law" ;
+    pi:version "0.1.0" ;
+    pi:ruleCount 8 ;
+    pi:status "CRITICAL_BLOCKING_ISSUE: All 8 rules blocked (6 missing templates, 6 missing queries)" ;
+    pi:note "prompt-manufactory program is non-functional pending asset implementation" ;
+    .
 
-ugl:RenderedArtifact
-  a owl:Class ;
-  rdfs:label "Rendered Artifact"@en ;
-  rdfs:comment "Output artifact produced by a generation rule."@en ;
-  skos:definition "A prov:Entity representing the rendered file emitted by a generation rule execution."@en ;
-  rdfs:subClassOf prov:Entity ;
-  rdfs:subClassOf dcat:Distribution .
+gen:RULE_005 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "research-program-prompt" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "select-research-programs.rq" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Template not implemented" ;
+    .
 
-# ============================================================================
-# PROPERTIES
-# ============================================================================
+gen:RULE_006 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "workflow-prompt" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "MISSING" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Query and template not implemented" ;
+    .
 
-ugl:ruleName
-  a owl:DatatypeProperty ;
-  rdfs:label "Rule Name"@en ;
-  rdfs:comment "Human-readable name of the generation rule."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range xsd:string ;
-  skos:example "blue-river-orchestrator, visualizer-dashboard-nextjs"@en .
+gen:RULE_007 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "checkpoint-prompt" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "MISSING" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Query and template not implemented" ;
+    .
 
-ugl:ruleDescription
-  a owl:DatatypeProperty ;
-  rdfs:label "Rule Description"@en ;
-  rdfs:comment "Human-readable description of what the rule manufactures."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range xsd:string .
+gen:RULE_008 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "hook-policy-prompt" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "MISSING" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Query and template not implemented" ;
+    .
 
-ugl:ruleStatus
-  a owl:ObjectProperty ;
-  rdfs:label "Rule Status"@en ;
-  rdfs:comment "Whether the rule is actively executed, deactivated, or conditional."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range ugl:RuleStatus ;
-  skos:cardinality "exactly 1"@en .
+gen:RULE_009 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "skill-definition-prompt" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "MISSING" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Query and template not implemented" ;
+    .
 
-ugl:outputFormat
-  a owl:ObjectProperty ;
-  rdfs:label "Output Format"@en ;
-  rdfs:comment "The format of artifacts produced by this rule."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range ugl:ArtifactFormat ;
-  skos:cardinality "exactly 1"@en .
+gen:RULE_010 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "subagent-role-prompt" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "MISSING" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Query and template not implemented" ;
+    .
 
-ugl:outputMode
-  a owl:ObjectProperty ;
-  rdfs:label "Output Mode"@en ;
-  rdfs:comment "How the artifact is written to disk."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range ugl:RuleMode ;
-  skos:cardinality "exactly 1"@en .
+gen:RULE_011 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "forbidden-collapse-law-prompt" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "MISSING" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Query and template not implemented" ;
+    .
 
-ugl:outputFilePath
-  a owl:DatatypeProperty ;
-  rdfs:label "Output File Path"@en ;
-  rdfs:comment "Absolute path to the rendered artifact file."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range xsd:string .
+gen:RULE_012 a owl:NamedIndividual, pi:GenerationRule ;
+    dcterms:title "research-warrant-emit" ;
+    pi:program gen:PROJECT_003 ;
+    pi:query "MISSING" ;
+    pi:template "MISSING" ;
+    pi:status "BLOCKED" ;
+    pi:blockingIssue "Query and template not implemented" ;
+    .
 
-ugl:queryFile
-  a owl:DatatypeProperty ;
-  rdfs:label "Query File"@en ;
-  rdfs:comment "Path to the SPARQL query (.rq) executed by this rule."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range xsd:string .
+# Summary Statistics
+gen:SUMMARY a owl:NamedIndividual, pi:GenerationStatistics ;
+    dcterms:title "Generation Rule Census Summary" ;
+    pi:tomlFiles 3 ;
+    pi:programs 3 ;
+    pi:totalRules 15 ;
+    pi:activeRules 2 ;
+    pi:inactiveRules 2 ;
+    pi:blockedRules 8 ;
+    pi:blockedRuleNote "prompt-manufactory: 8 rules blocked, 6 missing templates, 6 missing queries" ;
+    pi:totalQueries 34 ;
+    pi:auditQueries 17 ;
+    pi:selectionQueries 15 ;
+    pi:generationQueries 2 ;
+    pi:functionalGenerationRules 2 ;
+    pi:functionalProgramsPercentage "33.3%" ;
+    pi:functionalRulesPercentage "13.3%" ;
+    .
 
-ugl:templateFile
-  a owl:DatatypeProperty ;
-  rdfs:label "Template File"@en ;
-  rdfs:comment "Path to the Tera template (.tera) executed by this rule."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range xsd:string .
+# Vocabulary Classes
+pi:GenerationProgram a owl:Class ;
+    rdfs:label "Generation Program" ;
+    skos:definition "A ggen.toml program definition with generation rules and configuration" ;
+    .
 
-ugl:consumes
-  a owl:ObjectProperty ;
-  rdfs:label "Consumes"@en ;
-  rdfs:comment "Ontology or query surface consumed by this rule."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range [ rdf:type owl:Class ; owl:unionOf ( usl:OntologyGraph usl:QuerySurface ) ] .
+pi:GenerationRule a owl:Class ;
+    rdfs:label "Generation Rule" ;
+    skos:definition "Individual code/document generation rule within a generation program" ;
+    .
 
-ugl:produces
-  a owl:ObjectProperty ;
-  rdfs:label "Produces"@en ;
-  rdfs:comment "Artifact(s) produced by this rule."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range ugl:RenderedArtifact ;
-  skos:cardinality "at least 1"@en .
+pi:QuerySet a owl:Class ;
+    rdfs:label "Query Set" ;
+    skos:definition "Grouped collection of SPARQL queries for research or generation" ;
+    .
 
-ugl:ruleOrder
-  a owl:DatatypeProperty ;
-  rdfs:label "Rule Order"@en ;
-  rdfs:comment "Execution order (1-based) in the manufacturing pipeline."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range xsd:integer .
+pi:GenerationStatistics a owl:Class ;
+    rdfs:label "Generation Statistics" ;
+    skos:definition "Aggregate metrics across all generation programs" ;
+    .
 
-ugl:ownerProject
-  a owl:ObjectProperty ;
-  rdfs:label "Owner Project"@en ;
-  rdfs:comment "The project that defines and maintains this rule."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range pi:ReferencedProject ;
-  skos:cardinality "exactly 1"@en .
+# Vocabulary Properties
+pi:program a owl:ObjectProperty ;
+    rdfs:label "program" ;
+    skos:definition "The generation program containing this rule" ;
+    .
 
-ugl:requiresGate
-  a owl:ObjectProperty ;
-  rdfs:label "Requires Gate"@en ;
-  rdfs:comment "Audit gate(s) that must pass before this rule can execute."@en ;
-  rdfs:domain ugl:GenerationRule ;
-  rdfs:range pi:AuditGate .
+pi:handCoding a owl:DatatypeProperty ;
+    rdfs:label "hand coding" ;
+    rdfs:range xsd:boolean ;
+    .
 
-ugl:audience
-  a owl:DatatypeProperty ;
-  rdfs:label "Audience"@en ;
-  rdfs:comment "Intended audience or use case for the artifact."@en ;
-  rdfs:domain ugl:RenderedArtifact ;
-  rdfs:range xsd:string ;
-  skos:example "Process Intelligence Runtime, Board-level M&A Review, Engineering Team"@en .
+pi:evidenceSources a owl:DatatypeProperty ;
+    rdfs:label "evidence sources" ;
+    rdfs:range xsd:string ;
+    skos:definition "Paths to receipt/checkpoint directories containing evidence" ;
+    .
 
-ugl:compliance
-  a owl:DatatypeProperty ;
-  rdfs:label "Compliance"@en ;
-  rdfs:comment "Compliance framework or standard the artifact adheres to."@en ;
-  rdfs:domain ugl:RenderedArtifact ;
-  rdfs:range xsd:string ;
-  skos:example "MAPE-K autonomic loop, BPMN 2.0, SOC2 Type II"@en .
+pi:ruleCount a owl:DatatypeProperty ;
+    rdfs:label "rule count" ;
+    rdfs:range xsd:integer ;
+    .
 
-ugl:evidenceBacking
-  a owl:DatatypeProperty ;
-  rdfs:label "Evidence Backing"@en ;
-  rdfs:comment "What research evidence or doctrine backs this artifact."@en ;
-  rdfs:domain ugl:RenderedArtifact ;
-  rdfs:range xsd:string ;
-  skos:example "PROCESS_INTELLIGENCE_ALIVE_001 checkpoint"@en .
+pi:activeRules a owl:DatatypeProperty ;
+    rdfs:label "active rules" ;
+    rdfs:range xsd:integer ;
+    .
 
-# ============================================================================
-# SHAPES
-# ============================================================================
+pi:inactiveRules a owl:DatatypeProperty ;
+    rdfs:label "inactive rules" ;
+    rdfs:range xsd:integer ;
+    .
 
-ugl:GenerationRuleShape
-  a sh:NodeShape ;
-  sh:targetClass ugl:GenerationRule ;
-  sh:closed false ;
-  sh:property [
-    sh:path ugl:ruleName ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "GenerationRule must have exactly one rule name."@en
-  ] ;
-  sh:property [
-    sh:path ugl:queryFile ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "GenerationRule must reference exactly one query file."@en
-  ] ;
-  sh:property [
-    sh:path ugl:templateFile ;
-    sh:datatype xsd:string ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "GenerationRule must reference exactly one template file."@en
-  ] ;
-  sh:property [
-    sh:path ugl:ruleStatus ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "GenerationRule must have exactly one status."@en
-  ] ;
-  sh:property [
-    sh:path ugl:ownerProject ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:message "GenerationRule must be owned by exactly one project."@en
-  ] .
+pi:blockedRules a owl:DatatypeProperty ;
+    rdfs:label "blocked rules" ;
+    rdfs:range xsd:integer ;
+    .
 
-# ============================================================================
-# INSTANCES (7 Active Rules)
-# ============================================================================
+pi:mode a owl:DatatypeProperty ;
+    rdfs:label "mode" ;
+    rdfs:range xsd:string ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/rule-blue-river-orchestrator>
-  a ugl:GenerationRule ;
-  dcterms:title "Blue River Orchestrator Rule"@en ;
-  dcterms:description "Autonomic MAPE-K governance engine with lifecycle state transitions"@en ;
-  ugl:ruleName "blue-river-orchestrator"@en ;
-  ugl:ruleDescription "Generates Rust code implementing the MAPE-K autonomic monitoring-analyze-plan-execute loop with lifecycle state machine and governance rule enforcement."@en ;
-  ugl:ruleStatus ugl:ACTIVE ;
-  ugl:outputFormat ugl:RUST_CODE ;
-  ugl:outputMode ugl:OVERWRITE ;
-  ugl:outputFilePath "../blue_river_dam/src/lib.rs"@en ;
-  ugl:queryFile "queries/extract-lifecycle-governance.rq"@en ;
-  ugl:templateFile "templates/blue-river.tera"@en ;
-  ugl:ruleOrder "1"^^xsd:integer ;
-  ugl:ownerProject proj:process-intelligence ;
-  ugl:audience "Process Intelligence Runtime"@en ;
-  ugl:compliance "MAPE-K autonomic loop"@en ;
-  ugl:evidenceBacking "lifecycle state machine + governance rule enforcement"@en ;
-  prov:wasAttributedTo "Sean Chatman"@en ;
-  dcterms:created "2026-01-15"^^xsd:date .
+pi:queryCount a owl:DatatypeProperty ;
+    rdfs:label "query count" ;
+    rdfs:range xsd:integer ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/rule-visualizer-dashboard>
-  a ugl:GenerationRule ;
-  dcterms:title "Visualizer Dashboard NextJS Rule"@en ;
-  dcterms:description "Generate NextJS visualizer dashboard pages with conformance-backed claims"@en ;
-  ugl:ruleName "visualizer-dashboard-nextjs"@en ;
-  ugl:ruleDescription "Renders a NextJS React component dashboard displaying process intelligence conformance records, ALIVE verdicts, and board-admissible claims with interactive visualizations."@en ;
-  ugl:ruleStatus ugl:ACTIVE ;
-  ugl:outputFormat ugl:TYPESCRIPT_CODE ;
-  ugl:outputMode ugl:OVERWRITE ;
-  ugl:outputFilePath "../experiments/visualizer-nextjs/src/app/page.tsx"@en ;
-  ugl:queryFile "queries/extract-visualizer-data.rq"@en ;
-  ugl:templateFile "templates/visualizer-dashboard.tsx.tera"@en ;
-  ugl:ruleOrder "2"^^xsd:integer ;
-  ugl:ownerProject proj:process-intelligence ;
-  ugl:audience "Engineering Team, Board-level Review"@en ;
-  ugl:compliance "React/NextJS conventions"@en ;
-  ugl:evidenceBacking "conformance ledger + checkpoint verdicts"@en ;
-  prov:wasAttributedTo "Sean Chatman"@en ;
-  dcterms:created "2026-01-20"^^xsd:date .
+pi:auditQueries a owl:DatatypeProperty ;
+    rdfs:label "audit queries" ;
+    rdfs:range xsd:integer ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/rule-ma-deck>
-  a ugl:GenerationRule ;
-  dcterms:title "M&A Deck Generation Rule"@en ;
-  dcterms:description "M&A pitch deck from board claims"@en ;
-  ugl:ruleName "ma-deck"@en ;
-  ugl:ruleDescription "Generates a board-admissible M&A pitch deck (PPTX) from conformance-backed synergy and operational debt claims."@en ;
-  ugl:ruleStatus ugl:DEACTIVATED ;
-  ugl:outputFormat ugl:MARKDOWN_DOC ;
-  ugl:outputMode ugl:OVERWRITE ;
-  ugl:outputFilePath "../ma/ma-deck.md"@en ;
-  ugl:queryFile "queries/extract-board-claims.rq"@en ;
-  ugl:templateFile "templates/ma-deck.tera"@en ;
-  ugl:ruleOrder "3"^^xsd:integer ;
-  ugl:ownerProject proj:process-intelligence ;
-  ugl:audience "Board of Directors"@en ;
-  ugl:compliance "SEC disclosure rules, M&A best practices"@en ;
-  ugl:evidenceBacking "fitness >= 0.95, precision >= 0.90 board conformance gate"@en ;
-  prov:wasAttributedTo "Sean Chatman"@en ;
-  dcterms:created "2026-01-10"^^xsd:date ;
-  skos:note "Deactivated pending UI manufacturing completion."@en .
+pi:selectionQueries a owl:DatatypeProperty ;
+    rdfs:label "selection queries" ;
+    rdfs:range xsd:integer ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/rule-ma-diligence>
-  a ugl:GenerationRule ;
-  dcterms:title "M&A Diligence Generation Rule"@en ;
-  dcterms:description "Diligence report from operational debt claims"@en ;
-  ugl:ruleName "ma-diligence"@en ;
-  ugl:ruleDescription "Generates a comprehensive diligence workbook (XLSX) mapping operational debt claims to remediation hours and costs."@en ;
-  ugl:ruleStatus ugl:DEACTIVATED ;
-  ugl:outputFormat ugl:YAML_CONFIG ;
-  ugl:outputMode ugl:OVERWRITE ;
-  ugl:outputFilePath "../ma/diligence-workbook.yaml"@en ;
-  ugl:queryFile "queries/extract-diligence-claims.rq"@en ;
-  ugl:templateFile "templates/ma-diligence.tera"@en ;
-  ugl:ruleOrder "4"^^xsd:integer ;
-  ugl:ownerProject proj:process-intelligence ;
-  ugl:audience "Diligence Team, Financial Advisors"@en ;
-  ugl:compliance "M&A data standards, audit requirements"@en ;
-  ugl:evidenceBacking "operational debt taxonomy + remediation cost estimates"@en ;
-  prov:wasAttributedTo "Sean Chatman"@en ;
-  dcterms:created "2026-01-12"^^xsd:date ;
-  skos:note "Deactivated pending diligence manufacturing completion."@en .
+pi:ontology a owl:DatatypeProperty ;
+    rdfs:label "ontology" ;
+    rdfs:range xsd:string ;
+    skos:definition "Input TTL ontology file path" ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/rule-checkpoint-ledger>
-  a ugl:GenerationRule ;
-  dcterms:title "Checkpoint Ledger Rule"@en ;
-  dcterms:description "Generate checkpoint ledger document"@en ;
-  ugl:ruleName "checkpoint-ledger"@en ;
-  ugl:ruleDescription "Renders a Markdown document listing all ALIVE/PARTIAL/FAILED checkpoint verdicts with gate pass/fail status."@en ;
-  ugl:ruleStatus ugl:CONDITIONAL ;
-  ugl:outputFormat ugl:MARKDOWN_DOC ;
-  ugl:outputMode ugl:OVERWRITE ;
-  ugl:outputFilePath "../checkpoints/CHECKPOINT_LEDGER.md"@en ;
-  ugl:queryFile "queries/list-checkpoints.rq"@en ;
-  ugl:templateFile "checkpoint-ledger.md.tera"@en ;
-  ugl:ruleOrder "5"^^xsd:integer ;
-  ugl:ownerProject proj:process-intelligence ;
-  ugl:audience "Research Program Authority"@en ;
-  ugl:compliance "Immutable checkpoint ledger law"@en ;
-  ugl:evidenceBacking "checkpoint-ledger.ttl ontology"@en ;
-  prov:wasAttributedTo "Sean Chatman"@en ;
-  dcterms:created "2026-02-01"^^xsd:date ;
-  skos:note "Conditionally executed when new checkpoints are issued."@en .
+pi:query a owl:DatatypeProperty ;
+    rdfs:label "query" ;
+    rdfs:range xsd:string ;
+    skos:definition "Input SPARQL query file path" ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/rule-project-registry>
-  a ugl:GenerationRule ;
-  dcterms:title "Project Registry Rule"@en ;
-  dcterms:description "Generate project registry YAML"@en ;
-  ugl:ruleName "project-registry"@en ;
-  ugl:ruleDescription "Renders a YAML registry of all 9 major projects with roles, paths, and authorities."@en ;
-  ugl:ruleStatus ugl:CONDITIONAL ;
-  ugl:outputFormat ugl:YAML_CONFIG ;
-  ugl:outputMode ugl:OVERWRITE ;
-  ugl:outputFilePath "../project-registry.yaml"@en ;
-  ugl:queryFile "queries/list-projects-by-role.rq"@en ;
-  ugl:templateFile "project-registry.yaml.tera"@en ;
-  ugl:ruleOrder "6"^^xsd:integer ;
-  ugl:ownerProject proj:process-intelligence ;
-  ugl:audience "Infrastructure, Project Coordination"@en ;
-  ugl:compliance "Project governance model"@en ;
-  ugl:evidenceBacking "project-registry.ttl instances"@en ;
-  prov:wasAttributedTo "Sean Chatman"@en ;
-  dcterms:created "2026-02-05"^^xsd:date ;
-  skos:note "Conditionally executed during project discovery phase."@en .
+pi:template a owl:DatatypeProperty ;
+    rdfs:label "template" ;
+    rdfs:range xsd:string ;
+    skos:definition "Tera template file path for rendering" ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/rule-research-artifact-index>
-  a ugl:GenerationRule ;
-  dcterms:title "Research Artifact Index Rule"@en ;
-  dcterms:description "Generate research artifact index Markdown"@en ;
-  ugl:ruleName "research-artifact-index"@en ;
-  ugl:ruleDescription "Renders a Markdown index of all research artifacts: papers, experiments, audits, and capability maps."@en ;
-  ugl:ruleStatus ugl:CONDITIONAL ;
-  ugl:outputFormat ugl:MARKDOWN_DOC ;
-  ugl:outputMode ugl:OVERWRITE ;
-  ugl:outputFilePath "../research-artifact-index.md"@en ;
-  ugl:queryFile "queries/list-research-artifacts.rq"@en ;
-  ugl:templateFile "research-artifact-index.md.tera"@en ;
-  ugl:ruleOrder "7"^^xsd:integer ;
-  ugl:ownerProject proj:process-intelligence ;
-  ugl:audience "Research Program Authority"@en ;
-  ugl:compliance "Doctrine admissibility standards"@en ;
-  ugl:evidenceBacking "research-artifact-ledger.ttl"@en ;
-  prov:wasAttributedTo "Sean Chatman"@en ;
-  dcterms:created "2026-02-10"^^xsd:date ;
-  skos:note "Conditionally executed when new research artifacts are classified."@en .
+pi:outputFile a owl:DatatypeProperty ;
+    rdfs:label "output file" ;
+    rdfs:range xsd:string ;
+    skos:definition "Destination file path for generated artifact" ;
+    .
 
-# ============================================================================
-# STATISTICS
-# ============================================================================
+pi:outputMode a owl:DatatypeProperty ;
+    rdfs:label "output mode" ;
+    rdfs:range xsd:string ;
+    skos:definition "Write mode: Overwrite, Append, or Merge" ;
+    .
 
-<https://process.intelligence/unified-generation-ledger/statistics>
-  a prov:Entity ;
-  dcterms:title "Generation Ledger Statistics"@en ;
-  dcterms:description "Aggregate statistics for all generation rules"@en ;
-  rdf:value "Active rules: 2, Deactivated rules: 2, Conditional rules: 3, Total rules: 7, Output formats: 3 (Rust, TypeScript, YAML, Markdown), Rules producing code: 2, Rules producing docs: 5"@en ;
-  prov:wasGeneratedBy "ggen unified run 2026-06-01"@en .
+pi:targetFormat a owl:DatatypeProperty ;
+    rdfs:label "target format" ;
+    rdfs:range xsd:string ;
+    skos:definition "Language or format of output: Rust, TypeScript, Python, etc." ;
+    .
 
-@prefix usl: <https://process.intelligence/unified-source-ledger/> .
+pi:audience a owl:DatatypeProperty ;
+    rdfs:label "audience" ;
+    rdfs:range xsd:string ;
+    skos:definition "Intended consumer of the generated artifact" ;
+    .
+
+pi:compliance a owl:DatatypeProperty ;
+    rdfs:label "compliance" ;
+    rdfs:range xsd:string ;
+    skos:definition "Specification or standard this rule generates from" ;
+    .
+
+pi:evidence a owl:DatatypeProperty ;
+    rdfs:label "evidence" ;
+    rdfs:range xsd:string ;
+    skos:definition "Source evidence backing this generation rule" ;
+    .
+
+pi:status a owl:DatatypeProperty ;
+    rdfs:label "status" ;
+    rdfs:range xsd:string ;
+    skos:definition "READY, DEACTIVATED, BLOCKED, or AVAILABLE" ;
+    .
+
+pi:note a owl:DatatypeProperty ;
+    rdfs:label "note" ;
+    rdfs:range xsd:string ;
+    skos:definition "Additional context or status notes" ;
+    .
+
+pi:blockingIssue a owl:DatatypeProperty ;
+    rdfs:label "blocking issue" ;
+    rdfs:range xsd:string ;
+    skos:definition "Describes why this rule is blocked" ;
+    .
+
+pi:queries a owl:DatatypeProperty ;
+    rdfs:label "queries" ;
+    rdfs:range xsd:string ;
+    skos:definition "Comma-separated list of query names in this set" ;
+    .
+
+pi:blockedRuleNote a owl:DatatypeProperty ;
+    rdfs:label "blocked rule note" ;
+    rdfs:range xsd:string ;
+    .
+
+pi:totalQueries a owl:DatatypeProperty ;
+    rdfs:label "total queries" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:generationQueries a owl:DatatypeProperty ;
+    rdfs:label "generation queries" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:functionalGenerationRules a owl:DatatypeProperty ;
+    rdfs:label "functional generation rules" ;
+    rdfs:range xsd:integer ;
+    .
+
+pi:functionalProgramsPercentage a owl:DatatypeProperty ;
+    rdfs:label "functional programs percentage" ;
+    rdfs:range xsd:string ;
+    .
+
+pi:functionalRulesPercentage a owl:DatatypeProperty ;
+    rdfs:label "functional rules percentage" ;
+    rdfs:range xsd:string ;
+    .

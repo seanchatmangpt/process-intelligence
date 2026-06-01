@@ -1,15 +1,20 @@
-# Selection Query: All Template Surfaces
-# Returns all template definitions used in artifact manufacturing
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# SELECT: All Template Surfaces (34 Tera files)
+# Returns all Tera template sources with project, role, and file size
+# Date: 2026-06-01
 
-SELECT ?template ?label ?templateType ?renderEngine ?parameters
+SELECT ?template ?title ?sourceType ?projectId ?templateRole ?purpose ?fileSize ?referenced
 WHERE {
-  ?template a ggen:TemplateSurface .
-  OPTIONAL { ?template rdfs:label ?label }
-  OPTIONAL { ?template ggen:templateType ?templateType }
-  OPTIONAL { ?template ggen:renderEngine ?renderEngine }
-  OPTIONAL { ?template ggen:parameters ?parameters }
+    ?template a pi:Template .
+    ?template dcterms:title ?title .
+    ?template pi:sourceType ?sourceType .
+    ?template pi:projectId ?projectId .
+
+    OPTIONAL { ?template pi:templateRole ?templateRole }
+    OPTIONAL { ?template pi:purpose ?purpose }
+    OPTIONAL { ?template pi:fileSize ?fileSize }
+    OPTIONAL { ?template pi:referenced ?referenced }
 }
-ORDER BY ?template
+ORDER BY ?projectId ?title

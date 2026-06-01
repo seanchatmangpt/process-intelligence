@@ -1,0 +1,200 @@
+================================================================================
+PROCESS INTELLIGENCE GAP LEDGER & REMEDIATION PLAN
+Generated: 2026-06-01
+Authority: Process Intelligence Research Foundry
+Program: PI_RESEARCH_PROGRAM_ALIVE_001
+================================================================================
+
+DELIVERABLES PRODUCED:
+
+1. gap-ledger.yaml (528 lines, 25 KB)
+   - Comprehensive inventory of 11 structural gaps
+   - Every gap includes: id, title, severity, owner, blocks_alive, affected_files,
+     expected_capability, observed_capability (with evidence), remediation_class,
+     allowed/forbidden changes, audit_gate, expected_receipt, effort hours,
+     remediation_steps, prerequisite/dependent gaps
+   - Metadata: 4 CRITICAL, 5 MAJOR, 2 MINOR gaps
+   - Dependency graph showing prerequisite chains
+   - Audit paths mapping gates to gaps
+
+2. remediation-plan.md (899 lines, 28 KB)
+   - Actionable execution plan for closing all 11 gaps
+   - 5 phases: IMMEDIATE (1h), URGENT (9h), HIGH (14h), MAJOR (8h), EXPANSION (44h)
+   - Total effort: 56-64 hours across 3-4 FTE
+   - Timeline: 7-8 calendar days
+   - For each gap: what to do, why, how long, detailed steps, code snippets,
+     checklists, expected receipts
+   - Architecture diagrams (especially for complex gaps like GAP_001)
+   - Receipt issuance protocol with YAML format
+   - Governance, escalation criteria, blocker report format
+   - Appendices: file locations, tools/commands, test harness examples
+
+3. README.md (263 lines, 9.1 KB)
+   - Quick navigation guide to both documents
+   - By severity, owner project, timeline
+   - Copy-paste ready remediation checklist
+   - Key decisions already made
+   - Next steps (Phase 1 immediately, Phase 2 today, etc.)
+
+GAPS IDENTIFIED & CLASSIFIED:
+
+CRITICAL (5 gaps, blocks ALIVE reissue):
+  GAP_001: wasm4pm-compat graduation boundary not implemented (8h)
+  GAP_002: Named law refusals missing from wasm4pm (6h)
+  GAP_003: File-count gates cannot justify ALIVE verdict (8h)
+  GAP_004: TTL ontology parse violations (8 errors) (4h)
+  GAP_005: Legacy ggen files (12) not classified (3h)
+
+MAJOR (4 gaps, high priority):
+  GAP_006: Inductive Miner algorithm missing (12h)
+  GAP_007: Alignment-based conformance missing (10h)
+  GAP_008: DTO flattening in compat public API (2h)
+  GAP_009: OCPQ evaluator missing (14h)
+
+MINOR (2 gaps, important):
+  GAP_010: WfNet::attest_witnessed() forgeable (1h)
+  GAP_011: POWL discovery miner missing (8h)
+
+REMEDIATION PHASES:
+
+Phase 1: IMMEDIATE (0-4 hours) — Unblock other phases
+  GAP_010: Deprecate forgeable WfNet method [1h]
+
+Phase 2: URGENT (4-12 hours) — Unblock ggen manufacturing
+  GAP_004: Fix TTL parse errors [4h]
+  GAP_005: Classify legacy ggen files [3h]
+  GAP_008: Remove DTO flattening from compat [2h]
+
+Phase 3: HIGH (12-24 hours) — Close CRITICAL gaps for ALIVE reissue
+  GAP_001: Implement graduation boundary [8h] → SERIAL
+  GAP_002: Implement named law refusals [6h] → DEPENDS ON GAP_001
+
+Phase 4: MAJOR (24-48 hours) — Reissue ALIVE with behavioral gates
+  GAP_003: Replace file-count gates with behavioral gates [8h]
+
+Phase 5: EXPANSION (48+ hours) — Implement missing algorithms (PARALLEL)
+  GAP_006: Inductive Miner [12h]
+  GAP_007: Alignment Conformance [10h]
+  GAP_009: OCPQ Evaluator [14h]
+  GAP_011: POWL Miner [8h]
+
+EFFORT SUMMARY:
+
+Total Remediation: 56-64 hours
+Calendar Time: 7-8 days at 3-4 FTE
+Critical Path: GAP_001 → GAP_002 → GAP_003 (28 hours, serial)
+Parallelizable: Phase 1, 2, 5 can proceed independently
+
+CRITICAL CONSTRAINTS:
+
+1. Fix Forward Only
+   - No git reset --hard or destructive operations
+   - All fixes via new commits
+
+2. No Partial Authorization
+   - Cannot start downstream manufacturing until CRITICAL gaps close
+   - Phases 1-3 must complete before Phase 5
+
+3. Receipt Chain Required
+   - Every gap close must emit BLAKE3 receipt
+   - Receipts must link remediation commit to original gap
+
+4. Serial Dependencies Strict
+   - GAP_001 blocks GAP_002, 006, 007, 009, 011
+   - GAP_004 blocks GAP_005
+   - Phases 1-3 block downstream manufacturing
+
+KEY FINDINGS:
+
+1. wasm4pm and wasm4pm-compat are disconnected
+   - wasm4pm doesn't import wasm4pm-compat
+   - Graduation boundary exists only in compat, not implemented in wasm4pm
+   - Evidence admitted through compat type law is thrown away at wasm4pm boundary
+
+2. Error handling is non-compliant
+   - All error variants in wasm4pm carry String messages
+   - Covenant forbids bare String refusals
+   - Each refusal must name specific structural law (Refusal<R, W>)
+
+3. ALIVE verdict uses forbidden gates
+   - Current verdict justified by file counts ("33 doctrine files", "51 standards")
+   - File counts are not process evidence
+   - Van der Aalst covenant: file counts ≠ lawful process proof
+   - Must replace with behavioral gates (execution tests, proven results)
+
+4. TTL ontology has parse errors
+   - 8 RDF/Turtle syntax violations block SPARQL query execution
+   - Violations in ggen/ontology-extensions.ttl
+   - Must be fixed before ggen manufacturing can proceed
+
+5. ggen source files untracked
+   - 12 .ggen files (8 audit shells + 4 templates) exist but not classified
+   - Not in manifest, not deprecated, not deleted
+   - Must be inventoried and formally classified
+
+6. compat API violates boundary law
+   - to_json_string() and receipt_json() flatten Evidence<T> to casual JSON
+   - JSON serialization is manufacturing concern, not type-law concern
+   - Methods must be removed from compat and moved to wasm4pm
+
+OWNERSHIP:
+
+Process Intelligence: 2 gaps (GAP_003, 004, 005)
+wasm4pm: 5 gaps (GAP_001, 002, 006, 007, 009)
+wasm4pm-compat: 3 gaps (GAP_002, 008, 010)
+
+(Note: GAP_002 spans both projects but wasm4pm is primary owner)
+
+NEXT IMMEDIATE ACTIONS:
+
+1. TODAY: Execute Phase 1 (1 hour)
+   - GAP_010: Mark WfNet::attest_witnessed() as #[deprecated]
+
+2. TODAY: Execute Phase 2 (9 hours parallel)
+   - GAP_004: Fix TTL parse violations
+   - GAP_005: Classify legacy ggen files
+   - GAP_008: Remove DTO flattening
+
+3. TOMORROW-NEXT DAY: Execute Phase 3 (14 hours, serial)
+   - GAP_001: Implement graduation boundary
+   - GAP_002: Implement named law refusals (depends on GAP_001)
+
+4. AFTER PHASE 3: Execute Phase 4 (8 hours)
+   - GAP_003: Replace file-count gates with behavioral gates
+   - Re-issue PROCESS_INTELLIGENCE_ALIVE_002 checkpoint
+
+5. PARALLEL WITH PHASE 4: Execute Phase 5 (44 hours)
+   - GAP_006, 007, 009, 011 (algorithm implementations)
+
+EXPECTED OUTCOMES:
+
+After Phase 1-3 Complete (28 hours):
+- ✓ All CRITICAL gaps closed
+- ✓ Graduation boundary implemented (wasm4pm imports compat)
+- ✓ Named law refusals implemented (no more bare String errors)
+- ✓ ALIVE verdict reissued with behavioral gates (not file counts)
+- ✓ Downstream manufacturing unblocked
+
+After Phase 4 Complete (36 hours):
+- ✓ PROCESS_INTELLIGENCE_ALIVE_002 issued
+- ✓ All behavioral gates passing
+- ✓ Receipt chain complete
+
+After Phase 5 Complete (80 hours):
+- ✓ All 11 gaps closed
+- ✓ Full algorithm coverage (Inductive, Alignment, OCPQ, POWL)
+- ✓ All receipts issued and registered
+- ✓ Downstream manufacturing proceeding at full capacity
+
+AUTHORITY & SIGN-OFF:
+
+Issued By: PI_RESEARCH_PROGRAM_ALIVE_001 Checkpoint
+Authority: Process Intelligence Research Foundry
+Date: 2026-06-01
+Status: ACTIVE
+
+This ledger and plan are immutable. They supersede all prior gap documentation
+and provide the authoritative path to full ALIVE reissue and downstream
+manufacturing authorization.
+
+================================================================================
