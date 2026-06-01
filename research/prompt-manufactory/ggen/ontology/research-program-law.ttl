@@ -20,6 +20,7 @@
   dct:description "Full research-program reconciliation: census all projects, classify into RDF ontology, emit ggen surfaces, audit conformance, produce program map" ;
   pm:mission "Full research-program reconciliation: census all projects, classify into RDF ontology, emit ggen surfaces, audit conformance, produce program map" ;
   pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
   dct:issued "2026-06-01"^^xsd:dateTime ;
   rdfs:comment "Discovers program topology across wasm4pm, compat, ggen, Blue River, ZOEapp, OTel Weaver, Expo/Supabase, Claude Code" .
 
@@ -32,6 +33,7 @@
   dct:description "Gather ecosystem intelligence for wasm4pm-compat projections; Van der Aalst conformance-driven ggen manufacturing" ;
   pm:mission "Gather ecosystem intelligence for wasm4pm-compat projections; Van der Aalst conformance-driven ggen manufacturing" ;
   pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
   dct:issued "2026-06-01"^^xsd:dateTime ;
   rdfs:comment "Census Cargo, rustdoc, Specta, tsify, wasm-bindgen, WIT, Component Model; classify surfaces; create manifests; emit ggen rules/templates" .
 
@@ -44,6 +46,7 @@
   dct:description "OTel Weaver research: telemetry feedstock, registry model, witness mappings (NOT evidence)" ;
   pm:mission "OTel Weaver research: telemetry feedstock, registry model, witness mappings (NOT evidence)" ;
   pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
   dct:issued "2026-06-01"^^xsd:dateTime ;
   rdfs:comment "Classify Weaver artifacts as telemetry feedstock, not PI evidence; establish witness boundaries" .
 
@@ -56,6 +59,7 @@
   dct:description "ZOEapp proof cell: Expo, Supabase, livestream, on-device inference, Jest receipts" ;
   pm:mission "ZOEapp proof cell: Expo, Supabase, livestream, on-device inference, Jest receipts" ;
   pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
   dct:issued "2026-06-01"^^xsd:dateTime ;
   rdfs:comment "Classify ZOEapp as proof cell; map Expo/Supabase to framework extraction; verify event stream boundaries" .
 
@@ -68,6 +72,7 @@
   dct:description "Framework extraction: Expo Router law, RLS policies, Realtime contracts" ;
   pm:mission "Framework extraction: Expo Router law, RLS policies, Realtime contracts" ;
   pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
   dct:issued "2026-06-01"^^xsd:dateTime ;
   rdfs:comment "Extract reusable mobile substrate from ZOEapp; publish as separate research artifact" .
 
@@ -80,6 +85,7 @@
   dct:description "Claude Code dynamic workflow orchestration: phases, subagent topology, audit gates, checkpoints" ;
   pm:mission "Claude Code dynamic workflow orchestration: phases, subagent topology, audit gates, checkpoints" ;
   pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
   dct:issued "2026-06-01"^^xsd:dateTime ;
   rdfs:comment "Classify Claude Code workflows as orchestration substrate; document subagent coordination patterns" .
 
@@ -92,6 +98,7 @@
   dct:description "Remediate DTO flattening violation: move JSON serialization from compat → wasm4pm engine" ;
   pm:mission "Remediate DTO flattening violation: move JSON serialization from compat → wasm4pm engine" ;
   pm:hasPromptClass pm:REMEDIATE ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#REMEDIATE_WORKFLOW> ;
   dct:issued "2026-06-01"^^xsd:dateTime ;
   rdfs:comment "Fix blocking gate from GGEN_ECOSYSTEM_INTEL_001; move to_json_string() and receipt_json() out of compat boundary; re-audit to PASS" .
 
