@@ -14,3 +14,6 @@
 
 ### Paper: verbeek_2021_log_trie
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: kuesters_2024_ocpq_tree
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
