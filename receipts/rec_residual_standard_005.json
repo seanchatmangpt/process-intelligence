@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "slide_id": "e2f1b4a3-7d2b-4e8c-9a1b-cde490218b2c",
+  "slide_title": "Slide 5: Defensible Process Standardization (Residual Risk)",
+  "assertion_text": "Target process model is standardized at 97.5% conformance, with a Residual Weight $W_R \\le 0.025$ and Residual Entropy $H_R = 0.85$, demonstrating predictable workarounds rather than operational chaos.",
+  "target_log_hash": "ee9ab7234bcaf5e1613ab7d5f45af28229552e9327880cc2d4b97f193df4971a",
+  "process_model_hash": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+  "query_definition": {
+    "engine": "wasm4pm",
+    "query_uri": "file:///Users/sac/process-intelligence/sources/wasm4pm/queries/residual_entropy.wasm",
+    "parameters": {
+      "calculate_entropy": true,
+      "calculate_weight": true
+    }
+  },
+  "verification_results": {
+    "fitness": 0.975,
+    "precision": 0.910,
+    "residual_weight": 0.025,
+    "residual_entropy": 0.85,
+    "defensibility_verification": {
+      "rule_id": "SELLER_DEFENSE_DRIFT_AUDIT",
+      "drift_metrics": {
+        "temporal_sublogs_count": 4,
+        "max_interlog_distance": 0.082,
+        "control_bound_threshold": 0.10,
+        "drift_verdict": "STABLE"
+      }
+    }
+  },
+  "validator_signature": "ed25519_sig_e2f1b4a3_8bfcd77ac9083ef280fae968ec12f73ca28dfc8091cf8e9c70b8aef9f3cdde832ba81ce7f058e6cd72df8cb3cf7e10dfca89e227e1f40d12aefcbde7a00f23ea"
+}

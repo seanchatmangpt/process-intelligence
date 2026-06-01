@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "slide_id": "8a3e811c-2290-482a-a5f1-3215903b41fa",
+  "slide_title": "Slide 1: EBITDA Optimization via Process Rework Reduction",
+  "assertion_text": "Annual EBITDA will increase by $1,250,000 by reducing manual Purchase Order rework from 1.45 occurrences/case to a target of 0.20 occurrences/case, based on a projected annual volume of 500,000 cases and a fully-burdened average labor cost of $2.00 per rework event.",
+  "target_log_hash": "ee9ab7234bcaf5e1613ab7d5f45af28229552e9327880cc2d4b97f193df4971a",
+  "process_model_hash": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+  "query_definition": {
+    "engine": "wasm4pm",
+    "query_uri": "file:///Users/sac/process-intelligence/sources/wasm4pm/queries/ebitda_rework_reduction.wasm",
+    "parameters": {
+      "rework_activities": ["Change Price", "Modify Order", "Re-enter Order"],
+      "projected_annual_volume": 500000,
+      "labor_cost_per_event_usd": 2.00,
+      "baseline_rework_intensity": 1.45,
+      "target_rework_intensity": 0.20
+    }
+  },
+  "verification_results": {
+    "fitness": 0.982,
+    "precision": 0.945,
+    "throughput_days": 4.12,
+    "ebitda_impact_usd": 1250000.0,
+    "defensibility_verification": {
+      "rule_id": "VALUATION_DEFENSE_DEVIATION_PROFILE",
+      "behavioral_constraints": {
+        "precedence_check": {
+          "rule": "Invoice Approval must follow Goods Receipt",
+          "compliance_rate": 1.0
+        }
+      }
+    }
+  },
+  "validator_signature": "ed25519_sig_8a3e811c_02e0df2f3ca77ff129c5e3d7aa09df8c801b7a2dce51d93bde71f1a51270bc5e51029cba0ee2e2768d9046c1a8e97f90f23ee7914f6b21ba17b8813a890db8c"
+}

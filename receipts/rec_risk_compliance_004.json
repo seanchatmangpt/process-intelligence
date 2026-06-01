@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "slide_id": "cde49021-8b2c-47b2-9a8c-9b1c8f7d2b4a",
+  "slide_title": "Slide 4: GRC Compliance and Leakage Prevention",
+  "assertion_text": "Compliance leakage liability is verified at $0.00, proving zero active segregation of duties (SoD) or regulatory (SOX/GDPR/AML) violations in procurement workflows.",
+  "target_log_hash": "ee9ab7234bcaf5e1613ab7d5f45af28229552e9327880cc2d4b97f193df4971a",
+  "process_model_hash": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+  "query_definition": {
+    "engine": "wasm4pm",
+    "query_uri": "file:///Users/sac/process-intelligence/sources/wasm4pm/queries/grc_ltl_compliance.wasm",
+    "parameters": {
+      "rules": [
+        {
+          "rule_name": "SegregationOfDuties_PO_Approve",
+          "ltl_expression": "Box(Activity = 'Approve PO' => User_Approve != User_Create)"
+        },
+        {
+          "rule_name": "Precedence_Audit_Before_Payment",
+          "ltl_expression": "Box(~Approve_Payment) || (~Approve_Payment U Audit_Invoice)"
+        }
+      ]
+    }
+  },
+  "verification_results": {
+    "fitness": 1.0,
+    "precision": 0.965,
+    "compliance_leakage_usd": 0.0,
+    "violation_count": 0,
+    "defensibility_verification": {
+      "rule_id": "BUYER_RELIANCE_PREPROCESSING_TRANSPARENCY",
+      "delta_audit": {
+        "raw_log_hash": "2f6c8d76ea837f48bde9046c1a8e97f90f23ee7914f6b21ba17b8813a89db4a2",
+        "clean_log_hash": "ee9ab7234bcaf5e1613ab7d5f45af28229552e9327880cc2d4b97f193df4971a",
+        "removed_traces_count": 240,
+        "removed_traces_justification": "System testing generated events and database rollback entries; verified as non-operational noise.",
+        "compliance_violations_in_removed_traces": 0,
+        "transparency_verdict": "PASSED"
+      }
+    }
+  },
+  "validator_signature": "ed25519_sig_cde49021_fa282be7b4192b0c39f280a8de01c9b21f37ac896f6cbbe014283c7db81912aefbc683ef9082ef73e1cbf30db5e5fcd2372bf901ea8cf90dfab77a83d2cbcaef"
+}

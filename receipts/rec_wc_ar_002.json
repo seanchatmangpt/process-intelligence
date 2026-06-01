@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "slide_id": "7b2c91df-4b72-4d2a-89aa-cde490218b2c",
+  "slide_title": "Slide 2: Working Capital Release via Accounts Receivable (AR) Velocity Acceleration",
+  "assertion_text": "Unlock $1,369,863 of Working Capital by reducing the average Accounts Receivable (AR) processing latency from 42.5 days to 32.5 days (a 10.0-day speedup), based on annual credit sales of $50,000,000.",
+  "target_log_hash": "ee9ab7234bcaf5e1613ab7d5f45af28229552e9327880cc2d4b97f193df4971a",
+  "process_model_hash": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+  "query_definition": {
+    "engine": "wasm4pm",
+    "query_uri": "file:///Users/sac/process-intelligence/sources/wasm4pm/queries/working_capital_ar.wasm",
+    "parameters": {
+      "start_activity": "Invoice Creation",
+      "end_activity": "Payment Confirmation",
+      "annual_credit_sales_usd": 50000000.0,
+      "baseline_cycle_time_days": 42.5,
+      "target_cycle_time_days": 32.5
+    }
+  },
+  "verification_results": {
+    "fitness": 0.978,
+    "precision": 0.923,
+    "throughput_days": 35.4,
+    "working_capital_released_usd": 1369863.01,
+    "defensibility_verification": {
+      "rule_id": "BUYER_RELIANCE_INDEPENDENT_REPLICATION",
+      "replication_tolerance": {
+        "claimed_fitness": 0.978,
+        "replicated_fitness": 0.978,
+        "absolute_deviation": 0.0,
+        "max_allowable_tolerance": 1e-6,
+        "replication_verdict": "PASSED"
+      }
+    }
+  },
+  "validator_signature": "ed25519_sig_7b2c91df_9f228b3cd17f8a81d2dfd6c5eb12f5a6b0c22e49d5bf1a34d2847a9cb3cde912b77a06ee5e08c6fa24d31298cbe005b67a12cbfae082ffce182b8813a890db81"
+}

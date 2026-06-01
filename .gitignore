@@ -2,3 +2,6 @@
 ORIGINAL_REQUEST.md
 *.log
 .DS_Store
+target/
+sources/wasm4pm/target/
+Cargo.lock

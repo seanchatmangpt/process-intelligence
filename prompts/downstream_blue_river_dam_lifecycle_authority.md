@@ -27,8 +27,15 @@ Every process model and execution instance must progress through the following s
 - **Goal**: Validate that live execution traces conform to the approved process model.
 - **Criterion**: Live traces must exceed the board-established alignment fitness boundary ($\theta_{\text{fit}} \ge 0.95$). If a trace $\sigma$ falls below this threshold, it is rejected unless an Executive Board override signature is verified.
 - **Verification Equation**:
-  $$\operatorname{admissible}(\sigma) \iff \operatorname{fitness}(\sigma, N) \ge 0.95 \lor \left(\operatorname{fitness}(\sigma, N) \ge 0.85 \land \operatorname{override}(\sigma)\right)$$
-  where $\operatorname{override}(\sigma) \implies \text{Sign}_{\text{Board}}(\operatorname{hash}(\sigma))$. A trace with fitness $< 0.85$ is never admitted.
+  $$\operatorname{admissible}(\sigma) \iff \operatorname{fitness}(\sigma, N) \ge 0.95 \lor \left(0.85 \le \operatorname{fitness}(\sigma, N) < 0.95 \land \operatorname{override}(\sigma)\right)$$
+  where $\operatorname{override}(\sigma) \implies \operatorname{Ed25519-Verify}(\operatorname{PK}_{\text{Board}}, \operatorname{SHA-256}(\sigma), \operatorname{sig}) == \text{True}$.
+  A trace with fitness $< 0.85$ is fundamentally non-conforming and is rejected without exception, regardless of any override signature.
+- **Typestate Transition Validation**: Every process asset is wrapped in `Evidence<T, State, Witness>` container. State transitions are verified using typestates where moving from Gate 2 to Gate 3 requires compiling and executing the admission validator:
+  ```rust
+  impl Evidence<Log, ValidatedSound, Witness> {
+      pub fn admit_trace(self, trace: Trace, sig_opt: Option<IdentitySignature>) -> Result<Evidence<Log, Replayed, Witness>, RefusalReport>;
+  }
+  ```
 
 ### Gate 4: Repair State (Soundness Preservation Gate)
 - **Goal**: Ensure that automatic or manual process repairs do not introduce deadlocks or structural flaws.
@@ -62,14 +69,17 @@ To enforce proper process control-flow boundaries, developers must implement str
 Linear Temporal Logic (LTL) safety properties must be compiled into VM typestates:
 $$\mathbf{G} (\neg \text{Compliant}(s) \implies \mathbf{X} (\neg \text{Actuated}(s)))$$
 
+**Compiler-Enforced Separation**: Typestate methods like `actuate(transition)` must only compile if the transition $t \in T_{\text{elastic}}$. If $t \in T_{\text{compliance}}$, the code must fail to compile (or panic at runtime initialization if defined dynamically), enforcing physical segregation. Any boundary violation attempt must trigger a system halt and be logged to the security audit trail.
+
 ---
 
-## 3. Cryptographic Decommission Receipts
+## 3. Cryptographic Decommission Receipts and Memory Scrubbing
 When a process reaches the decommissioning state:
-1. Generate a permanent receipt:
+1. **Permanent Decommission Receipt**: Generate a signed decommission receipt:
    $$\operatorname{DecommissionReceipt} = \operatorname{BLAKE3}(\operatorname{trace} \mathbin{\Vert} \operatorname{model} \mathbin{\Vert} \operatorname{fitness} \mathbin{\Vert} \operatorname{timestamp} \mathbin{\Vert} \operatorname{actor\_signature})$$
-2. Clear all transient memory buffers containing in-flight trace data.
-3. Lock the process state as `Archived` in the governance registry to prevent future event appends.
+2. **Secure Memory Scrubbing**: The execution linear memory buffers that held the trace data, markings, or intermediate state tables must be actively zeroed out using a cryptographic overwrite pattern (e.g. `zeroize` crate or volatile write loops) to prevent data remanence in memory:
+   $$\forall \text{byte } b \in \text{linear\_memory}, \quad b \leftarrow \mathtt{0x00}$$
+3. **Ledger Archival Locking**: Set the process status to `Archived` in the database, freezing the key against any subsequent write/append requests.
 
 ---
 

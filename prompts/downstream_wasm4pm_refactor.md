@@ -23,9 +23,9 @@ The core engine must contain a complete, mathematically rigorous implementation 
   - $r$: Remaining tokens (tokens left in the net after the trace finishes, excluding the sink place $o$).
 - **Fitness Equation**:
   The trace fitness $f(\sigma, N)$ must be calculated as:
-  $$f(\sigma, N) = 1 - \frac{m}{c} - \frac{r}{p}$$
+  $$f(\sigma, N) = \frac{1}{2}\left(1 - \frac{m}{c}\right) + \frac{1}{2}\left(1 - \frac{r}{p}\right)$$
   The log fitness $f(L, N)$ is the average of trace fitness weighted by trace frequency:
-  $$f(L, N) = 1 - \frac{\sum_{\sigma \in L} L(\sigma) \cdot m(\sigma, N)}{\sum_{\sigma \in L} L(\sigma) \cdot c(\sigma, N)} - \frac{\sum_{\sigma \in L} L(\sigma) \cdot r(\sigma, N)}{\sum_{\sigma \in L} L(\sigma) \cdot p(\sigma, N)}$$
+  $$f(L, N) = \frac{1}{2}\left(1 - \frac{\sum_{\sigma \in L} L(\sigma) \cdot m(\sigma, N)}{\sum_{\sigma \in L} L(\sigma) \cdot c(\sigma, N)}\right) + \frac{1}{2}\left(1 - \frac{\sum_{\sigma \in L} L(\sigma) \cdot r(\sigma, N)}{\sum_{\sigma \in L} L(\sigma) \cdot p(\sigma, N)}\right)$$
 - **Axiom 2 Runtime Verification Monitor**:
   The engine must dynamically enforce lattice monotonicity at every transition firing step to prevent backtracking, duplicate execution, or trace laundering:
   1. **Monotonicity Verification**: For each transition firing $S_{k-1} \xrightarrow{t} S_k$, the engine must compute the step witness $W_{\text{step}}$ and update the running witness $W_k = W_{k-1} \sqcup W_{\text{step}}$. It must verify that $W_{k-1} \sqsubseteq W_k$ by asserting that $W_{k-1} \sqcup W_k = W_k$.

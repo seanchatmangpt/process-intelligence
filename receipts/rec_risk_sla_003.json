@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "slide_id": "9b1c8f7d-2b4a-4e8c-9a1b-cde490218b2c",
+  "slide_title": "Slide 3: SLA Penalty Exposure Mitigation",
+  "assertion_text": "Process SLA penalty liability is capped at $450,000, with late delivery rates verified below 2.5% across historical traces, and active case breach probability mapped.",
+  "target_log_hash": "ee9ab7234bcaf5e1613ab7d5f45af28229552e9327880cc2d4b97f193df4971a",
+  "process_model_hash": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+  "query_definition": {
+    "engine": "wasm4pm",
+    "query_uri": "file:///Users/sac/process-intelligence/sources/wasm4pm/queries/sla_penalty_liability.wasm",
+    "parameters": {
+      "sla_limit_days": 10.0,
+      "late_delivery_penalty_usd": 150.0,
+      "max_capped_liability_usd": 450000.0
+    }
+  },
+  "verification_results": {
+    "fitness": 0.985,
+    "precision": 0.912,
+    "throughput_days": 6.8,
+    "sla_penalty_liability_usd": 450000.0,
+    "late_delivery_percentage": 2.14,
+    "defensibility_verification": {
+      "rule_id": "BUYER_RELIANCE_LOG_REPRESENTATIVENESS",
+      "log_coverage": {
+        "time_horizon_months": 12,
+        "volume_coverage_percentage": 98.4,
+        "total_traces_audited": 124500,
+        "coverage_verdict": "PASSED"
+      }
+    }
+  },
+  "validator_signature": "ed25519_sig_9b1c8f7d_0df29aa8c6fa24d8b9e02316e25da8cf9102ca142d76e49ac8be401a8f90cbe0a273bfce8fae20e8b15ca85df2aefb7f94cd12bbd06fae9cdbe2a1290ff6b8e3"
+}
