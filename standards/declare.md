@@ -59,16 +59,37 @@ Each constraint template is a named LTLf formula over one or two activity names.
 
 ## LTLf Formula Mapping
 
-Each template maps to a well-defined LTLf formula over the trace alphabet. For example:
+Each template maps to a well-defined LTLf formula over the trace alphabet. Since the conformance engine compiles constraints into DFAs, we map each template to its future-only LTLf representation (using standard finite trace temporal operators):
 
-- `Response(a, b)` → `G(a → F(b))` (globally: every `a` is eventually followed by `b`).
-- `Precedence(a, b)` → `G(b → O(a))` (globally: every `b` was preceded by `a`; using
-  past-LTL operator).
-- `ChainResponse(a, b)` → `G(a → X(b))` (globally: `a` is immediately followed by `b`
-  in the next step).
-- `Absence(a)` → `G(¬a)` (globally: `a` never occurs).
+### Unary Constraints
+- `Existence(a)` → `F(a)` (at least once)
+- `Existence2(a)` → `F(a ∧ X(F(a)))` (at least twice)
+- `Existence3(a)` → `F(a ∧ X(F(a ∧ X(F(a)))))` (at least three times)
+- `Absence(a)` → `G(¬a)` (never occurs)
+- `Absence2(a)` → `G(¬a) ∨ F(a ∧ X(G(¬a)))` (at most once)
+- `Absence3(a)` → `G(¬a) ∨ F(a ∧ X(G(¬a) ∨ F(a ∧ X(G(¬a)))))` (at most twice)
+- `Init(a)` → `a ∨ [empty_trace]` (if any activity occurs, `a` is the first)
 
-These formulas are the basis for LTLf automaton compilation and conformance replay.
+### Binary Relation Constraints
+- `RespondedExistence(a, b)` → `F(a) → F(b)`
+- `CoExistence(a, b)` → `F(a) ↔ F(b)`
+- `Response(a, b)` → `G(a → F(b))`
+- `Precedence(a, b)` → `G(¬b) ∨ (¬b U a)` (Note: Can be represented in past-LTL as `G(b → O(a))`, but the future-only representation is used for DFA compilation).
+- `Succession(a, b)` → `G(a → F(b)) ∧ (G(¬b) ∨ (¬b U a))`
+- `AlternateResponse(a, b)` → `G(a → X(¬a W b))`
+- `AlternatePrecedence(a, b)` → `(G(¬b) ∨ (¬b U a)) ∧ G(b → X(¬b W a))`
+- `AlternateSuccession(a, b)` → `AlternateResponse(a, b) ∧ AlternatePrecedence(a, b)`
+- `ChainResponse(a, b)` → `G(a → X(b))`
+- `ChainPrecedence(a, b)` → `¬b ∧ G(X(b) → a)` (Note: In past-LTL, `G(b → Y(a))`, where `Y` is the yesterday operator).
+- `ChainSuccession(a, b)` → `G(a → X(b)) ∧ (¬b ∧ G(X(b) → a))`
+
+### Negative / Exclusion Constraints
+- `NotCoExistence(a, b)` → `¬(F(a) ∧ F(b))`
+- `NotSuccession(a, b)` → `G(a → G(¬b))`
+- `NotChainSuccession(a, b)` → `G(a → ¬X(b))`
+- `ExclusiveChoice(a, b)` → `(F(a) ∨ F(b)) ∧ ¬(F(a) ∧ F(b))`
+
+These future-only formulas are the basis for compiler compilation into LTLf state automata and conformance replay.
 
 ---
 
