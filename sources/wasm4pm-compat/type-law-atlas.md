@@ -52,3 +52,6 @@
 
 * **Step: map fail fixture quality**
   - Evaluating type safety and witness validations.
+
+* **Step: map pass fixture quality**
+  - Evaluating type safety and witness validations.
