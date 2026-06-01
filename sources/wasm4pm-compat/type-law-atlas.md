@@ -19,3 +19,6 @@
 
 * **Step: map receipt-shaped evidence**
   - Evaluating type safety and witness validations.
+
+* **Step: map OCEL structural law**
+  - Evaluating type safety and witness validations.
