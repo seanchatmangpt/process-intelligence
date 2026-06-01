@@ -25,3 +25,6 @@
 
 * **Step: map simulation authority**
   - Defining engine execution requirements.
+
+* **Step: map visualization preparation authority**
+  - Defining engine execution requirements.
