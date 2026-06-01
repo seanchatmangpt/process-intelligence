@@ -26,3 +26,6 @@
 
 ### Paper: aalst_2016_process_mining_action
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: aalst_2004_workflow_patterns
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
