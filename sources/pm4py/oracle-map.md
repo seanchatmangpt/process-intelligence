@@ -68,3 +68,6 @@
 
 * **Step: identify wasm4pm divergence**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: identify wasm4pm-compat type obligations**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
