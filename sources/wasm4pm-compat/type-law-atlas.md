@@ -49,3 +49,6 @@
 
 * **Step: map paper coverage claims**
   - Evaluating type safety and witness validations.
+
+* **Step: map fail fixture quality**
+  - Evaluating type safety and witness validations.
