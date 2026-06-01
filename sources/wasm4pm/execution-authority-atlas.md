@@ -79,3 +79,6 @@
 
 * **Step: identify raw-laundering risks**
   - Defining engine execution requirements.
+
+* **Step: identify replay gaps**
+  - Defining engine execution requirements.
