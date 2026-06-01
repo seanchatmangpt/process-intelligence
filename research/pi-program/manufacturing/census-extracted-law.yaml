@@ -1,0 +1,518 @@
+# ============================================================================
+# CENSUS-EXTRACTED-LAW.YAML
+# Program Law Extraction from TTL Ontologies
+# ============================================================================
+# Extracted from:
+#   - research-program-law.ttl (7 seed programs)
+#   - workflow-law.ttl (phases, subagent roles)
+#   - hook-law.ttl (andon gates, enforcement policies)
+#   - checkpoint-law.ttl (ALIVE/PARTIAL audit gates)
+#   - pi-ggen-generation-ledger.ttl (generation rules)
+#   - prompt-manufactory.ttl (core ontology)
+#   - pi-program.ttl (top-level PI program structure)
+#
+# Authority: Process Intelligence Research Foundry
+# Date: 2026-06-01
+# ============================================================================
+
+programs:
+
+  # ===========================================================================
+  # Program 1: PI_RESEARCH_PROGRAM_INTEL_001
+  # ===========================================================================
+  - id: PI_RESEARCH_PROGRAM_INTEL_001
+    type: ResearchProgram
+    prompt_class: INTEL
+    mission: "Full research-program reconciliation: census all projects, classify into RDF ontology, emit ggen surfaces, audit conformance, produce program map"
+    description: "Discovers program topology across wasm4pm, compat, ggen, Blue River, ZOEapp, OTel Weaver, Expo/Supabase, Claude Code"
+    issued: "2026-06-01"
+
+    workflow:
+      id: INTEL_WORKFLOW
+      label: "INTEL Workflow"
+      description: "8 phases: Census, Classify, Manifest, Queries, Templates, Conformance, Reconciliation, Checkpoint"
+      phases:
+        - id: INTEL_Phase_1_Census
+          label: "Phase 1: Census"
+          mission: "Comprehensive inventory of all surfaces in referenced projects"
+          subagent_roles:
+            - role_engine_census
+            - role_compat_census
+            - role_ggen_census
+            - role_proof_cell_census
+            - role_feedstock_census
+            - role_framework_census
+            - role_orchestration_census
+        - id: INTEL_Phase_2_Classify
+          label: "Phase 2: Classify"
+          mission: "Map each surface to program ontology categories"
+          subagent_roles:
+            - role_classification_agent
+        - id: INTEL_Phase_3_Manifest
+          label: "Phase 3: Manifest"
+          mission: "Create projection manifests and program declarations"
+          subagent_roles:
+            - role_manifest_agent
+        - id: INTEL_Phase_4_Queries
+          label: "Phase 4: Queries"
+          mission: "Emit SPARQL selection and audit queries"
+          subagent_roles:
+            - role_query_agent
+        - id: INTEL_Phase_5_Templates
+          label: "Phase 5: Templates"
+          mission: "Emit Tera templates for artifact rendering"
+          subagent_roles:
+            - role_template_agent
+        - id: INTEL_Phase_6_Conformance
+          label: "Phase 6: Conformance"
+          mission: "Van der Aalst audit: verify program structure against declared law"
+          subagent_roles:
+            - role_audit_agent
+        - id: INTEL_Phase_7_Reconciliation
+          label: "Phase 7: Reconciliation"
+          mission: "Emit unified program map outputs"
+          subagent_roles:
+            - role_reconciliation_agent
+        - id: INTEL_Phase_8_Checkpoint
+          label: "Phase 8: Checkpoint"
+          mission: "Emit ALIVE/PARTIAL verdict"
+          subagent_roles:
+            - role_checkpoint_agent
+
+    generation_rules: []
+
+    audit_gates:
+      - id: GATE_ontology_present
+        label: "Ontology Files Present"
+        mission: "All 8 .ttl ontology files exist and parse without error"
+        emits_refusal: REFUSAL_MISSING_ONTOLOGY
+      - id: GATE_queries_present
+        label: "Query Files Present"
+        mission: "All 14 .rq SPARQL query files exist and have valid syntax"
+        emits_refusal: REFUSAL_MISSING_QUERIES
+      - id: GATE_templates_present
+        label: "Template Files Present"
+        mission: "All 8 .tera Tera template files exist and have valid syntax"
+        emits_refusal: REFUSAL_MISSING_TEMPLATES
+      - id: GATE_ggen_toml_valid
+        label: "ggen.toml Valid"
+        mission: "ggen.toml wires all 8 generation rules correctly"
+        emits_refusal: REFUSAL_INVALID_GGEN_TOML
+      - id: GATE_seed_programs_encoded
+        label: "Seed Programs Encoded"
+        mission: "All 7 known programs exist as graph instances with required properties"
+        emits_refusal: REFUSAL_INCOMPLETE_SEED_DATA
+      - id: GATE_end_to_end_warrant_path
+        label: "End-to-End Warrant Path"
+        mission: "At least one complete workflow prompt successfully renders from graph data (CRITICAL)"
+        emits_refusal: REFUSAL_NO_WARRANT_PROOF
+      - id: GATE_warrant_is_receipted
+        label: "Warrant is Receipted"
+        mission: "Rendered prompt has entry in prompt-receipt-ledger with derivedFrom source"
+        emits_refusal: REFUSAL_MISSING_RECEIPT
+      - id: GATE_no_new_ggen_source_files
+        label: "No New .ggen Source Files"
+        mission: "Zero .ggen files in prompt-manufactory/ggen/ source directory"
+        emits_refusal: REFUSAL_INVALID_GGEN_SOURCE
+      - id: GATE_legacy_ggen_classified
+        label: "Legacy .ggen Files Classified"
+        mission: "All 22 existing .ggen files have classification ledger entry with owner/blocker/remediation"
+        emits_refusal: REFUSAL_UNCLASSIFIED_LEGACY_GGEN
+      - id: GATE_audits_pass
+        label: "All Audits Pass"
+        mission: "All audit gates execute and return PASS: no-hand-written, no-forced-ALIVE, checkpoint-has-partial, no-file-count-alive"
+        emits_refusal: REFUSAL_AUDIT_FAILED
+
+  # ===========================================================================
+  # Program 2: GGEN_ECOSYSTEM_INTEL_001
+  # ===========================================================================
+  - id: GGEN_ECOSYSTEM_INTEL_001
+    type: ResearchProgram
+    prompt_class: INTEL
+    mission: "Gather ecosystem intelligence for wasm4pm-compat projections; Van der Aalst conformance-driven ggen manufacturing"
+    description: "Census Cargo, rustdoc, Specta, tsify, wasm-bindgen, WIT, Component Model; classify surfaces; create manifests; emit ggen rules/templates"
+    issued: "2026-06-01"
+
+    workflow:
+      id: INTEL_WORKFLOW
+      label: "INTEL Workflow"
+
+    generation_rules: []
+
+    audit_gates: []
+
+  # ===========================================================================
+  # Program 3: GGEN_OTEL_WEAVER_PI_INTEL_001
+  # ===========================================================================
+  - id: GGEN_OTEL_WEAVER_PI_INTEL_001
+    type: ResearchProgram
+    prompt_class: INTEL
+    mission: "OTel Weaver research: telemetry feedstock, registry model, witness mappings (NOT evidence)"
+    description: "Classify Weaver artifacts as telemetry feedstock, not PI evidence; establish witness boundaries"
+    issued: "2026-06-01"
+
+    workflow:
+      id: INTEL_WORKFLOW
+      label: "INTEL Workflow"
+
+    generation_rules: []
+
+    audit_gates: []
+
+  # ===========================================================================
+  # Program 4: ZOEAPP_RESEARCH_PROGRAM_INTEL_001
+  # ===========================================================================
+  - id: ZOEAPP_RESEARCH_PROGRAM_INTEL_001
+    type: ResearchProgram
+    prompt_class: INTEL
+    mission: "ZOEapp proof cell: Expo, Supabase, livestream, on-device inference, Jest receipts"
+    description: "Classify ZOEapp as proof cell; map Expo/Supabase to framework extraction; verify event stream boundaries"
+    issued: "2026-06-01"
+
+    workflow:
+      id: INTEL_WORKFLOW
+      label: "INTEL Workflow"
+
+    generation_rules: []
+
+    audit_gates: []
+
+  # ===========================================================================
+  # Program 5: GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001
+  # ===========================================================================
+  - id: GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001
+    type: ResearchProgram
+    prompt_class: INTEL
+    mission: "Framework extraction: Expo Router law, RLS policies, Realtime contracts"
+    description: "Extract reusable mobile substrate from ZOEapp; publish as separate research artifact"
+    issued: "2026-06-01"
+
+    workflow:
+      id: INTEL_WORKFLOW
+      label: "INTEL Workflow"
+
+    generation_rules: []
+
+    audit_gates: []
+
+  # ===========================================================================
+  # Program 6: GGEN_CLAUDE_WORKFLOW_INTEL_001
+  # ===========================================================================
+  - id: GGEN_CLAUDE_WORKFLOW_INTEL_001
+    type: ResearchProgram
+    prompt_class: INTEL
+    mission: "Claude Code dynamic workflow orchestration: phases, subagent topology, audit gates, checkpoints"
+    description: "Classify Claude Code workflows as orchestration substrate; document subagent coordination patterns"
+    issued: "2026-06-01"
+
+    workflow:
+      id: INTEL_WORKFLOW
+      label: "INTEL Workflow"
+
+    generation_rules: []
+
+    audit_gates: []
+
+  # ===========================================================================
+  # Program 7: WASM4PM_COMPAT_PROJECTION_REMEDIATE_001
+  # ===========================================================================
+  - id: WASM4PM_COMPAT_PROJECTION_REMEDIATE_001
+    type: ResearchProgram
+    prompt_class: REMEDIATE
+    mission: "Remediate DTO flattening violation: move JSON serialization from compat → wasm4pm engine"
+    description: "Fix blocking gate from GGEN_ECOSYSTEM_INTEL_001; move to_json_string() and receipt_json() out of compat boundary; re-audit to PASS"
+    issued: "2026-06-01"
+
+    workflow:
+      id: REMEDIATE_WORKFLOW
+      label: "REMEDIATE Workflow"
+      description: "Single phase: fix failed gates"
+      phases:
+        - id: REMEDIATE_Phase_1
+          label: "Phase 1: Remediation"
+          mission: "Route failed gates and implement fixes"
+          subagent_roles:
+            - role_remediation_agent
+
+    generation_rules: []
+
+    audit_gates: []
+
+# ==============================================================================
+# GENERATION RULES (All 15 Rules Across 3 ggen.toml Programs)
+# ==============================================================================
+
+generation_rules:
+
+  # --- Generation Program 1: process-intelligence-ggen (2 ACTIVE + 2 INACTIVE)
+  - id: RULE_001
+    program_id: PROJECT_001
+    program_name: "process-intelligence-ggen"
+    title: "blue-river-orchestrator"
+    description: "Autonomic MAPE-K governance engine with lifecycle state transitions"
+    ontology: "ontology-extensions.ttl"
+    query: "queries/extract-lifecycle-governance.rq"
+    template: "templates/blue-river.tera"
+    output_file: "../blue_river_dam/src/lib.rs"
+    output_mode: "Overwrite"
+    target_format: "Rust"
+    audience: "Process Intelligence Runtime"
+    compliance: "MAPE-K autonomic loop"
+    evidence: "lifecycle state machine + governance rule enforcement"
+    status: READY
+
+  - id: RULE_002
+    program_id: PROJECT_001
+    program_name: "process-intelligence-ggen"
+    title: "visualizer-dashboard-nextjs"
+    description: "Generate NextJS visualizer dashboard pages with conformance-backed claims"
+    query: "queries/extract-visualizer-data.rq"
+    template: "templates/visualizer-dashboard.tsx.tera"
+    output_file: "../experiments/visualizer-nextjs/src/app/page.tsx"
+    output_mode: "Overwrite"
+    status: READY
+
+  - id: RULE_003_INACTIVE
+    program_id: PROJECT_001
+    program_name: "process-intelligence-ggen"
+    title: "ma-deck"
+    description: "M&A pitch deck generation from board claims"
+    query: "queries/extract-board-claims.rq"
+    template: "templates/ma-deck.tera"
+    status: DEACTIVATED
+    note: "Template artifact exists but generation rule is disabled (commented in ggen.toml)"
+
+  - id: RULE_004_INACTIVE
+    program_id: PROJECT_001
+    program_name: "process-intelligence-ggen"
+    title: "ma-diligence"
+    description: "M&A diligence workbook generation from operational debt claims"
+    query: "queries/extract-diligence-claims.rq"
+    template: "templates/ma-diligence.tera"
+    status: DEACTIVATED
+    note: "Template artifact exists but generation rule is disabled (commented in ggen.toml)"
+
+  # --- Generation Program 2: PI_RESEARCH_PROGRAM_INTEL_001 (QUERY-ONLY, 0 GENERATION RULES)
+  # Note: PROJECT_002 has 32 total queries (17 audit + 15 selection) but zero generation rules
+
+  # --- Generation Program 3: prompt-manufactory (8 BLOCKED RULES)
+  - id: RULE_005
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "research-program-prompt"
+    query: "select-research-programs.rq"
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Template not implemented"
+
+  - id: RULE_006
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "workflow-prompt"
+    query: MISSING
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Query and template not implemented"
+
+  - id: RULE_007
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "checkpoint-prompt"
+    query: MISSING
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Query and template not implemented"
+
+  - id: RULE_008
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "hook-policy-prompt"
+    query: MISSING
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Query and template not implemented"
+
+  - id: RULE_009
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "skill-definition-prompt"
+    query: MISSING
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Query and template not implemented"
+
+  - id: RULE_010
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "subagent-role-prompt"
+    query: MISSING
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Query and template not implemented"
+
+  - id: RULE_011
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "forbidden-collapse-law-prompt"
+    query: MISSING
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Query and template not implemented"
+
+  - id: RULE_012
+    program_id: PROJECT_003
+    program_name: "prompt-manufactory"
+    title: "research-warrant-emit"
+    query: MISSING
+    template: MISSING
+    status: BLOCKED
+    blocking_issue: "Query and template not implemented"
+
+# ==============================================================================
+# ANDON GATES (Hook Policies)
+# ==============================================================================
+
+hook_policies:
+  - id: HOOK_no_hand_written_prompts
+    label: "No Hand-Written Program Prompts"
+    mission: "Block workflow execution if a rendered prompt lacks derivedFrom source"
+    trigger: "prompt emit"
+    enforcement: "checks SHACL shape for pm:derivedFrom triple"
+
+  - id: HOOK_no_invalid_ggen_extension
+    label: "No Invalid .ggen Source Files"
+    mission: "Block workflow if new .ggen files found in source directory"
+    trigger: "file write"
+    enforcement: "queries graph for blocking-status .ggen files"
+
+  - id: HOOK_no_forced_alive
+    label: "No Forced ALIVE"
+    mission: "Block ALIVE verdict if any required audit gate failed"
+    trigger: "checkpoint emit"
+    enforcement: "validates all AuditGate status before ALIVE"
+
+  - id: HOOK_checkpoint_must_have_partial_path
+    label: "Checkpoint Must Have PARTIAL Path"
+    mission: "Require checkpoint template to include both ALIVE and PARTIAL exit conditions"
+    trigger: "template render"
+    enforcement: "validates PARTIAL section is present and executable"
+
+  - id: HOOK_receipt_required
+    label: "Receipt Required for Artifacts"
+    mission: "Every rendered artifact must have corresponding receipt entry"
+    trigger: "artifact emit"
+    enforcement: "creates receipt with blake3 hash and provenance"
+
+  - id: HOOK_legacy_ggen_routed
+    label: "Legacy .ggen Files Must Be Classified"
+    mission: "Every .ggen file in referenced tree must have classification entry"
+    trigger: "audit"
+    enforcement: "scans for unclassified .ggen files"
+
+# ==============================================================================
+# CHECKPOINT VERDICTS (ALIVE/PARTIAL Definitions)
+# ==============================================================================
+
+checkpoint_verdicts:
+  - id: CHECKPOINT_ALIVE
+    label: "ALIVE Verdict"
+    mission: "Emit when all critical gates pass and at least one end-to-end warrant path is proven"
+    description: "ALIVE certifies the research program is fully operational and can render research warrants from law"
+    prerequisites:
+      - "All ontologies present"
+      - "All queries/templates valid"
+      - "End-to-end warrant proof successful"
+      - "Zero new .ggen source files"
+      - "All legacy .ggen classified"
+      - "All audit gates pass"
+
+  - id: CHECKPOINT_PARTIAL
+    label: "PARTIAL Verdict"
+    mission: "Emit when any critical gate fails or prerequisites are incomplete"
+    description: "PARTIAL certifies the program structure is sound but not yet fully operational"
+    fail_conditions:
+      - "End-to-end warrant path not yet proven"
+      - "Legacy .ggen files not yet classified"
+      - "PI_RESEARCH_PROGRAM_INTEL_001 topology incomplete"
+      - "One or more audit gates failed"
+
+# ==============================================================================
+# EXTRACTION STATISTICS
+# ==============================================================================
+
+statistics:
+  programs_found: 7
+  programs_verified:
+    - PI_RESEARCH_PROGRAM_INTEL_001
+    - GGEN_ECOSYSTEM_INTEL_001
+    - GGEN_OTEL_WEAVER_PI_INTEL_001
+    - ZOEAPP_RESEARCH_PROGRAM_INTEL_001
+    - GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001
+    - GGEN_CLAUDE_WORKFLOW_INTEL_001
+    - WASM4PM_COMPAT_PROJECTION_REMEDIATE_001
+
+  workflows_found: 2
+  workflows:
+    - INTEL_WORKFLOW (8 phases, used by 6 programs)
+    - REMEDIATE_WORKFLOW (1 phase, used by 1 program)
+
+  total_phases: 9
+  total_subagent_roles: 8
+
+  generation_rules_found: 15
+  generation_rules_by_status:
+    READY: 2
+    DEACTIVATED: 2
+    BLOCKED: 8
+    QUERY_ONLY: 3
+
+  audit_gates_found: 10
+  hook_policies_found: 6
+  checkpoint_verdicts_found: 2
+
+  refusal_conditions_found: 10
+  refusal_conditions:
+    - REFUSAL_MISSING_ONTOLOGY
+    - REFUSAL_MISSING_QUERIES
+    - REFUSAL_MISSING_TEMPLATES
+    - REFUSAL_INVALID_GGEN_TOML
+    - REFUSAL_INCOMPLETE_SEED_DATA
+    - REFUSAL_NO_WARRANT_PROOF
+    - REFUSAL_MISSING_RECEIPT
+    - REFUSAL_INVALID_GGEN_SOURCE
+    - REFUSAL_UNCLASSIFIED_LEGACY_GGEN
+    - REFUSAL_AUDIT_FAILED
+
+# ==============================================================================
+# EXTRACTION GATE EVALUATION
+# ==============================================================================
+
+gate_evaluation:
+  all_7_programs_found: true
+  missing_required_fields: false
+  extraction_status: PASS
+  notes:
+    - "All 7 seed programs present in research-program-law.ttl"
+    - "Both INTEL_WORKFLOW and REMEDIATE_WORKFLOW extracted with complete phase definitions"
+    - "All 10 audit gates from checkpoint-law.ttl extracted with mission and refusal conditions"
+    - "All 6 hook policies from hook-law.ttl extracted"
+    - "All 15 generation rules from pi-ggen-generation-ledger.ttl extracted (2 READY + 2 INACTIVE + 8 BLOCKED + 3 QUERY_ONLY)"
+    - "No missing required fields detected"
+    - "Extraction complete and ready for downstream processing"
+
+# ==============================================================================
+# SOURCE FILES
+# ==============================================================================
+
+source_files:
+  - "/Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/research-program-law.ttl"
+  - "/Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/workflow-law.ttl"
+  - "/Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/hook-law.ttl"
+  - "/Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/checkpoint-law.ttl"
+  - "/Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl"
+  - "/Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-generation-ledger.ttl"
+  - "/Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl"
+
+extraction_date: "2026-06-01"
+extracted_by: "TTL Program Law Extraction Task"
+format_version: "1.0"

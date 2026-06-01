@@ -1,0 +1,246 @@
+# Process Intelligence API — Rate Limiting Configuration
+# Authority: Process Intelligence Research Directorate
+# Purpose: Protect API endpoints and prevent abuse
+
+---
+
+rate_limiting:
+  enabled: true
+  algorithm: token-bucket
+
+  # Default global limits
+  defaults:
+    requests_per_minute: 600
+    requests_per_hour: 10000
+    concurrent_requests: 50
+    burst_size: 100
+
+  # Per-tier limits (authenticated clients)
+  tiers:
+    free:
+      requests_per_minute: 10
+      requests_per_hour: 100
+      concurrent_requests: 1
+      description: Free tier for public testing
+
+    standard:
+      requests_per_minute: 100
+      requests_per_hour: 5000
+      concurrent_requests: 10
+      description: Standard tier for development
+
+    premium:
+      requests_per_minute: 1000
+      requests_per_hour: 100000
+      concurrent_requests: 100
+      description: Premium tier for production use
+
+    enterprise:
+      requests_per_minute: null  # Unlimited
+      requests_per_hour: null
+      concurrent_requests: null
+      description: Enterprise tier with custom SLAs
+
+  # Per-endpoint overrides
+  endpoints:
+    # High-cost endpoints with tighter limits
+    - path: /v1/sparql
+      requests_per_minute: 60
+      requests_per_hour: 1000
+      concurrent_requests: 5
+      timeout_seconds: 120
+      description: SPARQL queries can be expensive
+
+    - path: /v1/conformance/check
+      requests_per_minute: 30
+      requests_per_hour: 500
+      concurrent_requests: 3
+      timeout_seconds: 300
+      description: Conformance checking with PM4Py
+
+    - path: /v1/stream/ocel
+      requests_per_minute: null  # Unlimited for this endpoint
+      concurrent_streams: 100
+      timeout_seconds: 0  # Streaming, no timeout
+      description: Event streaming endpoint
+
+    # Moderate limits
+    - path: /v1/entities
+      requests_per_minute: 300
+      requests_per_hour: 5000
+      concurrent_requests: 20
+      description: Entity listing
+
+    - path: /v1/entity/{id}
+      requests_per_minute: 500
+      requests_per_hour: 10000
+      concurrent_requests: 50
+      description: Individual entity retrieval
+
+    - path: /v1/receipts
+      requests_per_minute: 200
+      requests_per_hour: 2000
+      concurrent_requests: 10
+      description: Receipt listing
+
+    - path: /v1/receipt/{receipt-id}
+      requests_per_minute: 300
+      requests_per_hour: 5000
+      concurrent_requests: 20
+      description: Receipt verification
+
+    - path: /v1/provenance/{artifact-id}
+      requests_per_minute: 100
+      requests_per_hour: 1000
+      concurrent_requests: 10
+      description: Provenance tracing
+
+    - path: /v1/lifecycle
+      requests_per_minute: 100
+      requests_per_hour: 1000
+      concurrent_requests: 10
+      description: Lifecycle definitions
+
+    # Admin endpoints (very restrictive)
+    - path: /v1/admin/*
+      requests_per_minute: 30
+      requests_per_hour: 100
+      concurrent_requests: 2
+      description: Administrative operations
+
+    # Health & metrics (excluded from limits)
+    - path: /v1/health
+      requests_per_minute: null
+      requests_per_hour: null
+      concurrent_requests: null
+      description: Health checks excluded from rate limits
+
+    - path: /v1/metrics
+      requests_per_minute: null
+      requests_per_hour: null
+      concurrent_requests: null
+      description: Metrics excluded from rate limits
+
+  # Storage backend for rate limit state
+  storage:
+    type: redis
+    connection:
+      host: localhost
+      port: 6379
+      db: 1
+      ttl_seconds: 3600
+
+  # Rate limit headers in response
+  headers:
+    enabled: true
+    limit_header: RateLimit-Limit
+    remaining_header: RateLimit-Remaining
+    reset_header: RateLimit-Reset
+    retry_after_header: Retry-After
+
+  # Rate limit exceeded behavior
+  on_limit_exceeded:
+    status_code: 429
+    response_body:
+      format: json
+      include_retry_after: true
+      include_reset_time: true
+
+  # Exemptions
+  exemptions:
+    # Healthcheck exemptions
+    paths:
+      - /v1/health
+      - /v1/health/startup
+      - /v1/health/readiness
+      - /v1/metrics
+
+    # Whitelist for internal services
+    ip_addresses:
+      - 127.0.0.1
+      - 10.0.0.0/8
+
+    # Service-to-service authentication
+    service_identities:
+      - service: blue-river-dam
+        limit_override: premium
+      - service: ggen-validator
+        limit_override: premium
+      - service: otel-weaver
+        limit_override: premium
+
+  # Monitoring & alerting
+  monitoring:
+    enabled: true
+
+    # Track rate limit events
+    metrics:
+      - endpoint: /v1/sparql
+        alert_threshold_percent: 80
+      - endpoint: /v1/conformance/check
+        alert_threshold_percent: 80
+
+    # Alert recipients
+    alerts:
+      - channel: slack
+        webhook: ${SLACK_WEBHOOK_URL}
+        conditions:
+          - type: rate_limit_exceeded
+          - type: endpoint_timeout
+          - type: queue_overflow
+
+  # Dynamic rate limiting (adaptive)
+  adaptive:
+    enabled: true
+
+    # Scale limits based on system load
+    scaling:
+      metric: cpu_usage
+      increase_threshold_percent: 30
+      decrease_threshold_percent: 70
+      adjustment_factor: 0.9
+
+    # Protect against cascading failures
+    circuit_breaker:
+      enabled: true
+      failure_threshold: 5
+      timeout_seconds: 60
+
+  # Burst allowances
+  burst_handling:
+    enabled: true
+    strategy: smooth
+    # Allows short bursts above sustained limits
+    # smooth: gradual enforcement
+    # strict: immediate enforcement
+    burst_multiplier: 1.5
+
+---
+# Testing & validation
+
+# Example rate limit scenarios:
+#
+# 1. Standard client making 600 requests/minute:
+#    - Status 200 (OK)
+#    - RateLimit-Limit: 600
+#    - RateLimit-Remaining: 0
+#    - RateLimit-Reset: [timestamp]
+#
+# 2. Client exceeding limits:
+#    - Status 429 (Too Many Requests)
+#    - Retry-After: 60
+#    - Body: { error: "rate_limit_exceeded", retry_after_seconds: 60 }
+#
+# 3. Burst traffic scenario:
+#    - Burst allowance: 1.5x normal limit
+#    - Temporary override during spikes
+#    - Gradual enforcement to prevent sudden cutoff
+
+---
+# Deployment checklist
+# [ ] Redis cluster configured with persistence
+# [ ] Rate limiter rules validated against endpoints
+# [ ] Alert thresholds calibrated for production
+# [ ] Monitoring dashboards created
+# [ ] Load testing performed
+# [ ] Graceful degradation tested

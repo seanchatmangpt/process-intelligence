@@ -1,0 +1,308 @@
+# Process Intelligence Global Knowledge API — Server Configuration
+# Authority: Process Intelligence Research Directorate
+# Status: Phase 24 Product Hardening & Market Launch
+
+---
+
+server:
+  # Server binding
+  host: 0.0.0.0
+  port: 8080
+  protocol: https
+  tls_cert: /etc/pi-api/certs/server.crt
+  tls_key: /etc/pi-api/certs/server.key
+
+  # HTTP/2 support
+  http2_enabled: true
+  max_connections: 10000
+
+  # Request/response limits
+  request_timeout_seconds: 30
+  max_request_body_bytes: 10485760  # 10 MB
+  max_response_time_seconds: 60
+
+# Authentication & Authorization
+auth:
+  enabled: true
+
+  # API Key authentication
+  api_key:
+    enabled: true
+    header_name: X-API-Key
+    key_store: /var/lib/pi-api/keys/api-keys.db
+    ttl_days: 365
+
+  # Bearer token (JWT)
+  bearer:
+    enabled: true
+    issuer: https://auth.process-intelligence.research
+    audience: https://api.process-intelligence.research
+    jwks_uri: https://auth.process-intelligence.research/.well-known/jwks.json
+
+  # RBAC scopes
+  scopes:
+    - entities:read
+    - entities:write
+    - sparql:execute
+    - stream:read
+    - receipts:read
+    - provenance:read
+    - conformance:execute
+    - lifecycle:read
+    - system:admin
+
+# Rate limiting
+rate_limiting:
+  enabled: true
+
+  # Per-API-key limits
+  per_key:
+    requests_per_minute: 600
+    requests_per_hour: 10000
+    concurrent_requests: 50
+
+  # Per-endpoint limits
+  endpoints:
+    - path: /v1/sparql
+      requests_per_minute: 60
+      timeout_seconds: 120
+    - path: /v1/stream/ocel
+      concurrent_streams: 100
+    - path: /v1/conformance/check
+      requests_per_minute: 30
+      timeout_seconds: 300
+
+# Logging & Monitoring
+logging:
+  level: INFO
+  format: json
+  outputs:
+    - /var/log/pi-api/server.log
+    - stdout
+
+  # Request/response logging
+  request_logging:
+    enabled: true
+    exclude_paths:
+      - /v1/health
+      - /v1/metrics
+
+  # Error tracking
+  error_reporting:
+    enabled: true
+    sentry_dsn: https://[KEY]@sentry.process-intelligence.research/[PROJECT_ID]
+
+# Tracing (OpenTelemetry)
+telemetry:
+  enabled: true
+  exporter: jaeger
+
+  jaeger:
+    agent_host: localhost
+    agent_port: 6831
+
+  traces:
+    sampling_rate: 0.1
+    trace_headers_propagation:
+      - traceparent
+      - tracestate
+
+  metrics:
+    enabled: true
+    interval_seconds: 60
+
+# Database connections
+databases:
+  # Primary knowledge graph (RDF backend)
+  knowledge_graph:
+    type: rdf4j
+    url: http://localhost:8081/rdf4j
+    repository: process-intelligence
+    query_timeout_seconds: 30
+    connection_pool_size: 10
+
+  # Event log storage
+  event_log:
+    type: postgresql
+    host: localhost
+    port: 5432
+    database: pi_events
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+    ssl_mode: require
+    connection_pool_size: 20
+
+  # Receipt chain (immutable)
+  receipts:
+    type: sqlite
+    path: /var/lib/pi-api/receipts/chain.db
+    readonly: true
+
+# Caching
+cache:
+  enabled: true
+  backend: redis
+
+  redis:
+    host: localhost
+    port: 6379
+    db: 0
+    ttl_seconds:
+      entities: 3600
+      sparql_results: 1800
+      health_status: 60
+
+  # Cache invalidation
+  invalidation:
+    mode: event-driven
+    topics:
+      - entity.created
+      - entity.updated
+      - receipt.issued
+
+# CORS configuration
+cors:
+  enabled: true
+  allowed_origins:
+    - https://process-intelligence.research
+    - https://open-ontologies.research
+    - http://localhost:3000
+  allowed_methods:
+    - GET
+    - POST
+    - OPTIONS
+  allowed_headers:
+    - Content-Type
+    - Authorization
+    - X-API-Key
+  max_age_seconds: 3600
+
+# API gateway features
+features:
+  # Request validation
+  openapi_validation:
+    enabled: true
+    spec_path: /etc/pi-api/openapi.yaml
+
+  # Response transformation
+  response_compression:
+    enabled: true
+    min_size_bytes: 1024
+
+  # API versioning
+  versioning:
+    mode: url-path
+    current_version: v1
+    deprecated_versions:
+      - v0
+
+# Health checks
+health:
+  # Startup checks
+  startup:
+    checks:
+      - knowledge_graph_connectivity
+      - event_log_connectivity
+      - receipts_immutability
+      - otel_exporter_reachability
+    timeout_seconds: 30
+    fail_on_error: true
+
+  # Readiness checks (liveness)
+  readiness:
+    enabled: true
+    interval_seconds: 10
+    checks:
+      - knowledge_graph_query_performance
+      - event_log_write_latency
+      - receipt_chain_integrity
+
+  # Startup probes
+  startup_probe:
+    initial_delay_seconds: 5
+    period_seconds: 10
+    failure_threshold: 3
+
+# Backup & disaster recovery
+backup:
+  # Receipt chain backup (immutable, cryptographically signed)
+  receipt_chain:
+    enabled: true
+    backup_interval_hours: 24
+    backup_location: /var/backups/pi-api/receipts/
+    replication: 3
+
+    # Cross-region replication
+    replicas:
+      - region: us-east-1
+        bucket: pi-receipts-us-east-1
+      - region: eu-west-1
+        bucket: pi-receipts-eu-west-1
+
+# Compliance & governance
+compliance:
+  # Data residency
+  data_residency:
+    enabled: true
+    allowed_regions:
+      - us-east-1
+      - eu-west-1
+
+  # Audit logging
+  audit_logging:
+    enabled: true
+    log_all_queries: true
+    log_all_mutations: true
+    log_path: /var/log/pi-api/audit.log
+    retention_days: 2555  # 7 years
+
+  # GDPR compliance
+  gdpr:
+    enabled: true
+    data_export_enabled: true
+    right_to_be_forgotten: false  # Immutable receipt chain
+
+# Integration points
+integrations:
+  # Open Ontologies service registry
+  open_ontologies:
+    enabled: true
+    registry_url: https://registry.open-ontologies.research/api/v1
+    service_id: process-intelligence-api
+    health_check_interval_seconds: 300
+
+  # Bidirectional OCEL streaming
+  ocel_streaming:
+    enabled: true
+    kafka_brokers:
+      - kafka-1.pi-cluster:9092
+      - kafka-2.pi-cluster:9092
+    topics:
+      inbound: ocel.events.inbound
+      outbound: ocel.events.outbound
+    consumer_group: pi-api-ocel-consumer
+
+  # Knowledge graph federation
+  federation:
+    enabled: true
+    remote_endpoints:
+      - https://ontology-1.open-ontologies.research/sparql
+      - https://ontology-2.open-ontologies.research/sparql
+    federation_timeout_seconds: 60
+    fallback_mode: local_only
+
+  # PM4Py conformance service
+  pm4py_service:
+    enabled: true
+    url: http://pm4py-service:5000
+    timeout_seconds: 300
+    pool_size: 5
+
+---
+# Deployment notes
+# 1. Certificates must be pre-provisioned at /etc/pi-api/certs/
+# 2. API keys stored in /var/lib/pi-api/keys/ (managed separately)
+# 3. Database credentials via environment variables (DB_USER, DB_PASSWORD)
+# 4. Kubernetes ConfigMap: pi-api-config
+# 5. Kubernetes Secret: pi-api-secrets (API keys, TLS certs, DB password)
+# 6. HPA configured: min replicas 2, max replicas 10, target CPU 70%

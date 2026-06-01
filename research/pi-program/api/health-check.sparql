@@ -1,0 +1,199 @@
+# Process Intelligence API — Health Check SPARQL Queries
+# Authority: Process Intelligence Research Directorate
+# Purpose: Verify ecosystem health through RDF integrity checks
+
+---
+
+# Health Check 1: Verify core ontologies are loaded
+ASK {
+  GRAPH ?g {
+    ?doctrine a owl:Ontology ;
+      dc:title "Process Intelligence Doctrine" .
+
+    ?lifecycle a owl:Ontology ;
+      dc:title "Process Lifecycle Authority" .
+
+    ?types a owl:Ontology ;
+      dc:title "Process Evidence Type Law" .
+  }
+}
+
+---
+
+# Health Check 2: Verify at least one ggen validator instance is registered
+ASK {
+  ?validator a ggen:Validator ;
+    ggen:instance-id ?id .
+    ggen:status ?status ;
+    ggen:last-heartbeat ?hb .
+
+  FILTER(?status = ggen:healthy)
+  FILTER(xsd:dateTime(?hb) > NOW() - "PT5M"^^xsd:duration)
+}
+
+---
+
+# Health Check 3: Verify recent artifacts have valid receipts
+ASK {
+  ?artifact a ggen:Artifact ;
+    ggen:created ?created ;
+    ggen:receipt ?receipt .
+
+  ?receipt a ggen:Receipt ;
+    ggen:blake3-hash ?hash ;
+    ggen:verified true ;
+    ggen:chain-valid true .
+
+  FILTER(?created > NOW() - "PT1H"^^xsd:duration)
+}
+
+---
+
+# Health Check 4: Verify no open FAILED checkpoints (critical blocker)
+ASK {
+  ?checkpoint a pi:Checkpoint ;
+    pi:verdict ?verdict .
+
+  FILTER(?verdict = pi:FAILED)
+}
+# Expected result: false (ASK should return false, indicating no FAILEDs)
+
+---
+
+# Health Check 5: Verify OCEL event log has recent events
+ASK {
+  ?event a ocel:Event ;
+    ocel:timestamp ?ts ;
+    ocel:activity ?activity .
+
+  FILTER(?ts > NOW() - "PT1H"^^xsd:duration)
+}
+
+---
+
+# Health Check 6: Verify process model is sound (1-boundedness)
+ASK {
+  ?model a petrinet:PetriNet ;
+    petrinet:sound true ;
+    petrinet:bounded 1 .
+}
+
+---
+
+# Health Check 7: Verify at least one active lifecycle transition rule
+ASK {
+  ?rule a blue-river:LifecycleRule ;
+    blue-river:from-state ?from ;
+    blue-river:to-state ?to ;
+    blue-river:enabled true .
+}
+
+---
+
+# Health Check 8: Verify knowledge graph federation is accessible
+ASK {
+  SERVICE <https://ontology-1.open-ontologies.research/sparql> {
+    ?ontology a owl:Ontology .
+  }
+}
+
+---
+
+# Health Check 9: Count conformance metrics (verify PM4Py integration)
+SELECT (COUNT(?metric) AS ?count) WHERE {
+  ?metric a van-aalst:ConformanceMetric ;
+    van-aalst:type ?type ;
+    van-aalst:value ?value ;
+    van-aalst:measured-at ?timestamp .
+
+  FILTER(?timestamp > NOW() - "P7D"^^xsd:duration)
+}
+# Expected: At least 4 metrics (fitness, precision, simplicity, generalization)
+
+---
+
+# Health Check 10: Verify receipt chain integrity
+ASK {
+  ?receipt1 a ggen:Receipt ;
+    ggen:blake3-hash ?h1 ;
+    ggen:chain-next ?receipt2 .
+
+  ?receipt2 a ggen:Receipt ;
+    ggen:blake3-hash ?h2 ;
+    ggen:chain-parent ?receipt1 .
+
+  # Verify parent-child consistency
+  FILTER(?receipt2 != UNDEF && ?receipt1 != UNDEF)
+}
+
+---
+
+# Health Check 11: Verify all entities have provenance
+SELECT (COUNT(?unprovenance) AS ?count) WHERE {
+  ?artifact a ggen:Artifact .
+
+  OPTIONAL {
+    ?artifact ggen:generated-by ?rule ;
+      ggen:sourced-from ?source .
+  }
+
+  BIND(IF(!BOUND(?rule) || !BOUND(?source), 1, 0) AS ?unprovenance)
+}
+# Expected: 0 (all artifacts should have provenance)
+
+---
+
+# Health Check 12: Verify Blue River Dam MAPE-K cycle is active
+ASK {
+  ?cycle a blue-river:MAPEK-Cycle ;
+    blue-river:status blue-river:active ;
+    blue-river:last-cycle ?last .
+
+  FILTER(?last > NOW() - "PT10M"^^xsd:duration)
+}
+
+---
+
+# Health Check 13: Verify no conformance anomalies (fitness < 0.95)
+ASK {
+  ?metric a van-aalst:ConformanceMetric ;
+    van-aalst:type van-aalst:fitness ;
+    van-aalst:value ?value ;
+    van-aalst:measured-at ?timestamp .
+
+  FILTER(?value < 0.95)
+  FILTER(?timestamp > NOW() - "P1D"^^xsd:duration)
+}
+# Expected result: false (ASK should return false, indicating all recent fitness >= 0.95)
+
+---
+
+# Health Check 14: Verify all gates are PASS or BLOCKED (no FAIL without escalation)
+SELECT (COUNT(?gate) AS ?failed_gates) WHERE {
+  ?gate a pi:DeploymentGate ;
+    pi:status pi:FAIL ;
+    pi:escalated false .
+}
+# Expected: 0 (all FAILs should be escalated)
+
+---
+
+# Health Check 15: Verify ecosystem is not in critical state
+ASK {
+  FILTER NOT EXISTS {
+    ?gate a pi:CriticalGate ;
+      pi:status pi:FAIL ;
+      pi:blocking-gates ?blocks .
+
+    FILTER(COUNT(?blocks) > 0)
+  }
+}
+
+---
+# Integration notes:
+# - Run health checks every 60 seconds (baseline)
+# - Critical checks (1-8): run every 10 seconds
+# - Conformance checks (9-15): run every 5 minutes
+# - Cache results for 30 seconds to prevent thundering herd
+# - Aggregate results into composite health status
+# - Alert on any failed ASK query (expected to return false)

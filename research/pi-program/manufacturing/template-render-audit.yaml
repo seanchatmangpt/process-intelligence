@@ -1,0 +1,350 @@
+templates:
+  - file: alive-partial-matrix.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: checkpoint-ledger.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: checkpoint.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: failed-gate-ledger.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/blue-river.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/census-report.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/conformance-report.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/deployment-summary.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/ecosystem-architecture.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/financial-projections.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/health-checks.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/integration-guide.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/m-and-a-investment-memo.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/ma-deck.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/ma-diligence.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/monitoring-dashboard.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/phase-16-checkpoint.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/risk-disclosure.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: ggen/templates/visualizer-dashboard.tsx.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: next-workflow-plan.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: program-surface-map.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: project-registry.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: remediation-plan.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research-artifact-index.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/deployment/ggen-validator-v1.0/artifacts/templates/blue-river.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/deployment/ggen-validator-v1.0/artifacts/templates/ma-deck.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/deployment/ggen-validator-v1.0/artifacts/templates/ma-diligence.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/deployment/ggen-validator-v1.0/artifacts/templates/visualizer-dashboard.tsx.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/checkpoint-ledger.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/checkpoint.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/failed-gate-ledger.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/generation-rule-ledger.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/ggen-source-ledger.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/ggen-unified-run-report.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/invalid-ggen-classification-ledger.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/pi-program-walkthrough.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/project-registry.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/remediation-plan.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/rendered-artifact-ledger.yaml.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/pi-program/ggen/templates/warrant-path-proof.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/checkpoint-prompt.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/hook-policy.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/invalid-ggen-classification-ledger.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/prompt-receipt.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/research-program-index.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/skill.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/subagent-prompt.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/workflow-prompt-simple.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+  - file: research/prompt-manufactory/ggen/templates/workflow-prompt.md.tera
+    syntax_valid: true
+    renderable: true
+    test_render_success: true
+    output_format_valid: true
+    error_count: 0
+    status: RENDERABLE
+
+summary:
+  total_templates: 49
+  renderable: 49
+  invalid: 0
+  gate_status: PASS

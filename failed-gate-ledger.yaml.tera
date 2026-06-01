@@ -67,6 +67,7 @@ failed_gates:
         actor: "{{ event.actor }}"
         details: "{{ event.details | safe }}"
 {% endfor %}
+{% endfor %}
 
 affected_programs:
 {% for program in affected_programs %}

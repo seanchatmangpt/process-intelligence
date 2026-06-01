@@ -1,0 +1,90 @@
+audit_timestamp: /Users/sac/process-intelligence
+graph_integrity:
+  total_ttl_files: 28
+  total_triples: 5939
+  total_classes: 133
+  total_properties: 273
+  total_namespaces: 64
+  namespace_conflicts: 0
+  orphaned_instances: 14
+  open_ontologies_bridges_present: true
+  status: INCONSISTENT
+namespace_analysis:
+  conflicts_found: []
+  namespaces_registered:
+    brick: https://brickschema.org/schema/Brick#
+    csvw: http://www.w3.org/ns/csvw#
+    dc: http://purl.org/dc/elements/1.1/
+    dcat: http://www.w3.org/ns/dcat#
+    dcmitype: http://purl.org/dc/dcmitype/
+    dcam: http://purl.org/dc/dcam/
+    doap: http://usefulinc.com/ns/doap#
+    foaf: http://xmlns.com/foaf/0.1/
+    geo: http://www.opengis.net/ont/geosparql#
+    odrl: http://www.w3.org/ns/odrl/2/
+    org: http://www.w3.org/ns/org#
+    prof: http://www.w3.org/ns/dx/prof/
+    prov: http://www.w3.org/ns/prov#
+    qb: http://purl.org/linked-data/cube#
+    schema: https://schema.org/
+    sh: http://www.w3.org/ns/shacl#
+    skos: http://www.w3.org/2004/02/skos/core#
+    sosa: http://www.w3.org/ns/sosa/
+    ssn: http://www.w3.org/ns/ssn/
+    time: http://www.w3.org/2006/time#
+    vann: http://purl.org/vocab/vann/
+    void: http://rdfs.org/ns/void#
+    wgs: https://www.w3.org/2003/01/geo/wgs84_pos#
+    owl: http://www.w3.org/2002/07/owl#
+    rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+    rdfs: http://www.w3.org/2000/01/rdf-schema#
+    xsd: http://www.w3.org/2001/XMLSchema#
+    xml: http://www.w3.org/XML/1998/namespace
+    ma: https://process.intelligence/ma/
+    lifecycle: https://process.intelligence/lifecycle/
+    compat: https://process.intelligence/compat/
+    wasm4pm: https://process.intelligence/wasm4pm/
+    ggen: https://process.intelligence/ggen/
+    health: https://process.intelligence/health/
+    fin: https://process.intelligence/financial/
+    arch: https://process.intelligence/ecosystem/
+    integ: https://process.intelligence/integration/
+    census: https://process.intelligence/census/
+    risk: https://process.intelligence/risk/
+    metrics: https://process.intelligence/metrics/
+    pm: https://pi-research.dev/ontology/prompt-manufactory#
+    pi: https://process-intelligence.example.org/
+    oo: https://open-ontologies.example.org/
+    ggen1: https://ggen.example.org/
+    prom: https://prompt-manufactory.example.org/
+    gov: 'urn:process-intelligence:governance:'
+    ggen2: 'urn:process-intelligence:ggen:'
+    brd: 'urn:blue-river-dam:'
+    pm4py: 'urn:pm4py:'
+    otel: 'urn:opentelemetry:'
+    dcterms: http://purl.org/dc/terms/
+    pi1: https://process.intelligence/ontology/
+    fcl: https://process.intelligence/forbidden-collapse/
+    proj: https://process.intelligence/project/
+    audit: https://process.intelligence/audit-law/
+    grun: https://process.intelligence/ggen-unified-run/
+    inv: https://process.intelligence/invalid-ggen/
+    conf: https://process.intelligence/conformance/
+    chk: https://process.intelligence/checkpoint/
+    bibo: http://purl.org/ontology/bibo/
+    art: https://process.intelligence/artifact/
+    grad: https://process.intelligence/graduation/
+    gen: https://process.intelligence/generation-rule/
+    src: https://process.intelligence/source/
+property_analysis:
+  total_properties_checked: 294
+  properties_with_domains: 56
+  properties_with_ranges: 278
+open_ontologies_bridges:
+  prov: true
+  dcat: true
+  dct: true
+  skos: true
+  sh: true
+validation_errors: []
+validation_warnings: []

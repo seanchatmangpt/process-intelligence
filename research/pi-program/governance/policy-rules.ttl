@@ -9,6 +9,40 @@
 @prefix otel: <urn:opentelemetry:> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# CLASS DEFINITIONS
+# ============================================================================
+
+gov:Policy a owl:Class ;
+  rdfs:label "Policy" ;
+  rdfs:comment "Base policy class for governance rules" .
+
+gov:CriticalPolicy a owl:Class ;
+  rdfs:subClassOf gov:Policy ;
+  rdfs:label "Critical Policy" ;
+  rdfs:comment "Highest-priority policy requiring immediate automated remediation" .
+
+gov:ImportantPolicy a owl:Class ;
+  rdfs:subClassOf gov:Policy ;
+  rdfs:label "Important Policy" ;
+  rdfs:comment "Medium-priority policy analyzed hourly with manual remediation" .
+
+gov:ObservabilityPolicy a owl:Class ;
+  rdfs:subClassOf gov:Policy ;
+  rdfs:label "Observability Policy" ;
+  rdfs:comment "Low-priority observability policy for continuous improvement" .
+
+gov:GovernancePolicy a owl:Class ;
+  rdfs:subClassOf gov:Policy ;
+  rdfs:label "Governance Policy" ;
+  rdfs:comment "Cross-cutting policy for governance health and program health" .
+
+gov:RoutingTable a owl:Class ;
+  rdfs:label "Routing Table" ;
+  rdfs:comment "Table for routing alerts and findings to appropriate handlers" .
 
 # ============================================================================
 # TIER 1: CRITICAL POLICIES (automatic immediate remediation)
@@ -19,7 +53,7 @@ gov:POLICY_001_ReceiptChainViolation
   a gov:CriticalPolicy ;
   gov:kpi_trigger gov:KPI_002_ReceiptChainIntegrity ;
   gov:severity gov:CRITICAL ;
-  gov:threshold xsd:decimal("0.99") ;
+  gov:threshold "0.99"^^xsd:decimal ;
   gov:condition "receipt_integrity_rate < 99%" ;
   gov:alert_latency "PT1M"^^xsd:duration ;
   gov:automatic_remediation true ;
@@ -50,7 +84,7 @@ gov:POLICY_002_HighRuleFailureRate
   a gov:CriticalPolicy ;
   gov:kpi_trigger gov:KPI_001_ManufacturingRuleSuccessRate ;
   gov:severity gov:CRITICAL ;
-  gov:threshold xsd:decimal("0.95") ;
+  gov:threshold "0.95"^^xsd:decimal ;
   gov:condition "success_rate < 95%" ;
   gov:alert_latency "PT5M"^^xsd:duration ;
   gov:automatic_remediation true ;
@@ -98,7 +132,7 @@ gov:POLICY_003_APIUptimeViolation
   a gov:CriticalPolicy ;
   gov:kpi_trigger gov:KPI_007_APIUptime ;
   gov:severity gov:CRITICAL ;
-  gov:threshold xsd:decimal("0.999") ;
+  gov:threshold "0.999"^^xsd:decimal ;
   gov:condition "api_uptime < 99.9%" ;
   gov:alert_latency "PT1M"^^xsd:duration ;
   gov:automatic_remediation true ;
@@ -140,7 +174,7 @@ gov:POLICY_004_FitnessDrift
   a gov:ImportantPolicy ;
   gov:kpi_trigger gov:KPI_003_VanDerAalstFitnessDrift ;
   gov:severity gov:IMPORTANT ;
-  gov:drift_threshold xsd:decimal("-0.05") ;
+  gov:drift_threshold "-0.05"^^xsd:decimal ;
   gov:condition "fitness_drift < -0.05" ;
   gov:alert_latency "PT30M"^^xsd:duration ;
   gov:automatic_remediation false ;
@@ -179,7 +213,7 @@ gov:POLICY_005_ProofGatePassRate
   a gov:ImportantPolicy ;
   gov:kpi_trigger gov:KPI_012_ProofGatePassRate ;
   gov:severity gov:IMPORTANT ;
-  gov:threshold xsd:decimal("0.94") ;
+  gov:threshold "0.94"^^xsd:decimal ;
   gov:condition "proof_gate_pass_rate < 94%" ;
   gov:alert_latency "PT20M"^^xsd:duration ;
   gov:automatic_remediation false ;
@@ -208,7 +242,7 @@ gov:POLICY_006_EventCompleteness
   a gov:ObservabilityPolicy ;
   gov:kpi_trigger gov:KPI_016_EventCompleteness ;
   gov:severity gov:INFORMATIONAL ;
-  gov:threshold xsd:decimal("0.95") ;
+  gov:threshold "0.95"^^xsd:decimal ;
   gov:condition "event_completeness < 95%" ;
   gov:batch_analysis true ;
   gov:batch_window "PT1D"^^xsd:duration ;
@@ -224,7 +258,7 @@ gov:POLICY_007_DoctrineCompletion
   a gov:GovernancePolicy ;
   gov:kpi_trigger gov:KPI_013_DoctrineCompleteness ;
   gov:severity gov:IMPORTANT ;
-  gov:threshold xsd:decimal("0.95") ;
+  gov:threshold "0.95"^^xsd:decimal ;
   gov:condition "unsourced_claims > 5% of total" ;
   gov:alert_latency "P1D"^^xsd:duration ;
   gov:automatic_remediation false ;

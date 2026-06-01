@@ -1,0 +1,108 @@
+audit_metadata:
+  date: '2026-06-01'
+  total_rules_checked: 9
+  rules_ready: 4
+  rules_invalid: 5
+  overall_status: GATE_FAIL
+rules:
+- rule_id: RULE_001
+  rule_name: blue-river-orchestrator
+  status: INVALID
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: false
+  hand_written_detected: false
+  issues:
+  - 'output_file not absolute: ../blue_river_dam/src/lib.rs'
+- rule_id: RULE_002
+  rule_name: visualizer-dashboard-nextjs
+  status: INVALID
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: false
+  output_dir_valid: false
+  hand_written_detected: false
+  issues:
+  - 'template_file invalid: Unbalanced braces (open_pct=5, close_pct=5, open_var=16,
+    close_var=17)'
+  - 'output_file not absolute: ../experiments/visualizer-nextjs/src/app/page.tsx'
+- rule_id: RULE_003
+  rule_name: checkpoint-ledger
+  status: READY
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: true
+  hand_written_detected: false
+  issues:
+  - none
+- rule_id: RULE_004
+  rule_name: generation-rule-ledger
+  status: READY
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: true
+  hand_written_detected: false
+  issues:
+  - none
+- rule_id: RULE_005
+  rule_name: invalid-ggen-classification
+  status: READY
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: true
+  hand_written_detected: false
+  issues:
+  - none
+- rule_id: RULE_006
+  rule_name: rendered-artifact-ledger
+  status: READY
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: true
+  hand_written_detected: false
+  issues:
+  - none
+- rule_id: RULE_007
+  rule_name: warrant-path-proof
+  status: INVALID
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: false
+  hand_written_detected: false
+  issues:
+  - 'output_file not absolute: ../emitted/ggen-validator-remediation/warrant-path-proof.md'
+- rule_id: RULE_008
+  rule_name: structural-placeholder
+  status: INVALID
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: false
+  hand_written_detected: false
+  issues:
+  - 'output_file not absolute: emitted/indexes/structural-placeholder.md'
+- rule_id: RULE_009
+  rule_name: workflow-prompts
+  status: INVALID
+  query_exists: true
+  query_valid: true
+  template_exists: true
+  template_valid: true
+  output_dir_valid: false
+  hand_written_detected: false
+  issues:
+  - 'output_file not absolute: emitted/prompts/workflows/PI_RESEARCH_PROGRAM_INTEL_001.md'
