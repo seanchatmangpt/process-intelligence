@@ -61,3 +61,6 @@
 
 * **Step: map audit gaps**
   - Evaluating type safety and witness validations.
+
+* **Step: map non-forgeability gaps**
+  - Evaluating type safety and witness validations.
