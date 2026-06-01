@@ -76,3 +76,6 @@
 
 * **Step: define what must never enter compat**
   - Evaluating type safety and witness validations.
+
+* **Step: define downstream wasm4pm obligations**
+  - Evaluating type safety and witness validations.
