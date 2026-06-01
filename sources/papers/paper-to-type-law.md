@@ -19,3 +19,7 @@
 ### Classify: verbeek_2021_log_trie
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: kuesters_2024_ocpq_tree
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
