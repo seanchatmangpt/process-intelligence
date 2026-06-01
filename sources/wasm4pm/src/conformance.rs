@@ -458,6 +458,35 @@ impl AlignmentEngine {
         AlignmentEngine { net }
     }
 
+    /// Compute the shortest path distance in the Petri Net from source to sink place.
+    pub fn compute_model_distance(&self, source_place: &str, sink_place: &str) -> usize {
+        let initial_marking = Marking::initial(source_place.to_string());
+        let target_marking = Marking::initial(sink_place.to_string());
+
+        let mut queue = std::collections::VecDeque::new();
+        let mut visited = std::collections::HashSet::new();
+        queue.push_back((initial_marking.clone(), 0));
+        visited.insert(initial_marking);
+
+        while let Some((marking, dist)) = queue.pop_front() {
+            if marking == target_marking {
+                return dist;
+            }
+
+            for t in &self.net.transitions {
+                if self.net.is_enabled(t, &marking) {
+                    let next_marking = self.net.fire(t, &marking);
+                    if !visited.contains(&next_marking) {
+                        visited.insert(next_marking.clone());
+                        queue.push_back((next_marking, dist + 1));
+                    }
+                }
+            }
+        }
+
+        0
+    }
+
     /// Compute optimal alignment between a trace and the net
     /// Returns Evidence<Alignment, Admitted, AlignmentWitness>
     pub fn align_trace(
@@ -489,7 +518,10 @@ impl AlignmentEngine {
             fn cmp(&self, other: &Self) -> std::cmp::Ordering {
                 let self_f = self.cost + self.heuristic;
                 let other_f = other.cost + other.heuristic;
-                other_f.cmp(&self_f) // Min-heap behavior
+                match other_f.cmp(&self_f) {
+                    std::cmp::Ordering::Equal => self.trace_index.cmp(&other.trace_index),
+                    ord => ord,
+                }
             }
         }
 
@@ -504,7 +536,7 @@ impl AlignmentEngine {
         
         heap.push(AStarState {
             cost: 0,
-            heuristic: trace.len(),
+            heuristic: 0,
             trace_index: 0,
             marking: initial_marking,
             moves: Vec::new(),
@@ -548,7 +580,7 @@ impl AlignmentEngine {
                     next_moves.push((None, Some(t.clone())));
                     heap.push(AStarState {
                         cost: state.cost + 1,
-                        heuristic: trace.len() - state.trace_index,
+                        heuristic: 0,
                         trace_index: state.trace_index,
                         marking: next_marking,
                         moves: next_moves,
@@ -565,7 +597,7 @@ impl AlignmentEngine {
                     next_moves.push((Some(next_event.clone()), Some(next_event.clone())));
                     heap.push(AStarState {
                         cost: state.cost,
-                        heuristic: trace.len() - (state.trace_index + 1),
+                        heuristic: 0,
                         trace_index: state.trace_index + 1,
                         marking: next_marking,
                         moves: next_moves,
@@ -580,7 +612,7 @@ impl AlignmentEngine {
                 next_moves.push((Some(next_event.clone()), None));
                 heap.push(AStarState {
                     cost: state.cost + 1,
-                    heuristic: trace.len() - (state.trace_index + 1),
+                    heuristic: 0,
                     trace_index: state.trace_index + 1,
                     marking: state.marking.clone(),
                     moves: next_moves,
@@ -617,6 +649,14 @@ impl AlignmentEngine {
 
         let mut verdicts = ConformanceVerdicts::new();
 
+        let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
+            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+        
+        let sink_place = self.net.places.iter().find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
+            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+
+        let model_distance = self.compute_model_distance(&source_place, &sink_place);
+
         for (case_id, trace) in cases {
             let alignment = match self.align_trace(case_id, trace) {
                 Ok(evidence) => evidence.payload,
@@ -629,7 +669,7 @@ impl AlignmentEngine {
                 }
             };
 
-            let fitness = alignment.fitness(trace.len(), 0); // model_distance to be computed
+            let fitness = alignment.fitness(trace.len(), model_distance);
             let verdict = if fitness >= 1.0 {
                 ConformanceVerdict::FullyConforming
             } else if fitness > 0.0 {

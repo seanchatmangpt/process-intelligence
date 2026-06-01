@@ -1,347 +1,440 @@
-# The Sparse Priming Representation (SPR) Thesis Actuation spec (v30.1.1 Ultimate Standard)
+# PROCESS INTELLIGENCE: A decompressed SPR thesis for full-lifecycle autonomic knowledge actuation
 
-This document materializes the v30.1.1 ultimate standard thesis on Process Intelligence, detailing all 27 core sections extracted from the foundational chapters.
+## 0. Prime thesis
 
----
+Process intelligence is not process mining.
+Process intelligence is not observability.
+Process intelligence is not dashboard interpretation.
+Process intelligence is not AI summarization.
 
-## Part I: The Type-Law Architecture (Chapter 3)
+Process intelligence is the full lifecycle manufacturing of lawful process reality:
+$$\text{Design} \to \text{Simulation} \to \text{Construction} \to \text{Activation} \to \text{Operation} \to \text{Monitoring} \to \text{Repair} \to \text{Optimization} \to \text{BoardProjection} \to \text{Integration} \to \text{Decommission} \to \text{Archive}$$
 
-### Section 1: The Evidence Lifecycle
-The central structural invariant of the process-evidence lifecycle is a typed, one-way door. Raw, untrusted input cannot be used as admitted evidence; admitted evidence cannot be un-admitted; refused evidence cannot be rehabilitated.
-The lifecycle is defined as a directed state machine over the set of stage tokens:
-$$\mathcal{S} = \{\texttt{Raw}, \texttt{Parsed}, \texttt{Admitted}, \texttt{Refused}, \texttt{Projected}, \texttt{Exportable}, \texttt{Receipted}\}$$
-with initial state $\texttt{Raw}$ and terminal states $\{\texttt{Refused}, \texttt{Receipted}\}$.
+The core breakthrough is that process knowledge must not merely describe work. It must actuate work, constrain work, evidence work, repair work, project work, and retire work. This is autonomic knowledge actuation.
 
-The lawful transitions are:
-$$\texttt{Raw} \xrightarrow{\texttt{into\_parsed}} \texttt{Parsed} \xrightarrow{\texttt{Admit::admit}} \texttt{Admitted} \to \begin{cases} 
-\texttt{Projected} \xrightarrow{\texttt{into\_receipted}} \texttt{Receipted} \\ 
-\texttt{Exportable} \xrightarrow{\texttt{into\_receipted}} \texttt{Receipted} \\ 
-\texttt{Receipted} \quad \text{(terminal)} 
-\end{cases}$$
+The universal business is therefore not software, consulting, dashboards, AI, or analytics. The universal business is:
+**manufacturing board-admissible process reality from public standards, process evidence, type law, receipts, replay, refusal, residuals, and lifecycle authority.**
 
-Refuse paths are available before admission:
-$$\texttt{Raw} \xrightarrow{\texttt{refuse}} \texttt{Refused}, \qquad \texttt{Parsed} \xrightarrow{\texttt{into\_refused}} \texttt{Refused}$$
+The research program is called `~/process-intelligence`. It is the research foundry.
+- `wasm4pm-compat` is the type-law foundry.
+- `wasm4pm` is the execution authority.
+- `ggen` is the manufacturing and projection machinery.
+- `PM4Py` is the comparative oracle.
+- The workflow papers are the academic law corpus.
+- `Blue River Dam` is the full-lifecycle authority layer.
+- `M&A-ready PowerPoint` is the highest-value executive projection surface.
 
-Type-level safety enforces that cross-state substitution is a compiler error:
-$$\forall T, S_1, S_2, W. \quad S_1 \neq S_2 \implies \text{Evidence}\langle T, S_1, W \rangle \not\leq \text{Evidence}\langle T, S_2, W \rangle$$
-
----
-
-### Section 2: The Witness Marker System
-A witness marker is an uninhabited type (an empty enum) representing a specific named authority. Witnesses carry no data and do no work; their sole function is to thread a named authority through the type signature.
-A witness marker $W \in \mathcal{W}$ implements the sealed `Witness` trait:
-$$\text{Witness} \implies \begin{cases}
-\texttt{KEY}: \&'\text{static str} \\
-\texttt{FAMILY}: \text{WitnessFamily} \\
-\texttt{TITLE}: \&'\text{static str} \\
-\texttt{YEAR}: \text{Option}\langle u16 \rangle
-\end{cases}$$
-
-Let $\iota: \mathcal{W} \times \mathcal{W} \to \{0, 1\}$ be the compile-time nominal type identity:
-$$\iota(W_1, W_2) = \begin{cases} 1 & \text{if } W_1 \equiv W_2 \text{ as Rust types} \\ 0 & \text{otherwise} \end{cases}$$
-Because generic type constructors are nominal and injective:
-$$\iota(W_1, W_2) = 0 \implies \text{Admission}\langle T, W_1 \rangle \not\equiv \text{Admission}\langle T, W_2 \rangle$$
+The entire thesis is:
+A process is not real because a system observed it. A process is real when its design, execution, evidence, failure boundaries, repairs, projections, and retirement can be lawfully constructed, receipted, replayed, audited, and relied upon.
 
 ---
 
-### Section 3: Const-Generic Law Machinery
-We map boolean const-generic expressions to compile-time proof obligations via:
-$$\text{Assert}\langle\text{const OK: bool}\rangle; \qquad \text{IsTrue for Assert}\langle\text{true}\rangle; \qquad \text{Require}\langle\text{const OK: bool}\rangle = \text{Assert}\langle\text{OK}\rangle$$
-A where-bound $\text{Require}\langle\text{EXPR}\rangle: \text{IsTrue}$ compiles successfully if and only if $\text{EXPR}$ evaluates to $\text{true}$.
+## 1. Fundamental objects
 
-The type-level rational metric bounds $\text{Between01}\langle n, d \rangle$ is defined as:
-$$\text{Between01}\langle\text{const NUM: u64, const DEN: u64}\rangle \quad \text{where} \quad d > 0 \land n \leq d$$
-Its soundness is stated as:
-$$\forall n, d \in \mathbb{N}, \quad \text{Between01}\langle n, d \rangle \text{ is well-formed} \iff d > 0 \land n \leq d$$
+Let $O$ be the raw operational world.
+Let $O^*$ be the public-standard admissible operational world.
+Let $P$ be a process.
+Let $L$ be the lifecycle state space of a process.
+Let $E$ be process evidence.
+Let $T$ be type law.
+Let $R$ be receipts.
+Let $F$ be refusals.
+Let $X$ be residuals.
+Let $Q$ be queries.
+Let $M$ be mined models.
+Let $C$ be conformance verdicts.
+Let $B$ be board claims.
+Let $D$ be decommissioning states.
 
-The "Need-9 means split" law enforces that a single condition cell holds at most 8 primary bits:
-$$\text{ConditionCell}\langle\text{const BITS: usize}\rangle \quad \text{where} \quad \text{Require}\langle\text{BITS} \leq 8\rangle: \text{IsTrue}$$
+Let $\mu$ be the admissibility and manufacturing function.
+Let $\alpha$ be the actuation function.
+Let $\rho$ be the receipt function.
+Let $\pi$ be the projection function.
+Let $\kappa$ be the checkpoint function.
+Let $\delta$ be the decommissioning function.
 
----
+The old equation was:
+$$A = \mu(O)$$
 
-### Section 4: Non-Forgeability via Sealed Constructors
-A workflow net soundness state is tracked via the enum:
-$$\text{SoundnessState} = \{\texttt{Unknown}, \texttt{Claimed}, \texttt{Witnessed}\}$$
-The non-forgeability of the $\texttt{Witnessed}$ state is enforced by a private constructor seal:
-$$\text{WfNetConst}\langle\text{const SOUNDNESS: SoundnessState}\rangle$$
-Only the function `witness_soundness`, requiring a `SoundnessProof` token generated inside the engine, can produce $\text{WfNetConst}\langle\texttt{Witnessed}\rangle$.
-The single-type design prevents the forgery surface introduced by conversion functions in a two-type design (e.g., separating parameterized and unparameterized nets).
+The receipted form is:
+$$R \vdash A = \mu(O^*)$$
+Meaning: An action $A$ is valid only when it is manufactured from admissible public-standard operational reality $O^*$, and receipt $R$ proves that the action crossed the lawful boundary.
 
----
+For process intelligence, the equation becomes:
+$$R \vdash P_i = \mu(O^*, T, L)$$
+Meaning: A process-intelligence claim $P_i$ is valid only when it is manufactured from public-standard operational evidence $O^*$, constrained by type law $T$, and placed within lifecycle state $L$.
 
-### Section 5: The LossPolicy Chain
-Loss policies determine how information loss during translation is handled:
-$$\text{LossPolicy} = \{\texttt{RefuseLoss}, \texttt{AllowNamedProjection}, \texttt{AllowLossWithReport}\}$$
-They form a lattice under permissiveness.
-A static name is defined by $\text{ProjectionName}(\&'\text{static str})$.
-A $\text{LossReport}\langle\text{From, To, Items}\rangle$ is emitted. The `Project` trait is defined as:
-$$\text{Project}(e, p) \to \text{Result}\langle\text{LossReport}\langle\text{From, To, Lost}\rangle, \text{Reason}\rangle$$
+For board reliance:
+$$R, \text{Replay}, \text{Audit} \vdash B = \pi(P_i)$$
+Meaning: A board claim $B$ is valid only when it is a projection of already-validated process intelligence $P_i$, backed by receipt, replay, and audit.
 
-**Algorithm: Lawful Lossy Projection Protocol:**
-1. Let $e$ be the source evidence of type $\text{Evidence}\langle T, \texttt{Admitted}, W \rangle$.
-2. Let $p$ be the target $\text{LossPolicy}$ and $n$ the $\text{ProjectionName}$.
-3. Identify dropped items: $\text{dropped} \leftarrow \text{Identify\_Loss}(e)$.
-4. If $p = \texttt{RefuseLoss}$ and $\text{dropped} \neq \emptyset$, return $\text{Err}(\text{RefusalReason})$.
-5. Otherwise, project: $e' \leftarrow \text{Apply\_Projection}(e, n)$.
-6. Construct report: $r \leftarrow \text{LossReport::new}(n, p, \text{dropped})$.
-7. Return $\text{Ok}(e'.\text{into\_projected}(), r)$.
-
----
-
-### Section 6: The Three-Layer Summary
-The compile-time checks of the type system are structured into three distinct layers:
-
-| Layer | Mechanism | Invariant Enforced |
-| :--- | :--- | :--- |
-| **State Tokens** | Empty enums as `PhantomData` | Cross-stage substitution is a type error |
-| **Witness Markers** | Uninhabited enums + sealed `Witness` trait | Cross-authority substitution is a type error |
-| **Const-Generic Law** | `Require<{EXPR}>: IsTrue` bounds | Out-of-bound metric or arity parameters do not compile |
+For M&A:
+$$R, \text{Replay}, \text{Residuals}, \text{Refusals} \vdash B_{ma} = \pi(P_i, \text{Risk}, \text{Synergy}, \text{Integration}, \text{Debt})$$
+Meaning: An M&A-ready slide claim must include not only the positive insight, but also the refused claims, residual claims, integration assumptions, process debt, and replayable evidence.
 
 ---
 
-## Part II: The Manufacturing Doctrine (Chapter 4)
+## 2. The lifecycle calculus
 
-### Section 7: Commits as Receipts
-A git commit is treated as a manufacturing transition $\tau = (c, \rho)$ where $c$ is the commit hash and $\rho$ is a receipt class:
-$$\rho \in \mathcal{R} = \{\texttt{paper-ledger}, \texttt{paper-law}, \texttt{type-law}, \texttt{fixture-pass}, \texttt{fixture-fail}, \texttt{stderr}, \texttt{ledger}, \texttt{audit}, \texttt{docs-law}, \texttt{checkpoint}, \texttt{tag}\}$$
-Commit validity is structural, meaning the changes in $c$ must exactly produce the type surface or compiler diagnostic claimed by the receipt class $\rho$.
+A process is not a single runtime trace. It is a lifecycle object. Let the lifecycle state set be:
+$$L = \{\text{Design}, \text{Simulation}, \text{Construction}, \text{Activation}, \text{Operation}, \text{Monitoring}, \text{Repair}, \text{Optimization}, \text{BoardProjection}, \text{Integration}, \text{Decommission}, \text{Archive}\}$$
+
+A valid process lifecycle is a directed state machine:
+$$P : L_0 \xrightarrow{\tau_1} L_1 \xrightarrow{\tau_2} L_2 \xrightarrow{\tau_3} \dots \xrightarrow{\tau_n} L_n$$
+where every transition $\tau_i$ must be lawful:
+$$\tau_i : L_i \to L_{i+1}$$
+and every lawful transition must emit evidence:
+$$\rho(\tau_i) = R_i$$
+
+Therefore:
+$$\forall\tau_i \in \text{lifecycle}(P), \text{lawful}(\tau_i) \implies \exists R_i \text{ such that } R_i \text{ proves } \tau_i$$
+
+A lifecycle transition without receipt is not a transition. It is a claim.
+The Blue River Dam rule is: No lifecycle transition crosses the dam without admission, refusal, residual, or receipt.
+Formally:
+$$\forall\tau, \kappa(\tau) \in \{\text{ADMIT}(R), \text{REFUSE}(F), \text{PARTIAL}(X)\}$$
+There is no silent success state.
 
 ---
 
-### Section 8: The ALIVE Gate
-A codebase state $\mathcal{R}$ satisfies the ALIVE certification level if and only if:
-$$\text{ALIVE}_{004}(\mathcal{R}) \iff \bigwedge_{i=1}^{10} G_i(\mathcal{R})$$
+## 3. Autonomic knowledge actuation
+
+Knowledge is usually treated as passive representation.
+In this system:
+$$\text{knowledge} \to \text{actuation boundary} \to \text{typed transition} \to \text{admissible condition} \to \text{refusal rule} \to \text{repair route} \to \text{receipt} \to \text{replay} \to \text{decommissioning law}$$
+
+Autonomic knowledge actuation is the condition where knowledge participates directly in process life.
+Let $K$ be knowledge. Let $\alpha$ be actuation.
+Old systems:
+$$K \text{ describes } P$$
+
+This system:
+$$\alpha(K, P, L, T) \to \tau$$
+Knowledge, process, lifecycle state, and type law manufacture a lawful transition. A transition $\tau$ is valid only when:
+$$\tau = \alpha(K, P, L, T)$$
+and:
+$$\kappa(\tau) = \text{ADMIT}(R) \quad \lor \quad \kappa(\tau) = \text{REFUSE}(F) \quad \lor \quad \kappa(\tau) = \text{PARTIAL}(X)$$
+This makes process knowledge into executable, receipted lifecycle control.
+
+---
+
+## 4. Public standards as feedstock
+
+The system’s power comes from refusing proprietary meaning as the foundation. Let $S$ be the set of public standards and public process forms:
+$$S = \{\text{OCEL}, \text{XES}, \text{BPMN}, \text{Petri}, \text{WF-net}, \text{POWL}, \text{Declare}, \text{ProcessTree}, \text{DFG}, \text{OCPQ}, \text{OTEL/Weaver}, \text{PROV-O}, \text{SHACL}, \text{DCTERMS}, \text{SKOS}, \text{ODRL}, \text{papers}\}$$
+
+Each standard $s \in S$ contributes one or more public law surfaces:
+$$\text{law}(s) \to \{\text{objects}, \text{relations}, \text{constraints}, \text{evidence forms}, \text{allowed transitions}, \text{failure conditions}\}$$
+
+`ggen` manufactures software and projection artifacts from those public surfaces:
+$$\text{ggen}(s) \to \{\text{types}, \text{validators}, \text{fixtures}, \text{receipts}, \text{docs}, \text{projections}, \text{queries}, \text{decks}\}$$
+
+The reverse lock-in effect emerges here:
+$$\text{Value} = \text{portability} + \text{authority}$$
+Traditional vendors maximize authority by reducing portability. Blue River Dam maximizes authority by increasing portability.
+Therefore:
+$$\frac{\partial\text{Value}}{\partial\text{Standards}} > 0$$
+Every new public standard increases Blue River Dam feedstock.
+
+---
+
+## 5. Reverse Porter Five algebra
+
+Let the five forces be:
+- Buyer power = $\beta$
+- Supplier power = $\sigma$
+- Substitution threat = $\upsilon$
+- New entrant threat = $\varepsilon$
+- Rivalry = $\gamma$
+
+In conventional strategy:
+$$\text{Margin} = f(-\beta, -\sigma, -\upsilon, -\varepsilon, -\gamma)$$
+The five forces compress margin.
+
+In Blue River Dam strategy:
+$$\text{Authority} = f(+\beta, +σ, +\upsilon, +\varepsilon, +\gamma) \quad \text{under public standards and validation law}$$
+Buyer power increases demand for public-standard validation. Supplier power collapses because standards and papers are abundant feedstock. Substitutes become projection surfaces.
+So the equation flips: Force $\uparrow \implies$ Demand for validation authority $\uparrow$.
+
+---
+
+## 6. The role of PM4Py
+
+PM4Py is not the target architecture. PM4Py is the comparative oracle.
+For each PM4Py capability $c$:
+$$\forall c \in \text{PM4PyCapabilities}, \text{map}(c) = \{\text{input}(c), \text{output}(c), \text{assumptions}(c), \text{algorithm}(c), \text{compatType}(c), \text{wasmExecution}(c), \text{refusal}(c), \text{receipt}(c), \text{replay}(c), \text{boardClaim}(c), \text{lifecycle}(c)\}$$
+
+PM4Py is a capability atlas; `wasm4pm-compat` is type law; `wasm4pm` is execution authority; `~/process-intelligence` is the research court that decides which is which.
+The compliance requirement:
+$$\text{BlueRiverReady}(c) \iff \text{PM4PyCapability}(c) \wedge \text{TypeLaw}(c) \wedge \text{ExecutionAuthority}(c) \wedge \text{Receipt}(c) \wedge \text{Replay}(c) \wedge \text{LifecyclePlacement}(c)$$
+
+---
+
+## 7. wasm4pm-compat as type-law foundry
+
+`wasm4pm-compat` is a future-conformance type foundry. Its purpose is to make process evidence structurally admissible before execution. The core object is typed evidence:
+$$\text{Evidence}<T, \text{State}, \text{Witness}>$$
 where:
-* $G_1(\mathcal{R})$: Paper Coverage ($\geq 80$ paper families ledgered).
-* $G_2(\mathcal{R})$: No Missing Type Law.
-* $G_3(\mathcal{R})$: Compile-Pass Fixtures ($\geq 200$).
-* $G_4(\mathcal{R})$: Compile-Fail Fixtures ($\geq 160$).
-* $G_5(\mathcal{R})$: Stderr Parity ($|\text{compile\_fail}| = |\text{.stderr}|$).
-* $G_6(\mathcal{R})$: Audit Script Coverage ($\geq 20$).
-* $G_7(\mathcal{R})$: Master Audit Gate (exit 0).
-* $G_8(\mathcal{R})$: Cargo Tests (exit 0).
-* $G_9(\mathcal{R})$: Clippy Warnings (exit 0).
-* $G_{10}(\mathcal{R})$: Format check (exit 0).
+- $T$ = evidence payload type.
+- $\text{State} \in \{\text{Raw}, \text{Parsed}, \text{Admitted}, \text{Exportable}, \text{Receipted}, \text{Refused}, \text{Partial}\}$.
+- $\text{Witness} \in \{\text{OCEL20}, \text{XES1849}, \text{BPMN}, \text{Petri}, \text{WFNet}, \text{POWL}, \text{Declare}, \text{ProcessTree}, \text{DFG}, \text{OCPQ}\}$.
+
+The non-forgeability law is:
+$$\text{Evidence}<T, \text{Admitted}, \text{OCEL20}> \neq \text{Evidence}<T, \text{Admitted}, \text{XES1849}>$$
+unless there is a lawful projection:
+$$\text{Project}(\text{Evidence}<T, \text{Admitted}, \text{XES1849}>, \text{OCEL20}, \text{LossPolicy}) \to \text{Evidence}<U, \text{Admitted}, \text{OCEL20}> + \text{LossReport} + \text{Receipt}$$
+No witness laundering. No silent coercion.
 
 ---
 
-### Section 9: The PARTIAL Checkpoint Pattern
-A PARTIAL checkpoint is a tagged commit recording:
-1. Satisfied gates: $\{i \mid G_i(\mathcal{R}) = \top\}$
-2. Residual gates: $\{i \mid G_i(\mathcal{R}) = \bot\}$
-3. Bill of Materials (BOM) specifying the exact backlog of receipt-bearing commits required to close the residuals:
-$$\text{BOM}(G_i) = \{ n \text{ commits of class } \rho \}$$
-The workflow is: $\text{PARTIAL} \to \text{residual inventory} \to \text{targeted closure} \to \text{recomputed gate} \to \text{ALIVE}$.
+## 8. wasm4pm as execution authority
+
+`wasm4pm` is the authority that executes, mines, checks, replays, queries, optimizes, and adjudicates admitted process evidence.
+The division:
+$$\text{compat} : \text{Shape} \to \text{Admissible Evidence}$$
+$$\text{wasm4pm} : \text{Admissible Evidence} \to \text{Execution Verdict} + \text{Receipt}$$
+
+Formally:
+$$\text{compat\_admit}(x) \to \text{Evidence}<T, \text{Admitted}, W> \quad \lor \quad \text{Refusal}$$
+$$\text{wasm\_execute}(\text{Evidence}<T, \text{Admitted}, W>, \text{Algorithm}, \text{Parameters}) \to \text{Verdict} + \text{Receipt} + \text{ReplayBundle}$$
+
+The law:
+$$\forall x, \text{raw}(x) \implies \text{refuse}(\text{wasm\_execute}(x))$$
 
 ---
 
-### Section 10: Anti-Regression Audit Mesh
-The repository enforces invariants via a mesh of 23 audit scripts divided into:
-* **Hard Audits**: Immediate blockers (e.g. no engine creep, feature boundaries).
-* **Soft Audits**: Quality metrics and coverage warning thresholds.
+## 9. ggen as manufacturing and projection machinery
 
-**Algorithm: Crown Audit Protocol (`audit\_crown\_gate\_all.sh`):**
-1. Let $\mathcal{S} = \{s_1, \ldots, s_{22}\}$ be the subordinate audit scripts.
-2. Initialize $\text{FAIL} \leftarrow 0$, $\text{defects} \leftarrow \emptyset$.
-3. For each $s_i \in \mathcal{S}$:
-   * If $\text{exit}(s_i(\mathcal{R})) \neq 0$:
-     * $\text{FAIL} \leftarrow \text{FAIL} + 1$
-     * $\text{defects} \leftarrow \text{defects} \cup \{s_i\}$
-4. If $\text{FAIL} = 0$, return exit 0. Else, print defects and return exit 1.
+`ggen` manufactures the surfaces from public standards and research law:
+$$\text{ggen}(S, \text{Law}, \text{Target}) \to \text{Artifact}$$
+
+Targets include Rust types, WASM interfaces, validators, fixtures, audit scripts, etc.
+It is the level above OTEL/Weaver:
+$$\text{Weaver} \subset \text{ProjectionTargets}(\text{ggen})$$
 
 ---
 
-### Section 11: Velocity and Scale
-Parallel manufacturing of compile-fail/pass fixture pairs is enabled by Claude Code dynamic workflows using the schema-free agent pattern. Returning results as plain text with simple patterns avoids structured-output latency timeouts:
-$$\text{Latency}_{\text{schema-free}} \ll \text{Latency}_{\text{schema-validated}}$$
-The manufacturing pipeline follows:
-$$\text{Paper intake} \to \text{Type-law assignment} \to \text{Fixture pair manufacturing} \to \text{Audit gate} \to \text{Checkpoint / Tag}$$
+## 10. Blue River Dam
+
+Blue River Dam is the lifecycle authority layer. It is the dam between raw operational flow and board-reliable process truth:
+$$\text{Dam}(\Omega) \to \{\text{Admitted Evidence}, \text{Refusal}, \text{Residual}, \text{ReplayBundle}, \text{BoardProjection}\}$$
+
+The operating equation:
+$$\text{BlueRiverDam} = \kappa \circ \rho \circ \alpha \circ \mu$$
+$$\kappa(\rho(\alpha(\mu(O^*)))) \to \text{ALIVE} \mid \text{PARTIAL} \mid \text{REFUSED}$$
 
 ---
 
-### Section 12: Paper as Law
-Every paper in the process mining corpus is mapped to one of five classifications:
-$$\text{Classification} \in \{\texttt{COVERED\_BY\_TYPE}, \texttt{COVERED\_BY\_GRADUATION\_BOUNDARY}, \texttt{PARTIAL\_WITH\_REASON}, \texttt{DUPLICATE\_OR\_BACKGROUND}, \texttt{OUT\_OF\_SCOPE\_WITH\_REASON}\}$$
-The status $\texttt{MISSING\_TYPE\_LAW}$ is strictly forbidden. Gate $G_2$ ensures that:
-$$|\{m \in \text{modules} \mid \text{MISSING\_TYPE\_LAW}(m)\}| = 0$$
+## 11. M&A-ready PowerPoint as executive projection
+
+M&A PowerPoint is the highest-value projection of process intelligence. Let $B_{ma}$ be an M&A board claim:
+$$B_{ma} = \pi(P_i, \text{Evidence}, \text{Receipts}, \text{Replay}, \text{Residuals}, \text{Refusals}, \text{Risk}, \text{Integration}, \text{Synergy}, \text{Debt})$$
+
+A slide is admissible only if:
+$$\forall \text{claim} \in \text{slide}, \exists \text{ evidence path}$$
+traceable back through transitions, validation rules, receipts, and replay.
 
 ---
 
-## Part III: Process Mining Canon as Type Law (Chapter 5)
+## 12. Combinatorial maximalism
 
-### Section 13: OCEL 2.0 Formal Objects
-An OCEL 2.0 log is defined as a bipartite directed graph:
-$$\mathcal{L} = (\mathcal{E}, \mathcal{O}, \text{E2O}, \text{O2O}, \Delta)$$
+The scale comes from multiplication, not heroics. The manufacturing surface is approximately:
+$$\text{Surface} = |S| \times |L| \times |A| \times |F| \times |R| \times |Q| \times |B| \times |D|$$
+
+This is combinatorial maximalism. A single public process form produces types, pass/fail fixtures, and PowerPoint projections.
+Takt measure for a proof factory:
+$$C = n \times d \times t$$
 where:
-* $\mathcal{E}$ is the set of events.
-* $\mathcal{O}$ is the set of objects.
-* $\text{E2O} \subseteq \mathcal{E} \times \mathcal{O} \times \mathcal{Q}$ are event-to-object links.
-* $\text{O2O} \subseteq \mathcal{O} \times \mathcal{O} \times \mathcal{Q}$ are object-to-object links.
-* $\Delta \subseteq \mathcal{O} \times \text{Attr} \times \text{Val} \times \mathbb{T}$ tracks attribute evolution.
+- $C$ = commits/month.
+- $n$ = production cells.
+- $d$ = days/month.
+- $t$ = commits/cell/day.
 
-A log $\mathcal{L}$ is valid if and only if:
-$$\forall (e, o, q) \in \text{E2O}, \quad e \in \mathcal{E} \land o \in \mathcal{O} \qquad \text{and} \qquad \forall (o_1, o_2, q) \in \text{O2O}, \quad o_1, o_2 \in \mathcal{O}$$
-The dimensional schema is defined as a triple $(\mathcal{OT}, \mathcal{AT}, \lambda)$ where $\lambda: \mathcal{AT} \to 2^{\mathcal{OT}}$ maps activity types to allowed object types.
+For $C = 5,000$, $d = 30$, and $n = 10$, $t \approx 16.7$ commits/cell/day.
 
 ---
 
-### Section 14: XES and Case-Centric Evidence
-The IEEE 1849 XES standard enforces single-case-notion event semantics. The type separation is strict:
-$$\text{XesLog} \not\equiv \text{OcelLog}$$
-The boundary is marked by the zero-sized `CaseCentricMarker`.
-The XES extension prefix law requires non-empty prefixes:
-$$\text{XesExtension}(n, p, u) \quad \text{is valid} \iff p \neq ""$$
-Violation of this law yields `XesRefusal::InvalidExtension`.
+## 13. TPS and DfLSS mapping
+
+- **TPS mapping**: workpiece = commit/fixture/receipt; station = agent; standard work = commit law; jidoka = refusal/PARTIAL; poka-yoke = typestate boundary; kanban = residual bill of materials; final inspection = ALIVE/PARTIAL gate.
+- **DfLSS mapping**: VOC = board/auditor; CTQ = admissible process claim requirement; $Y$ = board reliance; $X$ = evidence, type law, receipts, replay.
+The transfer function:
+$$Y_{ma} = f(\text{Evidence}, \text{TypeLaw}, \text{Receipts}, \text{Replay}, \text{Residuals}, \text{Refusals}, \text{Standards}, \text{Lifecycle})$$
 
 ---
 
-### Section 15: Petri Net Bipartite Arc Law
-A Petri net is a tuple $N = (P, T, F, W, M_0)$ where $P$ and $T$ are disjoint finite sets of places and transitions.
-The flow relation $F$ must satisfy:
-$$F \subseteq (P \times T) \cup (T \times P) \qquad \text{and} \qquad F \cap (P \times P) = \emptyset \land F \cap (T \times T) = \emptyset$$
-In `wasm4pm-compat`, this is structurally guaranteed because the only arc constructors are:
-$$\text{PlaceToTransitionArc}\langle P, T, Weight \rangle \qquad \text{and} \qquad \text{TransitionToPlaceArc}\langle T, P, Weight \rangle$$
-No place-to-place arc can be constructed in the type system.
+## 14. Research program: ~/process-intelligence
+
+`~/process-intelligence` is the research authority. It defines:
+- What process intelligence is.
+- What standards feed it.
+- What papers govern it.
+- What types preserve it.
+- What engines execute it.
+- What receipts prove it.
+
+The central research function:
+$$\text{ResearchProgram}(\text{InputCorpus}) \to \text{LawCorpus} + \text{Roadmaps} + \text{Experiments} + \text{Audits} + \text{DownstreamAuthority}$$
 
 ---
 
-### Section 16: WF-Net Soundness
-A workflow net (WF-net) has source place $i$, sink place $o$, and every node is on a path from $i$ to $o$.
-Soundness states are tracked at the type level:
-$$\text{SoundnessState} \in \{\texttt{Unknown}, \texttt{Claimed}, \texttt{Witnessed}\}$$
-The `WfNetConst<SOUNDNESS>` type restricts execution capabilities based on this parameter, requiring a cryptographically signed `SoundnessProof` from the engine to promote to $\texttt{Witnessed}$.
+## 15. Algorithm: paper-to-law manufacturing
+
+For each paper $p$:
+1. Extract formal objects.
+2. Extract algorithmic contribution.
+3. Extract input/output shapes.
+4. Extract assumptions and failure conditions.
+5. Classify structures that belong in `wasm4pm-compat` and `wasm4pm`.
+6. Define pass/fail fixtures and receipt/replay obligations.
+7. Emit paper-law row.
+
+Formal expression:
+$$\Phi(p) = \{O_p, A_p, I_p, Y_p, H_p, \text{Fail}_p, \text{Compat}_p, \text{Wasm}_p, \text{PM4Py}_p, \text{Fixtures}_p, \text{Receipts}_p, \text{Replay}_p, \text{Board}_p, \text{Lifecycle}_p, \text{Decommission}_p\}$$
+
+A paper is not COVERED unless:
+$$\text{Covered}(p) \iff \text{Compat}_p \lor \text{Wasm}_p \lor \text{ExplicitGraduationBoundary}_p$$
 
 ---
 
-### Section 17: POWL Projection Law
-A Partially Ordered Workflow Language (POWL) model $M$ is process-tree projectable if and only if:
-$$\mathcal{L}(M) = \mathcal{L}(T) \quad \text{for some block-structured process tree } T$$
-If $M$ contains irreducible partial orders, it exceeds the process tree language. The `TreeProjectable` trait is sealed and implemented only for `ProcessTreeProjectable`.
-Acyclic partial orders are verified using the `AcyclicPartialOrder` witness.
+## 16. Algorithm: PM4Py oracle mapping
+
+For each PM4Py capability $c$:
+1. Identify capability, input assumptions, and output.
+2. Identify process standard involved and algorithm family.
+3. Define compat type obligation, wasm4pm execution obligation, and receipt/refusal/replay surfaces.
+
+Formal expression:
+$$\Omega(c) = \{\text{Input}, \text{Output}, \text{Standard}, \text{Algorithm}, \text{Assumption}, \text{CompatType}, \text{WasmExecution}, \text{Refusal}, \text{Receipt}, \text{Replay}, \text{Lifecycle}, \text{BoardClaim}\}$$
+$$\text{BlueRiverReady}(c) \iff \text{PM4PyCapability}(c) \wedge \text{TypeLaw}(c) \wedge \text{ExecutionAuthority}(c) \wedge \text{Receipt}(c) \wedge \text{Replay}(c) \wedge \text{LifecyclePlacement}(c)$$
 
 ---
 
-### Section 18: Conformance Metrics
-The four quality dimensions (fitness, precision, generalization, simplicity) and F1 score are represented as rational numbers $\frac{p}{q} \in [0, 1]$.
-This is compile-enforced via the where-bounds:
-$$\text{Metric}\langle\text{const KIND: QualityMetricKind, const NUM: u64, const DEN: u64}\rangle \quad \text{where} \quad \text{Between01}\langle\text{NUM, DEN}\rangle: \text{IsTrue}$$
+## 17. Algorithm: admissible process evidence
+
+For raw operational event stream $x$:
+1. Identify candidate witness $W$.
+2. Validate structural shape, object identity, and event-object links.
+3. Verify lifecycle state and public standard mapping.
+4. If all required conditions hold, emit $\text{Evidence}<T, \text{Admitted}, W>$. Otherwise, emit $\text{Refusal}(F)$ or $\text{Partial}(X)$.
+
+Formal expression:
+$$\text{Admit}(x, W, T) \to \text{Evidence}<T, \text{Admitted}, W> \mid \text{Refusal}(F) \mid \text{Partial}(X)$$
 
 ---
 
-### Section 19: New Modules
-We formalize three additional modules:
-1. **Process Cube**: Dimensions are encoded as distinct types using const-strings:
-$$\text{CubeDimension}\langle\text{const NAME: \&'static str}\rangle$$
-2. **Temporal Ordering**: Four-valued temporal ordering relation:
-$$\text{TemporalOrder} = \{\texttt{Before}, \texttt{After}, \texttt{Concurrent}, \texttt{Unknown}\}$$
-3. **Object Lifecycle**: Phase transitions enforced through typestate methods:
-$$\text{PHASE} \in \{\texttt{Created}, \texttt{Active}, \texttt{Modified}, \texttt{Archived}, \texttt{Deleted}\}$$
-To prevent the nightly Rust compiler E0391 variance cycle, intermediate type aliases are used:
-$$\text{type ActiveToModified}\langle T \rangle = \text{LifecycledObject}\langle T, \texttt{Modified} \rangle$$
+## 18. Algorithm: receipt-bearing execution
+
+For admitted evidence, algorithm, and parameters:
+1. Verify algorithm is allowed for $W$ and parameters are typed.
+2. Execute algorithm.
+3. Capture inputs, outputs, residuals, and refusal boundaries.
+4. Emit verdict, receipt, and replay bundle.
+
+Formal expression:
+$$\text{Execute}(\text{Evidence}<T, \text{Admitted}, W>, \text{Algorithm } a, \text{Parameters } \theta) \to \text{Verdict } V + \text{Receipt } R + \text{ReplayBundle } \Gamma + \text{Residual } X$$
+where:
+$$V \implies R, \quad R \implies \Gamma, \quad \Gamma \implies \text{Evidence}<T, \text{Admitted}, W>$$
 
 ---
 
-## Part IV: Formal Foundations and Future Directions (Chapter 8)
+## 19. Algorithm: M&A deck manufacturing
 
-### Section 20: The Process Canon Summary
-The formal objects of the process mining canon are summarized in the following table:
+For validated process intelligence:
+1. Identify deal thesis and board claim families.
+2. For each claim, verify evidence path, public standard, lifecycle state, receipt, and replay.
+3. Classify claim as VALIDATED, PARTIAL, or REFUSED. Render slide only if status is explicit.
 
-| Canon Object | Paper Authority | Rust Type | Law Enforced |
-| :--- | :--- | :--- | :--- |
-| **OCEL 2.0** | Berti & van der Aalst (2023) | `OcelLog` | Bipartite graphs, typed links |
-| **XES** | IEEE 1849 (2016) | `XesLog` | Single-case notion, non-empty prefix |
-| **Petri Net** | Murata (1989) | `WfNetConst<S>` | Disjoint sets $P, T$; bipartite arcs |
-| **WF-Net** | van der Aalst (1998) | `WfNetConst<S>` | Non-forgeable soundness witness |
-| **POWL** | Kourani (2024) | `ProcessTreeProjectable` | Irreducible partial order check |
-| **Metrics** | Carmona (2018) | `FitnessConst<N,D>` | Value in $[0,1]$ via `Between01` |
-| **Lifecycle** | Berti (2023) | `LifecycledObject<T,P>` | Phase-transition DAG |
+Formal expression:
+$$\text{Deck} = \pi(\{B_i\})$$
+where:
+$$B_i \text{ valid} \iff \text{Evidence}_i \wedge \text{TypeLaw}_i \wedge \text{Receipt}_i \wedge \text{Replay}_i \wedge \text{Standard}_i \wedge \text{Lifecycle}_i$$
 
 ---
 
-### Section 21: The Evidence Lifecycle as a Partial Order
-The set of stage tokens $S$ forms a partially ordered set $(S, \preceq)$ where:
-$$s_1 \preceq s_2 \iff \text{there exists a lawful transition sequence } s_1 \to \cdots \to s_2$$
-The relation is reflexive, antisymmetric, and transitive.
+## 20. Algorithm: decommissioning
 
-**Theorem: Monotonicity of Evidence Transitions:**
-Let $f: \text{Evidence}\langle T, s_1, W \rangle \to \text{Evidence}\langle T, s_2, W \rangle$ be any lawful transition. Then:
-$$s_1 \preceq s_2$$
-**Proof:**
-By exhaustive inspection of the public constructors of `Evidence`. Transition methods are strictly one-way (e.g. `into_parsed`, `into_projected`, `into_receipted`), mapping from an earlier stage to a later stage. The constructors for advanced states are `pub(crate)` or sealed, meaning external callers cannot bypass the order. Hence, $s_1 \preceq s_2$. $\square$
+For active process $P$:
+1. Identify process dependencies, active obligations, and evidence retention requirements.
+2. Close or refuse each dependency.
+3. Emit final replay, archive bundle, and decommission receipt.
 
----
-
-### Section 22: Witness Markers as a Free Monoid
-Let $\mathcal{W}$ be the set of types implementing the `Witness` trait. The nominal type system ensures that:
-$$\iota(W_1, W_2) = 0 \implies \text{Admission}\langle T, W_1 \rangle \not\equiv \text{Admission}\langle T, W_2 \rangle$$
-This nominal separation means witness markers act as unique coordinates in the type-level authority space. No coercion exists between different witness coordinates.
+Formal expression:
+$$\delta(P) \to \text{Retired}(P) + \text{Archive}(A) + \text{Receipt}(R_\delta)$$
+only if:
+$$\forall \text{dep} \in \text{Dependencies}(P), \text{Closed}(\text{dep}) \lor \text{Refused}(\text{dep})$$
+and:
+$$\forall \text{claim} \in \text{Claims}(P), \text{ArchivedEvidence}(\text{claim}) \lor \text{RevokedClaim}(\text{claim})$$
 
 ---
 
-### Section 23: The Between01 Lattice and Conformance Arithmetic
-Let $\mathbb{Q}_{01} = \{ \frac{p}{q} \in \mathbb{Q} \mid 0 \leq \frac{p}{q} \leq 1, q > 0 \}$. $\mathbb{Q}_{01}$ is a bounded lattice under:
-$$\frac{p_1}{q_1} \wedge \frac{p_2}{q_2} = \min\left(\frac{p_1}{q_1}, \frac{p_2}{q_2}\right), \qquad \frac{p_1}{q_1} \vee \frac{p_2}{q_2} = \max\left(\frac{p_1}{q_1}, \frac{p_2}{q_2}\right)$$
-with bounds $0/1$ and $1/1$.
+## 21. Negative evidence and refusal capital
 
-For trace token-replay fitness of $\tau_i$ against WF-net $N$:
-$$f(\tau_i, N) = \frac{1}{2}\left(1 - \frac{m_i}{c_i}\right) + \frac{1}{2}\left(1 - \frac{r_i}{p_i}\right) \in [0, 1]$$
-Aggregate fitness of $L = \{\tau_1, \ldots, \tau_n\}$ is:
-$$F(L, N) = \frac{\sum_{i=1}^n |\tau_i| \cdot f(\tau_i, N)}{\sum_{i=1}^n |\tau_i|}$$
+Positive evidence tells what happened. Negative evidence tells what cannot be truthfully claimed. Let $F$ be the refusal set:
+$$F = \{f_1, f_2, \dots, f_n\}$$
 
-Precision via the escaping-edges estimator is:
-$$\text{prec}(L, N) = \frac{\sum_{\hat\sigma \in \text{Pref}(L)} | \text{EN}(N, \hat\sigma) \cap A(L) |}{\sum_{\hat\sigma \in \text{Pref}(L)} | \text{EN}(N, \hat\sigma) |} \in [0, 1]$$
+Each refusal $f$ is a boundary around false process claims. Refusal capital grows as:
+$$\text{RefusalCapital} = \sum \text{verified refusals with receipts}$$
+This is a moat. Competitors cannot instantly copy accumulated refusal capital.
 
 ---
 
-### Section 24: WF-Net Soundness as a Reachability Decision Problem
-Deciding whether an arbitrary Petri net is sound is PSPACE-complete.
-Block-structured nets are certified statically via their construction invariants. The incidence matrix $C$ is used to compute place invariants $A$:
-$$A \in \ker(C^\top) \implies A \cdot \mathbf{m} = A \cdot M_0 \quad \text{for all reachable markings } \mathbf{m}$$
-Soundness is verified by checking that the minimal $P$-invariants cover all places in $P$.
+## 22. Post-cyberpunk nonfiction in working code
+
+This project is not futuristic fiction. It is future-shaped infrastructure written into working systems. Post-cyberpunk means:
+*the speculative layer has become executable.*
+The proof is not vibes; it is tests, gates, receipts, commits, and refusal.
+$$\text{Post-cyberpunk is nonfiction writing in working code}$$
+- The codebase is the prose.
+- The fixtures are the counterfactuals.
+- The receipts are the citations.
+- The replay bundle is the appendix.
+- The checkpoint is the editor.
+- The board deck is the executive edition.
 
 ---
 
-### Section 25: Algorithm: The ALIVE Certification Protocol
-Let $\mathcal{C}$ be the codebase, $\mathcal{F}^+$ compile-pass fixtures, $\mathcal{F}^-$ compile-fail fixtures, and $\mathcal{D}$ expected stderr diagnostics.
+## 23. Why this is above current practice
 
-**Algorithm: ALIVE Protocol:**
-1. Initialize $R \leftarrow \emptyset$.
-2. For each $f^+ \in \mathcal{F}^+$:
-   * If $\text{Compile}(\mathcal{C} \cup \{f^+\}) \neq \text{Ok}$, then $R \leftarrow R \cup \{(\text{PASS\_FAIL}, f^+)\}$.
-3. For each $(f^-, d) \in \mathcal{F}^- \times \mathcal{D}$:
-   * Let $res \leftarrow \text{Compile}(\mathcal{C} \cup \{f^-\})$.
-   * If $res = \text{Ok}$, $R \leftarrow R \cup \{(\text{FAIL\_PASS}, f^-)\}$.
-   * Else if $\text{diagnostic}(res) \neq d$, $R \leftarrow R \cup \{(\text{WRONG\_LAW}, f^-, d)\}$.
-4. If $R = \emptyset$, return $\text{ALIVE}$. Else, return $\text{PARTIAL}(R)$.
+Current best practices are frozen observations of yesterday's production systems. This project manufactures tomorrow's patterns.
+- **Old stack**: ticket $\to$ branch $\to$ PR $\to$ review $\to$ test $\to$ deploy $\to$ dashboard $\to$ retro.
+- **New stack**: public law $\to$ type surface $\to$ admission $\to$ actuation $\to$ receipt $\to$ replay $\to$ repair $\to$ projection $\to$ decommission.
+It does not ask "Did the code pass tests?". It asks: "Can the lifecycle claim be admitted, replayed, audited, relied upon, and retired?"
 
 ---
 
-### Section 26: Loss-Policy Algebra
-The three loss policies form a semiring $(\mathcal{L}, \oplus, \otimes)$ ordered by permissiveness:
-$$\text{RefuseLoss} \leq \text{AllowNamedProjection} \leq \text{AllowLossWithReport}$$
-where $p_1 \oplus p_2 = \max(p_1, p_2)$ and $p_1 \otimes p_2 = \min(p_1, p_2)$.
+## 24. Algebra of board reliance
 
-A loss report is a signed measure $\ell: \mathcal{I} \to \mathbb{N}_0$ over the item universe $\mathcal{I}$ of dropped structures. Total loss is the $L_1$ norm:
-$$\|\ell\|_1 = \sum_{x \in \mathcal{I}} \ell(x) \in \mathbb{N}_0$$
-A projection is lossless if and only if $\|\ell\|_1 = 0$.
+A board claim $B$ is reliable if and only if:
+$$\text{Reliable}(B) \iff E \wedge T \wedge R \wedge \Gamma \wedge S \wedge L \wedge \text{explicit}(X) \wedge \text{explicit}(F)$$
+Reliability does not require zero residuals; it requires explicit residuals. It does not require no refusals; it requires known refusal boundaries.
+$$\text{Unknown risk} > \text{refused false claim}$$
 
 ---
 
-### Section 27: Algorithm: Admission Gate and the Graduation Functor
-The structural admission gate maps:
-$$\text{Admit}(v, W) \to \text{Result}\langle\text{Admission}\langle T, W \rangle, \text{Refusal}\langle R, W \rangle\rangle$$
-where $R$ is a named structural law. The validation check runs in $O(|\Lambda_W| \cdot |v|)$ time.
+## 25. The research program as theorem prover
 
-The graduation map is a functor $\mathcal{G}: \mathbf{Struct} \to \mathbf{Exec}$ mapping structural types in $\mathbf{Struct}$ to their corresponding runtime representations in $\mathbf{Exec}$.
+`~/process-intelligence` is a theorem-proving environment for process intelligence claims. A research claim $C$ must be grounded as a theorem over papers, standards, compat types, and execution laws.
+A claim checkpoint is:
+$$\kappa(C) \in \{\text{ALIVE}, \text{PARTIAL}, \text{REFUSED}\}$$
 
-**Algorithm: Receipt-Bearing Commit Validation:**
-1. Given range $[c_1, c_2]$ in repository $\mathcal{R}$, initialize $\text{violations} \leftarrow [ ]$.
-2. For each commit $c \in [c_1, c_2]$:
-   * Let $msg \leftarrow \text{CommitMessage}(c)$.
-   * If "Law:" $\notin msg$ or the class prefix is not in $\{\texttt{type-law}, \texttt{fixture-pass}, \texttt{fixture-fail}, \texttt{paper-ledger}, \texttt{audit}\}$, add $c$ to $\text{violations}$.
-3. Return $\text{violations}$.
+---
 
-**Differential Analysis of Certification State:**
-Let $\mathbf{g} = (g_1, \ldots, g_{10}) \in \mathbb{N}^{10}$ be the gate counts. The certification step is monotone if:
-$$\Delta\mathbf{g}^{(k)} = \mathbf{g}^{(k+1)} - \mathbf{g}^{(k)} \geq \mathbf{0}$$
-which ensures that counts of fixtures, papers, and audits never decrease during development.
+## 26. The 250-commit research program in compressed algebra
+
+Let $N = 250$. Let phases $\Phi$ be:
+$$\Phi = \{\Phi_0, \Phi_1, \Phi_2, \Phi_3, \Phi_4, \Phi_5, \Phi_6, \Phi_7, \Phi_8, \Phi_9, \Phi_{10}, \Phi_{11}\}$$
+Each commit $c_i$ must satisfy:
+$$\text{coherent}(c_i) \wedge \text{research\_transition}(c_i) \wedge \text{traceable}(c_i)$$
+The final summation:
+$$\sum_{i=1}^N c_i = \text{PROCESS\_INTELLIGENCE\_PARTIAL\_001} \quad \lor \quad \text{PROCESS\_INTELLIGENCE\_ALIVE\_001}$$
+
+---
+
+## 27. Final decompressed SPR kernel
+
+Process intelligence is full-lifecycle process authority. Telemetry is one signal surface; software is one manufactured artifact. A process claim becomes reliable only when it has public-standard grounding, typed evidence, lawful transition, receipt, replay, refusal boundary, residual map, and lifecycle state.
+
+Autonomic knowledge actuation means process knowledge does not describe a process from outside; it becomes the lawful machinery of its lifecycle. Public standards create reverse lock-in. Reverse Porter Five drives demand for validation. PM4Py is the oracle; `wasm4pm-compat` is the type foundry; `wasm4pm` is the execution authority; `ggen` is the factory; `~/process-intelligence` is the foundry; Blue River Dam is the court.
+
+Admit the evidence, execute with receipts, project to the board, retire with lineage. That is process intelligence.

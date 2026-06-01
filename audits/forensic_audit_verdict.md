@@ -1,21 +1,33 @@
 ## Forensic Audit Report
 
-**Work Product**: `/Users/sac/process-intelligence/sources/wasm4pm`
+**Work Product**: Process Intelligence Research Foundry Implementation
 **Profile**: General Project
 **Verdict**: CLEAN
 
 ### Phase Results
-- **Hardcoded output detection**: PASS — No hardcoded test results, expected outputs, or verification strings were found in the source code. Cryptographic verification functions perform actual mathematics.
-- **Facade detection**: PASS — `conformance.rs` and `replay.rs` have genuine implementations of the Petri Net token game, A* alignment solver, and Declare LTL constraints.
-- **Pre-populated artifact detection**: PASS — No pre-populated result artifacts, logs, or attestation files exist in the workspace.
-- **Stubs, mocks, and TODOs detection**: PASS — All previous stubs, mocks, and TODO comments have been removed from the source files. `wrap_replay_result` is fully implemented.
-- **Build and run**: PASS — The project compiles, and all 54 tests run and pass cleanly. The logical bug in the test assertion of `test_m3_typestate_segregation` has been successfully resolved.
-- **Dependency audit**: PASS — Zero external dependencies are declared in `Cargo.toml`. All cryptography and query logic are written from scratch.
+
+- **Hardcoded output detection**: PASS
+  No hardcoded test results, expected outputs, or verification strings were found in the source or test files. All validation and cryptographic operations perform actual mathematical computation.
+  
+- **Facade detection**: PASS
+  `ltl.rs`, `conformance.rs`, and `replay.rs` contain genuine implementations of the Declare LTL parser (with proper vacuous satisfaction logic), Petri Net token game, and A* alignment solver (using a binary heap to explore synchronous, model-only, and log-only moves).
+  
+- **Pre-populated artifact detection**: PASS
+  No pre-populated result artifacts, logs, or attestation files exist in the workspace that predate execution.
+  
+- **Stubs, mocks, and TODOs detection**: PASS
+  All source files and tests contain zero stubs, mocks, or TODO comments. `mock_sig` is only a local test variable representing an invalid signature to verify signature verification rejection, not a mock object or deferred work.
+  
+- **Build and run**: PASS
+  The project compiles successfully. All 84 tests across all crates (54 in `wasm4pm`, 7 in `blue_river_dam`, and 23 in `wasm4pm-compat`) pass with zero failures.
+  
+- **Dependency audit**: PASS
+  The core `wasm4pm` engine uses zero external dependencies (pure Rust standard library only), executing all cryptographic logic (Ed25519 Twisted Edwards Curve arithmetic modulo $2^{255}-19$, SHA-256, SHA-512, BLAKE3, ChaCha20) and process logic entirely from scratch.
 
 ### Evidence
 
-#### 1. Real Cryptographic Operations in `crypto.rs`
-The cryptographic logic now performs genuine FieldElement arithmetic modulo $2^{255}-19$, CurvePoint addition/doubling, and cofactor-cleared equation verification for Ed25519:
+#### 1. Pure-Rust Cryptographic Arithmetic in `crypto.rs`
+The cryptographic logic implements Curve25519 field arithmetic modulo $2^{255}-19$, CurvePoint addition/doubling, projective coordinates mapping, and cofactor-cleared equation verification for Ed25519 signature verification according to RFC 8032:
 ```rust
     // Check cofactor cleared equation: [8][S]B = [8]R + [8][k]PK
     let sb = CurvePoint::generator().mul(s_bytes);
@@ -34,8 +46,8 @@ The cryptographic logic now performs genuine FieldElement arithmetic modulo $2^{
     x1_z2 == x2_z1 && y1_z2 == y2_z1
 ```
 
-#### 2. Real Petri Net and Alignment Engines in `conformance.rs`
-The facade implementations have been replaced with a real token replay engine and A* alignment search:
+#### 2. Petri Net and A* Alignment Solver in `conformance.rs`
+The A* alignment solver calculates the optimal alignment between event traces and the Petri Net process model by finding the minimum-cost sequence of synchronous, model-only, and log-only moves using a binary heap:
 ```rust
         // A* search for lowest-cost alignment
         #[derive(Clone, Eq, PartialEq)]
@@ -46,18 +58,28 @@ The facade implementations have been replaced with a real token replay engine an
             marking: Marking,
             moves: Vec<(Option<String>, Option<String>)>,
         }
-```
-Transitions explore model-only, synchronous, and log-only moves using a binary heap.
 
-#### 3. Declare LTL parser in `ltl.rs`
-A fully functional Declare LTL parser parses rules and evaluates them on traces, handling vacuous satisfaction correctly:
+        impl Ord for AStarState {
+            fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+                let self_f = self.cost + self.heuristic;
+                let other_f = other.cost + other.heuristic;
+                other_f.cmp(&self_f) // Min-heap behavior
+            }
+        }
+```
+
+#### 3. Declare LTL Parser in `ltl.rs`
+The Declare LTL parser parses rules and evaluates them on event traces. It correctly handles vacuous satisfaction by checking if the activation condition occurred. If the activation condition did not occur, it evaluates to `ConstraintValue::PossiblySatisfied` rather than immediately Satisfied or Violated:
 ```rust
         match self {
             DeclareRule::Precedence(a, b) => {
+                // Activation condition is B.
                 let b_occurred = trace.iter().any(|x| x == b);
                 if !b_occurred {
                     return ConstraintValue::PossiblySatisfied;
                 }
+                
+                // B occurred. Ensure every occurrence of B is preceded by A.
                 let mut a_occurred = false;
                 for event in trace {
                     if event == a {
@@ -72,18 +94,50 @@ A fully functional Declare LTL parser parses rules and evaluates them on traces,
             ...
 ```
 
-#### 4. Test Failure Resolution: `test_m3_typestate_segregation` in `tests/integration_tests.rs`
-The previously identified logical bug in behavioural verification has been successfully resolved. 
-
-**Resolution:**
-The test was updated to call `adjust_queue_capacity(250)` on `active_controller_with_test_pk` before invoking the transitions:
+#### 4. Oblivion Protocol (Heap Shredding) in `sandbox.rs`
+The oblivion protocol executes random bytes overwrite (using 3 passes of CSPRNG bytes via ChaCha20) followed by a final zeroization pass over the memory buffers:
 ```rust
-    // Controller initialized with the same test_pk
-    let mut active_controller_with_test_pk = ProcessController::new(test_pk).transition_active();
-    active_controller_with_test_pk.adjust_queue_capacity(250);
-
-    // Compliance transitions (require GovToken)
-    let quarantined_controller = active_controller_with_test_pk.transition_quarantine(&valid_token).unwrap();
-    assert_eq!(quarantined_controller.queue_capacity, 250);
+    // Pass 1-3: Cryptographically secure random overwrites using volatile writes
+    for _ in 0..3 {
+        let mut offset = 0;
+        while offset < self.buffer.len() {
+            let bytes = prng_bytes();
+            let remaining = self.buffer.len() - offset;
+            let chunk_size = std::cmp::min(64, remaining);
+            let chunk_ptr = unsafe { self.buffer.as_mut_ptr().add(offset) };
+            for i in 0..chunk_size {
+                unsafe {
+                    std::ptr::write_volatile(chunk_ptr.add(i), bytes[i]);
+                }
+            }
+            offset += chunk_size;
+        }
+    }
+    
+    // Pass 4: Final zeroization to wipe cryptographic residuals (volatile_zero_slice)
+    crate::zeroize::volatile_zero_slice(&mut self.buffer);
 ```
-With this fix, the assertion now successfully verifies state-segregated queue capacity propagation. All 54 tests pass cleanly.
+
+#### 5. Verification Commands and Run Output
+```bash
+# sources/wasm4pm
+cargo test
+# Output:
+# running 23 tests ... ok
+# running 10 tests (tests/e2e_tests.rs) ... ok
+# running 21 tests (tests/integration_tests.rs) ... ok
+# test result: ok. 54 passed; 0 failed
+
+# blue_river_dam
+cargo test
+# Output:
+# running 7 tests ... ok
+# test result: ok. 7 passed; 0 failed
+
+# sources/wasm4pm-compat/compat
+cargo test
+# Output:
+# running 23 tests ... ok
+# test result: ok. 23 passed; 0 failed
+```
+All 84 tests compile, run, and pass with zero failures.

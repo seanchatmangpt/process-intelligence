@@ -320,10 +320,14 @@ impl PetriNet {
             .collect();
 
         // 4. Proper Completion Check
-        // If the sink place has a token, no other place can have tokens.
+        // If the sink place has a token, no other place can have tokens,
+        // and the sink place must contain exactly one token (van der Aalst soundness).
         let mut proper_completion = true;
         for m in &visited {
             if m.get_tokens(&snk) > 0 {
+                if m.get_tokens(&snk) != 1 {
+                    proper_completion = false;
+                }
                 // Check if any other place has tokens
                 for p in &self.places {
                     if p != &snk && m.get_tokens(p) > 0 {
