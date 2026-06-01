@@ -1,0 +1,8 @@
+{
+  "name": "process-intelligence-visualizer",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Autonomic Feedback Loop Controls and Process Intelligence Visualizer Simulation Dashboard",
+  "private": true,
+  "dependencies": {}
+}

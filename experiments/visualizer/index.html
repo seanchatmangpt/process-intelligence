@@ -1,341 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Process Intelligence Simulation Engine</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Main Stylesheet -->
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="dark-theme">
-  <div class="app-container">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process Intelligence Simulation Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
     
-    <!-- Premium Glassmorphic Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo-container">
-          <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89H18v3" />
-          </svg>
-          <span class="logo-text">PROCESS.<span class="highlight">IO</span></span>
+    <!-- Load Cryptography Ledger & A* Alignment Modules First -->
+    <script src="ledger.js"></script>
+    <script src="alignment.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo-section">
+            <h1>Process Intelligence Simulation Dashboard</h1>
+            <p>Execution Engine: WASM4PM Core JS Emulator v2.1.0</p>
         </div>
-        <p class="tagline">Process Intelligence Simulator</p>
-      </div>
-
-      <nav class="sidebar-nav">
-        <div class="nav-section-title">Control Station</div>
-        
-        <!-- Simulation Run Configurations -->
-        <div class="control-group">
-          <label for="simulation-speed">Simulation Speed (ms/tick)</label>
-          <div class="range-container">
-            <input type="range" id="simulation-speed" min="100" max="2000" value="500" step="50">
-            <span class="range-val" id="speed-val">500ms</span>
-          </div>
+        <div class="header-links">
+            <span class="text-muted">References:</span>
+            <a href="file:///Users/sac/process-intelligence/experiments/petri_conformance_sample.md" class="std-link" target="_blank">petri_conformance_sample.md</a> |
+            <a href="file:///Users/sac/process-intelligence/experiments/replay_receipt_sample.md" class="std-link" target="_blank">replay_receipt_sample.md</a> |
+            <a href="file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md" class="std-link" target="_blank">prov-o_provenance_placement.md</a>
         </div>
+    </header>
 
-        <div class="control-group">
-          <label for="noise-rate">Process Noise / Deviation Rate</label>
-          <div class="range-container">
-            <input type="range" id="noise-rate" min="0" max="100" value="15" step="5">
-            <span class="range-val" id="noise-val">15%</span>
-          </div>
-        </div>
-
-        <div class="control-group">
-          <label class="toggle-container">
-            <span class="toggle-label">Inject Anomaly (Concept Drift)</span>
-            <input type="checkbox" id="toggle-drift-injection">
-            <span class="toggle-slider"></span>
-          </label>
-          <span class="control-desc">Injects process delay & deviation at runtime.</span>
-        </div>
-
-        <div class="control-group">
-          <label class="toggle-container">
-            <span class="toggle-label">Auto-Solve Alignments</span>
-            <input type="checkbox" id="toggle-auto-alignment" checked>
-            <span class="toggle-slider"></span>
-          </label>
-          <span class="control-desc">Compute A* optimal path alignment on case complete.</span>
-        </div>
-
-        <div class="nav-section-title">Engine Quick Actions</div>
-        <div class="button-stack">
-          <button id="btn-inject-anomaly" class="btn btn-warning">
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            Trigger Concept Drift Now
-          </button>
-          <button id="btn-reset-engine" class="btn btn-danger">
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89H18v3" />
-            </svg>
-            Full Engine Reset
-          </button>
-        </div>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="developer-info">
-          <span>Engine Status: <span class="status-indicator online"></span> Ready</span>
-          <span class="version">v1.4.2-wasm4pm</span>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Workspace Section -->
-    <main class="main-content">
-      
-      <!-- Top Status Bar / Metrics Grid -->
-      <header class="status-bar">
-        <div class="metric-card">
-          <div class="metric-info">
-            <span class="metric-label">Completed Cases</span>
-            <span class="metric-value" id="metric-completed-cases">0</span>
-          </div>
-          <div class="metric-visual blue">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </div>
-        </div>
-
-        <div class="metric-card">
-          <div class="metric-info">
-            <span class="metric-label">Avg Throughput Time</span>
-            <span class="metric-value" id="metric-avg-duration">0.0s</span>
-          </div>
-          <div class="metric-visual purple">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </div>
-        </div>
-
-        <div class="metric-card">
-          <div class="metric-info">
-            <span class="metric-label">Average Alignment Fitness</span>
-            <span class="metric-value" id="metric-avg-fitness">1.00</span>
-          </div>
-          <div class="metric-visual emerald">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" /></svg>
-          </div>
-        </div>
-
-        <div class="metric-card">
-          <div class="metric-info">
-            <span class="metric-label">Ledger Integrity</span>
-            <span class="metric-value status-text-success" id="metric-ledger-integrity">VALID</span>
-          </div>
-          <div class="metric-visual gold" id="ledger-visual-status">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-          </div>
-        </div>
-      </header>
-
-      <!-- Main 4-Dashboard Workspace Grid -->
-      <div class="workspace-grid">
-        
-        <!-- DASHBOARD 1: Token Game & Process Map -->
-        <section class="dashboard-panel" id="panel-token-game">
-          <div class="panel-header">
-            <div class="panel-title-area">
-              <span class="panel-badge blue">01</span>
-              <h2>Process Map & Token Game Replayer</h2>
+    <main class="dashboard-grid">
+        <!-- LEFT SIDEBAR: Simulation Controls & Case History -->
+        <section class="sidebar">
+            <!-- Simulator Control Panel -->
+            <div class="panel">
+                <div class="panel-title">Simulation Panel</div>
+                <div class="control-group">
+                    <button class="btn btn-primary" id="btnSingleSim">Simulate Single Case</button>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <button class="btn" id="btnStartSim">▶ Run Stream</button>
+                        <button class="btn btn-active" id="btnPauseSim">⏸ Pause Stream</button>
+                    </div>
+                </div>
             </div>
-            <div class="panel-actions">
-              <span class="active-tokens-indicator">Tokens: <span id="active-tokens-count">0</span></span>
+
+            <!-- Drift Injector Panel -->
+            <div class="panel">
+                <div class="panel-title">Drift Injector</div>
+                <div class="control-group">
+                    <label class="switch-label">
+                        <input type="checkbox" id="driftToggle">
+                        <span>Activate Process Drift</span>
+                    </label>
+                    
+                    <div class="control-group">
+                        <span class="control-label">Drift Profile:</span>
+                        <select class="form-select" id="driftTypeSelector" disabled>
+                            <option value="skip_approve">Control-Flow: Skip Approval</option>
+                            <option value="delay_inspect">Performance: Inspector Bottleneck</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-danger" id="btnClearStats">Reset Statistics</button>
+                </div>
             </div>
-          </div>
-          <div class="panel-content">
-            <div class="canvas-wrapper">
-              <canvas id="token-game-canvas"></canvas>
+
+            <!-- Live Stream Feed Cases -->
+            <div class="panel">
+                <div class="panel-title">Live Case Stream</div>
+                <div class="case-table-container">
+                    <table class="case-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Variant</th>
+                                <th>Fitness</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="caseListBody">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">Awaiting simulation data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="dashboard-controls flex-row">
-              <button id="btn-token-step" class="btn btn-outline" title="Single step transitions">Step Simulation</button>
-              <button id="btn-token-play" class="btn btn-primary">Play</button>
-              <button id="btn-token-reset" class="btn btn-outline">Reset Map</button>
-              <div class="place-marking-status">
-                <span>Markings: </span>
-                <code id="marking-vector">[P1:1, P2:0, P3:0, P4:0, P5:0, P6:0]</code>
-              </div>
-            </div>
-          </div>
         </section>
 
-        <!-- DASHBOARD 2: A* Alignment Solver -->
-        <section class="dashboard-panel" id="panel-alignment">
-          <div class="panel-header">
-            <div class="panel-title-area">
-              <span class="panel-badge purple">02</span>
-              <h2>A* Alignment Solver</h2>
-            </div>
-            <span class="panel-meta">Optimal Process Conformant Mapping</span>
-          </div>
-          <div class="panel-content flex-column">
-            <div class="alignment-io-grid">
-              <div class="form-group">
-                <label for="trace-select">Select Trace Variant to Align</label>
-                <div class="flex-row">
-                  <select id="trace-select" class="form-select">
-                    <option value="conforming_standard">Conforming: Receive Order → Check Inventory → Approve → Ship → End</option>
-                    <option value="conforming_skip_check">Conforming: Receive Order → Approve → Ship → End (Auto-bypass)</option>
-                    <option value="deviant_skipped_approval">Deviant: Receive Order → Check Inventory → Ship → End (Skipped Approval!)</option>
-                    <option value="deviant_extra_ship">Deviant: Receive Order → Ship → Ship → End (Double Shipping!)</option>
-                    <option value="deviant_illegal_activity">Deviant: Receive Order → Refund → Ship → End (Illegal Refund!)</option>
-                    <option value="custom">-- Custom Trace --</option>
-                  </select>
+        <!-- MAIN AREA: Petri Net, Alignments, Charts, and Ledger -->
+        <section class="main-content">
+            <!-- Row 1: Petri Net & Conformance Alignment -->
+            <div class="row-split">
+                <!-- Petri Net Visualizer -->
+                <div class="panel">
+                    <div class="panel-title">
+                        <span>Petri Net Token Game Simulator</span>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-sm" id="btnStepReplay">Step Trace</button>
+                            <button class="btn btn-sm" id="btnResetReplay">Reset</button>
+                        </div>
+                    </div>
+                    <div class="petri-visualizer">
+                        <svg class="petri-svg" id="petriNetSvg" viewBox="0 0 1020 300"></svg>
+                    </div>
+                    <div class="replay-stats-bar">
+                        <div class="replay-stat-item">Inspected: <span id="insCaseId" class="text-glow">C-0000</span></div>
+                        <div class="replay-stat-item">Trace: <span id="insTrace" class="trace-badge">[]</span></div>
+                        <div class="replay-stat-item">Fitness: <strong id="insFitness">0%</strong></div>
+                        <div class="replay-stat-item">Duration: <strong id="insDuration">0s</strong></div>
+                    </div>
                 </div>
-              </div>
-              <div class="form-group" id="custom-trace-container" style="display: none;">
-                <label for="custom-trace-input">Enter Custom Log Trace (comma separated)</label>
-                <input type="text" id="custom-trace-input" class="form-input" placeholder="e.g. Receive Order, Ship, End">
-              </div>
+
+                <!-- Conformance Alignment Visualizer -->
+                <div class="panel">
+                    <div class="panel-title">A* Conformance Alignment</div>
+                    <div class="alignment-container" id="alignmentContainer">
+                        <div class="text-center text-muted" style="padding-top: 50px;">
+                            Select a simulated case from the feed list to compute A* alignment moves.
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="solver-run-bar flex-row">
-              <button id="btn-run-alignment" class="btn btn-primary btn-sm">Solve Alignment (A*)</button>
-              <div class="solver-stats">
-                <span>Search Stats: </span>
-                <span class="stat-bubble">Expanded: <strong id="solver-nodes-expanded">0</strong></span>
-                <span class="stat-bubble">Duration: <strong id="solver-duration">0ms</strong></span>
-                <span class="stat-bubble">Total Cost: <strong id="solver-total-cost">0</strong></span>
-              </div>
+            <!-- Row 2: EWMA Process Drift Monitor -->
+            <div class="panel">
+                <div class="panel-title">Statistical Process Drift monitor (EWMA Control Chart)</div>
+                <div class="alarm-banner" id="driftAlarmBanner">
+                    No active process drifts detected. Running within standard parameters.
+                </div>
+                <div class="ewma-chart-wrapper">
+                    <canvas class="ewma-canvas" id="ewmaCanvas" width="900" height="180"></canvas>
+                </div>
             </div>
 
-            <!-- Alignment Output Visualization Area -->
-            <div class="alignment-visualization">
-              <div class="alignment-row" id="align-row-log">
-                <div class="row-label">Log Trace:</div>
-                <div class="row-cells" id="log-trace-cells">
-                  <!-- JS generated elements -->
-                  <div class="empty-state">No alignment solved yet. Click 'Solve Alignment' to compute.</div>
-                </div>
-              </div>
-              <div class="alignment-row" id="align-row-model">
-                <div class="row-label">Model Trace:</div>
-                <div class="row-cells" id="model-trace-cells">
-                  <!-- JS generated elements -->
-                </div>
-              </div>
-              <div class="alignment-row" id="align-row-operation">
-                <div class="row-label">Operation:</div>
-                <div class="row-cells" id="operation-cells">
-                  <!-- JS generated elements -->
-                </div>
-              </div>
+            <!-- Row 3: Cryptographic Ledger & Receipt Explorer (Loaded via ledger.js) -->
+            <div class="panel" id="ledgerContainer">
+                <!-- Cryptographic Ledger gets dynamically generated here -->
             </div>
-            
-            <div class="conformance-legend">
-              <span class="legend-item"><span class="legend-box sync"></span> Sync Move (Cost: 0)</span>
-              <span class="legend-item"><span class="legend-box move-log"></span> Move on Log (Cost: 1)</span>
-              <span class="legend-item"><span class="legend-box move-model"></span> Move on Model (Cost: 1)</span>
-            </div>
-          </div>
         </section>
-
-        <!-- DASHBOARD 3: EWMA Concept Drift Monitor -->
-        <section class="dashboard-panel" id="panel-drift">
-          <div class="panel-header">
-            <div class="panel-title-area">
-              <span class="panel-badge emerald">03</span>
-              <h2>EWMA Concept Drift Monitor</h2>
-            </div>
-            <span class="panel-meta" id="drift-status-indicator">Status: <strong class="text-success">In Control</strong></span>
-          </div>
-          <div class="panel-content flex-column">
-            <!-- Drift Warning Bar -->
-            <div class="drift-alert-banner" id="drift-alert">
-              <div class="alert-pulse"></div>
-              <span><strong>PROCESS DRIFT DETECTED:</strong> Out-of-control variance in throughput duration.</span>
-            </div>
-            
-            <div class="canvas-wrapper">
-              <canvas id="drift-chart-canvas"></canvas>
-            </div>
-
-            <div class="drift-parameters-grid">
-              <div class="slider-control">
-                <div class="slider-labels">
-                  <span class="lbl">EWMA Lambda (Smoothing Factor)</span>
-                  <span class="val" id="val-lambda">0.20</span>
-                </div>
-                <input type="range" id="drift-lambda" min="0.05" max="0.95" value="0.20" step="0.05">
-              </div>
-
-              <div class="slider-control">
-                <div class="slider-labels">
-                  <span class="lbl">Control Limit Sigma Limit (LCL/UCL)</span>
-                  <span class="val" id="val-sigma">3.00</span>
-                </div>
-                <input type="range" id="drift-sigma" min="1.50" max="5.00" value="3.00" step="0.10">
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- DASHBOARD 4: SHA-256 Event Ledger -->
-        <section class="dashboard-panel" id="panel-ledger">
-          <div class="panel-header">
-            <div class="panel-title-area">
-              <span class="panel-badge gold">04</span>
-              <h2>SHA-256 Tamper-Evident Event Ledger</h2>
-            </div>
-            <div class="panel-actions">
-              <button id="btn-ledger-verify" class="btn btn-outline btn-xs">Verify Chain</button>
-            </div>
-          </div>
-          <div class="panel-content flex-column">
-            <div class="ledger-chain-container" id="ledger-chain-view">
-              <!-- Dynamically rendered blocks -->
-            </div>
-            
-            <div class="ledger-summary flex-row">
-              <div class="ledger-stat">Blocks: <strong id="ledger-block-count">0</strong></div>
-              <div class="ledger-stat">State: <span class="badge badge-success" id="ledger-state-badge">VALID</span></div>
-              <div class="ledger-stat text-truncate">Latest Hash: <code class="text-xs" id="ledger-latest-hash">00000000000000000000</code></div>
-              <button id="btn-ledger-restore" class="btn btn-outline btn-sm" style="display: none;">Re-sign Ledger & Repair Chain</button>
-            </div>
-          </div>
-        </section>
-
-      </div>
-
-      <!-- Bottom Global Control Panel -->
-      <footer class="global-control-panel">
-        <div class="play-controls">
-          <button class="control-btn" id="btn-global-play" title="Play Simulation">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-          </button>
-          <button class="control-btn" id="btn-global-pause" title="Pause Simulation">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" /></svg>
-          </button>
-          <button class="control-btn" id="btn-global-step" title="Single Tick">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4" /><line x1="19" y1="5" x2="19" y2="19" /></svg>
-          </button>
-          <button class="control-btn" id="btn-global-reset" title="Reset All Dashboard States">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12a7 7 0 0 0-7-7 7.24 7.24 0 0 0-5.3 2.24L4 10m0 0v-4m0 4h4m10 4h-4m4 0v4m-4-4a7 7 0 0 1 7-7 7.24 7.24 0 0 1-5.3-2.24L20 14" /></svg>
-          </button>
-        </div>
-        
-        <div class="simulation-log-stream">
-          <span class="stream-title">Live Ledger Stream:</span>
-          <div class="stream-content" id="live-ledger-log">
-            [Engine Initialized] Waiting to begin simulation ticks...
-          </div>
-        </div>
-      </footer>
-
     </main>
-  </div>
-
-  <!-- Javascript Modules -->
-  <script src="ledger.js"></script>
-  <script src="astar.js"></script>
-  <script src="drift-detector.js"></script>
-  <script src="token-game.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>

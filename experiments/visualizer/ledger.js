@@ -1,491 +1,310 @@
 /**
- * ledger.js
- * Cryptographic Event-Chain Explorer & Conformance Replay Receipt Verification System
- * 
- * Provides:
- * - SHA-256 hashing of workflow event sequences
- * - Cryptographic linking of events (blockchain hash-chaining)
- * - ECDSA P-256 key pair generation, signing, and verification of Conformance Receipts
- * - Interactive ledger visualizer rendering with tampering simulations and verification logs
- * 
- * References:
- * - Conformance Replay Receipt Schema: file:///Users/sac/process-intelligence/experiments/replay_receipt_sample.md
- * - Conformance Replay Doctrine: file:///Users/sac/process-intelligence/experiments/petri_conformance_sample.md
- * - Provenance Placements: file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md
+ * ==========================================================================
+ * SHA-256 Tamper-Evident Process Ledger
+ * ==========================================================================
  */
 
-const ProcessLedger = (() => {
-    // Session keypair for ECDSA P-256 signatures
-    let sessionKeyPair = null;
+// Pure JavaScript SHA-256 Implementation
+function sha256(ascii) {
+  function rightRotate(value, amount) {
+    return (value >>> amount) | (value << (32 - amount));
+  }
+  
+  var h = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+  var k = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484d7, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+  ];
 
-    /**
-     * Calculates the SHA-256 hash of a string using Web Crypto API.
-     */
-    async function sha256(message) {
-        const msgBuffer = new TextEncoder().encode(message);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  var msg = ascii;
+  var l = msg.length;
+  var words = [];
+  for (var i = 0; i < l; i++) {
+    words[i >> 2] |= (msg.charCodeAt(i) & 0xff) << (24 - (i % 4) * 8);
+  }
+  
+  var bitLen = l * 8;
+  words[bitLen >> 5] |= 0x80 << (24 - (bitLen % 32));
+  
+  var blockCount = ((bitLen + 64) >> 9) + 1;
+  var wordCount = blockCount * 16;
+  while (words.length < wordCount) {
+    words.push(0);
+  }
+  words[wordCount - 2] = Math.floor(bitLen / 0x100000000);
+  words[wordCount - 1] = bitLen & 0xffffffff;
+  
+  for (var chunk = 0; chunk < words.length; chunk += 16) {
+    var w = new Array(64);
+    for (var i = 0; i < 16; i++) {
+      w[i] = words[chunk + i];
     }
+    for (var i = 16; i < 64; i++) {
+      var s0 = rightRotate(w[i - 15], 7) ^ rightRotate(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+      var s1 = rightRotate(w[i - 2], 17) ^ rightRotate(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+      w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+    }
+    
+    var a = h[0], b = h[1], c = h[2], d = h[3], e = h[4], f = h[5], g = h[6], h_val = h[7];
+    
+    for (var i = 0; i < 64; i++) {
+      var S1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
+      var ch = (e & f) ^ ((~e) & g);
+      var temp1 = (h_val + S1 + ch + k[i] + w[i]) | 0;
+      
+      var S0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
+      var maj = (a & b) ^ (a & c) ^ (b & c);
+      var temp2 = (S0 + maj) | 0;
+      
+      h_val = g;
+      g = f;
+      f = e;
+      e = (d + temp1) | 0;
+      d = c;
+      c = b;
+      b = a;
+      a = (temp1 + temp2) | 0;
+    }
+    
+    h[0] = (h[0] + a) | 0;
+    h[1] = (h[1] + b) | 0;
+    h[2] = (h[2] + c) | 0;
+    h[3] = (h[3] + d) | 0;
+    h[4] = (h[4] + e) | 0;
+    h[5] = (h[5] + f) | 0;
+    h[6] = (h[6] + g) | 0;
+    h[7] = (h[7] + h_val) | 0;
+  }
+  
+  var hex = "";
+  for (var i = 0; i < 8; i++) {
+    var val = h[i];
+    if (val < 0) val += 0x100000000;
+    var str = val.toString(16);
+    while (str.length < 8) str = "0" + str;
+    hex += str;
+  }
+  return hex;
+}
 
-    /**
-     * Deterministically serializes an object to a string.
-     * Ensures consistent signatures regardless of key ordering.
-     */
-    function serializeDeterministic(obj) {
-        if (typeof obj !== 'object' || obj === null) {
-            return JSON.stringify(obj);
+class Block {
+  constructor(index, timestamp, caseId, activity, payload, prevHash) {
+    this.index = index;
+    this.timestamp = timestamp;
+    this.caseId = caseId;
+    this.activity = activity;
+    this.payload = payload; // JS Object
+    this.prevHash = prevHash;
+    this.hash = this.calculateHash();
+  }
+
+  calculateHash() {
+    const dataStr = 
+      this.index + 
+      this.timestamp + 
+      this.caseId + 
+      this.activity + 
+      JSON.stringify(this.payload) + 
+      this.prevHash;
+    return sha256(dataStr);
+  }
+}
+
+class ProcessLedger {
+  constructor() {
+    this.chain = [];
+    this.onIntegrityChanged = null;
+    this.onLogMessage = null;
+    this.init();
+  }
+
+  init() {
+    this.chain = [];
+    // Create genesis block
+    const genesis = new Block(
+      0,
+      new Date().toLocaleTimeString(),
+      "C-GENESIS",
+      "Initialize Ledger",
+      { note: "Process Intelligence Blockchain Started" },
+      "0".repeat(64)
+    );
+    this.chain.push(genesis);
+    this.log("Genesis Block established.");
+  }
+
+  log(msg) {
+    if (this.onLogMessage) {
+      this.onLogMessage(`[Ledger] ${msg}`);
+    }
+  }
+
+  addEvent(caseId, activity, payload = {}) {
+    const prevBlock = this.chain[this.chain.length - 1];
+    const newBlock = new Block(
+      this.chain.length,
+      new Date().toLocaleTimeString(),
+      caseId,
+      activity,
+      payload,
+      prevBlock.hash
+    );
+    this.chain.push(newBlock);
+    this.log(`Block #${newBlock.index} added [${caseId} - ${activity}]`);
+    this.verifyAndRender();
+  }
+
+  tamperBlock(index, newActivity) {
+    if (index < 0 || index >= this.chain.length) return;
+    this.chain[index].activity = newActivity;
+    this.log(`🚨 TAMPER ALERT: Block #${index} modified to "${newActivity}"!`);
+    this.verifyAndRender();
+  }
+
+  repairChain() {
+    this.log("⚙️ Attempting cryptographic ledger repair...");
+    for (let i = 1; i < this.chain.length; i++) {
+      this.chain[i].prevHash = this.chain[i - 1].hash;
+      this.chain[i].hash = this.chain[i].calculateHash();
+    }
+    this.log("✅ Cryptographic chain fully re-signed and repaired.");
+    this.verifyAndRender();
+  }
+
+  validateChain() {
+    for (let i = 0; i < this.chain.length; i++) {
+      const block = this.chain[i];
+      // Check stored hash matches computed hash
+      if (block.hash !== block.calculateHash()) {
+        return { isValid: false, failedIndex: i, reason: "Hash mismatch (data modified)" };
+      }
+      // Check chaining
+      if (i > 0) {
+        const prevBlock = this.chain[i - 1];
+        if (block.prevHash !== prevBlock.hash) {
+          return { isValid: false, failedIndex: i, reason: "Previous hash pointer broken" };
         }
-        if (Array.isArray(obj)) {
-            return '[' + obj.map(serializeDeterministic).join(',') + ']';
+      }
+    }
+    return { isValid: true, failedIndex: null, reason: null };
+  }
+
+  verifyAndRender() {
+    const { isValid, failedIndex } = this.validateChain();
+    
+    // Update global indicators
+    const integritySpan = document.getElementById("metric-completed-cases") ? document.getElementById("metric-ledger-integrity") : null;
+    const visualStatus = document.getElementById("ledger-visual-status");
+    const stateBadge = document.getElementById("ledger-state-badge");
+    const repairBtn = document.getElementById("btn-ledger-restore");
+    const countSpan = document.getElementById("ledger-block-count");
+    const latestHashSpan = document.getElementById("ledger-latest-hash");
+    
+    if (countSpan) countSpan.textContent = this.chain.length;
+    if (latestHashSpan) {
+      const lastHash = this.chain[this.chain.length - 1].hash;
+      latestHashSpan.textContent = lastHash.substring(0, 16) + "...";
+      latestHashSpan.title = lastHash;
+    }
+
+    if (integritySpan) {
+      if (isValid) {
+        integritySpan.textContent = "VALID";
+        integritySpan.className = "metric-value status-text-success";
+        if (visualStatus) visualStatus.className = "metric-visual gold";
+        if (stateBadge) {
+          stateBadge.textContent = "VALID";
+          stateBadge.className = "badge badge-success";
         }
-        const sortedKeys = Object.keys(obj).sort();
-        return '{' + sortedKeys.map(k => JSON.stringify(k) + ':' + serializeDeterministic(obj[k])).join(',') + '}';
-    }
-
-    /**
-     * Formats a block payload to be hashed deterministically.
-     */
-    function formatBlockString(block) {
-        return `${block.index}|${block.timestamp}|${block.caseId}|${block.activity}|${block.resource}|${block.previousHash}|${serializeDeterministic(block.payload)}`;
-    }
-
-    /**
-     * Initializes the ECDSA P-256 session keys.
-     */
-    async function initKeys() {
-        if (!sessionKeyPair) {
-            sessionKeyPair = await window.crypto.subtle.generateKey(
-                {
-                    name: "ECDSA",
-                    namedCurve: "P-256"
-                },
-                true,
-                ["sign", "verify"]
-            );
+        if (repairBtn) repairBtn.style.display = "none";
+      } else {
+        integritySpan.textContent = "CORRUPTED";
+        integritySpan.className = "metric-value status-text-tampered";
+        if (visualStatus) visualStatus.className = "metric-visual gold tampered-visual";
+        if (stateBadge) {
+          stateBadge.textContent = "TAMPERED";
+          stateBadge.className = "badge badge-danger";
         }
-        return sessionKeyPair;
+        if (repairBtn) repairBtn.style.display = "inline-block";
+      }
     }
 
-    /**
-     * Exports a public key in raw format to a hexadecimal string.
-     */
-    async function exportPublicKeyHex(publicKey) {
-        const raw = await window.crypto.subtle.exportKey("raw", publicKey);
-        return Array.from(new Uint8Array(raw)).map(b => b.toString(16).padStart(2, '0')).join('');
+    if (this.onIntegrityChanged) {
+      this.onIntegrityChanged(isValid, failedIndex);
     }
 
-    /**
-     * Imports a public key from a hexadecimal string.
-     */
-    async function importPublicKeyFromHex(hexString) {
-        const bytes = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-        return await window.crypto.subtle.importKey(
-            "raw",
-            bytes,
-            {
-                name: "ECDSA",
-                namedCurve: "P-256"
-            },
-            true,
-            ["verify"]
-        );
-    }
+    this.render();
+  }
 
-    /**
-     * Creates an event chain from a raw list of event objects.
-     */
-    async function createChain(events) {
-        const chain = [];
-        let previousHash = "0000000000000000000000000000000000000000000000000000000000000000";
+  render() {
+    const container = document.getElementById("ledger-chain-view");
+    if (!container) return;
+    container.innerHTML = "";
 
-        for (let i = 0; i < events.length; i++) {
-            const ev = events[i];
-            const block = {
-                index: i,
-                timestamp: ev.timestamp || new Date().toISOString(),
-                caseId: ev.caseId || "unknown_case",
-                activity: ev.activity,
-                resource: ev.resource || "system",
-                payload: ev.payload || {},
-                previousHash: previousHash,
-                hash: ""
-            };
-            const blockStr = formatBlockString(block);
-            block.hash = await sha256(blockStr);
-            previousHash = block.hash;
-            chain.push(block);
-        }
-        return chain;
-    }
-
-    /**
-     * Verifies the cryptographic integrity of an event chain.
-     * Identifies exactly which blocks are broken or tampered.
-     */
-    async function verifyChain(chain) {
-        const results = [];
-        let isChainBroken = false;
-
-        for (let i = 0; i < chain.length; i++) {
-            const block = chain[i];
-            const calculatedHash = await sha256(formatBlockString(block));
-            const isHashValid = (block.hash === calculatedHash);
-            
-            let isPrevHashValid = true;
-            if (i > 0) {
-                isPrevHashValid = (block.previousHash === chain[i - 1].hash);
-            } else {
-                isPrevHashValid = (block.previousHash === "0000000000000000000000000000000000000000000000000000000000000000");
-            }
-
-            const blockHealthy = isHashValid && isPrevHashValid && !isChainBroken;
-            if (!blockHealthy) {
-                isChainBroken = true; // Chain is broken from this point forward
-            }
-
-            results.push({
-                index: i,
-                hashValid: isHashValid,
-                prevHashValid: isPrevHashValid,
-                isValid: blockHealthy,
-                calculatedHash: calculatedHash
-            });
-        }
-        return {
-            isValid: !isChainBroken,
-            blockStatuses: results
-        };
-    }
-
-    /**
-     * Generates and cryptographically signs a Conformance Replay Receipt.
-     */
-    async function generateReceipt(chain, modelSha256, replayResults) {
-        const keys = await initKeys();
-        const pubKeyHex = await exportPublicKeyHex(keys.publicKey);
-        
-        const logSha256 = chain.length > 0 ? chain[chain.length - 1].hash : "0000000000000000000000000000000000000000000000000000000000000000";
-
-        const receipt = {
-            receipt_id: "rec_conformance_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now().toString().slice(-5),
-            timestamp: new Date().toISOString(),
-            execution_authority: {
-                engine_identifier: "wasm4pm-core-js-v2.1.0",
-                wasm_module_sha256: "4a7b744ce58b88cd28148b5dfbe984f932e650b2a8f98db832cdde32bbd42a9d"
-            },
-            input_artifacts: {
-                model_sha256: modelSha256 || "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
-                log_sha256: logSha256
-            },
-            replay_results: {
-                fitness_score: replayResults.fitness_score ?? 1.0,
-                missing_tokens: replayResults.missing_tokens ?? 0,
-                remaining_tokens: replayResults.remaining_tokens ?? 0,
-                produced_tokens: replayResults.produced_tokens ?? 0,
-                consumed_tokens: replayResults.consumed_tokens ?? 0
-            }
-        };
-
-        // Sign the receipt content
-        const serialized = serializeDeterministic(receipt);
-        const encoder = new TextEncoder();
-        const dataBytes = encoder.encode(serialized);
-        
-        const signatureBuffer = await window.crypto.subtle.sign(
-            {
-                name: "ECDSA",
-                hash: { name: "SHA-256" }
-            },
-            keys.privateKey,
-            dataBytes
-        );
-
-        const signatureBytesHex = Array.from(new Uint8Array(signatureBuffer))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
-
-        receipt.cryptographic_signature = {
-            public_key: pubKeyHex,
-            signature_bytes: signatureBytesHex
-        };
-
-        return receipt;
-    }
-
-    /**
-     * Cryptographically verifies a Conformance Replay Receipt.
-     * Validates both the signature and trace integrity against the active log.
-     */
-    async function verifyReceipt(receipt, chain) {
-        const logs = [];
-        logs.push(`[SYSTEM] Starting verification protocol for Receipt ID: ${receipt.receipt_id}`);
-
-        try {
-            const { cryptographic_signature, ...receiptData } = receipt;
-            if (!cryptographic_signature || !cryptographic_signature.public_key || !cryptographic_signature.signature_bytes) {
-                logs.push(`[ERROR] Verification aborted. Receipt missing cryptographic signature component.`);
-                return { valid: false, logs, reason: "Missing cryptographic signature component." };
-            }
-
-            // 1. Verify Event-Chain Hash linkage to the Receipt
-            const computedLogSha256 = chain.length > 0 ? chain[chain.length - 1].hash : "0000000000000000000000000000000000000000000000000000000000000000";
-            const receiptLogSha256 = receipt.input_artifacts.log_sha256;
-            logs.push(`[STEP 1] Validating trace boundary hash mapping...`);
-            logs.push(`  - Expected Log Hash (Receipt): ${receiptLogSha256}`);
-            logs.push(`  - Computed Log Hash (Active Chain): ${computedLogSha256}`);
-            
-            if (computedLogSha256 !== receiptLogSha256) {
-                logs.push(`[ERROR] Integrity failure: Active trace final hash does not match receipt input artifacts. The log has been modified after receipt generation.`);
-                return { valid: false, logs, reason: "Trace final hash mismatch. The event log has been modified." };
-            }
-            logs.push(`[SUCCESS] Trace hash boundary mapping verified.`);
-
-            // 2. Verify Internal Chain Linkage
-            logs.push(`[STEP 2] Performing full event-chain structural validation...`);
-            const chainStatus = await verifyChain(chain);
-            if (!chainStatus.isValid) {
-                logs.push(`[ERROR] Structural failure: Internal hash chain is broken or tampered.`);
-                return { valid: false, logs, reason: "Event chain internal structure is broken." };
-            }
-            logs.push(`[SUCCESS] Full event-chain structural integrity verified (0 tampering points detected).`);
-
-            // 3. Cryptographically Verify Signature
-            logs.push(`[STEP 3] Rebuilding deterministic serialization for signature validation...`);
-            const serialized = serializeDeterministic(receiptData);
-            const encoder = new TextEncoder();
-            const dataBytes = encoder.encode(serialized);
-
-            logs.push(`[STEP 4] Importing public key: ${cryptographic_signature.public_key.substring(0, 16)}...`);
-            const pubKey = await importPublicKeyFromHex(cryptographic_signature.public_key);
-            
-            const sigBytes = new Uint8Array(
-                cryptographic_signature.signature_bytes.match(/.{1,2}/g).map(b => parseInt(b, 16))
-            );
-
-            logs.push(`[STEP 5] Performing ECDSA P-256 verification...`);
-            const signatureValid = await window.crypto.subtle.verify(
-                {
-                    name: "ECDSA",
-                    hash: { name: "SHA-256" }
-                },
-                pubKey,
-                sigBytes,
-                dataBytes
-            );
-
-            if (signatureValid) {
-                logs.push(`[SUCCESS] Cryptographic signature is mathematically authentic.`);
-                logs.push(`[SYSTEM] Conformance Replay Receipt is 100% VALID. Provenance Placement established.`);
-                return { valid: true, logs, reason: "Receipt verified successfully." };
-            } else {
-                logs.push(`[ERROR] Signature validation failed. Key authorization or signature payload mismatch.`);
-                return { valid: false, logs, reason: "Invalid signature bytes." };
-            }
-        } catch (err) {
-            logs.push(`[CRITICAL] Verification engine threw exception: ${err.message}`);
-            return { valid: false, logs, reason: `Exception: ${err.message}` };
-        }
-    }
-
-    /**
-     * Renders the Cryptographic Event-Chain visualizer interface.
-     */
-    function renderLedgerExplorer(container, chain, verificationResult, activeReceipt, options = {}) {
-        const { onTamper, onRestore, onSignReceipt, onVerifyReceipt } = options;
-        
-        // Clear container
-        container.innerHTML = "";
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "ledger-explorer-wrapper";
-
-        // Title and metrics header
-        const header = document.createElement("div");
-        header.className = "ledger-header";
-        
-        const chainHealthy = verificationResult.isValid;
-        header.innerHTML = `
-            <div class="ledger-title-group">
-                <h3>Cryptographic Event-Chain Explorer</h3>
-                <div class="ledger-subtitle">
-                    Verifiable cryptographic log chain leveraging SHA-256 links. 
-                    Reference: <a href="file:///Users/sac/process-intelligence/experiments/replay_receipt_sample.md" target="_blank" class="std-link">replay_receipt_sample.md</a>
-                </div>
-            </div>
-            <div class="ledger-status-badge ${chainHealthy ? 'healthy' : 'tampered'}">
-                <span class="status-icon">${chainHealthy ? '✓' : '⚠'}</span>
-                <span>${chainHealthy ? 'Ledger Intact' : 'Ledger Tampered'}</span>
-            </div>
-        `;
-        wrapper.appendChild(header);
-
-        // Chain Blocks View
-        const blocksContainer = document.createElement("div");
-        blocksContainer.className = "ledger-blocks-container";
-        
-        chain.forEach((block, index) => {
-            const blockStatus = verificationResult.blockStatuses[index] || { isValid: true, hashValid: true, prevHashValid: true };
-            const isBlockTampered = !blockStatus.isValid;
-
-            const blockCard = document.createElement("div");
-            blockCard.className = `ledger-block-card ${isBlockTampered ? 'tampered' : 'healthy'}`;
-            
-            blockCard.innerHTML = `
-                <div class="block-index">BLOCK #${block.index}</div>
-                <div class="block-main">
-                    <div class="block-activity-row">
-                        <span class="activity-label">Activity:</span>
-                        <span class="activity-value text-glow">${block.activity}</span>
-                    </div>
-                    <div class="block-metadata">
-                        <div><strong>Case ID:</strong> ${block.caseId}</div>
-                        <div><strong>Resource:</strong> ${block.resource}</div>
-                        <div><strong>Timestamp:</strong> ${new Date(block.timestamp).toLocaleTimeString()}</div>
-                    </div>
-                    <div class="block-hash-chain">
-                        <div class="hash-row">
-                            <span class="hash-label">Prev Hash:</span>
-                            <span class="hash-value text-muted" title="${block.previousHash}">${block.previousHash.slice(0, 16)}...</span>
-                        </div>
-                        <div class="hash-row">
-                            <span class="hash-label">Block Hash:</span>
-                            <span class="hash-value ${blockStatus.hashValid ? 'text-success' : 'text-danger'}" title="${block.hash}">
-                                ${block.hash.slice(0, 16)}...
-                            </span>
-                        </div>
-                    </div>
-                    <div class="block-payload">
-                        <div class="payload-header" onclick="this.nextElementSibling.classList.toggle('expanded')">
-                            <span>Payload Context</span>
-                            <span class="chevron">▼</span>
-                        </div>
-                        <div class="payload-content">
-                            <pre>${JSON.stringify(block.payload, null, 2)}</pre>
-                        </div>
-                    </div>
-                </div>
-                <div class="block-actions">
-                    <button class="btn btn-sm btn-tamper" data-index="${index}">Tamper Data</button>
-                </div>
-            `;
-
-            // Setup tamper action
-            const tamperBtn = blockCard.querySelector(".btn-tamper");
-            tamperBtn.addEventListener("click", () => {
-                if (onTamper) onTamper(index);
-            });
-
-            blocksContainer.appendChild(blockCard);
-
-            // Append arrow if not last block
-            if (index < chain.length - 1) {
-                const arrow = document.createElement("div");
-                arrow.className = `ledger-chain-arrow ${isBlockTampered ? 'broken' : 'healthy'}`;
-                arrow.innerHTML = `
-                    <div class="arrow-line"></div>
-                    <div class="arrow-head">▶</div>
-                `;
-                blocksContainer.appendChild(arrow);
-            }
-        });
-
-        wrapper.appendChild(blocksContainer);
-
-        // Control Panel (Tamper / Restore)
-        const controlPanel = document.createElement("div");
-        controlPanel.className = "ledger-controls-row";
-        controlPanel.innerHTML = `
-            <button class="btn btn-secondary btn-restore" ${chainHealthy ? 'disabled' : ''}>
-                Restore Ledger Integrity
-            </button>
-            <div class="info-bubble">
-                ${chainHealthy 
-                    ? "✓ Every block hash matches its event content, and points properly to the preceding block's hash." 
-                    : "⚠ The chain has been modified. Replay Receipts generated under this state will fail verification."}
-            </div>
-        `;
-        
-        controlPanel.querySelector(".btn-restore").addEventListener("click", () => {
-            if (onRestore) onRestore();
-        });
-        wrapper.appendChild(controlPanel);
-
-        // Receipt Section
-        const receiptSection = document.createElement("div");
-        receiptSection.className = "ledger-receipt-section";
-        receiptSection.innerHTML = `
-            <div class="section-divider"></div>
-            <div class="receipt-layout-grid">
-                <div class="receipt-generation-panel">
-                    <h4>Conformance Replay Receipt Builder</h4>
-                    <p class="receipt-desc">
-                        Certify the results of your token game execution by sealing them in a cryptographic receipt. 
-                        Reference: <a href="file:///Users/sac/process-intelligence/experiments/petri_conformance_sample.md" target="_blank" class="std-link">petri_conformance_sample.md</a>
-                    </p>
-                    <div class="receipt-actions">
-                        <button class="btn btn-primary btn-generate-receipt">Generate & Sign Receipt</button>
-                    </div>
-                    ${activeReceipt ? `
-                        <div class="receipt-display-box">
-                            <div class="receipt-json-header">
-                                <span>SIGNED RECEIPT JSON</span>
-                                <span class="receipt-badge">ECDSA P-256</span>
-                            </div>
-                            <pre class="receipt-json-body">${JSON.stringify(activeReceipt, null, 2)}</pre>
-                        </div>
-                    ` : `
-                        <div class="receipt-placeholder">
-                            No active receipt. Click "Generate & Sign Receipt" to create a cryptographically signed proof.
-                        </div>
-                    `}
-                </div>
-                
-                <div class="receipt-verification-panel">
-                    <h4>Receipt Verification Engine</h4>
-                    <p class="receipt-desc">
-                        Load and run the cryptographic verification pipeline to validate the authenticity of the active receipt.
-                    </p>
-                    <div class="receipt-actions">
-                        <button class="btn btn-success btn-verify-receipt" ${!activeReceipt ? 'disabled' : ''}>
-                            Verify Active Receipt
-                        </button>
-                    </div>
-                    <div class="verification-console">
-                        <div class="console-title">VERIFICATION ENGINE OUTPUT LOGS</div>
-                        <div class="console-logs" id="verificationConsoleLogs">
-                            <span class="text-muted">Console idle. Awaiting receipt verification request...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        receiptSection.querySelector(".btn-generate-receipt").addEventListener("click", () => {
-            if (onSignReceipt) onSignReceipt();
-        });
-
-        if (activeReceipt) {
-            receiptSection.querySelector(".btn-verify-receipt").addEventListener("click", () => {
-                if (onVerifyReceipt) onVerifyReceipt();
-            });
-        }
-
-        wrapper.appendChild(receiptSection);
-        container.appendChild(wrapper);
-    }
-
-    return {
-        sha256,
-        serializeDeterministic,
-        createChain,
-        verifyChain,
-        generateReceipt,
-        verifyReceipt,
-        renderLedgerExplorer,
-        initKeys
+    const { isValid, failedIndex } = this.validateChain();
+    const isBlockValid = (index) => {
+      if (isValid) return true;
+      return index < failedIndex;
     };
-})();
 
-// Export globally for browser use
-window.ProcessLedger = ProcessLedger;
+    this.chain.forEach((block, index) => {
+      const blockEl = document.createElement("div");
+      const valid = isBlockValid(index);
+      blockEl.className = `ledger-block ${valid ? 'valid' : 'invalid'}`;
+      
+      blockEl.innerHTML = `
+        <div class="block-header">
+          <span class="block-id">BLOCK #${block.index}</span>
+          <span class="block-time">${block.timestamp}</span>
+        </div>
+        <div class="block-body">
+          <div class="block-activity" title="${block.activity}">${block.activity}</div>
+          <div class="block-case">${block.caseId}</div>
+          <span class="block-hash-label">Prev Hash</span>
+          <div class="block-hash">${block.prevHash.substring(0, 8)}...</div>
+          <span class="block-hash-label">Hash</span>
+          <div class="block-hash" style="color: ${valid ? '#10b981' : '#ef4444'}">${block.hash.substring(0, 8)}...</div>
+        </div>
+        <div class="block-actions">
+          ${block.index > 0 ? `<button class="btn-tamper" data-index="${block.index}">Tamper Block</button>` : ''}
+        </div>
+      `;
+      
+      container.appendChild(blockEl);
+    });
+
+    // Scroll to end of ledger container
+    container.scrollLeft = container.scrollWidth;
+
+    // Attach listeners
+    container.querySelectorAll(".btn-tamper").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const idx = parseInt(e.target.getAttribute("data-index"));
+        const act = prompt("Modify block activity to simulate attack:", "Unauthorized Refund");
+        if (act !== null) {
+          this.tamperBlock(idx, act);
+        }
+      });
+    });
+  }
+}
+
+// Global initialization
+window.ledgerEngine = new ProcessLedger();
+document.getElementById("btn-ledger-verify")?.addEventListener("click", () => {
+  const result = window.ledgerEngine.validateChain();
+  if (result.isValid) {
+    alert("✅ Cryptographic validation successful: Ledger is intact.");
+  } else {
+    alert(`❌ LEDGER COMPROMISED: Failed validation at block #${result.failedIndex}. Reason: ${result.reason}`);
+  }
+});
+document.getElementById("btn-ledger-restore")?.addEventListener("click", () => {
+  window.ledgerEngine.repairChain();
+});
