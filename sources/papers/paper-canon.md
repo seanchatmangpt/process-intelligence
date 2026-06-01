@@ -11,3 +11,6 @@
 
 ### Paper: ghahfarokhi_2021_ocel2
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: verbeek_2021_log_trie
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
