@@ -38,3 +38,6 @@
 
 ### Paper: gunther_2007_fuzzy_miner
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: song_2008_organizational_mining
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
