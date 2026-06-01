@@ -91,3 +91,6 @@
 
 * **Step: audit: wasm4pm research completeness**
   - Defining engine execution requirements.
+
+* **Step: checkpoint: wasm4pm research pass complete**
+  - Defining engine execution requirements.
