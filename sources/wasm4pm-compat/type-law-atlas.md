@@ -34,3 +34,6 @@
 
 * **Step: map POWL structural law**
   - Evaluating type safety and witness validations.
+
+* **Step: map Declare structural law**
+  - Evaluating type safety and witness validations.
