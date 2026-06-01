@@ -67,3 +67,6 @@
 
 * **Step: map DFG runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map OCPQ runtime obligations**
+  - Defining engine execution requirements.
