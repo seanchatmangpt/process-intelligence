@@ -85,3 +85,6 @@
 
 * **Step: define downstream M&A claim obligations**
   - Evaluating type safety and witness validations.
+
+* **Step: write compat research verdict**
+  - Evaluating type safety and witness validations.
