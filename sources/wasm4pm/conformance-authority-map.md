@@ -34,11 +34,16 @@ The core doctrine: **If a model claims to explain the log, but alignment reveals
 ```
 cost(a, t) = 
   | 0        if label(t) = a (move on both)
-  | 1        if a = ∞ (move on model, silent transition)
+  | 1        if a = ∞ and t is a visible transition (move on model only)
   | 0        if a = ∞ and t is silent τ (invisible move)
   | 1        if t = ∞ (move on log only)
   | ∞        if label(t) ≠ a (illegal move)
 ```
+
+**Alignment-Based Fitness (Adriansyah 2014):**
+For a trace $\sigma$ and Petri Net $N$, the alignment fitness $f_{\text{align}}(\sigma, N)$ is computed using the optimal alignment $\gamma^*$:
+$$f_{\text{align}}(\sigma, N) = 1 - \frac{C(\gamma^*)}{|\sigma| + d_{\text{min}}(i, o)}$$
+where $|\sigma|$ is the trace length and $d_{\text{min}}(i, o)$ is the length of the shortest path from the source place $i$ to the sink place $o$ in $N$ (ignoring silent transitions $\tau$).
 
 **Algorithm:**
 - Open set: Priority queue of (g_cost, h_estimate, state)
@@ -67,11 +72,11 @@ cost(a, t) =
 
 ### 1.2 Fitness Metric: Standard van der Aalst Equation
 
-**Authority Claim:** wasm4pm computes fitness per van der Aalst's standard token-based replay equation (applied to all traces in a log).
+**Authority Claim:** wasm4pm computes fitness per van der Aalst's standard token-based replay equation (applied to all traces in a log, using forced-firing replay).
 
 **Formal Definition:**
 
-For a single trace $\sigma$ with alignment $\gamma$:
+For a single trace $\sigma$ during token-based replay (not using alignments):
 - $p$ = tokens produced during replay
 - $c$ = tokens consumed during replay
 - $m$ = missing tokens (had to be artificially injected to fire next transition)
