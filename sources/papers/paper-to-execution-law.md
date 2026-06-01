@@ -38,3 +38,6 @@
 
 ### Fixtures for gunther_2007_fuzzy_miner
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for song_2008_organizational_mining
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
