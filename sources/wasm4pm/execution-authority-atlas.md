@@ -46,3 +46,6 @@
 
 * **Step: map OCEL runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map XES runtime obligations**
+  - Defining engine execution requirements.
