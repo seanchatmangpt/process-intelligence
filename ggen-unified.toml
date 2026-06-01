@@ -1,0 +1,32 @@
+# ggen-unified.toml — Master Manufacturing Manifest
+# Connects: ~/open-ontologies, ~/process-intelligence, ~/zoeapp, ~/pcp, ~/wasm4pm
+
+[project]
+name = "post-cyberpunk-foundry"
+version = "30.1.2-omega"
+
+[ontology]
+source = "research/pi-program/ggen/ontology/pi-program-merged.ttl"
+imports = [
+    "/Users/sac/open-ontologies/ontology/cli-open-ontologies.ttl",
+    "/Users/sac/open-ontologies/ontology/zoela/ocel.ttl",
+    "/Users/sac/open-ontologies/ontology/zoela/autoreceipt.ttl",
+    "/Users/sac/process-intelligence/ggen/ontology/prompt-manufactory.ttl"
+]
+
+[generation]
+enabled = true
+rules = [
+    # 1. Project Law to PCP Framework
+    { name = "pcp-core-types", query = { file = "queries/extract-pcp-types.rq" }, template = { file = "templates/pcp-types.ts.tera" }, output_file = "/Users/sac/pcp/packages/core/types.ts" },
+    
+    # 2. Project Execution Authority to wasm4pm
+    { name = "wasm4pm-boundary", query = { file = "queries/extract-wasm-boundary.rq" }, template = { file = "templates/wasm-boundary.rs.tera" }, output_file = "/Users/sac/wasm4pm/src/boundary.rs" },
+    
+    # 3. Project Board Claims to ZOEapp
+    { name = "zoe-board-claims", query = { file = "queries/extract-board-claims.rq" }, template = { file = "templates/board-claims.ts.tera" }, output_file = "/Users/sac/zoeapp/src/framework/v30/post-cyberpunk/BoardClaims.ts" }
+]
+
+[output]
+checksum_algorithm = "blake3"
+receipt_format = "json"
