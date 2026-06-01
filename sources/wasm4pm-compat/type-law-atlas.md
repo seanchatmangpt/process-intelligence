@@ -46,3 +46,6 @@
 
 * **Step: map OCPQ structural law**
   - Evaluating type safety and witness validations.
+
+* **Step: map paper coverage claims**
+  - Evaluating type safety and witness validations.
