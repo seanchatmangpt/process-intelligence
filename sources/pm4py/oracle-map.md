@@ -53,3 +53,6 @@
 
 * **Step: map visualization capability**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map organizational mining capability**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
