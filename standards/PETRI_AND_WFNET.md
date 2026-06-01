@@ -81,17 +81,48 @@ be confused in function signatures.
 
 - `PetriNet::validate()` — arcs reference declared nodes; IDs unique.
 - `WfNet::validate()` — structural shape: source/sink declared, basic graph consistency.
-- Neither checks reachability, boundedness, liveness, or soundness — those are `wasm4pm`.
+- The `wasm4pm` engine implements the full dynamic verification of soundness, boundedness, and liveness in [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs).
 
 ---
 
-## What wasm4pm Must Provide
+## Dynamic Verification Algorithms in [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs)
 
-| Capability | Graduates to |
+The `wasm4pm` engine evaluates the following dynamic properties via state space exploration:
+
+### 1. Reachability and Coverability Analysis
+- **Algorithm**: Depth-First Search (DFS) state space traversal starts from the initial marking $M_0 = [i]$.
+- **Termination**: Ensured by checking coverability. If a marking $M_{curr}$ is reached that covers an ancestor marking $M_{anc}$ (i.e., $M_{curr} \ge M_{anc}$ and $M_{curr} \neq M_{anc}$), the state space is unbounded, and the traversal prunes the branch.
+- **State Limit**: Traversal is capped at 100,000 states to prevent state space explosion.
+
+### 2. 1-Boundedness (Safeness) Check
+- **Verification**: A Petri net is 1-bounded if no reachable marking contains more than one token in any place.
+- **Coverability Check**: If any marking covers an ancestor, it implies unboundedness, violating 1-boundedness.
+- **Asserted Invariant**: $M(p) \le 1$ for all places $p$ and all reachable markings $M$.
+
+### 3. Deadlock Detection
+- **Definition**: A deadlock is a reachable marking $M$ with no enabled transitions, where $M \neq [o]$ (the sink marking).
+- **Verification**: The reachability graph is scanned to verify that all non-sink markings have at least one enabled transition.
+
+### 4. Dead-Transition Detection
+- **Definition**: A transition $t$ is dead if it cannot be fired from any reachable marking.
+- **Verification**: The analysis accumulates all transitions fired during reachability exploration. Any transition not in this set is flagged as dead.
+
+### 5. Siphon-Trap Properties
+- **Siphon**: A subset of places $S$ such that $\bullet S \subseteq S\bullet$. Once empty of tokens, a siphon can never obtain a token again.
+- **Trap**: A subset of places $T$ such that $T\bullet \subseteq \bullet T$. Once marked with at least one token, a trap can never become completely empty.
+- **Commoner's Theorem**: In a free-choice Petri net, liveness is equivalent to every siphon containing a marked trap.
+- **Implementation**: The engine provides `PetriNet::is_siphon`, `PetriNet::is_trap`, `PetriNet::find_siphons`, `PetriNet::find_traps`, and `PetriNet::check_siphon_trap_property` to calculate and check these invariants.
+
+---
+
+## What wasm4pm Provides
+
+| Capability | Module |
 |---|---|
-| Soundness analysis (reachability graph construction) | `wasm4pm` |
+| Soundness analysis (reachability graph construction) | [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs) |
 | Token-game replay (alignment, fitness) | `wasm4pm` |
-| Boundedness / safeness verification | `wasm4pm` |
+| Boundedness / safeness verification | [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs) |
+| Siphon-trap property checking | [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs) |
 | OC-Petri-net discovery from OCEL | `wasm4pm` |
 | WF-net → `SoundnessWitnessed` upgrade (returning a witness) | `wasm4pm` |
 
@@ -99,8 +130,4 @@ be confused in function signatures.
 
 ## Board Placement
 
-WF-net soundness is the mathematical guarantee that a process model will always complete
-correctly. By sealing soundness as a typestate at the type level, wasm4pm-compat makes it
-impossible to accidentally use an unsound process model in a safety-critical graduation
-path. The only legitimate route to a `SoundnessWitnessed` WF-net is through the `wasm4pm`
-engine — no short-circuit exists.
+WF-net soundness is the mathematical guarantee that a process model will always complete correctly. By sealing soundness as a typestate at the type level, wasm4pm-compat makes it impossible to accidentally use an unsound process model in a safety-critical graduation path. The only legitimate route to a `SoundnessWitnessed` WF-net is through the verification engine in [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs) — no short-circuit exists.
