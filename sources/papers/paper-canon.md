@@ -32,3 +32,6 @@
 
 ### Paper: weidlich_2011_profile_conformance
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: de_medeiros_2007_genetic_miner
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
