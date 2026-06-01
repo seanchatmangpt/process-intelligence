@@ -65,3 +65,6 @@
 
 * **Step: map Python runtime assumptions**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: identify wasm4pm divergence**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
