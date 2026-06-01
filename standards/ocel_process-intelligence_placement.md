@@ -19,13 +19,29 @@ OCEL logs represent processes as property graphs. The foundry maps these relatio
 
 ## 2. Type-System and Cryptographic Constraints
 
-OCEL graphs must satisfy graph integrity constraints:
+OCEL graphs must satisfy strict structural, graph-theoretic, and temporal integrity constraints to prevent graph cycle errors, missing foreign keys, or temporal anomalies on the ledger:
 
-1.  **Referential Integrity**: Every link from an event to an object, or an object to another object, must resolve to an existing ID registered in the log:
-    $$\forall (e, o) \in \text{Links}_{\text{event-object}}, \quad e \in \text{Events} \land o \in \text{Objects}$$
-2.  **Object Lifecycle Monotonicity**: An object's state attributes can only evolve via events. The ledger enforces that attribute value updates correspond to recorded events with matching timestamps.
-3.  **Cryptographic Proof Graphs**: To ensure non-forgeability, the graph structure is serialized into a canonical JSON representation and hashed:
-    $$\mathcal{H}_{\text{OCEL}} = \operatorname{BLAKE3}\left( \text{Events}_{\text{canon}} \parallel \text{Objects}_{\text{canon}} \parallel \text{Links}_{\text{canon}} \right)$$
+1.  **Referential Integrity**:
+    *   **Event-to-Object (E2O) Integrity**: Let $\text{Events}$ be the set of events, $\text{Objects}$ be the set of objects, and $\mathcal{Q}_{\text{E2O}}$ be the set of relationship qualifiers. The set of qualified event-to-object relationships $\mathcal{R}_{\text{E2O}} \subseteq \text{Events} \times \text{Objects} \times \mathcal{Q}_{\text{E2O}}$ must satisfy:
+        $$\forall (e, o, q) \in \mathcal{R}_{\text{E2O}}, \quad e \in \text{Events} \land o \in \text{Objects}$$
+    *   **Object-to-Object (O2O) Integrity**: Let $\mathcal{Q}_{\text{O2O}}$ be the set of O2O qualifiers. The set of qualified object-to-object relationships $\mathcal{R}_{\text{O2O}} \subseteq \text{Objects} \times \text{Objects} \times \mathcal{Q}_{\text{O2O}}$ must satisfy:
+        $$\forall (o_1, o_2, q) \in \mathcal{R}_{\text{O2O}}, \quad o_1 \in \text{Objects} \land o_2 \in \text{Objects}$$
+
+2.  **Graph Acyclicity (No Cycle Errors)**:
+    *   The directed graph of object dependencies $G_{\text{O2O}} = (\text{Objects}, E_{\text{O2O}})$, where $E_{\text{O2O}} = \{ (o_1, o_2) \mid \exists q \text{ s.t. } (o_1, o_2, q) \in \mathcal{R}_{\text{O2O}} \}$, must be a Directed Acyclic Graph (DAG):
+        $$\nexists (o_0, o_1, \dots, o_k) \text{ s.t. } o_0 = o_k \land k \ge 1 \land \forall i \in \{0, \dots, k-1\}, (o_i, o_{i+1}) \in E_{\text{O2O}}$$
+
+3.  **Temporal Monotonicity and Monotonic Lifecycle**:
+    *   Let $\text{time}(e)$ be the timestamp of event $e \in \text{Events}$. Let $A_o(t)$ represent the attribute state of object $o \in \text{Objects}$ at time $t$. An object's state can only evolve via events:
+        $$A_o(t_2) \neq A_o(t_1) \implies \exists e \in \text{Events}, q \in \mathcal{Q}_{\text{E2O}} \text{ s.t. } (e, o, q) \in \mathcal{R}_{\text{E2O}} \land t_1 < \text{time}(e) \le t_2$$
+    *   The timestamps of all attribute updates $\text{time}(a)$ for object $o$ must match the timestamps of events that are linked to $o$:
+        $$\forall a \in \text{attrs}(o), \quad \text{time}(a) \in \{ \text{time}(e) \mid e \in \text{Events} \land \exists q \text{ s.t. } (e, o, q) \in \mathcal{R}_{\text{E2O}} \}$$
+    *   For any sequence of events $(e_1, e_2, \dots, e_n)$ acting on a shared object $o$, the event timestamps must be monotonically non-decreasing:
+        $$\forall i, j \in \{1, \dots, n\}, \quad e_i \prec_{\text{flow}} e_j \implies \text{time}(e_i) \le \text{time}(e_j)$$
+
+4.  **Cryptographic Proof Graphs**:
+    To ensure non-forgeability, the graph structure is serialized into a canonical JSON representation and hashed:
+    $$\mathcal{H}_{\text{OCEL}} = \operatorname{BLAKE3}\left( \text{Events}_{\text{canon}} \parallel \text{Objects}_{\text{canon}} \parallel \mathcal{R}_{\text{E2O, canon}} \parallel \mathcal{R}_{\text{O2O, canon}} \right)$$
 
 ---
 

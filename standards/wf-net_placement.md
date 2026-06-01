@@ -28,17 +28,50 @@ The ledger verifies these structural invariants at registration time:
 
 The ledger enforces that any WF-net representing an active corporate process must be proven **sound** (van der Aalst 1998):
 
-1.  **Option to Complete**: For any reachable marking $M$ from the initial marking $[i]$, the final marking $[o]$ is reachable:
-    $$\forall M \in [i \rangle, \quad [o] \in [M \rangle$$
-2.  **Proper Completion**: If marking $M$ contains a token in $o$, then no other places contain tokens:
-    $$\forall M \in [i \rangle, \quad (M \ge [o]) \implies (M = [o])$$
-3.  **Liveness (No Dead Transitions)**: No transition in $N$ is dead; every step is reachable from $[i]$:
-    $$\forall t \in T, \quad \exists M \in [i \rangle, \quad M \xrightarrow{t}$$
+1.  **Option to Complete**: For any reachable marking $M$ from the initial marking $[i]$ (where $[i]$ denotes the marking with a single token in $i$ and 0 tokens elsewhere), the final marking $[o]$ is reachable:
+    $$\forall M \in [N, [i]\rangle, \quad [o] \in [N, M\rangle$$
+2.  **Proper Completion**: If marking $M$ is reachable from $[i]$ and contains a token in $o$ (i.e. $M \ge [o]$), then no other places contain tokens:
+    $$\forall M \in [N, [i]\rangle, \quad (M \ge [o]) \implies (M = [o])$$
+3.  **Liveness (No Dead Transitions)**: No transition in $N$ is dead; every transition is fireable from some marking reachable from $[i]$:
+    $$\forall t \in T, \quad \exists M \in [N, [i]\rangle, \quad M \xrightarrow{t}$$
 4.  **Verification Receipt**: The registration transaction block must contain a soundness proof signed by the compiler witness module.
 
 ---
 
-## 3. Academic Foundations and Conformance
+## 3. Mathematical Verification of WF-Net Soundness and 1-Boundedness
+
+The ledger mathematically verifies soundness and 1-boundedness by analyzing the **short-circuited Petri Net** $\overline{N} = (\overline{P}, \overline{T}, \overline{F})$ associated with $N = (P, T, F)$.
+
+### 3.1. The Short-Circuited Construction
+To construct $\overline{N}$:
+1. $\overline{P} = P$
+2. $\overline{T} = T \cup \{t^*\}$, where $t^*$ is a virtual feedback transition.
+3. $\overline{F} = F \cup \{(o, t^*), (t^*, i)\}$
+
+> [!IMPORTANT]
+> **Theorem 3 (Soundness Equivalence)**:
+> A WF-net $N$ is sound if and only if its short-circuited Petri net $\overline{N}$ is live and bounded under the initial marking $[i]$. Furthermore, if $\overline{N}$ is 1-bounded (safe), then $N$ is 1-sound.
+
+### 3.2. Proof of Properties and Conformance to Soundness
+Under the assumption that $\overline{N}$ is live and 1-bounded under $M_0 = [i]$, we prove that all soundness requirements are guaranteed:
+
+1.  **Proof of Proper Completion**:
+    Suppose Proper Completion is violated. Then there exists a marking $M \in [N, [i]\rangle$ such that $M(o) \ge 1$ and there exists a place $p \in P \setminus \{o\}$ such that $M(p) \ge 1$. Thus, $M \ge [o] + [p]$.
+    In the short-circuited net $\overline{N}$, from marking $M$, the feedback transition $t^*$ is enabled since $M(o) \ge 1$. Firing $t^*$ results in:
+    $$M' = M - [o] + [i] \ge [i] + [p]$$
+    Since $M' \ge [i]$, we can replay the transition sequence $\sigma$ that led from $[i]$ to $M$ in the subnet $N$. Firing $\sigma$ from $M'$ yields:
+    $$M'' = M' - [i] + M \ge M + [p] \ge [o] + 2[p]$$
+    By repeating this cycle $n$ times, we can generate a marking $M^{(n)} \ge [o] + n[p]$. Since $n$ can be arbitrarily large, this proves that the place $p$ is unbounded in $\overline{N}$. This contradicts the assumption that $\overline{N}$ is bounded. Hence, boundedness of $\overline{N}$ mathematically guarantees Proper Completion.
+2.  **Proof of Option to Complete**:
+    Liveness of $\overline{N}$ requires that transition $t^*$ is not dead. Specifically, from any reachable marking $M \in [\overline{N}, [i]\rangle$, there must be a sequence of transitions that enables $t^*$. Transition $t^*$ is enabled if and only if there is a token in place $o$. Once $t^*$ fires, it consumes the token from $o$ and places it in $i$. Thus, the final marking $[o]$ is reachable from any reachable marking $M \in [N, [i]\rangle$. This guarantees the Option to Complete.
+3.  **Proof of Liveness**:
+    Since $\overline{N}$ is live, no transition in $T \cup \{t^*\}$ is dead. In particular, every transition $t \in T$ is active, ensuring that there are no dead activities in the workflow under the initial marking $[i]$.
+4.  **1-Boundedness Under Concurrency**:
+    By verifying that the short-circuited net $\overline{N}$ is 1-bounded, we guarantee that during concurrent execution (e.g., parallel paths activated by AND-splits), no place $p \in P$ can ever hold more than one token. This mathematically prevents trace buffer overflows and queue leaks in asynchronous environments.
+
+---
+
+## 4. Academic Foundations and Conformance
 
 *   WF-Nets form the backbone of traditional process conformance and token game replays.
 *   For the formal equations of soundness and fitness, see the [Blue River Dam Doctrine](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md).
@@ -46,7 +79,7 @@ The ledger enforces that any WF-net representing an active corporate process mus
 
 ---
 
-## 4. M&A Slide-to-Receipt Bridge
+## 5. M&A Slide-to-Receipt Bridge
 
 To secure operational claims during mergers and acquisitions:
 1.  Target process flows must map to a verified WF-Net registered in the Virtual Data Room.

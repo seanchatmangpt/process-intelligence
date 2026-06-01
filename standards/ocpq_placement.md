@@ -37,12 +37,27 @@ The OCPQ abstract syntax tree (AST) maps to ledger relations:
 
 ## 2. Type-System and Query Safety
 
-OCPQ queries must satisfy structural safety rules:
+OCPQ queries must satisfy strict structural, graph-theoretic, and temporal safety rules, which are validated by the query compiler before execution on the ledger. Let a query logic $Q$ be represented as a tuple $Q = (V_E, V_O, E_{\text{E2O}}, C_T)$, where $V_E$ is the set of event variables, $V_O$ is the set of object variables, $E_{\text{E2O}} \subseteq V_E \times V_O$ represents event-to-object bindings, and $C_T$ is the set of temporal constraints.
 
-1.  **Object Association Safety**: Any variable bound to an object class must be connected to at least one Event node. Infinite cartesian products of objects are rejected at compile time.
-2.  **Determinism**: The query compiler ensures that execution plans are strictly deterministic. Caching query results is protected by hashing:
-    $$\mathcal{H}_{\text{result}} = \operatorname{BLAKE3}\left( \text{QueryID} \parallel \text{TargetLogHash} \parallel \text{ResultSet} \right)$$
-    This prevents replay attacks where historic query results are substituted.
+1.  **Object Association Safety**:
+    Every object variable $o \in V_O$ must be connected to at least one event variable in $V_E$ to prevent infinite Cartesian products:
+    $$\forall o \in V_O, \quad \exists e \in V_E \text{ s.t. } (e, o) \in E_{\text{E2O}}$$
+
+2.  **Temporal Constraint Graph Acyclicity (No Cycle Errors)**:
+    Temporal constraints must define a logically satisfiable ordering. We construct a directed temporal dependency graph $G_{\text{temporal}} = (V_E, E_{\text{temporal}})$, where:
+    $$E_{\text{temporal}} = \{ (v_a, v_b) \mid (v_a, v_b, \text{before}, \Delta) \in C_T \lor (v_b, v_a, \text{after}, \Delta) \in C_T \}$$
+    To ensure there are no contradictory temporal constraints (such as $v_a$ occurring before $v_b$ and $v_b$ before $v_a$), $G_{\text{temporal}}$ must be a Directed Acyclic Graph (DAG):
+    $$\nexists (v_0, v_1, \dots, v_k) \text{ s.t. } v_0 = v_k \land k \ge 1 \land \forall i \in \{0, \dots, k-1\}, (v_i, v_{i+1}) \in E_{\text{temporal}}$$
+
+3.  **Query Execution Temporal Safety (No Retroactive Anomalies)**:
+    Let $T_{\text{exec}}$ be the query execution timestamp. No query match can reference events that occur after the execution time (no future visibility):
+    $$\forall v \in V_E, \quad \text{time}(\operatorname{match}(v)) \le T_{\text{exec}}$$
+    Furthermore, the matching events must satisfy the temporal constraints:
+    $$\forall (v_a, v_b) \in E_{\text{temporal}}, \quad \text{time}(\operatorname{match}(v_a)) < \text{time}(\operatorname{match}(v_b))$$
+
+4.  **Determinism and Hashing**:
+    The query compiler ensures that execution plans are strictly deterministic. Query execution results are cached and verified against replay attacks using a BLAKE3 hash over the query, target log, execution timestamp, and results:
+    $$\mathcal{H}_{\text{result}} = \operatorname{BLAKE3}\left( \text{QueryID} \parallel \text{QueryLogic}_{\text{canon}} \parallel \text{TargetLogHash} \parallel T_{\text{exec}} \parallel \text{ResultSet}_{\text{canon}} \right)$$
 
 ---
 
