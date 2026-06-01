@@ -91,3 +91,6 @@
 
 * **Step: audit: compat research completeness**
   - Evaluating type safety and witness validations.
+
+* **Step: checkpoint: compat research pass complete**
+  - Evaluating type safety and witness validations.
