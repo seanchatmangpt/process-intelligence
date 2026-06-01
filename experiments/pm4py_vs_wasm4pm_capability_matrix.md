@@ -8,7 +8,7 @@ This matrix compares the performance, execution characteristics, and formal guar
 | :--- | :--- | :--- |
 | **Execution Environment** | CPython Interpreter, local OS process, single-threaded locks. | WebAssembly Sandbox, cross-platform, deterministic execution. |
 | **Memory Management** | In-memory Pandas DataFrames, garbage-collected, high overhead. | Zero-copy flat buffers, manual memory bounds, stream processing. |
-| **Verification & Security** | None. Logs and models are dynamic, mutable Python objects. | Cryptographic state-transition receipts (SHA-256 / Ed25519). |
+| **Verification & Security** | None. Logs and models are dynamic, mutable Python objects. | Cryptographic state-transition receipts (BLAKE3 / Ed25519). |
 | **Formal Soundness Checking** | Post-hoc manual verification using third-party solvers. | Embedded, real-time Petri Net soundness, liveness, and boundedness checkers. |
 | **Standard Support** | XES (XML), OCEL (JSON/SQLite) via custom Pandas loaders. | Strict schema-validated XES, OCEL 2.0 (JSON), BPMN, and POWL. |
 

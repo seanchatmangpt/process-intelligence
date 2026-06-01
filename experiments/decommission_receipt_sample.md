@@ -19,10 +19,10 @@ This experiment validates the Decommission Receipt format, proving that an enter
       "properties": {
         "final_marking_reached": { "type": "boolean" },
         "residual_tokens_remaining": { "type": "integer", "maximum": 0 },
-        "archival_hash_sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+        "archival_hash_blake3": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
         "compliance_gate_verdict": { "enum": ["PASSED", "FAILED"] }
       },
-      "required": ["final_marking_reached", "residual_tokens_remaining", "archival_hash_sha256", "compliance_gate_verdict"]
+      "required": ["final_marking_reached", "residual_tokens_remaining", "archival_hash_blake3", "compliance_gate_verdict"]
     },
     "cryptographic_witness": {
       "type": "object",
@@ -57,12 +57,12 @@ The following instance certifies that a legacy workflow server has been successf
   "conformance_proof": {
     "final_marking_reached": true,
     "residual_tokens_remaining": 0,
-    "archival_hash_sha256": "8e034aaab23c610ea3ed372e13bc159abf5556cec24debd57aded6f9e0cbfb4d",
+    "archival_hash_blake3": "8e034aaab23c610ea3ed372e13bc159abf5556cec24debd57aded6f9e0cbfb4d",
     "compliance_gate_verdict": "PASSED"
   },
   "cryptographic_witness": {
     "signer_identity": "autonomic_decom_authority_0",
-    "witness_signature": "0xfa0c6ffac0d1029616172d8e2d8d5af61dd859768e73e1cbf3d14d572dfc6b80"
+    "witness_signature": "ed25519_sig_88b901fb_fa0c6ffac0d1029616172d8e2d8d5af61dd859768e73e1cbf3d14d572dfc6b80fa0c6ffac0d1029616172d8e2d8d5af61dd859768e73e1cbf3d14d572dfc6b80"
   }
 }
 ```

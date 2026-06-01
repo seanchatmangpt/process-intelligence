@@ -16,17 +16,17 @@ This experiment validates the cryptographic Replay Receipt format. A Replay Rece
       "type": "object",
       "properties": {
         "engine_identifier": { "type": "string" },
-        "wasm_module_sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+        "wasm_module_blake3": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
       },
-      "required": ["engine_identifier", "wasm_module_sha256"]
+      "required": ["engine_identifier", "wasm_module_blake3"]
     },
     "input_artifacts": {
       "type": "object",
       "properties": {
-        "model_sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
-        "log_sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
+        "model_blake3": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+        "log_blake3": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" }
       },
-      "required": ["model_sha256", "log_sha256"]
+      "required": ["model_blake3", "log_blake3"]
     },
     "replay_results": {
       "type": "object",
@@ -62,11 +62,11 @@ The following instance certifies that a supply chain purchase log was replayed a
   "timestamp": "2026-05-31T22:44:00Z",
   "execution_authority": {
     "engine_identifier": "wasm4pm-core-v2.1.0",
-    "wasm_module_sha256": "4a7b744ce58b88cd28148b5dfbe984f932e650b2a8f98db832cdde32bbd42a9d"
+    "wasm_module_blake3": "4a7b744ce58b88cd28148b5dfbe984f932e650b2a8f98db832cdde32bbd42a9d"
   },
   "input_artifacts": {
-    "model_sha256": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
-    "log_sha256": "ccd1ae587abbec900fca5dfbeb4b12f101b20b317cb21a9d0312b918f4a1a67a"
+    "model_blake3": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+    "log_blake3": "ccd1ae587abbec900fca5dfbeb4b12f101b20b317cb21a9d0312b918f4a1a67a"
   },
   "replay_results": {
     "fitness_score": 0.982,
@@ -77,7 +77,7 @@ The following instance certifies that a supply chain purchase log was replayed a
   },
   "cryptographic_signature": {
     "public_key": "ed25519_pub_3c1b43c2778413107283db18c90d52486a67a3f3",
-    "signature_bytes": "0x8e73e1cbf3d14d572dfc6b8032eba9067d241bdc0f16ad0fcad9c7aa775d33c73e39bcd099b0be1b7bb4e48746c170f057257816a6b25f4777165032"
+    "signature_bytes": "ed25519_sig_993f80ab_8e73e1cbf3d14d572dfc6b8032eba9067d241bdc0f16ad0fcad9c7aa775d33c73e39bcd099b0be1b7bb4e48746c170f057257816a6b25f47771650320a1bcdef"
   }
 }
 ```

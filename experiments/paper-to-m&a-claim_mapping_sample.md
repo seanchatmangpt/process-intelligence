@@ -52,7 +52,7 @@ The seller claims a $5M synergy from process consolidation. The process mining e
     "petri_net_soundness": true,
     "conformance_fitness": 0.982,
     "violating_trace_percentage": 1.8,
-    "receipt_signature": "sha256-42d8f99e3a890db8182b83c799a4c8e7915a210b38ff40c7ea82312b918f4a1a"
+    "receipt_signature": "ed25519_sig_synergy1_02e0df2f3ca77ff129c5e3d7aa09df8c801b7a2dce51d93bde71f1a51270bc5e51029cba0ee2e2768d9046c1a8e97f90f23ee7914f6b21ba17b8813a890db8c"
   }
 }
 ```
@@ -70,7 +70,7 @@ The seller claims a $3.5M cost reduction in order fulfillment. However, conforma
     "petri_net_soundness": false,
     "conformance_fitness": 0.620,
     "violating_trace_percentage": 38.0,
-    "receipt_signature": "sha256-ff32c91823ab817d23cf9e9c8e9f9024ba7b12d90fa8e62c12a843e620581ba9"
+    "receipt_signature": "ed25519_sig_synergy2_0df29aa8c6fa24d8b9e02316e25da8cf9102ca142d76e49ac8be401a8f90cbe0a273bfce8fae20e8b15ca85df2aefb7f94cd12bbd06fae9cdbe2a1290ff6b8e3"
   }
 }
 ```

@@ -13,7 +13,7 @@ The engine refuses to process any log that lacks valid transition chain signatur
   "type": "object",
   "properties": {
     "evaluation_id": { "type": "string" },
-    "analyzed_log_hash_sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+    "analyzed_log_hash_blake3": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
     "verdict": { "enum": ["REJECTED", "ACCEPTED"] },
     "detection_rules": {
       "type": "object",
@@ -41,7 +41,7 @@ The engine refuses to process any log that lacks valid transition chain signatur
       }
     }
   },
-  "required": ["evaluation_id", "analyzed_log_hash_sha256", "verdict", "detection_rules"]
+  "required": ["evaluation_id", "analyzed_log_hash_blake3", "verdict", "detection_rules"]
 }
 ```
 
@@ -53,7 +53,7 @@ A trace was "washed" by inserting a synchronous `Audit_Invoice` event with a fak
 ```json
 {
   "evaluation_id": "eval_laundering_procurement_99a",
-  "analyzed_log_hash_sha256": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
+  "analyzed_log_hash_blake3": "81f7dca25ba3594074888c74547b0e70796a2082f9cda3b2c12a843e620581ba9",
   "verdict": "REJECTED",
   "detection_rules": {
     "check_cryptographic_chain": true,
@@ -75,7 +75,7 @@ A trace was "washed" by inserting a synchronous `Audit_Invoice` event with a fak
 ```json
 {
   "evaluation_id": "eval_laundering_procurement_99b",
-  "analyzed_log_hash_sha256": "ccd1ae587abbec900fca5dfbeb4b12f101b20b317cb21a9d0312b918f4a1a67a",
+  "analyzed_log_hash_blake3": "ccd1ae587abbec900fca5dfbeb4b12f101b20b317cb21a9d0312b918f4a1a67a",
   "verdict": "ACCEPTED",
   "detection_rules": {
     "check_cryptographic_chain": true,
@@ -94,7 +94,7 @@ An adversary altered transition values (timestamps or costs) and attempted to fo
 ```json
 {
   "evaluation_id": "eval_forgery_attack",
-  "analyzed_log_hash_sha256": "3e9b0e271bf1b8ff1db18f3a3a7895085e3b20755efc077d7045b84c3c3eb6fb",
+  "analyzed_log_hash_blake3": "3e9b0e271bf1b8ff1db18f3a3a7895085e3b20755efc077d7045b84c3c3eb6fb",
   "verdict": "REJECTED",
   "detection_rules": {
     "check_cryptographic_chain": true,
@@ -118,7 +118,7 @@ An adversary attempted to pass a mutable, unhashed `pandas.DataFrame` object dir
 ```json
 {
   "evaluation_id": "eval_raw_dataframe",
-  "analyzed_log_hash_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "analyzed_log_hash_blake3": "0000000000000000000000000000000000000000000000000000000000000000",
   "verdict": "REJECTED",
   "detection_rules": {
     "check_cryptographic_chain": false,

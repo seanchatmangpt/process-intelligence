@@ -12,7 +12,7 @@ To graduate the standards crosswalk to a finalized state, the foundry's verifica
 *   [x] **Downstream Reference Alignment**: The mappings are aligned with the limits and assumptions identified in the [PM4Py Oracle Map](file:///Users/sac/process-intelligence/sources/pm4py/oracle-map.md).
 *   [x] **Audit Completeness**: The [Audit: Standards Coverage Check](file:///Users/sac/process-intelligence/standards/audit__standards_coverage.md) has run and registered a green status for all 16 standards.
 *   [x] **No Template Files**: All placement files under the `standards/` directory contain fully realized schemas, mathematical formulations, and execution rules, with no incomplete elements or deferred tasks.
-*   [x] **Link Integrity**: All cross-references are written as absolute, un-backticked markdown links in the format `file:///Users/sac/process-intelligence/...`.
+*   [x] **Link Integrity**: All cross-references are written as absolute, un-backticked markdown links in the format `/Users/sac/process-intelligence/...`.
 
 ---
 

@@ -1,32 +1,37 @@
-# Project: process-intelligence-v30.1.1-alignment
+# Project: Process Intelligence Research Foundry
 
 ## Architecture
-- The research corpus represents the authority layer for studying process-evidence type law.
-- The structure consists of doctrine definitions, public standard mapping, academic paper mappings, lifecycle transitions, M&A diligence claim projections, and sample/fixture validations.
-- Interaction flows from theoretical papers/standards to execution structures, verified via cryptographic receipts.
+The Process Intelligence Research Foundry acts as the authority layer for studying process-evidence type law and executing process reality mapping under the v30.1.1 ultimate standard.
+- The foundry consists of a type-law engine defining `Evidence<T, State, Witness>`, information lattices, and Ed25519 signature checks.
+- It includes a deterministic Petri Net execution engine and an A* alignment solver.
+- It implements Declare LTL verification checks.
+- Sandbox memory boundaries are secured via gas metering, recursion guards, and ChaCha20 memory sanitization.
+- Chronological event logs are chained as an event ledger using SHA-256 blocks.
+- PowerPoint/JSON receipts project verified board claims.
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| 1 | M1: Adversarial Audit | Scan doctrine, sources, standards, lifecycle, ma, and experiments for stubs and weak math | none | DONE |
-| 2 | M2: M&A Diligence Rigor | Update slide-to-receipt maps, cost minimization, and signature verification with JSON schemas and math in `ma/define_slide-to-receipt_map.md`, `ma/define_auditor_evidence_path.md`, `ma/define_slide-to-replay_map.md`, and `ma/slide-to-receipt-map.md` | M1 | IN_PROGRESS |
-| 3 | M3: Petri Net & OCPQ Rigor | Formalize Petri Net place/transition dynamics, stochastic nets, and OCPQ query bindings in `standards/petri_net_placement.md`, `standards/petri-net.md`, and `standards/ocpq_placement.md` using LaTeX | M1 | IN_PROGRESS |
-| 4 | M4: Fixture & Link Upgrades | Review and optimize validation scripts/fixtures in `experiments/` and `audits/`, fix broken links in `standards/reverse-lock-in.md` and checkpoints | M2, M3 | PLANNED |
-| 5 | M5: Final Report & Integration | Resolve `INCOMPLETE` markers in `sources/wasm4pm-compat/`, compile final audit report at `audits/adversarial_audit_v30.1.1.md`, and run Forensic Audit | M4 | PLANNED |
+| 1 | M1: Type-Law Engine | Implement Evidence, Information Lattices, Ed25519, autonomic lifecycle state machine | none | PLANNED |
+| 2 | M2: Petri & LTL Engine | Petri Net token-game replay, P-invariants, soundness checks, Declare LTL checks | M1 | PLANNED |
+| 3 | M3: A* Solver & Sandbox | A* alignment solver, sandbox (gas, memory, ChaCha20), ledger hashing | M2 | PLANNED |
+| 4 | M4: ggen Projection | PowerPoint/JSON receipt projection, code generators | M3 | PLANNED |
+| 5 | M5: E2E Integration | Verify 100% passing tests and run Forensic Auditor | M4 | PLANNED |
 
 ## Interface Contracts
-### slide-to-receipt ↔ verification math
-- Diligence claims must correspond to a schema defining inputs, output cryptographic hash, and signers.
-- Verification math must specify SHA-256/BLAKE3 hash checks and Ed25519 signature checks.
+### Evidence ↔ Execution Authority
+- `Evidence<T, State, Witness>` must bind event payload, execution state, and cryptographic witness.
+- `Witness` join/meet operations verify monotonic state transitions.
+- Authority signatures must be Ed25519 compliant.
 
-### Petri Net place/transition ↔ OCPQ query
-- Petri Net dynamics must be specified in terms of place-transition flow matrices and marking transitions.
-- OCPQ query bindings must specify patterns/rules to select and project events into the Petri Net.
+### Petri Net ↔ A* Solver
+- The Petri Net token game provides transition firing matrices.
+- The A* solver uses transition firing rules to search for optimal alignments minimizing synchronous/model-only/log-only move costs.
 
 ## Code Layout
-- `doctrine/` - Process law foundations
-- `ma/` - Diligence claims, slide-to-receipt maps, and taxonomies
-- `standards/` - Place of Petri Net and OCPQ rules, public schemas
-- `sources/` - Research mappings (papers, pm4py, wasm4pm, wasm4pm-compat)
-- `lifecycle/` - Transition laws and MAPE-K configurations
-- `experiments/` & `audits/` - Validation fixtures and correctness tests
+- `sources/wasm4pm/src/evidence.rs` - Type-Law structures, lattices, signatures, and lifecycle.
+- `sources/wasm4pm/src/petri.rs` - Petri Net definition, token game, P-invariants, soundness checks.
+- `sources/wasm4pm/src/ltl.rs` - Declare LTL parser and verification checks.
+- `sources/wasm4pm/src/alignment.rs` - A* alignment solver.
+- `sources/wasm4pm/src/ledger.rs` - Event ledger block chaining.
+- `sources/wasm4pm/src/sandbox.rs` - Sandbox constraints (gas, recursion, ChaCha20 memory shredding).

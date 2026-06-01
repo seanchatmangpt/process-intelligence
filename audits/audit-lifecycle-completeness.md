@@ -49,7 +49,7 @@ Subagent checks verified that the verification test suite executes and passes fo
 - **`assert_soundness`**: Proves 1-boundedness, liveness, and structure bounds.
 - **`assert_fitness`**: Asserts trace alignment score exceeds the admissibility threshold ($\theta_{\text{fit}} \ge 0.95$).
 - **`assert_no_ghost_transitions`**: Confirms that all labeled transitions are active in the log or are explicit silent routing steps.
-- **`assert_decommission_receipt`**: Verifies Ed25519 signature and SHA-256 hashes of retired models and log archives.
+- **`assert_decommission_receipt`**: Verifies Ed25519 signature and BLAKE3 hashes of retired models and log archives.
 
 ---
 

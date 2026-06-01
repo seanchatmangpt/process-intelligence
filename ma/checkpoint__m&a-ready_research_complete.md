@@ -31,7 +31,7 @@ The following checklist verifies the implementation status of all files in this 
 ## 2. Integrity Verification Assertions
 
 1. **No Stubs/Placeholders**: Every file has been expanded to define fully realized mathematical, structural, and operational rules.
-2. **Standard Formatting**: All cross-references use absolute links of the form `file:///Users/sac/process-intelligence/ma/...` and do not contain backticks.
+2. **Standard Formatting**: All cross-references use absolute links of the form `/Users/sac/process-intelligence/ma/...` and do not contain backticks.
 3. **Formal Foundations**: All claims are validated against Dr. Wil van der Aalst's process mining doctrine (alignment fitness, precision, liveness, boundedness).
 
 ## 3. Verdict

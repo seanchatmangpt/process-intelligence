@@ -297,6 +297,6 @@ For each competitor integration, we measure:
 
 - [Blue River Dam](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md): Kinetic enforcement mechanism
 - [Public Standards Gravity](file:///Users/sac/process-intelligence/doctrine/public-standards-gravity.md): Game-theoretic formalism
-- [Reverse Porter's Five Forces](file:///Users/sac/process-intelligence/standards/reverse-porter-five.md): Competitive inversion strategy
+- [Reverse Porter's Five Forces](file:///Users/sac/process-intelligence/doctrine/reverse-porter-five.md): Competitive inversion strategy
 - [Full-Lifecycle Process Intelligence](file:///Users/sac/process-intelligence/doctrine/full-lifecycle-process.md): End-to-end observation requirements
 - [standards/docs-law__standards_readme.md](file:///Users/sac/process-intelligence/standards/docs-law__standards_readme.md): Complete standards registry
