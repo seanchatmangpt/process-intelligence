@@ -3,6 +3,9 @@ use wasm4pm::ocel::ZeroCopyOcel;
 use wasm4pm::query::{self, OcpqQuery};
 use wasm4pm::sandbox::{self, GasMeter, RecursionGuard};
 use wasm4pm::ffi;
+use std::sync::Mutex;
+
+static TEST_MUTEX: Mutex<()> = Mutex::new(());
 
 // Helper to construct a valid zero-copy OCEL 2.0 binary log buffer
 fn build_valid_ocel_buffer() -> Vec<u8> {
@@ -111,6 +114,7 @@ fn build_valid_ocel_buffer() -> Vec<u8> {
 
 #[test]
 fn test_allocator_boundaries() {
+    let _lock = TEST_MUTEX.lock().unwrap();
     // Test ceiling violation
     let res = allocator::init_global_arena(2_000_000_000); // 2GB (absolute limit is 1GB)
     assert!(res.is_err());
@@ -135,6 +139,7 @@ fn test_allocator_boundaries() {
 
 #[test]
 fn test_zero_copy_parsing() {
+    let _lock = TEST_MUTEX.lock().unwrap();
     let buf = build_valid_ocel_buffer();
     let ocel = ZeroCopyOcel::parse(&buf).unwrap();
     
@@ -165,6 +170,7 @@ fn test_zero_copy_parsing() {
 
 #[test]
 fn test_query_evaluator() {
+    let _lock = TEST_MUTEX.lock().unwrap();
     let buf = build_valid_ocel_buffer();
     let ocel = ZeroCopyOcel::parse(&buf).unwrap();
     
@@ -184,6 +190,7 @@ fn test_query_evaluator() {
 
 #[test]
 fn test_gas_limit_violation() {
+    let _lock = TEST_MUTEX.lock().unwrap();
     let buf = build_valid_ocel_buffer();
     let ocel = ZeroCopyOcel::parse(&buf).unwrap();
     
@@ -201,6 +208,7 @@ fn test_gas_limit_violation() {
 
 #[test]
 fn test_recursion_limit_violation() {
+    let _lock = TEST_MUTEX.lock().unwrap();
     let buf = build_valid_ocel_buffer();
     let ocel = ZeroCopyOcel::parse(&buf).unwrap();
     
@@ -218,6 +226,7 @@ fn test_recursion_limit_violation() {
 
 #[test]
 fn test_oblivion_protocol_memory_shredding() {
+    let _lock = TEST_MUTEX.lock().unwrap();
     allocator::init_global_arena(1 * 1024 * 1024).unwrap(); // 1MB
     
     // Allocate something and write data
@@ -241,6 +250,7 @@ fn test_oblivion_protocol_memory_shredding() {
 
 #[test]
 fn test_ffi_boundary_safety() {
+    let _lock = TEST_MUTEX.lock().unwrap();
     // Initialize FFI with 50MB
     let code = ffi::wasm_init(50 * 1024 * 1024);
     assert_eq!(code, 0);

@@ -19,13 +19,16 @@ pub struct DoubleBufferedArena {
     transient_cursor: usize,
     transient_start: usize,
     ceiling: usize,
+    aligned_offset: usize,
 }
 
 impl DoubleBufferedArena {
     pub fn new(ceiling: usize) -> Self {
-        let mut buffer = Vec::with_capacity(ceiling);
-        // Pre-allocate the memory to ensure contiguity and capture allocation errors early
-        buffer.resize(ceiling, 0);
+        let mut buffer = Vec::with_capacity(ceiling + 8);
+        buffer.resize(ceiling + 8, 0);
+        let base_addr = buffer.as_ptr() as usize;
+        let aligned_addr = (base_addr + 7) & !7;
+        let aligned_offset = aligned_addr - base_addr;
         let transient_start = ceiling / 2; // Split 50/50 for permanent and transient allocations
         Self {
             buffer,
@@ -33,6 +36,7 @@ impl DoubleBufferedArena {
             transient_cursor: transient_start,
             transient_start,
             ceiling,
+            aligned_offset,
         }
     }
 
@@ -50,7 +54,7 @@ impl DoubleBufferedArena {
         }
 
         self.permanent_cursor = aligned_cursor + size;
-        let ptr = unsafe { self.buffer.as_mut_ptr().add(aligned_cursor) };
+        let ptr = unsafe { self.buffer.as_mut_ptr().add(self.aligned_offset + aligned_cursor) };
         Ok(ptr)
     }
 
@@ -68,7 +72,7 @@ impl DoubleBufferedArena {
         }
 
         self.transient_cursor = aligned_cursor + size;
-        let ptr = unsafe { self.buffer.as_mut_ptr().add(aligned_cursor) };
+        let ptr = unsafe { self.buffer.as_mut_ptr().add(self.aligned_offset + aligned_cursor) };
         Ok(ptr)
     }
 
@@ -77,7 +81,9 @@ impl DoubleBufferedArena {
         let start = self.transient_start;
         let end = self.transient_cursor;
         if end > start {
-            self.buffer[start..end].fill(0);
+            let abs_start = self.aligned_offset + start;
+            let abs_end = self.aligned_offset + end;
+            self.buffer[abs_start..abs_end].fill(0);
         }
         self.transient_cursor = self.transient_start;
     }
@@ -105,8 +111,8 @@ impl DoubleBufferedArena {
     }
 
     pub fn contains_ptr(&self, ptr: *const u8, len: usize) -> bool {
-        let start = self.buffer.as_ptr() as usize;
-        let end = start + self.buffer.len();
+        let start = (self.buffer.as_ptr() as usize) + self.aligned_offset;
+        let end = start + self.ceiling;
         let target_start = ptr as usize;
         let target_end = target_start + len;
 
@@ -114,9 +120,9 @@ impl DoubleBufferedArena {
     }
 
     pub fn get_relative_offset(&self, ptr: *const u8) -> Option<u32> {
-        let start = self.buffer.as_ptr() as usize;
+        let start = (self.buffer.as_ptr() as usize) + self.aligned_offset;
         let target = ptr as usize;
-        if target >= start && target < start + self.buffer.len() {
+        if target >= start && target < start + self.ceiling {
             Some((target - start) as u32)
         } else {
             None
@@ -124,8 +130,8 @@ impl DoubleBufferedArena {
     }
 
     pub fn get_absolute_ptr(&self, offset: u32) -> Option<*mut u8> {
-        if (offset as usize) < self.buffer.len() {
-            Some(unsafe { self.buffer.as_ptr().add(offset as usize) as *mut u8 })
+        if (offset as usize) < self.ceiling {
+            Some(unsafe { self.buffer.as_ptr().add(self.aligned_offset + offset as usize) as *mut u8 })
         } else {
             None
         }
