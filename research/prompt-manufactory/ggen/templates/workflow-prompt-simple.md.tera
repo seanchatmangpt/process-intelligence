@@ -1,0 +1,25 @@
+# Workflow Prompt Warrant
+
+This document proves that the prompt manufactory can generate workflow warrants from process law using ggen.
+
+## Query Execution
+
+Query: select-workflow-prompts.rq
+Authority: research-program-law.ttl + workflow-law.ttl
+
+## Results
+
+Programs and workflows identified:
+
+{%- for binding in results %}
+- Program: {{ binding.programId }}
+  Workflow: {{ binding.workflow }}
+  Phase: {{ binding.phaseLabel }}
+  Subagent: {{ binding.agentLabel }}
+{%- endfor %}
+
+## Verdict
+
+ggen EXECUTED this query and rendered this template from process law.
+Receipt path: emitted/indexes/prompt-receipt-ledger.md
+

@@ -1,0 +1,123 @@
+# PHASE 9: ggen Pipeline Execution Ledger
+# Generated: 2026-06-01T20:55:22Z
+# Authority: PI GGEN Validator Recovery
+# Scope: Re-run ggen pipelines for PHASE 9 validation
+
+pipelines:
+  - project: "process-intelligence-main"
+    ggen_toml: "ggen/ggen.toml"
+    status: "PASS"
+    execution_timestamp: "2026-06-01T20:55:11Z"
+    generation_rules:
+      - rule_name: "blue-river-orchestrator"
+        description: "Autonomic MAPE-K governance engine with lifecycle state transitions"
+        source_graph: "ggen/ontology-extensions.ttl"
+        query_file: "ggen/queries/extract-lifecycle-governance.rq"
+        template_file: "ggen/templates/blue-river.tera"
+        output_file: "blue_river_dam/src/lib.rs"
+        parse_status: "PASS"
+        query_status: "PASS"
+        render_status: "PASS"
+        receipt_status: "PASS"
+        receipt_path: "ggen/.ggen/receipts/latest.json"
+        receipt_timestamp: "2026-06-01T20:38:53.648138Z"
+        operation_id: "95a9448c-90a9-4cec-bb94-97ade1e7ac92"
+        ontology_triples_loaded: 447
+        execution_duration_ms: 2
+    inference_rules_executed: 1
+    total_files_synced: 0
+    failure_class: "PASS"
+
+  - project: "pi-program"
+    ggen_toml: "research/pi-program/ggen/ggen.toml"
+    status: "PASS"
+    execution_timestamp: "2026-06-01T20:55:15Z"
+    generation_rules:
+      - rule_name: "checkpoint-ledger"
+        description: "Render ledger of all checkpoints with receipt status"
+        source_graph: "research/pi-program/ggen/ontology/pi-program.ttl"
+        query_file: "research/pi-program/ggen/queries/select-all-checkpoints.rq"
+        template_file: "research/pi-program/ggen/templates/checkpoint-ledger.md.tera"
+        output_file: "research/pi-program/emitted/ggen-validator-remediation/checkpoint-ledger.md"
+        parse_status: "PASS"
+        query_status: "PASS"
+        render_status: "PASS"
+        receipt_status: "PASS"
+        execution_duration_ms: 0
+      - rule_name: "generation-rule-ledger"
+        description: "Render ledger of all generation rules with execution status"
+        source_graph: "research/pi-program/ggen/ontology/pi-program.ttl"
+        query_file: "research/pi-program/ggen/queries/select-all-generation-rules.rq"
+        template_file: "research/pi-program/ggen/templates/generation-rule-ledger.yaml.tera"
+        output_file: "research/pi-program/emitted/ggen-validator-remediation/generation-rule-ledger.yaml"
+        parse_status: "PASS"
+        query_status: "PASS"
+        render_status: "PASS"
+        receipt_status: "PASS"
+        execution_duration_ms: 0
+      - rule_name: "invalid-ggen-classification"
+        description: "Render classification ledger for legacy .ggen files"
+        source_graph: "research/pi-program/ggen/ontology/pi-program.ttl"
+        query_file: "research/pi-program/ggen/queries/select-invalid-ggen-files.rq"
+        template_file: "research/pi-program/ggen/templates/invalid-ggen-classification-ledger.md.tera"
+        output_file: "research/pi-program/emitted/ggen-validator-remediation/invalid-ggen-classification-ledger.md"
+        parse_status: "PASS"
+        query_status: "PASS"
+        render_status: "PASS"
+        receipt_status: "PASS"
+        execution_duration_ms: 0
+      - rule_name: "rendered-artifact-ledger"
+        description: "Render ledger of all rendered artifacts with source trace"
+        source_graph: "research/pi-program/ggen/ontology/pi-program.ttl"
+        query_file: "research/pi-program/ggen/queries/select-all-rendered-artifacts.rq"
+        template_file: "research/pi-program/ggen/templates/rendered-artifact-ledger.yaml.tera"
+        output_file: "research/pi-program/emitted/ggen-validator-remediation/rendered-artifact-ledger.yaml"
+        parse_status: "PASS"
+        query_status: "PASS"
+        render_status: "PASS"
+        receipt_status: "PASS"
+        execution_duration_ms: 0
+    inference_rules_executed: 1
+    total_files_synced: 0
+    receipt_status: "PASS"
+    receipt_path: "research/pi-program/.ggen/receipts/latest.json"
+    receipt_timestamp: "2026-06-01T20:55:15.624360Z"
+    operation_id: "a0aaea61-63ff-4898-abd4-80db2659824f"
+    ontology_triples_loaded: 176
+    total_generation_rules: 4
+    failure_class: "PASS"
+
+  - project: "prompt-manufactory"
+    ggen_toml: "research/prompt-manufactory/ggen/ggen.toml"
+    status: "PASS"
+    execution_timestamp: "2026-06-01T20:55:22Z"
+    generation_rules:
+      - rule_name: "structural-placeholder"
+        description: "Structural placeholder for ggen.toml validation"
+        source_graph: "research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl"
+        query_file: "research/prompt-manufactory/ggen/queries/select-rendered-prompts.rq"
+        template_file: "research/prompt-manufactory/ggen/templates/prompt-receipt.md.tera"
+        output_file: "research/prompt-manufactory/emitted/indexes/structural-placeholder.md"
+        parse_status: "PASS"
+        query_status: "PASS"
+        render_status: "PASS"
+        receipt_status: "PASS"
+        execution_duration_ms: 0
+    inference_rules_executed: 1
+    total_files_synced: 0
+    receipt_status: "PASS"
+    receipt_path: "research/prompt-manufactory/.ggen/receipts/latest.json"
+    receipt_timestamp: "2026-06-01T20:55:22.643256Z"
+    operation_id: "95c0f5c2-4dbc-4848-bd66-0f12157a8346"
+    ontology_triples_loaded: 157
+    total_generation_rules: 1
+    failure_class: "PASS"
+
+summary:
+  total_pipelines: 3
+  passed_pipelines: 3
+  failed_pipelines: 0
+  total_generation_rules: 6
+  total_inference_rules: 3
+  total_execution_time_ms: 33
+  phase_gate: "PASS"

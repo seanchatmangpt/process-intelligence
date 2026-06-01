@@ -27,7 +27,6 @@ standard_only = false
 [generation]
 output_dir = ".."
 
-# All rules disabled pending template syntax fixes (Phase 8 recovery)
 # Placeholder rule for DMAIC measurement gate compliance
 [[generation.rules]]
 name = "structural-placeholder"
@@ -36,6 +35,15 @@ template = { file = "templates/prompt-receipt.md.tera" }
 output_file = "emitted/indexes/structural-placeholder.md"
 mode = "Overwrite"
 description = "Structural placeholder for ggen.toml validation"
+
+# Phase 10 warrant path: workflow prompts generated from law
+[[generation.rules]]
+name = "workflow-prompts"
+query = { file = "queries/select-workflow-prompts.rq" }
+template = { file = "templates/workflow-prompt-simple.md.tera" }
+output_file = "emitted/prompts/workflows/PI_RESEARCH_PROGRAM_INTEL_001.md"
+mode = "Overwrite"
+description = "Render workflow prompts from program law; proves ggen can manufacture warrants"
 
 [sync]
 enabled = true

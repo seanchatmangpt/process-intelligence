@@ -1,0 +1,12 @@
+- file: pi-ggen-project-registry.ttl
+  old: proj:ZOEAPP 
+  new: proj:PCP_PROOF_CELL
+  class: Operational
+- file: pi-program.ttl
+  old: Zoeapp
+  new: PCP
+  class: Operational
+- file: conformance-ledger.ttl
+  old: "https://zoe.framework/ontology/"
+  new: "https://pcp.framework/ontology/"
+  class: Operational

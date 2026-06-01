@@ -1,0 +1,11 @@
+do_not_copy:
+  - ".env"
+  - "node_modules"
+  - ".git"
+  - "src/app"
+  - "src/components"
+  - "src/hooks"
+  - "src/constants"
+  - "src/types"
+  - "ios"
+  - "android"
