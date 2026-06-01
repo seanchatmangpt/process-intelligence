@@ -79,11 +79,20 @@ impl RustGenerator {
 
     /// Verify generated module compiles
     pub fn verify_compilation(&self, module_path: &Path) -> Result<bool, String> {
-        // Placeholder: actual verification would invoke rustc
-        // For now, return success
-
-        let _path = module_path;
-        Ok(true)
+        let temp_output = std::env::temp_dir().join(format!(
+            "wasm4pm_compat_rust_check_{}",
+            module_path.file_stem().and_then(|s| s.to_str()).unwrap_or("temp")
+        ));
+        let status = std::process::Command::new("rustc")
+            .arg("--crate-type=lib")
+            .arg("--edition=2021")
+            .arg("--check")
+            .arg("-o")
+            .arg(temp_output)
+            .arg(module_path)
+            .status()
+            .map_err(|e| format!("Failed to execute rustc: {}", e))?;
+        Ok(status.success())
     }
 
     /// Generate all modules in a category

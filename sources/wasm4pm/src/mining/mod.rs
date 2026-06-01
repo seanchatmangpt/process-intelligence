@@ -752,29 +752,100 @@ pub fn alpha_miner(
     public_key: &[u8; 32],
     signature: &[u8; 64],
 ) -> Result<Evidence<ProcessModel, Admitted, AlphaWitness>, String> {
-    // Placeholder: actual implementation in mining submodules
     if event_log.is_empty() {
         return Err("EmptyLog".to_string());
     }
 
+    let mut activities = HashSet::new();
+    for event in event_log {
+        activities.insert(event.activity.clone());
+    }
+
+    let mut cases: HashMap<String, Vec<&Event>> = HashMap::new();
+    for event in event_log {
+        let key = if event.object_ids.is_empty() {
+            "default".to_string()
+        } else {
+            event.object_ids[0].clone()
+        };
+        cases.entry(key).or_default().push(event);
+    }
+
+    let mut directly_follows = HashSet::new();
+    for case_events in cases.values_mut() {
+        case_events.sort_by_key(|e| e.timestamp);
+        for i in 0..case_events.len().saturating_sub(1) {
+            let a = case_events[i].activity.clone();
+            let b = case_events[i+1].activity.clone();
+            directly_follows.insert((a, b));
+        }
+    }
+
+    let mut causal_relations = HashSet::new();
+    for (a, b) in &directly_follows {
+        if !directly_follows.contains(&(b.clone(), a.clone())) {
+            causal_relations.insert((a.clone(), b.clone()));
+        }
+    }
+    let causality_count = causal_relations.len();
+
+    let mut places = vec!["source".to_string(), "sink".to_string()];
+    let mut flow = Vec::new();
+    let transitions: Vec<String> = activities.iter().cloned().collect();
+
+    let mut start_activities = HashSet::new();
+    let mut end_activities = HashSet::new();
+    for case_events in cases.values() {
+        if let Some(first) = case_events.first() {
+            start_activities.insert(first.activity.clone());
+        }
+        if let Some(last) = case_events.last() {
+            end_activities.insert(last.activity.clone());
+        }
+    }
+
+    for start_act in &start_activities {
+        flow.push(("source".to_string(), start_act.clone()));
+    }
+
+    let mut place_counter = 0;
+    for (a, b) in &causal_relations {
+        let p_name = format!("p_c_{}", place_counter);
+        places.push(p_name.clone());
+        flow.push((a.clone(), p_name.clone()));
+        flow.push((p_name, b.clone()));
+        place_counter += 1;
+    }
+
+    for end_act in &end_activities {
+        flow.push((end_act.clone(), "sink".to_string()));
+    }
+
+    let mut initial_marking = HashMap::new();
+    initial_marking.insert("source".to_string(), 1);
+
+    let mut final_marking = HashMap::new();
+    final_marking.insert("sink".to_string(), 1);
+
     let net = PetriNet {
-        places: vec!["source".to_string(), "sink".to_string()],
-        transitions: vec![],
-        flow: vec![],
-        initial_marking: HashMap::new(),
-        final_marking: HashMap::new(),
+        places,
+        transitions,
+        flow,
+        initial_marking,
+        final_marking,
     };
+
     let model = ProcessModel::Net(net);
     let witness = AlphaWitness {
-        activities: HashSet::new(),
-        directly_follows: HashSet::new(),
-        causality_count: 0,
+        activities,
+        directly_follows,
+        causality_count,
     };
 
     let evidence = Evidence {
         payload: model,
         state: Admitted::Discovered,
-        witness: witness.clone(),
+        witness,
         epoch: 0,
         signature: IdentitySignature {
             public_key: public_key.to_vec(),
@@ -786,32 +857,76 @@ pub fn alpha_miner(
     Ok(evidence)
 }
 
-/// Mine Directly-Follows Graph for conformance baseline.
-///
-/// Returns: Evidence<ProcessModel, Admitted, HeuristicsWitness>
-/// - Linear-time construction from event log
-/// - Baseline for fitness before advanced conformance checking
 pub fn dfg_mining(
     event_log: &[Event],
     public_key: &[u8; 32],
     signature: &[u8; 64],
 ) -> Result<Evidence<ProcessModel, Admitted, HeuristicsWitness>, String> {
-    // Placeholder: actual implementation in mining submodules
     if event_log.is_empty() {
         return Err("EmptyLog".to_string());
     }
 
+    let mut activities_set = HashSet::new();
+    for event in event_log {
+        activities_set.insert(event.activity.clone());
+    }
+    let activities: Vec<String> = activities_set.iter().cloned().collect();
+
+    let mut cases: HashMap<String, Vec<&Event>> = HashMap::new();
+    for event in event_log {
+        let key = if event.object_ids.is_empty() {
+            "default".to_string()
+        } else {
+            event.object_ids[0].clone()
+        };
+        cases.entry(key).or_default().push(event);
+    }
+
+    let mut follows_freq: HashMap<(String, String), u32> = HashMap::new();
+    let mut variants_map: HashMap<Vec<String>, u32> = HashMap::new();
+    let mut self_loop_count = 0;
+
+    for case_events in cases.values_mut() {
+        case_events.sort_by_key(|e| e.timestamp);
+        let mut variant_trace = Vec::new();
+        for e in case_events.iter() {
+            variant_trace.push(e.activity.clone());
+        }
+        *variants_map.entry(variant_trace).or_insert(0) += 1;
+
+        for i in 0..case_events.len().saturating_sub(1) {
+            let a = case_events[i].activity.clone();
+            let b = case_events[i+1].activity.clone();
+            if a == b {
+                self_loop_count += 1;
+            }
+            *follows_freq.entry((a, b)).or_insert(0) += 1;
+        }
+    }
+
+    let mut edges = Vec::new();
+    for ((a, b), freq) in follows_freq {
+        edges.push((a, b, freq));
+    }
+
+    let mut variants = Vec::new();
+    for (trace, freq) in variants_map {
+        variants.push((trace, freq));
+    }
+
+    let edge_count = edges.len();
     let dfg = DirectlyFollowsGraph {
-        activities: vec![],
-        edges: vec![],
-        variants: vec![],
+        activities,
+        edges,
+        variants: variants.clone(),
     };
+
     let model = ProcessModel::DFG(dfg);
     let witness = HeuristicsWitness {
         dependency_threshold: 128,
-        edge_count: 0,
-        variant_count: 0,
-        self_loop_count: 0,
+        edge_count,
+        variant_count: variants.len(),
+        self_loop_count,
     };
 
     let evidence = Evidence {
@@ -912,5 +1027,59 @@ mod tests {
         let mut buf = Vec::new();
         tree.serialize_bytes(&mut buf);
         assert!(!buf.is_empty());
+    }
+
+    #[test]
+    fn test_alpha_miner_discovery() {
+        let events = vec![
+            Event {
+                activity: "A".to_string(),
+                timestamp: 100,
+                object_ids: vec!["case1".to_string()],
+                attributes: HashMap::new(),
+            },
+            Event {
+                activity: "B".to_string(),
+                timestamp: 200,
+                object_ids: vec!["case1".to_string()],
+                attributes: HashMap::new(),
+            },
+        ];
+        let pk = [0u8; 32];
+        let sig = [0u8; 64];
+        let res = alpha_miner(&events, &pk, &sig).unwrap();
+        assert_eq!(res.witness.activities.len(), 2);
+        assert!(res.witness.directly_follows.contains(&("A".to_string(), "B".to_string())));
+        assert_eq!(res.witness.causality_count, 1);
+        if let ProcessModel::Net(net) = res.payload {
+            assert!(net.places.len() >= 3);
+            assert!(net.flow.iter().any(|(s, t)| s == "source" && t == "A"));
+            assert!(net.flow.iter().any(|(s, t)| s == "B" && t == "sink"));
+        } else {
+            panic!("Expected PetriNet process model");
+        }
+    }
+
+    #[test]
+    fn test_dfg_miner_discovery() {
+        let events = vec![
+            Event {
+                activity: "A".to_string(),
+                timestamp: 100,
+                object_ids: vec!["case1".to_string()],
+                attributes: HashMap::new(),
+            },
+            Event {
+                activity: "B".to_string(),
+                timestamp: 200,
+                object_ids: vec!["case1".to_string()],
+                attributes: HashMap::new(),
+            },
+        ];
+        let pk = [0u8; 32];
+        let sig = [0u8; 64];
+        let res = dfg_mining(&events, &pk, &sig).unwrap();
+        assert_eq!(res.witness.edge_count, 1);
+        assert_eq!(res.witness.variant_count, 1);
     }
 }
