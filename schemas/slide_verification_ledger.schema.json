@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SlideVerificationLedger",
+  "description": "Ledger mapping slide UUIDs to their cryptographic verification results, hashes, and signatures.",
+  "type": "object",
+  "patternProperties": {
+    "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$": {
+      "type": "object",
+      "properties": {
+        "slide_id": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+        },
+        "slide_title": {
+          "type": "string"
+        },
+        "assertion_text": {
+          "type": "string"
+        },
+        "target_log_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        },
+        "process_model_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        },
+        "query_definition": {
+          "type": "string"
+        },
+        "verification_results": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": ["verified", "failed", "unverified"]
+            },
+            "timestamp": {
+              "type": "string"
+            },
+            "details": {
+              "type": "string"
+            }
+          },
+          "required": ["status"]
+        },
+        "validator_signature": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{128}$"
+        }
+      },
+      "required": [
+        "slide_id",
+        "slide_title",
+        "assertion_text",
+        "target_log_hash",
+        "process_model_hash",
+        "query_definition",
+        "verification_results",
+        "validator_signature"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

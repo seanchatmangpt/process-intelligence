@@ -332,3 +332,140 @@ pub extern "C" fn wasm_verify_otel_trace(trace_offset: u32, trace_len: u32) -> u
     })
 }
 
+// 6. Decommission the process using GovToken
+#[no_mangle]
+pub extern "C" fn wasm_decommission_process(
+    gov_pk_offset: u32,
+    sig_offset: u32,
+    msg_offset: u32,
+    msg_len: u32,
+) -> u32 {
+    let result = std::panic::catch_unwind(|| {
+        set_last_error(0);
+        let pk_ptr = match allocator::get_absolute_ptr(gov_pk_offset) {
+            Some(p) => p,
+            None => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+        let sig_ptr = match allocator::get_absolute_ptr(sig_offset) {
+            Some(p) => p,
+            None => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+        let msg_ptr = match allocator::get_absolute_ptr(msg_offset) {
+            Some(p) => p,
+            None => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+
+        if !crate::safety::FfiSafetyChecker::check_slice(pk_ptr, 32, 1)
+            || !crate::safety::FfiSafetyChecker::check_slice(sig_ptr, 64, 1)
+            || !crate::safety::FfiSafetyChecker::check_slice(msg_ptr, msg_len as usize, 1)
+        {
+            set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+            return sandbox::ERR_LIFECYCLE_VIOLATION;
+        }
+
+        let pk = unsafe { &*(pk_ptr as *const [u8; 32]) };
+        let sig = unsafe { &*(sig_ptr as *const [u8; 64]) };
+        let msg = unsafe { std::slice::from_raw_parts(msg_ptr, msg_len as usize) };
+
+        // Verify signature and create GovToken
+        let token = match crate::controllers::GovToken::verify(pk, sig, msg) {
+            Some(t) => t,
+            None => {
+                set_last_error(sandbox::ERR_CONFORMANCE_VIOLATION);
+                return sandbox::ERR_CONFORMANCE_VIOLATION;
+            }
+        };
+
+        // Initialize and run transition
+        let controller = crate::controllers::ProcessController::new(*pk);
+        let active = controller.transition_active();
+        if active.transition_decommission(&token).is_some() {
+            0
+        } else {
+            set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+            sandbox::ERR_LIFECYCLE_VIOLATION
+        }
+    });
+
+    result.unwrap_or_else(|_| {
+        set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+        sandbox::ERR_LIFECYCLE_VIOLATION
+    })
+}
+
+// 7. Verify JCS canonicalized signature
+#[no_mangle]
+pub extern "C" fn wasm_verify_jcs_signature(
+    gov_pk_offset: u32,
+    sig_offset: u32,
+    json_offset: u32,
+    json_len: u32,
+) -> u32 {
+    let result = std::panic::catch_unwind(|| {
+        set_last_error(0);
+        let pk_ptr = match allocator::get_absolute_ptr(gov_pk_offset) {
+            Some(p) => p,
+            None => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+        let sig_ptr = match allocator::get_absolute_ptr(sig_offset) {
+            Some(p) => p,
+            None => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+        let json_ptr = match allocator::get_absolute_ptr(json_offset) {
+            Some(p) => p,
+            None => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+
+        if !crate::safety::FfiSafetyChecker::check_slice(pk_ptr, 32, 1)
+            || !crate::safety::FfiSafetyChecker::check_slice(sig_ptr, 64, 1)
+            || !crate::safety::FfiSafetyChecker::check_slice(json_ptr, json_len as usize, 1)
+        {
+            set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+            return sandbox::ERR_LIFECYCLE_VIOLATION;
+        }
+
+        let pk = unsafe { &*(pk_ptr as *const [u8; 32]) };
+        let sig = unsafe { &*(sig_ptr as *const [u8; 64]) };
+        let json_slice = unsafe { std::slice::from_raw_parts(json_ptr, json_len as usize) };
+        
+        let json_str = match std::str::from_utf8(json_slice) {
+            Ok(s) => s,
+            Err(_) => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+
+        if crate::crypto::verify_jcs_receipt_signature(pk, sig, json_str) {
+            0
+        } else {
+            set_last_error(sandbox::ERR_CONFORMANCE_VIOLATION);
+            sandbox::ERR_CONFORMANCE_VIOLATION
+        }
+    });
+
+    result.unwrap_or_else(|_| {
+        set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+        sandbox::ERR_LIFECYCLE_VIOLATION
+    })
+}
+
+

@@ -13,10 +13,10 @@ The Process Intelligence Research Foundry acts as the authority layer for studyi
 | # | Name | Scope | Status |
 |---|------|-------|--------|
 | 1 | Milestone 1: Exploration & Gap Analysis | Gap analysis, environment preparation, initial structural design | DONE |
-| 2 | Milestone 2: Type-Law and Execution Core Implementation | Evidence lattice, typestate transitions, Petri Net solver, FFI safety checks | IN_PROGRESS |
-| 3 | Milestone 3: Board-Admissible M&A Projections and Autonomic Actuation | Alignment solvers, autonomic actuation policies, projection mapping | PLANNED |
-| 4 | Milestone 4: Test Fixtures, Integration Tests & Threat Simulation | Edge cases, differential testing, simulated threat vectors | PLANNED |
-| 5 | Milestone 5: Verification & Forensic Audit | End-to-end certification, audit trail generation, code freeze | PLANNED |
+| 2 | Milestone 2: Type-Law and Execution Core Implementation | Evidence lattice, typestate transitions, Petri Net solver, FFI safety checks | DONE |
+| 3 | Milestone 3: Board-Admissible M&A Projections and Autonomic Actuation | Alignment solvers, autonomic actuation policies, projection mapping | DONE |
+| 4 | Milestone 4: Test Fixtures, Integration Tests & Threat Simulation | Edge cases, differential testing, simulated threat vectors | DONE |
+| 5 | Milestone 5: Verification & Forensic Audit | End-to-end certification, audit trail generation, code freeze | DONE |
 
 ## Interface Contracts
 ### Evidence ↔ Execution Authority

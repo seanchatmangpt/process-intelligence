@@ -110,6 +110,14 @@ impl<'a> ZeroCopyOcel<'a> {
         }
         let len = u32::from_le_bytes(self.data[abs_offset..end_len].try_into().unwrap()) as usize;
         
+        // Strict boundary check: the string must reside entirely within the string table
+        let end_offset_in_table = offset.checked_add(4)
+            .and_then(|val| val.checked_add(len as u32))
+            .ok_or(OcelError::OutOfBounds)?;
+        if end_offset_in_table > self.string_table_size {
+            return Err(OcelError::OutOfBounds);
+        }
+
         let end_slice = end_len.checked_add(len).ok_or(OcelError::OutOfBounds)?;
         if end_slice > self.data.len() {
             return Err(OcelError::OutOfBounds);
@@ -309,6 +317,13 @@ impl<'a> ZeroCopyOcel<'a> {
         last_event_for_object.fill(-1);
 
         let act_count = activity_offsets.len();
+        let expected_matrix_len = act_count.checked_mul(act_count).ok_or(OcelError::OutOfBounds)?;
+        if dfg_matrix.len() < expected_matrix_len {
+            return Err(OcelError::OutOfBounds);
+        }
+        if last_event_for_object.len() < self.objects_count as usize {
+            return Err(OcelError::OutOfBounds);
+        }
 
         // Helper to find the index of an activity offset
         let find_act_idx = |offset: u32| -> Option<usize> {
@@ -374,6 +389,104 @@ impl<'a> ZeroCopyOcel<'a> {
             }
         }
  
+        Ok(())
+    }
+
+    // Zero-Copy Multi-Perspective DFG Projection
+    // Projects active events onto a specific object type, recording process paths strictly for that type
+    pub fn compute_multi_perspective_dfg(
+        &self,
+        bitmask: &[u64],
+        target_object_type: &str,
+        dfg_matrix: &mut [u32], // flat array of size activity_count * activity_count
+        activity_offsets: &[u32], // sorted unique activity offsets in the string table
+        last_event_for_object: &mut [i32], // scratch space of size objects_count, initialized to -1
+    ) -> Result<(), OcelError> {
+        // Clear the DFG matrix
+        dfg_matrix.fill(0);
+        // Clear the scratch space
+        last_event_for_object.fill(-1);
+
+        let act_count = activity_offsets.len();
+        let expected_matrix_len = act_count.checked_mul(act_count).ok_or(OcelError::OutOfBounds)?;
+        if dfg_matrix.len() < expected_matrix_len {
+            return Err(OcelError::OutOfBounds);
+        }
+        if last_event_for_object.len() < self.objects_count as usize {
+            return Err(OcelError::OutOfBounds);
+        }
+
+        // Helper to find the index of an activity offset
+        let find_act_idx = |offset: u32| -> Option<usize> {
+            activity_offsets.binary_search(&offset).ok()
+        };
+
+        // Scan all events
+        for event_idx in 0..self.events_count {
+            // Check if this event is active in the bitmask
+            let word_idx = event_idx as usize / 64;
+            let bit_idx = event_idx as usize % 64;
+            if word_idx >= bitmask.len() {
+                break;
+            }
+            if (bitmask[word_idx] & (1 << bit_idx)) == 0 {
+                continue; // Event is masked out
+            }
+
+            // Get event activity offset
+            let offset = (event_idx as usize)
+                .checked_mul(24)
+                .and_then(|val| (self.events_offset as usize).checked_add(val))
+                .ok_or(OcelError::OutOfBounds)?;
+            if offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+                return Err(OcelError::OutOfBounds);
+            }
+            let act_offset = u32::from_le_bytes(self.data[offset + 4..offset + 8].try_into().unwrap());
+            let act_idx = match find_act_idx(act_offset) {
+                Some(idx) => idx,
+                None => continue,
+            };
+
+            // Get related objects
+            let related_objs = self.get_event_objects(event_idx)?;
+            for &obj_idx in related_objs {
+                if obj_idx as usize >= last_event_for_object.len() {
+                    return Err(OcelError::OutOfBounds);
+                }
+
+                // Filter by the requested object type
+                let obj_type = self.get_object_type(obj_idx)?;
+                if obj_type != target_object_type {
+                    continue;
+                }
+
+                let prev_event_idx = last_event_for_object[obj_idx as usize];
+                if prev_event_idx >= 0 {
+                    // There was a previous active event for this object.
+                    // Get its activity index
+                    let prev_offset = (prev_event_idx as usize)
+                        .checked_mul(24)
+                        .and_then(|val| (self.events_offset as usize).checked_add(val))
+                        .ok_or(OcelError::OutOfBounds)?;
+                    if prev_offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+                        return Err(OcelError::OutOfBounds);
+                    }
+                    let prev_act_offset = u32::from_le_bytes(self.data[prev_offset + 4..prev_offset + 8].try_into().unwrap());
+                    if let Some(prev_act_idx) = find_act_idx(prev_act_offset) {
+                        // Increment transition frequency in DFG matrix: (prev_act_idx -> act_idx)
+                        let matrix_idx = prev_act_idx.checked_mul(act_count)
+                            .and_then(|val| val.checked_add(act_idx))
+                            .ok_or(OcelError::OutOfBounds)?;
+                        if matrix_idx < dfg_matrix.len() {
+                            dfg_matrix[matrix_idx] = dfg_matrix[matrix_idx].saturating_add(1);
+                        }
+                    }
+                }
+                // Update last active event for this object
+                last_event_for_object[obj_idx as usize] = event_idx as i32;
+            }
+        }
+
         Ok(())
     }
 }

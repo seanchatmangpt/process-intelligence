@@ -41,7 +41,7 @@ WASM_BRIDGED = PARTIAL means a related but not identical function exists in WASM
 | Inductive Miner (Petri net) | `pm4py.discover_petri_net_inductive()` | EventLog | PetriNet+Markings | YES — `discover_petri_net_inductive(log_json)` |
 | Inductive Miner (process tree) | `pm4py.discover_process_tree_inductive()` | EventLog | ProcessTree | YES — `discover_process_tree_inductive(log_json)` |
 | Inductive Miner (BPMN) | `pm4py.discover_bpmn_inductive()` | EventLog | BPMN XML | YES — `discover_bpmn_inductive(log_json)` |
-| Heuristics Miner | `pm4py.discover_heuristics_miner()` | EventLog, threshold | HeuristicsNet | YES — `discover_heuristics_miner(log_json, dep_threshold)` |
+| Heuristics Miner | `pm4py.discover_heuristics_net()` | EventLog, threshold | HeuristicsNet | YES — `discover_heuristics_miner(log_json, dep_threshold)` |
 | Heuristics Net → Petri Net | `pm4py.convert_to_petri_net(hnet)` | HeuristicsNet | PetriNet+Markings | YES — `heuristics_to_petri_net(net_json)` |
 | Genetic Miner | `pm4py.discover_petri_net_genetic()` | EventLog, config | PetriNet+Markings | YES — `discover_petri_net_genetic(log_json, config_json)` |
 | POWL Discovery (Inductive) | `pm4py.discover_powl()` | EventLog, variant | POWL | PARTIAL — `parse_powl(s)` parses; no discover_powl() in WASM |
@@ -199,3 +199,28 @@ WASM_BRIDGED = PARTIAL means a related but not identical function exists in WASM
 - WASM bridged (YES): ~75 (primarily discovery, conformance, filtering, variants, I/O)
 - Not bridged (NO): ~45 (organizational mining, prediction/ML, OCEL, DECLARE conformance, log skeleton conformance, visualization rendering)
 - PARTIAL: ~5 (POWL discover, visualization DOT, NL→POWL direction)
+
+---
+
+## 11. Rigorous Mathematical Specifications & Robustness
+
+### 11.1 Process Discovery Soundness Guarantees
+All block-structured discovery (Inductive Miner variants) in PM4Py and its WebAssembly mirror (`wasm4pm`) must satisfy the classic soundness criteria for a Workflow Net $N = (P, T, F, M_0, M_f)$ mapped from a process tree/POWL structure $\mathcal{T}$:
+1. **Option to Complete**: $\forall M \in [N, M_0\rangle, \quad M_f \in [N, M\rangle$
+2. **Proper Completion**: $\forall M \in [N, M_0\rangle, \quad (M \ge M_f) \implies (M = M_f)$
+3. **No Dead Transitions**: $\forall t \in T, \quad \exists M \in [N, M_0\rangle, \quad M \xrightarrow{t}$
+
+### 11.2 Heuristics Miner Loop Dependency Formulations
+To ensure correct noisy log and variant fuzzer handling, the discovery algorithms compute deterministic relations:
+- **Heuristic Dependency ($a \neq b$)**:
+  $$\text{dep}(a, b) = \frac{|a \to b| - |b \to a|}{|a \to b| + |b \to a| + 1}$$
+- **Length-1 Loop ($a = b$)**:
+  $$\text{dep}(a, a) = \frac{|a \to a|}{|a \to a| + 1}$$
+- **Length-2 Loop ($a \to b \to a$)**:
+  $$\text{dep}_2(a, b) = \frac{|a \to b \to a| + |b \to a \to b|}{|a \to b \to a| + |b \to a \to b| + 1}$$
+
+### 11.3 Fuzzer and Noisy Log Hardening
+The WASM-mirrored Heuristics Miner and binary parser prevent JIT panic traps and memory leaks on corrupted payloads via:
+1. **Boundary Limits**: Maximum unique activities limit ($N_{\text{activities}} \le 1,000$) and max event limits ($E_{\max} = 10,000,000$).
+2. **Arithmetic Safety**: Event traversal and index offsets use checked arithmetic (`checked_add`, `checked_mul`) returning `OutOfBounds` or `ERR_QUERY_TIMEOUT` error codes on invalid fuzzed inputs.
+3. **Deterministic Tie-Breaking**: For all sorting and dependency evaluations, tie-breaks must be resolved using lexicographical comparisons of SHA-256 hashes of activity name labels.

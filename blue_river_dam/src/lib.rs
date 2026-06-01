@@ -17,6 +17,13 @@
 // Governance Authority Hierarchy (Per Blue River Dam Doctrine §4)
 // ============================================================================
 
+#[derive(Debug, Clone)]
+pub struct PetriNetTopology {
+    pub places: Vec<String>,
+    pub transitions: Vec<String>,
+    pub flow: Vec<(String, String)>,
+}
+
 /// Root authority for policy and compliance
 pub struct Governor {
     /// Cryptographic authority identifier
@@ -39,8 +46,101 @@ pub struct Architect;
 
 impl Architect {
     /// Validate topology is a sound Workflow Net
-    pub fn validate_wf_net_soundness() -> Result<(), ArchitectRefusal> {
-        // Soundness check: WF-net with single source, single sink, no dead transitions
+    pub fn validate_wf_net_soundness(net: &PetriNetTopology) -> Result<(), ArchitectRefusal> {
+        // Verify that there is exactly one place with no incoming flow arcs (source place).
+        let mut source_places = Vec::new();
+        for p in &net.places {
+            let mut has_incoming = false;
+            for (_, tgt) in &net.flow {
+                if tgt == p {
+                    has_incoming = true;
+                    break;
+                }
+            }
+            if !has_incoming {
+                source_places.push(p.clone());
+            }
+        }
+        if source_places.len() != 1 {
+            return Err(ArchitectRefusal::UnsoundNet);
+        }
+        let source_place = &source_places[0];
+
+        // Verify that there is exactly one place with no outgoing flow arcs (sink place).
+        let mut sink_places = Vec::new();
+        for p in &net.places {
+            let mut has_outgoing = false;
+            for (src, _) in &net.flow {
+                if src == p {
+                    has_outgoing = true;
+                    break;
+                }
+            }
+            if !has_outgoing {
+                sink_places.push(p.clone());
+            }
+        }
+        if sink_places.len() != 1 {
+            return Err(ArchitectRefusal::UnsoundNet);
+        }
+        let sink_place = &sink_places[0];
+
+        // Verify that every place and transition is reachable from the source place (using BFS/DFS traversal).
+        let mut visited = std::collections::HashSet::new();
+        let mut queue = std::collections::VecDeque::new();
+
+        visited.insert(source_place.clone());
+        queue.push_back(source_place.clone());
+
+        while let Some(curr) = queue.pop_front() {
+            for (src, tgt) in &net.flow {
+                if src == &curr {
+                    if visited.insert(tgt.clone()) {
+                        queue.push_back(tgt.clone());
+                    }
+                }
+            }
+        }
+
+        for p in &net.places {
+            if !visited.contains(p) {
+                return Err(ArchitectRefusal::UnsoundNet);
+            }
+        }
+        for t in &net.transitions {
+            if !visited.contains(t) {
+                return Err(ArchitectRefusal::UnsoundNet);
+            }
+        }
+
+        // Verify that every place and transition can reach the sink place.
+        let mut visited_rev = std::collections::HashSet::new();
+        let mut queue_rev = std::collections::VecDeque::new();
+
+        visited_rev.insert(sink_place.clone());
+        queue_rev.push_back(sink_place.clone());
+
+        while let Some(curr) = queue_rev.pop_front() {
+            for (src, tgt) in &net.flow {
+                if tgt == &curr {
+                    if visited_rev.insert(src.clone()) {
+                        queue_rev.push_back(src.clone());
+                    }
+                }
+            }
+        }
+
+        for p in &net.places {
+            if !visited_rev.contains(p) {
+                return Err(ArchitectRefusal::UnsoundNet);
+            }
+        }
+        for t in &net.transitions {
+            if !visited_rev.contains(t) {
+                return Err(ArchitectRefusal::UnsoundNet);
+            }
+        }
+
         Ok(())
     }
 }
@@ -76,10 +176,38 @@ impl Auditor {
     /// Compute alignment fitness against reference model
     /// Returns fitness score in range [0.0, 1.0]
     pub fn compute_fitness(trace: &EventTrace) -> ConformanceMetric {
+        let activities: Vec<u32> = trace.events.iter().map(|e| e.activity).collect();
+        if activities.is_empty() {
+            return ConformanceMetric {
+                fitness: 0.0,
+                trace_id: trace.id,
+                alignment_moves: 3,
+                threshold: 0.95,
+            };
+        }
+
+        let ref_seq = [1, 2, 3];
+        let n = activities.len();
+        let m = ref_seq.len();
+        let mut dp = vec![vec![0; m + 1]; n + 1];
+
+        for i in 1..=n {
+            for j in 1..=m {
+                if activities[i - 1] == ref_seq[j - 1] {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = dp[i - 1][j].max(dp[i][j - 1]);
+                }
+            }
+        }
+        let lcs = dp[n][m];
+        let alignment_moves = (n + 3 - 2 * lcs) as u32;
+        let fitness = lcs as f64 / n.max(3) as f64;
+
         ConformanceMetric {
-            fitness: 0.95,
+            fitness,
             trace_id: trace.id,
-            alignment_moves: 0,
+            alignment_moves,
             threshold: 0.95,
         }
     }
@@ -625,5 +753,88 @@ mod tests {
     fn test_mape_k_knowledge_persistence() {
         let knowledge = Knowledge::new();
         assert_eq!(knowledge.reference_model, "sound_wf_net");
+    }
+
+    #[test]
+    fn test_validate_wf_net_soundness() {
+        let sound_net = PetriNetTopology {
+            places: vec!["source".to_string(), "p1".to_string(), "p2".to_string(), "sink".to_string()],
+            transitions: vec!["t1".to_string(), "t2".to_string(), "t3".to_string()],
+            flow: vec![
+                ("source".to_string(), "t1".to_string()),
+                ("t1".to_string(), "p1".to_string()),
+                ("t1".to_string(), "p2".to_string()),
+                ("p1".to_string(), "t2".to_string()),
+                ("p2".to_string(), "t3".to_string()),
+                ("t2".to_string(), "sink".to_string()),
+                ("t3".to_string(), "sink".to_string()),
+            ],
+        };
+        assert!(Architect::validate_wf_net_soundness(&sound_net).is_ok());
+
+        // Unsound: two sources
+        let unsound_two_sources = PetriNetTopology {
+            places: vec!["source1".to_string(), "source2".to_string(), "p1".to_string(), "sink".to_string()],
+            transitions: vec!["t1".to_string()],
+            flow: vec![
+                ("source1".to_string(), "t1".to_string()),
+                ("source2".to_string(), "t1".to_string()),
+                ("t1".to_string(), "p1".to_string()),
+                ("p1".to_string(), "sink".to_string()),
+            ],
+        };
+        assert!(Architect::validate_wf_net_soundness(&unsound_two_sources).is_err());
+
+        // Unsound: unreachable node
+        let unsound_unreachable = PetriNetTopology {
+            places: vec!["source".to_string(), "p1".to_string(), "unreachable_place".to_string(), "sink".to_string()],
+            transitions: vec!["t1".to_string(), "t2".to_string()],
+            flow: vec![
+                ("source".to_string(), "t1".to_string()),
+                ("t1".to_string(), "p1".to_string()),
+                ("p1".to_string(), "t2".to_string()),
+                ("t2".to_string(), "sink".to_string()),
+            ],
+        };
+        assert!(Architect::validate_wf_net_soundness(&unsound_unreachable).is_err());
+    }
+
+    #[test]
+    fn test_compute_fitness_genuine() {
+        let events_1 = vec![
+            ProcessEvent { timestamp: 0, activity: 1, case_id: 1 },
+            ProcessEvent { timestamp: 1, activity: 2, case_id: 1 },
+            ProcessEvent { timestamp: 2, activity: 3, case_id: 1 },
+        ];
+        let events_1_static: &'static [ProcessEvent] = Box::leak(events_1.into_boxed_slice());
+        let trace_1 = EventTrace {
+            id: 1,
+            events: events_1_static,
+        };
+        let metric_1 = Auditor::compute_fitness(&trace_1);
+        assert_eq!(metric_1.alignment_moves, 0);
+        assert!((metric_1.fitness - 1.0).abs() < 1e-9);
+
+        let events_2 = vec![
+            ProcessEvent { timestamp: 0, activity: 1, case_id: 1 },
+            ProcessEvent { timestamp: 1, activity: 3, case_id: 1 },
+        ];
+        let events_2_static: &'static [ProcessEvent] = Box::leak(events_2.into_boxed_slice());
+        let trace_2 = EventTrace {
+            id: 2,
+            events: events_2_static,
+        };
+        let metric_2 = Auditor::compute_fitness(&trace_2);
+        assert_eq!(metric_2.alignment_moves, 1);
+        assert!((metric_2.fitness - (2.0 / 3.0)).abs() < 1e-9);
+
+        // Empty trace
+        let trace_empty = EventTrace {
+            id: 3,
+            events: &[],
+        };
+        let metric_empty = Auditor::compute_fitness(&trace_empty);
+        assert_eq!(metric_empty.alignment_moves, 3);
+        assert!((metric_empty.fitness - 0.0).abs() < 1e-9);
     }
 }

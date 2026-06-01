@@ -240,17 +240,77 @@ impl TokenReplayEngine {
             return Err(ConformanceRefusal::EmptyLog);
         }
 
-        // Placeholder: actual token replay algorithm implementation
-        // 1. Initialize with source marking
-        // 2. For each activity, attempt to fire matching transition
-        // 3. Track tokens produced/missing/remaining
-        // 4. Compare final marking with sink
+        // Real token replay algorithm
+        let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
+            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+
+        let mut marking = Marking::initial(source_place);
+
+        let mut produced = 1u32;
+        let mut consumed = 0u32;
+        let mut missing = 0u32;
+        let mut remaining = 0u32;
+
+        for act in activities {
+            if !self.net.transitions.contains(act) {
+                return Err(ConformanceRefusal::UnknownActivity);
+            }
+
+            // Check and handle enabled transitions
+            if let Some(inputs) = self.net.pre.get(act) {
+                for (place, &weight) in inputs {
+                    let cur = marking.get_tokens(place);
+                    if cur < weight {
+                        let diff = weight - cur;
+                        missing += diff;
+                        produced += diff;
+                        marking.tokens.insert(place.clone(), weight);
+                    }
+                }
+            }
+
+            // Consume inputs & Produce outputs
+            marking = self.net.fire(act, &marking);
+
+            if let Some(inputs) = self.net.pre.get(act) {
+                for &weight in inputs.values() {
+                    consumed += weight;
+                }
+            }
+            if let Some(outputs) = self.net.post.get(act) {
+                for &weight in outputs.values() {
+                    produced += weight;
+                }
+            }
+        }
+
+        // Handle final marking and sink place
+        if let Some(sink) = self.net.places.iter().find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o") {
+            let final_sink_tokens = marking.get_tokens(sink);
+            if final_sink_tokens < 1 {
+                let diff = 1 - final_sink_tokens;
+                missing += diff;
+                consumed += diff;
+            } else {
+                consumed += 1;
+            }
+            // All other remaining tokens
+            for (place, &tokens) in &marking.tokens {
+                if place != sink {
+                    remaining += tokens;
+                }
+            }
+        }
+
+        let f_numerator = if consumed == 0 { 0.0 } else { missing as f64 / consumed as f64 };
+        let f_denominator = if produced == 0 { 0.0 } else { remaining as f64 / produced as f64 };
+        let fitness = 0.5 * (1.0 - f_numerator) + 0.5 * (1.0 - f_denominator);
 
         let result = TokenReplayResult {
-            tokens_produced: activities.len(),
-            tokens_missing: 0,
-            tokens_remaining: 0,
-            fitness: 1.0,
+            tokens_produced: produced as usize,
+            tokens_missing: missing as usize,
+            tokens_remaining: remaining as usize,
+            fitness,
         };
 
         // Create Evidence with witness marker
@@ -409,18 +469,126 @@ impl AlignmentEngine {
             return Err(ConformanceRefusal::EmptyLog);
         }
 
-        // Placeholder: actual alignment algorithm
-        // 1. Build state space (net reachability graph)
-        // 2. Build trace path (log prefix graph)
-        // 3. Find lowest-cost path in combined state space using A*
-        // 4. Extract moves from path
-        // 5. Compute cost (number of log-only and model-only moves)
+        let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
+            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+        
+        let sink_place = self.net.places.iter().find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
+            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
 
-        let alignment = Alignment {
-            case_id: case_id.to_string(),
-            moves: vec![],
+        // A* search for lowest-cost alignment
+        #[derive(Clone, Eq, PartialEq)]
+        struct AStarState {
+            cost: usize,
+            heuristic: usize,
+            trace_index: usize,
+            marking: Marking,
+            moves: Vec<(Option<String>, Option<String>)>,
+        }
+
+        impl Ord for AStarState {
+            fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+                let self_f = self.cost + self.heuristic;
+                let other_f = other.cost + other.heuristic;
+                other_f.cmp(&self_f) // Min-heap behavior
+            }
+        }
+
+        impl PartialOrd for AStarState {
+            fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+                Some(self.cmp(other))
+            }
+        }
+
+        let initial_marking = Marking::initial(source_place);
+        let mut heap = std::collections::BinaryHeap::new();
+        
+        heap.push(AStarState {
             cost: 0,
-        };
+            heuristic: trace.len(),
+            trace_index: 0,
+            marking: initial_marking,
+            moves: Vec::new(),
+        });
+
+        let mut visited = std::collections::HashSet::new();
+        let mut best_alignment = None;
+        let mut iterations = 0;
+
+        while let Some(state) = heap.pop() {
+            iterations += 1;
+            if iterations > 5000 {
+                return Err(ConformanceRefusal::StateSpaceExceeded);
+            }
+
+            let state_key = (state.marking.clone(), state.trace_index);
+            if visited.contains(&state_key) {
+                continue;
+            }
+            visited.insert(state_key);
+
+            // Goal test: all trace events replayed and only token is in sink place
+            if state.trace_index == trace.len() 
+                && state.marking.tokens.len() == 1 
+                && state.marking.get_tokens(&sink_place) == 1 
+            {
+                best_alignment = Some(Alignment {
+                    case_id: case_id.to_string(),
+                    moves: state.moves,
+                    cost: state.cost,
+                });
+                break;
+            }
+
+            // Generative transition rules:
+            // 1. Model-only moves (for any transition enabled in net)
+            for t in &self.net.transitions {
+                if self.net.is_enabled(t, &state.marking) {
+                    let next_marking = self.net.fire(t, &state.marking);
+                    let mut next_moves = state.moves.clone();
+                    next_moves.push((None, Some(t.clone())));
+                    heap.push(AStarState {
+                        cost: state.cost + 1,
+                        heuristic: trace.len() - state.trace_index,
+                        trace_index: state.trace_index,
+                        marking: next_marking,
+                        moves: next_moves,
+                    });
+                }
+            }
+
+            // 2. Synchronous moves (next trace event matches enabled transition)
+            if state.trace_index < trace.len() {
+                let next_event = &trace[state.trace_index];
+                if self.net.transitions.contains(next_event) && self.net.is_enabled(next_event, &state.marking) {
+                    let next_marking = self.net.fire(next_event, &state.marking);
+                    let mut next_moves = state.moves.clone();
+                    next_moves.push((Some(next_event.clone()), Some(next_event.clone())));
+                    heap.push(AStarState {
+                        cost: state.cost,
+                        heuristic: trace.len() - (state.trace_index + 1),
+                        trace_index: state.trace_index + 1,
+                        marking: next_marking,
+                        moves: next_moves,
+                    });
+                }
+            }
+
+            // 3. Log-only moves (deviation: skip next trace event)
+            if state.trace_index < trace.len() {
+                let next_event = &trace[state.trace_index];
+                let mut next_moves = state.moves.clone();
+                next_moves.push((Some(next_event.clone()), None));
+                heap.push(AStarState {
+                    cost: state.cost + 1,
+                    heuristic: trace.len() - (state.trace_index + 1),
+                    trace_index: state.trace_index + 1,
+                    marking: state.marking.clone(),
+                    moves: next_moves,
+                });
+            }
+        }
+
+        let alignment = best_alignment.ok_or(ConformanceRefusal::EarlyTermination)?;
 
         // Create Evidence with witness marker
         let evidence = Evidence {

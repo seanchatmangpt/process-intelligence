@@ -122,23 +122,9 @@ mod tests {
         // Verification 1: Ensuring 100% of linear memory is modified (the buffer is not equal to its initial state)
         assert_ne!(buf_after, buf_before, "The memory buffer was not modified by the shredding protocol");
         
-        // Verification 2: Verify that every byte matches the exact mathematical outputs of ChaCha20 CSPRNG
-        let mut expected_buf = vec![0u8; ceiling + 8];
-        let nonce = [0u8; 12];
-        let mut prng = ChaCha20::new(&seed, &nonce);
-        
-        for _ in 0..3 {
-            let mut offset = 0;
-            while offset < expected_buf.len() {
-                let bytes = prng.next_block();
-                let remaining = expected_buf.len() - offset;
-                let chunk_size = std::cmp::min(64, remaining);
-                expected_buf[offset..offset + chunk_size].copy_from_slice(&bytes[..chunk_size]);
-                offset += chunk_size;
-            }
-        }
-        
-        assert_eq!(buf_after, expected_buf, "The scrubbed buffer does not match the exact 3-pass ChaCha20 keystream");
+        // Verification 2: Verify that every byte is completely zeroed out after the final pass
+        let expected_buf = vec![0u8; ceiling + 8];
+        assert_eq!(buf_after, expected_buf, "The scrubbed buffer was not completely zeroed by the 4-pass protocol");
     }
 }
 

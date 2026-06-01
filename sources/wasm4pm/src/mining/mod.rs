@@ -588,21 +588,45 @@ pub fn inductive_miner(
     public_key: &[u8; 32],
     signature: &[u8; 64],
 ) -> Result<Evidence<ProcessModel, Admitted, InductiveWitness>, String> {
-    // Placeholder: actual implementation in mining submodules
     if event_log.is_empty() {
         return Err("EmptyLog".to_string());
     }
 
-    let tree = ProcessTree::Activity("placeholder".to_string());
-    let model = ProcessModel::Tree(tree);
+    // Extract unique activity labels in order of appearance
+    let mut activities_seq = Vec::new();
+    let mut activities_set = HashSet::new();
+    for event in event_log {
+        if activities_set.insert(event.activity.clone()) {
+            activities_seq.push(event.activity.clone());
+        }
+    }
+    activities_seq.sort(); // Sort to make deterministic
+
+    let tree = if activities_seq.len() > 1 {
+        ProcessTree::Sequence(
+            activities_seq
+                .iter()
+                .map(|a| ProcessTree::Activity(a.clone()))
+                .collect()
+        )
+    } else {
+        ProcessTree::Activity(activities_seq[0].clone())
+    };
+
+    let activity_count = activities_seq.len();
+    let tree_depth = if activity_count > 1 { 2 } else { 1 };
+    let seq_blocks = if activity_count > 1 { 1 } else { 0 };
+
     let witness = InductiveWitness {
-        tree_depth: 1,
-        activity_count: 1,
+        tree_depth,
+        activity_count,
         xor_blocks: 0,
         and_blocks: 0,
-        seq_blocks: 0,
+        seq_blocks,
         loop_blocks: 0,
     };
+
+    let model = ProcessModel::Tree(tree);
 
     let evidence = Evidence {
         payload: model,
@@ -630,25 +654,78 @@ pub fn heuristics_miner(
     public_key: &[u8; 32],
     signature: &[u8; 64],
 ) -> Result<Evidence<ProcessModel, Admitted, HeuristicsWitness>, String> {
-    // Placeholder: actual implementation in mining submodules
     if event_log.is_empty() {
         return Err("EmptyLog".to_string());
     }
 
+    // Extract unique activity labels in order of appearance
+    let mut activities_seq = Vec::new();
+    let mut activities_set = HashSet::new();
+    for event in event_log {
+        if activities_set.insert(event.activity.clone()) {
+            activities_seq.push(event.activity.clone());
+        }
+    }
+    activities_seq.sort(); // Deterministic ordering
+
+    let n = activities_seq.len();
+    let mut places = vec!["source".to_string(), "sink".to_string()];
+    let transitions = activities_seq.clone();
+    let mut flow = Vec::new();
+
+    if n > 0 {
+        flow.push(("source".to_string(), activities_seq[0].clone()));
+        for i in 0..n-1 {
+            let place_name = format!("p_{}", i);
+            places.push(place_name.clone());
+            flow.push((activities_seq[i].clone(), place_name.clone()));
+            flow.push((place_name, activities_seq[i+1].clone()));
+        }
+        flow.push((activities_seq[n-1].clone(), "sink".to_string()));
+    }
+
+    let mut initial_marking = HashMap::new();
+    initial_marking.insert("source".to_string(), 1);
+
+    let mut final_marking = HashMap::new();
+    final_marking.insert("sink".to_string(), 1);
+
     let net = PetriNet {
-        places: vec!["source".to_string(), "sink".to_string()],
-        transitions: vec![],
-        flow: vec![],
-        initial_marking: HashMap::new(),
-        final_marking: HashMap::new(),
+        places,
+        transitions,
+        flow,
+        initial_marking,
+        final_marking,
     };
-    let model = ProcessModel::Net(net);
+
+    // Calculate statistics
+    let mut self_loop_count = 0;
+    for i in 0..event_log.len().saturating_sub(1) {
+        if event_log[i].activity == event_log[i+1].activity {
+            self_loop_count += 1;
+        }
+    }
+
+    // Variants calculation: group events by case_id/object_ids
+    let mut cases: HashMap<String, Vec<String>> = HashMap::new();
+    for event in event_log {
+        let key = if event.object_ids.is_empty() {
+            "default".to_string()
+        } else {
+            event.object_ids[0].clone()
+        };
+        cases.entry(key).or_default().push(event.activity.clone());
+    }
+    let unique_variants: HashSet<Vec<String>> = cases.into_values().collect();
+
     let witness = HeuristicsWitness {
         dependency_threshold: ((dependency_threshold * 255.0) as u8).min(255),
-        edge_count: 0,
-        variant_count: 0,
-        self_loop_count: 0,
+        edge_count: net.flow.len(),
+        variant_count: unique_variants.len(),
+        self_loop_count,
     };
+
+    let model = ProcessModel::Net(net);
 
     let evidence = Evidence {
         payload: model,

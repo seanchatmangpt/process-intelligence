@@ -840,4 +840,203 @@ fn test_heuristics_miner_noisy_trace_hardening() {
     assert_eq!(res_len, sandbox::ERR_QUERY_TIMEOUT); // Error code indicating internal query out of bounds
 }
 
+#[test]
+fn test_m3_sha512_correctness() {
+    use wasm4pm::crypto::Sha512;
+    // Test vector 1: Empty string
+    let mut hasher = Sha512::new();
+    hasher.update(b"");
+    let result = hasher.finalize();
+    let expected = [
+        0xcf, 0x83, 0xe1, 0x35, 0x7e, 0xef, 0xb8, 0xbd, 0xf1, 0x54, 0x28, 0x50, 0xd6, 0x6d, 0x80, 0x07,
+        0xd6, 0x20, 0xe4, 0x05, 0x0b, 0x57, 0x15, 0xdc, 0x83, 0xf4, 0xa9, 0x21, 0xd3, 0x6c, 0xe9, 0xce,
+        0x47, 0xd0, 0xd1, 0x3c, 0x5d, 0x85, 0xf2, 0xb0, 0xff, 0x83, 0x18, 0xd2, 0x87, 0x7e, 0xec, 0x2f,
+        0x63, 0xb9, 0x31, 0xbd, 0x47, 0x41, 0x7a, 0x81, 0xa5, 0x38, 0x32, 0x7a, 0xf9, 0x27, 0xda, 0x3e,
+    ];
+    assert_eq!(result, expected);
+
+    // Test vector 2: "abc"
+    let mut hasher = Sha512::new();
+    hasher.update(b"abc");
+    let result = hasher.finalize();
+    let expected = [
+        0xdd, 0xaf, 0x35, 0xa1, 0x93, 0x61, 0x7a, 0xba, 0xcc, 0x41, 0x73, 0x49, 0xae, 0x20, 0x41, 0x31,
+        0x12, 0xe6, 0xfa, 0x4e, 0x89, 0xa9, 0x7e, 0xa2, 0x0a, 0x9e, 0xee, 0xe6, 0x4b, 0x55, 0xd3, 0x9a,
+        0x21, 0x92, 0x99, 0x2a, 0x27, 0x4f, 0xc1, 0xa8, 0x36, 0xba, 0x3c, 0x23, 0xa3, 0xfe, 0xeb, 0xbd,
+        0x45, 0x4d, 0x44, 0x23, 0x64, 0x3c, 0xe8, 0x0e, 0x2a, 0x9a, 0xc9, 0x4f, 0xa5, 0x4c, 0xa4, 0x9f,
+    ];
+    assert_eq!(result, expected);
+}
+
+#[test]
+fn test_m3_ed25519_signature_canonical_bytes() {
+    use wasm4pm::crypto::{self, verify_ed25519_signature};
+    // RFC 8032 vector 1: message is empty
+    let pk_hex = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a";
+    let sig_hex = "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b";
+    
+    let mut pk = [0u8; 32];
+    for i in 0..32 {
+        pk[i] = u8::from_str_radix(&pk_hex[i*2..i*2+2], 16).unwrap();
+    }
+    let mut sig = [0u8; 64];
+    for i in 0..64 {
+        sig[i] = u8::from_str_radix(&sig_hex[i*2..i*2+2], 16).unwrap();
+    }
+    
+    assert!(verify_ed25519_signature(&pk, &sig, &[]));
+
+    // Test JCS canonicalization and signature verification
+    let raw_json_1 = r#"{
+      "slide_id": "8c83e135-7eef-b8bd-f154-2850d66d8007",
+      "slide_title": "EBITDA",
+      "assertion_text": "conforms",
+      "target_log_hash": "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce",
+      "process_model_hash": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a",
+      "query_definition": "create_order",
+      "verification_results": {
+        "status": "verified"
+      },
+      "validator_signature": "e64662bc41e52be887b4b40c14e367c11fc25b725e0ae6472b39a91342e66e69b4c7de0fcd3e8496a86140bca869f3deec2801b62cbe531d3e4f091137513605"
+    }"#;
+
+    let raw_json_2 = r#"{"assertion_text":"conforms","process_model_hash":"ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a","query_definition":"create_order","slide_id":"8c83e135-7eef-b8bd-f154-2850d66d8007","slide_title":"EBITDA","target_log_hash":"cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce","validator_signature":"e64662bc41e52be887b4b40c14e367c11fc25b725e0ae6472b39a91342e66e69b4c7de0fcd3e8496a86140bca869f3deec2801b62cbe531d3e4f091137513605","verification_results":{"status":"verified"}}"#;
+
+    let parsed1 = crypto::parse_json(raw_json_1).unwrap();
+    let parsed2 = crypto::parse_json(raw_json_2).unwrap();
+
+    let mut map1 = match parsed1 {
+        crypto::JsonValue::Object(m) => m,
+        _ => panic!("Expected object"),
+    };
+    let mut map2 = match parsed2 {
+        crypto::JsonValue::Object(m) => m,
+        _ => panic!("Expected object"),
+    };
+
+    map1.remove("validator_signature");
+    map2.remove("validator_signature");
+
+    let jcs1 = crypto::JsonValue::Object(map1).to_jcs();
+    let jcs2 = crypto::JsonValue::Object(map2).to_jcs();
+
+    assert_eq!(jcs1, jcs2);
+
+    let canonical_sig_hex = "e64662bc41e52be887b4b40c14e367c11fc25b725e0ae6472b39a91342e66e69b4c7de0fcd3e8496a86140bca869f3deec2801b62cbe531d3e4f091137513605";
+    let mut canonical_sig = [0u8; 64];
+    for i in 0..64 {
+        canonical_sig[i] = u8::from_str_radix(&canonical_sig_hex[i*2..i*2+2], 16).unwrap();
+    }
+    assert!(crypto::verify_jcs_receipt_signature(&pk, &canonical_sig, raw_json_1));
+}
+
+#[test]
+fn test_m3_typestate_segregation() {
+    use wasm4pm::controllers::{ProcessController, GovToken};
+
+    let governor_pk = [1u8; 32];
+    let controller = ProcessController::new(governor_pk);
+
+    // Initial state is Init. Let's transition to Active
+    let mut active_controller = controller.transition_active();
+
+    // Verify elastic transitions compile and execute without any GovToken
+    active_controller.adjust_queue_capacity(250);
+    assert_eq!(active_controller.queue_capacity, 250);
+
+    active_controller.set_log_level("DEBUG");
+    assert_eq!(active_controller.log_level, "DEBUG");
+
+    // Compliance transition: Quarantine with invalid token should fail
+    let mock_sig = [0u8; 64];
+    let token_opt = GovToken::verify(&governor_pk, &mock_sig, b"quarantine_me");
+    assert!(token_opt.is_none());
+
+    // Construct a correct signature for dummy message (empty message for test_pk)
+    let test_pk_hex = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a";
+    let test_sig_hex = "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b";
+    let mut test_pk = [0u8; 32];
+    for i in 0..32 {
+        test_pk[i] = u8::from_str_radix(&test_pk_hex[i*2..i*2+2], 16).unwrap();
+    }
+    let mut test_sig = [0u8; 64];
+    for i in 0..64 {
+        test_sig[i] = u8::from_str_radix(&test_sig_hex[i*2..i*2+2], 16).unwrap();
+    }
+
+    let valid_token = GovToken::verify(&test_pk, &test_sig, &[]).unwrap();
+
+    // Controller initialized with the same test_pk
+    let mut active_controller_with_test_pk = ProcessController::new(test_pk).transition_active();
+    active_controller_with_test_pk.adjust_queue_capacity(250);
+
+    // Compliance transitions (require GovToken)
+    let quarantined_controller = active_controller_with_test_pk.transition_quarantine(&valid_token).unwrap();
+    assert_eq!(quarantined_controller.queue_capacity, 250);
+
+    // Transition to decommissioned (require GovToken)
+    let decommissioned_controller = quarantined_controller.transition_decommission(&valid_token).unwrap();
+    assert_eq!(decommissioned_controller.queue_capacity, 0);
+}
+
+#[test]
+fn test_m3_memory_scrubbing_wiped() {
+    let _lock = TEST_MUTEX.lock().unwrap();
+    
+    allocator::init_global_arena(1024).unwrap();
+    allocator::fill_global_arena_raw_buffer(0xFF);
+    
+    let raw_buf_before = allocator::get_global_arena_raw_buffer();
+    assert_eq!(raw_buf_before[0], 0xFF);
+
+    let seed = [0u8; 32];
+    sandbox::execute_oblivion_protocol(&seed);
+
+    let raw_buf_after = allocator::get_global_arena_raw_buffer();
+
+    for &val in &raw_buf_after {
+        assert_eq!(val, 0, "Memory was not completely zeroed out");
+    }
+}
+
+#[test]
+fn test_zero_copy_multi_perspective_dfg() {
+    let _lock = TEST_MUTEX.lock().unwrap();
+    let buf = build_valid_ocel_buffer();
+    let ocel = ZeroCopyOcel::parse(&buf).unwrap();
+
+    let mut dfg_matrix = vec![0u32; 4]; // 2 activities * 2 activities = 4
+    let mut last_event_for_object = vec![-1i32; 1]; // 1 object
+    let bitmask = vec![3u64]; // bits 0 and 1 set: both event 0 and event 1 are active
+
+    // string table offsets for "create_order" (16) and "approve_order" (32)
+    let activity_offsets = vec![16, 32];
+
+    // Compute multi-perspective DFG for object type "Order"
+    ocel.compute_multi_perspective_dfg(
+        &bitmask,
+        "Order",
+        &mut dfg_matrix,
+        &activity_offsets,
+        &mut last_event_for_object,
+    ).unwrap();
+
+    // Expect a transition from create_order (index 0) to approve_order (index 1) for Order type.
+    assert_eq!(dfg_matrix[1], 1);
+
+    // Compute multi-perspective DFG for object type "Item" (which doesn't exist/has no events)
+    let mut dfg_matrix_item = vec![0u32; 4];
+    let mut last_event_for_object_item = vec![-1i32; 1];
+    ocel.compute_multi_perspective_dfg(
+        &bitmask,
+        "Item",
+        &mut dfg_matrix_item,
+        &activity_offsets,
+        &mut last_event_for_object_item,
+    ).unwrap();
+
+    // Expect 0 transitions because there are no Item objects.
+    assert_eq!(dfg_matrix_item[1], 0);
+}
+
 

@@ -95,22 +95,33 @@ impl DoubleBufferedArena {
     }
 
     pub fn shred(&mut self, prng_bytes: &mut dyn FnMut() -> [u8; 64]) {
-        // Oblivion Protocol requires overwriting memory three times with cryptographically secure random bytes
+        // Pass 1-3: Cryptographically secure random overwrites using volatile writes
         for _ in 0..3 {
             let mut offset = 0;
             while offset < self.buffer.len() {
                 let bytes = prng_bytes();
                 let remaining = self.buffer.len() - offset;
                 let chunk_size = std::cmp::min(64, remaining);
-                self.buffer[offset..offset + chunk_size].copy_from_slice(&bytes[..chunk_size]);
+                let chunk_ptr = unsafe { self.buffer.as_mut_ptr().add(offset) };
+                for i in 0..chunk_size {
+                    unsafe {
+                        std::ptr::write_volatile(chunk_ptr.add(i), bytes[i]);
+                    }
+                }
                 offset += chunk_size;
             }
         }
-        self.permanent_cursor = 8;
-        self.transient_cursor = self.transient_start;
+        
+        // Pass 4: Final zeroization to wipe cryptographic residuals (volatile_zero_slice)
+        crate::zeroize::volatile_zero_slice(&mut self.buffer);
+
+        // Ensure cursors are also zeroed using volatile writes
+        unsafe {
+            std::ptr::write_volatile(&mut self.permanent_cursor, 0);
+            std::ptr::write_volatile(&mut self.transient_cursor, 0);
+        }
     }
 
-    #[cfg(test)]
     pub fn raw_buffer(&self) -> &[u8] {
         &self.buffer
     }
@@ -194,7 +205,6 @@ pub fn shred_global_arena(prng_bytes: &mut dyn FnMut() -> [u8; 64]) {
     }
 }
 
-#[cfg(test)]
 pub fn get_global_arena_raw_buffer() -> Vec<u8> {
     let guard = GLOBAL_ARENA.lock().unwrap();
     if let Some(ref arena) = *guard {
@@ -204,7 +214,6 @@ pub fn get_global_arena_raw_buffer() -> Vec<u8> {
     }
 }
 
-#[cfg(test)]
 pub fn fill_global_arena_raw_buffer(val: u8) {
     let mut guard = GLOBAL_ARENA.lock().unwrap();
     if let Some(ref mut arena) = *guard {

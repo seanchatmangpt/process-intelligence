@@ -1307,7 +1307,7 @@ pub enum AutonomicState {
     Monitoring,         // 7. Streaming event logging / conformance checking
     Repair,             // 8. Dynamic S-component repair routing
     Optimization,       // 9. Inductive Miner candidate model search
-    Decommission,       // 10. Quarantine and revocation sequences
+    Decommissioning,    // 10. Quarantine and revocation sequences
     Archive,            // 11. Read-only cold ledger storage
     BoardProjection,    // 12. Strategic synergy projection map
 }
@@ -1380,9 +1380,9 @@ impl AutonomicActuator {
             
             // Monitoring checks: triggers autonomic actuation laws
             (AutonomicState::Monitoring, AutonomicEvent::CheckMetrics) => {
-                // 1. Retirement Actuation: utility drops below 0.50 -> transition to Decommission
+                // 1. Retirement Actuation: utility drops below 0.50 -> transition to Decommissioning
                 if self.process_utility < 0.50 {
-                    AutonomicState::Decommission
+                    AutonomicState::Decommissioning
                 // 2. Compliance Deviation Actuation: fitness drops below 0.85 -> Force Lockdown / Error
                 } else if self.alignment_fitness < 0.85 {
                     return Err("Compliance Deviation: Fitness falls below hard floor. Triggering lockdown.");
@@ -1407,8 +1407,8 @@ impl AutonomicActuator {
                 if sound { AutonomicState::Monitoring } else { return Err("Optimization yielded unsound model."); }
             }
 
-            // Decommission -> Archive
-            (AutonomicState::Decommission, AutonomicEvent::CompleteArchiveVerification) => {
+            // Decommissioning -> Archive
+            (AutonomicState::Decommissioning, AutonomicEvent::CompleteArchiveVerification) => {
                 AutonomicState::Archive
             }
 
@@ -1572,7 +1572,7 @@ mod tests {
     #[test]
     fn test_sha512_vectors() {
         let mut hasher = Sha512::new();
-        hasher.update(&vec![0u8; 111]);
+        hasher.update(&[0u8; 111]);
         let out = hasher.finalize();
         println!("Rust sha512 on 111 zeros: {:x?}", out);
     }
@@ -1597,7 +1597,7 @@ mod tests {
         assert!(valid, "Signature verification failed on RFC 8032 Test Vector 1!");
 
         // Tamper test
-        let mut tampered_sig = sig.clone();
+        let mut tampered_sig = *sig;
         tampered_sig[0] ^= 1;
         let invalid = verify_ed25519_signature(pk, &tampered_sig, message);
         assert!(!invalid, "Tampered signature should fail verification!");
@@ -1658,9 +1658,9 @@ mod tests {
         // 3. Retirement Actuation (utility < 50%)
         actuator.process_debt = 0.0;
         actuator.process_utility = 0.40;
-        assert_eq!(actuator.actuate(AutonomicEvent::CheckMetrics).unwrap(), AutonomicState::Decommission);
+        assert_eq!(actuator.actuate(AutonomicEvent::CheckMetrics).unwrap(), AutonomicState::Decommissioning);
 
-        // Decommission -> Archive
+        // Decommissioning -> Archive
         assert_eq!(actuator.actuate(AutonomicEvent::CompleteArchiveVerification).unwrap(), AutonomicState::Archive);
 
         // Archive -> BoardProjection

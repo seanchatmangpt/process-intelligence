@@ -113,6 +113,9 @@ impl O2eIndex {
         } else {
             self.event_indices.len()
         };
+        if start > end || end > self.event_indices.len() {
+            return &[];
+        }
         &self.event_indices[start..end]
     }
 }

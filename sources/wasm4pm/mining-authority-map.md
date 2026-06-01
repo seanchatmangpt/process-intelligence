@@ -49,7 +49,8 @@ Unlike the philosophical abstraction in v30.1.1, **v30.1.2 specifies the concret
   "block_structure_proof": {
     "depth": <tree depth>,
     "leaf_count": <activity count>,
-    "loop_blocks": <count of ← → operators>,
+    "seq_blocks": <count of → operators>,
+    "loop_blocks": <count of ↺ operators>,
     "xor_blocks": <count of × operators>,
     "par_blocks": <count of ∧ operators>
   },
@@ -69,8 +70,17 @@ Unlike the philosophical abstraction in v30.1.1, **v30.1.2 specifies the concret
 - **Output:** 
   - DFG: $G = (A, E_{df}, f)$ where $A$ = activities, $E_{df}$ = directly-follows edges, $f$ = frequency
   - Petri Net: $N = (P, T, F, M_0)$ with places representing activity relations
-- **Heuristics:**
-  - Dependency measure: $\text{dep}(a, b) = \frac{|\text{a→b}| - |\text{b→a}|}{|\text{a→b}| + |\text{b→a}| + 1}$
+- **Heuristics & Noise Filtering:**
+  - Dependency measure for distinct activities $a \neq b$:
+    $$\text{dep}(a, b) = \frac{|a \to b| - |b \to a|}{|a \to b| + |b \to a| + 1}$$
+  - Dependency measure for length-1 loops (where $a = b$):
+    $$\text{dep}(a, a) = \frac{|a \to a|}{|a \to a| + 1}$$
+  - Dependency measure for length-2 loops (e.g. $a \to b \to a$):
+    $$\text{dep}_2(a, b) = \frac{|a \to b \to a| + |b \to a \to b|}{|a \to b \to a| + |b \to a \to b| + 1}$$
+  - **Fuzzer & Noisy Log Handling Invariants**:
+    - **Activity/Edge Cutoff**: Filter out activities whose frequency is below relative threshold $\theta_{\text{act}} \in [0.0, 1.0]$. Keep edges $a \to b$ if $\text{dep}(a, b) \ge \theta_{\text{dep}}$ and edge frequency $\ge f_{\min}$.
+    - **Orphan Preservation**: If activity filtering isolates an activity node, it must be attached to the closest active ancestor or connected to the start/end node to maintain block-structured completeness.
+    - **Robust Binary Traversal Safety**: Binary parsing of event tables, E2O lists, and string offsets must implement checked arithmetic overflow boundaries (`checked_add`, `checked_mul`) and return `OutOfBounds` or `ERR_QUERY_TIMEOUT` rather than throwing JIT traps or panic violations when fuzzer payloads contain out-of-bound indices.
   - Long-distance dependencies (l-loops): Traces with $a \to ... \to a$ sequences
   - AND-split/join detection via co-occurrence matrix
 - **Loss Report:** DFG flattens concurrent relationships; receipt must quantify lost information
