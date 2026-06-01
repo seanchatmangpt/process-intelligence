@@ -20,3 +20,6 @@
 
 ### Paper: weske_2019_bpm_principles
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: rosenberg_2020_cloud_lifecycle
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
