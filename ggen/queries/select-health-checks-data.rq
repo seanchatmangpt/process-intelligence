@@ -1,0 +1,23 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX ggen: <https://process.intelligence/ggen/>
+PREFIX health: <https://process.intelligence/health/>
+
+SELECT DISTINCT
+  ?gate_name
+  ?category
+  ?description
+  ?procedure
+  ?expected_outcome
+  ?failure_action
+  ?status
+WHERE {
+  ?health_check a health:StartupGate ;
+    health:name ?gate_name ;
+    health:category ?category ;
+    health:description ?description ;
+    health:procedure ?procedure ;
+    health:expected_outcome ?expected_outcome ;
+    health:failure_action ?failure_action ;
+    health:status ?status .
+}
+ORDER BY ?gate_name

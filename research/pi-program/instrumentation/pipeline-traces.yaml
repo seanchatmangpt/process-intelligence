@@ -1,0 +1,317 @@
+---
+# OpenTelemetry Traces for Generation Rule Pipelines
+# Authority: Van der Aalst Process Mining Constitution
+# Purpose: Trace ggen generation rule execution within pipelines
+# Generated: 2026-06-01
+
+pipeline_tracing:
+  service_name: "process-intelligence-pipeline-system"
+  version: "1.0.0"
+
+  # Pipeline definitions
+  pipelines:
+
+    # Pipeline 1: Governance Generation
+    - pipeline_id: "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001"
+      name: "Governance Generation Pipeline"
+      description: "Generate process intelligence doctrine and lifecycle governance"
+      created_timestamp: "2026-05-31T00:00:00Z"
+
+      generation_rules:
+        - rule_id: "GEN_RULE_001_LIFECYCLE_EXTRACTION"
+          rule_name: "Extract Lifecycle Definitions from Process Models"
+          rule_type: "sparql_query_execution"
+          execution_order: 1
+
+          execution_trace:
+            span_id: "pipeline.execute_rule"
+            span_name: "Execute Generation Rule: Lifecycle Extraction"
+            start_timestamp: "2026-05-31T10:00:00Z"
+            end_timestamp: "2026-05-31T10:00:45Z"
+            duration_ms: 45000
+            status: "success"
+
+            attributes:
+              query_file: "ggen/queries/lifecycle-states-extraction.rq"
+              query_namespace: "http://purl.org/bpmn/process-intelligence"
+              events_extracted: 156
+              execution_latency_ms: 45000
+              output_artifacts: ["lifecycle-states.json", "lifecycle-transitions.json"]
+              output_hashes:
+                "lifecycle-states.json": "a1b2c3d4e5f6..."
+                "lifecycle-transitions.json": "b2c3d4e5f6a7..."
+              receipt_signature: "RULE_001_RECEIPT_001"
+
+        - rule_id: "GEN_RULE_002_DOCTRINE_SYNTHESIS"
+          rule_name: "Synthesize Process Doctrine from Lifecycle Data"
+          rule_type: "tera_template_rendering"
+          execution_order: 2
+
+          execution_trace:
+            span_id: "pipeline.execute_rule"
+            span_name: "Execute Generation Rule: Doctrine Synthesis"
+            start_timestamp: "2026-05-31T10:00:45Z"
+            end_timestamp: "2026-05-31T10:01:30Z"
+            duration_ms: 45000
+            status: "success"
+
+            attributes:
+              template_file: "ggen/templates/process-doctrine-synthesis.tera"
+              output_format: "markdown"
+              variables_rendered: 42
+              output_artifact: "doctrine/process-intelligence-maturity.md"
+              output_hash: "c3d4e5f6a7b8..."
+              parent_span_id: "pipeline.execute_rule:GEN_RULE_001"
+              receipt_signature: "RULE_002_RECEIPT_001"
+
+        - rule_id: "GEN_RULE_003_GOVERNANCE_VALIDATION"
+          rule_name: "Validate Generated Governance Artifacts"
+          rule_type: "validation"
+          execution_order: 3
+
+          execution_trace:
+            span_id: "pipeline.validate_artifacts"
+            span_name: "Validate Governance Artifacts"
+            start_timestamp: "2026-05-31T10:01:30Z"
+            end_timestamp: "2026-05-31T10:02:00Z"
+            duration_ms: 30000
+            status: "success"
+
+            attributes:
+              artifacts_validated: 2
+              validation_rules_applied: 5
+              validation_passed: true
+              validation_errors: 0
+              receipt_signature: "RULE_003_RECEIPT_001"
+
+      pipeline_completion:
+        completion_timestamp: "2026-05-31T10:02:00Z"
+        total_duration_ms: 120000
+        rules_executed: 3
+        rules_succeeded: 3
+        rules_failed: 0
+        pipeline_status: "success"
+        final_receipt_hash: "d4e5f6a7b8c9..."
+
+    # Pipeline 2: Audit and Conformance Checking
+    - pipeline_id: "GGEN_UNIFIED_AUDIT_PIPELINE_001"
+      name: "Audit and Conformance Pipeline"
+      description: "Execute conformance audits and quality metrics checks"
+      created_timestamp: "2026-06-01T00:00:00Z"
+
+      generation_rules:
+        - rule_id: "GEN_RULE_101_CONFORMANCE_CHECK"
+          rule_name: "Run Conformance Checking Algorithm"
+          rule_type: "process_mining_algorithm"
+          execution_order: 1
+
+          execution_trace:
+            span_id: "pipeline.execute_rule"
+            span_name: "Execute Conformance Check"
+            start_timestamp: "2026-06-01T01:00:00Z"
+            end_timestamp: "2026-06-01T01:05:00Z"
+            duration_ms: 300000
+            status: "success"
+
+            attributes:
+              algorithm: "pm4py.conformance.replay_fitness"
+              model_file: "process-models/pi-system-model.pnml"
+              log_file: "logs/pi-system-execution.xes"
+              fitness_score: 0.92
+              output_artifact: "audits/conformance-report.json"
+              output_hash: "e5f6a7b8c9d0..."
+              receipt_signature: "RULE_101_RECEIPT_001"
+
+        - rule_id: "GEN_RULE_102_QUALITY_METRICS"
+          rule_name: "Compute Process Quality Metrics"
+          rule_type: "metrics_computation"
+          execution_order: 2
+
+          execution_trace:
+            span_id: "pipeline.execute_rule"
+            span_name: "Compute Quality Metrics"
+            start_timestamp: "2026-06-01T01:05:00Z"
+            end_timestamp: "2026-06-01T01:10:00Z"
+            duration_ms: 300000
+            status: "success"
+
+            attributes:
+              metrics_computed: 8
+              fitness: 0.92
+              precision: 0.88
+              generalization: 0.85
+              simplicity: 0.80
+              output_artifact: "audits/quality-metrics.yaml"
+              output_hash: "f6a7b8c9d0e1..."
+              parent_span_id: "pipeline.execute_rule:GEN_RULE_101"
+              receipt_signature: "RULE_102_RECEIPT_001"
+
+      pipeline_completion:
+        completion_timestamp: "2026-06-01T01:10:00Z"
+        total_duration_ms: 600000
+        rules_executed: 2
+        rules_succeeded: 2
+        rules_failed: 0
+        pipeline_status: "success"
+        final_receipt_hash: "g7b8c9d0e1f2..."
+
+# Span definitions for pipeline activities
+pipeline_spans:
+
+  - span_id: "pipeline.start"
+    activity: "Start Pipeline Execution"
+    span_attributes:
+      pipeline_id: "string"
+      pipeline_name: "string"
+      total_rules: "int"
+
+  - span_id: "pipeline.execute_rule"
+    activity: "Execute Single Generation Rule"
+    span_attributes:
+      rule_id: "string"
+      rule_name: "string"
+      rule_type: "string"
+      execution_order: "int"
+      output_artifacts: "array<string>"
+      receipt_signature: "string"
+      rule_status: "enum:success|failure|partial"
+      rule_duration_ms: "int"
+
+  - span_id: "pipeline.validate_artifacts"
+    activity: "Validate Generated Artifacts"
+    span_attributes:
+      artifacts_count: "int"
+      validation_rules: "int"
+      validation_status: "enum:pass|fail|warning"
+      validation_errors: "int"
+
+  - span_id: "pipeline.emit_receipt"
+    activity: "Emit Pipeline Receipt"
+    span_attributes:
+      pipeline_id: "string"
+      receipt_hash: "string"
+      artifacts_hash: "string"
+      completion_status: "string"
+
+  - span_id: "pipeline.complete"
+    activity: "Complete Pipeline Execution"
+    span_attributes:
+      pipeline_id: "string"
+      total_duration_ms: "int"
+      rules_executed: "int"
+      rules_succeeded: "int"
+      rules_failed: "int"
+      final_receipt_hash: "string"
+
+# Object-Centric Event Log (OCEL) Mapping for Pipelines
+ocel_mapping:
+
+  object_types:
+    - id: "pipeline"
+      name: "Pipeline"
+      attributes: ["pipeline_id", "pipeline_name", "status"]
+
+    - id: "generation_rule"
+      name: "Generation Rule"
+      attributes: ["rule_id", "rule_name", "rule_type", "execution_order"]
+
+    - id: "artifact"
+      name: "Artifact"
+      attributes: ["artifact_id", "artifact_type", "content_hash"]
+
+    - id: "receipt"
+      name: "Pipeline Receipt"
+      attributes: ["receipt_id", "pipeline_id", "artifact_hash", "signature"]
+
+  # Span-to-event rules
+  span_to_event_rules:
+
+    - span_id: "pipeline.start"
+      event_activity: "pipeline.start"
+      event_objects:
+        - type: "pipeline"
+          qualifier: "starts"
+
+    - span_id: "pipeline.execute_rule"
+      event_activity: "pipeline.execute_rule"
+      event_objects:
+        - type: "pipeline"
+          qualifier: "executes"
+        - type: "generation_rule"
+          qualifier: "is_executed_by"
+        - type: "artifact"
+          qualifier: "produces"
+
+    - span_id: "pipeline.validate_artifacts"
+      event_activity: "pipeline.validate_artifacts"
+      event_objects:
+        - type: "pipeline"
+          qualifier: "validates"
+        - type: "artifact"
+          qualifier: "is_validated_by"
+
+    - span_id: "pipeline.emit_receipt"
+      event_activity: "pipeline.emit_receipt"
+      event_objects:
+        - type: "pipeline"
+          qualifier: "for"
+        - type: "receipt"
+          qualifier: "emits"
+
+    - span_id: "pipeline.complete"
+      event_activity: "pipeline.complete"
+      event_objects:
+        - type: "pipeline"
+          qualifier: "completes"
+        - type: "receipt"
+          qualifier: "issues"
+
+# Temporal constraints for pipeline execution
+temporal_constraints:
+
+  - constraint_id: "rule_execution_order"
+    description: "Generation rules execute in specified order"
+    precedence_rule: "execution_order_monotonic"
+
+  - constraint_id: "validation_after_execution"
+    description: "Artifact validation occurs after rule execution"
+    precedence: ["pipeline.execute_rule", "pipeline.validate_artifacts"]
+
+  - constraint_id: "receipt_after_validation"
+    description: "Receipt emission occurs after validation"
+    precedence: ["pipeline.validate_artifacts", "pipeline.emit_receipt"]
+
+  - constraint_id: "completion_after_receipt"
+    description: "Pipeline completion occurs after receipt emission"
+    precedence: ["pipeline.emit_receipt", "pipeline.complete"]
+
+# Quality metrics for pipeline execution
+quality_metrics:
+
+  - metric: "rule_execution_success_rate"
+    description: "Percentage of generation rules that execute successfully"
+    target: 100
+
+  - metric: "artifact_validation_rate"
+    description: "Percentage of artifacts that pass validation"
+    target: 100
+
+  - metric: "pipeline_completion_rate"
+    description: "Percentage of pipelines that complete successfully"
+    target: 100
+
+  - metric: "receipt_chain_integrity"
+    description: "All receipts form unbroken chain"
+    target: 100
+
+  - metric: "average_rule_latency_ms"
+    description: "Average latency of generation rule execution"
+    target: 60000  # 60 seconds
+
+---
+metadata:
+  created: "2026-06-01T00:00:00Z"
+  authority: "Process Intelligence Research Foundry"
+  standard: "OpenTelemetry 1.0, OCEL 2.0"
+  version: "1.0.0"
+  status: "ACTIVE"

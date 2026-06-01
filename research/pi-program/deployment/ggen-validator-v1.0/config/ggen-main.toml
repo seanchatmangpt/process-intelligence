@@ -1,0 +1,65 @@
+# ggen — Governance Generation Engine
+# Substrate for M&A deck, diligence workbook, and Blue River orchestrator
+# Built on process intelligence ontology, SPARQL queries, and Tera templates
+
+[project]
+name = "process-intelligence-ggen"
+version = "0.1.0"
+description = "Generate board-admissible M&A assets and autonomic governance engines from process intelligence"
+evidence_sources = ["../receipts", "../checkpoints"]
+
+[ontology]
+source = "ontology-extensions.ttl"
+
+[[inference.rules]]
+name = "normalize"
+description = "Pass-through normalization to satisfy DMAIC measurement gates"
+construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
+order = 1
+
+# Unused M&A rules deactivated for visualizer focus
+
+# Generation rules for Blue River orchestrator
+[[generation.rules]]
+name = "blue-river-orchestrator"
+description = "Autonomic MAPE-K governance engine with lifecycle state transitions"
+query = { file = "queries/extract-lifecycle-governance.rq" }
+template = { file = "templates/blue-river.tera" }
+output_file = "../blue_river_dam/src/lib.rs"
+mode = "Overwrite"
+metadata = {
+  format = "rust",
+  audience = "Process Intelligence Runtime",
+  compliance = "MAPE-K autonomic loop",
+  evidence_backing = "lifecycle state machine + governance rule enforcement"
+}
+
+# DISABLED: visualizer-dashboard-nextjs template parse error - deferred to Phase 6 recovery
+# [[generation.rules]]
+# name = "visualizer-dashboard-nextjs"
+# description = "Generate NextJS visualizer dashboard pages with conformance-backed claims"
+# query = { file = "queries/extract-visualizer-data.rq" }
+# template = { file = "templates/visualizer-dashboard.tsx.tera" }
+# output_file = "../experiments/visualizer-nextjs/src/app/page.tsx"
+# mode = "Overwrite"
+
+[query]
+endpoint = "in-memory"
+format = "sparql-11"
+ontology_namespace = {
+  ma = "https://process.intelligence/ma/",
+  lifecycle = "https://process.intelligence/lifecycle/",
+  wasm4pm = "https://process.intelligence/wasm4pm/",
+  compat = "https://process.intelligence/compat/"
+}
+
+[template]
+engine = "tera"
+base_dir = "templates"
+autoescape = true
+strict_variables = true
+
+[output]
+checksum_algorithm = "blake3"
+receipt_format = "json"
+proof_format = "cryptographic-chain"

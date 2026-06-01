@@ -1,0 +1,27 @@
+PREFIX ma: <https://process.intelligence/ma/>
+PREFIX pi: <https://process.intelligence/>
+
+SELECT DISTINCT
+  ?claim_id
+  ?claim_type
+  ?category
+  ?claim_statement
+  ?evidence_level
+  ?board_admissible
+  ?synergy_value
+  ?risk_level
+  ?supporting_research
+WHERE {
+  ?claim a ma:Claim ;
+    ma:id ?claim_id ;
+    ma:type ?claim_type ;
+    ma:category ?category ;
+    ma:statement ?claim_statement ;
+    ma:evidenceLevel ?evidence_level ;
+    ma:boardAdmissible ?board_admissible ;
+    ma:supportingResearch ?supporting_research .
+
+  OPTIONAL { ?claim ma:synergyValue ?synergy_value . }
+  OPTIONAL { ?claim ma:riskLevel ?risk_level . }
+}
+ORDER BY ?claim_type ?claim_id

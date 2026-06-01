@@ -1,0 +1,736 @@
+# Tera Template Validator Test Fixtures
+
+fixture_suite:
+  id: "VALIDATOR_TEST_FIXTURES_001"
+  version: "1.0"
+  authority: "Process Intelligence Research Directorate"
+  date_created: "2026-06-01"
+  purpose: "Normative test cases for Tera Template Validator contract compliance"
+  description: "Exhaustive fixture set demonstrating all validator states and behaviors"
+
+---
+
+# SECTION 1: VALID PARSE FIXTURES
+# These templates have syntactically correct Tera and MUST all achieve TEMPLATE_PARSE_PASS
+
+fixtures_valid_parse:
+
+  - fixture_id: "VALID_PARSE_001"
+    name: "valid-basic.tera"
+    category: "PARSE_PASS"
+    description: "Simple variable substitution"
+    template_content: |
+      {{ name }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      name: "Alice"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Basic variable expression is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_002"
+    name: "valid-nested-field.tera"
+    category: "PARSE_PASS"
+    description: "Nested object field access"
+    template_content: |
+      Name: {{ person.profile.name }}
+      City: {{ person.profile.address.city }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      person:
+        profile:
+          name: "Alice"
+          address:
+            city: "Portland"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Nested dot notation is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_003"
+    name: "valid-array-index.tera"
+    category: "PARSE_PASS"
+    description: "Array indexing with numeric literal"
+    template_content: |
+      First item: {{ items[0] }}
+      Second item: {{ items[1] }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      items:
+        - "Apple"
+        - "Banana"
+        - "Cherry"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Array index [n] is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_004"
+    name: "valid-loop-for.tera"
+    category: "PARSE_PASS"
+    description: "For loop with loop variable and body"
+    template_content: |
+      {% for item in items %}
+      - {{ item.id }}: {{ item.name }}
+      {% endfor %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      items:
+        - id: 1
+          name: "Alice"
+        - id: 2
+          name: "Bob"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "For loop with correct open/close tags is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_005"
+    name: "valid-if-condition.tera"
+    category: "PARSE_PASS"
+    description: "If/else conditional statement"
+    template_content: |
+      {% if status == "active" %}
+      Status: ACTIVE
+      {% else %}
+      Status: INACTIVE
+      {% endif %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      status: "active"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "If/else with comparison operator is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_006"
+    name: "valid-if-elif-else.tera"
+    category: "PARSE_PASS"
+    description: "If/elif/else chain"
+    template_content: |
+      {% if grade == "A" %}
+      Excellent
+      {% elif grade == "B" %}
+      Good
+      {% else %}
+      Acceptable
+      {% endif %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      grade: "B"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "If/elif/else chain is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_007"
+    name: "valid-filter-length.tera"
+    category: "PARSE_PASS"
+    description: "Filter applied to variable"
+    template_content: |
+      Total items: {{ items | length }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      items:
+        - "A"
+        - "B"
+        - "C"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Filter syntax with pipe operator is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_008"
+    name: "valid-filter-chain.tera"
+    category: "PARSE_PASS"
+    description: "Multiple filters chained together"
+    template_content: |
+      {{ names | sort | join(", ") }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      names:
+        - "Charlie"
+        - "Alice"
+        - "Bob"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Chained filters are valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_009"
+    name: "valid-filter-with-args.tera"
+    category: "PARSE_PASS"
+    description: "Filter with arguments"
+    template_content: |
+      {{ items | join("; ") }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      items:
+        - "apple"
+        - "banana"
+        - "cherry"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Filter with string argument is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_010"
+    name: "valid-variable-set.tera"
+    category: "PARSE_PASS"
+    description: "Variable assignment with set block"
+    template_content: |
+      {% set greeting = "Hello" %}
+      {{ greeting }}, World!
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context: {}
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Set statement with literal assignment is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_011"
+    name: "valid-variable-set-from-context.tera"
+    category: "PARSE_PASS"
+    description: "Variable assignment from context"
+    template_content: |
+      {% set full_name = person.name %}
+      Welcome {{ full_name }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      person:
+        name: "Alice"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Set statement with context reference is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_012"
+    name: "valid-logical-and.tera"
+    category: "PARSE_PASS"
+    description: "Logical AND operator in condition"
+    template_content: |
+      {% if user.is_admin and user.is_active %}
+      Admin user is active
+      {% endif %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      user:
+        is_admin: true
+        is_active: true
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Logical AND in condition is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_013"
+    name: "valid-logical-or.tera"
+    category: "PARSE_PASS"
+    description: "Logical OR operator in condition"
+    template_content: |
+      {% if status == "pending" or status == "processing" %}
+      In progress
+      {% endif %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      status: "processing"
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Logical OR in condition is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_014"
+    name: "valid-logical-not.tera"
+    category: "PARSE_PASS"
+    description: "Logical NOT operator"
+    template_content: |
+      {% if not is_archived %}
+      Active record
+      {% endif %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      is_archived: false
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "Logical NOT in condition is valid Tera syntax"
+
+  - fixture_id: "VALID_PARSE_015"
+    name: "valid-comparison-operators.tera"
+    category: "PARSE_PASS"
+    description: "All comparison operators"
+    template_content: |
+      Equal: {{ a == b }}
+      Not equal: {{ a != b }}
+      Less: {{ a < b }}
+      Greater: {{ a > b }}
+      Less or equal: {{ a <= b }}
+      Greater or equal: {{ a >= b }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    parse_error: null
+    test_context:
+      a: 10
+      b: 20
+    expected_render_status: "TEMPLATE_RENDER_PASS"
+    expected_missing_variables: []
+    rationale: "All comparison operators are valid Tera syntax"
+
+---
+
+# SECTION 2: INVALID PARSE FIXTURES
+# These templates have syntactically incorrect Tera and MUST all achieve TEMPLATE_PARSE_FAIL
+
+fixtures_invalid_parse:
+
+  - fixture_id: "INVALID_PARSE_001"
+    name: "invalid-unclosed-expression.tera"
+    category: "PARSE_FAIL"
+    description: "Missing closing }} in variable expression"
+    template_content: |
+      {{ name
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "unclosed"
+      - "expected }}"
+    rationale: "{{ without }} is invalid Tera syntax"
+    error_example: "unclosed variable expression at line 1"
+
+  - fixture_id: "INVALID_PARSE_002"
+    name: "invalid-unclosed-for.tera"
+    category: "PARSE_FAIL"
+    description: "For loop missing close tag"
+    template_content: |
+      {% for item in items %}
+      {{ item }}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "unclosed"
+      - "endfor"
+      - "for"
+    rationale: "{% for %} without {% endfor %} is invalid Tera syntax"
+    error_example: "unclosed for block; expected endfor"
+
+  - fixture_id: "INVALID_PARSE_003"
+    name: "invalid-unclosed-if.tera"
+    category: "PARSE_FAIL"
+    description: "If statement missing close tag"
+    template_content: |
+      {% if condition %}
+      Yes
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "unclosed"
+      - "endif"
+      - "if"
+    rationale: "{% if %} without {% endif %} is invalid Tera syntax"
+    error_example: "unclosed if block; expected endif"
+
+  - fixture_id: "INVALID_PARSE_004"
+    name: "invalid-bad-keyword.tera"
+    category: "PARSE_FAIL"
+    description: "Invalid block keyword"
+    template_content: |
+      {% invalid %}
+      Content
+      {% endinvalid %}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "invalid"
+      - "unknown"
+      - "keyword"
+    rationale: "{% invalid %} is not a valid Tera keyword"
+    error_example: "unknown keyword 'invalid'"
+
+  - fixture_id: "INVALID_PARSE_005"
+    name: "invalid-mismatched-blocks.tera"
+    category: "PARSE_FAIL"
+    description: "Mismatched block open/close tags"
+    template_content: |
+      {% if condition %}
+      Content
+      {% endfor %}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "mismatch"
+      - "expected endif"
+      - "endfor"
+    rationale: "{% if %} ... {% endfor %} mismatch is invalid Tera syntax"
+    error_example: "expected endif but found endfor"
+
+  - fixture_id: "INVALID_PARSE_006"
+    name: "invalid-orphan-endif.tera"
+    category: "PARSE_FAIL"
+    description: "Endif without matching if"
+    template_content: |
+      {% endif %}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "unexpected"
+      - "endif"
+      - "no matching"
+    rationale: "{% endif %} without {% if %} is invalid Tera syntax"
+    error_example: "unexpected endif; no matching if"
+
+  - fixture_id: "INVALID_PARSE_007"
+    name: "invalid-bad-expression.tera"
+    category: "PARSE_FAIL"
+    description: "Invalid expression with trailing operator"
+    template_content: |
+      {{ 42 + }}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "expression"
+      - "operator"
+      - "operand"
+    rationale: "{{ 42 + }} with missing operand is invalid Tera syntax"
+    error_example: "expected operand after +"
+
+  - fixture_id: "INVALID_PARSE_008"
+    name: "invalid-unclosed-filter.tera"
+    category: "PARSE_FAIL"
+    description: "Filter name missing in pipe"
+    template_content: |
+      {{ items | }}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "filter"
+      - "name"
+      - "expected"
+    rationale: "{{ items | }} without filter name is invalid Tera syntax"
+    error_example: "expected filter name after pipe"
+
+  - fixture_id: "INVALID_PARSE_009"
+    name: "invalid-unclosed-field-access.tera"
+    category: "PARSE_FAIL"
+    description: "Field access without field name"
+    template_content: |
+      {{ obj. }}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "field"
+      - "access"
+      - "expected"
+    rationale: "{{ obj. }} without field name is invalid Tera syntax"
+    error_example: "expected field name after dot"
+
+  - fixture_id: "INVALID_PARSE_010"
+    name: "invalid-empty-brackets.tera"
+    category: "PARSE_FAIL"
+    description: "Array index without index value"
+    template_content: |
+      {{ items[] }}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "index"
+      - "expected"
+      - "bracket"
+    rationale: "{{ items[] }} without index is invalid Tera syntax"
+    error_example: "expected index inside brackets"
+
+  - fixture_id: "INVALID_PARSE_011"
+    name: "invalid-double-pipe.tera"
+    category: "PARSE_FAIL"
+    description: "Double pipe operator (not standard Tera)"
+    template_content: |
+      {{ a || b }}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "unexpected"
+      - "operator"
+    rationale: "{{ a || b }} is invalid (Tera uses 'or' not ||)"
+    error_example: "unexpected character | at position"
+
+  - fixture_id: "INVALID_PARSE_012"
+    name: "invalid-triple-brace.tera"
+    category: "PARSE_FAIL"
+    description: "Three braces instead of two"
+    template_content: |
+      {{{ name }}}
+    expected_parse_status: "TEMPLATE_PARSE_FAIL"
+    parse_error_must_contain:
+      - "unexpected"
+      - "brace"
+    rationale: "{{{ name }}} with extra brace is invalid Tera syntax"
+    error_example: "unexpected { at position"
+
+---
+
+# SECTION 3: CONTEXT MISSING FIXTURES
+# These templates have valid syntax but missing variables in provided context
+# Parse should PASS, Render should return CONTEXT_MISSING
+
+fixtures_context_missing:
+
+  - fixture_id: "CONTEXT_MISSING_001"
+    name: "context-missing-simple.tera"
+    category: "CONTEXT_MISSING"
+    description: "Simple variable not in context"
+    template_content: |
+      {{ author_name }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context:
+      title: "Report"
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "author_name"
+    rationale: "author_name is referenced but not provided in context"
+
+  - fixture_id: "CONTEXT_MISSING_002"
+    name: "context-missing-nested.tera"
+    category: "CONTEXT_MISSING"
+    description: "Nested field not in context"
+    template_content: |
+      {{ user.profile.phone }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context:
+      user:
+        profile:
+          name: "Alice"
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "phone"
+    rationale: "user.profile exists but phone field is missing"
+
+  - fixture_id: "CONTEXT_MISSING_003"
+    name: "context-missing-loop-iterable.tera"
+    category: "CONTEXT_MISSING"
+    description: "Loop iterable not in context"
+    template_content: |
+      {% for item in products %}{{ item.name }}{% endfor %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context:
+      users: []
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "products"
+    rationale: "products variable referenced in for loop but not provided"
+
+  - fixture_id: "CONTEXT_MISSING_004"
+    name: "context-missing-condition-variable.tera"
+    category: "CONTEXT_MISSING"
+    description: "Condition variable not in context"
+    template_content: |
+      {% if is_admin %}Admin panel{% endif %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context:
+      user_id: 123
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "is_admin"
+    rationale: "is_admin variable used in condition but not provided"
+
+  - fixture_id: "CONTEXT_MISSING_005"
+    name: "context-missing-multiple.tera"
+    category: "CONTEXT_MISSING"
+    description: "Multiple missing variables"
+    template_content: |
+      Name: {{ first_name }} {{ last_name }}
+      Email: {{ email }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context: {}
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "first_name"
+      - "last_name"
+      - "email"
+    rationale: "Three variables are all missing from empty context"
+
+  - fixture_id: "CONTEXT_MISSING_006"
+    name: "context-missing-partial-object.tera"
+    category: "CONTEXT_MISSING"
+    description: "Object exists but required field missing"
+    template_content: |
+      Address: {{ location.street }} {{ location.city }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context:
+      location:
+        street: "123 Main St"
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "city"
+    rationale: "location object exists but city field is missing"
+
+  - fixture_id: "CONTEXT_MISSING_007"
+    name: "context-missing-completely-empty.tera"
+    category: "CONTEXT_MISSING"
+    description: "Template has variables but context is empty"
+    template_content: |
+      {{ name }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context: {}
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "name"
+    rationale: "Context is completely empty but template requires 'name'"
+
+  - fixture_id: "CONTEXT_MISSING_008"
+    name: "context-missing-deep-nesting.tera"
+    category: "CONTEXT_MISSING"
+    description: "Missing variable in deeply nested path"
+    template_content: |
+      {{ org.team.member.profile.email }}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    test_context:
+      org:
+        team:
+          member:
+            profile: {}
+    expected_render_status: "TEMPLATE_CONTEXT_MISSING"
+    expected_missing_variables:
+      - "email"
+    rationale: "email is missing in deeply nested structure"
+
+---
+
+# SECTION 4: OUT OF SCOPE FIXTURES
+# Valid templates that are not referenced in any ggen.toml rule
+# These should parse successfully but may not require render validation
+
+fixtures_out_of_scope:
+
+  - fixture_id: "OUT_OF_SCOPE_001"
+    name: "experimental-draft.tera"
+    category: "OUT_OF_SCOPE"
+    description: "Valid template but not referenced in active rules"
+    template_content: |
+      {% for item in future_items %}
+      [DRAFT] {{ item }}
+      {% endfor %}
+    expected_parse_status: "TEMPLATE_PARSE_PASS"
+    referenced_in_ggen_rules: false
+    rationale: "Valid syntax but not used in any active generation rule"
+
+---
+
+# SECTION 5: FIXTURE EXECUTION MATRIX
+# How to run the entire fixture suite
+
+execution_matrix:
+  test_framework: "pytest"
+  test_file: "test_validator_fixtures.py"
+  test_discovery: "test_*.py in tests/ directory"
+
+  test_groups:
+    - group_id: "VALID_PARSE_GROUP"
+      test_count: 15
+      expected_pass_count: 15
+      expected_fail_count: 0
+      gate_impact: "Gate 1 (Valid fixtures) and Gate 3 (Active templates parse)"
+
+    - group_id: "INVALID_PARSE_GROUP"
+      test_count: 12
+      expected_pass_count: 12
+      expected_fail_count: 0
+      gate_impact: "Gate 2 (Invalid fixtures document failures)"
+
+    - group_id: "CONTEXT_MISSING_GROUP"
+      test_count: 8
+      expected_pass_count: 8
+      expected_fail_count: 0
+      gate_impact: "Validator behavior correctness"
+
+    - group_id: "OUT_OF_SCOPE_GROUP"
+      test_count: 1
+      expected_pass_count: 1
+      expected_fail_count: 0
+      gate_impact: "Out-of-scope template handling"
+
+  total_fixtures: 36
+  critical_path_gates: [1, 2, 3]
+
+---
+
+# SECTION 6: ACCEPTANCE CRITERIA
+
+acceptance_criteria:
+
+  criterion_1:
+    id: "ACCEPT_001"
+    title: "All Valid Fixtures Parse Successfully"
+    condition: "All 15 VALID_PARSE fixtures achieve TEMPLATE_PARSE_PASS"
+    measurement: "count of PARSE_PASS == 15"
+    gate_satisfied: "Gate 1 (Validator Fixture Tests PASS)"
+    evidence_location: "validator-test-fixtures-execution-report.yaml"
+
+  criterion_2:
+    id: "ACCEPT_002"
+    title: "All Invalid Fixtures Fail Correctly"
+    condition: "All 12 INVALID_PARSE fixtures achieve TEMPLATE_PARSE_FAIL with error messages"
+    measurement: "count of PARSE_FAIL == 12 AND all have parse_error defined"
+    gate_satisfied: "Gate 2 (Validator Fixture Tests FAIL - Invalid)"
+    evidence_location: "validator-test-fixtures-execution-report.yaml"
+
+  criterion_3:
+    id: "ACCEPT_003"
+    title: "Context Missing Distinct from Parse Fail"
+    condition: "All 8 CONTEXT_MISSING fixtures achieve PARSE_PASS + CONTEXT_MISSING (not PARSE_FAIL)"
+    measurement: "parse_status == PARSE_PASS AND render_status == CONTEXT_MISSING for all 8"
+    gate_satisfied: "Validator state separation correctness"
+    evidence_location: "validator-test-fixtures-execution-report.yaml"
+
+  criterion_4:
+    id: "ACCEPT_004"
+    title: "Error Messages Are Specific"
+    condition: "All PARSE_FAIL fixtures include parse_error that identifies the specific error type"
+    measurement: "parse_error not null AND contains error category (unclosed, mismatch, etc.)"
+    gate_satisfied: "Validator error reporting quality"
+    evidence_location: "validator-test-fixtures-execution-report.yaml"
+
+---
+
+# SECTION 7: TEST EXECUTION EXPECTATIONS
+
+execution_expectations:
+
+  test_run_1:
+    name: "Full Fixture Suite Execution"
+    command: "pytest test_validator_fixtures.py -v --tb=short"
+    expected_output:
+      total_tests: 36
+      passed: 36
+      failed: 0
+      errors: 0
+    time_estimate: "< 30 seconds"
+    output_format: "pytest-html with detailed results"
+
+  test_run_2:
+    name: "Invalid Fixture Group Only"
+    command: "pytest test_validator_fixtures.py -k INVALID_PARSE -v"
+    expected_output:
+      total_tests: 12
+      passed: 12
+      failed: 0
+    gate_focus: "Gate 2 validation"
+
+  test_run_3:
+    name: "Context Missing Group Only"
+    command: "pytest test_validator_fixtures.py -k CONTEXT_MISSING -v"
+    expected_output:
+      total_tests: 8
+      passed: 8
+      failed: 0
+    gate_focus: "Validator state separation"
+
+---
+
+# SECTION 8: DOCUMENTATION REQUIREMENTS
+
+documentation:
+
+  required_deliverables:
+    - validator-contract.md (2000+ words, this document)
+    - validator-test-fixtures.yaml (36 fixtures with expected outcomes)
+    - validator-states-diagram.md (state machine visualization)
+    - test_validator_fixtures.py (pytest implementation)
+    - validator-test-fixtures-execution-report.yaml (test results)
+
+  required_documentation_sections:
+    - How each fixture demonstrates a specific validator behavior
+    - How to run individual fixture groups
+    - How to interpret test results
+    - How fixture results map to gate criteria
+    - How to troubleshoot fixture failures
+
+status: "READY FOR IMPLEMENTATION"
+authority: "Process Intelligence Research Directorate"
+date_issued: "2026-06-01"

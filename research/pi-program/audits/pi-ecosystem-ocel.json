@@ -1,0 +1,544 @@
+{
+  "ocel:global-event": {
+    "ocel:attribute-names": {
+      "query_file": "string",
+      "query_namespace": "string",
+      "event_count": "int",
+      "template_file": "string",
+      "output_format": "string",
+      "output_hash": "string",
+      "receipt_signature": "string",
+      "artifact_id": "string",
+      "checkpoint_id": "string",
+      "verdict": "string",
+      "gate_id": "string",
+      "criterion_description": "string",
+      "pipeline_id": "string",
+      "rule_id": "string",
+      "rule_name": "string",
+      "rule_type": "string",
+      "execution_order": "int",
+      "artifacts_count": "int",
+      "authority": "string",
+      "content_hash": "string",
+      "signature_value": "string",
+      "trace_id": "string",
+      "parent_span_id": "string"
+    },
+    "ocel:object-types": [
+      "ggen_engine",
+      "sparql_query",
+      "tera_template",
+      "artifact",
+      "receipt",
+      "checkpoint",
+      "gate",
+      "pipeline",
+      "generation_rule",
+      "witness_chain",
+      "authority"
+    ]
+  },
+  "ocel:events": [
+    {
+      "ocel:event-id": "E-001",
+      "ocel:activity": "ggen.execute_query",
+      "ocel:timestamp": "2026-05-31T10:00:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "GGEN_ENGINE_001",
+          "ocel:qualifier": "executed_by"
+        },
+        {
+          "ocel:object-id": "SPARQL_LIFECYCLE_EXTRACTION",
+          "ocel:qualifier": "executes"
+        }
+      ],
+      "ocel:attributes": {
+        "query_file": "ggen/queries/lifecycle-states-extraction.rq",
+        "query_namespace": "http://purl.org/bpmn/process-intelligence",
+        "event_count": 156,
+        "authority": "Process Intelligence Governance",
+        "trace_id": "a1b2c3d4e5f6g7h8",
+        "parent_span_id": ""
+      }
+    },
+    {
+      "ocel:event-id": "E-002",
+      "ocel:activity": "ggen.render_template",
+      "ocel:timestamp": "2026-05-31T10:00:45Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "GGEN_ENGINE_001",
+          "ocel:qualifier": "executed_by"
+        },
+        {
+          "ocel:object-id": "TERA_DOCTRINE_SYNTHESIS",
+          "ocel:qualifier": "renders"
+        },
+        {
+          "ocel:object-id": "ARTIFACT_DOCTRINE_001",
+          "ocel:qualifier": "produces"
+        }
+      ],
+      "ocel:attributes": {
+        "template_file": "ggen/templates/process-doctrine-synthesis.tera",
+        "output_format": "markdown",
+        "output_hash": "c3d4e5f6a7b8d9e0f1g2h3i4",
+        "receipt_signature": "RULE_002_RECEIPT_001",
+        "trace_id": "a1b2c3d4e5f6g7h8",
+        "parent_span_id": "a1b2c3d4e5f6g7h8"
+      }
+    },
+    {
+      "ocel:event-id": "E-003",
+      "ocel:activity": "ggen.write_output",
+      "ocel:timestamp": "2026-05-31T10:01:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "GGEN_ENGINE_001",
+          "ocel:qualifier": "executed_by"
+        },
+        {
+          "ocel:object-id": "ARTIFACT_DOCTRINE_001",
+          "ocel:qualifier": "writes"
+        }
+      ],
+      "ocel:attributes": {
+        "artifact_id": "ARTIFACT_DOCTRINE_001",
+        "output_hash": "c3d4e5f6a7b8d9e0f1g2h3i4",
+        "receipt_signature": "WRITE_RECEIPT_001",
+        "trace_id": "a1b2c3d4e5f6g7h8",
+        "parent_span_id": "a1b2c3d4e5f6g7h8"
+      }
+    },
+    {
+      "ocel:event-id": "E-004",
+      "ocel:activity": "checkpoint.gate_check",
+      "ocel:timestamp": "2026-06-01T00:00:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+          "ocel:qualifier": "subject_of"
+        },
+        {
+          "ocel:object-id": "GATE_001",
+          "ocel:qualifier": "evaluates"
+        }
+      ],
+      "ocel:attributes": {
+        "checkpoint_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "gate_id": "GATE_001_RESEARCH_PAPER_COMPLETENESS",
+        "criterion_description": "All papers classified and cited",
+        "authority": "Van der Aalst Commission",
+        "trace_id": "b2c3d4e5f6g7h8i9j0k1l2m3",
+        "parent_span_id": ""
+      }
+    },
+    {
+      "ocel:event-id": "E-005",
+      "ocel:activity": "checkpoint.gate_check",
+      "ocel:timestamp": "2026-06-01T00:00:15Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+          "ocel:qualifier": "subject_of"
+        },
+        {
+          "ocel:object-id": "GATE_002",
+          "ocel:qualifier": "evaluates"
+        }
+      ],
+      "ocel:attributes": {
+        "checkpoint_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "gate_id": "GATE_002_LIFECYCLE_DEFINITION_COMPLETENESS",
+        "criterion_description": "All lifecycle states defined",
+        "authority": "Van der Aalst Commission",
+        "trace_id": "b2c3d4e5f6g7h8i9j0k1l2m3",
+        "parent_span_id": "b2c3d4e5f6g7h8i9j0k1l2m3"
+      }
+    },
+    {
+      "ocel:event-id": "E-006",
+      "ocel:activity": "checkpoint.gate_check",
+      "ocel:timestamp": "2026-06-01T00:00:30Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+          "ocel:qualifier": "subject_of"
+        },
+        {
+          "ocel:object-id": "GATE_003",
+          "ocel:qualifier": "evaluates"
+        }
+      ],
+      "ocel:attributes": {
+        "checkpoint_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "gate_id": "GATE_003_MA_CLAIM_GROUNDING",
+        "criterion_description": "All M&A claims grounded in research",
+        "authority": "Van der Aalst Commission",
+        "trace_id": "b2c3d4e5f6g7h8i9j0k1l2m3",
+        "parent_span_id": "b2c3d4e5f6g7h8i9j0k1l2m3"
+      }
+    },
+    {
+      "ocel:event-id": "E-007",
+      "ocel:activity": "checkpoint.gate_check",
+      "ocel:timestamp": "2026-06-01T00:00:45Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+          "ocel:qualifier": "subject_of"
+        },
+        {
+          "ocel:object-id": "GATE_004",
+          "ocel:qualifier": "evaluates"
+        }
+      ],
+      "ocel:attributes": {
+        "checkpoint_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "gate_id": "GATE_004_STANDARDS_ALIGNMENT",
+        "criterion_description": "Process intelligence aligned with standards",
+        "authority": "Van der Aalst Commission",
+        "trace_id": "b2c3d4e5f6g7h8i9j0k1l2m3",
+        "parent_span_id": "b2c3d4e5f6g7h8i9j0k1l2m3"
+      }
+    },
+    {
+      "ocel:event-id": "E-008",
+      "ocel:activity": "checkpoint.gate_check",
+      "ocel:timestamp": "2026-06-01T00:01:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+          "ocel:qualifier": "subject_of"
+        },
+        {
+          "ocel:object-id": "GATE_005",
+          "ocel:qualifier": "evaluates"
+        }
+      ],
+      "ocel:attributes": {
+        "checkpoint_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "gate_id": "GATE_005_WASM4PM_COMPATIBILITY",
+        "criterion_description": "Type law enforcement with wasm4pm",
+        "authority": "Van der Aalst Commission",
+        "trace_id": "b2c3d4e5f6g7h8i9j0k1l2m3",
+        "parent_span_id": "b2c3d4e5f6g7h8i9j0k1l2m3"
+      }
+    },
+    {
+      "ocel:event-id": "E-009",
+      "ocel:activity": "checkpoint.issue_verdict",
+      "ocel:timestamp": "2026-06-01T00:01:15Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+          "ocel:qualifier": "for"
+        },
+        {
+          "ocel:object-id": "VERDICT_ALIVE_001",
+          "ocel:qualifier": "issues"
+        }
+      ],
+      "ocel:attributes": {
+        "checkpoint_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "verdict": "ALIVE",
+        "authority": "Dr. Wil van der Aalst Commission",
+        "trace_id": "b2c3d4e5f6g7h8i9j0k1l2m3",
+        "parent_span_id": "b2c3d4e5f6g7h8i9j0k1l2m3"
+      }
+    },
+    {
+      "ocel:event-id": "E-010",
+      "ocel:activity": "receipt.hash_content",
+      "ocel:timestamp": "2026-06-01T00:00:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "RECEIPT_001_CHECKPOINT_ALIVE",
+          "ocel:qualifier": "for"
+        },
+        {
+          "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+          "ocel:qualifier": "hashes"
+        }
+      ],
+      "ocel:attributes": {
+        "receipt_signature": "31422cd6a051f6e5c6c2f4c0fa3b7f1a",
+        "content_hash": "31422cd6a051f6e5c6c2f4c0fa3b7f1a9e2d5c8b1f4a7e0d3c6b9a2e5f8c1a",
+        "artifact_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "trace_id": "c3d4e5f6g7h8i9j0k1l2m3n4",
+        "parent_span_id": ""
+      }
+    },
+    {
+      "ocel:event-id": "E-011",
+      "ocel:activity": "receipt.emit_witness",
+      "ocel:timestamp": "2026-06-01T00:00:01Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "RECEIPT_001_CHECKPOINT_ALIVE",
+          "ocel:qualifier": "emitted_to"
+        },
+        {
+          "ocel:object-id": "WITNESS_CHAIN_001",
+          "ocel:qualifier": "receives"
+        }
+      ],
+      "ocel:attributes": {
+        "receipt_signature": "31422cd6a051f6e5c6c2f4c0fa3b7f1a",
+        "authority": "Van der Aalst Process Mining Commission",
+        "trace_id": "c3d4e5f6g7h8i9j0k1l2m3n4",
+        "parent_span_id": "c3d4e5f6g7h8i9j0k1l2m3n4"
+      }
+    },
+    {
+      "ocel:event-id": "E-012",
+      "ocel:activity": "pipeline.start",
+      "ocel:timestamp": "2026-05-31T09:59:59Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PIPELINE_GGEN_UNIFIED_GOVERNANCE_001",
+          "ocel:qualifier": "starts"
+        }
+      ],
+      "ocel:attributes": {
+        "pipeline_id": "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001",
+        "authority": "Process Intelligence Manufacturing",
+        "trace_id": "d4e5f6g7h8i9j0k1l2m3n4o5",
+        "parent_span_id": ""
+      }
+    },
+    {
+      "ocel:event-id": "E-013",
+      "ocel:activity": "pipeline.execute_rule",
+      "ocel:timestamp": "2026-05-31T10:00:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PIPELINE_GGEN_UNIFIED_GOVERNANCE_001",
+          "ocel:qualifier": "executes"
+        },
+        {
+          "ocel:object-id": "RULE_001",
+          "ocel:qualifier": "is_executed_by"
+        },
+        {
+          "ocel:object-id": "ARTIFACT_LIFECYCLE_STATES",
+          "ocel:qualifier": "produces"
+        }
+      ],
+      "ocel:attributes": {
+        "pipeline_id": "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001",
+        "rule_id": "GEN_RULE_001_LIFECYCLE_EXTRACTION",
+        "rule_name": "Extract Lifecycle Definitions from Process Models",
+        "rule_type": "sparql_query_execution",
+        "execution_order": 1,
+        "receipt_signature": "RULE_001_RECEIPT_001",
+        "trace_id": "d4e5f6g7h8i9j0k1l2m3n4o5",
+        "parent_span_id": "d4e5f6g7h8i9j0k1l2m3n4o5"
+      }
+    },
+    {
+      "ocel:event-id": "E-014",
+      "ocel:activity": "pipeline.execute_rule",
+      "ocel:timestamp": "2026-05-31T10:00:45Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PIPELINE_GGEN_UNIFIED_GOVERNANCE_001",
+          "ocel:qualifier": "executes"
+        },
+        {
+          "ocel:object-id": "RULE_002",
+          "ocel:qualifier": "is_executed_by"
+        },
+        {
+          "ocel:object-id": "ARTIFACT_DOCTRINE_001",
+          "ocel:qualifier": "produces"
+        }
+      ],
+      "ocel:attributes": {
+        "pipeline_id": "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001",
+        "rule_id": "GEN_RULE_002_DOCTRINE_SYNTHESIS",
+        "rule_name": "Synthesize Process Doctrine from Lifecycle Data",
+        "rule_type": "tera_template_rendering",
+        "execution_order": 2,
+        "receipt_signature": "RULE_002_RECEIPT_001",
+        "trace_id": "d4e5f6g7h8i9j0k1l2m3n4o5",
+        "parent_span_id": "d4e5f6g7h8i9j0k1l2m3n4o5"
+      }
+    },
+    {
+      "ocel:event-id": "E-015",
+      "ocel:activity": "pipeline.validate_artifacts",
+      "ocel:timestamp": "2026-05-31T10:01:30Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PIPELINE_GGEN_UNIFIED_GOVERNANCE_001",
+          "ocel:qualifier": "validates"
+        },
+        {
+          "ocel:object-id": "ARTIFACT_DOCTRINE_001",
+          "ocel:qualifier": "is_validated_by"
+        }
+      ],
+      "ocel:attributes": {
+        "pipeline_id": "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001",
+        "artifacts_count": 2,
+        "authority": "Process Intelligence Validation Authority",
+        "trace_id": "d4e5f6g7h8i9j0k1l2m3n4o5",
+        "parent_span_id": "d4e5f6g7h8i9j0k1l2m3n4o5"
+      }
+    },
+    {
+      "ocel:event-id": "E-016",
+      "ocel:activity": "pipeline.complete",
+      "ocel:timestamp": "2026-05-31T10:02:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PIPELINE_GGEN_UNIFIED_GOVERNANCE_001",
+          "ocel:qualifier": "completes"
+        },
+        {
+          "ocel:object-id": "RECEIPT_PIPELINE_001",
+          "ocel:qualifier": "issues"
+        }
+      ],
+      "ocel:attributes": {
+        "pipeline_id": "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001",
+        "authority": "Process Intelligence Manufacturing",
+        "receipt_signature": "PIPELINE_001_RECEIPT_001",
+        "trace_id": "d4e5f6g7h8i9j0k1l2m3n4o5",
+        "parent_span_id": "d4e5f6g7h8i9j0k1l2m3n4o5"
+      }
+    }
+  ],
+  "ocel:objects": [
+    {
+      "ocel:object-id": "GGEN_ENGINE_001",
+      "ocel:object-type": "ggen_engine",
+      "ocel:object-attributes": {
+        "engine_id": "GGEN_ENGINE_001",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "ocel:object-id": "SPARQL_LIFECYCLE_EXTRACTION",
+      "ocel:object-type": "sparql_query",
+      "ocel:object-attributes": {
+        "query_file": "ggen/queries/lifecycle-states-extraction.rq",
+        "query_namespace": "http://purl.org/bpmn/process-intelligence"
+      }
+    },
+    {
+      "ocel:object-id": "TERA_DOCTRINE_SYNTHESIS",
+      "ocel:object-type": "tera_template",
+      "ocel:object-attributes": {
+        "template_file": "ggen/templates/process-doctrine-synthesis.tera",
+        "output_format": "markdown"
+      }
+    },
+    {
+      "ocel:object-id": "ARTIFACT_DOCTRINE_001",
+      "ocel:object-type": "artifact",
+      "ocel:object-attributes": {
+        "artifact_id": "ARTIFACT_DOCTRINE_001",
+        "file_path": "doctrine/process-intelligence-maturity.md",
+        "content_hash": "c3d4e5f6a7b8d9e0f1g2h3i4"
+      }
+    },
+    {
+      "ocel:object-id": "RECEIPT_001_CHECKPOINT_ALIVE",
+      "ocel:object-type": "receipt",
+      "ocel:object-attributes": {
+        "receipt_id": "RECEIPT_001_CHECKPOINT_ALIVE",
+        "artifact_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "signature": "31422cd6a051f6e5c6c2f4c0fa3b7f1a9e2d5c8b1f4a7e0d3c6b9a2e5f8c1a"
+      }
+    },
+    {
+      "ocel:object-id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+      "ocel:object-type": "checkpoint",
+      "ocel:object-attributes": {
+        "checkpoint_id": "CHECKPOINT_PROCESS_INTELLIGENCE_ALIVE_001",
+        "state": "ALIVE",
+        "verdict": "ALIVE",
+        "authority": "Dr. Wil van der Aalst Commission"
+      }
+    },
+    {
+      "ocel:object-id": "GATE_001",
+      "ocel:object-type": "gate",
+      "ocel:object-attributes": {
+        "gate_id": "GATE_001_RESEARCH_PAPER_COMPLETENESS",
+        "criterion_description": "All papers classified and cited",
+        "result": "PASS"
+      }
+    },
+    {
+      "ocel:object-id": "VERDICT_ALIVE_001",
+      "ocel:object-type": "verdict",
+      "ocel:object-attributes": {
+        "verdict_id": "VERDICT_ALIVE_001",
+        "verdict_type": "ALIVE",
+        "timestamp": "2026-06-01T00:01:15Z",
+        "authority": "Dr. Wil van der Aalst Commission"
+      }
+    },
+    {
+      "ocel:object-id": "PIPELINE_GGEN_UNIFIED_GOVERNANCE_001",
+      "ocel:object-type": "pipeline",
+      "ocel:object-attributes": {
+        "pipeline_id": "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001",
+        "pipeline_name": "Governance Generation Pipeline",
+        "status": "success"
+      }
+    },
+    {
+      "ocel:object-id": "RULE_001",
+      "ocel:object-type": "generation_rule",
+      "ocel:object-attributes": {
+        "rule_id": "GEN_RULE_001_LIFECYCLE_EXTRACTION",
+        "rule_name": "Extract Lifecycle Definitions from Process Models",
+        "rule_type": "sparql_query_execution",
+        "execution_order": 1
+      }
+    },
+    {
+      "ocel:object-id": "RULE_002",
+      "ocel:object-type": "generation_rule",
+      "ocel:object-attributes": {
+        "rule_id": "GEN_RULE_002_DOCTRINE_SYNTHESIS",
+        "rule_name": "Synthesize Process Doctrine from Lifecycle Data",
+        "rule_type": "tera_template_rendering",
+        "execution_order": 2
+      }
+    },
+    {
+      "ocel:object-id": "WITNESS_CHAIN_001",
+      "ocel:object-type": "witness_chain",
+      "ocel:object-attributes": {
+        "chain_id": "WITNESS_CHAIN_001",
+        "chain_length": 1,
+        "root_receipt_id": "RECEIPT_001_CHECKPOINT_ALIVE"
+      }
+    },
+    {
+      "ocel:object-id": "ARTIFACT_LIFECYCLE_STATES",
+      "ocel:object-type": "artifact",
+      "ocel:object-attributes": {
+        "artifact_id": "ARTIFACT_LIFECYCLE_STATES",
+        "file_path": "lifecycle/states.json",
+        "content_hash": "a1b2c3d4e5f6g7h8"
+      }
+    },
+    {
+      "ocel:object-id": "RECEIPT_PIPELINE_001",
+      "ocel:object-type": "receipt",
+      "ocel:object-attributes": {
+        "receipt_id": "RECEIPT_PIPELINE_001",
+        "pipeline_id": "GGEN_UNIFIED_GOVERNANCE_PIPELINE_001",
+        "signature": "PIPELINE_001_RECEIPT_001"
+      }
+    }
+  ]
+}

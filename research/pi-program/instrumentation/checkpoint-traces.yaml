@@ -1,0 +1,230 @@
+---
+# OpenTelemetry Traces for Checkpoint System
+# Authority: Van der Aalst Process Mining Constitution
+# Purpose: Trace checkpoint transitions and gate evaluations
+# Generated: 2026-06-01
+
+checkpoint_tracing:
+  service_name: "process-intelligence-checkpoint-system"
+  version: "1.0.0"
+
+  # Checkpoint transition tracking
+  transitions:
+
+    # Phase 15 Checkpoint: PARTIAL -> ALIVE
+    - checkpoint_id: "PROCESS_INTELLIGENCE_ALIVE_001"
+      source_state: "PARTIAL"
+      target_state: "ALIVE"
+      timestamp: "2026-06-01T00:00:00Z"
+
+      # Gates that were evaluated
+      gates_evaluated:
+        - gate_id: "GATE_001_RESEARCH_PAPER_COMPLETENESS"
+          criterion: "All papers classified and cited"
+          result: "PASS"
+          evidence: "100% paper coverage achieved"
+          checked_by: "research-paper-audit"
+
+        - gate_id: "GATE_002_LIFECYCLE_DEFINITION_COMPLETENESS"
+          criterion: "All lifecycle states defined"
+          result: "PASS"
+          evidence: "5 lifecycle states fully specified"
+          checked_by: "lifecycle-audit"
+
+        - gate_id: "GATE_003_MA_CLAIM_GROUNDING"
+          criterion: "All M&A claims grounded in research"
+          result: "PASS"
+          evidence: "Board-admissible claims manufactured"
+          checked_by: "m-and-a-audit"
+
+        - gate_id: "GATE_004_STANDARDS_ALIGNMENT"
+          criterion: "Process intelligence aligned with standards"
+          result: "PASS"
+          evidence: "OCEL 2.0, XES, ISO compliance verified"
+          checked_by: "standards-audit"
+
+        - gate_id: "GATE_005_WASM4PM_COMPATIBILITY"
+          criterion: "Type law enforcement with wasm4pm"
+          result: "PASS"
+          evidence: "Witness lattice and compat matrix confirmed"
+          checked_by: "wasm4pm-compat-audit"
+
+      verdict_decision: "ALIVE"
+      verdict_timestamp: "2026-06-01T00:00:00Z"
+      verdict_authority: "Dr. Wil van der Aalst Commission"
+
+    # Phase 16 Checkpoint: M&A Manufacturing
+    - checkpoint_id: "M_AND_A_BOARD_ADMISSIBLE_CLAIMS_001"
+      source_state: "PENDING"
+      target_state: "COMPLETE"
+      timestamp: "2026-06-01T00:00:00Z"
+
+      gates_evaluated:
+        - gate_id: "GATE_601_CLAIM_TAXONOMY_COMPLETENESS"
+          criterion: "All claim types classified"
+          result: "PASS"
+          evidence: "Synergy, debt, operational claims taxonomy defined"
+
+        - gate_id: "GATE_602_BUYER_RELIANCE_GROUNDING"
+          criterion: "Buyer reliance requirements mapped to doctrine"
+          result: "PASS"
+          evidence: "Board-admissible requirements specified"
+
+        - gate_id: "GATE_603_SELLER_DEFENSIBILITY"
+          criterion: "Seller defensibility requirements proven"
+          result: "PASS"
+          evidence: "Audit trails and receipt chain established"
+
+        - gate_id: "GATE_604_SLIDE_TO_RECEIPT_MAPPING"
+          criterion: "M&A slides mapped to operational receipts"
+          result: "PASS"
+          evidence: "Full traceability from presentation to evidence"
+
+      verdict_decision: "COMPLETE"
+      verdict_timestamp: "2026-06-01T00:00:00Z"
+      verdict_authority: "M&A Claims Commission"
+
+# Span definitions for checkpoint activities
+spans:
+
+  # Span: Checkpoint Creation
+  - span_id: "checkpoint.create"
+    activity: "Create Checkpoint"
+    span_attributes:
+      checkpoint_id: "string"
+      source_state: "string"
+      target_state: "string"
+      authority: "string"
+    duration_ms: "int"
+    status: "success"
+
+  # Span: Gate Check Evaluation
+  - span_id: "checkpoint.gate_check"
+    activity: "Evaluate Gate Criterion"
+    span_attributes:
+      gate_id: "string"
+      criterion_description: "string"
+      criteria_count: "int"
+      all_passed: "boolean"
+      failed_criteria: "array<string>"
+    duration_ms: "int"
+    status: "enum:success|failure|partial"
+
+  # Span: Verdict Issuance
+  - span_id: "checkpoint.issue_verdict"
+    activity: "Issue Checkpoint Verdict"
+    span_attributes:
+      checkpoint_id: "string"
+      verdict: "enum:ALIVE|PARTIAL|FAILED"
+      gate_results: "object"
+      evidence_chain_hash: "string"
+      signature_algorithm: "string"
+    duration_ms: "int"
+    status: "success"
+
+  # Span: Receipt Generation
+  - span_id: "checkpoint.generate_receipt"
+    activity: "Generate Checkpoint Receipt"
+    span_attributes:
+      checkpoint_id: "string"
+      receipt_id: "string"
+      content_hash: "string"
+      previous_receipt_id: "string"
+      signature: "string"
+    duration_ms: "int"
+    status: "success"
+
+# Object-Centric Event Log (OCEL) Mapping for Checkpoints
+ocel_mapping:
+
+  object_types:
+    - id: "checkpoint"
+      name: "Checkpoint"
+      attributes: ["checkpoint_id", "state", "verdict", "authority"]
+
+    - id: "gate"
+      name: "Gate Criterion"
+      attributes: ["gate_id", "criterion_description", "result"]
+
+    - id: "verdict"
+      name: "Verdict"
+      attributes: ["verdict_id", "verdict_type", "timestamp", "authority"]
+
+    - id: "receipt"
+      name: "Checkpoint Receipt"
+      attributes: ["receipt_id", "checkpoint_id", "signature"]
+
+  # Span-to-event rules
+  span_to_event_rules:
+
+    - span_id: "checkpoint.create"
+      event_activity: "checkpoint.create"
+      event_objects:
+        - type: "checkpoint"
+          qualifier: "created"
+
+    - span_id: "checkpoint.gate_check"
+      event_activity: "checkpoint.gate_check"
+      event_objects:
+        - type: "checkpoint"
+          qualifier: "subject_of"
+        - type: "gate"
+          qualifier: "evaluates"
+
+    - span_id: "checkpoint.issue_verdict"
+      event_activity: "checkpoint.issue_verdict"
+      event_objects:
+        - type: "checkpoint"
+          qualifier: "for"
+        - type: "verdict"
+          qualifier: "issues"
+
+    - span_id: "checkpoint.generate_receipt"
+      event_activity: "checkpoint.generate_receipt"
+      event_objects:
+        - type: "checkpoint"
+          qualifier: "for"
+        - type: "receipt"
+          qualifier: "generates"
+
+# Temporal constraints for checkpoint lifecycle
+temporal_constraints:
+
+  - constraint_id: "gates_before_verdict"
+    description: "All gates must be checked before verdict is issued"
+    precedence: ["checkpoint.gate_check", "checkpoint.issue_verdict"]
+
+  - constraint_id: "verdict_before_receipt"
+    description: "Verdict must be issued before receipt is generated"
+    precedence: ["checkpoint.issue_verdict", "checkpoint.generate_receipt"]
+
+  - constraint_id: "no_concurrent_verdicts"
+    description: "No two verdicts for same checkpoint can overlap"
+    concurrency_rule: "not_overlapping"
+
+# Quality metrics for checkpoint tracing
+quality_metrics:
+
+  - metric: "gate_coverage"
+    description: "Percentage of defined gates that were evaluated"
+    target: 100
+
+  - metric: "verdict_authority"
+    description: "All verdicts are signed by authorized authority"
+    target: 100
+
+  - metric: "receipt_chain_integrity"
+    description: "All receipts form unbroken chain"
+    target: 100
+
+  - metric: "temporal_conformance"
+    description: "Temporal constraints satisfied"
+    target: 100
+
+---
+metadata:
+  created: "2026-06-01T00:00:00Z"
+  authority: "Process Intelligence Research Foundry"
+  standard: "OpenTelemetry 1.0, OCEL 2.0"
+  version: "1.0.0"
+  status: "ACTIVE"

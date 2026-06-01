@@ -1,0 +1,35 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX ma: <https://process.intelligence/ma/>
+PREFIX lifecycle: <https://process.intelligence/lifecycle/>
+PREFIX ggen: <https://process.intelligence/ggen/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT DISTINCT
+  ?phase
+  ?objective
+  ?status
+  ?verdict
+  ?deliverables
+  ?authority
+  (COUNT(?rule) AS ?rule_count)
+  (COUNT(?query) AS ?query_count)
+  (COUNT(?template) AS ?template_count)
+WHERE {
+  ?ggen_run a ggen:PipelineExecution ;
+    ggen:phase ?phase ;
+    ggen:objective ?objective ;
+    ggen:status ?status ;
+    ggen:verdict ?verdict ;
+    ggen:deliverables ?deliverables ;
+    ggen:authority ?authority ;
+    ggen:timestamp ?timestamp .
+
+  OPTIONAL { ?ggen_run ggen:appliedRule ?rule . }
+  OPTIONAL { ?ggen_run ggen:executedQuery ?query . }
+  OPTIONAL { ?ggen_run ggen:renderedTemplate ?template . }
+
+  FILTER (BOUND(?phase))
+}
+GROUP BY ?phase ?objective ?status ?verdict ?deliverables ?authority
+ORDER BY DESC(?timestamp)
+LIMIT 1

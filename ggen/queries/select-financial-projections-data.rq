@@ -1,0 +1,27 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX fin: <https://process.intelligence/financial/>
+PREFIX ma: <https://process.intelligence/ma/>
+
+SELECT DISTINCT
+  ?projection_id
+  ?scenario_type
+  ?year
+  ?revenue_impact
+  ?cost_savings
+  ?integration_cost
+  ?net_present_value
+  ?confidence_level
+  ?assumptions
+WHERE {
+  ?projection a fin:Projection ;
+    fin:id ?projection_id ;
+    fin:scenarioType ?scenario_type ;
+    fin:year ?year ;
+    fin:revenueImpact ?revenue_impact ;
+    fin:costSavings ?cost_savings ;
+    fin:integrationCost ?integration_cost ;
+    fin:netPresentValue ?net_present_value ;
+    fin:confidenceLevel ?confidence_level ;
+    fin:assumptions ?assumptions .
+}
+ORDER BY ?scenario_type ?year

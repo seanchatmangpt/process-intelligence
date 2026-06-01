@@ -1,0 +1,282 @@
+---
+# OpenTelemetry Configuration for Process Intelligence ggen Validator
+# Authority: Van der Aalst Process Mining Constitution
+# Standard: OpenTelemetry 1.0 (https://opentelemetry.io/docs/reference/specification/)
+# Generated: 2026-06-01
+
+otel:
+  service_name: "process-intelligence-ggen-validator"
+  version: "1.0.0"
+
+  # Instrumentation libraries to enable
+  instrumentation:
+    - name: "ggen-validator"
+      enabled: true
+      version: "0.1.0"
+
+  # Tracer configuration
+  tracer:
+    name: "process-intelligence-tracer"
+    version: "0.1.0"
+
+  # Exporter configuration
+  exporters:
+    jaeger:
+      enabled: true
+      endpoint: "http://localhost:14250"  # gRPC endpoint
+      timeout: "30s"
+
+    # OTEL Collector as alternative
+    otel_collector:
+      enabled: true
+      endpoint: "http://localhost:4317"  # gRPC Exporter endpoint
+      timeout: "30s"
+
+  # Sampler configuration
+  sampler:
+    type: "always_on"  # Always export traces for research
+
+  # Resource attributes
+  resource_attributes:
+    service.name: "process-intelligence-ggen-validator"
+    service.version: "1.0.0"
+    deployment.environment: "research"
+    process.command: "ggen-validator"
+    telemetry.sdk.name: "opentelemetry"
+    telemetry.sdk.language: "rust"
+    telemetry.sdk.version: "0.21"
+
+# Instrumentation points mapped to ggen validator phases
+instrumentation_points:
+
+  # Phase 1: SPARQL Query Execution
+  - id: "ggen.execute_query"
+    activity: "Execute SPARQL Query"
+    stage: "query_execution"
+    attributes:
+      - name: "query_file"
+        type: "string"
+        description: "Path to SPARQL query file"
+      - name: "query_namespace"
+        type: "string"
+        description: "Ontology namespace"
+      - name: "event_count"
+        type: "int"
+        description: "Number of events extracted"
+      - name: "execution_status"
+        type: "string"
+        enum: ["success", "failure", "timeout"]
+      - name: "execution_duration_ms"
+        type: "int"
+        description: "Query execution time in milliseconds"
+
+  # Phase 2: Tera Template Rendering
+  - id: "ggen.render_template"
+    activity: "Render Tera Template"
+    stage: "template_rendering"
+    attributes:
+      - name: "template_file"
+        type: "string"
+        description: "Path to Tera template"
+      - name: "output_format"
+        type: "string"
+        enum: ["rust", "json", "yaml", "markdown"]
+      - name: "variable_count"
+        type: "int"
+        description: "Number of variables rendered"
+      - name: "output_hash"
+        type: "string"
+        description: "BLAKE3 hash of rendered output"
+      - name: "rendering_status"
+        type: "string"
+        enum: ["success", "failure"]
+      - name: "rendering_duration_ms"
+        type: "int"
+
+  # Phase 3: Output File Writing
+  - id: "ggen.write_output"
+    activity: "Write Output File"
+    stage: "output_writing"
+    attributes:
+      - name: "output_file"
+        type: "string"
+        description: "Path to output file"
+      - name: "write_mode"
+        type: "string"
+        enum: ["create", "overwrite", "append"]
+      - name: "file_size_bytes"
+        type: "int"
+        description: "Size of written file"
+      - name: "receipt_hash"
+        type: "string"
+        description: "BLAKE3 hash of file content"
+      - name: "write_status"
+        type: "string"
+        enum: ["success", "failure"]
+      - name: "write_duration_ms"
+        type: "int"
+
+  # Phase 4: Artifact Validation
+  - id: "ggen.validate_artifact"
+    activity: "Validate Artifact"
+    stage: "validation"
+    attributes:
+      - name: "artifact_id"
+        type: "string"
+      - name: "validation_rules"
+        type: "int"
+        description: "Number of validation rules applied"
+      - name: "validation_passed"
+        type: "boolean"
+      - name: "validation_errors"
+        type: "int"
+        description: "Number of validation errors (0 if passed)"
+      - name: "validation_duration_ms"
+        type: "int"
+
+# Span-to-OCEL event mapping
+span_to_ocel_mapping:
+
+  # Define the object types in the process intelligence domain
+  object_types:
+    - id: "ggen_engine"
+      name: "GGEN Engine"
+      attributes: ["engine_id", "version"]
+
+    - id: "sparql_query"
+      name: "SPARQL Query"
+      attributes: ["query_file", "query_namespace"]
+
+    - id: "tera_template"
+      name: "Tera Template"
+      attributes: ["template_file", "output_format"]
+
+    - id: "artifact"
+      name: "Artifact"
+      attributes: ["artifact_id", "file_path", "content_hash"]
+
+    - id: "receipt"
+      name: "Receipt"
+      attributes: ["receipt_id", "artifact_id", "signature_hash"]
+
+  # Map spans to OCEL events
+  span_to_event_rules:
+
+    - span_id: "ggen.execute_query"
+      event_activity: "ggen.execute_query"
+      event_objects:
+        - type: "ggen_engine"
+          qualifier: "executed_by"
+        - type: "sparql_query"
+          qualifier: "executes"
+
+    - span_id: "ggen.render_template"
+      event_activity: "ggen.render_template"
+      event_objects:
+        - type: "ggen_engine"
+          qualifier: "executed_by"
+        - type: "tera_template"
+          qualifier: "renders"
+
+    - span_id: "ggen.write_output"
+      event_activity: "ggen.write_output"
+      event_objects:
+        - type: "ggen_engine"
+          qualifier: "executed_by"
+        - type: "artifact"
+          qualifier: "writes"
+
+    - span_id: "ggen.validate_artifact"
+      event_activity: "ggen.validate_artifact"
+      event_objects:
+        - type: "ggen_engine"
+          qualifier: "executed_by"
+        - type: "artifact"
+          qualifier: "validates"
+
+# Trace correlation rules for parent-child relationships
+trace_correlation:
+  parent_child_rules:
+    - parent: "ggen.execute_query"
+      child: "ggen.render_template"
+      causality: "query_results_input_to_template"
+
+    - parent: "ggen.render_template"
+      child: "ggen.write_output"
+      causality: "rendered_output_written_as_artifact"
+
+    - parent: "ggen.write_output"
+      child: "ggen.validate_artifact"
+      causality: "artifact_validation_after_write"
+
+# OCEL 2.0 output configuration
+ocel_output:
+  format_version: "2.0"
+  ocel_namespace: "http://www.ocel-standard.org/2.0#"
+  output_file: "/Users/sac/process-intelligence/research/pi-program/audits/pi-ecosystem-ocel.json"
+
+  # Required OCEL objects
+  required_objects:
+    - name: "ggen_engine"
+      description: "The ggen validation engine"
+
+    - name: "sparql_query"
+      description: "SPARQL query executed"
+
+    - name: "tera_template"
+      description: "Tera template rendered"
+
+    - name: "artifact"
+      description: "Artifact generated or validated"
+
+    - name: "receipt"
+      description: "Cryptographic receipt for artifact"
+
+# Conformance checking configuration
+conformance_checking:
+  enabled: true
+
+  # Verify temporal ordering
+  temporal_constraints:
+    - constraint_id: "query_before_render"
+      description: "SPARQL query must execute before template rendering"
+      precedence: ["ggen.execute_query", "ggen.render_template"]
+
+    - constraint_id: "render_before_write"
+      description: "Template must be rendered before output writing"
+      precedence: ["ggen.render_template", "ggen.write_output"]
+
+    - constraint_id: "write_before_validate"
+      description: "File must be written before validation"
+      precedence: ["ggen.write_output", "ggen.validate_artifact"]
+
+  # Verify object lifecycle
+  object_lifecycle_rules:
+    - object_type: "artifact"
+      required_activities: ["ggen.write_output", "ggen.validate_artifact"]
+
+    - object_type: "receipt"
+      required_activities: ["receipt.hash_content", "receipt.emit_witness"]
+
+# Quality metrics configuration
+quality_metrics:
+  - metric: "fitness"
+    description: "Proportion of events in log that conform to model"
+
+  - metric: "precision"
+    description: "Proportion of model behavior observed in log"
+
+  - metric: "generalization"
+    description: "Model avoids over-fitting to specific log behaviors"
+
+  - metric: "simplicity"
+    description: "Model complexity vs. expressiveness"
+
+---
+# File Metadata
+metadata:
+  created: "2026-06-01T00:00:00Z"
+  authority: "Process Intelligence Research Foundry"
+  standard: "OpenTelemetry 1.0, OCEL 2.0"
+  version: "1.0.0"
+  status: "ACTIVE"
