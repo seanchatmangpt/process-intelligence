@@ -41,3 +41,6 @@
 
 * **Step: map filtering capability**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map performance analysis capability**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
