@@ -28,3 +28,6 @@
 
 * **Step: map visualization preparation authority**
   - Defining engine execution requirements.
+
+* **Step: map WASM runtime authority**
+  - Defining engine execution requirements.
