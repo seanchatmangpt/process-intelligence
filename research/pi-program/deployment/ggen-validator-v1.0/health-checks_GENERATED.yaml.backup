@@ -1,0 +1,50 @@
+# ggen Validator Health Checks Configuration
+# Auto-generated from conformance analysis
+#
+# Generated: 2026-06-01T15:14:58Z
+
+health_checks:
+  version: 1.0
+  schedule:
+    startup: "on-deployment"
+    daily: "02:00 UTC"
+    weekly: "Monday 03:00 UTC"
+    monthly: "1st of month 04:00 UTC"
+
+startup_gates:
+
+  - name: "ANDON_CRITICAL_INVARIANT_GATE"
+    category: "Safety/Liveness"
+    description: "Verify that all cognitive stress markers do not exceed limit"
+    procedure: |
+      Run cognitive telemetry diagnostics on interface surface
+    expected_outcome: "Cognitive stress telemetry reports <= 0.85"
+    failure_action: "Escalate to supervisor and pause state replication"
+    status: "PASS"
+
+  - name: "BLUE_RIVER_DAM_VERDICT_GATE"
+    category: "Data Integrity"
+    description: "Verify that all sync frames are signed with BLAKE3 receipt chain"
+    procedure: |
+      Query SQLite local database for head receipt hash chain verification
+    expected_outcome: "Local SQLite contains valid receipt matching the previous head"
+    failure_action: "Quarantine transition and roll back"
+    status: "PASS"
+
+
+alerting:
+  enabled: true
+  channels:
+    - type: "log"
+      level: "all"
+      destination: "/var/lib/ggen-validator/logs/alerts.log"
+    - type: "email"
+      level: "critical"
+      recipients: ["pi-research@example.com"]
+    - type: "slack"
+      level: "warning"
+      webhook_url: "${SLACK_WEBHOOK_URL}"
+
+status: "CONFIGURED"
+authority: "Process Intelligence Research Directorate"
+version: "1.0.0"

@@ -1,0 +1,21 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX metrics: <https://process.intelligence/metrics/>
+
+SELECT DISTINCT
+  ?metric_name
+  ?metric_type
+  ?description
+  ?unit
+  ?dashboard_panel
+  ?alert_threshold
+WHERE {
+  ?metric a metrics:PrometheusMetric ;
+    metrics:name ?metric_name ;
+    metrics:type ?metric_type ;
+    metrics:description ?description ;
+    metrics:unit ?unit ;
+    metrics:dashboardPanel ?dashboard_panel .
+
+  OPTIONAL { ?metric metrics:alertThreshold ?alert_threshold . }
+}
+ORDER BY ?metric_type ?metric_name

@@ -1,0 +1,20 @@
+{
+  "operation_id": "d34af691-1484-4a28-b5a5-821b56469283",
+  "timestamp": "2026-06-01T22:14:42.835603Z",
+  "input_hashes": [],
+  "output_hashes": [
+    "/Users/sac/process-intelligence/research/pi-program/deployment/ggen-validator-v1.0/DEPLOYMENT_SUMMARY_GENERATED.md:1a6413a95a77716705dfc19acf1f9af67818a2bd0549ee715e5537ee51e1d73b",
+    "/Users/sac/process-intelligence/research/pi-program/deployment/ggen-validator-v1.0/health-checks_GENERATED.yaml:64353ca390c7ddc8d74cfc15e079f30f15f0b79797d76643aa6cf2b43dba5e24",
+    "/Users/sac/process-intelligence/research/pi-program/deployment/ggen-validator-v1.0/monitoring-dashboard_GENERATED.md:20fa680ba8f96353f96749f6c3b2bdb4e7acc751ca6a4e367bb032377f7e1d59",
+    "/Users/sac/process-intelligence/research/pi-program/audits/fitness-precision-generalization-report_GENERATED.md:b168d6e6dd23673acbc67c9498bc3c851e11aca4852c08c2336fde5f3734875e",
+    "/Users/sac/process-intelligence/research/pi-program/ma/board-investment-memo_GENERATED.md:4a202fdf6424b602b9f3849207c5c1ecf2996c4e80d7a66d2ca0dfe153d5f22d",
+    "/Users/sac/process-intelligence/research/pi-program/ma/financial-projections-v1_GENERATED.yaml:c32bfe472ea53f5ebc7c7a2a31ffd2e157b8db2d44beabe0767515446f4bbc43",
+    "/Users/sac/process-intelligence/research/pi-program/ma/risk-disclosure-v1_GENERATED.md:818bb6328ede620d4d5c8cc687516c15a875b79ef6c64f8b359dda5e3942f2a7",
+    "/Users/sac/process-intelligence/research/pi-program/integration/ecosystem-architecture_GENERATED.md:788ef1c64806f348cece299d3a933f62634f48b6e4d98ed2585b347549fba58f",
+    "/Users/sac/process-intelligence/research/pi-program/integration/guides/BCI_UX_Cognitive_to_Holographic_Cards_GENERATED.md:5ce497808690911e8aa8f12892097a3bafd008b53cf019025fcaff4200a69c44",
+    "/Users/sac/process-intelligence/research/pi-program/census/resource-census_GENERATED.md:4654ffd7d96f249dd7afd42f3e08ccef29239aaaeb0126c55fb277b713047f58",
+    "/Users/sac/process-intelligence/checkpoints/PHASE_16_M&A_CLAIM_MANUFACTURING_COMPLETE_GENERATED.md:2e68eedc78c15c4c4d296fcdec407eb7e6f750188f1b1b77ceb889b5b261ab50"
+  ],
+  "signature": "8e63f154b8859f4eed8e61a693c355323dc53d1cfed280b6f65cf47cb95da2eb35e349d73b56c27b1244a4e3cd563f175eca4084d9f4f503def7ab2085069c0e",
+  "previous_receipt_hash": "07b4c43fdd9690de53d2ac5bed9afd00216f2d5d6206276afca52de450bf9232"
+}

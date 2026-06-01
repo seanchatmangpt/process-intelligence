@@ -1,0 +1,695 @@
+# Open Ontologies Infrastructure Inventory
+# Structured census for PI program integration planning
+# Generated: 2026-06-01
+
+project:
+  name: "open-ontologies (OntoStar)"
+  version: "26.5.21"
+  license: "MIT"
+  github: "https://github.com/fabio-rovai/open-ontologies"
+  primary_language: "Rust"
+  secondary_languages:
+    - TypeScript
+    - SQL
+    - Python (scripts)
+    - Erlang
+  runtime_targets:
+    - Linux/macOS binary
+    - WebAssembly (AtomVM)
+
+directories:
+  root: "/Users/sac/open-ontologies"
+  ontologies: "ontology/"
+  queries: ".specify/queries/"
+  templates: ".specify/templates/"
+  source_code: "src/"
+  tests: "tests/"
+  ggen_artifacts: ".ggen/"
+  receipts: ".ggen/receipts/"
+
+ontologies:
+  total_files: 30
+  format: "Turtle (TTL)"
+  rdf_store: "Oxigraph 0.3.x"
+  serialization: "N-Triples (.nt files)"
+  files:
+    - path: "ontology/cli-open-ontologies.ttl"
+      type: "OWL"
+      purpose: "CLI surface ontology (primary generation source)"
+      classes: 50+
+      properties: 30+
+      individuals: 100+
+
+    - path: "ontology/powl-process-mining.ttl"
+      type: "OWL"
+      purpose: "POWL discovery variants + OCEL 2.0 object types"
+      classes: 3
+      properties: 8+
+      individuals: 12  # 8 DiscoveryVariant + 4 ConformanceDimension
+      entities:
+        discovery_variants:
+          - DecisionGraphCyclic
+          - DecisionGraphCyclicStrict
+          - DecisionGraphMax
+          - DecisionGraphClustering
+          - DynamicClustering
+          - Maximal
+          - Tree
+          - BruteForce
+        conformance_dimensions:
+          - Fitness
+          - Precision
+          - Generalization
+          - Simplicity
+      dependencies:
+        - wasm4pm (via algorithm stubs)
+        - pm4py (via POWL model format)
+
+    - path: "ontology/cell8-core.ttl"
+      type: "OWL"
+      purpose: "Manufacturing gate definitions (A1-A13)"
+      classes: 6
+      properties: 12
+      individuals: 13
+
+    - path: "ontology/cell8-manufacturing.ttl"
+      type: "OWL"
+      purpose: "Manufacturing stage transitions"
+      classes: 8
+      properties: 15
+      individuals: 5  # Seeded, Bred, Validated, Admitted, Released
+
+    - path: "ontology/cell8-profile.ttl"
+      type: "OWL"
+      purpose: "Cell8 profile layer"
+      classes: 12
+      properties: 20
+      codegen_trigger: "cell8-ggen/ggen.toml"
+
+    - path: "ontology/cell8-shapes.ttl"
+      type: "SHACL"
+      purpose: "SHACL constraints for A1-A3 gates"
+
+    - path: "ontology/wasm4pm-stubs.ttl"
+      type: "OWL"
+      purpose: "wasm4pm algorithm function signatures"
+      classes: 40+
+      properties: 50+
+
+    - path: "ontology/ontostar-wasm4pm-integration.ttl"
+      type: "OWL"
+      purpose: "Integration bridge between OntoStar and wasm4pm"
+      classes: 5
+      properties: 8
+      alignment_patterns:
+        - owl:equivalentClass
+        - owl:sameAs
+        - rdfs:subClassOf
+
+    - path: "ontology/truex-ecosystem.ttl"
+      type: "OWL"
+      purpose: "E2E test ecosystem model"
+      classes: 35+
+      properties: 45+
+
+    - path: "ontology/portfolio-os.ttl"
+      type: "OWL"
+      purpose: "Portfolio operating system model"
+      classes: 18
+      properties: 25
+
+    - path: "ontology/requirements.ttl"
+      type: "OWL"
+      purpose: "Requirements DSL for CTQ admission"
+      classes: 8
+      properties: 12
+
+    - path: "ontology/profiles/zoela-supabase-materialization.ttl"
+      type: "OWL"
+      purpose: "ZOE LA Mobile database materialization rules"
+      domain: "ZOE LA Mobile"
+
+    - path: "ontology/profiles/zoela-supabase-rls.ttl"
+      type: "OWL"
+      purpose: "Row-level security policy definitions"
+      domain: "ZOE LA Mobile"
+
+    - path: "ontology/profiles/zoela-governance.ttl"
+      type: "OWL"
+      purpose: "Role hierarchies and governance tables"
+      domain: "ZOE LA Mobile"
+
+    - path: "ontology/profiles/zoela-expo-app.ttl"
+      type: "OWL"
+      purpose: "Expo mobile app manifest definitions"
+      domain: "ZOE LA Mobile"
+
+    - path: "ontology/ghf-core.ttl"
+      type: "OWL"
+      purpose: "GitHub Factory domain model"
+      domain: "GitHub Factory"
+      classes: 8
+
+    - path: "ontology/ghf-shacl.ttl"
+      type: "SHACL"
+      purpose: "GitHub Factory constraints"
+      domain: "GitHub Factory"
+
+    - path: "ontology/ghf-security-policy.ttl"
+      type: "OWL"
+      purpose: "Branch protection and security rules"
+      domain: "GitHub Factory"
+
+    - path: "ontology/aat-live-rules.ttl"
+      type: "OWL"
+      purpose: "AAT live rule definitions"
+      classes: 10
+      properties: 16
+
+    - path: "ontology/public-alignment.ttl"
+      type: "OWL"
+      purpose: "Cross-system alignment mappings"
+
+    - path: "ontology/public-shapes.ttl"
+      type: "SHACL"
+      purpose: "Public interface SHACL constraints"
+
+    - path: "ontology/attestation-shapes.ttl"
+      type: "SHACL"
+      purpose: "Receipt attestation constraints"
+
+    - path: "ontology/shared-receipt-shapes.ttl"
+      type: "SHACL"
+      purpose: "Cross-system receipt validation"
+
+    - path: "ontology/mcpp-proof-chain.ttl"
+      type: "OWL"
+      purpose: "Proof chain model"
+
+    - path: "ontology/revops-manufacturing.ttl"
+      type: "OWL"
+      purpose: "RevOps test case (CodeManufactory proof)"
+
+    - path: "ontology/thesis-manufacturing.ttl"
+      type: "OWL"
+      purpose: "Thesis domain manufacturing model"
+
+    - path: "ontology/thesis-shapes.ttl"
+      type: "SHACL"
+      purpose: "Thesis domain constraints"
+
+ggen_manifests:
+  primary:
+    path: "ggen.toml"
+    version: "26.5.21"
+    ontology_source: "ontology/cli-open-ontologies.ttl"
+    base_uri: "https://ggen.io/onto/cli/open-ontologies/"
+    imports_count: 36
+    imports_limit: 36  # Pre-flight scaling constraint
+    scaling_note: ">36 imports causes >10 min compile; documented bottleneck"
+    inference_rules: 1
+    generation_rules: 40
+
+  cell8:
+    path: "cell8-ggen/ggen.toml"
+    ontology_source: "../../ontology/cell8-profile.ttl"
+    output_dir: "../../src/cell8/generated/"
+    generation_rules: 2
+    outputs:
+      - "src/cell8/generated/stations.rs"
+      - "src/cell8/generated/byte_law.rs"
+
+sparql_queries:
+  total_count: 83
+  format: "SPARQL 1.1 (SELECT, CONSTRUCT, ASK)"
+  categories:
+    cli:
+      count: 5
+      path: ".specify/queries/cli/"
+      examples:
+        - "commands_aggregated.rq"
+        - "subcommands_aggregated.rq"
+      pattern: "GROUP_CONCAT aggregation for CLI codegen"
+
+    zoela:
+      count: 25+
+      path: ".specify/queries/zoela/"
+      domain: "ZOE LA Mobile"
+      subcategories:
+        materialization:
+          - "extract-public-materializations.rq"
+          - "extract-public-materialization-columns.rq"
+          - "extract-legacy-coverage.rq"
+        governance:
+          - "extract-governance-tables.rq"
+          - "extract-odrl-policies.rq"
+        forms_and_types:
+          - "extract-form-fields.rq"
+          - "extract-skos-enums.rq"
+          - "extract-types.rq"
+        expo:
+          - "extract-expo-package.rq"
+          - "extract-expo-app-json.rq"
+          - "extract-expo-tsconfig.rq"
+          - "extract-expo-runtime-config.rq"
+          - "extract-verify-supabase.rq"
+
+    ghf:
+      count: 8
+      path: ".specify/queries/ghf/"
+      domain: "GitHub Factory"
+      examples:
+        - "repositories_aggregated.rq"
+        - "security_policy_aggregated.rq"
+        - "branch_protection_aggregated.rq"
+        - "labels_aggregated.rq"
+
+    truex:
+      count: 16
+      path: ".specify/queries/truex/"
+      domain: "E2E Test Ecosystem"
+      examples:
+        - "ecosystem-master-aggregated.rq"
+        - "failure-taxonomy-aggregated.rq"
+        - "e2e-tests-aggregated.rq"
+        - "test-obligations.rq"
+
+    powl:
+      count: 2
+      path: ".specify/queries/powl/"
+      examples:
+        - "powl-variant-descriptions.rq"
+
+    revops:
+      count: 2
+      path: ".specify/queries/revops/"
+      examples:
+        - "stages_aggregated.rq"
+
+    portfolio:
+      count: 2
+      path: ".specify/queries/portfolio/"
+
+    thesis:
+      count: 3
+      path: ".specify/queries/thesis/"
+
+    aat_live:
+      count: 4
+      path: ".specify/queries/aat-live/"
+
+    wasm4pm_stubs:
+      count: 4
+      path: ".specify/queries/" (root level)
+      examples:
+        - "extract-wasm4pm-stub-requirements.rq"
+        - "extract-wasm4pm-stub-interfaces.rq"
+        - "wasm4pm-types-stub.rq"
+        - "wasm4pm-stub-modules.rq"
+        - "wasm4pm-cognition-breeds.rq"
+
+    cell8:
+      count: 2
+      path: "cell8-ggen/queries/"
+      examples:
+        - "manufacturing_gates.rq"
+        - "byte_law_types.rq"
+
+  query_patterns:
+    aggregation: "GROUP_CONCAT for flattening nested structures → one row per output file"
+    materialization: "Extract domain data (tables, columns, policies) for migration generation"
+    governance: "Extract authorization rules (ODRL) for RLS policy generation"
+    validation: "ASK queries to verify ontology structure compliance"
+
+tera_templates:
+  total_count: 74
+  engine: "Tera 1.x"
+  auto_escape: true
+  strict_variables: true
+  categories:
+    cli:
+      count: 2
+      path: ".specify/templates/cli/"
+      outputs: "Rust code"
+
+    zoela:
+      count: 20+
+      path: ".specify/templates/zoela/"
+      domain: "ZOE LA Mobile"
+      output_types:
+        - "SQL migrations"
+        - "TypeScript types"
+        - "React form hooks"
+        - "Zod schemas"
+        - "OCEL schemas"
+        - "Expo config files"
+      examples:
+        - "supabase-migration.tera"
+        - "supabase-columns.tera"
+        - "supabase-rls.tera"
+        - "typescript-types.tera"
+        - "zod-schema.tera"
+        - "react-hook-form.tera"
+        - "expo-app-json.tera"
+        - "expo-package-json.tera"
+
+    ghf:
+      count: 8
+      path: ".specify/templates/ghf/"
+      domain: "GitHub Factory"
+      output_types:
+        - "YAML"
+        - "JSON"
+        - "Markdown"
+
+    truex:
+      count: 9
+      path: ".specify/templates/truex/"
+      domain: "E2E Test Ecosystem"
+      output_types:
+        - "JavaScript (Jest config)"
+        - "YAML (workspace)"
+        - "JSON (package.json)"
+        - "TypeScript"
+
+    revops:
+      count: 1
+      path: ".specify/templates/revops/"
+      output_types:
+        - "Rust code"
+
+    portfolio:
+      count: 2
+      path: ".specify/templates/portfolio/"
+
+    thesis:
+      count: 3
+      path: ".specify/templates/thesis/"
+
+    wasm4pm:
+      count: 4
+      path: ".specify/templates/" (root level)
+      output_types:
+        - "Rust code (stubs)"
+      examples:
+        - "wasm4pm-stub.rs.tera"
+        - "wasm4pm-types-stub.rs.tera"
+        - "wasm4pm-cognition-stub.rs.tera"
+        - "wasm4pm-algos-stub.rs.tera"
+
+    cell8:
+      count: 2
+      path: "cell8-ggen/templates/"
+      output_types:
+        - "Rust code"
+
+code_generation_rules:
+  total_active: 40  # Primary ggen.toml
+  cell8_additional: 2  # cell8-ggen.toml
+  pattern: "SPARQL query → Tera template → output file"
+  modes: ["Overwrite"]
+  notable_rules:
+    - name: "cli-cmds"
+      query: "commands_aggregated.rq"
+      template: "cmds.rs.tera"
+      output: "src/cmds/generated.rs"
+      domain: "CLI"
+      note: "Aggregated one row per file"
+
+    - name: "zoela-public-materialization"
+      query: "extract-public-materializations.rq"
+      template: "supabase-migration.tera"
+      output: "supabase/migrations/20260519000002_zoela_admitted_tables.sql"
+      domain: "ZOE LA Mobile"
+      note: "PUBLIC_ANCHOR-gated admission"
+
+    - name: "zoela-rls"
+      query: "extract-odrl-policies.rq"
+      template: "supabase-rls.tera"
+      output: "supabase/migrations/20260519000004_zoela_admitted_rls.sql"
+      domain: "ZOE LA Mobile"
+      note: "ODRL → Postgres RLS"
+
+    - name: "zoela-expo-*"
+      count: 10
+      domain: "ZOE LA Mobile"
+      outputs:
+        - "apps/mobile/package.json"
+        - "apps/mobile/app.json"
+        - "apps/mobile/tsconfig.json"
+        - "apps/mobile/babel.config.js"
+        - "apps/mobile/metro.config.js"
+        - "apps/mobile/App.tsx"
+        - "apps/mobile/src/lib/supabaseClient.ts"
+        - "apps/mobile/scripts/verify-supabase.mjs"
+        - "apps/mobile/README.md"
+
+    - name: "ghf-*"
+      count: 8
+      domain: "GitHub Factory"
+      output_types: ["YAML", "JSON", "Markdown"]
+
+    - name: "truex-*"
+      count: 9
+      domain: "E2E Test Ecosystem"
+      output_types: ["JavaScript", "YAML", "JSON", "TypeScript"]
+
+rust_source:
+  workspace: "Cargo.toml (workspace)"
+  edition: "2021"
+  msrv: "1.70"
+  modules:
+    total_count: 85
+    categories:
+      core_operations:
+        - "graph.rs (Oxigraph integration)"
+        - "shacl.rs (SHACL validation)"
+        - "admission.rs (recursive gates)"
+        - "receipts.rs (BLAKE3 chain)"
+        - "attestation.rs (Ed25519 signing)"
+
+      llm_translation:
+        - "llm_translator.rs (Groq + DSPy)"
+        - "llm_input.rs (DSPy signature construction)"
+
+      manufacturing:
+        - "manufacturing/ (IaC + Erlang/AtomVM)"
+        - "swarm.rs (9-breed cognition)"
+        - "subprocess.rs (subprocess management)"
+
+      validation:
+        - "enforce.rs (design pattern enforcement)"
+        - "clinical.rs (clinical terminology)"
+
+      governance:
+        - "cell_ready.rs (Cell8 gate orchestration)"
+        - "cell8.rs (13-gate attestation)"
+        - "lineage.rs (manufacturing lineage)"
+        - "drift.rs (version drift detection)"
+
+      alignment:
+        - "align.rs (cross-ontology alignment)"
+
+      tools:
+        - "cmds/ (50+ MCP tool implementations)"
+        - "server.rs (JSON-RPC server)"
+
+      utilities:
+        - "cache.rs (query caching)"
+        - "config.rs (configuration)"
+        - "error.rs (error handling)"
+        - "health_guardian.rs (health monitoring)"
+
+  key_dependencies:
+    - "oxigraph 0.3.x (RDF store)"
+    - "pm4py (Python process mining via FFI)"
+    - "wasm4pm (WebAssembly process mining)"
+    - "DSPy (LLM orchestration)"
+    - "Groq API (LLM backend)"
+    - "tera (template engine)"
+    - "blake3 (cryptographic hashing)"
+    - "ed25519 (signature verification)"
+    - "tokio (async runtime)"
+    - "serde (serialization)"
+    - "clap (CLI parsing)"
+
+mcp_tools:
+  total: 50+
+  protocol: "JSON-RPC 2.0"
+  transports: ["stdio", "HTTP"]
+  categories:
+    ontology_lifecycle: 8  # validate, load, clear, stats, version, history, rollback, cache
+    querying: 3  # query, search, similarity
+    reasoning: 2  # reason, dl_check
+    validation: 3  # lint, enforce, shacl
+    data_extension: 3  # ingest, sql_ingest, map
+    alignment: 3  # align, align_feedback, crosswalk
+    governance: 5  # plan, apply, lock, drift, monitor
+    codegen: 1  # onto_codegen
+    repository: 2  # repo_list, repo_load
+    clinical: 3  # validate_clinical, enrich, crosswalk
+    marketplace: 1  # onto_marketplace
+    conversion: 1  # onto_convert
+    diff: 1  # onto_diff
+
+test_suite:
+  total_functions: 695
+  breakdown:
+    real_groq_tests: 20  # Require GROQ_API_KEY
+    real_toolchain_tests: 5  # terraform, cargo, erlc, AtomVM
+    hermetic_tests: 670
+  categories:
+    llm_translation:
+      - "tests/real_groq_*.rs (20 tests)"
+
+    manufacturing:
+      - "tests/manufacturing_validators.rs"
+      - "tests/adversarial_real_toolchains.rs"
+      - "tests/real_swarm_e2e.rs"
+
+    admission:
+      - "tests/recursive_admission_e2e.rs"
+      - "tests/admission*.rs"
+
+    cell8:
+      - "tests/cell8_thirteen_gates.rs"
+
+    receipts:
+      - "tests/external_verifier_e2e.rs"
+      - "tests/receipt_chain_adversarial.rs"
+      - "tests/ed25519_attestation.rs"
+
+    multi_tenant:
+      - "tests/multi_tenant_isolation.rs"
+
+    graph_and_validation:
+      - "tests/graph_test.rs"
+      - "tests/shacl_test.rs"
+
+    mcp_integration:
+      - "tests/onto_integration_test.rs"
+
+receipt_chain:
+  storage: ".ggen/receipts/"
+  format: "JSON"
+  hash_algorithm: "BLAKE3"
+  signature_algorithm: "Ed25519"
+  immutability: "BLAKE3-chained (previous_receipt pointer)"
+  fields:
+    - receipt_id
+    - timestamp
+    - tenant_id
+    - session_id
+    - gate_passed
+    - input_hash
+    - previous_receipt
+    - signature
+    - signing_key_id
+    - admission_evidence
+  verification_tool: "open-ontologies verify --receipt <path>"
+  key_storage: ".ggen/keys/"
+
+rdf_store:
+  engine: "Oxigraph"
+  version: "0.3.x"
+  store_path: ".ggen/rdf-store"
+  serialization:
+    primary: "N-Triples (.nt files)"
+    cache: "RDF store cache"
+  query_caching:
+    enabled: true
+    ttl_seconds: 3600
+    key_algorithm: "SHA256"
+  inference_profiles:
+    - "RDFS"
+    - "OWL-RL"
+  capabilities:
+    - "SPARQL 1.1 SELECT, CONSTRUCT, ASK"
+    - "Named graphs"
+    - "Full-text search indexes"
+
+ggen_artifacts:
+  cache_directory: ".ggen/cache/"
+  cache_files:
+    - "inference_state.sha256"
+    - "manifest.sha256"
+    - "ontology.sha256"
+    - "rules.sha256"
+  receipt_directory: ".ggen/receipts/"
+  proof_receipt_directory: ".ggen/proof-receipts/"
+  audit_directory: ".ggen/audit/"
+  audit_subdirectories:
+    - "p0-a/ (P0-B.4d-fix audits)"
+
+integration_patterns:
+  shared_sparql_infrastructure:
+    path: ".specify/queries/"
+    extensibility: "New domain subdirectories can be added without modifying ggen.toml"
+    constraints: []
+
+  tera_template_expansion:
+    path: ".specify/templates/"
+    extensibility: "New templates for new domains"
+    constraints: []
+
+  ontology_extension:
+    path: "ontology/"
+    extensibility: "New TTL files can be imported into cli-open-ontologies.ttl"
+    constraints:
+      - "Total imports must not exceed 36 (pre-flight scaling bottleneck)"
+
+  cell8_gate_patterns:
+    reusability: "A1-A13 gate structure can be adapted for domain-specific lifecycle states"
+    location: "src/cell8/ (generated) + ontology/cell8-*.ttl (source)"
+
+  receipt_chain_extension:
+    reusability: "BLAKE3 chain can be extended with domain-specific events"
+    location: ".ggen/receipts/"
+
+  ocel_object_types:
+    reusability: "OCEL 2.0 object type classes from powl-process-mining.ttl"
+    location: "ontology/powl-process-mining.ttl"
+
+proposed_pi_integration_bridges:
+  bridge_1:
+    name: "PI Governance Query Library"
+    location: ".specify/queries/pi-lifecycle/"
+    files:
+      - "select-lifecycle-state-transitions.rq"
+      - "select-process-mining-conformance.rq"
+      - "select-m-and-a-claim-evidence.rq"
+      - "select-autonomic-governance-rules.rq"
+
+  bridge_2:
+    name: "M&A Deck Manufacturing Rules"
+    location: "ggen.toml (new generation rules)"
+    files:
+      - ".specify/queries/pi-m-and-a/extract-claim-evidence.rq"
+      - ".specify/templates/pi-m-and-a/board-deck.md.tera"
+
+  bridge_3:
+    name: "Process Mining Conformance Extraction"
+    location: ".specify/queries/pi-pm4py/"
+    files:
+      - "select-conformance-metrics.rq"
+
+  bridge_4:
+    name: "Lifecycle State Machine Codegen"
+    location: ".specify/templates/pi-lifecycle/"
+    files:
+      - "lifecycle-state-machine.rs.tera"
+
+  bridge_5:
+    name: "Cross-System Receipt Verification"
+    location: ".specify/queries/pi-receipts/"
+    files:
+      - "verify-pi-claim-evidence.rq"
+
+compatibility_summary:
+  architectural_alignment: "HIGH"
+  shared_toolchain: ["ggen v26.5.x", "Oxigraph 0.3.x", "Tera 1.x"]
+  process_mining_support: "EXPLICIT (POWL ontology + OCEL 2.0)"
+  manufacturing_pattern_reuse: "HIGH (Cell8 gates, BLAKE3 receipts)"
+  query_template_extensibility: "UNRESTRICTED"
+  ontology_extension_capacity: "36 imports limit (known constraint)"
+  verdict: "GATE_PASS"

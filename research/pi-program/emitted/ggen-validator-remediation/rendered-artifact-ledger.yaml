@@ -1,0 +1,26 @@
+---
+# Rendered Artifact Ledger — Generated Outputs
+# Generated: 2026-06-01 15:09:47
+
+artifacts:
+- rule_id: "https://process.intelligence/generation-rule/RULE_001"
+    title: "blue-river-orchestrator"
+    output_file: "../blue_river_dam/src/lib.rs"
+    output_mode: "Overwrite"
+    target_format: "Rust"
+    audience: "Process Intelligence Runtime"
+    evidence: "lifecycle state machine + governance rule enforcement"
+    status: "READY"
+- rule_id: "https://process.intelligence/generation-rule/RULE_002"
+    title: "visualizer-dashboard-nextjs"
+    output_file: "../experiments/visualizer-nextjs/src/app/page.tsx"
+    output_mode: "Overwrite"
+    target_format: "N/A"
+    audience: "N/A"
+    evidence: "N/A"
+    status: "READY"
+
+
+metadata:
+  total_artifacts: 2
+  generated_at: "2026-06-01T15:09:47Z"

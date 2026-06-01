@@ -1,0 +1,51 @@
+# Monitor: Van der Aalst Fitness Drift
+# Derives KPI-003: compares current conformance fitness vs. baseline
+# Detects process degradation or unexpected behavioral changes
+
+PREFIX pm4py: <urn:pm4py:>
+PREFIX otel: <urn:opentelemetry:>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT
+  ?process_name
+  ?baseline_fitness
+  ?current_fitness
+  (xsd:decimal(?current_fitness) - xsd:decimal(?baseline_fitness) AS ?fitness_drift)
+  (CASE
+    WHEN (xsd:decimal(?current_fitness) - xsd:decimal(?baseline_fitness) >= -0.02)
+      THEN "GREEN"
+    WHEN (xsd:decimal(?current_fitness) - xsd:decimal(?baseline_fitness) >= -0.05)
+      THEN "YELLOW"
+    ELSE "RED"
+   END AS ?drift_status)
+  ?measurement_time
+  ?drift_explanation
+WHERE {
+  # Current fitness measurement
+  ?current_measurement pm4py:process ?process_name .
+  ?current_measurement pm4py:metric_type pm4py:CONFORMANCE_FITNESS .
+  ?current_measurement pm4py:value ?current_fitness .
+  ?current_measurement otel:timestamp ?measurement_time .
+
+  # Baseline fitness (7-day rolling window)
+  ?baseline_measurement pm4py:process ?process_name .
+  ?baseline_measurement pm4py:metric_type pm4py:CONFORMANCE_FITNESS .
+  ?baseline_measurement pm4py:value ?baseline_fitness .
+  ?baseline_measurement otel:timestamp ?baseline_time .
+
+  # Get the most recent baseline (at least 24 hours old)
+  FILTER (?measurement_time > NOW() - "PT1H"^^xsd:duration)
+  FILTER (?baseline_time < NOW() - "PT24H"^^xsd:duration)
+  FILTER (?baseline_time > NOW() - "P7D"^^xsd:duration)
+
+  # Explain significant drift
+  OPTIONAL {
+    ?drift_event pm4py:process ?process_name .
+    ?drift_event pm4py:event_type pm4py:DRIFT_DETECTED .
+    ?drift_event pm4py:explanation ?drift_explanation .
+    ?drift_event otel:timestamp ?drift_time .
+    FILTER (?drift_time > NOW() - "PT1H"^^xsd:duration)
+  }
+}
+ORDER BY DESC(ABS(xsd:decimal(?current_fitness) - xsd:decimal(?baseline_fitness)))
+LIMIT 20

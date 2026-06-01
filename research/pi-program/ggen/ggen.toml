@@ -10,7 +10,7 @@ construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
 order = 1
 
 [ontology]
-source = "ontology/pi-program.ttl"
+source = "ontology/pi-program-merged.ttl"
 additional = [
   "ontology/project-registry.ttl",
   "ontology/checkpoint-ledger.ttl",
@@ -31,7 +31,7 @@ additional = [
 name = "checkpoint-ledger"
 query = { file = "queries/select-all-checkpoints.rq" }
 template = { file = "templates/checkpoint-ledger.md.tera" }
-output_file = "../emitted/ggen-validator-remediation/checkpoint-ledger.md"
+output_file = "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/checkpoint-ledger.md"
 mode = "Overwrite"
 description = "Render ledger of all checkpoints with receipt status"
 
@@ -39,7 +39,7 @@ description = "Render ledger of all checkpoints with receipt status"
 name = "generation-rule-ledger"
 query = { file = "queries/select-all-generation-rules.rq" }
 template = { file = "templates/generation-rule-ledger.yaml.tera" }
-output_file = "../emitted/ggen-validator-remediation/generation-rule-ledger.yaml"
+output_file = "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/generation-rule-ledger.yaml"
 mode = "Overwrite"
 description = "Render ledger of all generation rules with execution status"
 
@@ -47,7 +47,7 @@ description = "Render ledger of all generation rules with execution status"
 name = "invalid-ggen-classification"
 query = { file = "queries/select-invalid-ggen-files.rq" }
 template = { file = "templates/invalid-ggen-classification-ledger.md.tera" }
-output_file = "../emitted/ggen-validator-remediation/invalid-ggen-classification-ledger.md"
+output_file = "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/invalid-ggen-classification-ledger.md"
 mode = "Overwrite"
 description = "Render classification ledger for legacy .ggen files"
 
@@ -55,7 +55,7 @@ description = "Render classification ledger for legacy .ggen files"
 name = "rendered-artifact-ledger"
 query = { file = "queries/select-all-rendered-artifacts.rq" }
 template = { file = "templates/rendered-artifact-ledger.yaml.tera" }
-output_file = "../emitted/ggen-validator-remediation/rendered-artifact-ledger.yaml"
+output_file = "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/rendered-artifact-ledger.yaml"
 mode = "Overwrite"
 description = "Render ledger of all rendered artifacts with source trace"
 

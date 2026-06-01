@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-06-01T15:48:48.000901",
+  "validation_results": {
+    "van_der_aalst_conformance": {
+      "fitness": 0.95,
+      "precision": 0.92,
+      "generalization": 0.88,
+      "simplicity": 0.9,
+      "overall": 0.91,
+      "timestamp": "2026-06-01T15:48:48.002280"
+    }
+  },
+  "conformance_metrics": {
+    "total_entities": 194,
+    "verified_entities": 50,
+    "failed_verifications": 0
+  },
+  "proof_chains_count": 50,
+  "receipts_verified": 20,
+  "signature_chains": []
+}

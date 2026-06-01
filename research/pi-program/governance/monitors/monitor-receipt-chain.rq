@@ -1,0 +1,48 @@
+# Monitor: Receipt Chain Integrity
+# Derives KPI-002: ensures all receipts cryptographically verify and chain properly
+# CRITICAL: any failure triggers immediate alert
+
+PREFIX brd: <urn:blue-river-dam:>
+PREFIX crypto: <urn:cryptography:>
+PREFIX otel: <urn:opentelemetry:>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT
+  ?receipt_id
+  ?chain_position
+  ?parent_hash
+  ?current_hash
+  ?hash_valid
+  ?chain_complete
+  (CASE WHEN (?hash_valid && ?chain_complete) THEN "VALID" ELSE "INVALID" END AS ?integrity_status)
+  ?verification_timestamp
+WHERE {
+  # Match all recent receipts
+  ?receipt brd:receipt_id ?receipt_id .
+  ?receipt brd:timestamp ?verification_timestamp .
+  ?receipt brd:hash ?current_hash .
+  ?receipt brd:chain_position ?chain_position .
+
+  # Verify cryptographic hash
+  ?receipt crypto:parent_hash ?parent_hash .
+  ?receipt crypto:hash_valid ?hash_valid .
+
+  # Check chain continuity
+  OPTIONAL {
+    ?parent_receipt brd:receipt_id ?parent_id .
+    ?parent_receipt brd:chain_position ?parent_position .
+    ?parent_receipt brd:hash ?parent_receipt_hash .
+    FILTER (?parent_position = ?chain_position - 1)
+    FILTER (?parent_receipt_hash = ?parent_hash)
+  }
+
+  BIND (
+    IF(BOUND(?parent_receipt) || ?chain_position = 0,
+       true,
+       false)
+    AS ?chain_complete
+  )
+
+  FILTER (?verification_timestamp > NOW() - "PT1H"^^xsd:duration)
+}
+ORDER BY ?chain_position

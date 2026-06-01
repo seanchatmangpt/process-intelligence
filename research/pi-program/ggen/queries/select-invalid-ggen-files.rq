@@ -1,18 +1,12 @@
 PREFIX pi: <https://process.intelligence/ontology/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-# SELECT: Invalid GGEN Files (23 .ggen files requiring migration)
-# Returns .ggen file classification and migration status
-# Date: 2026-06-01
-
-SELECT ?file ?title ?sourceType ?projectId ?classification ?count
+SELECT DISTINCT ?file ?title ?classification ?purpose ?remediationRoute
 WHERE {
-    ?file a pi:InvalidGGENFile .
+    ?file a pi:GgenFile .
     ?file dcterms:title ?title .
-    ?file pi:sourceType ?sourceType .
-    ?file pi:projectId ?projectId .
-
-    OPTIONAL { ?file pi:classification ?classification }
-    OPTIONAL { ?file pi:ggenFileCount ?count }
+    ?file pi:classification ?classification .
+    OPTIONAL { ?file pi:purpose ?purpose }
+    OPTIONAL { ?file pi:remediationRoute ?remediationRoute }
 }
-ORDER BY ?projectId ?title
+ORDER BY ?title

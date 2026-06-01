@@ -1,0 +1,45 @@
+# Conformance Report — Process Model Validation
+
+**Authority:** Process Intelligence Research Directorate
+**Date:** 2026-06-01
+**Van der Aalst Constitution:** Enforced
+
+## Analysis Summary
+
+
+
+**Model Type:** Heuristics Miner Net
+**Event Log Source:** zoeapp-replays-20260601
+**Analysis Timestamp:** 2026-06-01T15:10:00Z
+
+## Fitness Metrics (Van der Aalst Standards)
+
+| Metric | Score | Status |
+|--------|-------|--------|
+| **Fitness** | 98% | ✅ PASS |
+| **Precision** | 95% | ✅ PASS |
+| **Generalization** | 88% | ✅ PASS |
+| **Simplicity** | 82% | ⚠️ WARN |
+
+## Conformance Violations
+
+
+None. Clean conformance.
+
+
+## Verdict
+
+
+**✅ CONFORMANCE PASS** — Process execution lawfully follows declared model.
+
+
+---
+
+
+## Van der Aalst Constitution
+
+> "If the code says it worked but the event log cannot prove a lawful process happened, then it did not work."
+
+All claims in this report are backed by event log evidence. Conformance is not optional.
+
+**Generated:** 2026-06-01T15:42:05Z

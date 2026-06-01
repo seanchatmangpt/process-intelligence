@@ -12,7 +12,7 @@ construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
 order = 1
 
 [ontology]
-source = "ontology/prompt-manufactory.ttl"
+source = "ontology/prompt-manufactory-merged.ttl"
 additional = [
   "ontology/research-program-law.ttl",
   "ontology/workflow-law.ttl",
@@ -25,7 +25,7 @@ additional = [
 standard_only = false
 
 [generation]
-output_dir = ".."
+output_dir = "/Users/sac/process-intelligence/research/prompt-manufactory"
 
 # Placeholder rule for DMAIC measurement gate compliance
 [[generation.rules]]

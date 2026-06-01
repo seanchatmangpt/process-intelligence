@@ -1,0 +1,27 @@
+# Resource Census Report
+
+**Authority:** Process Intelligence Research Directorate
+**Date:** {{ now() | date(format="%Y-%m-%d") }}
+**Scope:** Full Resource Inventory
+
+## Census Summary
+
+Total resources discovered: {{ results | length }}
+
+## Resources by Type
+
+| Type | Resource Name (ID) | Status | Authority Backing | Date Discovered | Last Updated |
+|---|---|---|---|---|---|
+{% for item in results | sort(attribute="resource_type") %}
+| {{ item.resource_type }} | **{{ item.resource_name }}** ({{ item.resource_id }}) | {{ item.status }} | {{ item.authority_backing }} | {{ item.date_discovered }} | {{ item.last_updated }} |
+{% endfor %}
+
+## Census Authority
+
+All resources in this census have been:
+1. Discovered via filesystem and RDF scanning
+2. Classified by type and authority
+3. Backed by research program evidence
+4. Maintained in current status
+
+**Generated:** {{ now() | date(format="%Y-%m-%dT%H:%M:%SZ") }}

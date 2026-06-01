@@ -1,0 +1,24 @@
+PREFIX pi: <https://process.intelligence/>
+PREFIX ma: <https://process.intelligence/ma/>
+PREFIX checkpoint: <https://process.intelligence/checkpoint/>
+
+SELECT DISTINCT
+  ?claims_manufactured
+  ?board_admissible_count
+  ?evidence_backed_count
+  ?synergy_total_value
+  ?risk_items_disclosed
+  ?integration_guides_count
+WHERE {
+  ?phase a checkpoint:Phase ;
+    checkpoint:phaseNumber 16 ;
+    checkpoint:manufacturer ma:ClaimManufacturing ;
+    checkpoint:claimsManufactured ?claims_manufactured ;
+    checkpoint:boardAdmissibleCount ?board_admissible_count ;
+    checkpoint:evidenceBackedCount ?evidence_backed_count ;
+    checkpoint:riskItemsDisclosed ?risk_items_disclosed ;
+    checkpoint:integrationGuidesCount ?integration_guides_count .
+
+  OPTIONAL { ?phase checkpoint:synergyTotalValue ?synergy_total_value . }
+}
+LIMIT 1

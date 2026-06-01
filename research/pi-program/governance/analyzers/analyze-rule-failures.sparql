@@ -1,0 +1,145 @@
+# Analyzer: Manufacturing Rule Failure Root Cause Analysis
+# Detects patterns in rule failures and recommends remediation
+# Input: monitor-manufacturing-rules.rq output (KPI-001)
+# Output: Root cause assessment and remediation plan
+
+PREFIX ggen: <urn:process-intelligence:ggen:>
+PREFIX gov: <urn:process-intelligence:governance:>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX otel: <urn:opentelemetry:>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# Rule 1: Detect cascading failures (one rule's failure triggers others)
+CONSTRUCT {
+  ?cascade_group a gov:CascadingFailure .
+  ?cascade_group gov:root_cause ?root_rule .
+  ?cascade_group gov:affected_rules ?affected_rules .
+  ?cascade_group gov:confidence "HIGH"^^xsd:decimal .
+  ?cascade_group gov:remediation ?remediation .
+}
+WHERE {
+  # Find rule failure pairs where timing suggests causality
+  ?execution1 ggen:rule ?root_rule .
+  ?execution1 ggen:status ggen:FAILED .
+  ?execution1 otel:timestamp ?fail_time_1 .
+
+  ?execution2 ggen:rule ?other_rule .
+  ?execution2 ggen:status ggen:FAILED .
+  ?execution2 otel:timestamp ?fail_time_2 .
+
+  # Timing: other_rule fails within 1 minute of root_rule
+  FILTER (?fail_time_2 >= ?fail_time_1 && ?fail_time_2 <= ?fail_time_1 + "PT1M"^^xsd:duration)
+  FILTER (?root_rule != ?other_rule)
+
+  # Check if execution2 depends on execution1
+  OPTIONAL {
+    ?root_rule ggen:outputs ?output .
+    ?other_rule ggen:requires ?output .
+  }
+
+  # Group affected rules
+  {
+    SELECT ?root_rule (GROUP_CONCAT(?other_rule) AS ?affected_rules)
+    WHERE {
+      ?ex1 ggen:rule ?root_rule .
+      ?ex1 ggen:status ggen:FAILED .
+      ?ex1 otel:timestamp ?t1 .
+
+      ?ex2 ggen:rule ?other_rule .
+      ?ex2 ggen:status ggen:FAILED .
+      ?ex2 otel:timestamp ?t2 .
+
+      FILTER (?t2 >= ?t1 && ?t2 <= ?t1 + "PT1M"^^xsd:duration)
+      FILTER (?root_rule != ?other_rule)
+    }
+    GROUP BY ?root_rule
+  }
+
+  BIND (CONCAT("Remediate root cause in ", STR(?root_rule), " to resolve cascading failures") AS ?remediation)
+}
+
+# Rule 2: Detect resource exhaustion (failures correlate with high resource usage)
+CONSTRUCT {
+  ?resource_issue a gov:ResourceExhaustionDetected .
+  ?resource_issue gov:affected_rule ?rule .
+  ?resource_issue gov:resource_type ?resource_type .
+  ?resource_issue gov:utilization_percent ?utilization .
+  ?resource_issue gov:confidence "MEDIUM"^^xsd:decimal .
+  ?resource_issue gov:remediation "Scale resources or optimize rule execution" .
+}
+WHERE {
+  # Find rules that fail when resources are high
+  ?execution ggen:rule ?rule .
+  ?execution ggen:status ggen:FAILED .
+  ?execution otel:timestamp ?fail_time .
+
+  # Check resource metrics at failure time
+  ?resource_metric otel:metric_type otel:RESOURCE_UTILIZATION .
+  ?resource_metric otel:resource_type ?resource_type .
+  ?resource_metric otel:value ?utilization .
+  ?resource_metric otel:timestamp ?metric_time .
+
+  FILTER (?metric_time >= ?fail_time - "PT30S"^^xsd:duration && ?metric_time <= ?fail_time)
+  FILTER (xsd:decimal(?utilization) > 85)
+}
+
+# Rule 3: Detect schema/data quality issues
+CONSTRUCT {
+  ?quality_issue a gov:DataQualityIssue .
+  ?quality_issue gov:affected_rule ?rule .
+  ?quality_issue gov:issue_type ?issue_type .
+  ?quality_issue gov:failing_record_count ?fail_count .
+  ?quality_issue gov:confidence "HIGH"^^xsd:decimal .
+  ?quality_issue gov:remediation "Review input data schemas and validation rules" .
+}
+WHERE {
+  # Find rules that fail due to schema validation errors
+  ?execution ggen:rule ?rule .
+  ?execution ggen:status ggen:FAILED .
+  ?execution ggen:error_reason ?error_reason .
+
+  # Pattern match for validation errors
+  FILTER (REGEX(STR(?error_reason), "schema|validation|type", "i"))
+
+  # Count recent similar failures
+  {
+    SELECT ?rule
+           (STRAFTER(?error_reason, "schema validation: ") AS ?issue_type)
+           (COUNT(?similar_execution) AS ?fail_count)
+    WHERE {
+      ?similar_execution ggen:rule ?rule .
+      ?similar_execution ggen:status ggen:FAILED .
+      ?similar_execution ggen:error_reason ?err .
+      FILTER (REGEX(STR(?err), "schema|validation", "i"))
+    }
+    GROUP BY ?rule (STRAFTER(?error_reason, "schema validation: "))
+  }
+
+  FILTER (?fail_count > 5)
+}
+
+# Rule 4: Detect doctrine-to-implementation mismatches
+CONSTRUCT {
+  ?doctrine_issue a gov:DoctrineImplementationMismatch .
+  ?doctrine_issue gov:affected_rule ?rule .
+  ?doctrine_issue gov:doctrine_claim ?doctrine_claim .
+  ?doctrine_issue gov:actual_behavior ?actual_behavior .
+  ?doctrine_issue gov:confidence "MEDIUM"^^xsd:decimal .
+  ?doctrine_issue gov:remediation "Audit doctrine vs. implementation; update either doctrine or rule" .
+}
+WHERE {
+  # Find rules that fail in ways unexpected by doctrine
+  ?execution ggen:rule ?rule .
+  ?execution ggen:status ggen:FAILED .
+  ?execution ggen:error_reason ?error_reason .
+  ?execution otel:timestamp ?fail_time .
+
+  # Match against doctrine claim about this rule
+  ?doctrine_claim prov:wasAssociatedWith ?rule .
+  ?doctrine_claim gov:expected_behavior ?expected_behavior .
+
+  # If error is unexpected, flag as mismatch
+  FILTER (!REGEX(STR(?expected_behavior), STR(?error_reason)))
+
+  BIND (STR(?error_reason) AS ?actual_behavior)
+}

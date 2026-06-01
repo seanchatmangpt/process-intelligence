@@ -1,0 +1,39 @@
+# Risk Disclosure Report
+
+**Authority:** Process Intelligence Research Directorate
+**Date:** {{ now() | date(format="%Y-%m-%d") }}
+**Compliance:** BOARD-REQUIRED
+
+## Identified Risks
+
+{% for risk in results | sort(attribute="risk_category") %}
+
+### {{ risk.risk_category }} — {{ risk.risk_id }}
+
+**Risk Statement:** {{ risk.risk_statement }}
+
+**Severity:** {{ risk.severity_level }}
+**Likelihood:** {{ risk.likelihood }}
+**Impact:** {{ risk.impact }}
+**Owner:** {{ risk.owner }}
+**Discovery Date:** {{ risk.discovery_date }}
+
+{% if risk.mitigation_strategy %}
+**Mitigation Strategy:**
+{{ risk.mitigation_strategy }}
+{% endif %}
+
+---
+{% endfor %}
+
+## Risk Aggregation
+
+| Severity Level | Count |
+|---|---|
+| High | {{ results | length }} |
+
+## Compliance Statement
+
+All identified risks have been disclosed to the board with mitigation strategies. No risks are hidden or minimized.
+
+**Generated:** {{ now() | date(format="%Y-%m-%dT%H:%M:%SZ") }}

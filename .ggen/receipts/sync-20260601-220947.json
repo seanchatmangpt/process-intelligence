@@ -1,0 +1,13 @@
+{
+  "operation_id": "d1ade2ff-e315-4721-88cf-a1590655a2c8",
+  "timestamp": "2026-06-01T22:09:47.353216Z",
+  "input_hashes": [],
+  "output_hashes": [
+    "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/checkpoint-ledger.md:b9cab46e9227cf54763b67165cf6ad2ff742e375af8db630dbf45df5f545192f",
+    "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/generation-rule-ledger.yaml:bff38a60fb021d76ff9498e3ce87459d852fbac2f70f832a76cf380f7510439c",
+    "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/invalid-ggen-classification-ledger.md:d6241df8394f9ffdf47959802e71c56f5446c695121800dd9ad7cda012983ad8",
+    "/Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-remediation/rendered-artifact-ledger.yaml:b4792be070208819847334237a963caa9cd1bbe1149496fa9db63bd5a9692302"
+  ],
+  "signature": "33ccbcf609e7170695d4fcf1cbfb0951d45fc29b235f1e65a6ab7f8bf21afdf3833b1788ab32835297abccbb7e3ec4148938b8f8f268d211cfd1ee455c52dc02",
+  "previous_receipt_hash": "f56526cfdc27616b1cfe72ac77798ee5e1a54948399bb5ac85717706ff057794"
+}

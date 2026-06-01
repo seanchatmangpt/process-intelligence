@@ -11,8 +11,8 @@
 
 ## Deliverables Completed
 
-{% for item in deliverables %}
-- ✅ {{ item }}
+{% for item in deliverables | split(pat=",") %}
+- ✅ {{ item | trim }}
 {% endfor %}
 
 ## Generation Statistics

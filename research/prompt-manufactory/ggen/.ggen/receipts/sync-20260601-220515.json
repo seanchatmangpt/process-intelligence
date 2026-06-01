@@ -1,0 +1,10 @@
+{
+  "operation_id": "b1f8544f-6147-4c13-92d6-1df696dc8ddb",
+  "timestamp": "2026-06-01T22:05:15.191403Z",
+  "input_hashes": [
+    "ggen.toml:3de84f51e945b2796d08d550777b67552defd341b9818b5f396f2aef3ade521b"
+  ],
+  "output_hashes": [],
+  "signature": "3427dd29cd2a33f6dd49b7b116e235a7cacd3cd54fff5bc6400b58cdb0783696f9f03d6ee08e70e0ac930c5b371d9619d41e2de5b039689b58089081a003eb03",
+  "previous_receipt_hash": "8236cb51ce95fbc6c6e628394742cda26edd95c2787ba60800b96281888336c5"
+}

@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-06-01T15:48:34.493791",
+  "graph_name": "pi-ecosystem-complete",
+  "version": "1.0",
+  "components": {
+    "pi_program": {
+      "location": "research/pi-program/ggen/ontology",
+      "files": [
+        "pi-program/deployment/ggen-validator-v1.0/artifacts/ontology/ontology-extensions.ttl",
+        "pi-program/ggen/ontology/checkpoint-ledger.ttl",
+        "pi-program/ggen/ontology/conformance-ledger.ttl",
+        "pi-program/ggen/ontology/forbidden-collapse-law.ttl",
+        "pi-program/ggen/ontology/graduation-boundary.ttl",
+        "pi-program/ggen/ontology/pi-ggen-audit-law.ttl",
+        "pi-program/ggen/ontology/pi-ggen-checkpoint-ledger.ttl",
+        "pi-program/ggen/ontology/pi-ggen-generation-ledger.ttl",
+        "pi-program/ggen/ontology/pi-ggen-invalid-extension-ledger.ttl",
+        "pi-program/ggen/ontology/pi-ggen-project-registry.ttl",
+        "pi-program/ggen/ontology/pi-ggen-source-ledger.ttl",
+        "pi-program/ggen/ontology/pi-ggen-unified-run.ttl",
+        "pi-program/ggen/ontology/pi-program-merged.ttl",
+        "pi-program/ggen/ontology/pi-program.ttl",
+        "pi-program/ggen/ontology/project-registry.ttl",
+        "pi-program/ggen/ontology/research-artifact-ledger.ttl",
+        "prompt-manufactory/ggen/ontology/checkpoint-law.ttl",
+        "prompt-manufactory/ggen/ontology/forbidden-collapse-law.ttl",
+        "prompt-manufactory/ggen/ontology/hook-law.ttl",
+        "prompt-manufactory/ggen/ontology/prompt-manufactory-merged.ttl",
+        "prompt-manufactory/ggen/ontology/prompt-manufactory.ttl",
+        "prompt-manufactory/ggen/ontology/research-program-law.ttl",
+        "prompt-manufactory/ggen/ontology/skill-law.ttl",
+        "prompt-manufactory/ggen/ontology/subagent-role-law.ttl",
+        "prompt-manufactory/ggen/ontology/workflow-law.ttl"
+      ],
+      "role": "Process intelligence program ontology"
+    }
+  },
+  "completeness": {
+    "entities_ingested": 194,
+    "triples_merged": 9335,
+    "graph_consistency": "VERIFIED"
+  },
+  "exports": {
+    "entity_registry": "entity-registry.json",
+    "graph_metrics": "graph-metrics.json",
+    "knowledge_graph": "pi-ecosystem-complete.ttl",
+    "proof_ledger": "complete-proof-ledger.json"
+  }
+}

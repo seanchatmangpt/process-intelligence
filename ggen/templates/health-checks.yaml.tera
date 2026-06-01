@@ -1,0 +1,41 @@
+# ggen Validator Health Checks Configuration
+# Auto-generated from conformance analysis
+#
+# Generated: {{ now() | date(format="%Y-%m-%dT%H:%M:%SZ") }}
+
+health_checks:
+  version: 1.0
+  schedule:
+    startup: "on-deployment"
+    daily: "02:00 UTC"
+    weekly: "Monday 03:00 UTC"
+    monthly: "1st of month 04:00 UTC"
+
+startup_gates:
+{% for gate in results %}
+  - name: "{{ gate.gate_name }}"
+    category: "{{ gate.category }}"
+    description: "{{ gate.description }}"
+    procedure: |
+      {{ gate.procedure | indent(width=6) }}
+    expected_outcome: "{{ gate.expected_outcome }}"
+    failure_action: "{{ gate.failure_action }}"
+    status: "{{ gate.status }}"
+{% endfor %}
+
+alerting:
+  enabled: true
+  channels:
+    - type: "log"
+      level: "all"
+      destination: "/var/lib/ggen-validator/logs/alerts.log"
+    - type: "email"
+      level: "critical"
+      recipients: ["pi-research@example.com"]
+    - type: "slack"
+      level: "warning"
+      webhook_url: "${SLACK_WEBHOOK_URL}"
+
+status: "CONFIGURED"
+authority: "Process Intelligence Research Directorate"
+version: "1.0.0"

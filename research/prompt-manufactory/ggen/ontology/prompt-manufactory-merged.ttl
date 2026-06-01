@@ -1,0 +1,1106 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# GGEN PROMPT MANUFACTORY ONTOLOGY
+# ============================================================================
+# Core classes for research program manufacturing.
+# All relations and properties defined here.
+# Grounded in public vocabularies: PROV-O, DCTERMS, DCAT, SKOS, SHACL.
+# No private vocabulary foundation.
+# ============================================================================
+
+# --- Classes ---
+
+pm:ResearchProgram a rdfs:Class ;
+  rdfs:comment "Top-level research program (PI, ZOEapp, wasm4pm-compat, etc.)" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:Workflow a rdfs:Class ;
+  rdfs:comment "Dynamic workflow with phases and subagents" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:Phase a rdfs:Class ;
+  rdfs:comment "One phase within a workflow" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:SubagentRole a rdfs:Class ;
+  rdfs:comment "Bounded inspection station with mission, owned/forbidden surfaces, output contract" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:Skill a rdfs:Class ;
+  rdfs:comment "Reusable standard-work capability (e.g., census, classify, audit)" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:HookPolicy a rdfs:Class ;
+  rdfs:comment "Andon gate: deterministic lifecycle enforcement" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:Checkpoint a rdfs:Class ;
+  rdfs:comment "ALIVE/PARTIAL verdict record" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:RenderedPrompt a rdfs:Class ;
+  rdfs:comment "Manufactured research warrant (typed by PromptClass)" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:AuditGate a rdfs:Class ;
+  rdfs:comment "Pass/fail condition for workflow" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:RefusalCondition a rdfs:Class ;
+  rdfs:comment "Named reason workflow execution must stop" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:OwnedSurface a rdfs:Class ;
+  rdfs:comment "File/directory surface a subagent inspects" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:ForbiddenSurface a rdfs:Class ;
+  rdfs:comment "Surface a subagent must not touch" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:Receipt a rdfs:Class ;
+  rdfs:comment "Proof-of-execution artifact with derivation and hash" ;
+  rdfs:subClassOf prov:Entity .
+
+pm:PromptClass a rdfs:Class ;
+  rdfs:comment "Type of research warrant: INTEL | RECONCILE | REMEDIATE | SYNC | AUDIT | CHECKPOINT | SPR | LIVESTREAM" ;
+  rdfs:subClassOf rdf:Property .
+
+pm:InvalidGgenFile a rdfs:Class ;
+  rdfs:comment "Classification record for legacy .ggen files found in referenced projects" ;
+  rdfs:subClassOf prov:Entity .
+
+# --- Relations (Object Properties) ---
+
+pm:hasProject a rdf:Property ;
+  rdfs:domain pm:ResearchProgram ;
+  rdfs:range prov:Entity ;
+  rdfs:comment "ResearchProgram references project" .
+
+pm:hasWorkflow a rdf:Property ;
+  rdfs:domain pm:ResearchProgram ;
+  rdfs:range pm:Workflow ;
+  rdfs:comment "ResearchProgram contains workflow" .
+
+pm:hasPhase a rdf:Property ;
+  rdfs:domain pm:Workflow ;
+  rdfs:range pm:Phase ;
+  rdfs:comment "Workflow contains phase" .
+
+pm:hasSubagentRole a rdf:Property ;
+  rdfs:domain pm:Phase ;
+  rdfs:range pm:SubagentRole ;
+  rdfs:comment "Phase requires subagent role" .
+
+pm:ownsSurface a rdf:Property ;
+  rdfs:domain pm:SubagentRole ;
+  rdfs:range pm:OwnedSurface ;
+  rdfs:comment "Subagent inspects owned surface" .
+
+pm:forbidsSurface a rdf:Property ;
+  rdfs:domain pm:SubagentRole ;
+  rdfs:range pm:ForbiddenSurface ;
+  rdfs:comment "Subagent must not touch forbidden surface" .
+
+pm:hasAuditGate a rdf:Property ;
+  rdfs:domain pm:Workflow ;
+  rdfs:range pm:AuditGate ;
+  rdfs:comment "Workflow enforces audit gate" .
+
+pm:emitsRefusal a rdf:Property ;
+  rdfs:domain pm:AuditGate ;
+  rdfs:range pm:RefusalCondition ;
+  rdfs:comment "Gate may fail with refusal" .
+
+pm:emitsCheckpoint a rdf:Property ;
+  rdfs:domain pm:Workflow ;
+  rdfs:range pm:Checkpoint ;
+  rdfs:comment "Workflow emits checkpoint verdict" .
+
+pm:derivedFrom a rdf:Property ;
+  rdfs:domain pm:RenderedPrompt ;
+  rdfs:range prov:Entity ;
+  rdfs:comment "Prompt derived from graph source (not hand-written)" .
+
+pm:governedBy a rdf:Property ;
+  rdfs:domain pm:RenderedPrompt ;
+  rdfs:range pm:AuditGate ;
+  rdfs:comment "Prompt must satisfy gate" .
+
+pm:proves a rdf:Property ;
+  rdfs:domain pm:Receipt ;
+  rdfs:range pm:RenderedPrompt ;
+  rdfs:comment "Receipt proves prompt was manufactured from law" .
+
+pm:hasPromptClass a rdf:Property ;
+  rdfs:domain pm:ResearchProgram ;
+  rdfs:range pm:PromptClass ;
+  rdfs:comment "Program emits this class of warrant" .
+
+pm:hasOutputContract a rdf:Property ;
+  rdfs:domain pm:SubagentRole ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Subagent must produce output matching this description" .
+
+pm:hasRefusalGate a rdf:Property ;
+  rdfs:domain pm:SubagentRole ;
+  rdfs:range pm:RefusalCondition ;
+  rdfs:comment "Subagent may refuse under this condition" .
+
+# --- Data Properties (Literal) ---
+
+pm:programId a rdf:Property ;
+  rdfs:domain pm:ResearchProgram ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Unique identifier (e.g., PI_RESEARCH_PROGRAM_INTEL_001)" .
+
+pm:mission a rdf:Property ;
+  rdfs:domain prov:Entity ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Human-readable description of purpose" .
+
+pm:filePath a rdf:Property ;
+  rdfs:domain pm:InvalidGgenFile ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Absolute file path of .ggen artifact" .
+
+pm:ownerProject a rdf:Property ;
+  rdfs:domain pm:InvalidGgenFile ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Project that owns this .ggen file" .
+
+pm:classification a rdf:Property ;
+  rdfs:domain pm:InvalidGgenFile ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Classification: LEGACY_INVALID_SOURCE | RENDERED_ARTIFACT_WITH_WRONG_EXTENSION | MIGRATION_REQUIRED | OUT_OF_SCOPE_EXTERNAL_ARTIFACT | BLOCKING_SOURCE_SURFACE" .
+
+pm:blockingStatus a rdf:Property ;
+  rdfs:domain pm:InvalidGgenFile ;
+  rdfs:range xsd:boolean ;
+  rdfs:comment "true = blocks Prompt Manufactory; false = non-blocking migration" .
+
+pm:remediationRoute a rdf:Property ;
+  rdfs:domain pm:InvalidGgenFile ;
+  rdfs:range xsd:string ;
+  rdfs:comment "Remediation action: move, delete, rename, external, out-of-scope, etc." .
+
+# --- Constraints (SHACL) ---
+
+# Every ResearchProgram must have an ID
+[] a sh:NodeShape ;
+  sh:targetClass pm:ResearchProgram ;
+  sh:property [
+    sh:path pm:programId ;
+    sh:minCount 1 ;
+    sh:datatype xsd:string
+  ] .
+
+# Every SubagentRole must have a mission
+[] a sh:NodeShape ;
+  sh:targetClass pm:SubagentRole ;
+  sh:property [
+    sh:path pm:mission ;
+    sh:minCount 1 ;
+    sh:datatype xsd:string
+  ] .
+
+# Every RenderedPrompt must have derivedFrom source
+[] a sh:NodeShape ;
+  sh:targetClass pm:RenderedPrompt ;
+  sh:property [
+    sh:path pm:derivedFrom ;
+    sh:minCount 1 ;
+    sh:message "RenderedPrompt must have derivedFrom source (not hand-written)"
+  ] .
+
+# Every Checkpoint must have status (implied by ALIVE/PARTIAL verdict)
+[] a sh:NodeShape ;
+  sh:targetClass pm:Checkpoint ;
+  sh:property [
+    sh:path dct:issued ;
+    sh:minCount 1 ;
+    sh:datatype xsd:dateTime
+  ] .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# ============================================================================
+# CHECKPOINT LAW — ALIVE/PARTIAL Verdict Rules
+# ============================================================================
+# Defines when ALIVE can be emitted and when PARTIAL is required.
+# ALIVE requires all critical gates to pass.
+# PARTIAL is the honest verdict when any critical gate fails.
+# ============================================================================
+
+pm:CHECKPOINT_ALIVE a pm:Checkpoint ;
+  rdfs:label "ALIVE Verdict" ;
+  pm:mission "Emit when all critical gates pass and at least one end-to-end warrant path is proven" ;
+  dct:description "ALIVE certifies the research program is fully operational and can render research warrants from law" ;
+  rdfs:comment "ALIVE requires: all ontologies present, all queries/templates valid, end-to-end warrant proof successful, no new .ggen source files, all legacy .ggen classified, all audit gates pass" .
+
+pm:CHECKPOINT_PARTIAL a pm:Checkpoint ;
+  rdfs:label "PARTIAL Verdict" ;
+  pm:mission "Emit when any critical gate fails or prerequisites are incomplete" ;
+  dct:description "PARTIAL certifies the program structure is sound but not yet fully operational" ;
+  rdfs:comment "PARTIAL is correct when: end-to-end warrant path not yet proven, legacy .ggen files not yet classified, PI_RESEARCH_PROGRAM_INTEL_001 topology incomplete, or audit gates fail" .
+
+# --- ALIVE Gate Definitions ---
+
+pm:GATE_ontology_present a pm:AuditGate ;
+  rdfs:label "Ontology Files Present" ;
+  pm:mission "All 8 .ttl ontology files exist and parse without error" ;
+  pm:emitsRefusal pm:REFUSAL_MISSING_ONTOLOGY .
+
+pm:GATE_queries_present a pm:AuditGate ;
+  rdfs:label "Query Files Present" ;
+  pm:mission "All 14 .rq SPARQL query files exist and have valid syntax" ;
+  pm:emitsRefusal pm:REFUSAL_MISSING_QUERIES .
+
+pm:GATE_templates_present a pm:AuditGate ;
+  rdfs:label "Template Files Present" ;
+  pm:mission "All 8 .tera Tera template files exist and have valid syntax" ;
+  pm:emitsRefusal pm:REFUSAL_MISSING_TEMPLATES .
+
+pm:GATE_ggen_toml_valid a pm:AuditGate ;
+  rdfs:label "ggen.toml Valid" ;
+  pm:mission "ggen.toml wires all 8 generation rules correctly" ;
+  pm:emitsRefusal pm:REFUSAL_INVALID_GGEN_TOML .
+
+pm:GATE_seed_programs_encoded a pm:AuditGate ;
+  rdfs:label "Seed Programs Encoded" ;
+  pm:mission "All 7 known programs exist as graph instances with required properties" ;
+  pm:emitsRefusal pm:REFUSAL_INCOMPLETE_SEED_DATA .
+
+pm:GATE_end_to_end_warrant_path a pm:AuditGate ;
+  rdfs:label "End-to-End Warrant Path" ;
+  pm:mission "At least one complete workflow prompt successfully renders from graph data (CRITICAL)" ;
+  pm:emitsRefusal pm:REFUSAL_NO_WARRANT_PROOF .
+
+pm:GATE_warrant_is_receipted a pm:AuditGate ;
+  rdfs:label "Warrant is Receipted" ;
+  pm:mission "Rendered prompt has entry in prompt-receipt-ledger with derivedFrom source" ;
+  pm:emitsRefusal pm:REFUSAL_MISSING_RECEIPT .
+
+pm:GATE_no_new_ggen_source_files a pm:AuditGate ;
+  rdfs:label "No New .ggen Source Files" ;
+  pm:mission "Zero .ggen files in prompt-manufactory/ggen/ source directory" ;
+  pm:emitsRefusal pm:REFUSAL_INVALID_GGEN_SOURCE .
+
+pm:GATE_legacy_ggen_classified a pm:AuditGate ;
+  rdfs:label "Legacy .ggen Files Classified" ;
+  pm:mission "All 22 existing .ggen files have classification ledger entry with owner/blocker/remediation" ;
+  pm:emitsRefusal pm:REFUSAL_UNCLASSIFIED_LEGACY_GGEN .
+
+pm:GATE_audits_pass a pm:AuditGate ;
+  rdfs:label "All Audits Pass" ;
+  pm:mission "All audit gates execute and return PASS: no-hand-written, no-forced-ALIVE, checkpoint-has-partial, no-file-count-alive" ;
+  pm:emitsRefusal pm:REFUSAL_AUDIT_FAILED .
+
+# --- Refusal Conditions for Checkpoints ---
+
+pm:REFUSAL_MISSING_ONTOLOGY a pm:RefusalCondition ;
+  rdfs:label "Missing Ontology" ;
+  rdfs:comment "One or more required .ttl ontology files not found" .
+
+pm:REFUSAL_MISSING_QUERIES a pm:RefusalCondition ;
+  rdfs:label "Missing Queries" ;
+  rdfs:comment "One or more required .rq SPARQL query files not found" .
+
+pm:REFUSAL_MISSING_TEMPLATES a pm:RefusalCondition ;
+  rdfs:label "Missing Templates" ;
+  rdfs:comment "One or more required .tera Tera template files not found" .
+
+pm:REFUSAL_INVALID_GGEN_TOML a pm:RefusalCondition ;
+  rdfs:label "Invalid ggen.toml" ;
+  rdfs:comment "ggen.toml missing or does not wire all 8 generation rules" .
+
+pm:REFUSAL_INCOMPLETE_SEED_DATA a pm:RefusalCondition ;
+  rdfs:label "Incomplete Seed Data" ;
+  rdfs:comment "One or more of 7 seed programs missing from research-program-law.ttl" .
+
+pm:REFUSAL_NO_WARRANT_PROOF a pm:RefusalCondition ;
+  rdfs:label "No Warrant Proof" ;
+  rdfs:comment "End-to-end warrant path (read instance → SPARQL → Tera → emit → audit) not yet executed successfully" .
+
+pm:REFUSAL_MISSING_RECEIPT a pm:RefusalCondition ;
+  rdfs:label "Missing Receipt" ;
+  rdfs:comment "Rendered warrant has no entry in prompt-receipt-ledger or lacks derivedFrom triple" .
+
+pm:REFUSAL_UNCLASSIFIED_LEGACY_GGEN a pm:RefusalCondition ;
+  rdfs:label "Unclassified Legacy .ggen Files" ;
+  rdfs:comment "One or more existing .ggen files lacks classification, owner, blocker status, or remediation route" .
+
+pm:REFUSAL_AUDIT_FAILED a pm:RefusalCondition ;
+  rdfs:label "Audit Failed" ;
+  rdfs:comment "One or more required audit gates returned FAIL" .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# FORBIDDEN COLLAPSE LAW
+# ============================================================================
+# Defines absolute boundaries that must not be crossed.
+# Three categories: .ggen source files, DTO/JSON flattening, forced ALIVE.
+# Also defines the classification system for legacy .ggen files.
+# ============================================================================
+
+# --- .ggen Source File Ban ---
+
+pm:FORBIDDEN_ggen_source_files a rdfs:Class ;
+  rdfs:label "Forbidden: .ggen Source Files" ;
+  rdfs:comment "No .ggen extension files allowed in source directories (ggen/ontology, ggen/queries, ggen/templates, ggen.toml)" ;
+  rdfs:comment "Valid source surfaces ONLY: .ttl, .rq, .tera, ggen.toml, .md (documentation)" ;
+  rdfs:comment "Audit rule: find . -name '*.ggen' → must return zero results in prompt-manufactory/ggen/" .
+
+# --- DTO/JSON Flattening Ban ---
+
+pm:FORBIDDEN_dto_flattening a rdfs:Class ;
+  rdfs:label "Forbidden: DTO/JSON Flattening" ;
+  rdfs:comment "No collapse of structured Evidence<T, State, W> into casual JSON/string carriers without boundary classification" ;
+  rdfs:comment "Examples: EvidenceDto, payload_json, state_tag as unbounded string" ;
+  rdfs:comment "Refusal: REFUSAL_DTO_COLLAPSE" .
+
+# --- Forced ALIVE Ban ---
+
+pm:FORBIDDEN_forced_alive a rdfs:Class ;
+  rdfs:label "Forbidden: Forced ALIVE" ;
+  rdfs:comment "No ALIVE verdict claimed when critical audit gates have failed or prerequisite proofs are incomplete" ;
+  rdfs:comment "PARTIAL is the honest verdict when: end-to-end warrant path unproven, legacy .ggen unclassified, or gates fail" ;
+  rdfs:comment "Audit rule: FAIL if ALIVE claimed with unresolved blockers" .
+
+# --- Legacy .ggen File Classification System ---
+
+pm:InvalidGgenFile_Classification a rdfs:Class ;
+  rdfs:label "Invalid .ggen File Classification" ;
+  rdfs:subClassOf pm:InvalidGgenFile ;
+  rdfs:comment "Classification system for the 22 legacy .ggen files found across the research tree" .
+
+# Classification values (enumeration)
+
+pm:LEGACY_INVALID_SOURCE a pm:InvalidGgenFile_Classification ;
+  rdfs:label "LEGACY_INVALID_SOURCE" ;
+  rdfs:comment "File was generated by previous workflow as source file with wrong extension; must be reclassified or deleted" .
+
+pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION a pm:InvalidGgenFile_Classification ;
+  rdfs:label "RENDERED_ARTIFACT_WITH_WRONG_EXTENSION" ;
+  rdfs:comment "File is a valid rendered artifact but has .ggen extension instead of intended output extension" ;
+  rdfs:comment "Fix: rename to correct extension (e.g., audit-*.sh.ggen → audit-*.sh)" .
+
+pm:MIGRATION_REQUIRED a pm:InvalidGgenFile_Classification ;
+  rdfs:label "MIGRATION_REQUIRED" ;
+  rdfs:comment "File must be migrated to new location or refactored; blocking but fixable" .
+
+pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT a pm:InvalidGgenFile_Classification ;
+  rdfs:label "OUT_OF_SCOPE_EXTERNAL_ARTIFACT" ;
+  rdfs:comment "File is generated artifact in external project; non-blocking" .
+
+pm:BLOCKING_SOURCE_SURFACE a pm:InvalidGgenFile_Classification ;
+  rdfs:label "BLOCKING_SOURCE_SURFACE" ;
+  rdfs:comment "File is source surface with .ggen extension in Prompt Manufactory scope; blocks ALIVE" .
+
+# --- 22 Legacy .ggen Files (Seed Data for Classification Ledger) ---
+
+<https://pi-research.dev/invalid-ggen/001>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/templates/feature-plan.yaml.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to feature-plan.yaml" .
+
+<https://pi-research.dev/invalid-ggen/002>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/templates/specta-exporter.rs.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to specta-exporter.rs" .
+
+<https://pi-research.dev/invalid-ggen/003>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/templates/wasm-boundary.rs.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to wasm-boundary.rs" .
+
+<https://pi-research.dev/invalid-ggen/004>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/templates/wasm4pm-compat.wit.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to wasm4pm-compat.wit" .
+
+<https://pi-research.dev/invalid-ggen/005>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/templates/wit-world.wit.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to wit-world.wit" .
+
+<https://pi-research.dev/invalid-ggen/006>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/audits/audit-component-boundary.sh.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to audit-component-boundary.sh" .
+
+<https://pi-research.dev/invalid-ggen/007>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/audits/audit-feature-law.sh.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to audit-feature-law.sh" .
+
+<https://pi-research.dev/invalid-ggen/008>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/audits/audit-no-engine-in-wasm-feature.sh.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to audit-no-engine-in-wasm-feature.sh" .
+
+<https://pi-research.dev/invalid-ggen/009>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/audits/audit-ts-brand-tokens.sh.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to audit-ts-brand-tokens.sh" .
+
+<https://pi-research.dev/invalid-ggen/010>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/audits/audit-ts-enum-tagging.sh.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to audit-ts-enum-tagging.sh" .
+
+<https://pi-research.dev/invalid-ggen/011>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/audits/audit-ts-monomorphization.sh.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to audit-ts-monomorphization.sh" .
+
+<https://pi-research.dev/invalid-ggen/012>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/ggen/audits/audit-ts-projection-surface.sh.ggen" ;
+  pm:ownerProject "process-intelligence" ;
+  pm:classification pm:RENDERED_ARTIFACT_WITH_WRONG_EXTENSION ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "rename to audit-ts-projection-surface.sh" .
+
+<https://pi-research.dev/invalid-ggen/013>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/templates/pi-live-check-intake.rs.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/014>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/templates/pi-otel-constants.rs.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/015>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/templates/pi-registry-diff-report.md.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/016>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/templates/pi-telemetry-docs.md.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/017>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/templates/pi-weaver-registry.yaml.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/018>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/templates/pi-witness-map.rs.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/019>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/audits/audit-live-check-findings-routed.sh.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/020>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/audits/audit-no-telemetry-equals-process.sh.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/021>
+  a pm:InvalidGgenFile ;
+  pm:filePath "process-intelligence/otel-weaver/ggen/audits/audit-registry-diff-routed.sh.ggen" ;
+  pm:ownerProject "otel-weaver" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+
+<https://pi-research.dev/invalid-ggen/022>
+  a pm:InvalidGgenFile ;
+  pm:filePath "wasm4pm-compat/ggen/templates/ts-projection.rs.ggen" ;
+  pm:ownerProject "wasm4pm-compat" ;
+  pm:classification pm:OUT_OF_SCOPE_EXTERNAL_ARTIFACT ;
+  pm:blockingStatus false ;
+  pm:remediationRoute "external: no action required for Prompt Manufactory" .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# HOOK LAW — Andon Gates (Deterministic Lifecycle Enforcement)
+# ============================================================================
+# Hooks are Claude Code lifecycle automations that enforce refusal conditions.
+# They run deterministically at specific events, not at model discretion.
+# ============================================================================
+
+pm:HOOK_no_hand_written_prompts a pm:HookPolicy ;
+  rdfs:label "No Hand-Written Program Prompts" ;
+  pm:mission "Block workflow execution if a rendered prompt lacks derivedFrom source" ;
+  rdfs:comment "Triggers on prompt emit; checks SHACL shape for pm:derivedFrom triple" .
+
+pm:HOOK_no_invalid_ggen_extension a pm:HookPolicy ;
+  rdfs:label "No Invalid .ggen Source Files" ;
+  pm:mission "Block workflow if new .ggen files found in source directory" ;
+  rdfs:comment "Triggers on file write; queries graph for blocking-status .ggen files" .
+
+pm:HOOK_no_forced_alive a pm:HookPolicy ;
+  rdfs:label "No Forced ALIVE" ;
+  pm:mission "Block ALIVE verdict if any required audit gate failed" ;
+  rdfs:comment "Triggers on checkpoint emit; validates all AuditGate status before ALIVE" .
+
+pm:HOOK_checkpoint_must_have_partial_path a pm:HookPolicy ;
+  rdfs:label "Checkpoint Must Have PARTIAL Path" ;
+  pm:mission "Require checkpoint template to include both ALIVE and PARTIAL exit conditions" ;
+  rdfs:comment "Triggers on template render; validates PARTIAL section is present and executable" .
+
+pm:HOOK_receipt_required a pm:HookPolicy ;
+  rdfs:label "Receipt Required for Artifacts" ;
+  pm:mission "Every rendered artifact must have corresponding receipt entry" ;
+  rdfs:comment "Triggers on artifact emit; creates receipt with blake3 hash and provenance" .
+
+pm:HOOK_legacy_ggen_routed a pm:HookPolicy ;
+  rdfs:label "Legacy .ggen Files Must Be Classified" ;
+  pm:mission "Every .ggen file in referenced tree must have classification entry" ;
+  rdfs:comment "Triggers on audit; scans for unclassified .ggen files" .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# RESEARCH PROGRAM LAW — 7 SEED INSTANCES
+# ============================================================================
+# Known programs encoded as RDF instances with mission, scope, prompt class.
+# Seed data sourced from checkpoints and census files.
+# ============================================================================
+
+# --- Program 1: PI_RESEARCH_PROGRAM_INTEL_001 ---
+
+<https://pi-research.dev/programs#PI_RESEARCH_PROGRAM_INTEL_001>
+  a pm:ResearchProgram ;
+  pm:programId "PI_RESEARCH_PROGRAM_INTEL_001" ;
+  dct:identifier "PI_RESEARCH_PROGRAM_INTEL_001" ;
+  dct:description "Full research-program reconciliation: census all projects, classify into RDF ontology, emit ggen surfaces, audit conformance, produce program map" ;
+  pm:mission "Full research-program reconciliation: census all projects, classify into RDF ontology, emit ggen surfaces, audit conformance, produce program map" ;
+  pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
+  dct:issued "2026-06-01"^^xsd:dateTime ;
+  rdfs:comment "Discovers program topology across wasm4pm, compat, ggen, Blue River, ZOEapp, OTel Weaver, Expo/Supabase, Claude Code" .
+
+# --- Program 2: GGEN_ECOSYSTEM_INTEL_001 ---
+
+<https://pi-research.dev/programs#GGEN_ECOSYSTEM_INTEL_001>
+  a pm:ResearchProgram ;
+  pm:programId "GGEN_ECOSYSTEM_INTEL_001" ;
+  dct:identifier "GGEN_ECOSYSTEM_INTEL_001" ;
+  dct:description "Gather ecosystem intelligence for wasm4pm-compat projections; Van der Aalst conformance-driven ggen manufacturing" ;
+  pm:mission "Gather ecosystem intelligence for wasm4pm-compat projections; Van der Aalst conformance-driven ggen manufacturing" ;
+  pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
+  dct:issued "2026-06-01"^^xsd:dateTime ;
+  rdfs:comment "Census Cargo, rustdoc, Specta, tsify, wasm-bindgen, WIT, Component Model; classify surfaces; create manifests; emit ggen rules/templates" .
+
+# --- Program 3: GGEN_OTEL_WEAVER_PI_INTEL_001 ---
+
+<https://pi-research.dev/programs#GGEN_OTEL_WEAVER_PI_INTEL_001>
+  a pm:ResearchProgram ;
+  pm:programId "GGEN_OTEL_WEAVER_PI_INTEL_001" ;
+  dct:identifier "GGEN_OTEL_WEAVER_PI_INTEL_001" ;
+  dct:description "OTel Weaver research: telemetry feedstock, registry model, witness mappings (NOT evidence)" ;
+  pm:mission "OTel Weaver research: telemetry feedstock, registry model, witness mappings (NOT evidence)" ;
+  pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
+  dct:issued "2026-06-01"^^xsd:dateTime ;
+  rdfs:comment "Classify Weaver artifacts as telemetry feedstock, not PI evidence; establish witness boundaries" .
+
+# --- Program 4: ZOEAPP_RESEARCH_PROGRAM_INTEL_001 ---
+
+<https://pi-research.dev/programs#ZOEAPP_RESEARCH_PROGRAM_INTEL_001>
+  a pm:ResearchProgram ;
+  pm:programId "ZOEAPP_RESEARCH_PROGRAM_INTEL_001" ;
+  dct:identifier "ZOEAPP_RESEARCH_PROGRAM_INTEL_001" ;
+  dct:description "ZOEapp proof cell: Expo, Supabase, livestream, on-device inference, Jest receipts" ;
+  pm:mission "ZOEapp proof cell: Expo, Supabase, livestream, on-device inference, Jest receipts" ;
+  pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
+  dct:issued "2026-06-01"^^xsd:dateTime ;
+  rdfs:comment "Classify ZOEapp as proof cell; map Expo/Supabase to framework extraction; verify event stream boundaries" .
+
+# --- Program 5: GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001 ---
+
+<https://pi-research.dev/programs#GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001>
+  a pm:ResearchProgram ;
+  pm:programId "GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001" ;
+  dct:identifier "GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001" ;
+  dct:description "Framework extraction: Expo Router law, RLS policies, Realtime contracts" ;
+  pm:mission "Framework extraction: Expo Router law, RLS policies, Realtime contracts" ;
+  pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
+  dct:issued "2026-06-01"^^xsd:dateTime ;
+  rdfs:comment "Extract reusable mobile substrate from ZOEapp; publish as separate research artifact" .
+
+# --- Program 6: GGEN_CLAUDE_WORKFLOW_INTEL_001 ---
+
+<https://pi-research.dev/programs#GGEN_CLAUDE_WORKFLOW_INTEL_001>
+  a pm:ResearchProgram ;
+  pm:programId "GGEN_CLAUDE_WORKFLOW_INTEL_001" ;
+  dct:identifier "GGEN_CLAUDE_WORKFLOW_INTEL_001" ;
+  dct:description "Claude Code dynamic workflow orchestration: phases, subagent topology, audit gates, checkpoints" ;
+  pm:mission "Claude Code dynamic workflow orchestration: phases, subagent topology, audit gates, checkpoints" ;
+  pm:hasPromptClass pm:INTEL ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#INTEL_WORKFLOW> ;
+  dct:issued "2026-06-01"^^xsd:dateTime ;
+  rdfs:comment "Classify Claude Code workflows as orchestration substrate; document subagent coordination patterns" .
+
+# --- Program 7: WASM4PM_COMPAT_PROJECTION_REMEDIATE_001 ---
+
+<https://pi-research.dev/programs#WASM4PM_COMPAT_PROJECTION_REMEDIATE_001>
+  a pm:ResearchProgram ;
+  pm:programId "WASM4PM_COMPAT_PROJECTION_REMEDIATE_001" ;
+  dct:identifier "WASM4PM_COMPAT_PROJECTION_REMEDIATE_001" ;
+  dct:description "Remediate DTO flattening violation: move JSON serialization from compat → wasm4pm engine" ;
+  pm:mission "Remediate DTO flattening violation: move JSON serialization from compat → wasm4pm engine" ;
+  pm:hasPromptClass pm:REMEDIATE ;
+  pm:hasWorkflow <https://pi-research.dev/workflows#REMEDIATE_WORKFLOW> ;
+  dct:issued "2026-06-01"^^xsd:dateTime ;
+  rdfs:comment "Fix blocking gate from GGEN_ECOSYSTEM_INTEL_001; move to_json_string() and receipt_json() out of compat boundary; re-audit to PASS" .
+
+# --- Prompt Classes (enumeration values) ---
+
+pm:INTEL a pm:PromptClass ;
+  rdfs:label "INTEL" ;
+  rdfs:comment "Census, classify, map existing work" .
+
+pm:RECONCILE a pm:PromptClass ;
+  rdfs:label "RECONCILE" ;
+  rdfs:comment "Unify checkpoints, resolve contradictions" .
+
+pm:REMEDIATE a pm:PromptClass ;
+  rdfs:label "REMEDIATE" ;
+  rdfs:comment "Route failed gates without broad implementation" .
+
+pm:SYNC a pm:PromptClass ;
+  rdfs:label "SYNC" ;
+  rdfs:comment "Run ggen sync from known-good graph" .
+
+pm:AUDIT a pm:PromptClass ;
+  rdfs:label "AUDIT" ;
+  rdfs:comment "Inspect for forbidden collapses" .
+
+pm:CHECKPOINT a pm:PromptClass ;
+  rdfs:label "CHECKPOINT" ;
+  rdfs:comment "Emit ALIVE/PARTIAL verdict" .
+
+pm:SPR a pm:PromptClass ;
+  rdfs:label "SPR" ;
+  rdfs:comment "Compress program state for cold-load" .
+
+pm:LIVESTREAM a pm:PromptClass ;
+  rdfs:label "LIVESTREAM" ;
+  rdfs:comment "Turn workflow into public narration" .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# SKILL LAW — Reusable Standard-Work Capabilities
+# ============================================================================
+# Skills are reusable research doctrine packaged as Claude Code skills.
+# Each skill has a mission, invariants, and refusal gates.
+# ============================================================================
+
+pm:SKILL_no_hand_coding a pm:Skill ;
+  rdfs:label "No Hand Coding" ;
+  pm:mission "Ensure all artifacts are rendered from templates, not hand-written" ;
+  rdfs:comment "Refusal: hand-coded artifact found where template should be used" .
+
+pm:SKILL_pi_research_census a pm:Skill ;
+  rdfs:label "PI Research Census" ;
+  pm:mission "Comprehensive inventory of all surfaces in referenced projects" ;
+  rdfs:comment "Standard census pattern: find all files/dirs, document counts and paths" .
+
+pm:SKILL_checkpoint_ledger a pm:Skill ;
+  rdfs:label "Checkpoint Ledger" ;
+  pm:mission "Track ALIVE/PARTIAL verdicts across the program" ;
+  rdfs:comment "Refusal: claiming ALIVE from file count alone" .
+
+pm:SKILL_no_forced_alive a pm:Skill ;
+  rdfs:label "No Forced ALIVE" ;
+  pm:mission "Emit PARTIAL if any critical gate fails" ;
+  rdfs:comment "Refusal: ALIVE verdict with unresolved blockers" .
+
+pm:SKILL_van_der_aalst_audit a pm:Skill ;
+  rdfs:label "Van der Aalst Conformance Audit" ;
+  pm:mission "Verify actual process structure matches declared law" ;
+  rdfs:comment "Process mining conformance checking applied to program artifacts" .
+
+pm:SKILL_receipt_manufacturing a pm:Skill ;
+  rdfs:label "Receipt Manufacturing" ;
+  pm:mission "Emit receipts for all manufactured artifacts with proof chain" ;
+  rdfs:comment "BLAKE3-sealed provenance tracking for all outputs" .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# SUBAGENT ROLE LAW — Bounded Inspection Stations
+# ============================================================================
+# Defines owned/forbidden surfaces, output contracts, refusal conditions.
+# Each role is a self-contained inspection station with clear boundaries.
+# ============================================================================
+
+# --- Census Roles ---
+
+<https://pi-research.dev/roles#role_engine_census>
+  a pm:SubagentRole ;
+  rdfs:label "wasm4pm Engine Census" ;
+  pm:mission "Inspect wasm4pm engine surfaces: discovery, replay, conformance, OCPQ, receipts, E2E tests, OTel verification, checkpoints" ;
+  pm:ownsSurface "src/mining" ;
+  pm:ownsSurface "src/replay" ;
+  pm:ownsSurface "src/conformance" ;
+  pm:ownsSurface "src/ocpq" ;
+  pm:ownsSurface "src/receipt" ;
+  pm:ownsSurface "tests/" ;
+  pm:forbidsSurface "../wasm4pm-compat/" ;
+  pm:forbidsSurface "../process-intelligence/" ;
+  pm:hasOutputContract "research/pi-program/intel/wasm4pm-engine-census.md" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_SOURCE .
+
+<https://pi-research.dev/roles#role_compat_census>
+  a pm:SubagentRole ;
+  rdfs:label "wasm4pm-compat Census" ;
+  pm:mission "Inspect type-law surfaces, features, graduation bridge, DTO/JSON risks, checkpoints" ;
+  pm:ownsSurface "src/" ;
+  pm:ownsSurface "Cargo.toml" ;
+  pm:ownsSurface "ggen/" ;
+  pm:forbidsSurface "../wasm4pm/" ;
+  pm:hasOutputContract "research/pi-program/intel/wasm4pm-compat-census.md" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_SOURCE .
+
+<https://pi-research.dev/roles#role_ggen_census>
+  a pm:SubagentRole ;
+  rdfs:label "ggen Census" ;
+  pm:mission "Inspect ggen surfaces: .ttl ontologies, .rq queries, .tera templates, ggen.toml, rendered outputs" ;
+  pm:ownsSurface "ggen/" ;
+  pm:forbidsSurface ".ggen files as source surfaces" ;
+  pm:hasOutputContract "research/pi-program/intel/ggen-census.md" ;
+  pm:hasRefusalGate pm:REFUSAL_INVALID_GGEN_SOURCE .
+
+<https://pi-research.dev/roles#role_proof_cell_census>
+  a pm:SubagentRole ;
+  rdfs:label "ZOEapp Proof Cell Census" ;
+  pm:mission "Inspect Expo, Supabase, livestream, on-device inference, Jest receipts; classify as proof cell" ;
+  pm:ownsSurface "src/" ;
+  pm:forbidsSurface "other repositories" ;
+  pm:hasOutputContract "research/pi-program/intel/zoeapp-census.md" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_SOURCE .
+
+<https://pi-research.dev/roles#role_feedstock_census>
+  a pm:SubagentRole ;
+  rdfs:label "OTel Weaver Feedstock Census" ;
+  pm:mission "Inspect OTel Weaver: registry model, witness mappings; classify as telemetry feedstock, NOT evidence" ;
+  pm:ownsSurface "otel-weaver/" ;
+  pm:forbidsSurface "other repositories" ;
+  pm:hasOutputContract "research/pi-program/intel/otel-weaver-census.md" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_SOURCE .
+
+<https://pi-research.dev/roles#role_framework_census>
+  a pm:SubagentRole ;
+  rdfs:label "Expo/Supabase Framework Census" ;
+  pm:mission "Inspect framework extraction: Expo Router, RLS, Realtime contracts" ;
+  pm:ownsSurface "expo-supabase-framework/" ;
+  pm:forbidsSurface "app implementation details" ;
+  pm:hasOutputContract "research/pi-program/intel/expo-supabase-framework-census.md" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_SOURCE .
+
+<https://pi-research.dev/roles#role_orchestration_census>
+  a pm:SubagentRole ;
+  rdfs:label "Claude Code Workflow Census" ;
+  pm:mission "Inspect Claude Code workflows: phases, subagent topology, audit gates, checkpoints" ;
+  pm:ownsSurface "workflow artifacts" ;
+  pm:forbidsSurface "execution traces" ;
+  pm:hasOutputContract "research/pi-program/intel/claude-workflow-census.md" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_SOURCE .
+
+# --- Specialization Roles ---
+
+<https://pi-research.dev/roles#role_classification_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Classification Agent" ;
+  pm:mission "Map all census discoveries to program ontology; emit TTL ontology instances" ;
+  pm:ownsSurface "census files" ;
+  pm:ownsSurface "ggen/ontology/" ;
+  pm:forbidsSurface "hand-coded classifications" ;
+  pm:hasOutputContract "ggen/ontology/*.ttl files with classified instances" ;
+  pm:hasRefusalGate pm:REFUSAL_HAND_CODING .
+
+<https://pi-research.dev/roles#role_manifest_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Manifest Agent" ;
+  pm:mission "Create projection manifests and program declarations" ;
+  pm:ownsSurface "ggen/manifests/" ;
+  pm:forbidsSurface "implementation details" ;
+  pm:hasOutputContract "manifests/*.yaml files" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_SOURCE .
+
+<https://pi-research.dev/roles#role_query_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Query Agent" ;
+  pm:mission "Emit SPARQL selection and audit queries" ;
+  pm:ownsSurface "ggen/queries/" ;
+  pm:forbidsSurface "application logic" ;
+  pm:hasOutputContract "ggen/queries/*.rq files" ;
+  pm:hasRefusalGate pm:REFUSAL_INVALID_SPARQL .
+
+<https://pi-research.dev/roles#role_template_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Template Agent" ;
+  pm:mission "Emit Tera templates for artifact rendering" ;
+  pm:ownsSurface "ggen/templates/" ;
+  pm:forbidsSurface ".ggen source files" ;
+  pm:hasOutputContract "ggen/templates/*.tera files" ;
+  pm:hasRefusalGate pm:REFUSAL_INVALID_GGEN_SOURCE .
+
+<https://pi-research.dev/roles#role_audit_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Audit Agent" ;
+  pm:mission "Run Van der Aalst conformance audits; verify program structure against law" ;
+  pm:ownsSurface "TTL graphs" ;
+  pm:ownsSurface "emitted artifacts" ;
+  pm:forbidsSurface "modification of audit results" ;
+  pm:hasOutputContract "audit result files with pass/fail + violations" ;
+  pm:hasRefusalGate pm:REFUSAL_AUDIT_FAILED .
+
+<https://pi-research.dev/roles#role_reconciliation_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Reconciliation Agent" ;
+  pm:mission "Render templates and emit unified program map outputs" ;
+  pm:ownsSurface "emitted/" ;
+  pm:forbidsSurface "hand-coded outputs" ;
+  pm:hasOutputContract "emitted/indexes/*.md files + prompt-map" ;
+  pm:hasRefusalGate pm:REFUSAL_TEMPLATE_FAILED .
+
+<https://pi-research.dev/roles#role_checkpoint_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Checkpoint Agent" ;
+  pm:mission "Emit ALIVE/PARTIAL verdict with audit gates" ;
+  pm:ownsSurface "checkpoints/" ;
+  pm:forbidsSurface "forced ALIVE declarations" ;
+  pm:hasOutputContract "checkpoints/CHECKPOINT_*.md with honest PARTIAL path" ;
+  pm:hasRefusalGate pm:REFUSAL_NO_FORCED_ALIVE .
+
+<https://pi-research.dev/roles#role_remediation_agent>
+  a pm:SubagentRole ;
+  rdfs:label "Remediation Agent" ;
+  pm:mission "Route failed gates and implement fixes" ;
+  pm:ownsSurface "failed gate documentation" ;
+  pm:forbidsSurface "changing audit results retroactively" ;
+  pm:hasOutputContract "remediation plan with owner + effort + deadline" ;
+  pm:hasRefusalGate pm:REFUSAL_MISSING_BLOCKER .
+
+# --- Refusal Conditions ---
+
+pm:REFUSAL_MISSING_SOURCE a pm:RefusalCondition ;
+  rdfs:label "Missing Source" ;
+  rdfs:comment "Required source file or directory not found" .
+
+pm:REFUSAL_INVALID_GGEN_SOURCE a pm:RefusalCondition ;
+  rdfs:label "Invalid .ggen Source" ;
+  rdfs:comment ".ggen files found as source surfaces (only .ttl, .rq, .tera, ggen.toml allowed)" .
+
+pm:REFUSAL_HAND_CODING a pm:RefusalCondition ;
+  rdfs:label "Hand Coding Detected" ;
+  rdfs:comment "Manual coding instead of template rendering" .
+
+pm:REFUSAL_INVALID_SPARQL a pm:RefusalCondition ;
+  rdfs:label "Invalid SPARQL" ;
+  rdfs:comment "SPARQL query does not parse or execute" .
+
+pm:REFUSAL_AUDIT_FAILED a pm:RefusalCondition ;
+  rdfs:label "Audit Failed" ;
+  rdfs:comment "Conformance audit did not pass" .
+
+pm:REFUSAL_TEMPLATE_FAILED a pm:RefusalCondition ;
+  rdfs:label "Template Failed" ;
+  rdfs:comment "Tera template rendering produced invalid output" .
+
+pm:REFUSAL_NO_FORCED_ALIVE a pm:RefusalCondition ;
+  rdfs:label "No Forced ALIVE" ;
+  rdfs:comment "Cannot declare ALIVE when audit gates fail; must emit PARTIAL" .
+
+pm:REFUSAL_MISSING_BLOCKER a pm:RefusalCondition ;
+  rdfs:label "Missing Blocker" ;
+  rdfs:comment "Remediation plan lacks owner or remediation class" .
+@prefix pm:   <https://pi-research.dev/ontology/prompt-manufactory#> .
+@prefix dct:  <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# ============================================================================
+# WORKFLOW LAW — Phase and Subagent Topology
+# ============================================================================
+# Defines the phase structure for each program type.
+# Maps phases to required subagent roles.
+# ============================================================================
+
+# --- INTEL Workflow Structure (used by PI_RESEARCH_PROGRAM_INTEL_001, etc.) ---
+
+<https://pi-research.dev/workflows#INTEL_WORKFLOW>
+  a pm:Workflow ;
+  rdfs:label "INTEL Workflow" ;
+  dct:description "8 phases: Census, Classify, Manifest, Queries, Templates, Conformance, Reconciliation, Checkpoint" ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_1_Census> ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_2_Classify> ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_3_Manifest> ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_4_Queries> ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_5_Templates> ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_6_Conformance> ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_7_Reconciliation> ;
+  pm:hasPhase <https://pi-research.dev/phases#INTEL_Phase_8_Checkpoint> .
+
+# --- Phase 1: Census ---
+
+<https://pi-research.dev/phases#INTEL_Phase_1_Census>
+  a pm:Phase ;
+  rdfs:label "Phase 1: Census" ;
+  pm:mission "Comprehensive inventory of all surfaces in referenced projects" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_engine_census> ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_compat_census> ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_ggen_census> ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_proof_cell_census> ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_feedstock_census> ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_framework_census> ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_orchestration_census> .
+
+# --- Phase 2: Classify ---
+
+<https://pi-research.dev/phases#INTEL_Phase_2_Classify>
+  a pm:Phase ;
+  rdfs:label "Phase 2: Classify" ;
+  pm:mission "Map each surface to program ontology categories" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_classification_agent> .
+
+# --- Phase 3: Manifest ---
+
+<https://pi-research.dev/phases#INTEL_Phase_3_Manifest>
+  a pm:Phase ;
+  rdfs:label "Phase 3: Manifest" ;
+  pm:mission "Create projection manifests and program declarations" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_manifest_agent> .
+
+# --- Phase 4: Queries ---
+
+<https://pi-research.dev/phases#INTEL_Phase_4_Queries>
+  a pm:Phase ;
+  rdfs:label "Phase 4: Queries" ;
+  pm:mission "Emit SPARQL selection and audit queries" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_query_agent> .
+
+# --- Phase 5: Templates ---
+
+<https://pi-research.dev/phases#INTEL_Phase_5_Templates>
+  a pm:Phase ;
+  rdfs:label "Phase 5: Templates" ;
+  pm:mission "Emit Tera templates for artifact rendering" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_template_agent> .
+
+# --- Phase 6: Conformance ---
+
+<https://pi-research.dev/phases#INTEL_Phase_6_Conformance>
+  a pm:Phase ;
+  rdfs:label "Phase 6: Conformance" ;
+  pm:mission "Van der Aalst audit: verify program structure against declared law" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_audit_agent> .
+
+# --- Phase 7: Reconciliation ---
+
+<https://pi-research.dev/phases#INTEL_Phase_7_Reconciliation>
+  a pm:Phase ;
+  rdfs:label "Phase 7: Reconciliation" ;
+  pm:mission "Emit unified program map outputs" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_reconciliation_agent> .
+
+# --- Phase 8: Checkpoint ---
+
+<https://pi-research.dev/phases#INTEL_Phase_8_Checkpoint>
+  a pm:Phase ;
+  rdfs:label "Phase 8: Checkpoint" ;
+  pm:mission "Emit ALIVE/PARTIAL verdict" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_checkpoint_agent> .
+
+# --- REMEDIATE Workflow Structure (simpler: 1 phase) ---
+
+<https://pi-research.dev/workflows#REMEDIATE_WORKFLOW>
+  a pm:Workflow ;
+  rdfs:label "REMEDIATE Workflow" ;
+  dct:description "Single phase: fix failed gates" ;
+  pm:hasPhase <https://pi-research.dev/phases#REMEDIATE_Phase_1> .
+
+<https://pi-research.dev/phases#REMEDIATE_Phase_1>
+  a pm:Phase ;
+  rdfs:label "Phase 1: Remediation" ;
+  pm:mission "Route failed gates and implement fixes" ;
+  pm:hasSubagentRole <https://pi-research.dev/roles#role_remediation_agent> .

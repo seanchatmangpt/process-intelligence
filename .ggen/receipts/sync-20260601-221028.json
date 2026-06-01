@@ -1,0 +1,10 @@
+{
+  "operation_id": "4bbb53da-7e05-4baa-8a8e-b041d02b339d",
+  "timestamp": "2026-06-01T22:10:28.098976Z",
+  "input_hashes": [],
+  "output_hashes": [
+    "/Users/sac/process-intelligence/research/prompt-manufactory/emitted/prompts/workflows/PI_RESEARCH_PROGRAM_INTEL_001.md:0896c3c35326cbc8956f476fc8689af3c77723059851eecc64d472cc8c538e78"
+  ],
+  "signature": "f240347e657f3f4b96f9c87543198faef92cf95cd59e5633b1e9bb7b186b9ddfc3dd0a12b21e290e699c429ee393e9d57c630a80208523e60d52a66ae7c7e402",
+  "previous_receipt_hash": "068cd0a8702504c0569c6f2f91fda9d2460fcfff9f8282748a80fed156511e3e"
+}

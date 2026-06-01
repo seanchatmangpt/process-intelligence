@@ -1,6 +1,7 @@
 PREFIX pi: <https://process.intelligence/>
 PREFIX conform: <https://process.intelligence/conformance/>
 PREFIX ocel: <https://ocel.io/2.0/metamodel/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 SELECT DISTINCT
   ?model_type
@@ -9,8 +10,17 @@ SELECT DISTINCT
   ?precision_score
   ?generalization_score
   ?simplicity_score
+  ?fitness_percent
+  ?precision_percent
+  ?generalization_percent
+  ?simplicity_percent
   ?conformance_violations
   ?timestamp
+  ?fitness_pass
+  ?precision_pass
+  ?generalization_pass
+  ?simplicity_pass
+  ?verdict_pass
 WHERE {
   ?analysis a conform:ConformanceAnalysis ;
     conform:modelType ?model_type ;
@@ -22,6 +32,17 @@ WHERE {
     conform:timestamp ?timestamp .
 
   OPTIONAL { ?analysis conform:violations ?conformance_violations . }
+
+  BIND(round(xsd:float(?fitness_score) * 100) AS ?fitness_percent)
+  BIND(round(xsd:float(?precision_score) * 100) AS ?precision_percent)
+  BIND(round(xsd:float(?generalization_score) * 100) AS ?generalization_percent)
+  BIND(round(xsd:float(?simplicity_score) * 100) AS ?simplicity_percent)
+
+  BIND((?fitness_score >= 0.95) AS ?fitness_pass)
+  BIND((?precision_score >= 0.90) AS ?precision_pass)
+  BIND((?generalization_score >= 0.85) AS ?generalization_pass)
+  BIND((?simplicity_score >= 0.85) AS ?simplicity_pass)
+  BIND((?fitness_score >= 0.95 && ?precision_score >= 0.90) AS ?verdict_pass)
 }
 ORDER BY DESC(?timestamp)
 LIMIT 10

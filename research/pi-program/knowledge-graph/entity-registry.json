@@ -1,0 +1,2381 @@
+{
+  "timestamp": "2026-06-01T15:48:34.490413",
+  "entity_summary": {
+    "total_entities": 194,
+    "entity_types": {}
+  },
+  "entities": {
+    "https://process.intelligence/lifecycle/StateTransition": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b44",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b45"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b44",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ma/IntegrationRiskClaim": {
+      "types": [
+        "BoardClaim",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b17"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b17",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/lifecycle/AnalyzeRule": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b50",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b51"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b51",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ma/SynergyProjection": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b6",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b7",
+        "BoardClaim"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b7",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/lifecycle/MonitorRule": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b48",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b49"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b48",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/wasm4pm/ReplayTrace": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b27",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b26"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b26",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/wasm4pm/CryptographicReceipt": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b25",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b24"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b25",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ma/BoardClaim": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b64"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b64",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2002/07/owl#disjointUnionOf', 'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ma/OperationalDebtClaim": {
+      "types": [
+        "BoardClaim",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b11",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b12"
+      ],
+      "metadata": {
+        "type": "BoardClaim",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ma/RemediationStrategy": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b16"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b16",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/lifecycle/ExecuteAction": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b54"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b54",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/lifecycle/PlanRule": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b53",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b52"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b53",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/compat/Evidence": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b61",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b62",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b63"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b63",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/lifecycle/ProcessState": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b35",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b36"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b36",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/wasm4pm/ConformanceVerdict": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b23",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b22",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b21"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b22",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/lifecycle/TransitionGuard": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b46",
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b47"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b47",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ma/ControlClaim": {
+      "types": [
+        "BoardClaim"
+      ],
+      "metadata": {
+        "type": "BoardClaim",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ma/ProcessAssetClaim": {
+      "types": [
+        "BoardClaim"
+      ],
+      "metadata": {
+        "type": "BoardClaim",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/lifecycle/KnowledgeAsset": {
+      "types": [
+        "ne6e2b0ef204045c0affcf4a1ee2f89a9b60"
+      ],
+      "metadata": {
+        "type": "ne6e2b0ef204045c0affcf4a1ee2f89a9b60",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/ORCHESTRATOR_ALIVE": {
+      "types": [
+        "ALIVE"
+      ],
+      "metadata": {
+        "type": "ALIVE",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://purl.org/dc/terms/description', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/verdictType', 'http://purl.org/dc/terms/created'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/GGEN_ECOSYSTEM_INTEL_ALIVE_001": {
+      "types": [
+        "PARTIAL"
+      ],
+      "metadata": {
+        "type": "PARTIAL",
+        "predicates": "{'https://process.intelligence/ontology/gateFail', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/authority', 'https://schema.org/url', 'https://process.intelligence/ontology/failureImpact', 'https://process.intelligence/ontology/remediationPhase1', 'https://process.intelligence/ontology/estimatedFixHours', 'https://process.intelligence/ontology/failureIssue', 'http://purl.org/dc/terms/issued', 'https://process.intelligence/ontology/remediationPhase3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/failureLocation', 'https://process.intelligence/ontology/gatesCriteriaMet', 'https://process.intelligence/ontology/verdictType'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/ZOEAPP_RESEARCH_PARTIAL_001": {
+      "types": [
+        "PARTIAL"
+      ],
+      "metadata": {
+        "type": "PARTIAL",
+        "predicates": "{'https://schema.org/url', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/verdictType'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/PAPERLAW_ALIVE": {
+      "types": [
+        "ALIVE"
+      ],
+      "metadata": {
+        "type": "ALIVE",
+        "predicates": "{'https://process.intelligence/ontology/verdictType'}"
+      }
+    },
+    "https://process.intelligence/ontology/PARTIALClaimShape": {
+      "types": [
+        "PARTIAL_CLAIM"
+      ],
+      "metadata": {
+        "type": "PARTIAL_CLAIM",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/GGEN_OTEL_WEAVER_PI_ALIVE_001": {
+      "types": [
+        "ALIVE"
+      ],
+      "metadata": {
+        "type": "ALIVE",
+        "predicates": "{'https://process.intelligence/ontology/authority', 'https://process.intelligence/ontology/unresolvedPartials', 'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/ns/prov#wasAttributedTo', 'https://process.intelligence/ontology/gate4', 'https://process.intelligence/ontology/domain', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/gateCriteria', 'https://process.intelligence/ontology/failedGates', 'http://purl.org/dc/terms/title', 'https://schema.org/url', 'http://purl.org/dc/terms/description', 'https://process.intelligence/ontology/gate2', 'https://process.intelligence/ontology/status', 'https://process.intelligence/ontology/gatesCriteriaMet', 'https://process.intelligence/ontology/verdictType', 'https://process.intelligence/ontology/hash', 'https://process.intelligence/ontology/riskAssessment', 'https://process.intelligence/ontology/downstreamIntegrations'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/PROCESS_INTELLIGENCE_ALIVE_001": {
+      "types": [
+        "ALIVE"
+      ],
+      "metadata": {
+        "type": "ALIVE",
+        "predicates": "{'https://process.intelligence/ontology/verdictType', 'https://process.intelligence/ontology/authorizedDownstream', 'https://process.intelligence/ontology/gateCriteria'}"
+      }
+    },
+    "https://process.intelligence/ontology/CheckpointImmutabilityShape": {
+      "types": [
+        "CHECKPOINT"
+      ],
+      "metadata": {
+        "type": "CHECKPOINT",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/PROCESS_INTELLIGENCE_ADVERSARIAL_V30_1_1_OMEGA": {
+      "types": [
+        "ALIVE"
+      ],
+      "metadata": {
+        "type": "ALIVE",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'https://schema.org/url', 'http://www.w3.org/ns/prov#wasAttributedTo', 'http://purl.org/dc/terms/description', 'https://process.intelligence/ontology/verdictType', 'http://purl.org/dc/terms/created'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/failed-gate-dto-flattening": {
+      "types": [
+        "FAILED"
+      ],
+      "metadata": {
+        "type": "FAILED",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/verdictType', 'http://www.w3.org/ns/prov#wasRevisionOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ALIVEClaimShape": {
+      "types": [
+        "ALIVE_CLAIM"
+      ],
+      "metadata": {
+        "type": "ALIVE_CLAIM",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/failed-gate-gap002-or-join-resolved": {
+      "types": [
+        "RESOLVED"
+      ],
+      "metadata": {
+        "type": "RESOLVED",
+        "predicates": "{'https://schema.org/url', 'https://process.intelligence/ontology/verdictType'}"
+      }
+    },
+    "https://process.intelligence/checkpoint/failed-gate-gap001-compat-wasm-bridge": {
+      "types": [
+        "OPEN"
+      ],
+      "metadata": {
+        "type": "OPEN",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/verdictType', 'http://purl.org/dc/terms/description'}"
+      }
+    },
+    "https://process.intelligence/ontology/ConformanceRecordShape": {
+      "types": [
+        "ConformanceRecord"
+      ],
+      "metadata": {
+        "type": "ConformanceRecord",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/ontology/ReceiptSurfaceShape": {
+      "types": [
+        "RECEIPT_SURFACE"
+      ],
+      "metadata": {
+        "type": "RECEIPT_SURFACE",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/ontology/SilentFlatteningCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/RawEvidenceExportCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/ontology/JSONSerializationCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ActiveCollapseBlocksAlive": {
+      "types": [
+        "ALIVE_CLAIM"
+      ],
+      "metadata": {
+        "type": "ALIVE_CLAIM",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#sparql'}"
+      }
+    },
+    "https://process.intelligence/ontology/ForbiddenCollapseInstanceShape": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/ontology/RefusalLawCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/WitnessMixingCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/StateTagCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/EvidenceRefCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/LossItemCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/WitnessKeyCollapse": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/NeedsObjectCentricQueryExecution": {
+      "types": [
+        "GraduationReason"
+      ],
+      "metadata": {
+        "type": "GraduationReason",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/RebuildingProcessMiningLocally": {
+      "types": [
+        "GraduationReason"
+      ],
+      "metadata": {
+        "type": "GraduationReason",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/GraduationSignalShape": {
+      "types": [
+        "GRADUATION_SIGNAL"
+      ],
+      "metadata": {
+        "type": "GRADUATION_SIGNAL",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/ontology/NeedsConformanceExecution": {
+      "types": [
+        "GraduationReason"
+      ],
+      "metadata": {
+        "type": "GraduationReason",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/CompatLayerShape": {
+      "types": [
+        "COMPATIBILITY_LAYER"
+      ],
+      "metadata": {
+        "type": "COMPATIBILITY_LAYER",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#message', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#not'}"
+      }
+    },
+    "https://process.intelligence/ontology/NeedsDiscovery": {
+      "types": [
+        "GraduationReason"
+      ],
+      "metadata": {
+        "type": "GraduationReason",
+        "predicates": "{'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/NeedsReplay": {
+      "types": [
+        "GraduationReason"
+      ],
+      "metadata": {
+        "type": "GraduationReason",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_011": {
+      "types": [
+        "TelemetryEvent"
+      ],
+      "metadata": {
+        "type": "TelemetryEvent",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_007": {
+      "types": [
+        "FFIExport"
+      ],
+      "metadata": {
+        "type": "FFIExport",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_010": {
+      "types": [
+        "DashboardState"
+      ],
+      "metadata": {
+        "type": "DashboardState",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_006": {
+      "types": [
+        "TypeScriptEnum"
+      ],
+      "metadata": {
+        "type": "TypeScriptEnum",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_008": {
+      "types": [
+        "PublicItem"
+      ],
+      "metadata": {
+        "type": "PublicItem",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_004": {
+      "types": [
+        "EvidenceType"
+      ],
+      "metadata": {
+        "type": "EvidenceType",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_012": {
+      "types": [
+        "EventLogEntry"
+      ],
+      "metadata": {
+        "type": "EventLogEntry",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_002": {
+      "types": [
+        "FeatureDefinition"
+      ],
+      "metadata": {
+        "type": "FeatureDefinition",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_014": {
+      "types": [
+        "SchemaDiff"
+      ],
+      "metadata": {
+        "type": "SchemaDiff",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_013": {
+      "types": [
+        "LiveCheckFinding"
+      ],
+      "metadata": {
+        "type": "LiveCheckFinding",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_015": {
+      "types": [
+        "OTelSchema"
+      ],
+      "metadata": {
+        "type": "OTelSchema",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_001": {
+      "types": [
+        "SerializationCheck"
+      ],
+      "metadata": {
+        "type": "SerializationCheck",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_003": {
+      "types": [
+        "WITWorld"
+      ],
+      "metadata": {
+        "type": "WITWorld",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_005": {
+      "types": [
+        "BoardClaimDTO"
+      ],
+      "metadata": {
+        "type": "BoardClaimDTO",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/audit-law/SHAPE_009": {
+      "types": [
+        "AuthenticationMethod"
+      ],
+      "metadata": {
+        "type": "AuthenticationMethod",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/ontology/PARTIALVerdictCheckpoint": {
+      "types": [
+        "Checkpoint"
+      ],
+      "metadata": {
+        "type": "Checkpoint",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ALIVEVerdictCheckpoint": {
+      "types": [
+        "Checkpoint"
+      ],
+      "metadata": {
+        "type": "Checkpoint",
+        "predicates": "{'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_022": {
+      "types": [
+        "Markdown documentation"
+      ],
+      "metadata": {
+        "type": "Markdown documentation",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/blockingStatus', 'https://process.intelligence/ontology/outputType', 'https://process.intelligence/ontology/classification', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_009": {
+      "types": [
+        "WIT interface definition"
+      ],
+      "metadata": {
+        "type": "WIT interface definition",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/outputType', 'https://process.intelligence/ontology/blockingStatus', 'http://purl.org/dc/terms/title'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_021": {
+      "types": [
+        "Markdown documentation"
+      ],
+      "metadata": {
+        "type": "Markdown documentation",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/purpose', 'https://process.intelligence/ontology/outputType', 'http://purl.org/dc/terms/title'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_010": {
+      "types": [
+        "Rust source code"
+      ],
+      "metadata": {
+        "type": "Rust source code",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/outputType', 'https://process.intelligence/ontology/classification', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_012": {
+      "types": [
+        "TOML fragment (Cargo.toml)"
+      ],
+      "metadata": {
+        "type": "TOML fragment (Cargo.toml)",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/outputType', 'https://process.intelligence/ontology/classification', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_023": {
+      "types": [
+        "YAML configuration"
+      ],
+      "metadata": {
+        "type": "YAML configuration",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/outputType'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_011": {
+      "types": [
+        "Rust source code"
+      ],
+      "metadata": {
+        "type": "Rust source code",
+        "predicates": "{'https://process.intelligence/ontology/blockingStatus', 'https://process.intelligence/ontology/outputType', 'https://process.intelligence/ontology/classification', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_008": {
+      "types": [
+        "WIT component definition"
+      ],
+      "metadata": {
+        "type": "WIT component definition",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/classification', 'https://process.intelligence/ontology/outputType', 'https://process.intelligence/ontology/purpose'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_019": {
+      "types": [
+        "Rust source code"
+      ],
+      "metadata": {
+        "type": "Rust source code",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/outputType'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_013": {
+      "types": [
+        "shell script"
+      ],
+      "metadata": {
+        "type": "shell script",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/purpose', 'https://process.intelligence/ontology/outputType', 'http://purl.org/dc/terms/title'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_020": {
+      "types": [
+        "Rust source code"
+      ],
+      "metadata": {
+        "type": "Rust source code",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/purpose', 'https://process.intelligence/ontology/outputType'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_018": {
+      "types": [
+        "Rust source code"
+      ],
+      "metadata": {
+        "type": "Rust source code",
+        "predicates": "{'https://process.intelligence/ontology/blockingStatus', 'https://process.intelligence/ontology/outputType', 'https://process.intelligence/ontology/purpose', 'https://process.intelligence/ontology/classification', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/invalid-ggen/FILE_001": {
+      "types": [
+        "shell script"
+      ],
+      "metadata": {
+        "type": "shell script",
+        "predicates": "{'https://process.intelligence/ontology/templatingPattern', 'https://process.intelligence/ontology/outputType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_3": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_3": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_QUERY_1": {
+      "types": [
+        "rq"
+      ],
+      "metadata": {
+        "type": "rq",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_9": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/ontology/Ontology": {
+      "types": [
+        "Source"
+      ],
+      "metadata": {
+        "type": "Source",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_ONTOLOGY_6": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_QUERY_1": {
+      "types": [
+        "rq",
+        "Extraction"
+      ],
+      "metadata": {
+        "type": "Extraction",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/queryType', 'https://process.intelligence/ontology/projectId'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_TEMPLATE_2": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_6": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/projectId', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_TEMPLATE_4": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_5": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_2": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_1": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/purpose', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_4": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_ONTOLOGY_7": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_ONTOLOGY_5": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_QUERY_4": {
+      "types": [
+        "rq",
+        "Extraction"
+      ],
+      "metadata": {
+        "type": "Extraction",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/queryType', 'https://process.intelligence/ontology/fileSize'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ONTOLOGY_1": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/fileSize', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_5": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/ontology/Query": {
+      "types": [
+        "Source"
+      ],
+      "metadata": {
+        "type": "Source",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_1": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_ONTOLOGY_4": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_2": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_AUDIT_QUERIES": {
+      "types": [
+        "rq"
+      ],
+      "metadata": {
+        "type": "rq",
+        "predicates": "{'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/queries', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_7": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_6": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_ONTOLOGY_1": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_7": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_TEMPLATE_1": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_QUERY_2": {
+      "types": [
+        "rq",
+        "Extraction"
+      ],
+      "metadata": {
+        "type": "Extraction",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'https://process.intelligence/ontology/queryType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/projectId'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_QUERY_3": {
+      "types": [
+        "rq",
+        "Extraction"
+      ],
+      "metadata": {
+        "type": "Extraction",
+        "predicates": "{'https://process.intelligence/ontology/queryType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_TEMPLATE_3": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/templateRole', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_4": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/ontology/Template": {
+      "types": [
+        "Source"
+      ],
+      "metadata": {
+        "type": "Source",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_SELECTION_QUERIES": {
+      "types": [
+        "rq"
+      ],
+      "metadata": {
+        "type": "rq",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/queryCount', 'https://process.intelligence/ontology/queries', 'https://process.intelligence/ontology/sourceType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_TEMPLATE_1": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/fileSize', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_ONTOLOGY_2": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType', 'https://process.intelligence/ontology/purpose', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_1_ROOT_TEMPLATE_8": {
+      "types": [
+        "tera"
+      ],
+      "metadata": {
+        "type": "tera",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_3_ONTOLOGY_8": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/fileSize', 'https://process.intelligence/ontology/projectId', 'https://process.intelligence/ontology/sourceType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/parseStatus', 'https://process.intelligence/ontology/referenced'}"
+      }
+    },
+    "https://process.intelligence/source/PROJ_2_ONTOLOGY_3": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/sourceType'}"
+      }
+    },
+    "https://process.intelligence/ggen-unified-run/ARTIFACT_3": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/artifactRole', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/dcat#theme', 'http://purl.org/dc/terms/title', 'https://process.intelligence/ontology/outputPath', 'http://purl.org/dc/terms/description', 'https://process.intelligence/ontology/artifactType', 'https://process.intelligence/ontology/teraFileCount', 'http://www.w3.org/ns/prov#wasGeneratedBy'}"
+      }
+    },
+    "https://process.intelligence/ggen-unified-run/ARTIFACT_6": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://www.w3.org/ns/dcat#theme', 'https://process.intelligence/ontology/outputPath', 'https://process.intelligence/ontology/artifactType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/prov#wasGeneratedBy', 'https://process.intelligence/ontology/aliveCheckpointCount'}"
+      }
+    },
+    "https://process.intelligence/ggen-unified-run/ARTIFACT_2": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/artifactRole', 'http://purl.org/dc/terms/title', 'http://www.w3.org/ns/dcat#theme', 'http://purl.org/dc/terms/description', 'https://process.intelligence/ontology/projectCount', 'https://process.intelligence/ontology/artifactType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/prov#wasGeneratedBy'}"
+      }
+    },
+    "https://process.intelligence/ggen-unified-run/ARTIFACT_4": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/artifactType'}"
+      }
+    },
+    "https://process.intelligence/ggen-unified-run/ARTIFACT_7": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/artifactRole', 'http://purl.org/dc/terms/title', 'http://www.w3.org/ns/dcat#theme', 'https://process.intelligence/ontology/auditGateCount', 'https://process.intelligence/ontology/artifactType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/prov#wasGeneratedBy'}"
+      }
+    },
+    "https://process.intelligence/ggen-unified-run/ARTIFACT_1": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/artifactRole', 'http://purl.org/dc/terms/title', 'http://www.w3.org/ns/dcat#theme', 'https://process.intelligence/ontology/artifactType', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "https://process.intelligence/ggen-unified-run/ARTIFACT_5": {
+      "types": [
+        "ttl"
+      ],
+      "metadata": {
+        "type": "ttl",
+        "predicates": "{'https://process.intelligence/ontology/artifactRole', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'https://process.intelligence/ontology/ggenFileCount', 'http://www.w3.org/ns/dcat#theme', 'https://process.intelligence/ontology/migrationRequiredCount', 'https://process.intelligence/ontology/outputPath', 'https://process.intelligence/ontology/artifactType', 'http://www.w3.org/ns/prov#wasGeneratedBy'}"
+      }
+    },
+    "https://process.intelligence/ontology/CONFORMANCE_SURFACE": {
+      "types": [
+        "EXECUTION_COURT"
+      ],
+      "metadata": {
+        "type": "EXECUTION_COURT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/AuditFinding": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/AUTHORIZATION_COURT": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/MANUFACTURING_CELL": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/GRADUATION_SIGNAL": {
+      "types": [
+        "AUTHORIZATION_COURT"
+      ],
+      "metadata": {
+        "type": "AUTHORIZATION_COURT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/PROOF_CELL": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://www.w3.org/2004/02/skos/core#scopeNote'}"
+      }
+    },
+    "https://process.intelligence/ontology/PARTIAL_CLAIM": {
+      "types": [
+        "CHECKPOINT"
+      ],
+      "metadata": {
+        "type": "CHECKPOINT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/PROGRAM": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/RefusalSurfaceShape": {
+      "types": [
+        "REFUSAL_SURFACE"
+      ],
+      "metadata": {
+        "type": "REFUSAL_SURFACE",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/ontology/ALIVE_CLAIM": {
+      "types": [
+        "CHECKPOINT"
+      ],
+      "metadata": {
+        "type": "CHECKPOINT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/REMEDIATION_CANDIDATE": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ForbiddenCollapseShape": {
+      "types": [
+        "FORBIDDEN_COLLAPSE"
+      ],
+      "metadata": {
+        "type": "FORBIDDEN_COLLAPSE",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/ontology/FAILED_GATE": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/REFUSAL_SURFACE": {
+      "types": [
+        "AUTHORIZATION_COURT"
+      ],
+      "metadata": {
+        "type": "AUTHORIZATION_COURT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/RESEARCH_ARTIFACT": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ProjectRegistryShape": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/ontology/REPLAY_SURFACE": {
+      "types": [
+        "EXECUTION_COURT"
+      ],
+      "metadata": {
+        "type": "EXECUTION_COURT",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/RECEIPT_SURFACE": {
+      "types": [
+        "EXECUTION_COURT"
+      ],
+      "metadata": {
+        "type": "EXECUTION_COURT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ADMISSION_SURFACE": {
+      "types": [
+        "AUTHORIZATION_COURT"
+      ],
+      "metadata": {
+        "type": "AUTHORIZATION_COURT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/PaperClassificationShape": {
+      "types": [
+        "PaperClassification"
+      ],
+      "metadata": {
+        "type": "PaperClassification",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://process.intelligence/ontology/EXECUTION_COURT": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/SOURCE_COURT": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/MOBILE_SUBSTRATE": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://www.w3.org/2004/02/skos/core#scopeNote'}"
+      }
+    },
+    "https://process.intelligence/ontology/ENGINE": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://www.w3.org/2004/02/skos/core#scopeNote'}"
+      }
+    },
+    "https://process.intelligence/ontology/COMPATIBILITY_LAYER": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://www.w3.org/2004/02/skos/core#scopeNote'}"
+      }
+    },
+    "https://process.intelligence/ontology/CapabilityMap": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/PaperClassification": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/CheckpointShape": {
+      "types": [
+        "CHECKPOINT"
+      ],
+      "metadata": {
+        "type": "CHECKPOINT",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/ontology/FORBIDDEN_COLLAPSE": {
+      "types": [
+        "REFUSAL_SURFACE"
+      ],
+      "metadata": {
+        "type": "REFUSAL_SURFACE",
+        "predicates": "{'http://www.w3.org/2004/02/skos/core#example', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ExperimentFixture": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/ResearchArtifactShape": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://process.intelligence/ontology/TELEMETRY_FEEDSTOCK": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://process.intelligence/ontology/WORKFLOW_SUBSTRATE": {
+      "types": [
+        "ProgramRole"
+      ],
+      "metadata": {
+        "type": "ProgramRole",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#label', 'http://www.w3.org/2004/02/skos/core#definition', 'http://www.w3.org/2000/01/rdf-schema#subClassOf', 'http://www.w3.org/2004/02/skos/core#scopeNote'}"
+      }
+    },
+    "https://process.intelligence/ontology/CHECKPOINT": {
+      "types": [
+        "RESEARCH_ARTIFACT"
+      ],
+      "metadata": {
+        "type": "RESEARCH_ARTIFACT",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#InvalidGgenFile_Classification": {
+      "types": [
+        "prompt-manufactory#InvalidGgenFile"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#InvalidGgenFile",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/programs#GGEN_CLAUDE_WORKFLOW_INTEL_001": {
+      "types": [
+        "prompt-manufactory#INTEL"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#INTEL",
+        "predicates": "{'http://purl.org/dc/terms/issued', 'https://pi-research.dev/ontology/prompt-manufactory#hasPromptClass'}"
+      }
+    },
+    "n14ed57cf428b492fa4bc4ebcc7a866b4b7": {
+      "types": [
+        "prompt-manufactory#Checkpoint"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#Checkpoint",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#Receipt": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#OwnedSurface": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#RenderedPrompt": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/programs#GGEN_ECOSYSTEM_INTEL_001": {
+      "types": [
+        "prompt-manufactory#INTEL"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#INTEL",
+        "predicates": "{'http://purl.org/dc/terms/description', 'http://purl.org/dc/terms/issued', 'https://pi-research.dev/ontology/prompt-manufactory#hasPromptClass', 'https://pi-research.dev/ontology/prompt-manufactory#programId', 'http://www.w3.org/2000/01/rdf-schema#comment', 'https://pi-research.dev/ontology/prompt-manufactory#mission', 'https://pi-research.dev/ontology/prompt-manufactory#hasWorkflow'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#HookPolicy": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#PromptClass": {
+      "types": [
+        "22-rdf-syntax-ns#Property"
+      ],
+      "metadata": {
+        "type": "22-rdf-syntax-ns#Property",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#ResearchProgram": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#Phase": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#AuditGate": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#ForbiddenSurface": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#RefusalCondition": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#SubagentRole": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/programs#GGEN_OTEL_WEAVER_PI_INTEL_001": {
+      "types": [
+        "prompt-manufactory#INTEL"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#INTEL",
+        "predicates": "{'https://pi-research.dev/ontology/prompt-manufactory#hasPromptClass'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#Skill": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#comment', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/programs#GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001": {
+      "types": [
+        "prompt-manufactory#INTEL"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#INTEL",
+        "predicates": "{'http://purl.org/dc/terms/issued', 'https://pi-research.dev/ontology/prompt-manufactory#hasPromptClass'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#InvalidGgenFile": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#Checkpoint": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "n14ed57cf428b492fa4bc4ebcc7a866b4b5": {
+      "types": [
+        "prompt-manufactory#RenderedPrompt"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#RenderedPrompt",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    },
+    "https://pi-research.dev/programs#ZOEAPP_RESEARCH_PROGRAM_INTEL_001": {
+      "types": [
+        "prompt-manufactory#INTEL"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#INTEL",
+        "predicates": "{'http://purl.org/dc/terms/issued', 'https://pi-research.dev/ontology/prompt-manufactory#hasPromptClass', 'https://pi-research.dev/ontology/prompt-manufactory#programId', 'http://www.w3.org/2000/01/rdf-schema#comment', 'https://pi-research.dev/ontology/prompt-manufactory#mission', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'}"
+      }
+    },
+    "n14ed57cf428b492fa4bc4ebcc7a866b4b3": {
+      "types": [
+        "prompt-manufactory#SubagentRole"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#SubagentRole",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://pi-research.dev/ontology/prompt-manufactory#Workflow": {
+      "types": [
+        "prov#Entity"
+      ],
+      "metadata": {
+        "type": "prov#Entity",
+        "predicates": "{'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/2000/01/rdf-schema#subClassOf'}"
+      }
+    },
+    "n14ed57cf428b492fa4bc4ebcc7a866b4b1": {
+      "types": [
+        "prompt-manufactory#ResearchProgram"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#ResearchProgram",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "https://pi-research.dev/programs#WASM4PM_COMPAT_PROJECTION_REMEDIATE_001": {
+      "types": [
+        "prompt-manufactory#REMEDIATE"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#REMEDIATE",
+        "predicates": "{'http://purl.org/dc/terms/description', 'http://purl.org/dc/terms/issued', 'https://pi-research.dev/ontology/prompt-manufactory#hasPromptClass', 'https://pi-research.dev/ontology/prompt-manufactory#programId', 'http://www.w3.org/2000/01/rdf-schema#comment', 'https://pi-research.dev/ontology/prompt-manufactory#mission', 'https://pi-research.dev/ontology/prompt-manufactory#hasWorkflow', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://purl.org/dc/terms/identifier'}"
+      }
+    },
+    "https://pi-research.dev/programs#PI_RESEARCH_PROGRAM_INTEL_001": {
+      "types": [
+        "prompt-manufactory#INTEL"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#INTEL",
+        "predicates": "{'http://www.w3.org/2000/01/rdf-schema#comment', 'https://pi-research.dev/ontology/prompt-manufactory#hasPromptClass'}"
+      }
+    },
+    "n234ca5ba374841ac8aa84d3f5d568811b7": {
+      "types": [
+        "prompt-manufactory#Checkpoint"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#Checkpoint",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "n234ca5ba374841ac8aa84d3f5d568811b5": {
+      "types": [
+        "prompt-manufactory#RenderedPrompt"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#RenderedPrompt",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "n234ca5ba374841ac8aa84d3f5d568811b1": {
+      "types": [
+        "prompt-manufactory#ResearchProgram"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#ResearchProgram",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass', 'http://www.w3.org/ns/shacl#property'}"
+      }
+    },
+    "n234ca5ba374841ac8aa84d3f5d568811b3": {
+      "types": [
+        "prompt-manufactory#SubagentRole"
+      ],
+      "metadata": {
+        "type": "prompt-manufactory#SubagentRole",
+        "predicates": "{'http://www.w3.org/ns/shacl#targetClass'}"
+      }
+    }
+  },
+  "relationships": {
+    "summary": {
+      "total_relations": 9335,
+      "relation_types": {
+        "rdf-schema#label": 1109,
+        "owl#onProperty": 31,
+        "owl#cardinality": 27,
+        "rdf-schema#range": 511,
+        "22-rdf-syntax-ns#first": 83,
+        "22-rdf-syntax-ns#rest": 83,
+        "22-rdf-syntax-ns#type": 2168,
+        "rdf-schema#subClassOf": 162,
+        "rdf-schema#comment": 248,
+        "rdf-schema#domain": 92,
+        "owl#disjointUnionOf": 3,
+        "owl#minCardinality": 4,
+        "owl#maxCardinality": 2,
+        "verdictType": 20,
+        "prov#wasUsedBy": 26,
+        "description": 392,
+        "shacl#path": 90,
+        "shacl#property": 90,
+        "core#definition": 390,
+        "shacl#minCount": 60,
+        "commitHash": 2,
+        "created": 46,
+        "authorizedDownstream": 8,
+        "url": 64,
+        "gatesCriteriaTotal": 4,
+        "shacl#in": 14,
+        "shacl#message": 86,
+        "prov#startedAtTime": 4,
+        "gatesCriteriaMet": 14,
+        "shacl#datatype": 16,
+        "prov#wasAttributedTo": 42,
+        "prov#endedAtTime": 4,
+        "prov#wasGeneratedBy": 50,
+        "shacl#targetClass": 68,
+        "owl#imports": 12,
+        "authoritySignature": 2,
+        "owl#versionInfo": 14,
+        "prov#wasRevisionOf": 2,
+        "blockingGap": 2,
+        "core#note": 12,
+        "title": 292,
+        "creator": 34,
+        "prov#wasPartOf": 100,
+        "shacl#maxInclusive": 2,
+        "witnessMarker": 2,
+        "conformanceVerdict": 2,
+        "precisionValue": 2,
+        "conformanceThreshold": 2,
+        "fitnessValue": 4,
+        "shacl#minInclusive": 2,
+        "collapseRemediationPath": 16,
+        "collapseAuditResult": 20,
+        "core#example": 38,
+        "collapseStatus": 16,
+        "collapseLocation": 16,
+        "core#editorialNote": 4,
+        "shacl#select": 2,
+        "shacl#sparql": 2,
+        "engineSurface": 10,
+        "graduatesTo": 10,
+        "graduatesFrom": 10,
+        "graduationReason": 10,
+        "shacl#not": 2,
+        "shacl#hasValue": 24,
+        "hasRole": 90,
+        "criterion": 36,
+        "shaclShape": 30,
+        "category": 30,
+        "gateNumber": 36,
+        "scope": 30,
+        "blockingStatus": 82,
+        "shaclConstraints": 2,
+        "failureExample": 2,
+        "expectedAction": 2,
+        "gateCategories": 2,
+        "expectedCount": 2,
+        "totalGates": 2,
+        "issued": 30,
+        "estimatedRemediationHours": 2,
+        "gate6": 2,
+        "gateCriteria": 10,
+        "domain": 4,
+        "auditCount": 2,
+        "remediationPhase2": 2,
+        "failedGates": 10,
+        "gapTitle": 2,
+        "authority": 12,
+        "gatesDescription": 2,
+        "status": 62,
+        "committedHash": 4,
+        "riskAssessment": 10,
+        "unresolvedPartials": 8,
+        "gate3Criterion": 2,
+        "gateFail": 2,
+        "gate4Criterion": 2,
+        "estimatedFixHours": 4,
+        "remediationPhase3": 2,
+        "downstreamAuthorization": 8,
+        "gate1": 4,
+        "gate9Criterion": 2,
+        "assessmentRepository": 2,
+        "failureImpact": 2,
+        "artifactCount": 2,
+        "blake3Seal": 2,
+        "gate5Criterion": 2,
+        "failingGate": 2,
+        "gate4": 4,
+        "statusCode": 2,
+        "blueRiverDamLines": 2,
+        "verificationCode": 4,
+        "downstreamIntegrations": 2,
+        "gate5": 4,
+        "failureLocation": 2,
+        "gate10": 2,
+        "gate6Criterion": 2,
+        "gapId": 4,
+        "targetSubsystems": 2,
+        "gapImpact": 2,
+        "receiptRegistryEntries": 2,
+        "gate8Criterion": 2,
+        "gate2": 4,
+        "gate12": 2,
+        "targetCrate": 2,
+        "gapIds": 2,
+        "renderedArtifacts": 2,
+        "receiptReference": 2,
+        "phase2": 4,
+        "openRemediationItems": 2,
+        "totalMarkdownArtifacts": 2,
+        "gate8": 2,
+        "failureIssue": 2,
+        "partialCheckpoints": 2,
+        "gate2Criterion": 2,
+        "phase3": 4,
+        "gate3": 4,
+        "failureRemediationNote": 2,
+        "totalCheckpoints": 2,
+        "auditGatePasses": 2,
+        "gatePass": 2,
+        "gate9": 2,
+        "gate10Criterion": 2,
+        "zeroUnsafeCode": 2,
+        "phase5": 2,
+        "gate11Criterion": 2,
+        "gate1Criterion": 2,
+        "operationalStatus": 2,
+        "forbidEnforced": 2,
+        "aliveCheckpoints": 2,
+        "phase1": 4,
+        "failedCheckpoints": 2,
+        "downstreamProjectsFound": 2,
+        "blueRiverDamPath": 2,
+        "hash": 4,
+        "remediationPhase1": 2,
+        "gate11": 2,
+        "phase6": 2,
+        "phase4": 4,
+        "gate7Criterion": 2,
+        "blueRiverDamTestsPassed": 2,
+        "gate7": 2,
+        "blockingIssue": 16,
+        "queries": 128,
+        "program": 28,
+        "query": 24,
+        "template": 24,
+        "totalRules": 2,
+        "activeGenerationRules": 2,
+        "auditQueries": 4,
+        "evidence": 2,
+        "ruleCount": 6,
+        "ontology": 2,
+        "note": 10,
+        "selectionQueries": 4,
+        "version": 10,
+        "activeRules": 4,
+        "programs": 2,
+        "outputMode": 4,
+        "blockedRules": 2,
+        "evidenceSources": 2,
+        "compliance": 2,
+        "inactiveRules": 4,
+        "outputFile": 4,
+        "audience": 2,
+        "totalQueries": 2,
+        "targetFormat": 2,
+        "generationQueries": 2,
+        "queryCount": 10,
+        "functionalGenerationRules": 2,
+        "tomlFiles": 2,
+        "functionalProgramsPercentage": 2,
+        "blockedRuleNote": 2,
+        "functionalRulesPercentage": 2,
+        "handCoding": 2,
+        "mode": 2,
+        "classification": 46,
+        "migrationRequired": 2,
+        "purpose": 92,
+        "outputType": 26,
+        "phase1Detail": 2,
+        "remediationRoute": 4,
+        "blockingSource": 2,
+        "phase4Detail": 2,
+        "phase2Detail": 2,
+        "totalGgenFiles": 2,
+        "renderedWithWrongExtension": 2,
+        "templatingPattern": 2,
+        "phase3Detail": 2,
+        "verdict": 2,
+        "outOfScope": 2,
+        "legacyInvalid": 2,
+        "lifecycleFileCount": 2,
+        "count": 10,
+        "dcat#theme": 100,
+        "workspaceMembers": 22,
+        "capability": 4,
+        "coreModule": 6,
+        "pipelineStage": 10,
+        "testFixtureCount": 2,
+        "codeRepository": 30,
+        "studiedProjects": 12,
+        "subsystem": 10,
+        "qualityGate": 6,
+        "role": 24,
+        "feature": 8,
+        "lifecycleState": 14,
+        "capabilityName": 4,
+        "identifier": 28,
+        "proofGate": 16,
+        "checkpointReference": 2,
+        "responsibility": 8,
+        "outputAuthority": 2,
+        "maClaimFileCount": 2,
+        "dependency": 2,
+        "standardsFileCount": 2,
+        "testSuiteCount": 2,
+        "knownGap": 2,
+        "doctrineFileCount": 2,
+        "testCoverage": 2,
+        "totalSources": 2,
+        "parseStatus": 74,
+        "fileSize": 70,
+        "referenced": 74,
+        "parseStatusError": 2,
+        "projectId": 74,
+        "unreferencedPercentage": 2,
+        "sourceType": 74,
+        "referencedPercentage": 2,
+        "templateRole": 8,
+        "parseStatusSuspicious": 2,
+        "referencedByGeneration": 2,
+        "queryType": 8,
+        "unreferencedByGeneration": 2,
+        "ttlFiles": 2,
+        "teraFiles": 2,
+        "rqFiles": 2,
+        "parseStatusValid": 2,
+        "artifactType": 14,
+        "inputOntologies": 14,
+        "shaclConstraintCount": 2,
+        "artifactRole": 14,
+        "teraFileCount": 2,
+        "outputPath": 14,
+        "ggenFileCount": 2,
+        "partialCheckpointCount": 2,
+        "position": 8,
+        "outputProducts": 6,
+        "auditGateCount": 2,
+        "projectCount": 2,
+        "tomlFileCount": 2,
+        "aliveCheckpointCount": 2,
+        "feeds": 2,
+        "ttlFileCount": 2,
+        "prov#wasAssociatedWith": 2,
+        "generationRuleCount": 2,
+        "migrationRequiredCount": 2,
+        "rqFileCount": 2,
+        "core#scopeNote": 14,
+        "source": 10,
+        "conformsTo": 6,
+        "date": 18,
+        "prov#used": 2,
+        "subject": 2,
+        "license": 2,
+        "prompt-manufactory#mission": 110,
+        "prompt-manufactory#emitsRefusal": 20,
+        "prompt-manufactory#blockingStatus": 44,
+        "prompt-manufactory#remediationRoute": 44,
+        "prompt-manufactory#classification": 44,
+        "prompt-manufactory#filePath": 44,
+        "prompt-manufactory#ownerProject": 44,
+        "prompt-manufactory#forbidsSurface": 32,
+        "prompt-manufactory#hasOutputContract": 30,
+        "prompt-manufactory#hasRefusalGate": 30,
+        "prompt-manufactory#hasSubagentRole": 30,
+        "prompt-manufactory#hasWorkflow": 14,
+        "prompt-manufactory#hasPhase": 18,
+        "prompt-manufactory#hasPromptClass": 14,
+        "prompt-manufactory#ownsSurface": 48,
+        "prompt-manufactory#programId": 14
+      }
+    },
+    "rdf-schema#label": 1109,
+    "owl#onProperty": 31,
+    "owl#cardinality": 27,
+    "rdf-schema#range": 511,
+    "22-rdf-syntax-ns#first": 83,
+    "22-rdf-syntax-ns#rest": 83,
+    "22-rdf-syntax-ns#type": 2168,
+    "rdf-schema#subClassOf": 162,
+    "rdf-schema#comment": 248,
+    "rdf-schema#domain": 92,
+    "owl#disjointUnionOf": 3,
+    "owl#minCardinality": 4,
+    "owl#maxCardinality": 2,
+    "verdictType": 20,
+    "prov#wasUsedBy": 26,
+    "description": 392,
+    "shacl#path": 90,
+    "shacl#property": 90,
+    "core#definition": 390,
+    "shacl#minCount": 60,
+    "commitHash": 2,
+    "created": 46,
+    "authorizedDownstream": 8,
+    "url": 64,
+    "gatesCriteriaTotal": 4,
+    "shacl#in": 14,
+    "shacl#message": 86,
+    "prov#startedAtTime": 4,
+    "gatesCriteriaMet": 14,
+    "shacl#datatype": 16,
+    "prov#wasAttributedTo": 42,
+    "prov#endedAtTime": 4,
+    "prov#wasGeneratedBy": 50,
+    "shacl#targetClass": 68,
+    "owl#imports": 12,
+    "authoritySignature": 2,
+    "owl#versionInfo": 14,
+    "prov#wasRevisionOf": 2,
+    "blockingGap": 2,
+    "core#note": 12,
+    "title": 292,
+    "creator": 34,
+    "prov#wasPartOf": 100,
+    "shacl#maxInclusive": 2,
+    "witnessMarker": 2,
+    "conformanceVerdict": 2,
+    "precisionValue": 2,
+    "conformanceThreshold": 2,
+    "fitnessValue": 4,
+    "shacl#minInclusive": 2,
+    "collapseRemediationPath": 16,
+    "collapseAuditResult": 20,
+    "core#example": 38,
+    "collapseStatus": 16,
+    "collapseLocation": 16,
+    "core#editorialNote": 4,
+    "shacl#select": 2,
+    "shacl#sparql": 2,
+    "engineSurface": 10,
+    "graduatesTo": 10,
+    "graduatesFrom": 10,
+    "graduationReason": 10,
+    "shacl#not": 2,
+    "shacl#hasValue": 24,
+    "hasRole": 90,
+    "criterion": 36,
+    "shaclShape": 30,
+    "category": 30,
+    "gateNumber": 36,
+    "scope": 30,
+    "blockingStatus": 82,
+    "shaclConstraints": 2,
+    "failureExample": 2,
+    "expectedAction": 2,
+    "gateCategories": 2,
+    "expectedCount": 2,
+    "totalGates": 2,
+    "issued": 30,
+    "estimatedRemediationHours": 2,
+    "gate6": 2,
+    "gateCriteria": 10,
+    "domain": 4,
+    "auditCount": 2,
+    "remediationPhase2": 2,
+    "failedGates": 10,
+    "gapTitle": 2,
+    "authority": 12,
+    "gatesDescription": 2,
+    "status": 62,
+    "committedHash": 4,
+    "riskAssessment": 10,
+    "unresolvedPartials": 8,
+    "gate3Criterion": 2,
+    "gateFail": 2,
+    "gate4Criterion": 2,
+    "estimatedFixHours": 4,
+    "remediationPhase3": 2,
+    "downstreamAuthorization": 8,
+    "gate1": 4,
+    "gate9Criterion": 2,
+    "assessmentRepository": 2,
+    "failureImpact": 2,
+    "artifactCount": 2,
+    "blake3Seal": 2,
+    "gate5Criterion": 2,
+    "failingGate": 2,
+    "gate4": 4,
+    "statusCode": 2,
+    "blueRiverDamLines": 2,
+    "verificationCode": 4,
+    "downstreamIntegrations": 2,
+    "gate5": 4,
+    "failureLocation": 2,
+    "gate10": 2,
+    "gate6Criterion": 2,
+    "gapId": 4,
+    "targetSubsystems": 2,
+    "gapImpact": 2,
+    "receiptRegistryEntries": 2,
+    "gate8Criterion": 2,
+    "gate2": 4,
+    "gate12": 2,
+    "targetCrate": 2,
+    "gapIds": 2,
+    "renderedArtifacts": 2,
+    "receiptReference": 2,
+    "phase2": 4,
+    "openRemediationItems": 2,
+    "totalMarkdownArtifacts": 2,
+    "gate8": 2,
+    "failureIssue": 2,
+    "partialCheckpoints": 2,
+    "gate2Criterion": 2,
+    "phase3": 4,
+    "gate3": 4,
+    "failureRemediationNote": 2,
+    "totalCheckpoints": 2,
+    "auditGatePasses": 2,
+    "gatePass": 2,
+    "gate9": 2,
+    "gate10Criterion": 2,
+    "zeroUnsafeCode": 2,
+    "phase5": 2,
+    "gate11Criterion": 2,
+    "gate1Criterion": 2,
+    "operationalStatus": 2,
+    "forbidEnforced": 2,
+    "aliveCheckpoints": 2,
+    "phase1": 4,
+    "failedCheckpoints": 2,
+    "downstreamProjectsFound": 2,
+    "blueRiverDamPath": 2,
+    "hash": 4,
+    "remediationPhase1": 2,
+    "gate11": 2,
+    "phase6": 2,
+    "phase4": 4,
+    "gate7Criterion": 2,
+    "blueRiverDamTestsPassed": 2,
+    "gate7": 2,
+    "blockingIssue": 16,
+    "queries": 128,
+    "program": 28,
+    "query": 24,
+    "template": 24,
+    "totalRules": 2,
+    "activeGenerationRules": 2,
+    "auditQueries": 4,
+    "evidence": 2,
+    "ruleCount": 6,
+    "ontology": 2,
+    "note": 10,
+    "selectionQueries": 4,
+    "version": 10,
+    "activeRules": 4,
+    "programs": 2,
+    "outputMode": 4,
+    "blockedRules": 2,
+    "evidenceSources": 2,
+    "compliance": 2,
+    "inactiveRules": 4,
+    "outputFile": 4,
+    "audience": 2,
+    "totalQueries": 2,
+    "targetFormat": 2,
+    "generationQueries": 2,
+    "queryCount": 10,
+    "functionalGenerationRules": 2,
+    "tomlFiles": 2,
+    "functionalProgramsPercentage": 2,
+    "blockedRuleNote": 2,
+    "functionalRulesPercentage": 2,
+    "handCoding": 2,
+    "mode": 2,
+    "classification": 46,
+    "migrationRequired": 2,
+    "purpose": 92,
+    "outputType": 26,
+    "phase1Detail": 2,
+    "remediationRoute": 4,
+    "blockingSource": 2,
+    "phase4Detail": 2,
+    "phase2Detail": 2,
+    "totalGgenFiles": 2,
+    "renderedWithWrongExtension": 2,
+    "templatingPattern": 2,
+    "phase3Detail": 2,
+    "verdict": 2,
+    "outOfScope": 2,
+    "legacyInvalid": 2,
+    "lifecycleFileCount": 2,
+    "count": 10,
+    "dcat#theme": 100,
+    "workspaceMembers": 22,
+    "capability": 4,
+    "coreModule": 6,
+    "pipelineStage": 10,
+    "testFixtureCount": 2,
+    "codeRepository": 30,
+    "studiedProjects": 12,
+    "subsystem": 10,
+    "qualityGate": 6,
+    "role": 24,
+    "feature": 8,
+    "lifecycleState": 14,
+    "capabilityName": 4,
+    "identifier": 28,
+    "proofGate": 16,
+    "checkpointReference": 2,
+    "responsibility": 8,
+    "outputAuthority": 2,
+    "maClaimFileCount": 2,
+    "dependency": 2,
+    "standardsFileCount": 2,
+    "testSuiteCount": 2,
+    "knownGap": 2,
+    "doctrineFileCount": 2,
+    "testCoverage": 2,
+    "totalSources": 2,
+    "parseStatus": 74,
+    "fileSize": 70,
+    "referenced": 74,
+    "parseStatusError": 2,
+    "projectId": 74,
+    "unreferencedPercentage": 2,
+    "sourceType": 74,
+    "referencedPercentage": 2,
+    "templateRole": 8,
+    "parseStatusSuspicious": 2,
+    "referencedByGeneration": 2,
+    "queryType": 8,
+    "unreferencedByGeneration": 2,
+    "ttlFiles": 2,
+    "teraFiles": 2,
+    "rqFiles": 2,
+    "parseStatusValid": 2,
+    "artifactType": 14,
+    "inputOntologies": 14,
+    "shaclConstraintCount": 2,
+    "artifactRole": 14,
+    "teraFileCount": 2,
+    "outputPath": 14,
+    "ggenFileCount": 2,
+    "partialCheckpointCount": 2,
+    "position": 8,
+    "outputProducts": 6,
+    "auditGateCount": 2,
+    "projectCount": 2,
+    "tomlFileCount": 2,
+    "aliveCheckpointCount": 2,
+    "feeds": 2,
+    "ttlFileCount": 2,
+    "prov#wasAssociatedWith": 2,
+    "generationRuleCount": 2,
+    "migrationRequiredCount": 2,
+    "rqFileCount": 2,
+    "core#scopeNote": 14,
+    "source": 10,
+    "conformsTo": 6,
+    "date": 18,
+    "prov#used": 2,
+    "subject": 2,
+    "license": 2,
+    "prompt-manufactory#mission": 110,
+    "prompt-manufactory#emitsRefusal": 20,
+    "prompt-manufactory#blockingStatus": 44,
+    "prompt-manufactory#remediationRoute": 44,
+    "prompt-manufactory#classification": 44,
+    "prompt-manufactory#filePath": 44,
+    "prompt-manufactory#ownerProject": 44,
+    "prompt-manufactory#forbidsSurface": 32,
+    "prompt-manufactory#hasOutputContract": 30,
+    "prompt-manufactory#hasRefusalGate": 30,
+    "prompt-manufactory#hasSubagentRole": 30,
+    "prompt-manufactory#hasWorkflow": 14,
+    "prompt-manufactory#hasPhase": 18,
+    "prompt-manufactory#hasPromptClass": 14,
+    "prompt-manufactory#ownsSurface": 48,
+    "prompt-manufactory#programId": 14
+  }
+}

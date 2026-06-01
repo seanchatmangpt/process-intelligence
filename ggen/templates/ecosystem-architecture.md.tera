@@ -1,0 +1,42 @@
+# Ecosystem Architecture — Integration Landscape
+
+**Authority:** Process Intelligence Research Directorate
+**Date:** {{ now() | date(format="%Y-%m-%d") }}
+**Status:** CURRENT
+
+## Components Overview
+
+{% for component in results | sort(attribute="component_type") %}
+
+### {{ component.component_name }} ({{ component.component_type }})
+
+**ID:** {{ component.component_id }}
+**Capability Level:** {{ component.capability_level }}
+
+**Description:** {{ component.description }}
+
+{% if component.dependencies %}
+**Dependencies:**
+{{ component.dependencies }}
+{% endif %}
+
+{% if component.integration_points %}
+**Integration Points:**
+{{ component.integration_points }}
+{% endif %}
+
+{% if component.risk_assessment %}
+**Risk Assessment:** {{ component.risk_assessment }}
+{% endif %}
+
+---
+{% endfor %}
+
+## Architecture Principles
+
+1. All components must be discoverable and classifiable
+2. Dependencies must be explicitly documented
+3. Integration points require formal specifications
+4. Risk assessments drive mitigation planning
+
+**Generated:** {{ now() | date(format="%Y-%m-%dT%H:%M:%SZ") }}

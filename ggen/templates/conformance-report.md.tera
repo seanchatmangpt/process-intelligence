@@ -1,0 +1,49 @@
+# Conformance Report — Process Model Validation
+
+**Authority:** Process Intelligence Research Directorate
+**Date:** {{ now() | date(format="%Y-%m-%d") }}
+**Van der Aalst Constitution:** Enforced
+
+## Analysis Summary
+
+{% for analysis in results %}
+
+**Model Type:** {{ analysis.model_type }}
+**Event Log Source:** {{ analysis.event_log_source }}
+**Analysis Timestamp:** {{ analysis.timestamp }}
+
+## Fitness Metrics (Van der Aalst Standards)
+
+| Metric | Score | Status |
+|--------|-------|--------|
+| **Fitness** | {{ analysis.fitness_percent }}% | {% if analysis.fitness_pass == "true" %}✅ PASS{% else %}⚠️ WARN{% endif %} |
+| **Precision** | {{ analysis.precision_percent }}% | {% if analysis.precision_pass == "true" %}✅ PASS{% else %}⚠️ WARN{% endif %} |
+| **Generalization** | {{ analysis.generalization_percent }}% | {% if analysis.generalization_pass == "true" %}✅ PASS{% else %}⚠️ WARN{% endif %} |
+| **Simplicity** | {{ analysis.simplicity_percent }}% | {% if analysis.simplicity_pass == "true" %}✅ PASS{% else %}⚠️ WARN{% endif %} |
+
+## Conformance Violations
+
+{% if analysis.conformance_violations %}
+{{ analysis.conformance_violations }}
+{% else %}
+No violations detected. Process execution matches declared model.
+{% endif %}
+
+## Verdict
+
+{% if analysis.verdict_pass == "true" %}
+**✅ CONFORMANCE PASS** — Process execution lawfully follows declared model.
+{% else %}
+**⚠️ CONFORMANCE REVIEW REQUIRED** — Model-vs-log mismatch detected.
+{% endif %}
+
+---
+{% endfor %}
+
+## Van der Aalst Constitution
+
+> "If the code says it worked but the event log cannot prove a lawful process happened, then it did not work."
+
+All claims in this report are backed by event log evidence. Conformance is not optional.
+
+**Generated:** {{ now() | date(format="%Y-%m-%dT%H:%M:%SZ") }}

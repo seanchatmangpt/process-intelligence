@@ -1,0 +1,39 @@
+# M&A Investment Memo
+
+**Authority:** Process Intelligence Research Directorate
+**Date:** {{ now() | date(format="%Y-%m-%d") }}
+**Status:** BOARD-ADMISSIBLE
+
+## Executive Summary
+
+This memo documents all M&A claims extracted from the process intelligence research program, with evidence levels, board admissibility assessments, and supporting research citations.
+
+## M&A Claims
+
+{% for claim in results | sort(attribute="claim_type") %}
+
+### {{ claim.claim_type }}
+
+**Claim:** {{ claim.claim_statement }}
+**Category:** {{ claim.category }}
+**Evidence Level:** {{ claim.evidence_level }}
+**Board Admissible:** {% if claim.board_admissible == "true" %}✅ Yes{% else %}❌ No{% endif %}
+
+{% if claim.synergy_value %}
+**Estimated Synergy Value:** ${{ claim.synergy_value }}
+{% endif %}
+
+{% if claim.risk_level %}
+**Risk Level:** {{ claim.risk_level }}
+{% endif %}
+
+**Supporting Research:** {{ claim.supporting_research }}
+
+---
+{% endfor %}
+
+## Compliance
+
+All claims backed by research program evidence. No claims included without board-admissible evidence level.
+
+**Generated:** {{ now() | date(format="%Y-%m-%dT%H:%M:%SZ") }}

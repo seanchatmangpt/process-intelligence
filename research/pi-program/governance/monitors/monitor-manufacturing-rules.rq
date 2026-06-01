@@ -1,0 +1,49 @@
+# Monitor: Manufacturing Rule Success Rate
+# Derives KPI-001 from ggen execution logs
+# Returns success rate and failure details
+
+PREFIX ggen: <urn:process-intelligence:ggen:>
+PREFIX otel: <urn:opentelemetry:>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT
+  ?rule
+  ?total_executions
+  ?successful_executions
+  ?failed_executions
+  (xsd:decimal(?successful_executions) / xsd:decimal(?total_executions) as ?success_rate)
+  ?last_failure_time
+  ?last_failure_reason
+WHERE {
+  # Match all ggen rule executions
+  ?execution ggen:rule ?rule .
+  ?execution ggen:status ?status .
+  ?execution otel:timestamp ?timestamp .
+
+  # Aggregate execution counts
+  {
+    SELECT ?rule
+           (COUNT(?execution) AS ?total_executions)
+           (COUNT(FILTER(?status = ggen:SUCCESS)) AS ?successful_executions)
+           (COUNT(FILTER(?status = ggen:FAILED)) AS ?failed_executions)
+           (MAX(?timestamp) AS ?max_timestamp)
+    WHERE {
+      ?execution ggen:rule ?rule .
+      ?execution ggen:status ?status .
+      ?execution otel:timestamp ?timestamp .
+      FILTER (?timestamp > NOW() - "PT1H"^^xsd:duration)
+    }
+    GROUP BY ?rule
+  }
+
+  # Get details of last failure
+  OPTIONAL {
+    ?last_failure ggen:rule ?rule .
+    ?last_failure ggen:status ggen:FAILED .
+    ?last_failure otel:timestamp ?last_failure_time .
+    ?last_failure ggen:error_reason ?last_failure_reason .
+    FILTER (?last_failure_time = ?max_timestamp)
+  }
+}
+ORDER BY DESC(?success_rate)

@@ -1,0 +1,803 @@
+openapi: 3.0.0
+info:
+  title: Process Intelligence Ecosystem API
+  description: |
+    Unified API for the Process Intelligence research ecosystem.
+    Exposes all entity types, conformance queries, event streams, and provenance tracing.
+  version: 1.0.0
+  contact:
+    name: Process Intelligence Research Directorate
+    email: xpointsh@gmail.com
+  license:
+    name: Process Intelligence Research Covenant
+
+servers:
+  - url: https://api.process-intelligence.research/v1
+    description: Production API
+  - url: http://localhost:8080/v1
+    description: Local development
+
+paths:
+  /health:
+    get:
+      summary: Ecosystem health status
+      description: Returns current health status of all 5 systems and 30 deployment gates
+      operationId: getHealth
+      tags:
+        - System
+      responses:
+        '200':
+          description: Ecosystem health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: One or more systems degraded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  /metrics:
+    get:
+      summary: Van der Aalst fitness metrics
+      description: |
+        Returns conformance metrics for the unified ecosystem:
+        - Fitness (token-based replay)
+        - Precision (model specificity)
+        - Simplicity (Occam's razor)
+        - Generalization (model flexibility)
+      operationId: getMetrics
+      tags:
+        - System
+      responses:
+        '200':
+          description: Conformance metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConformanceMetrics'
+        '404':
+          description: Metrics not yet computed (Phase 22 pending)
+
+  /entities:
+    get:
+      summary: List all entities
+      description: List all entities across all types in the ecosystem
+      operationId: listEntities
+      tags:
+        - Entities
+      parameters:
+        - name: type
+          in: query
+          description: Filter by entity type
+          schema:
+            type: string
+            enum:
+              - ManufacturingEngine
+              - GenerationRule
+              - Artifact
+              - Receipt
+              - ProcessModel
+              - ObjectType
+              - EventType
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            default: 100
+            maximum: 1000
+        - name: offset
+          in: query
+          description: Result offset for pagination
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of entities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityList'
+        '400':
+          description: Invalid query parameters
+
+  /entity/{id}:
+    get:
+      summary: Get entity details with provenance
+      description: Retrieve a single entity with full details, provenance trace, and source documentation
+      operationId: getEntity
+      tags:
+        - Entities
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Entity ID (UUID or content hash)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Entity details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityWithProvenance'
+        '404':
+          description: Entity not found
+
+  /entities/{type}:
+    get:
+      summary: List entities by type
+      description: List all entities of a specific type
+      operationId: listEntitiesByType
+      tags:
+        - Entities
+      parameters:
+        - name: type
+          in: path
+          required: true
+          description: Entity type
+          schema:
+            type: string
+            enum:
+              - ManufacturingEngine
+              - GenerationRule
+              - Artifact
+              - Receipt
+              - ProcessModel
+              - ObjectType
+              - EventType
+        - name: limit
+          in: query
+          description: Maximum number of results
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          description: Result offset
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Entities of specified type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityList'
+
+  /sparql:
+    post:
+      summary: Execute SPARQL query
+      description: |
+        Execute a SPARQL ASK, SELECT, or CONSTRUCT query against the unified knowledge graph.
+        Supports federated queries across all 5 systems.
+      operationId: sparqlQuery
+      tags:
+        - Query
+      requestBody:
+        required: true
+        content:
+          application/sparql-query:
+            schema:
+              type: string
+              format: sparql
+      responses:
+        '200':
+          description: Query results
+          content:
+            application/sparql-results+json:
+              schema:
+                type: object
+            text/turtle:
+              schema:
+                type: string
+        '400':
+          description: Invalid SPARQL query
+        '503':
+          description: Knowledge graph unavailable
+
+  /stream/ocel:
+    get:
+      summary: Stream OCEL 2.0 events
+      description: |
+        Stream object-centric event log in OCEL 2.0 format.
+        Uses Server-Sent Events (SSE) for real-time event delivery.
+      operationId: streamOCEL
+      tags:
+        - Events
+      parameters:
+        - name: since
+          in: query
+          description: Return only events after timestamp (ISO 8601)
+          schema:
+            type: string
+            format: date-time
+        - name: object-type
+          in: query
+          description: Filter by object type
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OCEL event stream (Server-Sent Events)
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/OCELEvent'
+        '400':
+          description: Invalid query parameters
+
+  /receipt/{receipt-id}:
+    get:
+      summary: Verify cryptographic receipt
+      description: |
+        Retrieve and verify a cryptographic receipt.
+        Receipt integrity validated using Blake3 signature chain.
+      operationId: getReceipt
+      tags:
+        - Receipts
+      parameters:
+        - name: receipt-id
+          in: path
+          required: true
+          description: Receipt ID (Blake3 hash)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Receipt details with verification status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Receipt'
+        '404':
+          description: Receipt not found
+        '409':
+          description: Receipt verification failed (chain broken)
+
+  /receipts:
+    get:
+      summary: List all receipts
+      description: List receipts for artifacts, conformance checks, and system state transitions
+      operationId: listReceipts
+      tags:
+        - Receipts
+      parameters:
+        - name: type
+          in: query
+          description: Filter by receipt type
+          schema:
+            type: string
+            enum:
+              - artifact
+              - conformance
+              - state-transition
+              - checkpoint
+        - name: limit
+          in: query
+          description: Maximum results
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Receipt list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceiptList'
+
+  /provenance/{artifact-id}:
+    get:
+      summary: Trace artifact to source law
+      description: |
+        Trace an artifact back to its source:
+        - Generating rule
+        - Process law (doctrine/)
+        - Paper or experiment (source evidence)
+        - Research checkpoint (authorization)
+      operationId: getProvenance
+      tags:
+        - Provenance
+      parameters:
+        - name: artifact-id
+          in: path
+          required: true
+          description: Artifact ID or content hash
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Provenance trace
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvenanceTrace'
+        '404':
+          description: Artifact not found or no provenance available
+        '503':
+          description: Research program authority unavailable
+
+  /provenance/search:
+    post:
+      summary: Search provenance by criteria
+      description: Search provenance graph for claims matching criteria
+      operationId: searchProvenance
+      tags:
+        - Provenance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvenanceSearchQuery'
+      responses:
+        '200':
+          description: Provenance search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvenanceSearchResults'
+        '400':
+          description: Invalid search query
+
+  /lifecycle:
+    get:
+      summary: Get lifecycle states and transitions
+      description: |
+        Retrieve all defined lifecycle states from Blue River Dam doctrine.
+        Includes state machines for artifacts, receipts, and system governance.
+      operationId: getLifecycle
+      tags:
+        - Lifecycle
+      parameters:
+        - name: entity-type
+          in: query
+          description: Filter by entity type
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lifecycle definitions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LifecycleDefinition'
+
+  /conformance/check:
+    post:
+      summary: Run conformance check
+      description: |
+        Execute pm4py conformance checking against submitted event log.
+        Returns fitness, precision, simplicity, and generalization metrics.
+      operationId: checkConformance
+      tags:
+        - Conformance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConformanceCheckRequest'
+      responses:
+        '200':
+          description: Conformance check results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConformanceCheckResult'
+        '400':
+          description: Invalid event log format
+        '503':
+          description: Conformance checking service unavailable
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      description: Ecosystem health status across all 5 systems and 30 gates
+      properties:
+        status:
+          type: string
+          enum:
+            - healthy
+            - degraded
+            - critical
+        timestamp:
+          type: string
+          format: date-time
+        systems:
+          type: object
+          properties:
+            zoeapp:
+              $ref: '#/components/schemas/SystemHealth'
+            blue-river-dam:
+              $ref: '#/components/schemas/SystemHealth'
+            ggen:
+              $ref: '#/components/schemas/SystemHealth'
+            otel-weaver:
+              $ref: '#/components/schemas/SystemHealth'
+            expo-supabase:
+              $ref: '#/components/schemas/SystemHealth'
+        gates:
+          type: array
+          items:
+            $ref: '#/components/schemas/GateStatus'
+      required:
+        - status
+        - timestamp
+        - systems
+        - gates
+
+    SystemHealth:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - healthy
+            - degraded
+            - offline
+        uptime_seconds:
+          type: integer
+        last_heartbeat:
+          type: string
+          format: date-time
+        version:
+          type: string
+
+    GateStatus:
+      type: object
+      properties:
+        gate_id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        status:
+          type: string
+          enum:
+            - PASS
+            - FAIL
+            - BLOCKED
+        evidence:
+          type: string
+        owner:
+          type: string
+
+    ConformanceMetrics:
+      type: object
+      description: Van der Aalst fitness metrics
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        measurement_date:
+          type: string
+          format: date
+        fitness:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        precision:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        simplicity:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        generalization:
+          type: number
+          format: double
+          minimum: 0
+          maximum: 1
+        overall_status:
+          type: string
+          enum:
+            - PASS
+            - FAIL
+            - PENDING
+        thresholds:
+          type: object
+          properties:
+            fitness_min:
+              type: number
+            precision_min:
+              type: number
+            simplicity_min:
+              type: number
+            generalization_min:
+              type: number
+        evidence:
+          type: string
+          description: Path to PM4Py output or receipt
+        receipt_id:
+          type: string
+          description: Blake3 hash of metrics receipt
+
+    Entity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        content_hash:
+          type: string
+          description: Blake3 hash of content
+
+    EntityWithProvenance:
+      allOf:
+        - $ref: '#/components/schemas/Entity'
+        - type: object
+          properties:
+            provenance:
+              $ref: '#/components/schemas/ProvenanceTrace'
+            receipts:
+              type: array
+              items:
+                $ref: '#/components/schemas/Receipt'
+
+    EntityList:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Entity'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    OCELEvent:
+      type: object
+      description: OCEL 2.0 event
+      properties:
+        ocel:event-id:
+          type: string
+        ocel:activity:
+          type: string
+        ocel:timestamp:
+          type: string
+          format: date-time
+        ocel:object-refs:
+          type: array
+          items:
+            type: object
+            properties:
+              ocel:object-id:
+                type: string
+              ocel:object-type:
+                type: string
+        ocel:attributes:
+          type: object
+
+    Receipt:
+      type: object
+      description: Cryptographic receipt with Blake3 signature
+      properties:
+        receipt_id:
+          type: string
+          description: Blake3 hash
+        type:
+          type: string
+        artifact_id:
+          type: string
+        content_hash:
+          type: string
+        signature:
+          type: string
+          description: Blake3 signature
+        issued_at:
+          type: string
+          format: date-time
+        verified:
+          type: boolean
+        chain_parent:
+          type: string
+          description: Previous receipt in chain
+        chain_next:
+          type: string
+          description: Next receipt in chain
+
+    ReceiptList:
+      type: object
+      properties:
+        receipts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Receipt'
+        total:
+          type: integer
+
+    ProvenanceTrace:
+      type: object
+      description: Trace artifact to source law and authorization
+      properties:
+        artifact_id:
+          type: string
+        artifact_type:
+          type: string
+        generated_by:
+          type: string
+          description: Generating rule ID
+        rule_definition:
+          type: object
+          properties:
+            rule_id:
+            type: string
+            rule_name:
+              type: string
+            sparql_query:
+              type: string
+            template_name:
+              type: string
+        sourced_from:
+          type: array
+          items:
+            type: object
+            properties:
+              source_type:
+                type: string
+                enum:
+                  - doctrine
+                  - paper
+                  - experiment
+                  - checkpoint
+              source_id:
+                type: string
+              claim:
+                type: string
+              citation:
+                type: string
+        authorization:
+          type: object
+          properties:
+            checkpoint_id:
+              type: string
+            verdict:
+              type: string
+              enum:
+                - ALIVE
+                - PARTIAL
+                - FAILED
+            authority:
+              type: string
+        evidence_chain:
+          type: array
+          items:
+            type: object
+
+    ProvenanceSearchQuery:
+      type: object
+      properties:
+        claim:
+          type: string
+          description: Search for specific claim
+        source_type:
+          type: string
+        artifact_type:
+          type: string
+        time_range:
+          type: object
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+
+    ProvenanceSearchResults:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProvenanceTrace'
+        total:
+          type: integer
+
+    LifecycleDefinition:
+      type: object
+      properties:
+        entity_type:
+          type: string
+        states:
+          type: array
+          items:
+            type: object
+            properties:
+              state_name:
+                type: string
+              description:
+                type: string
+              transitions:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    to_state:
+                      type: string
+                    condition:
+                      type: string
+        source_authority:
+          type: string
+          description: Path to Blue River Dam doctrine
+
+    ConformanceCheckRequest:
+      type: object
+      required:
+        - event_log
+      properties:
+        event_log:
+          type: object
+          description: Event log in OCEL 2.0 format
+        process_model:
+          type: object
+          description: Process model (Petri net or similar)
+        include_negative_tests:
+          type: boolean
+          default: false
+
+    ConformanceCheckResult:
+      type: object
+      properties:
+        fitness:
+          type: number
+          format: double
+        precision:
+          type: number
+          format: double
+        simplicity:
+          type: number
+          format: double
+        generalization:
+          type: number
+          format: double
+        status:
+          type: string
+          enum:
+            - PASS
+            - FAIL
+        receipt_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    BearerAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - ApiKeyAuth: []
+  - BearerAuth: []

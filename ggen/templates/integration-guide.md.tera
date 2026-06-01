@@ -1,0 +1,49 @@
+# Integration Guide — {{ system_name }} → {{ target_system }}
+
+**Authority:** Process Intelligence Research Directorate
+**Date:** {{ now() | date(format="%Y-%m-%d") }}
+**Integration Type:** {{ integration_type }}
+**Estimated Effort:** {{ estimated_effort }}
+**Risk Level:** {{ risk_level }}
+
+## Prerequisites
+
+{% if prerequisites %}
+{{ prerequisites }}
+{% else %}
+- None specified
+{% endif %}
+
+## Integration Steps
+
+Total steps: {{ step_count }}
+
+### Step-by-Step Procedure
+
+1. Validate prerequisites
+2. Prepare source system
+3. Configure target system
+4. Execute integration
+5. Validate data transfer
+6. Verify conformance
+7. Document integration
+8. Complete handoff
+
+## Validation Method
+
+{{ validation_method | default(value="Automated conformance checking via process mining") }}
+
+## Risk Mitigation
+
+**Risk Level:** {{ risk_level }}
+
+- Backup all source data before integration
+- Run in test environment first
+- Verify conformance against expected process model
+- Maintain rollback capability
+
+## Support & Escalation
+
+For integration issues, contact Process Intelligence Research Directorate.
+
+**Generated:** {{ now() | date(format="%Y-%m-%dT%H:%M:%SZ") }}

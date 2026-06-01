@@ -1,8 +1,20 @@
 {
-  "operation_id": "7f2b2ea4-a88a-4756-b241-659c2d4f981c",
-  "timestamp": "2026-06-01T20:55:11.208134Z",
+  "operation_id": "3fd7cbcc-eda8-434b-a3e1-083b01af2a31",
+  "timestamp": "2026-06-01T22:42:05.074524Z",
   "input_hashes": [],
-  "output_hashes": [],
-  "signature": "8f55d59fdfa5586326a2237fb80d717b837abf2abf9b329b0b7ee2c0bda25facd26092441c4f30e7c6509e06a5f2ea07af96b70b859749f95d1a7f44f81c7806",
-  "previous_receipt_hash": null
+  "output_hashes": [
+    "/Users/sac/process-intelligence/research/pi-program/deployment/ggen-validator-v1.0/DEPLOYMENT_SUMMARY_GENERATED.md:1a6413a95a77716705dfc19acf1f9af67818a2bd0549ee715e5537ee51e1d73b",
+    "/Users/sac/process-intelligence/research/pi-program/deployment/ggen-validator-v1.0/health-checks_GENERATED.yaml:be9472be823dabe8aeea7d3f13857991be5b08209377e175e320951936eddd2b",
+    "/Users/sac/process-intelligence/research/pi-program/deployment/ggen-validator-v1.0/monitoring-dashboard_GENERATED.md:8a8452f4528119edf7b869e8cf7b13db318e1fda8c8e550ba48786e7c9ebea96",
+    "/Users/sac/process-intelligence/research/pi-program/audits/fitness-precision-generalization-report_GENERATED.md:d46c29da435f4f5e813bbcf95544fe89c1dacb73506714cb2cdc64c4a6224869",
+    "/Users/sac/process-intelligence/research/pi-program/ma/board-investment-memo_GENERATED.md:222832283f1c37e4a1568885d269abc24e29b7fd6f6908ddb134346608e60315",
+    "/Users/sac/process-intelligence/research/pi-program/ma/financial-projections-v1_GENERATED.yaml:1a234f3b4f3ed9f08a928a7a811a8201e92d38245d2b38db2dcef1c6363aa018",
+    "/Users/sac/process-intelligence/research/pi-program/ma/risk-disclosure-v1_GENERATED.md:4caf1984ca6d8e6b90db699ce82b45e91570f767358009bc0669d697a9f5de48",
+    "/Users/sac/process-intelligence/research/pi-program/integration/ecosystem-architecture_GENERATED.md:e8e35b1b1ef51603d060607dd7ebe199d8be40c8885adbce44d2d5f5145ae59e",
+    "/Users/sac/process-intelligence/research/pi-program/integration/guides/BCI_UX_Cognitive_to_Holographic_Cards_GENERATED.md:29523f1add23aa0a54f30494a40908d155e62e89e825f571a36ed533c91ee7d9",
+    "/Users/sac/process-intelligence/research/pi-program/census/resource-census_GENERATED.md:29550ba92468a10572eec5fdedc58b7764433dbf9100d74043107f2864597455",
+    "/Users/sac/process-intelligence/checkpoints/PHASE_16_M&A_CLAIM_MANUFACTURING_COMPLETE_GENERATED.md:384aa0f30a7a4ed97b92dc45b86b2ae00b288255cc03027c6f49383ecdb9536e"
+  ],
+  "signature": "d6c81cc96fa9e435faf9a3985b65b0dd47f1cca723ef515fe26031456de30b1c614a68021e157c485a700387fa747495ab4a57389874d22e33507ed533a4f70f",
+  "previous_receipt_hash": "f5a7c9b6798715b4e9475a389fc14901b0fbf8497b6f468e8ea4c7b288629be3"
 }
