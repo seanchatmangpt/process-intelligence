@@ -1,91 +1,15 @@
+# Oracle Map: PM4Py as the Baseline Truth
 
+## 1. The Oracle's Purpose
+In the v30.1.1 post-cyberpunk research foundry, PM4Py acts as the standard calibration instrument. We do not copy its mechanics; we measure our deviation from its baseline. PM4Py defines the "known world" of classical process mining.
 
-* **Step: map event log capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+## 2. Epistemological Boundaries
+*   **Data Epistemology:** PM4Py believes the Event Log (XES/CSV/DataFrame) is the ground truth.
+*   **Our Rebuttal:** The log is a shadow. The true process exists in the live state transitions and cryptographic receipts of the system.
 
-* **Step: map XES capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map OCEL capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map BPMN capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map Petri net capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map process tree capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map DFG capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map inductive miner capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map alpha miner capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map heuristics miner capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map conformance capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map token replay capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map alignment capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map filtering capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map performance analysis capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map variant analysis capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map prediction capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map visualization capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map organizational mining capability**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map object-centric limitations**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map dataframe assumptions**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: map Python runtime assumptions**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: identify wasm4pm divergence**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: identify wasm4pm-compat type obligations**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: identify board-claim gaps**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: identify replay gaps**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: identify receipt gaps**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: identify decommissioning gaps**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: write PM4Py not-to-copy memo**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
-
-* **Step: checkpoint: PM4Py oracle complete**
-  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+## 3. Oracle Coordinates
+| Oracle Subsystem | Epistemic Stance | Actuation Counter-Stance |
+| :--- | :--- | :--- |
+| `pm4py.read_xes` | Immutable past | Real-time state streams |
+| `pm4py.discover_petri_net` | Static topology | Dynamic, self-modifying networks |
+| `pm4py.fitness_alignments` | Optimal path deviation | Morphological resilience |
