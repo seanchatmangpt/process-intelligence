@@ -27,3 +27,7 @@
 ### Classify: weske_2019_bpm_principles
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: rosenberg_2020_cloud_lifecycle
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
