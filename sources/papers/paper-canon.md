@@ -41,3 +41,6 @@
 
 ### Paper: song_2008_organizational_mining
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: dongen_2009_mxml_to_xes
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
