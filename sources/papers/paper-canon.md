@@ -5,3 +5,6 @@
 
 ### Paper: adriansyah_2014_alignment_conformance
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: leemans_2013_inductive_miner
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
