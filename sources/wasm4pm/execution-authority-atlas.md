@@ -13,3 +13,6 @@
 
 * **Step: map conformance authority**
   - Defining engine execution requirements.
+
+* **Step: map replay authority**
+  - Defining engine execution requirements.
