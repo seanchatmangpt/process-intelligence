@@ -81,5 +81,5 @@ The following instance defines a loop-based POWL tree where `Review` can run con
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/powl_placement.md.
-- **M&A Claims**: Defensibility claims of POWL process structures are mapped to the synergy taxonomy at file:///Users/sac/process-intelligence/ma/define_synergy_claim_taxonomy.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [powl_placement.md](file:///Users/sac/process-intelligence/standards/powl_placement.md).
+- **M&A Claims**: Defensibility claims of POWL process structures are mapped to the synergy taxonomy at [define_synergy_claim_taxonomy.md](file:///Users/sac/process-intelligence/ma/define_synergy_claim_taxonomy.md).

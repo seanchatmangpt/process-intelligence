@@ -72,5 +72,5 @@ The following instance maps real supply chain log metrics to competitive forces 
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/public_standards_to_m&a_claims.md.
-- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the porter maps at file:///Users/sac/process-intelligence/experiments/reverse_porter_five_sample.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [public_standards_to_m&a_claims.md](file:///Users/sac/process-intelligence/standards/public_standards_to_m&a_claims.md).
+- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the porter maps at [reverse_porter_five_sample.md](file:///Users/sac/process-intelligence/experiments/reverse_porter_five_sample.md).

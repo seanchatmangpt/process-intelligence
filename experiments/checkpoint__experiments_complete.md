@@ -15,4 +15,4 @@ This checkpoint verifies that the entire experiments suite has been fully implem
 Signed,
 *AGI Adversarial Process Intelligence Auditor*
 
-Verification Artifact: file:///Users/sac/process-intelligence/experiments/checkpoint__experiments_complete.md.
+Verification Artifact: [checkpoint__experiments_complete.md](file:///Users/sac/process-intelligence/experiments/checkpoint__experiments_complete.md).

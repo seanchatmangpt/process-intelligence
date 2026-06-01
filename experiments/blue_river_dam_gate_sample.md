@@ -85,5 +85,5 @@ The following event sequence demonstrates a compliant check-and-release operatio
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/public_standards_to_blue_river_dam.md.
-- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the lifecycle gate maps at file:///Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [Public Standards to Blue River Dam](file:///Users/sac/process-intelligence/standards/public_standards_to_blue_river_dam.md).
+- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the lifecycle gate maps at [Blue River Dam Lifecycle Gate Map](file:///Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md).

@@ -78,5 +78,5 @@ A trace was "washed" by inserting a synchronous `Audit_Invoice` event with a fak
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/public_ontology_reverse-lock-in_map.md.
-- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the seller defensibility requirements at file:///Users/sac/process-intelligence/ma/define_seller_defensibility_requirements.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [public_ontology_reverse-lock-in_map.md](file:///Users/sac/process-intelligence/standards/public_ontology_reverse-lock-in_map.md).
+- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the seller defensibility requirements at [define_seller_defensibility_requirements.md](file:///Users/sac/process-intelligence/ma/define_seller_defensibility_requirements.md).

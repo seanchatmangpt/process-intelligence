@@ -1,6 +1,6 @@
 # Experiment: Paper-to-Fixture Mapping
 
-This document provides concrete mappings between classical academic process-mining literature and standardized JSON validation fixtures representing executable test scenarios. All fixtures represent the formal objects defined in the paper canon (see file:///Users/sac/process-intelligence/sources/papers/paper-canon.md).
+This document provides concrete mappings between academic process-mining literature and standardized JSON validation fixtures representing executable test scenarios. All fixtures represent the formal objects defined in the paper canon (see [paper-canon.md](file:///Users/sac/process-intelligence/sources/papers/paper-canon.md)).
 
 ## 1. van der Aalst 1998: Workflow Nets (Soundness & Liveness)
 
@@ -17,7 +17,7 @@ This fixture represents a sound process with parallel split and synchronization 
   "paper_reference": "van_der_aalst_1998_workflow_nets",
   "fixture_id": "wf_net_sound_and_split",
   "is_sound": true,
-  "places": ["i", "p1", "p2", "o"],
+  "places": ["i", "p1", "p2", "p3", "p4", "o"],
   "transitions": ["t_start", "t_a", "t_b", "t_end"],
   "arcs": [
     {"source": "i", "target": "t_start"},
@@ -25,11 +25,14 @@ This fixture represents a sound process with parallel split and synchronization 
     {"source": "t_start", "target": "p2"},
     {"source": "p1", "target": "t_a"},
     {"source": "p2", "target": "t_b"},
-    {"source": "t_a", "target": "o"},
-    {"source": "t_b", "target": "o"}
+    {"source": "t_a", "target": "p3"},
+    {"source": "t_b", "target": "p4"},
+    {"source": "p3", "target": "t_end"},
+    {"source": "p4", "target": "t_end"},
+    {"source": "t_end", "target": "o"}
   ],
   "initial_marking": {"i": 1},
-  "final_marking": {"o": 2}
+  "final_marking": {"o": 1}
 }
 ```
 
@@ -144,5 +147,5 @@ Ghahfarokhi et al. introduced the OCEL 2.0 standard, allowing multiple objects (
 
 ## 5. Standard and Claim Maps
 
-- **Standards Crosswalk**: Mapped to standard public specifications in file:///Users/sac/process-intelligence/standards/public_standards_to_ggen_projections.md.
-- **M&A Claims**: Defensibility claims of process structure soundness are mapped to the transaction board criteria at file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md.
+- **Standards Crosswalk**: Mapped to standard public specifications in [public_standards_to_ggen_projections.md](file:///Users/sac/process-intelligence/standards/public_standards_to_ggen_projections.md).
+- **M&A Claims**: Defensibility claims of process structure soundness are mapped to the transaction board criteria at [define_board-admissible_claim_requirements.md](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md).

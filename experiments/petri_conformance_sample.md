@@ -99,5 +99,5 @@ $$f(\sigma_2, N) = \frac{1}{2}\left(1 - \frac{1}{3}\right) + \frac{1}{2}\left(1 
 
 ## 4. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Fits into the Petri Net placement specification mapped at file:///Users/sac/process-intelligence/standards/petri_net_placement.md.
-- **M&A Claims**: Defensibility claims are verified by mapping these replay parameters onto slide-to-replay logs at file:///Users/sac/process-intelligence/ma/define_slide-to-replay_map.md.
+- **Standard Crosswalk**: Fits into the Petri Net placement specification mapped at [petri_net_placement.md](file:///Users/sac/process-intelligence/standards/petri_net_placement.md).
+- **M&A Claims**: Defensibility claims are verified by mapping these replay parameters onto slide-to-replay logs at [define_slide-to-replay_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-replay_map.md).

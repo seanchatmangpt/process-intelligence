@@ -78,5 +78,5 @@ The seller claims a $3.5M cost reduction in order fulfillment. However, conforma
 
 ## 4. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Standards mappings are configured in file:///Users/sac/process-intelligence/standards/public_standards_to_m&a_claims.md.
-- **Diligence Taxonomy**: The taxonomy definitions are anchored at file:///Users/sac/process-intelligence/ma/define_board_claim_taxonomy.md.
+- **Standard Crosswalk**: Standards mappings are configured in [public_standards_to_m&a_claims.md](file:///Users/sac/process-intelligence/standards/public_standards_to_m&a_claims.md).
+- **Diligence Taxonomy**: The taxonomy definitions are anchored at [define_board_claim_taxonomy.md](file:///Users/sac/process-intelligence/ma/define_board_claim_taxonomy.md).

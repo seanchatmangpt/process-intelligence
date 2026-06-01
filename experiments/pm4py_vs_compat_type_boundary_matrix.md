@@ -82,5 +82,5 @@ An incoming event containing a missing `cost` (represented as `NaN` by pandas or
 
 ## 4. Linkages to Standards and M&A Claims
 
-- **Standards Compliance**: Mapped to standard XES loss-policy constraints at file:///Users/sac/process-intelligence/experiments/xes_loss-policy_sample.md.
-- **M&A Claims**: Defensibility claims of type safety are mapped at file:///Users/sac/process-intelligence/ma/define_buyer_reliance_requirements.md.
+- **Standards Compliance**: Mapped to standard XES loss-policy constraints at [xes_loss-policy_sample.md](file:///Users/sac/process-intelligence/experiments/xes_loss-policy_sample.md).
+- **M&A Claims**: Defensibility claims of type safety are mapped at [define_buyer_reliance_requirements.md](file:///Users/sac/process-intelligence/ma/define_buyer_reliance_requirements.md).

@@ -77,5 +77,5 @@ The following JSON instance represents a compiled projection targeting a three-a
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/public_standards_to_ggen_projections.md.
-- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the lifecycle maps at file:///Users/sac/process-intelligence/ma/define_process_asset_claim_taxonomy.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [public_standards_to_ggen_projections.md](file:///Users/sac/process-intelligence/standards/public_standards_to_ggen_projections.md).
+- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the lifecycle maps at [define_process_asset_claim_taxonomy.md](file:///Users/sac/process-intelligence/ma/define_process_asset_claim_taxonomy.md).

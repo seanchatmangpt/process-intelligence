@@ -69,5 +69,5 @@ The following instance certifies that a legacy workflow server has been successf
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/public_standards_to_decommissioning.md.
-- **M&A Claims**: Defensibility claims are verified by mapping these decommissioning proofs to residual liabilities at file:///Users/sac/process-intelligence/ma/define_slide-to-residual_map.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [public_standards_to_decommissioning.md](file:///Users/sac/process-intelligence/standards/public_standards_to_decommissioning.md).
+- **M&A Claims**: Defensibility claims are verified by mapping these decommissioning proofs to residual liabilities at [define_slide-to-residual_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-residual_map.md).

@@ -84,5 +84,5 @@ The following instance certifies that a supply chain purchase log was replayed a
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Conforms to standards mapped at file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md.
-- **M&A Claims**: Defensibility claims are verified by mapping these parameters onto slide-to-receipt logs at file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md.
+- **Standard Crosswalk**: Conforms to standards mapped at [prov-o_provenance_placement.md](file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md).
+- **M&A Claims**: Defensibility claims are verified by mapping these parameters onto slide-to-receipt logs at [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md).

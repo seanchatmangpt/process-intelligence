@@ -62,7 +62,7 @@ The following instance records a board-level query finding all high-value purcha
 ```json
 {
   "query_id": "ocpq_diligence_q1_delayed_synergy",
-  "execution_timestamp": "2026-05-31T22:44:00Z",
+  "execution_timestamp": "2026-05-31T22:50:00Z",
   "query_logic": {
     "primary_object_type": "purchase_order",
     "interacting_object_types": ["part", "shipment"],
@@ -86,5 +86,5 @@ The following instance records a board-level query finding all high-value purcha
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/ocpq_placement.md.
-- **M&A Claims**: Defensibility claims are verified by mapping these queries directly to board-level claims at file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [OCPQ Standard Ledger Placement](file:///Users/sac/process-intelligence/standards/ocpq_placement.md).
+- **M&A Claims**: Defensibility claims are verified by mapping these queries directly to board-level claims at [Board-Admissible Claim Requirements](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md).

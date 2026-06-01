@@ -68,5 +68,5 @@ The following instance maps custom workflows from a proprietary system to public
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/public_ontology_reverse-lock-in_map.md.
-- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the reverse lock-in maps at file:///Users/sac/process-intelligence/experiments/reverse_lock-in_sample.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [public_ontology_reverse-lock-in_map.md](file:///Users/sac/process-intelligence/standards/public_ontology_reverse-lock-in_map.md).
+- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the reverse lock-in maps at [reverse_lock-in_sample.md](file:///Users/sac/process-intelligence/experiments/reverse_lock-in_sample.md).

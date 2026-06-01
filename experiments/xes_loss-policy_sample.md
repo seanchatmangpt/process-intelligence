@@ -95,5 +95,5 @@ The following instance defines a compliant policy appraisal sequence followed by
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Fits into XES serialization definitions mapped at file:///Users/sac/process-intelligence/standards/xes_process-intelligence_placement.md.
-- **M&A Claims**: Defensibility claims of loss-policy conformance are mapped to process liabilities at file:///Users/sac/process-intelligence/ma/define_process_liability_claim_taxonomy.md.
+- **Standard Crosswalk**: Fits into XES serialization definitions mapped at [xes_process-intelligence_placement.md](file:///Users/sac/process-intelligence/standards/xes_process-intelligence_placement.md).
+- **M&A Claims**: Defensibility claims of loss-policy conformance are mapped to process liabilities at [define_process_liability_claim_taxonomy.md](file:///Users/sac/process-intelligence/ma/define_process_liability_claim_taxonomy.md).

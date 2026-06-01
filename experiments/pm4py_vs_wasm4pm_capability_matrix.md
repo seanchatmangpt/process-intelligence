@@ -69,5 +69,5 @@ An instance of the validated benchmark log:
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standards Compliance**: Verification results map to the OCEL 2.0 schema defined at file:///Users/sac/process-intelligence/standards/ocel_process-intelligence_placement.md.
-- **M&A Claims**: Defensibility claims are backed by cryptographic receipts mapped at file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md.
+- **Standards Compliance**: Verification results map to the OCEL 2.0 schema defined at [ocel_process-intelligence_placement.md](file:///Users/sac/process-intelligence/standards/ocel_process-intelligence_placement.md).
+- **M&A Claims**: Defensibility claims are backed by cryptographic receipts mapped at [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md).

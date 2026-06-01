@@ -63,5 +63,5 @@ The following instance defines the projection of log events to the W3C PROV-O pr
 
 ## 3. Linkages to Standards and M&A Claims
 
-- **Standard Crosswalk**: Aligns with standards mapped at file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md.
-- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the slide-to-public-standard maps at file:///Users/sac/process-intelligence/ma/define_slide-to-public-standard_map.md.
+- **Standard Crosswalk**: Aligns with standards mapped at [prov-o_provenance_placement.md](file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md).
+- **M&A Claims**: Defensibility claims are verified by mapping safety validations onto the slide-to-public-standard maps at [define_slide-to-public-standard_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-public-standard_map.md).
