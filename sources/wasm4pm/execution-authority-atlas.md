@@ -16,3 +16,6 @@
 
 * **Step: map replay authority**
   - Defining engine execution requirements.
+
+* **Step: map query authority**
+  - Defining engine execution requirements.
