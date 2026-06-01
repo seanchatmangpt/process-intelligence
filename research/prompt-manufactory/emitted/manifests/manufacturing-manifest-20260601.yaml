@@ -1,0 +1,36 @@
+execution_timestamp: '2026-06-01T23:09:45Z'
+generator: ggen-v26.5.21
+project: prompt-manufactory
+rules_executed: 6
+rules:
+  - select-workflow-prompts.rq
+  - select-subagent-prompts.rq
+  - select-checkpoint-prompts.rq
+  - select-skill-prompts.rq
+  - select-hook-policies.rq
+  - research-program-index generator
+research_programs: 7
+artifacts_emitted: 41
+  workflows: 7
+  subagents: 17
+  checkpoints: 2
+  skills: 6
+  hooks: 6
+  indexes: 3
+receipts_issued: 41
+total_bytes: 41867
+status: SUCCESS
+gate_checks:
+  artifacts_emitted_gte_40: PASS
+  receipts_eq_artifacts: PASS
+overall_gate: PASS
+manufacturing_phase: COMPLETE
+checkpoint_candidates:
+  - PI_RESEARCH_PROGRAM_INTEL_001 (eligible for ALIVE evaluation)
+  - GGEN_ECOSYSTEM_INTEL_001 (eligible for ALIVE evaluation)
+  - GGEN_OTEL_WEAVER_PI_INTEL_001 (eligible for ALIVE evaluation)
+  - ZOEAPP_RESEARCH_PROGRAM_INTEL_001 (eligible for ALIVE evaluation)
+  - GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001 (eligible for ALIVE evaluation)
+  - GGEN_CLAUDE_WORKFLOW_INTEL_001 (eligible for ALIVE evaluation)
+  - WASM4PM_COMPAT_PROJECTION_REMEDIATE_001 (eligible for PARTIAL evaluation)
+next_step: Audit generated prompts against COVENANT requirements

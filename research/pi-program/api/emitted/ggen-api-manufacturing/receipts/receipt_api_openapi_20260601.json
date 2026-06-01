@@ -1,0 +1,18 @@
+{
+  "artifact_id": "api_openapi_20260601",
+  "artifact_name": "openapi-3.0-spec.yaml",
+  "artifact_type": "OpenAPI Specification",
+  "content_hash": "blake3:594a5cc1f2a6981ce6f7851af697e8cdfba1c1081e6f56d168dc035403acf9b4",
+  "receipt_id": "receipt_api_openapi_20260601_20260601",
+  "timestamp": "2026-06-01T16:09:17.735628Z",
+  "authority": "PI Research Program Manufacturing Phase",
+  "witness": "ggen_api_specification_manufacturing_v3.0.0",
+  "manufacturing_phase": "api_specification_generation",
+  "status": "ISSUED",
+  "file_size_bytes": 10487,
+  "cryptographic_chain": {
+    "proof_algorithm": "BLAKE3-SHA256",
+    "is_certified": true,
+    "can_be_replayed": true
+  }
+}

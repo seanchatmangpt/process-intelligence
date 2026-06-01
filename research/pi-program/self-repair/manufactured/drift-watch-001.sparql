@@ -1,0 +1,444 @@
+# Drift Detection SPARQL Rules
+# Authority: Autonomic Knowledge Actuation + Blue River Dam
+# Generated: 2026-06-01T16:00:00Z
+# Purpose: Runtime drift detection rules for self-repair triggers
+
+PREFIX aka: <http://process-intelligence.local/autonomic/>
+PREFIX mape: <http://process-intelligence.local/mape-k/>
+PREFIX gov: <http://process-intelligence.local/governance/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# =============================================================================
+# DRIFT DETECTION RULE: Sudden Fitness Degradation
+# =============================================================================
+# ID: drift-fitness-degradation
+# Type: concept-drift
+# Severity: high
+# Auto-Repair: false
+# Requires Approval: true
+#
+# Description:
+# Detect rapid drop in conformance fitness metric
+#
+# Trigger Condition:
+# Fitness(σ_recent) < Fitness(σ_baseline) - threshold
+# =============================================================================
+
+CONSTRUCT {
+  ?detection a aka:DriftDetection ;
+    rdfs:label "Sudden Fitness Degradation" ;
+    rdfs:comment "Detect rapid drop in conformance fitness metric" ;
+    aka:driftType "concept-drift" ;
+    aka:triggeredAt ?now ;
+    aka:requiredApproval true ;
+    aka:autoRepairAllowed false ;
+    aka:severity "high" ;
+    aka:sparqlRuleId "drift-fitness-degradation" ;
+    aka:traceId ?traceId ;
+    aka:affectedTrace ?trace ;
+    aka:recommendedAction ?action ;
+    aka:confidenceScore ?confidence .
+}
+WHERE {
+  BIND(NOW() AS ?now)
+
+  # Rule: Sudden Fitness Degradation Detection
+  BIND(xsd:float("0.15") AS ?threshold)
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId ;
+    mape:fitness ?recentFitness .
+
+  ?baseline mape:baselineTrace ?baselineTrace ;
+    mape:baselineFitness ?baselineFitness .
+
+  FILTER(?recentFitness < ?baselineFitness - ?threshold)
+
+  BIND("Initiate local repair of bottleneck activities" AS ?action)
+  BIND(xsd:float("0.95") AS ?confidence)
+}
+
+---
+
+# =============================================================================
+# DRIFT DETECTION RULE: Rare Behavior Pattern Emergence
+# =============================================================================
+# ID: drift-rare-patterns
+# Type: behavior-drift
+# Severity: high
+# Auto-Repair: false
+# Requires Approval: true
+#
+# Description:
+# Detect statistically improbable process execution paths
+#
+# Trigger Condition:
+# novelActivity() observed in event log < threshold frequency
+# =============================================================================
+
+CONSTRUCT {
+  ?detection a aka:DriftDetection ;
+    rdfs:label "Rare Behavior Pattern Emergence" ;
+    rdfs:comment "Detect statistically improbable process execution paths" ;
+    aka:driftType "behavior-drift" ;
+    aka:triggeredAt ?now ;
+    aka:requiredApproval true ;
+    aka:autoRepairAllowed false ;
+    aka:severity "high" ;
+    aka:sparqlRuleId "drift-rare-patterns" ;
+    aka:traceId ?traceId ;
+    aka:affectedTrace ?trace ;
+    aka:recommendedAction ?action ;
+    aka:confidenceScore ?confidence .
+}
+WHERE {
+  BIND(NOW() AS ?now)
+
+  # Rule: Rare Behavior Pattern Emergence
+  BIND(xsd:float("0.05") AS ?raretyThreshold)
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId ;
+    mape:activities ?activity .
+
+  ?activityStats mape:activity ?activity ;
+    mape:frequency ?freq ;
+    mape:totalActivities ?total .
+
+  FILTER(xsd:float(?freq) / xsd:float(?total) < ?raretyThreshold)
+
+  BIND("Alert ostar-auditor for pattern classification" AS ?action)
+  BIND(xsd:float("0.85") AS ?confidence)
+}
+
+---
+
+# =============================================================================
+# DRIFT DETECTION RULE: Structural Invariant Violation
+# =============================================================================
+# ID: drift-invariant-violation
+# Type: structural-drift
+# Severity: critical
+# Auto-Repair: false
+# Requires Approval: true
+#
+# Description:
+# Detect P-invariant conservation violation
+#
+# Trigger Condition:
+# y^T · M ≠ y^T · M0 for some P-invariant y
+# =============================================================================
+
+CONSTRUCT {
+  ?detection a aka:DriftDetection ;
+    rdfs:label "Structural Invariant Violation" ;
+    rdfs:comment "Detect P-invariant conservation violation" ;
+    aka:driftType "structural-drift" ;
+    aka:triggeredAt ?now ;
+    aka:requiredApproval true ;
+    aka:autoRepairAllowed false ;
+    aka:severity "critical" ;
+    aka:sparqlRuleId "drift-invariant-violation" ;
+    aka:traceId ?traceId ;
+    aka:affectedTrace ?trace ;
+    aka:recommendedAction ?action ;
+    aka:confidenceScore ?confidence .
+}
+WHERE {
+  BIND(NOW() AS ?now)
+
+  # Rule: Structural P-Invariant Violation
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId ;
+    mape:marking ?marking .
+
+  ?invariant a mape:PInvariant ;
+    mape:vector ?vector .
+
+  FILTER(NOT(mape:invariantHolds(?vector, ?marking)))
+
+  BIND("Halt execution and escalate to ostar-doctor" AS ?action)
+  BIND(xsd:float("1.0") AS ?confidence)
+}
+
+---
+
+# =============================================================================
+# DRIFT DETECTION RULE: Performance Bottleneck Emergence
+# =============================================================================
+# ID: drift-performance-bottleneck
+# Type: performance-drift
+# Severity: high
+# Auto-Repair: true
+# Requires Approval: false
+#
+# Description:
+# Detect unexplained increase in activity inter-arrival time
+#
+# Trigger Condition:
+# Latency(activities) > baseline + 3σ
+# =============================================================================
+
+CONSTRUCT {
+  ?detection a aka:DriftDetection ;
+    rdfs:label "Performance Bottleneck Emergence" ;
+    rdfs:comment "Detect unexplained increase in activity inter-arrival time" ;
+    aka:driftType "performance-drift" ;
+    aka:triggeredAt ?now ;
+    aka:requiredApproval false ;
+    aka:autoRepairAllowed true ;
+    aka:severity "high" ;
+    aka:sparqlRuleId "drift-performance-bottleneck" ;
+    aka:traceId ?traceId ;
+    aka:affectedTrace ?activity ;
+    aka:recommendedAction ?action ;
+    aka:confidenceScore ?confidence .
+}
+WHERE {
+  BIND(NOW() AS ?now)
+
+  # Rule: Performance Bottleneck Emergence
+  BIND(xsd:float("3.0") AS ?sigmaMultiplier)
+  ?activity a mape:Activity ;
+    mape:name ?activityName ;
+    mape:interArrivalTime ?iat .
+
+  ?activityStats mape:activity ?activityName ;
+    mape:baselineIAT ?baseline ;
+    mape:stddev ?sigma .
+
+  FILTER(xsd:float(?iat) > (xsd:float(?baseline) + (?sigmaMultiplier * xsd:float(?sigma))))
+
+  BIND("Auto-trigger resource scaling and queue tuning" AS ?action)
+  BIND(xsd:float("0.90") AS ?confidence)
+}
+
+---
+
+# =============================================================================
+# DRIFT DETECTION RULE: Declare Constraint Violation
+# =============================================================================
+# ID: drift-declare-violation
+# Type: compliance-drift
+# Severity: high
+# Auto-Repair: false
+# Requires Approval: true
+#
+# Description:
+# Detect violation of Response/Precedence/Choice temporal constraints
+#
+# Trigger Condition:
+# σ |≠ φ_declare for some constraint φ
+# =============================================================================
+
+CONSTRUCT {
+  ?detection a aka:DriftDetection ;
+    rdfs:label "Declare Constraint Violation" ;
+    rdfs:comment "Detect violation of Response/Precedence/Choice temporal constraints" ;
+    aka:driftType "compliance-drift" ;
+    aka:triggeredAt ?now ;
+    aka:requiredApproval true ;
+    aka:autoRepairAllowed false ;
+    aka:severity "high" ;
+    aka:sparqlRuleId "drift-declare-violation" ;
+    aka:traceId ?traceId ;
+    aka:affectedTrace ?trace ;
+    aka:recommendedAction ?action ;
+    aka:confidenceScore ?confidence .
+}
+WHERE {
+  BIND(NOW() AS ?now)
+
+  # Rule: Declare Constraint Violation Detection
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId .
+
+  ?constraint a aka:DeclareConstraint ;
+    rdfs:label ?constraintLabel .
+
+  FILTER(NOT(mape:satisfiesConstraint(?trace, ?constraint)))
+
+  BIND(CONCAT("Escalate ", ?constraintLabel, " violation to auditor") AS ?action)
+  BIND(xsd:float("0.98") AS ?confidence)
+}
+
+---
+
+# =============================================================================
+# DRIFT DETECTION RULE: Abrupt Process Model Degradation
+# =============================================================================
+# ID: drift-model-degradation
+# Type: model-drift
+# Severity: high
+# Auto-Repair: false
+# Requires Approval: true
+#
+# Description:
+# Detect simplification of discovered process tree (over-generalization)
+#
+# Trigger Condition:
+# Complexity(discovered_tree_recent) < Complexity(discovered_tree_baseline) - threshold
+# =============================================================================
+
+CONSTRUCT {
+  ?detection a aka:DriftDetection ;
+    rdfs:label "Abrupt Process Model Degradation" ;
+    rdfs:comment "Detect simplification of discovered process tree (over-generalization)" ;
+    aka:driftType "model-drift" ;
+    aka:triggeredAt ?now ;
+    aka:requiredApproval true ;
+    aka:autoRepairAllowed false ;
+    aka:severity "high" ;
+    aka:sparqlRuleId "drift-model-degradation" ;
+    aka:traceId ?traceId ;
+    aka:affectedTrace ?tree ;
+    aka:recommendedAction ?action ;
+    aka:confidenceScore ?confidence .
+}
+WHERE {
+  BIND(NOW() AS ?now)
+
+  # Rule: Abrupt Model Degradation (Process Tree Simplification)
+  BIND(xsd:integer("5") AS ?complexityThreshold)
+  ?tree a mape:ProcessTree ;
+    mape:treeId ?traceId ;
+    mape:complexity ?recentComplexity .
+
+  ?baseline mape:baselineTree ?baselineTree ;
+    mape:baselineComplexity ?baselineComplexity .
+
+  FILTER(xsd:integer(?recentComplexity) < (xsd:integer(?baselineComplexity) - ?complexityThreshold))
+
+  BIND("Re-discover process tree with stricter generalization bounds" AS ?action)
+  BIND(xsd:float("0.92") AS ?confidence)
+}
+
+---
+
+# =============================================================================
+# SHARED UTILITY CONSTRUCTS
+# =============================================================================
+
+CONSTRUCT {
+  ?repairPlan a aka:SelfRepairPlan ;
+    rdfs:label ?label ;
+    rdfs:comment ?comment ;
+    aka:affectedTrace ?trace ;
+    aka:targetedDrift ?drift ;
+    aka:isElasticRepair true ;
+    aka:preservesInterface true ;
+    aka:estimatedLatency ?latency ;
+    aka:rollbackCapable true ;
+    aka:requiresApproval false ;
+    aka:signatureRequired false .
+}
+WHERE {
+  # Template for auto-repair eligibility analysis
+  ?detection a aka:DriftDetection ;
+    aka:autoRepairAllowed true ;
+    aka:affectedTrace ?trace ;
+    aka:driftType ?driftType .
+
+  BIND(CONCAT("Auto-repair plan for ", STR(?driftType)) AS ?label)
+  BIND(CONCAT("Execute local repair within S-component boundary, ",
+              "preserving interface contract and LTL compliance")) AS ?comment)
+  BIND(xsd:duration("PT500MS") AS ?latency)
+}
+
+---
+
+# DRIFT DETECTION MONITORING CONFIGURATION
+# Generated: 2026-06-01T16:00:00Z
+
+apiVersion: autonomic/v1
+kind: DriftDetectionMonitor
+metadata:
+  name: blue-river-drift-watch-001
+  namespace: governance
+
+spec:
+  rules:
+    - name: "drift-fitness-degradation"
+      label: "Sudden Fitness Degradation"
+      type: "concept-drift"
+      enabled: true
+      evaluationFrequency: "1s"
+      autoRepair: false
+      requiresApproval: true
+
+    - name: "drift-rare-patterns"
+      label: "Rare Behavior Pattern Emergence"
+      type: "behavior-drift"
+      enabled: true
+      evaluationFrequency: "1s"
+      autoRepair: false
+      requiresApproval: true
+
+    - name: "drift-invariant-violation"
+      label: "Structural Invariant Violation"
+      type: "structural-drift"
+      enabled: true
+      evaluationFrequency: "1s"
+      autoRepair: false
+      requiresApproval: true
+
+    - name: "drift-performance-bottleneck"
+      label: "Performance Bottleneck Emergence"
+      type: "performance-drift"
+      enabled: true
+      evaluationFrequency: "1s"
+      autoRepair: true
+      requiresApproval: false
+
+    - name: "drift-declare-violation"
+      label: "Declare Constraint Violation"
+      type: "compliance-drift"
+      enabled: true
+      evaluationFrequency: "1s"
+      autoRepair: false
+      requiresApproval: true
+
+    - name: "drift-model-degradation"
+      label: "Abrupt Process Model Degradation"
+      type: "model-drift"
+      enabled: true
+      evaluationFrequency: "1s"
+      autoRepair: false
+      requiresApproval: true
+
+  queryEngine:
+    backend: "jena-sparql"
+    inferenceRules: "rdfs"
+    timeoutSeconds: 5
+
+  eventStream:
+    source: "mape-k-monitor-output"
+    format: "rdf-quads"
+    batchSize: 100
+
+  responseActions:
+    onDetection:
+      if:
+        requiresApproval: true
+      then:
+        action: "queue-for-auditor-review"
+        notificationChannel: "governance-alerts"
+        ttl: "1h"
+
+    onDetection:
+      if:
+        autoRepair: true
+      then:
+        action: "execute-repair-immediately"
+        verifyInterface: true
+        verifyCompliance: true
+
+  storage:
+    detectionLog: "rocksdb"
+    retentionDays: 90
+    compressionCodec: "zstd"
+
+  observability:
+    metricsExport: "prometheus"
+    driftMetricName: "drift_detection_count"
+    autoRepairMetricName: "auto_repair_executions"

@@ -1,0 +1,166 @@
+# MAPE-K Autonomic Loop Configuration
+# Authority: Autonomic Knowledge Actuation v1.0
+# Generated: 2026-06-01T16:00:00Z
+# Purpose: Real-time monitor configuration for MAPE-K feedback loop
+
+apiVersion: autonomic/v1
+kind: MAPEKLoop
+metadata:
+  name: blue-river-autonomic-loop-001
+  namespace: governance
+  labels:
+    authority: blue-river-dam
+    version: "30.1.1"
+    component: monitor
+spec:
+  monitors:
+    - name: "monitor-event-ingestion"
+      type: "Monitor"
+      label: "Event Stream Ingestion"
+      comment: "Real-time ingestion of XES and OCEL 2.0 event traces"
+      config:
+        eventFormat: "XES/OCEL2.0"
+        alignmentMethod: "stream-based"
+        updateFrequency: "rt"
+        fitnessThreshold: 1.0
+      enabled: true
+      priority: "high"
+
+    - name: "monitor-trace-alignment"
+      type: "Monitor"
+      label: "Trace Alignment Calculator"
+      comment: "Continuous alignment of observed traces to process model"
+      config:
+        eventFormat: "optimal-alignment"
+        alignmentMethod: "pm4py-cost-function"
+        updateFrequency: "bounded"
+        fitnessThreshold: 0.85
+      enabled: true
+      priority: "high"
+
+    - name: "monitor-conformance-fitness"
+      type: "Monitor"
+      label: "Conformance Fitness Tracker"
+      comment: "Real-time computation of fitness metric across running traces"
+      config:
+        eventFormat: "fitness-scalar"
+        alignmentMethod: "weighted-cost"
+        updateFrequency: "1s"
+        fitnessThreshold: 0.85
+      enabled: true
+      priority: "high"
+
+    - name: "monitor-state-space"
+      type: "Monitor"
+      label: "Coverability State Space Monitor"
+      comment: "Background verification of reachable markings and boundedness"
+      config:
+        eventFormat: "reachability-graph"
+        alignmentMethod: "structural-analysis"
+        updateFrequency: "bounded"
+        fitnessThreshold: 1.0
+      enabled: true
+      priority: "high"
+
+  aggregator:
+    mode: "stream-bounded"
+    batchSize: 1000
+    flushInterval: "1s"
+
+  eventSources:
+    - name: "xes-event-stream"
+      type: "XES"
+      protocol: "kafka"
+      topic: "events.xes"
+    - name: "ocel-event-stream"
+      type: "OCEL2.0"
+      protocol: "kafka"
+      topic: "events.ocel2"
+
+  alignment:
+    engine: "pm4py"
+    costFunction: "weighted-move"
+    maxComputeTime: "100ms"
+
+  traceStore:
+    backend: "rocksdb"
+    ttl: "24h"
+    compressionCodec: "zstd"
+
+  compliance:
+    minFitness: 0.85
+    deviationAction: "escalate-to-auditor"
+
+  typestate:
+    compilationMode: "inline"
+    vmTarget: "wasm32-unknown-unknown"
+
+  sandboxing:
+    gasLimit: 10000000
+    maxStackDepth: 100
+    memoryShredding: "oblivion-protocol"
+    shredPasses: 3
+
+  observability:
+    metricsExport: "prometheus"
+    tracingEnabled: true
+    logLevel: "info"
+
+  certification:
+    signer: "ostar-auditor"
+    algorithm: "BLAKE3"
+    interval: "5m"
+
+---
+# Event Log Derivation Configuration
+apiVersion: autonomic/v1
+kind: EventLogDerivation
+metadata:
+  name: otel-to-ocel-conversion-001
+spec:
+  source:
+    protocol: "opentelemetry"
+    endpoint: "localhost:4317"
+    exportInterval: "100ms"
+
+  mapping:
+    traces: "object-centric"
+    spans: "events"
+    attributes: "properties"
+
+  target:
+    format: "OCEL2.0"
+    storage: "ocel-event-store"
+
+  conformance:
+    validateSchema: true
+    strictTyping: true
+    dropInvalid: false
+
+---
+# Fitness Computation Pipeline
+apiVersion: autonomic/v1
+kind: FitnessComputation
+metadata:
+  name: conformance-fitness-pipeline-001
+spec:
+  input:
+    traces: "from-alignment-engine"
+    model: "active-process-model"
+    costFunction: "pm4py-weighted"
+
+  computation:
+    algorithm: "optimal-alignment"
+    timeout: "5s"
+    parallelism: 8
+
+  output:
+    metricsName: "conformance.fitness"
+    interval: "1s"
+
+  notification:
+    onBelowThreshold:
+      threshold: 0.85
+      action: "create-violation-alert"
+      recipient: "ostar-auditor"
+      severity: "high"

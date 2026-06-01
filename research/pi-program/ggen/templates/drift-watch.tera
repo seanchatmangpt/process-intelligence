@@ -1,0 +1,235 @@
+# Drift Detection SPARQL Rules
+# Authority: Autonomic Knowledge Actuation + Blue River Dam
+# Generated: {{ now | date(format="%Y-%m-%dT%H:%M:%SZ") }}
+# Purpose: Runtime drift detection rules for self-repair triggers
+
+PREFIX aka: <http://process-intelligence.local/autonomic/>
+PREFIX mape: <http://process-intelligence.local/mape-k/>
+PREFIX gov: <http://process-intelligence.local/governance/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+{%- for result in results %}
+{%- if result[0] %}
+
+# =============================================================================
+# DRIFT DETECTION RULE: {{ result[1] }}
+# =============================================================================
+# ID: {{ result[0] | split(uri='/') | last }}
+# Type: {{ result[2] }}
+# Severity: {{ result[5] }}
+# Auto-Repair: {{ result[6] }}
+# Requires Approval: {{ result[7] }}
+#
+# Description:
+# {{ result[3] }}
+#
+# Trigger Condition:
+# {{ result[4] }}
+# =============================================================================
+
+CONSTRUCT {
+  ?detection a aka:DriftDetection ;
+    rdfs:label "{{ result[1] }}" ;
+    rdfs:comment "{{ result[3] }}" ;
+    aka:driftType "{{ result[2] }}" ;
+    aka:triggeredAt ?now ;
+    aka:requiredApproval {{ result[7] }} ;
+    aka:autoRepairAllowed {{ result[6] }} ;
+    aka:severity "{{ result[5] }}" ;
+    aka:sparqlRuleId "{{ result[0] | split(uri='/') | last }}" ;
+    aka:traceId ?traceId ;
+    aka:affectedTrace ?trace ;
+    aka:recommendedAction ?action ;
+    aka:confidenceScore ?confidence .
+}
+WHERE {
+  BIND(NOW() AS ?now)
+
+  {%- if "fitness-degradation" in result[2] %}
+  # Rule: Sudden Fitness Degradation Detection
+  BIND(xsd:float("0.15") AS ?threshold)
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId ;
+    mape:fitness ?recentFitness .
+
+  ?baseline mape:baselineTrace ?baselineTrace ;
+    mape:baselineFitness ?baselineFitness .
+
+  FILTER(?recentFitness < ?baselineFitness - ?threshold)
+
+  BIND("Initiate local repair of bottleneck activities" AS ?action)
+  BIND(xsd:float("0.95") AS ?confidence)
+
+  {%- elif "rare-patterns" in result[2] %}
+  # Rule: Rare Behavior Pattern Emergence
+  BIND(xsd:float("0.05") AS ?raretyThreshold)
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId ;
+    mape:activities ?activity .
+
+  ?activityStats mape:activity ?activity ;
+    mape:frequency ?freq ;
+    mape:totalActivities ?total .
+
+  FILTER(xsd:float(?freq) / xsd:float(?total) < ?raretyThreshold)
+
+  BIND("Alert ostar-auditor for pattern classification" AS ?action)
+  BIND(xsd:float("0.85") AS ?confidence)
+
+  {%- elif "invariant-violation" in result[2] %}
+  # Rule: Structural P-Invariant Violation
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId ;
+    mape:marking ?marking .
+
+  ?invariant a mape:PInvariant ;
+    mape:vector ?vector .
+
+  FILTER(NOT(mape:invariantHolds(?vector, ?marking)))
+
+  BIND("Halt execution and escalate to ostar-doctor" AS ?action)
+  BIND(xsd:float("1.0") AS ?confidence)
+
+  {%- elif "performance-bottleneck" in result[2] %}
+  # Rule: Performance Bottleneck Emergence
+  BIND(xsd:float("3.0") AS ?sigmaMultiplier)
+  ?activity a mape:Activity ;
+    mape:name ?activityName ;
+    mape:interArrivalTime ?iat .
+
+  ?activityStats mape:activity ?activityName ;
+    mape:baselineIAT ?baseline ;
+    mape:stddev ?sigma .
+
+  FILTER(xsd:float(?iat) > (xsd:float(?baseline) + (?sigmaMultiplier * xsd:float(?sigma))))
+
+  BIND("Auto-trigger resource scaling and queue tuning" AS ?action)
+  BIND(xsd:float("0.90") AS ?confidence)
+
+  {%- elif "declare-violation" in result[2] %}
+  # Rule: Declare Constraint Violation Detection
+  ?trace a mape:Trace ;
+    mape:traceId ?traceId .
+
+  ?constraint a aka:DeclareConstraint ;
+    rdfs:label ?constraintLabel .
+
+  FILTER(NOT(mape:satisfiesConstraint(?trace, ?constraint)))
+
+  BIND(CONCAT("Escalate ", ?constraintLabel, " violation to auditor") AS ?action)
+  BIND(xsd:float("0.98") AS ?confidence)
+
+  {%- elif "model-degradation" in result[2] %}
+  # Rule: Process Model Simplification Detection
+  BIND(xsd:integer("5") AS ?complexityThreshold)
+  ?tree a mape:ProcessTree ;
+    mape:treeId ?treeId ;
+    mape:complexity ?recentComplexity .
+
+  ?baseline mape:baselineTree ?baselineTree ;
+    mape:baselineComplexity ?baselineComplexity .
+
+  FILTER(xsd:integer(?recentComplexity) < (xsd:integer(?baselineComplexity) - ?complexityThreshold))
+
+  BIND("Re-discover process tree with stricter generalization bounds" AS ?action)
+  BIND(xsd:float("0.92") AS ?confidence)
+
+  {%- endif %}
+}
+
+{%- endif %}
+{%- endfor %}
+
+# =============================================================================
+# SHARED UTILITY CONSTRUCTS
+# =============================================================================
+
+CONSTRUCT {
+  ?repairPlan a aka:SelfRepairPlan ;
+    rdfs:label ?label ;
+    rdfs:comment ?comment ;
+    aka:affectedTrace ?trace ;
+    aka:targetedDrift ?drift ;
+    aka:isElasticRepair {{ true | as_safe }} ;
+    aka:preservesInterface {{ true | as_safe }} ;
+    aka:estimatedLatency ?latency ;
+    aka:rollbackCapable {{ true | as_safe }} ;
+    aka:requiresApproval {{ false | as_safe }} ;
+    aka:signatureRequired {{ false | as_safe }} .
+}
+WHERE {
+  # Template for auto-repair eligibility analysis
+  ?detection a aka:DriftDetection ;
+    aka:autoRepairAllowed true ;
+    aka:affectedTrace ?trace ;
+    aka:driftType ?driftType .
+
+  BIND(CONCAT("Auto-repair plan for ", STR(?driftType)) AS ?label)
+  BIND(CONCAT("Execute local repair within S-component boundary, ",
+              "preserving interface contract and LTL compliance")) AS ?comment)
+  BIND(xsd:duration("PT500MS") AS ?latency)
+}
+
+---
+
+# DRIFT DETECTION MONITORING CONFIGURATION
+# Generated: {{ now | date(format="%Y-%m-%dT%H:%M:%SZ") }}
+
+apiVersion: autonomic/v1
+kind: DriftDetectionMonitor
+metadata:
+  name: blue-river-drift-watch-001
+  namespace: governance
+
+spec:
+  rules:
+    {%- for result in results %}
+    {%- if result[0] %}
+    - name: "{{ result[0] | split(uri='/') | last }}"
+      label: "{{ result[1] }}"
+      type: "{{ result[2] }}"
+      enabled: true
+      evaluationFrequency: "1s"
+      autoRepair: {{ result[6] }}
+      requiresApproval: {{ result[7] }}
+    {%- endif %}
+    {%- endfor %}
+
+  queryEngine:
+    backend: "jena-sparql"
+    inferenceRules: "rdfs"
+    timeoutSeconds: 5
+
+  eventStream:
+    source: "mape-k-monitor-output"
+    format: "rdf-quads"
+    batchSize: 100
+
+  responseActions:
+    onDetection:
+      if:
+        requiresApproval: true
+      then:
+        action: "queue-for-auditor-review"
+        notificationChannel: "governance-alerts"
+        ttl: "1h"
+
+    onDetection:
+      if:
+        autoRepair: true
+      then:
+        action: "execute-repair-immediately"
+        verifyInterface: true
+        verifyCompliance: true
+
+  storage:
+    detectionLog: "rocksdb"
+    retentionDays: 90
+    compressionCodec: "zstd"
+
+  observability:
+    metricsExport: "prometheus"
+    driftMetricName: "drift_detection_count"
+    autoRepairMetricName: "auto_repair_executions"

@@ -1,0 +1,18 @@
+{
+  "artifact_id": "api_ratelimit_20260601",
+  "artifact_name": "rate-limits.yaml",
+  "artifact_type": "Rate Limit Configuration",
+  "content_hash": "blake3:ba54033b18ffcaa8e5b52432e43f90c401adcf36a9f143b0633f792da93e255a",
+  "receipt_id": "receipt_api_ratelimit_20260601_20260601",
+  "timestamp": "2026-06-01T16:09:17.736101Z",
+  "authority": "PI Research Program Manufacturing Phase",
+  "witness": "ggen_api_specification_manufacturing_v3.0.0",
+  "manufacturing_phase": "api_specification_generation",
+  "status": "ISSUED",
+  "file_size_bytes": 4550,
+  "cryptographic_chain": {
+    "proof_algorithm": "BLAKE3-SHA256",
+    "is_certified": true,
+    "can_be_replayed": true
+  }
+}

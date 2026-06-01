@@ -1,0 +1,18 @@
+{
+  "artifact_id": "api_auth_20260601",
+  "artifact_name": "auth-spec.md",
+  "artifact_type": "Authentication Specification",
+  "content_hash": "blake3:5911bbe72c8924a7f5192096ca36c3edef735aee547912b9f20d0350eeb70c6d",
+  "receipt_id": "receipt_api_auth_20260601_20260601",
+  "timestamp": "2026-06-01T16:09:47.347322Z",
+  "authority": "PI Research Program Manufacturing Phase",
+  "witness": "ggen_api_specification_manufacturing_v3.0.0",
+  "manufacturing_phase": "api_specification_generation",
+  "status": "ISSUED",
+  "file_size_bytes": 5573,
+  "cryptographic_chain": {
+    "proof_algorithm": "BLAKE3-SHA256",
+    "is_certified": true,
+    "can_be_replayed": true
+  }
+}

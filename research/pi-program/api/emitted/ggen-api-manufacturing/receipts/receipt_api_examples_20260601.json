@@ -1,0 +1,18 @@
+{
+  "artifact_id": "api_examples_20260601",
+  "artifact_name": "api-examples.md",
+  "artifact_type": "API Examples",
+  "content_hash": "blake3:5ac17528e513f4ae0cbc9c9260d5016c69abd824dc14bdf1a32b6cba93bc1703",
+  "receipt_id": "receipt_api_examples_20260601_20260601",
+  "timestamp": "2026-06-01T16:09:17.736277Z",
+  "authority": "PI Research Program Manufacturing Phase",
+  "witness": "ggen_api_specification_manufacturing_v3.0.0",
+  "manufacturing_phase": "api_specification_generation",
+  "status": "ISSUED",
+  "file_size_bytes": 5518,
+  "cryptographic_chain": {
+    "proof_algorithm": "BLAKE3-SHA256",
+    "is_certified": true,
+    "can_be_replayed": true
+  }
+}

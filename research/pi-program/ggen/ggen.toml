@@ -24,7 +24,10 @@ additional = [
   "ontology/pi-ggen-invalid-extension-ledger.ttl",
   "ontology/pi-ggen-project-registry.ttl",
   "ontology/pi-ggen-source-ledger.ttl",
-  "ontology/pi-ggen-unified-run.ttl"
+  "ontology/pi-ggen-unified-run.ttl",
+  "ontology/api-specification.ttl",
+  "ontology/governance-policy.ttl",
+  "ontology/autonomic-law.ttl"
 ]
 
 [[generation.rules]]
@@ -67,6 +70,56 @@ description = "Render ledger of all rendered artifacts with source trace"
 # output_file = "../emitted/ggen-validator-remediation/warrant-path-proof.md"
 # mode = "Overwrite"
 # description = "Prove Prompt Manufactory warrant path through ggen execution"
+
+# API Specification Generation Rules
+[[generation.rules]]
+name = "openapi-specification"
+query = { file = "queries/select-api-endpoints.rq" }
+template = { file = "templates/openapi-3-0-spec.yaml.tera" }
+output_file = "../research/pi-program/api/manufactured/openapi-3.0-spec.yaml"
+mode = "Overwrite"
+description = "Generate OpenAPI 3.0 specification from API schema"
+
+[[generation.rules]]
+name = "api-authentication-specification"
+query = { file = "queries/select-api-auth-rules.rq" }
+template = { file = "templates/api-auth-spec.md.tera" }
+output_file = "../research/pi-program/api/manufactured/auth-spec.md"
+mode = "Overwrite"
+description = "Generate API authentication specification"
+
+[[generation.rules]]
+name = "api-rate-limiting-configuration"
+query = { file = "queries/select-rate-limit-rules.rq" }
+template = { file = "templates/rate-limiter.yaml.tera" }
+output_file = "../research/pi-program/api/manufactured/rate-limits.yaml"
+mode = "Overwrite"
+description = "Generate rate limiting configuration"
+
+# Blue River Governance Manufacturing Rules
+[[generation.rules]]
+name = "mape-k-monitor-config"
+query = { file = "queries/select-mape-monitors.rq" }
+template = { file = "templates/autonomic-loop.tera" }
+output_file = "../governance/manufactured/mape-monitor-001.yaml"
+mode = "Overwrite"
+description = "Manufacture MAPE-K monitor configuration from governance policy"
+
+[[generation.rules]]
+name = "andon-gate-enforcement"
+query = { file = "queries/select-andon-gates.rq" }
+template = { file = "templates/hook-policy.tera" }
+output_file = "../governance/manufactured/andon-gates-001.yaml"
+mode = "Overwrite"
+description = "Manufacture andon gate enforcement policies from Blue River Dam"
+
+[[generation.rules]]
+name = "drift-detection-rules"
+query = { file = "queries/select-drift-detection-rules.rq" }
+template = { file = "templates/drift-watch.tera" }
+output_file = "../self-repair/manufactured/drift-watch-001.sparql"
+mode = "Overwrite"
+description = "Manufacture drift detection SPARQL rules for autonomic self-repair"
 
 [query]
 endpoint = "in-memory"

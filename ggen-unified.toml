@@ -1,0 +1,13 @@
+
+[project]
+name = "post-cyberpunk-foundry"
+version = "30.1.2"
+
+[ontology]
+source = "research/pi-program/ggen/ontology/pi-program.ttl"
+
+[generation]
+enabled = true
+rules = [
+    { name = "pcp-types", query = { file = "queries/extract-pcp-types.rq" }, template = { file = "templates/pcp-types.ts.tera" }, output_file = "/Users/sac/pcp/packages/core/types_generated.ts" }
+]

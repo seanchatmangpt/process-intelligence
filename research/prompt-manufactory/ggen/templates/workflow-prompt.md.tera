@@ -1,85 +1,41 @@
-# Workflow Warrant: {{ workflow_id }}
+# Workflow Warrant: {{ programId }}
 
-**Program:** {{ program_name }}
-**Workflow URI:** {{ workflow_uri }}
+**Program ID:** {{ programId }}
+**Mission:** {{ mission }}
 **Authority Layer:** Research Program Law
-**Manufacturing Timestamp:** {{ mfg_timestamp }}
+**Workflow URI:** {{ workflow }}
 
 ---
 
-## Workflow Identity
+## Program Details
 
 | Property | Value |
 |----------|-------|
-| **Workflow ID** | {{ workflow_id }} |
-| **Canonical Name** | {{ workflow_name }} |
-| **Description** | {{ workflow_description }} |
-| **Scope** | {{ workflow_scope }} |
-| **Authority Reference** | {{ authority_ref }} |
+| **Program ID** | {{ programId }} |
+| **Mission** | {{ mission }} |
+| **Authority:** Research Program Law |
 
 ---
 
-## Authorized Stages
+## Workflow Phases
 
-{%- for stage in workflow_stages %}
-### Stage: {{ stage.name }}
+{%- for phase in phase %}
+### Phase: {{ phaseLabel }}
 
-- **Type:** {{ stage.stage_type }}
-- **Purpose:** {{ stage.purpose }}
-- **Proof Gate(s):** {{ stage.proof_gates | join(", ") }}
-- **Success Criteria:** {{ stage.success_criteria }}
+- **Mission:** {{ phaseMission }}
+- **Subagent Role:** {{ agentLabel }}
+  - **Agent Mission:** {{ agentMission }}
+  - **Output Contract:** {{ outputContract }}
+  - **Owned Surface:** {{ ownedSurface | default(value="UNRESTRICTED") }}
+  - **Forbidden Surface:** {{ forbiddenSurface | default(value="NONE") }}
 
 {%- endfor %}
 
 ---
 
-## Transition Rules
+## Manufacturing Authority
 
-{%- for transition in workflow_transitions %}
-- **From** `{{ transition.from_stage }}` → **To** `{{ transition.to_stage }}`
-  - **Condition:** {{ transition.condition }}
-  - **Warrant:** {{ transition.warrant }}
-
-{%- endfor %}
-
----
-
-## Forbidden Transitions
-
-{%- for forbidden in forbidden_transitions %}
-- ~~{{ forbidden.from_stage }} → {{ forbidden.to_stage }}~~
-  - **Reason:** {{ forbidden.reason }}
-
-{%- endfor %}
-
----
-
-## Artifact Lifecycle
-
-{%- for artifact_type in artifact_types %}
-### {{ artifact_type.name }}
-
-- **Proof Gate(s):** {{ artifact_type.proof_gates | join(", ") }}
-- **Receipt Required:** {{ artifact_type.receipt_required }}
-- **Immutability:** {{ artifact_type.immutable }}
-
-{%- endfor %}
-
----
-
-## Manufacturing Authorization
-
-- **Authorized by:** {{ authorized_by }}
-- **Authority Layer:** {{ authority_layer }}
-- **Binding Doctrine:** {{ binding_doctrine }}
-- **COVENANT Status:** {{ covenant_status }}
-
----
-
-## Warrant Proof
-
-```
-receipt_hash: {{ receipt_hash }}
-manufacture_chain: {{ manufacture_chain }}
-proof_timestamp: {{ proof_timestamp }}
-```
+- **Authority Layer:** Research Program Law
+- **Warrant Type:** Workflow Permit
+- **Status:** AUTHORIZED
+- **Binding Doctrine:** Process Intelligence Lifecycle Law

@@ -1,0 +1,220 @@
+# API Rate Limiting Configuration
+# Version: 3.0.0
+# Generated: {{ now() | date(format="%Y-%m-%d %H:%M:%S UTC") }}
+# Authority: PI Research Program Manufacturing Phase
+
+rate_limiting:
+  enabled: true
+  strategy: token_bucket
+  engine: in-memory
+  clock: system_wallclock
+
+default_tier: standard
+
+tiers:
+  # Standard tier: balanced rate limits for typical operations
+  standard:
+    name: Standard
+    description: Balanced rate limits for typical API operations
+    limits:
+      per_second: 100
+      per_minute: 5000
+      per_hour: 100000
+    burst:
+      capacity: 200
+      window_ms: 1000
+    retry_after_header: true
+    endpoints:
+      - /api/v1/processes/manufacture
+      - /api/v1/processes/{processId}
+      - /api/v1/governance/rules
+      - /api/v1/lifecycle/transition
+      - /api/v1/evidence/validate
+
+  # Intensive tier: reduced limits for heavy-weight operations
+  intensive:
+    name: Intensive
+    description: Reduced limits for heavy computation operations (conformance checking)
+    limits:
+      per_second: 10
+      per_minute: 500
+      per_hour: 10000
+    burst:
+      capacity: 20
+      window_ms: 1000
+    retry_after_header: true
+    endpoints:
+      - /api/v1/conformance/check
+
+  # Unlimited tier: no practical rate limits for public endpoints
+  unlimited:
+    name: Unlimited
+    description: Unlimited rate limits for public health/status endpoints
+    limits:
+      per_second: 1000
+      per_minute: 999999
+      per_hour: 999999
+    burst:
+      capacity: 5000
+      window_ms: 1000
+    retry_after_header: false
+    endpoints:
+      - /api/v1/health
+
+# User-based rate limit overrides
+user_tiers:
+  free:
+    limits:
+      per_second: 10
+      per_minute: 500
+      per_hour: 5000
+    burst:
+      capacity: 20
+
+  pro:
+    limits:
+      per_second: 100
+      per_minute: 5000
+      per_hour: 100000
+    burst:
+      capacity: 200
+
+  enterprise:
+    limits:
+      per_second: 500
+      per_minute: 30000
+      per_hour: 1000000
+    burst:
+      capacity: 1000
+
+# IP-based rate limiting
+ip_limiting:
+  enabled: true
+  strategies:
+    - whitelist:
+        name: Internal Network
+        cidrs:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+        tier: enterprise
+    - whitelist:
+        name: Partner Networks
+        cidrs:
+          - 203.0.113.0/24  # Example CIDR - replace with actual
+        tier: pro
+    - default:
+        tier: free
+
+# Backoff and retry behavior
+retry_policy:
+  algorithm: exponential_backoff
+  base_delay_ms: 100
+  max_delay_ms: 30000
+  multiplier: 2.0
+  jitter: true
+  max_retries: 5
+
+# HTTP headers for rate limit communication
+headers:
+  limit_header: X-RateLimit-Limit
+  remaining_header: X-RateLimit-Remaining
+  reset_header: X-RateLimit-Reset
+  retry_after_header: Retry-After
+
+# Monitoring and alerting
+monitoring:
+  enabled: true
+  metrics:
+    - requests_total
+    - requests_rejected
+    - limit_exceeded_count
+    - average_latency_ms
+  alert_thresholds:
+    rate_limit_hits_per_minute: 100
+    consecutive_errors: 10
+    high_latency_ms: 1000
+
+# Distributed rate limiting (for multi-instance deployments)
+distributed:
+  enabled: false
+  backend: redis
+  sync_interval_ms: 500
+  redis_config:
+    host: localhost
+    port: 6379
+    db: 0
+    password: null
+
+# Quota management
+quotas:
+  daily_reset: true
+  reset_time_utc: "00:00"
+  track_by:
+    - user_id
+    - api_key
+    - ip_address
+
+# Endpoint-specific overrides
+endpoint_overrides:
+  /api/v1/conformance/check:
+    tier: intensive
+    custom_limits:
+      per_second: 10
+      per_minute: 500
+      per_hour: 10000
+    timeout_seconds: 300
+    requires_async: true
+
+  /api/v1/health:
+    tier: unlimited
+    custom_limits:
+      per_second: 1000
+      per_minute: 999999
+    timeout_seconds: 5
+
+# Grace period for rate limit recovery
+grace_period:
+  enabled: true
+  duration_seconds: 60
+  reduced_limit_percentage: 50
+
+# Caching to reduce rate limit calls
+cache_config:
+  enabled: true
+  ttl_seconds: 60
+  backend: in-memory
+  max_entries: 10000
+
+# Logging
+logging:
+  enabled: true
+  log_level: info
+  log_formats:
+    - client_ip
+    - user_id
+    - endpoint
+    - tier
+    - limit_status
+    - remaining_quota
+  sample_rate: 0.1  # Log 10% of requests
+
+# SLA compliance
+sla:
+  target_uptime_percentage: 99.9
+  guaranteed_tier_availability:
+    - tier: standard
+      availability: 99.9
+    - tier: intensive
+      availability: 99.0
+    - tier: unlimited
+      availability: 99.5
+
+# Cost-based rate limiting
+cost_based:
+  enabled: false
+  cost_per_request:
+    /api/v1/conformance/check: 10
+    /api/v1/processes/manufacture: 5
+    default: 1
+  monthly_quota_credits: 10000

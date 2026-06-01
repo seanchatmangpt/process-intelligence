@@ -1,0 +1,522 @@
+openapi: 3.0.0
+info:
+  title: PI Manufacturing API
+  description: RESTful API for process intelligence manufacturing, validation, and lifecycle management
+  version: 3.0.0
+  contact:
+    name: PI Research Program
+    email: pi-research@process-intelligence.org
+  license:
+    name: Proprietary
+    url: https://process-intelligence.org/license
+
+servers:
+  - url: https://api.process-intelligence.org
+    description: Production API
+
+tags:
+  - name: manufacturing
+    description: Process manufacturing operations
+  - name: conformance
+    description: Process validation and conformance checking
+  - name: governance
+    description: Governance rules and policies
+  - name: lifecycle
+    description: Artifact lifecycle state management
+  - name: evidence
+    description: Evidence validation and cryptography
+  - name: health
+    description: System health and status
+
+paths:
+  /api/v1/processes/manufacture:
+    post:
+      operationId: manufactureProcess
+      summary: Manufacture Process
+      description: Initiates manufacturing of a process specification and returns receipt chain
+      tags:
+        - manufacturing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - processName
+                - specification
+              properties:
+                processName:
+                  type: string
+                  description: Name of the process to manufacture
+                specification:
+                  type: object
+                  description: Process specification in JSON format
+                witness:
+                  type: string
+                  description: Optional witness for specification
+      responses:
+        '201':
+          description: Process manufacturing initiated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - receiptId
+                  - manufactureStatus
+                  - artifacts
+                properties:
+                  receiptId:
+                    type: string
+                    description: Unique receipt identifier
+                  manufactureStatus:
+                    type: string
+                    enum:
+                      - SUCCESS
+                      - PARTIAL
+                      - FAILED
+                  artifacts:
+                    type: array
+                    items:
+                      type: object
+                    description: List of manufactured artifacts
+      security:
+        - BearerAuth: []
+
+  /api/v1/processes/{processId}:
+    get:
+      operationId: getProcess
+      summary: Get Process
+      description: Retrieves process manufacturing status and receipt chain
+      tags:
+        - manufacturing
+      parameters:
+        - name: processId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique process identifier
+      responses:
+        '200':
+          description: Process details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - processId
+                  - status
+                  - receipt
+                  - artifacts
+                properties:
+                  processId:
+                    type: string
+                  status:
+                    type: string
+                  receipt:
+                    type: object
+                    description: Receipt chain and proofs
+                  artifacts:
+                    type: array
+                    items:
+                      type: object
+      security:
+        - BearerAuth: []
+
+  /api/v1/conformance/check:
+    post:
+      operationId: checkConformance
+      summary: Check Conformance
+      description: Performs model-vs-log conformance checking using pm4py
+      tags:
+        - conformance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - eventLog
+                - processModel
+              properties:
+                eventLog:
+                  type: object
+                  description: Event log in OCEL format
+                processModel:
+                  type: object
+                  description: Process model specification
+                fitnessCriteria:
+                  type: object
+                  description: Optional fitness constraints
+      responses:
+        '200':
+          description: Conformance check completed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - conformant
+                  - fitness
+                  - receipt
+                properties:
+                  conformant:
+                    type: boolean
+                    description: Whether process conforms to model
+                  fitness:
+                    type: number
+                    minimum: 0
+                    maximum: 1
+                    description: Fitness score
+                  violations:
+                    type: array
+                    items:
+                      type: object
+                    description: List of conformance violations
+                  receipt:
+                    type: object
+                    description: Conformance check receipt
+      security:
+        - BearerAuth: []
+
+  /api/v1/governance/rules:
+    get:
+      operationId: listGovernanceRules
+      summary: List Governance Rules
+      description: Returns all active governance rules for the research program
+      tags:
+        - governance
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by rule category
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: Governance rules retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - rules
+                  - totalCount
+                properties:
+                  rules:
+                    type: array
+                    items:
+                      type: object
+                    description: List of governance rules
+                  totalCount:
+                    type: integer
+                  pageInfo:
+                    type: object
+      security: []
+
+  /api/v1/lifecycle/transition:
+    post:
+      operationId: transitionLifecycle
+      summary: Lifecycle Transition
+      description: Moves an artifact through valid lifecycle state transitions
+      tags:
+        - lifecycle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - artifactId
+                - toState
+              properties:
+                artifactId:
+                  type: string
+                  description: Artifact to transition
+                fromState:
+                  type: string
+                  description: Current state
+                toState:
+                  type: string
+                  description: Target state
+                reason:
+                  type: string
+                  description: Transition reason
+      responses:
+        '200':
+          description: Lifecycle transition completed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - artifactId
+                  - previousState
+                  - currentState
+                properties:
+                  artifactId:
+                    type: string
+                  previousState:
+                    type: string
+                  currentState:
+                    type: string
+                  transitionProof:
+                    type: string
+      security:
+        - BearerAuth: []
+
+  /api/v1/evidence/validate:
+    post:
+      operationId: validateEvidence
+      summary: Validate Evidence
+      description: Cryptographically validates evidence block integrity and receipt chain
+      tags:
+        - evidence
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - evidence
+              properties:
+                evidence:
+                  type: object
+                  description: Evidence block to validate
+                verifyWitness:
+                  type: boolean
+                  default: true
+                checkReceiptChain:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Evidence validation completed
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - valid
+                  - witnessVerified
+                  - receiptChainValid
+                properties:
+                  valid:
+                    type: boolean
+                  witnessVerified:
+                    type: boolean
+                  receiptChainValid:
+                    type: boolean
+                  violations:
+                    type: array
+                    items:
+                      type: object
+                    description: Any validation violations
+      security:
+        - BearerAuth: []
+
+  /api/v1/health:
+    get:
+      operationId: healthCheck
+      summary: Health Check
+      description: Returns system status, version, and manufacturing readiness
+      tags:
+        - health
+      responses:
+        '200':
+          description: System health status
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - version
+                  - manufacturingReady
+                  - uptime
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - healthy
+                      - degraded
+                      - unhealthy
+                  version:
+                    type: string
+                  manufacturingReady:
+                    type: boolean
+                  uptime:
+                    type: integer
+                    description: Uptime in seconds
+      security: []
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT bearer token for API authentication
+
+  schemas:
+    ProcessManufactureRequest:
+      type: object
+      required:
+        - processName
+        - specification
+      properties:
+        processName:
+          type: string
+        specification:
+          type: object
+        witness:
+          type: string
+
+    ProcessManufactureResponse:
+      type: object
+      required:
+        - receiptId
+        - manufactureStatus
+        - artifacts
+      properties:
+        receiptId:
+          type: string
+        manufactureStatus:
+          type: string
+          enum:
+            - SUCCESS
+            - PARTIAL
+            - FAILED
+        artifacts:
+          type: array
+          items:
+            type: object
+
+    ConformanceCheckRequest:
+      type: object
+      required:
+        - eventLog
+        - processModel
+      properties:
+        eventLog:
+          type: object
+        processModel:
+          type: object
+        fitnessCriteria:
+          type: object
+
+    ConformanceCheckResponse:
+      type: object
+      required:
+        - conformant
+        - fitness
+        - receipt
+      properties:
+        conformant:
+          type: boolean
+        fitness:
+          type: number
+          minimum: 0
+          maximum: 1
+        violations:
+          type: array
+          items:
+            type: object
+        receipt:
+          type: object
+
+    LifecycleTransitionRequest:
+      type: object
+      required:
+        - artifactId
+        - toState
+      properties:
+        artifactId:
+          type: string
+        fromState:
+          type: string
+        toState:
+          type: string
+        reason:
+          type: string
+
+    LifecycleTransitionResponse:
+      type: object
+      required:
+        - artifactId
+        - previousState
+        - currentState
+      properties:
+        artifactId:
+          type: string
+        previousState:
+          type: string
+        currentState:
+          type: string
+        transitionProof:
+          type: string
+
+    EvidenceValidationRequest:
+      type: object
+      required:
+        - evidence
+      properties:
+        evidence:
+          type: object
+        verifyWitness:
+          type: boolean
+          default: true
+        checkReceiptChain:
+          type: boolean
+          default: true
+
+    EvidenceValidationResponse:
+      type: object
+      required:
+        - valid
+        - witnessVerified
+        - receiptChainValid
+      properties:
+        valid:
+          type: boolean
+        witnessVerified:
+          type: boolean
+        receiptChainValid:
+          type: boolean
+        violations:
+          type: array
+          items:
+            type: object
+
+    HealthCheckResponse:
+      type: object
+      required:
+        - status
+        - version
+        - manufacturingReady
+        - uptime
+      properties:
+        status:
+          type: string
+          enum:
+            - healthy
+            - degraded
+            - unhealthy
+        version:
+          type: string
+        manufacturingReady:
+          type: boolean
+        uptime:
+          type: integer

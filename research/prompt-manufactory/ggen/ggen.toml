@@ -27,15 +27,59 @@ standard_only = false
 [generation]
 output_dir = ".."
 
-# All rules disabled pending template syntax fixes (Phase 8 recovery)
-# Placeholder rule for DMAIC measurement gate compliance
+# Prompt Manufactory Generation Rules
+# Phase 8: Enable workflow, subagent, and checkpoint prompt manufacturing
+
 [[generation.rules]]
-name = "structural-placeholder"
+name = "workflow-prompts"
+query = { file = "queries/select-workflow-prompts.rq" }
+template = { file = "templates/workflow-prompt.md.tera" }
+output_file = "emitted/prompts/workflows/{{ programId }}.md"
+mode = "Overwrite"
+description = "Generate workflow-level prompts from research programs"
+
+[[generation.rules]]
+name = "subagent-prompts"
+query = { file = "queries/select-subagent-prompts.rq" }
+template = { file = "templates/subagent-prompt.md.tera" }
+output_file = "emitted/prompts/subagents/{{ roleLabel }}.md"
+mode = "Overwrite"
+description = "Generate subagent role prompts from subagent-role-law"
+
+[[generation.rules]]
+name = "checkpoint-prompts"
+query = { file = "queries/select-checkpoint-prompts.rq" }
+template = { file = "templates/checkpoint-prompt.md.tera" }
+output_file = "emitted/prompts/checkpoints/{{ programId }}.md"
+mode = "Overwrite"
+description = "Generate checkpoint-level prompts from checkpoint definitions"
+
+# Skill prompts
+[[generation.rules]]
+name = "skill-prompts"
+query = { file = "queries/select-skill-prompts.rq" }
+template = { file = "templates/skill.md.tera" }
+output_file = "emitted/prompts/skills/{{ skillId }}.md"
+mode = "Overwrite"
+description = "Generate skill warrants from skill-law"
+
+# Hook policy prompts
+[[generation.rules]]
+name = "hook-policies"
+query = { file = "queries/select-hook-policies.rq" }
+template = { file = "templates/hook-policy.md.tera" }
+output_file = "emitted/prompts/hooks/{{ hookId }}.md"
+mode = "Overwrite"
+description = "Generate hook policy documents from hook-law"
+
+# Index rules for manufacturing receipts
+[[generation.rules]]
+name = "prompt-receipt-ledger"
 query = { file = "queries/select-rendered-prompts.rq" }
 template = { file = "templates/prompt-receipt.md.tera" }
-output_file = "emitted/indexes/structural-placeholder.md"
+output_file = "emitted/indexes/prompt-receipt-ledger.md"
 mode = "Overwrite"
-description = "Structural placeholder for ggen.toml validation"
+description = "Generate prompt receipt ledger for manufacturing audit"
 
 [sync]
 enabled = true

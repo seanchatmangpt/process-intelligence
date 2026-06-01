@@ -1,0 +1,12 @@
+{
+  "operation_id": "c05d9315-1acd-440c-a0bd-4be3d7561c3b",
+  "timestamp": "2026-06-01T23:12:01.370035Z",
+  "input_hashes": [
+    "ggen.toml:acfec4fba731d698ce2da0656380d50d980b7c029d6edb1deaec29e8de282639"
+  ],
+  "output_hashes": [
+    "/Users/sac/pcp/packages/core/types_generated.ts:95df8db0c2c0bfa19959ef28748d91db2af4072c4407691a289f91e29dd779d8"
+  ],
+  "signature": "53380786a2386d315a73d9b8c96a921a8a341ca660cfbefe3ebbb73336e2158d37f4535e95a1a5afd9862a0f2b87dbcc7b0fe052a294aabc09d492f4a20c6d01",
+  "previous_receipt_hash": null
+}

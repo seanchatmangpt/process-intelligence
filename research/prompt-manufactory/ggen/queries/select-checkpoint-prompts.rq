@@ -8,10 +8,10 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT ?programId ?checkpointLabel ?checkpointMission
 WHERE {
   ?program a pm:ResearchProgram ;
-    pm:programId ?programId ;
-    pm:hasCheckpoint ?checkpoint .
-  
-  ?checkpoint rdfs:label ?checkpointLabel ;
+    pm:programId ?programId .
+
+  ?checkpoint a pm:Checkpoint ;
+    rdfs:label ?checkpointLabel ;
     pm:mission ?checkpointMission .
 }
-ORDER BY ?programId
+ORDER BY ?programId ?checkpointLabel

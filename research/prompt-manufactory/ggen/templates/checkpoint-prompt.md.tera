@@ -1,9 +1,9 @@
-# Checkpoint Warrant: {{ checkpoint_id }}
+# Checkpoint Warrant: {{ programId }}
 
-**Program:** {{ program_name }}
-**Checkpoint URI:** {{ checkpoint_uri }}
-**Authority Layer:** Research Program Law
-**Manufacturing Timestamp:** {{ mfg_timestamp }}
+**Program ID:** {{ programId }}
+**Checkpoint Label:** {{ checkpointLabel }}
+**Authority Layer:** Checkpoint Law
+**Checkpoint Mission:** {{ checkpointMission }}
 
 ---
 
@@ -11,112 +11,16 @@
 
 | Property | Value |
 |----------|-------|
-| **Checkpoint ID** | {{ checkpoint_id }} |
-| **Canonical Name** | {{ checkpoint_name }} |
-| **Phase** | {{ phase_name }} |
-| **Verdict Type** | {{ verdict_type }} |
-| **Authority Reference** | {{ authority_ref }} |
-
----
-
-## Gatekeeping Criteria
-
-{%- for criterion in gatekeeping_criteria %}
-### {{ criterion.name }}
-
-- **Category:** {{ criterion.category }}
-- **Requirement:** {{ criterion.requirement }}
-- **Proof Gate:** {{ criterion.proof_gate }}
-- **Evidence Type:** {{ criterion.evidence_type }}
-- **Authority:** {{ criterion.authority }}
-
-{%- endfor %}
-
----
-
-## Verdict Outcomes
-
-### Verdict: ALIVE
-
-**Conditions for ALIVE:**
-{%- for condition in alive_conditions %}
-- {{ condition }}
-
-{%- endfor %}
-
-**Consequences:**
-- {{ alive_consequence }}
-
----
-
-### Verdict: PARTIAL
-
-**Conditions for PARTIAL:**
-{%- for condition in partial_conditions %}
-- {{ condition }}
-
-{%- endfor %}
-
-**Gaps Identified:**
-{%- for gap in identified_gaps %}
-- {{ gap.name }}: {{ gap.description }}
-
-{%- endfor %}
-
-**Remediation Path:** {{ remediation_path }}
-
----
-
-### Verdict: FAILED
-
-**Conditions for FAILED:**
-{%- for condition in failed_conditions %}
-- {{ condition }}
-
-{%- endfor %}
-
-**Consequences:**
-- {{ failed_consequence }}
-
-**Remediation Authority:** {{ failed_remediation_authority }}
-
----
-
-## Evidence Ledger
-
-{%- for evidence in evidence_ledger %}
-- **{{ evidence.name }}**
-  - Type: {{ evidence.type }}
-  - Authority: {{ evidence.authority }}
-  - Proof: {{ evidence.proof_path }}
-
-{%- endfor %}
-
----
-
-## Sign-Off Authority
-
-| Role | Name | Authority | Timestamp |
-|------|------|-----------|-----------|
-{%- for signoff in signoff_authority %}
-| {{ signoff.role }} | {{ signoff.name }} | {{ signoff.authority }} | {{ signoff.timestamp }} |
-{%- endfor %}
+| **Program ID** | {{ programId }} |
+| **Checkpoint Label** | {{ checkpointLabel }} |
+| **Checkpoint Mission** | {{ checkpointMission }} |
+| **Authority Reference** | Checkpoint Law |
 
 ---
 
 ## Manufacturing Authorization
 
-- **Authorized by:** {{ authorized_by }}
-- **Authority Layer:** {{ authority_layer }}
-- **Binding Doctrine:** {{ binding_doctrine }}
-- **COVENANT Status:** {{ covenant_status }}
-
----
-
-## Warrant Proof
-
-```
-receipt_hash: {{ receipt_hash }}
-manufacture_chain: {{ manufacture_chain }}
-proof_timestamp: {{ proof_timestamp }}
-```
+- **Authority Layer:** Checkpoint Law
+- **Warrant Type:** Checkpoint Verdict
+- **Status:** AUTHORIZED
+- **Binding Doctrine:** Research Program Intelligence Law

@@ -1,0 +1,18 @@
+{
+  "artifact_id": "api_guide_20260601",
+  "artifact_name": "api-integration-guide.md",
+  "artifact_type": "Integration Guide",
+  "content_hash": "blake3:cf4a5af849a0949584a36567e930aae16ed255ae76c29dac371a638b485e3c8a",
+  "receipt_id": "receipt_api_guide_20260601_20260601",
+  "timestamp": "2026-06-01T16:09:47.347894Z",
+  "authority": "PI Research Program Manufacturing Phase",
+  "witness": "ggen_api_specification_manufacturing_v3.0.0",
+  "manufacturing_phase": "api_specification_generation",
+  "status": "ISSUED",
+  "file_size_bytes": 6795,
+  "cryptographic_chain": {
+    "proof_algorithm": "BLAKE3-SHA256",
+    "is_certified": true,
+    "can_be_replayed": true
+  }
+}

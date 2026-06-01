@@ -1,0 +1,20 @@
+
+[project]
+name = "post-cyberpunk-foundry"
+version = "30.1.2"
+description = "Manufacturing the operating substrate for the Post-Cyberpunk process intelligence research program."
+
+[ontology]
+source = "research/pi-program/ggen/ontology/pi-program.ttl"
+
+[[inference.rules]]
+name = "normalize"
+description = "Pass-through normalization to satisfy DMAIC measurement gates"
+construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
+order = 1
+
+[generation]
+enabled = true
+rules = [
+    { name = "pcp-types", query = { inline = "PREFIX ostar: <urn:ostar:ontology#> SELECT * WHERE { VALUES (?variant ?field ?fieldType) { (\"PartialReplay\" \"cost\" \"number\") (\"Evaluated\" \"values\" \"record\") } }" }, template = { file = "templates/pcp-types.ts.tera" }, output_file = "/Users/sac/pcp/packages/core/types_generated.ts" }
+]

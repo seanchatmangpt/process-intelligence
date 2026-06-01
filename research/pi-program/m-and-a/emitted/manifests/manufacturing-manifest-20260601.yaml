@@ -1,0 +1,151 @@
+---
+# M&A Deck Manufacturing Manifest
+# Date: 2026-06-01T23:06:00Z
+# Authority: downstream_m&a_deck_manufacturing.md
+# Compliance: CLAUDE.md § Never Commit Unsupported Claims
+
+manufacturing_directive: "Execute M&A deck manufacturing via ggen"
+start_time: "2026-06-01T23:06:00Z"
+end_time: "2026-06-01T23:07:30Z"
+
+# GATE FAILURE REPORT
+gate_status: "FAILED"
+gate_failure_reason: "Evidence gate not satisfied - required data files absent"
+
+# Gate Checklist
+gates:
+  - gate_id: "data_source_ma_claims_ttl"
+    requirement: "ma-claims.ttl file loaded into ontology"
+    status: "NOT_FOUND"
+    evidence: "No ma-claims.ttl file located in ggen/ontology or data directories"
+    path_checked: "/Users/sac/process-intelligence/ggen/"
+    remediation_required: true
+
+  - gate_id: "data_source_synergy_taxonomy_ttl"
+    requirement: "synergy-taxonomy.ttl file loaded into ontology"
+    status: "NOT_FOUND"
+    evidence: "No synergy-taxonomy.ttl file located in project directories"
+    path_checked: "/Users/sac/process-intelligence/"
+    remediation_required: true
+
+  - gate_id: "query_select_board_claims"
+    requirement: "extract-board-claims.rq executable with data"
+    status: "READY"
+    evidence: "Query file exists at /Users/sac/process-intelligence/ggen/queries/extract-board-claims.rq"
+    path: "/Users/sac/process-intelligence/ggen/queries/extract-board-claims.rq"
+    note: "Query is ready but will return zero results without data"
+    remediation_required: false
+
+  - gate_id: "template_ma_deck_tera"
+    requirement: "ma-deck.tera template available"
+    status: "READY"
+    evidence: "Template file exists at /Users/sac/process-intelligence/ggen/templates/ma-deck.tera"
+    path: "/Users/sac/process-intelligence/ggen/templates/ma-deck.tera"
+    remediation_required: false
+
+  - gate_id: "query_select_diligence_claims"
+    requirement: "extract-diligence-claims.rq executable with data"
+    status: "READY"
+    evidence: "Query file exists at /Users/sac/process-intelligence/ggen/queries/extract-diligence-claims.rq"
+    path: "/Users/sac/process-intelligence/ggen/queries/extract-diligence-claims.rq"
+    note: "Query is ready but will return zero results without data"
+    remediation_required: false
+
+  - gate_id: "template_ma_diligence_tera"
+    requirement: "ma-diligence.tera template available"
+    status: "READY"
+    evidence: "Template file exists at /Users/sac/process-intelligence/ggen/templates/ma-diligence.tera"
+    path: "/Users/sac/process-intelligence/ggen/templates/ma-diligence.tera"
+    remediation_required: false
+
+  - gate_id: "ggen_m_and_a_rules_enabled"
+    requirement: "M&A generation rules enabled in ggen.toml"
+    status: "DISABLED"
+    evidence: "M&A rules commented out in /Users/sac/process-intelligence/ggen/ggen.toml (lines 20-21)"
+    note: "Only blue-river-orchestrator rule is active"
+    remediation_required: true
+
+  - gate_id: "output_directory_structure"
+    requirement: "Output directories exist and writable"
+    status: "READY"
+    evidence: "Created /Users/sac/process-intelligence/research/pi-program/m-and-a/emitted/manifests"
+    paths:
+      - "/Users/sac/process-intelligence/research/pi-program/m-and-a/emitted/decks"
+      - "/Users/sac/process-intelligence/research/pi-program/m-and-a/emitted/diligence"
+      - "/Users/sac/process-intelligence/research/pi-program/m-and-a/emitted/manifests"
+    remediation_required: false
+
+# Root Cause Analysis
+root_causes:
+  - cause: "Data source files missing"
+    description: |
+      The task requires loading ma-claims.ttl and synergy-taxonomy.ttl into the ggen ontology.
+      These files do not exist in the repository. Per CLAUDE.md § Never Commit Unsupported Claims:
+      'Every claim in doctrine/ files must cite a source: paper, experiment, or prior checkpoint.
+      If evidence is absent, the finding is PARTIAL.'
+
+    evidence_needed:
+      - "ma-claims.ttl: RDF assertions of board-admissible claims with quantified metrics"
+      - "synergy-taxonomy.ttl: Synergy projection instances with EBITDA impact values"
+      - "conformance verdicts linking claims to wasm4pm execution receipts"
+      - "cryptographic receipts proving claim fitness >= 95%"
+
+  - cause: "M&A generation rules disabled in ggen.toml"
+    description: |
+      Per ggen.toml line 20-21: 'Unused M&A rules deactivated for visualizer focus'.
+      The rules are commented out and only the blue-river-orchestrator rule is active.
+
+    remediation_steps:
+      - "1. Uncomment M&A generation rules in ggen.toml"
+      - "2. Create ma-claims.ttl with at least 4 board-admissible claim instances"
+      - "3. Create synergy-taxonomy.ttl with synergy projection instances"
+      - "4. Re-run: ggen sync"
+
+# Artifact Emission Report
+artifacts_emitted: 0
+receipts_issued: 0
+expected_artifacts: 8
+  board_decks: 4
+  diligence_workbooks: 4
+
+artifact_details: []
+
+# Compliance Verdict
+compliance:
+  - rule: "CLAUDE.md § Never Commit Unsupported Claims"
+    status: "ENFORCED"
+    verdict: |
+      Manufacturing M&A decks without underlying data sources (ma-claims.ttl,
+      synergy-taxonomy.ttl) would violate the doctrine requirement that
+      'Every claim in doctrine/ files must cite a source'.
+      Gate failure is CORRECT.
+
+  - rule: "CLAUDE.md § Evidence Before Authorization"
+    status: "ENFORCED"
+    verdict: |
+      No downstream wasm4pm refactor, M&A claim manufacturing, or gap closure
+      without research program grounding. The required data grounding is absent.
+
+# Next Steps (Blocking)
+blocked_on:
+  - "Create ma-claims.ttl with board-admissible claim instances"
+  - "Create synergy-taxonomy.ttl with quantified synergy projections"
+  - "Link claims to wasm4pm ConformanceVerdict instances"
+  - "Generate cryptographic receipts for each claim"
+  - "Enable M&A generation rules in ggen.toml"
+
+summary: |
+  M&A Deck Manufacturing FAILED at evidence gate.
+
+  Status: GATE_FAILURE
+  Artifacts Emitted: 0/8
+  Receipts Issued: 0
+
+  Root Cause: Required data files (ma-claims.ttl, synergy-taxonomy.ttl) not found.
+
+  Per CLAUDE.md doctrine, manufacturing claims without evidence is prohibited.
+  This gate failure is correct and prevents unsupported artifact emission.
+
+  Remediation: Supply research-backed M&A claims data before re-running manufacturing.
+
+exit_code: 1

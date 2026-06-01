@@ -1,0 +1,154 @@
+# Andon Gate Hook Policy Configuration
+# Authority: Blue River Dam v30.1.1
+# Generated: {{ now | date(format="%Y-%m-%dT%H:%M:%SZ") }}
+# Purpose: Enforce compliance boundaries via policy gates
+
+apiVersion: governance/v1
+kind: AndonGatePolicy
+metadata:
+  name: blue-river-andon-gates-001
+  namespace: governance
+  authority: "ostar-governor"
+  version: "30.1.1"
+
+spec:
+  gates:
+    {%- for result in results %}
+    {%- if result[0] %}
+    - id: "{{ result[0] | split(uri='/') | last }}"
+      label: "{{ result[1] }}"
+      comment: "{{ result[2] }}"
+      gateName: "{{ result[3] }}"
+      triggerCondition: "{{ result[4] }}"
+      action: "{{ result[5] }}"
+      severity: "{{ result[6] }}"
+      authority: "{{ result[7] }}"
+      requiresSignature: {{ result[8] }}
+      enabled: true
+    {%- endif %}
+    {%- endfor %}
+
+  execution:
+    mode: "synchronous"
+    evaluationOrder: "priority-cascade"
+    shortCircuitOnCritical: true
+
+  alerts:
+    destination: "governance-event-stream"
+    format: "json"
+    includePayload: true
+
+  signatures:
+    algorithm: "BLAKE3"
+    keyStore: "hsm"
+    verifyOnGate: true
+
+  compliance:
+    strictMode: true
+    logAllDecisions: true
+    auditRetention: "90d"
+
+  escalation:
+    fitnessBelowThreshold:
+      threshold: 0.85
+      action: "route-to-ostar-auditor"
+      retryCount: 3
+      retryBackoff: "exponential"
+
+    policyMutation:
+      action: "require-gov-token"
+      timeout: "5m"
+      escalateTo: "ostar-governor"
+
+    modelHotSwap:
+      preScan: "verify-soundness"
+      verification: "compile-check"
+      rollback: "automatic-on-failure"
+
+    deadTransition:
+      action: "halt-execution"
+      preserveState: true
+      notifyAuditor: true
+
+  recovery:
+    rollbackSupport: true
+    lastVerifiedMarkingStore: "rocksdb"
+    rollbackTimeout: "30s"
+
+  typestate:
+    enforcement: "compile-time"
+    compilationTarget: "wasm32-unknown-unknown"
+    strictTransitionCheck: true
+
+---
+# Authority Token Configuration (GovToken)
+apiVersion: governance/v1
+kind: GovernmentTokenPolicy
+metadata:
+  name: gov-token-policy-001
+  signer: "ostar-governor"
+
+spec:
+  tokenTypes:
+    - name: "PolicyMutationToken"
+      requiredFor: ["policy-mutation"]
+      expirationTime: "1h"
+      signingKeyId: "gov-hsm-primary"
+
+    - name: "ComplianceOverrideToken"
+      requiredFor: ["compliance-override"]
+      expirationTime: "15m"
+      signingKeyId: "gov-hsm-primary"
+      requiresAuditLog: true
+
+    - name: "LifecycleTransitionToken"
+      requiredFor: ["lifecycle-promotion", "lifecycle-decommission"]
+      expirationTime: "24h"
+      signingKeyId: "gov-hsm-primary"
+
+  verification:
+    algorithm: "blake3-signature"
+    maxClockSkew: "5m"
+    validateChain: true
+
+  hsm:
+    provider: "thales-lunaHSM"
+    pin: "${HSM_PIN}"
+    slotId: 0
+
+---
+# Compliance Boundary Enforcement
+apiVersion: governance/v1
+kind: ComplianceBoundary
+metadata:
+  name: default-compliance-boundary-001
+
+spec:
+  fitnessThreshold:
+    minimum: 0.85
+    warningLevel: 0.90
+    action: "escalate"
+
+  soundnessCheck:
+    enabled: true
+    algorithm: "structural-analysis"
+    maxComputeTime: "10s"
+
+  pInvariantCheck:
+    enabled: true
+    conservationRequired: true
+    checkInterval: "5m"
+
+  ltlCompliance:
+    framework: "declare"
+    templates:
+      - "Response(A, B)"
+      - "Precedence(A, B)"
+      - "Choice(A, B)"
+      - "Exclusive Choice(A, B)"
+    vacuousSatisfactionAllowed: false
+
+  stateAutomata:
+    compilationMode: "rust-typestate"
+    vmTarget: "wasm32-unknown-unknown"
+    failCompilationOnViolation: true
