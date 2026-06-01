@@ -61,7 +61,120 @@ The research establishes the core doctrine of **GGEN feature-gated code manufact
 
 This checkpoint certifies that the entire ecosystem mapping is active, audited, and closed.
 
-**Audit Verification Status:** **PASSED**  
+**Audit Verification Status:** **PARTIAL (1 VIOLATION)**  
 **Lead Auditor Signature:**  
 `SHA-256(GGEN_ECOSYSTEM_INTEL_ALIVE_001_SEAL)`  
 `Hash: d5d7990b798b31a3962d3bf30f0f3531b26f56a310efc35ad1a89b3f021e85a6`
+
+---
+
+## 4. Detailed Audit Results
+
+**Total Audits:** 4 executed  
+**Passed:** 3/4  
+**Failed:** 1/4  
+**Status:** PARTIAL — Manufacturing halted pending DTO remediation
+
+### Audit 1: No DTO Flattening — **FAIL**
+- Violation discovered: JSON serialization patterns found
+- Location: `sources/wasm4pm-compat/compat/src/manufacturing/`
+- Issues:
+  - `to_json_string()` method in mod.rs
+  - `receipt_json()` method in traits.rs
+- Impact: DTO flattening violates boundary law; these methods must be moved to wasm4pm engine
+- Remediation: Move JSON serialization out of compat into wasm4pm only
+- Timeline: Critical blocker for graduation
+
+### Audit 2: No Tool Smuggling — **PASS**
+- 7 forbidden tool functions checked: all correctly blocked
+- Graduation signals properly separated from compat
+
+### Audit 3: Feature Isolation — **PASS**
+- Cargo feature configuration verified
+- Default behavior clean
+- No conformance/replay/discovery imports in compat
+
+### Audit 4: Graduation Boundary (Van der Aalst) — **PASS**
+- 87 public items verified against graduation surface ledger
+- Witness trait compliance confirmed
+- Receipt chain integrity verified
+- Process law conforms
+
+---
+
+## 5. Artifact Metrics
+
+| Category | Count | Status |
+|----------|-------|--------|
+| Ecosystem Intel Sources | 17 | ✓ Complete |
+| Projection Manifests | 3 | ✓ Complete |
+| ggen Rules | 5 | ✓ Complete |
+| ggen Templates | 8 | ✓ Complete |
+| Audit Scripts | 7 | 3/4 PASS |
+| Documentation | 5 | ✓ Complete |
+| **TOTAL ARTIFACTS** | **45** | **PARTIAL** |
+
+### Intel Sources (17)
+- ecosystem-census.md
+- allowed-projection-surfaces.yaml
+- surface-classification-map.yaml
+- projectable-type-ledger.yaml
+- non-projectable-type-ledger.yaml
+- forbidden-tool-ledger.yaml
+- forbidden-in-compat-ledger.yaml
+- graduation-surface-ledger.yaml
+- cargo-feature-map.yaml
+- dependency-boundary-map.yaml
+- optional-dependency-law.yaml
+- rust-public-api-map.json
+- specta-capability-map.md
+- tsify-capability-map.md
+- wasm-abi-map.yaml
+- component-model-map.md
+- wit-surface-ledger.yaml
+
+### Projection Manifests (3)
+- ts-projection-manifest.yaml
+- wasm-projection-manifest.yaml
+- component-projection-manifest.yaml
+
+### Rules (5)
+- feature-law.yaml
+- ts-projection-law.yaml
+- wasm-boundary-law.yaml
+- component-boundary-law.yaml
+- graduation-law.yaml
+
+### Templates (8)
+- specta-exporter.rs.ggen
+- wasm-boundary.rs.ggen
+- wasm4pm-compat.wit.ggen
+- wit-world.wit.ggen
+- feature-plan.yaml.ggen
+- ma-deck.tera
+- ma-diligence.tera
+- blue-river.tera
+
+---
+
+## 6. Remediation Plan
+
+**Phase 1: DTO Removal (CRITICAL)**
+1. Move `to_json_string()` from `compat/src/manufacturing/mod.rs` → `wasm4pm/src/core/`
+2. Move `receipt_json()` from `compat/src/manufacturing/traits.rs` → `wasm4pm/src/receipt/`
+3. Update compat re-exports to remove JSON serialization from public API
+4. Re-run audit-no-dto-flattening.txt; expect PASS
+
+**Phase 2: Boundary Verification**
+- Re-run all 4 audits
+- Target: 4/4 PASS
+- Seal: GGEN_ECOSYSTEM_INTEL_ALIVE_002
+
+**Phase 3: Manufacturing Authorization**
+- Upon ALIVE verdict, authorize ggen sync to wasm4pm-compat
+- Begin projection surface generation (ts, wasm, component)
+- Manufacture all hand-coded artifacts via ggen templates
+
+**Phase 4: Release**
+- Deploy wasm4pm-compat v0.2.0 with projections
+- Board approval for M&A deck, diligence workbook, Blue River orchestrator
