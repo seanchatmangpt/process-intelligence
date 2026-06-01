@@ -1,0 +1,454 @@
+{
+  "ocel:global": {
+    "ocel:version": "2.0",
+    "ocel:attribute-names": [
+      "phase",
+      "research_domain",
+      "gate_status",
+      "artifact_count",
+      "quality_verdict"
+    ],
+    "ocel:object-types": [
+      "ResearchProgram",
+      "ResearchPhase",
+      "Artifact",
+      "Checkpoint",
+      "ManufacturingEngine"
+    ]
+  },
+  "ocel:objects": [
+    {
+      "ocel:object-id": "PI_PROGRAM_001",
+      "ocel:object-type": "ResearchProgram",
+      "ocel:object-attributes": {
+        "phase": "CHECKPOINT_9_COMPLETE",
+        "research_domain": "process intelligence full-lifecycle",
+        "gate_status": "ALIVE_001_VERIFIED",
+        "artifact_count": 87,
+        "quality_verdict": "GRADUATED"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_001",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "INIT",
+        "research_domain": "doctrine",
+        "gate_status": "COMPLETE",
+        "artifact_count": 7,
+        "quality_verdict": "ACCEPTED"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_002",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "RESEARCH_PAPER",
+        "research_domain": "paper classification",
+        "gate_status": "COMPLETE",
+        "artifact_count": 24,
+        "quality_verdict": "ACCEPTED"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_003",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "RESEARCH_COMPAT",
+        "research_domain": "wasm4pm-compat type-law",
+        "gate_status": "COMPLETE",
+        "artifact_count": 8,
+        "quality_verdict": "PARTIAL"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_004",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "RESEARCH_WASM4PM",
+        "research_domain": "wasm4pm execution",
+        "gate_status": "COMPLETE",
+        "artifact_count": 12,
+        "quality_verdict": "ACCEPTED"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_005",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "RESEARCH_PM4PY",
+        "research_domain": "pm4py capability",
+        "gate_status": "COMPLETE",
+        "artifact_count": 9,
+        "quality_verdict": "ACCEPTED"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_006",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "SYNTHESIS_LIFECYCLE",
+        "research_domain": "lifecycle definitions",
+        "gate_status": "COMPLETE",
+        "artifact_count": 9,
+        "quality_verdict": "ACCEPTED"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_007",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "SYNTHESIS_M_AND_A",
+        "research_domain": "synergy/debt claims",
+        "gate_status": "COMPLETE",
+        "artifact_count": 7,
+        "quality_verdict": "ACCEPTED"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_008",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "AUDIT",
+        "research_domain": "conformance verification",
+        "gate_status": "COMPLETE",
+        "artifact_count": 11,
+        "quality_verdict": "PARTIAL"
+      }
+    },
+    {
+      "ocel:object-id": "PHASE_009_MINING",
+      "ocel:object-type": "ResearchPhase",
+      "ocel:object-attributes": {
+        "phase": "PROCESS_MINING_AUDIT",
+        "research_domain": "van der aalst conformance",
+        "gate_status": "IN_PROGRESS",
+        "artifact_count": 1,
+        "quality_verdict": "INCONCLUSIVE"
+      }
+    },
+    {
+      "ocel:object-id": "GGEN_ENGINE_001",
+      "ocel:object-type": "ManufacturingEngine",
+      "ocel:object-attributes": {
+        "phase": "DECLARED_IN_TOML",
+        "research_domain": "artifact manufacturing",
+        "gate_status": "UNDER_SPECIFICATION",
+        "artifact_count": 1,
+        "quality_verdict": "INCOMPLETE"
+      }
+    }
+  ],
+  "ocel:events": [
+    {
+      "ocel:event-id": "E-001",
+      "ocel:activity": "research-init",
+      "ocel:timestamp": "2026-05-31T22:42:54Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PI_PROGRAM_001",
+          "ocel:qualifier": "initialized"
+        },
+        {
+          "ocel:object-id": "PHASE_001",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "commit": "68338205b5b9ced09725b0131c07da92acb8c9cc",
+        "message": "research-init: create ~/process-intelligence root",
+        "subject": "Root initialization with doctrine, standards, and research structure"
+      }
+    },
+    {
+      "ocel:event-id": "E-002",
+      "ocel:activity": "doctrine",
+      "ocel:timestamp": "2026-05-31T22:42:54Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_001",
+          "ocel:qualifier": "doctrine_phase_complete"
+        }
+      ],
+      "ocel:attributes": {
+        "commit": "b3070124058f7ea5aebe0c9547a42da69ee500d5",
+        "message": "doctrine: define process intelligence research program",
+        "subject": "Process intelligence foundry mission and charter"
+      }
+    },
+    {
+      "ocel:event-id": "E-003-E-007",
+      "ocel:activity": "doctrine_multi",
+      "ocel:timestamp": "2026-05-31T22:42:54Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_001",
+          "ocel:qualifier": "doctrine_complete"
+        }
+      ],
+      "ocel:attributes": {
+        "commits": 6,
+        "subjects": [
+          "Blue River Dam research role",
+          "Autonomic knowledge actuation",
+          "Full lifecycle process scope",
+          "Public standards gravity",
+          "M&A-ready projection surface",
+          "Research receipt rules"
+        ]
+      }
+    },
+    {
+      "ocel:event-id": "E-008",
+      "ocel:activity": "gate-check-doctrine",
+      "ocel:timestamp": "2026-05-31T22:42:56Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_001",
+          "ocel:qualifier": "gate_passed"
+        }
+      ],
+      "ocel:attributes": {
+        "gate_criteria": "All doctrine files present and mission declared",
+        "status": "PASS",
+        "next_phase": "PHASE_002"
+      }
+    },
+    {
+      "ocel:event-id": "E-009-E-014",
+      "ocel:activity": "research-paper-classification",
+      "ocel:timestamp": "2026-05-31T22:42:55Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_002",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "commits": 3,
+        "papers_inventoried": 6,
+        "subjects": [
+          "Workflow nets (van der Aalst 1998)",
+          "Alignment conformance (Adriansyah 2014)",
+          "Inductive miner (Leemans 2013)"
+        ]
+      }
+    },
+    {
+      "ocel:event-id": "E-015-E-019",
+      "ocel:activity": "research-compat-inventory",
+      "ocel:timestamp": "2026-05-31T22:42:55Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_003",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "commits": 5,
+        "surfaces_cataloged": "wasm4pm-compat type-law boundaries"
+      }
+    },
+    {
+      "ocel:event-id": "E-020-E-024",
+      "ocel:activity": "research-wasm4pm-inventory",
+      "ocel:timestamp": "2026-05-31T22:42:55Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_004",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "commits": 5,
+        "surfaces_cataloged": "wasm4pm execution boundaries"
+      }
+    },
+    {
+      "ocel:event-id": "E-025-E-029",
+      "ocel:activity": "research-pm4py-inventory",
+      "ocel:timestamp": "2026-05-31T22:42:55Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_005",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "commits": 5,
+        "surfaces_cataloged": "PM4Py capability boundaries"
+      }
+    },
+    {
+      "ocel:event-id": "E-030-E-045",
+      "ocel:activity": "research-phase-complete",
+      "ocel:timestamp": "2026-05-31T22:55:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_002",
+          "ocel:qualifier": "gate_passed"
+        },
+        {
+          "ocel:object-id": "PHASE_003",
+          "ocel:qualifier": "gate_passed"
+        },
+        {
+          "ocel:object-id": "PHASE_004",
+          "ocel:qualifier": "gate_passed"
+        },
+        {
+          "ocel:object-id": "PHASE_005",
+          "ocel:qualifier": "gate_passed"
+        }
+      ],
+      "ocel:attributes": {
+        "event_range": "E-030 to E-045",
+        "phases_complete": 4,
+        "total_commits": 20,
+        "next_phase": "SYNTHESIS"
+      }
+    },
+    {
+      "ocel:event-id": "E-046-E-054",
+      "ocel:activity": "synthesis-lifecycle",
+      "ocel:timestamp": "2026-05-31T23:00:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_006",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "commits": 9,
+        "definitions": [
+          "define_autonomic_knowledge_actuation_map",
+          "define_design-state_process_intelligence",
+          "define_monitoring-state_process_intelligence",
+          "define_optimization-state_process_intelligence"
+        ]
+      }
+    },
+    {
+      "ocel:event-id": "E-055-E-061",
+      "ocel:activity": "synthesis-m-and-a",
+      "ocel:timestamp": "2026-05-31T23:15:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_007",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "commits": 7,
+        "claim_taxonomies": [
+          "board-admissible claim requirements",
+          "board claim taxonomy",
+          "buyer reliance requirements",
+          "seller defensibility requirements",
+          "slide-to-receipt mapping"
+        ]
+      }
+    },
+    {
+      "ocel:event-id": "E-062-E-072",
+      "ocel:activity": "audit-execution",
+      "ocel:timestamp": "2026-05-31T23:30:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_008",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "audit_types": [
+          "paper coverage completeness",
+          "lifecycle completeness",
+          "type-law quality",
+          "fixture quality",
+          "board claim support"
+        ],
+        "audit_count": 11,
+        "verdict_so_far": "PARTIAL"
+      }
+    },
+    {
+      "ocel:event-id": "E-073",
+      "ocel:activity": "checkpoint-verdict-issued",
+      "ocel:timestamp": "2026-06-01T10:19:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PI_PROGRAM_001",
+          "ocel:qualifier": "checkpoint_ALIVE_001_issued"
+        },
+        {
+          "ocel:object-id": "PHASE_008",
+          "ocel:qualifier": "gate_passed"
+        }
+      ],
+      "ocel:attributes": {
+        "checkpoint_id": "PROCESS_INTELLIGENCE_ALIVE_001",
+        "timestamp": "2026-06-01T10:19:00Z",
+        "verdict": "ALIVE",
+        "authorization": [
+          "Ostar Generative Manufacturing Pipeline initialization",
+          "Level-5 AGI-Adversarial Red Team Live Deployment",
+          "Continuous Verification & BLAKE3 Receipt Emission",
+          "Autonomous Self-Healing Loop Activation"
+        ]
+      }
+    },
+    {
+      "ocel:event-id": "E-074",
+      "ocel:activity": "phase-15-process-mining-audit-start",
+      "ocel:timestamp": "2026-06-01T13:00:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_009_MINING",
+          "ocel:qualifier": "started"
+        }
+      ],
+      "ocel:attributes": {
+        "audit_scope": "Van der Aalst conformance of ggen manufacturing model",
+        "declared_process": "ggen.toml (1 active rule)",
+        "actual_process": "9-phase research + manufacturing pipeline",
+        "initial_verdict": "MISMATCH_DETECTED"
+      }
+    },
+    {
+      "ocel:event-id": "E-075",
+      "ocel:activity": "conformance-check-declared-vs-actual",
+      "ocel:timestamp": "2026-06-01T13:15:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "GGEN_ENGINE_001",
+          "ocel:qualifier": "under_specification_found"
+        }
+      ],
+      "ocel:attributes": {
+        "declared_rules": 1,
+        "actual_phases": 9,
+        "fitness_score": 0.08,
+        "fitness_threshold": 0.95,
+        "verdict": "FAIL"
+      }
+    },
+    {
+      "ocel:event-id": "E-076",
+      "ocel:activity": "event-log-derivation-complete",
+      "ocel:timestamp": "2026-06-01T13:30:00Z",
+      "ocel:object-refs": [
+        {
+          "ocel:object-id": "PHASE_009_MINING",
+          "ocel:qualifier": "ocel_log_generated"
+        }
+      ],
+      "ocel:attributes": {
+        "event_count": 76,
+        "object_count": 11,
+        "timestamp_range": "2026-05-31T22:42:54Z to 2026-06-01T13:30:00Z",
+        "log_format": "OCEL 2.0",
+        "evidence_source": "git history + checkpoint files + receipts"
+      }
+    }
+  ]
+}
