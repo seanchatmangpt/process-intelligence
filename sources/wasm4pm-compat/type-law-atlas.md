@@ -79,3 +79,6 @@
 
 * **Step: define downstream wasm4pm obligations**
   - Evaluating type safety and witness validations.
+
+* **Step: define downstream ggen obligations**
+  - Evaluating type safety and witness validations.
