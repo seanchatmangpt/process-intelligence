@@ -34,3 +34,6 @@
 
 * **Step: map CLI authority**
   - Defining engine execution requirements.
+
+* **Step: map receipt validation authority**
+  - Defining engine execution requirements.
