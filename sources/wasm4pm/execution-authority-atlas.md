@@ -40,3 +40,6 @@
 
 * **Step: map lifecycle state authority**
   - Defining engine execution requirements.
+
+* **Step: map object-centric runtime spine**
+  - Defining engine execution requirements.
