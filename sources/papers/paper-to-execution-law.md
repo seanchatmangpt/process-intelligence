@@ -41,3 +41,6 @@
 
 ### Fixtures for song_2008_organizational_mining
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for dongen_2009_mxml_to_xes
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
