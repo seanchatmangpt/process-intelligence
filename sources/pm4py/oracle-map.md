@@ -56,3 +56,6 @@
 
 * **Step: map organizational mining capability**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map object-centric limitations**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
