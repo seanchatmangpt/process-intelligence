@@ -6,8 +6,12 @@ This directive establishes the verification checklist to confirm that all downst
 Ensure that the following files are fully written and free of placeholders or TODOs:
 - [downstream_wasm4pm_refactor.md](file:///Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md)
   * Verify it contains: WebAssembly FFI constraints, Petri net soundness criteria, token game math, and conformance formulas.
+- [downstream-wasm4pm-refactor.md](file:///Users/sac/process-intelligence/prompts/downstream-wasm4pm-refactor.md)
+  * Verify it contains: WebAssembly FFI constraints, Petri net soundness criteria, token game math, and conformance formulas.
 - [downstream_wasm4pm-compat_gap_close.md](file:///Users/sac/process-intelligence/prompts/downstream_wasm4pm-compat_gap_close.md)
-  * Verify it contains: `Evidence<T, State, Witness>` lattice descriptions, admission/refusal laws, and conversion loss policies.
+  * Verify it contains: Evidence lattice descriptions, admission/refusal laws, and conversion loss policies.
+- [downstream-compat-gap-close.md](file:///Users/sac/process-intelligence/prompts/downstream-compat-gap-close.md)
+  * Verify it contains: Evidence lattice descriptions, admission/refusal laws, and conversion loss policies.
 - [downstream_ggen_projection_integration.md](file:///Users/sac/process-intelligence/prompts/downstream_ggen_projection_integration.md)
   * Verify it contains: Slide-to-receipt maps, M&A diligence evidence rules, and file format expectations.
 - [downstream_audit_mesh_expansion.md](file:///Users/sac/process-intelligence/prompts/downstream_audit_mesh_expansion.md)
@@ -15,6 +19,8 @@ Ensure that the following files are fully written and free of placeholders or TO
 - [downstream_blue_river_dam_lifecycle_authority.md](file:///Users/sac/process-intelligence/prompts/downstream_blue_river_dam_lifecycle_authority.md)
   * Verify it contains: Gate mapping definitions, transition validators, and cryptographic decommission rules.
 - [downstream_m&a_deck_manufacturing.md](file:///Users/sac/process-intelligence/prompts/downstream_m&a_deck_manufacturing.md)
+  * Verify it contains: slide-to-receipt verification indexes and EBITDA risk calculation mappings.
+- [downstream-ma-deck-manufacture.md](file:///Users/sac/process-intelligence/prompts/downstream-ma-deck-manufacture.md)
   * Verify it contains: slide-to-receipt verification indexes and EBITDA risk calculation mappings.
 - [downstream_paper_fixture_manufacturing.md](file:///Users/sac/process-intelligence/prompts/downstream_paper_fixture_manufacturing.md)
   * Verify it contains: academic paper citation targets and test schema requirements.
@@ -24,4 +30,4 @@ Ensure that the following files are fully written and free of placeholders or TO
   * Verify it contains: schema validations for XES/OCEL/BPMN and cross-standard semantic loss policy mapping.
 
 ## 2. Link Integrity
-All files listed above must use absolute markdown links of the format `file:///Users/sac/process-intelligence/...` without backticks in the link syntax. No broken references or placeholders are permitted.
+All files listed above must use absolute markdown links of the format file:///Users/sac/process-intelligence/... without backticks in the link syntax. No broken references or placeholders are permitted.

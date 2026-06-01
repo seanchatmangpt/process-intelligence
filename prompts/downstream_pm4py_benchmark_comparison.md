@@ -15,6 +15,10 @@ Developers must implement automated comparison scripts that evaluate both system
   3. Missing activity labels.
   - Verify that `wasm4pm-compat` raises compilation or parsing errors immediately, whereas PM4Py might fail deep inside the execution logic or yield corrupt results.
 - **Result Parity Checks**: Assert that the token game fitness and alignment cost values calculated by `wasm4pm` match those calculated by PM4Py for a given sound Petri Net and event log. Document any divergence due to search heuristic variance or float rounding.
+  - **Trace Fitness Equation**:
+    $$f(\sigma, N) = 1 - \frac{m(\sigma, N)}{c(\sigma, N)} - \frac{r(\sigma, N)}{p(\sigma, N)}$$
+  - **Log Fitness Equation**:
+    $$f(L, N) = 1 - \frac{\sum_{\sigma \in L} L(\sigma) \cdot m(\sigma, N)}{\sum_{\sigma \in L} L(\sigma) \cdot c(\sigma, N)} - \frac{\sum_{\sigma \in L} L(\sigma) \cdot r(\sigma, N)}{\sum_{\sigma \in L} L(\sigma) \cdot p(\sigma, N)}$$
 
 ## 3. Reference Maps and Atlas Alignment
 All implementation details must align with:

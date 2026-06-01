@@ -4,7 +4,7 @@ This document establishes the architecture and execution directives for the `gge
 
 ## 1. Slide-to-Receipt Mapping Architecture
 Every downstream presentation, deck, or text report produced by `ggen` must map each qualitative or quantitative claim to a concrete, cryptographic execution receipt.
-- **Assertion Anchors**: For any slide claiming operational metrics (e.g., "92% trace compliance on Order-to-Cash process" or "EBITDA leak of $1.2M due to unauthorized approval loop"), `ggen` must inject an metadata block (JSON/XML) containing:
+- **Assertion Anchors**: For any slide claiming operational metrics (e.g., "92% trace compliance on Order-to-Cash process" or "EBITDA leak of $1.2M due to unauthorized approval loop"), `ggen` must inject a metadata block (JSON/XML) containing:
   1. The hash of the raw event log ($H_{log}$).
   2. The hash of the process model ($H_{model}$).
   3. The alignment matrix hash ($H_{alignment}$).
@@ -19,7 +19,16 @@ Every downstream presentation, deck, or text report produced by `ggen` must map 
   - *Process Risk*: Probability of regulatory violations (e.g., four-eyes principle bypass).
   - *Process Residual*: Gaps that cannot be automated due to system limitations.
 
-## 3. Projection Target Formats
+## 3. Projection Target Formats and Equations
+Downstream generation tools must calculate the following metrics:
+- **Synergy Projection Value**:
+  $$V_{\text{synergy}} = \sum_{i \in \text{parallelizable}} \text{latency}_i \times \text{frequency}_i \times (1 - \text{dependency\_coeff}_i)$$
+- **Process Debt Value**:
+  $$V_{\text{debt}} = \sum_{j \in \text{non\_conforming}} \text{rework\_cost}_j \times \text{recurrence}_j \times (1 - \text{insurance\_coverage}_j)$$
+- **Control-Flow Compliance**:
+  $$\operatorname{Compliance} = \frac{|L_{\text{conforming}}|}{|L_{\text{total}}|}$$
+
+Target formats include:
 - **OpenXML PowerPoint Generation**: Generate `.pptx` presentations with embedded slide-to-receipt metadata.
 - **PDF Diligence Reports**: Generate print-ready PDF reports with QR codes or cryptographic hyperlinks pointing to the verification registry.
 - **Structured JSON Manifests**: Compile all project variables, logs, models, and alignment receipts into a single ZIP archive for buyer ingestion.

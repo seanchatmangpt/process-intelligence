@@ -7,9 +7,13 @@ To ensure formal proof of execution, all process artifacts (logs, models, alignm
 - **T**: The target process asset type (e.g., `Ocel2Log`, `PetriNet`).
 - **State**: The dynamic state of verification (e.g., `Parsed`, `ValidatedSound`, `Replayed`).
 - **Witness**: A cryptographic or structural proof of correctness (e.g., an algebraic signature, a reachability tree certificate, or an alignment cost matrix).
-- **Lattice Order**: Define a partial order $\sqsubseteq$ over `Evidence` states such that:
+- **Lattice Order**: The set of verification states $S = \{\text{Parsed}, \text{ValidatedSound}, \text{Replayed}\}$ forms a join-semilattice $(S, \sqsubseteq)$ with the partial order:
   $$\text{Parsed} \sqsubseteq \text{ValidatedSound} \sqsubseteq \text{Replayed}$$
   A state transition is only valid if it moves monotonically upward in the information lattice.
+  For any states $a, b \in S$, there exists a unique least upper bound (join) $a \sqcup b$ satisfying:
+  - Associativity: $a \sqcup (b \sqcup c) = (a \sqcup b) \sqcup c$
+  - Commutativity: $a \sqcup b = b \sqcup a$
+  - Idempotency: $a \sqcup a = a$
 
 ## 2. Admission and Refusal Laws
 - **Strict Schema Admission**: Implement strict parsers that refuse any log failing schema validation (e.g., XML schema for XES, JSON-schema/SQLite schema for OCEL 2.0).
