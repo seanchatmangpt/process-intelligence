@@ -70,3 +70,6 @@
 
 * **Step: map absence-proof fixture failures**
   - Evaluating type safety and witness validations.
+
+* **Step: define compat graduation boundary**
+  - Evaluating type safety and witness validations.
