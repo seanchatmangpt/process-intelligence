@@ -37,3 +37,6 @@
 
 * **Step: map Declare structural law**
   - Evaluating type safety and witness validations.
+
+* **Step: map ProcessTree structural law**
+  - Evaluating type safety and witness validations.
