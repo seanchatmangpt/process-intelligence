@@ -17,3 +17,6 @@
 
 * **Step: map process tree capability**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map DFG capability**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
