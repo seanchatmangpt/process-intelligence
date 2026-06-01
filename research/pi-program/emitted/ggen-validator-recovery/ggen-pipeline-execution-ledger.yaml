@@ -1,0 +1,146 @@
+# GGEN Pipeline Execution Ledger
+# Phase 5: Re-run all discovered ggen pipelines with fixed validator
+# Authority: Phase 5 & 6 requirement
+# Timestamp: 2026-06-01T00:00:00Z
+
+execution_metadata:
+  phase: "Phase 5 & 6: Pipeline Re-execution and Warrant Path Proof"
+  batch_id: "GGEN_RECOVERY_001"
+  execution_date: "2026-06-01"
+  total_pipelines: 3
+  total_rules_attempted: 12
+  validator_version: "ggen-v5.5.0"
+
+pipelines:
+  - id: "pipeline_001"
+    name: "Main ggen Pipeline"
+    path: "/Users/sac/process-intelligence/ggen/ggen.toml"
+    status: "PARTIAL_FAILURE"
+    execution_summary:
+      total_rules: 2
+      rules_passed: 0
+      rules_failed: 2
+      parse_status: "PASS"
+      query_status: "UNKNOWN"
+      render_status: "FAIL"
+      output_status: "FAIL"
+    
+    fixes_applied:
+      - fix_001:
+          file: "ontology-extensions.ttl"
+          issue: "Missing xsd: prefix declaration"
+          class: "MISSING_PREFIX"
+          severity: "CRITICAL"
+          resolved: true
+      - fix_002:
+          file: "templates/blue-river.tera"
+          issue: "Unescaped Tera syntax in Rust comment (line 45)"
+          class: "TEMPLATE_SYNTAX_ERROR"
+          severity: "HIGH"
+          resolved: true
+    
+    rules:
+      - rule_001:
+          name: "blue-river-orchestrator"
+          status: "FAILED"
+          failure_class: "CODE_GRAPH_NOT_INITIALIZED"
+          failure_detail: "SPARQL query returned no results; ontology contains no lifecycle states"
+          query_file: "queries/extract-lifecycle-governance.rq"
+          query_status: "PASS"
+          template_file: "templates/blue-river.tera"
+          template_status: "PASS"
+          output_file: "../blue_river_dam/src/lib.rs"
+          output_status: "FAIL"
+          receipt_status: "NONE"
+          owner: "Phase 5 Agent"
+          
+      - rule_002:
+          name: "visualizer-dashboard-nextjs"
+          status: "DISABLED_FOR_RECOVERY"
+          failure_class: "TEMPLATE_PARSE_ERROR"
+          failure_detail: "Tera template parse error; JSX {{ }} syntax conflicts with Tera syntax"
+          query_file: "queries/extract-visualizer-data.rq"
+          query_status: "PASS"
+          template_file: "templates/visualizer-dashboard.tsx.tera"
+          template_status: "FAIL"
+          output_file: "../experiments/visualizer-nextjs/src/app/page.tsx"
+          output_status: "FAIL"
+          receipt_status: "NONE"
+          owner: "Phase 6 Recovery"
+          action_required: "Rewrite template using Tera raw blocks to escape JSX {{ }} syntax"
+
+  - id: "pipeline_002"
+    name: "PI Program ggen Pipeline"
+    path: "/Users/sac/process-intelligence/research/pi-program/ggen/ggen.toml"
+    status: "BLOCKED"
+    execution_summary:
+      total_rules: 57
+      rules_passed: 0
+      rules_failed: 0
+      parse_status: "PARTIAL"
+      query_status: "UNKNOWN"
+      render_status: "UNKNOWN"
+      output_status: "FAIL"
+    
+    fixes_applied:
+      - fix_001:
+          file: "ggen.toml"
+          issue: "Invalid TOML structure; [program] section instead of [project]"
+          class: "MANIFEST_SCHEMA_ERROR"
+          severity: "CRITICAL"
+          resolved: true
+      - fix_002:
+          file: "ggen.toml"
+          issue: "Missing source and additional fields in [ontology] section"
+          class: "MISSING_MANIFEST_FIELD"
+          severity: "CRITICAL"
+          resolved: true
+    
+    notes:
+      - "Pipeline contains 57 distinct generation rules; requires full ontology validation"
+      - "Manifest was not compatible with ggen v5 format; updated with source and additional fields"
+      - "Has not yet completed successful execution; requires further debugging of ontology queries"
+      - "Complex research program reconciliation; may require domain-specific rule optimization"
+
+  - id: "pipeline_003"
+    name: "Prompt Manufactory ggen Pipeline"
+    path: "/Users/sac/process-intelligence/research/prompt-manufactory/ggen/ggen.toml"
+    status: "BLOCKED"
+    execution_summary:
+      total_rules: 8
+      rules_passed: 0
+      rules_failed: 0
+      parse_status: "PASS"
+      query_status: "UNKNOWN"
+      render_status: "FAIL"
+      output_status: "FAIL"
+    
+    rules:
+      - rule_001:
+          name: "workflow-prompts"
+          status: "BLOCKED"
+          failure_class: "TEMPLATE_PARSE_ERROR"
+          failure_detail: "Template parse error during rendering phase"
+          query_file: "queries/select-workflow-prompts.rq"
+          query_status: "PASS"
+          template_file: "templates/workflow-prompt.md.tera"
+          template_status: "SYNTAX_VALID_BUT_RENDER_FAILS"
+          output_file: "emitted/prompts/workflows/"
+          output_status: "FAIL"
+          receipt_status: "NONE"
+          owner: "Phase 6 Warrant Path"
+          action_required: "Debug ggen v5 template rendering pipeline; may be issue with context bindings"
+
+summary:
+  total_pipelines_executed: 3
+  pipelines_with_any_success: 0
+  pipelines_fully_successful: 0
+  critical_blockers:
+    - "JSX {{ }} syntax in NextJS template conflicts with Tera template syntax"
+    - "Research program pipeline requires complex multi-ontology integration"
+    - "Prompt Manufactory template rendering fails despite syntactic validity"
+  gaps_documented:
+    - "GAP_001: Tera template auto-escaping strategy for JSX and other syntax"
+    - "GAP_002: ggen v5 context binding for SELECT query results → Tera template variables"
+    - "GAP_003: Multi-rule orchestration in pi-program pipeline (57 rules)"
+

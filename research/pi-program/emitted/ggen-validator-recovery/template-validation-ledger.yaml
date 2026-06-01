@@ -1,0 +1,328 @@
+# Template Validation Ledger
+# Generated: 2026-06-01T13:22:14.181344
+# Total Templates: 24
+
+statistics:
+  CONTEXT_MISSING: 23
+  RENDER_PASS: 1
+
+results:
+  - template_path: research/pi-program/ggen/templates/checkpoint-ledger.md.tera
+    status: RENDER_PASS
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/checkpoint.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 2 variables: critical_defect, failing_gate"
+    missing_vars:
+      - critical_defect
+      - failing_gate
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/failed-gate-ledger.yaml.tera
+    status: CONTEXT_MISSING
+    error: "Missing 9 variables: blocking_checkpoint, criterion, critical_path_gates, cumulative_fitness_delta, cumulative_precision_delta (+4 more)"
+    missing_vars:
+      - blocking_checkpoint
+      - criterion
+      - critical_path_gates
+      - cumulative_fitness_delta
+      - cumulative_precision_delta
+      - failed_gates
+      - gate_failure
+      - gate_type_summary
+      - gates_blocking_release
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/generation-rule-ledger.yaml.tera
+    status: CONTEXT_MISSING
+    error: "Missing 6 variables: artifact, category, cumulative_duration_seconds, cumulative_success_rate, rule (+1 more)"
+    missing_vars:
+      - artifact
+      - category
+      - cumulative_duration_seconds
+      - cumulative_success_rate
+      - rule
+      - rules
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/ggen-source-ledger.yaml.tera
+    status: CONTEXT_MISSING
+    error: "Missing 4 variables: provenance_chain, source, sources, use"
+    missing_vars:
+      - provenance_chain
+      - source
+      - sources
+      - use
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/ggen-unified-run-report.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 3 variables: action, artifact, failure"
+    missing_vars:
+      - action
+      - artifact
+      - failure
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/invalid-ggen-classification-ledger.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 6 variables: action, classification, factor, invalid_classifications, summary (+1 more)"
+    missing_vars:
+      - action
+      - classification
+      - factor
+      - invalid_classifications
+      - summary
+      - violation
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/pi-program-walkthrough.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 19 variables: claim_cat, claims, doctrine_item, doctrines, experiment (+14 more)"
+    missing_vars:
+      - claim_cat
+      - claims
+      - doctrine_item
+      - doctrines
+      - experiment
+      - gap
+      - gaps
+      - lifecycle_state
+      - lifecycle_states
+      - now
+    # ... and 9 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/project-registry.yaml.tera
+    status: CONTEXT_MISSING
+    error: "Missing 3 variables: artifact, project, projects"
+    missing_vars:
+      - artifact
+      - project
+      - projects
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/remediation-plan.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 15 variables: criterion, critical_path_duration, critical_path_gates, current_state, dep (+10 more)"
+    missing_vars:
+      - criterion
+      - critical_path_duration
+      - critical_path_gates
+      - current_state
+      - dep
+      - factor
+      - milestone
+      - prepared_by
+      - remediation
+      - remediations
+    # ... and 5 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/rendered-artifact-ledger.yaml.tera
+    status: CONTEXT_MISSING
+    error: "Missing 3 variables: artifact, artifacts, validation"
+    missing_vars:
+      - artifact
+      - artifacts
+      - validation
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/pi-program/ggen/templates/warrant-path-proof.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 29 variables: all_artifacts_valid, all_stages_lawful, artifact, chain_status, chain_verified (+24 more)"
+    missing_vars:
+      - all_artifacts_valid
+      - all_stages_lawful
+      - artifact
+      - chain_status
+      - chain_verified
+      - conformance_boundary
+      - declared_model_diagram
+      - derivation_chain_diagram
+      - event_log
+      - fitness_status
+    # ... and 19 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/checkpoint-prompt.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 21 variables: alive_consequence, authority_layer, authority_ref, authorized_by, binding_doctrine (+16 more)"
+    missing_vars:
+      - alive_consequence
+      - authority_layer
+      - authority_ref
+      - authorized_by
+      - binding_doctrine
+      - checkpoint_uri
+      - condition
+      - covenant_status
+      - criterion
+      - evidence
+    # ... and 11 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/hook-policy.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 23 variables: action, activation_rule, authority_layer, authority_ref, authorized_by (+18 more)"
+    missing_vars:
+      - action
+      - activation_rule
+      - authority_layer
+      - authority_ref
+      - authorized_by
+      - binding_doctrine
+      - covenant_status
+      - escalation
+      - event_pattern
+      - forbidden
+    # ... and 13 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/invalid-ggen-classification-ledger.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 20 variables: authority_layer, binding_doctrine, classified_count, covenant_compliance, deprecated_count (+15 more)"
+    missing_vars:
+      - authority_layer
+      - binding_doctrine
+      - classified_count
+      - covenant_compliance
+      - deprecated_count
+      - file
+      - ggen_file
+      - immutability_chain
+      - manufacture_chain
+      - manufacture_timestamp
+    # ... and 10 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/prompt-receipt.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 26 variables: artifact, authority_layer, authorized_by, binding_doctrine, covenant_binding (+21 more)"
+    missing_vars:
+      - artifact
+      - authority_layer
+      - authorized_by
+      - binding_doctrine
+      - covenant_binding
+      - error
+      - failed_renders
+      - failure
+      - final_manufacture_chain
+      - final_receipt_hash
+    # ... and 16 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/research-program-index.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 23 variables: conformance_status, layer, manufacture_chain, manufacture_timestamp, manufacturing_root (+18 more)"
+    missing_vars:
+      - conformance_status
+      - layer
+      - manufacture_chain
+      - manufacture_timestamp
+      - manufacturing_root
+      - mfg_timestamp
+      - ontology_version
+      - program
+      - program_ref
+      - proof_ledger
+    # ... and 13 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/skill.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 24 variables: authority_layer, authority_ref, authorized_by, binding_doctrine, boundary (+19 more)"
+    missing_vars:
+      - authority_layer
+      - authority_ref
+      - authorized_by
+      - binding_doctrine
+      - boundary
+      - capability
+      - covenant_status
+      - knowledge
+      - manufacture_chain
+      - metric
+    # ... and 14 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/subagent-prompt.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 18 variables: authority, authority_layer, authority_ref, authorized_by, binding_doctrine (+13 more)"
+    missing_vars:
+      - authority
+      - authority_layer
+      - authority_ref
+      - authorized_by
+      - binding_doctrine
+      - covenant_status
+      - escalation
+      - forbidden
+      - manufacture_chain
+      - mfg_timestamp
+    # ... and 8 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: research/prompt-manufactory/ggen/templates/workflow-prompt.md.tera
+    status: CONTEXT_MISSING
+    error: "Missing 17 variables: artifact_type, authority_layer, authority_ref, authorized_by, binding_doctrine (+12 more)"
+    missing_vars:
+      - artifact_type
+      - authority_layer
+      - authority_ref
+      - authorized_by
+      - binding_doctrine
+      - covenant_status
+      - forbidden
+      - manufacture_chain
+      - mfg_timestamp
+      - proof_timestamp
+    # ... and 7 more
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: ggen/templates/blue-river.tera
+    status: CONTEXT_MISSING
+    error: "Missing 8 variables: action, analyze, knowledge, monitor, now (+3 more)"
+    missing_vars:
+      - action
+      - analyze
+      - knowledge
+      - monitor
+      - now
+      - plan
+      - state
+      - transition
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: ggen/templates/ma-deck.tera
+    status: CONTEXT_MISSING
+    error: "Missing 8 variables: claim, claims, conformance_summary, debt_items, debt_slide (+3 more)"
+    missing_vars:
+      - claim
+      - claims
+      - conformance_summary
+      - debt_items
+      - debt_slide
+      - signoff_slide
+      - synergy_items
+      - synergy_waterfall
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: ggen/templates/ma-diligence.tera
+    status: CONTEXT_MISSING
+    error: "Missing 1 variables: claims"
+    missing_vars:
+      - claims
+    parse_duration_ms: 0
+    render_duration_ms: 0
+  - template_path: ggen/templates/visualizer-dashboard.tsx.tera
+    status: CONTEXT_MISSING
+    error: "Missing 3 variables: claim, height, transition"
+    missing_vars:
+      - claim
+      - height
+      - transition
+    parse_duration_ms: 2
+    render_duration_ms: 0

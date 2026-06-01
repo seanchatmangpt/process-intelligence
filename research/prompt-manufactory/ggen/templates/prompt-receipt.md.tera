@@ -1,0 +1,157 @@
+# Prompt Receipt Ledger
+
+**Manufacturing Authority:** Prompt Manufactory
+**Manufacturing Timestamp:** {{ mfg_timestamp }}
+**Manufacture Chain:** {{ manufacture_chain }}
+
+---
+
+## Manufacture Summary
+
+| Metric | Count |
+|--------|-------|
+| **Total Rendered Prompts** | {{ total_rendered }} |
+| **Successful Renders** | {{ successful_renders }} |
+| **Failed Renders** | {{ failed_renders }} |
+| **Partial Renders** | {{ partial_renders }} |
+| **Validation Passed** | {{ validation_passed }} |
+| **Validation Failed** | {{ validation_failed }} |
+
+---
+
+## Rendered Artifacts Ledger
+
+{%- for artifact in rendered_artifacts %}
+
+### Artifact: {{ artifact.artifact_name }}
+
+| Property | Value |
+|----------|-------|
+| **Artifact ID** | {{ artifact.artifact_id }} |
+| **Type** | {{ artifact.artifact_type }} |
+| **Output Path** | {{ artifact.output_path }} |
+| **Source Program** | {{ artifact.source_program }} |
+| **Source Query** | {{ artifact.source_query }} |
+| **Template Used** | {{ artifact.template_used }} |
+| **Render Status** | {{ artifact.render_status }} |
+| **Validation Status** | {{ artifact.validation_status }} |
+| **Render Timestamp** | {{ artifact.render_timestamp }} |
+| **File Size** | {{ artifact.file_size }} bytes |
+| **Hash** | {{ artifact.hash }} |
+
+**Proof of Manufacture:**
+```
+generation_rule: {{ artifact.generation_rule }}
+receipt_hash: {{ artifact.receipt_hash }}
+manufacture_warranty: {{ artifact.manufacture_warranty }}
+immutability_chain: {{ artifact.immutability_chain }}
+```
+
+{%- if artifact.warnings %}
+**Warnings:**
+{%- for warning in artifact.warnings %}
+- {{ warning }}
+
+{%- endfor %}
+{%- endif %}
+
+{%- if artifact.validation_errors %}
+**Validation Errors:**
+{%- for error in artifact.validation_errors %}
+- {{ error }}
+
+{%- endfor %}
+{%- endif %}
+
+---
+
+{%- endfor %}
+
+## Failed Renders
+
+{%- if failed_renders > 0 %}
+
+{%- for failure in render_failures %}
+
+### Failure: {{ failure.artifact_name }}
+
+- **Error:** {{ failure.error_message }}
+- **Root Cause:** {{ failure.root_cause }}
+- **Query File:** {{ failure.query_file }}
+- **Template File:** {{ failure.template_file }}
+- **Timestamp:** {{ failure.timestamp }}
+
+**Remediation Required:**
+- {{ failure.remediation }}
+
+---
+
+{%- endfor %}
+
+{%- else %}
+
+All renders succeeded. No failures recorded.
+
+{%- endif %}
+
+## Validation Summary
+
+{%- for validation_result in validation_results %}
+
+### {{ validation_result.artifact_name }}
+
+- **Conformance to Law:** {{ validation_result.conformance_status }}
+- **COVENANT Compliance:** {{ validation_result.covenant_compliance }}
+- **Authority Warranty:** {{ validation_result.authority_warranty }}
+- **Binding Doctrine:** {{ validation_result.binding_doctrine }}
+- **Immutability:** {{ validation_result.immutability_proof }}
+
+{%- endfor %}
+
+---
+
+## Cross-Reference: Generation Rules
+
+{%- for rule in generation_rules_used %}
+
+### Rule: {{ rule.rule_name }}
+
+- **Query:** {{ rule.query_file }}
+- **Template:** {{ rule.template_file }}
+- **Output Directory:** {{ rule.output_directory }}
+- **Artifacts Rendered:** {{ rule.artifact_count }}
+- **Success Rate:** {{ rule.success_rate }}%
+- **Description:** {{ rule.description }}
+
+---
+
+{%- endfor %}
+
+## Manufacturing Authority Chain
+
+```
+manufacturing_root: {{ manufacturing_root }}
+ont_version: {{ ontology_version }}
+generation_engine: {{ generation_engine }}
+validation_engine: {{ validation_engine }}
+```
+
+---
+
+## Manufacture Warranty
+
+- **Authorized by:** {{ authorized_by }}
+- **Authority Layer:** {{ authority_layer }}
+- **Binding Doctrine:** {{ binding_doctrine }}
+- **COVENANT Binding:** {{ covenant_binding }}
+
+---
+
+## Final Receipt
+
+```
+receipt_hash: {{ final_receipt_hash }}
+manufacture_chain: {{ final_manufacture_chain }}
+proof_timestamp: {{ proof_timestamp }}
+immutability_proof: {{ immutability_proof }}
+```

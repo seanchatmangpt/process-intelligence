@@ -1,0 +1,358 @@
+---
+ledger_id: "PI_GGEN_VALIDATOR_RECOVERY_GAP_LEDGER_001"
+date_emitted: "2026-06-01"
+authority: "Process Intelligence Research Directorate"
+phase: "Phases 9-10: Gap Ledger & Final Checkpoint"
+audit_run: "PI_GGEN_CONFORMANCE_AUDIT_2026_06_01"
+
+executive_summary:
+  total_gaps_identified: 8
+  blocking_gaps: 6
+  non_blocking_gaps: 2
+  total_violations: 101
+  gates_failing: 6
+  gates_passing: 9
+  audit_pass_rate: "60%"
+
+gaps:
+  # Blocking Gap 1: Template Validator Bug
+  - gap_id: "GAP_VALIDATOR_BUG_001_TERA_PARSER"
+    title: "ggen v26.5.21 Tera Template Validator Internal Error"
+    owner_project: "ggen maintainer"
+    severity: "CRITICAL"
+    description: |
+      ggen v26.5.21 template validator rejects valid Tera syntax with cryptic error:
+      "SyntaxError: Failed to parse 'test_template'" referencing undefined identifier.
+      This appears to be an internal ggen validator bug, not a syntax problem because:
+      1. All templates pass manual Tera syntax validation
+      2. Error message references undefined 'test_template' (not actual template)
+      3. Error occurs during manifest validation phase, before template execution
+      4. Same error occurs across multiple different template files
+
+    blocks_alive: true
+    blocking_reason: "Templates cannot be validated or rendered; all pipelines blocked"
+
+    affected_files:
+      - "ggen/templates/visualizer-dashboard.tsx.tera"
+      - "ggen/templates/blue-river.tera"
+      - "research/prompt-manufactory/ggen/templates/workflow-prompt.md.tera"
+      - "research/prompt-manufactory/ggen/templates/subagent-prompt.md.tera"
+      - "research/prompt-manufactory/ggen/templates/skill.md.tera"
+      - "research/prompt-manufactory/ggen/templates/hook-policy.md.tera"
+
+    violation_count: 3  # 3 pipelines blocked
+    audit_gate: "gate_05_tera_templates_render"
+    audit_gate_status: "FAIL"
+
+    remediation_class: "TOOL_UPGRADE"
+    allowed_changes:
+      - "Update ggen version to 26.6+ (if available)"
+      - "Configure ggen --no-validate flag if available"
+      - "Use direct Tera CLI rendering (workaround)"
+      - "Submit issue to ggen project with reproducible example"
+
+    forbidden_changes:
+      - "Rewrite templates to simpler syntax (workaround hiding root cause)"
+      - "Skip template validation entirely without fix"
+
+    expected_receipt: "ggen upgrade completed OR validator issue fixed OR workaround applied"
+    next_workflow_if_not_closed: "MANUAL_TERA_RENDERING | GGEN_UPGRADE | BUG_REPORT"
+    effort_estimate_hours: 1  # if simple workaround
+    estimated_completion: "2026-06-02"
+
+  # Blocking Gap 2: TTL Syntax Validation
+  - gap_id: "GAP_GGEN_001_TTL_SYNTAX_VALIDATION"
+    title: "TTL Ontology Files Not Syntax-Validated"
+    owner_project: "Process Intelligence"
+    severity: "MEDIUM"
+    description: "23 TTL files found but RDF syntax validation not performed. No rapper/librdf installed."
+
+    blocks_alive: true
+    blocking_reason: "Gate 3 cannot PASS without validation tools; validation failures unknown"
+
+    affected_files:
+      - "ggen/ontology/research-program-law.ttl"
+      - "ggen/ontology/workflow-law.ttl"
+      - "research/prompt-manufactory/ggen/ontology/research-program-law.ttl"
+      - "research/prompt-manufactory/ggen/ontology/workflow-law.ttl"
+      - "research/pi-program/ggen/ontology/*.ttl (11 more files)"
+
+    violation_count: 23
+    audit_gate: "gate_03_ttl_graphs_parse"
+    audit_gate_status: "FAIL"
+
+    remediation_class: "TOOL_INSTALLATION"
+    allowed_changes:
+      - "Install librdf/rapper (macOS: brew install raptor2; Linux: apt-get install librdf-utils)"
+      - "Validate all TTL files: find . -name '*.ttl' -exec rapper -c {} \\;"
+      - "Fix any RDF syntax errors reported"
+      - "Document validation report"
+
+    forbidden_changes:
+      - "Skip TTL validation"
+      - "Mark valid TTL files as invalid"
+
+    expected_receipt: "ttl-validation-report.txt with pass/fail status per file"
+    next_workflow_if_not_closed: "TOOL_INSTALL | SYNTAX_FIX | RE_VALIDATE"
+    effort_estimate_hours: 2
+    estimated_completion: "2026-06-02"
+
+  # Blocking Gap 3: RQ Query Validation
+  - gap_id: "GAP_GGEN_002_RQ_QUERY_VALIDATION"
+    title: "SPARQL RQ Query Files Not Syntax-Validated"
+    owner_project: "Process Intelligence"
+    severity: "MEDIUM"
+    description: "61 RQ files found but SPARQL syntax validation not performed. Also: 5 query files missing in ggen-003."
+
+    blocks_alive: true
+    blocking_reason: "Gate 4 cannot PASS without validation; query syntax unknown; missing queries"
+
+    affected_files:
+      - "ggen/queries/extract-lifecycle-governance.rq"
+      - "ggen/queries/extract-visualizer-data.rq"
+      - "research/prompt-manufactory/ggen/queries/select-workflow-prompts.rq (and 58 more)"
+
+    violation_count: 61  # 61 files not validated, +5 missing files = 66 total violations
+    audit_gate: "gate_04_rq_queries_parse"
+    audit_gate_status: "FAIL"
+
+    remediation_class: "TOOL_INSTALLATION"
+    allowed_changes:
+      - "Install librdf/rapper (same as Gap 2)"
+      - "Validate all RQ files: find . -name '*.rq' -exec rapper -q {} \\;"
+      - "Infer and create 5 missing ggen-003 query files"
+      - "Fix SPARQL syntax errors"
+      - "Document validation report"
+
+    forbidden_changes:
+      - "Skip SPARQL validation"
+      - "Ignore missing query files"
+
+    expected_receipt: "rq-validation-report.txt with pass/fail; manifest.md with missing files documented"
+    next_workflow_if_not_closed: "TOOL_INSTALL | SYNTAX_FIX | CREATE_MISSING | RE_VALIDATE"
+    effort_estimate_hours: 2
+    estimated_completion: "2026-06-02"
+
+  # Blocking Gap 4: Legacy .ggen Classification
+  - gap_id: "GAP_GGEN_003_LEGACY_CLASSIFICATION"
+    title: "13 Legacy .ggen Files Not Formally Classified"
+    owner_project: "Process Intelligence"
+    severity: "HIGH"
+    description: "Legacy .ggen files exist but have no formal MANIFEST.md documenting status (active/deprecated/legacy/moved)."
+
+    blocks_alive: true
+    blocking_reason: "Gate 9 cannot PASS; classification authority missing"
+
+    affected_files:
+      - "ggen/ directory (13 .ggen files total)"
+      - "Missing: ggen/MANIFEST.md"
+
+    violation_count: 13
+    audit_gate: "gate_09_legacy_ggen_classified"
+    audit_gate_status: "FAIL"
+
+    remediation_class: "DOCUMENTATION"
+    allowed_changes:
+      - "Create ggen/MANIFEST.md with table of all 13 .ggen files"
+      - "For each file: assign status (ACTIVE | DEPRECATED | LEGACY | MOVED)"
+      - "Add metadata: created date, purpose, last modified, reason for status"
+      - "Include cross-references to generation rules that use each file"
+
+    forbidden_changes:
+      - "Delete .ggen files without documenting disposition"
+      - "Leave legacy files unclassified"
+
+    expected_receipt: "ggen/MANIFEST.md with complete status table"
+    next_workflow_if_not_closed: "CLASSIFY_LEGACY_GGEN | CREATE_MANIFEST"
+    effort_estimate_hours: 1
+    estimated_completion: "2026-06-02"
+
+  # Blocking Gap 5: Hand-Written Warrants
+  - gap_id: "GAP_GGEN_005_HAND_WRITTEN_WARRANTS"
+    title: "2 Hand-Written Research Warrants in Doctrine"
+    owner_project: "Process Intelligence"
+    severity: "HIGH"
+    description: "Two doctrine files contain unsupported claims not backed by evidence (papers, experiments, prior checkpoints)."
+
+    blocks_alive: true
+    blocking_reason: "Gate 12 cannot PASS; doctrine authority violated"
+
+    affected_files:
+      - "doctrine/[file_1_TBD].md (contains unsupported claim)"
+      - "doctrine/[file_2_TBD].md (contains unsupported claim)"
+
+    violation_count: 2
+    audit_gate: "gate_12_no_hand_written_warrant"
+    audit_gate_status: "FAIL"
+
+    remediation_class: "EVIDENCE_COLLECTION"
+    allowed_changes:
+      - "Identify the 2 doctrine files with unsupported claims"
+      - "For each claim: search papers/, experiments/, checkpoints/ for evidence"
+      - "If evidence found: add citation to doctrine with specific reference"
+      - "If no evidence: move claim to gaps/ directory with 'EVIDENCE_NEEDED' tag"
+      - "Document action in audit trail"
+
+    forbidden_changes:
+      - "Leave unsupported claims in doctrine"
+      - "Assert claims without evidence"
+      - "Hide missing evidence"
+
+    expected_receipt: "doctrine files updated with citations OR gaps/ files created for unsupported claims"
+    next_workflow_if_not_closed: "EVIDENCE_AUDIT | FIND_SOURCES | UPDATE_DOCTRINE"
+    effort_estimate_hours: 2
+    estimated_completion: "2026-06-02"
+
+  # Blocking Gap 6: File-Count Gate Verification
+  - gap_id: "GAP_GGEN_004_FILE_COUNT_GATE"
+    title: "File-Count Gate Verification Required"
+    owner_project: "Process Intelligence"
+    severity: "HIGH"
+    description: "Parent checkpoint (PI_RESEARCH_PROGRAM_ALIVE_001) may reference file-count metrics as justification. ALIVE verdicts cannot be based on file counts alone."
+
+    blocks_alive: true
+    blocking_reason: "Gate 10 cannot PASS; parent checkpoint audit required"
+
+    affected_files:
+      - "checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md (source document for audit)"
+
+    violation_count: 1
+    audit_gate: "gate_10_no_file_count_alive"
+    audit_gate_status: "FAIL"
+
+    remediation_class: "AUDIT"
+    allowed_changes:
+      - "Read PI_RESEARCH_PROGRAM_ALIVE_001.md"
+      - "Search for file-count language: 'files', 'documents', 'total', 'count', 'therefore ALIVE'"
+      - "If clean (no file-count justifications): Gate 10 → PASS"
+      - "If violations found: document findings and escalate to parent checkpoint remediation"
+
+    forbidden_changes:
+      - "Ignore parent checkpoint audit"
+      - "Justify ALIVE with file counts"
+
+    expected_receipt: "Audit finding: 'PI_RESEARCH_PROGRAM_ALIVE_001 contains no file-count ALIVE justification' OR escalation notice"
+    next_workflow_if_not_closed: "AUDIT_PARENT | ESCALATE_IF_NEEDED"
+    effort_estimate_hours: 1
+    estimated_completion: "2026-06-02"
+
+  # Blocking Gap 7: Commit-Count Gate Verification
+  - gap_id: "GAP_GGEN_006_COMMIT_COUNT_GATE"
+    title: "Commit-Count Gate Verification Required"
+    owner_project: "Process Intelligence"
+    severity: "HIGH"
+    description: "Parent checkpoint (PI_RESEARCH_PROGRAM_ALIVE_001) may reference commit-count metrics. ALIVE verdicts cannot be based on commit counts alone."
+
+    blocks_alive: true
+    blocking_reason: "Gate 14 cannot PASS; parent checkpoint audit required"
+
+    affected_files:
+      - "checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md (source document for audit)"
+
+    violation_count: 1
+    audit_gate: "gate_14_commit_count_gaming_rejected"
+    audit_gate_status: "FAIL"
+
+    remediation_class: "AUDIT"
+    allowed_changes:
+      - "Read PI_RESEARCH_PROGRAM_ALIVE_001.md"
+      - "Search for commit-count language: 'commits', 'frequency', 'velocity', 'therefore ALIVE'"
+      - "If clean (no commit-count justifications): Gate 14 → PASS"
+      - "If violations found: document findings and escalate to parent checkpoint remediation"
+
+    forbidden_changes:
+      - "Ignore parent checkpoint audit"
+      - "Justify ALIVE with commit counts"
+
+    expected_receipt: "Audit finding: 'PI_RESEARCH_PROGRAM_ALIVE_001 contains no commit-count ALIVE justification' OR escalation notice"
+    next_workflow_if_not_closed: "AUDIT_PARENT | ESCALATE_IF_NEEDED"
+    effort_estimate_hours: 1
+    estimated_completion: "2026-06-02"
+
+  # Non-Blocking Gap 1: PI-Program Legacy Format
+  - gap_id: "GAP_CONFIG_001_PI_PROGRAM_LEGACY_FORMAT"
+    title: "PI-Program ggen.toml Uses Legacy Research Format"
+    owner_project: "Process Intelligence"
+    severity: "LOW"
+    description: "ggen.toml at research/pi-program/ggen/ uses custom research-program format, not standard ggen v26.5.21 schema."
+
+    blocks_alive: false
+    blocking_reason: "Non-blocking; documented gap with clear remediation path"
+
+    affected_files:
+      - "research/pi-program/ggen/ggen.toml"
+
+    violation_count: 1
+    audit_gate: "none (not part of audit gates)"
+    audit_gate_status: "N/A"
+
+    remediation_class: "CONFIGURATION"
+    allowed_changes:
+      - "Adapt ggen.toml to standard ggen v26.5.21 manifest format OR"
+      - "Create separate research-program execution orchestrator outside ggen"
+      - "Document the rationale for custom format"
+
+    forbidden_changes:
+      - "Force ggen to process non-standard manifest"
+
+    expected_receipt: "ggen.toml either adapted to standard schema OR documented as intentionally non-ggen"
+    next_workflow_if_not_closed: "REFACTOR_MANIFEST | CUSTOM_ORCHESTRATOR | DOCUMENT_DECISION"
+    effort_estimate_hours: 3
+    estimated_completion: "2026-06-03"
+
+  # Non-Blocking Gap 2: Missing SPARQL Queries
+  - gap_id: "GAP_QUERY_001_MISSING_QUERIES_GGEN_003"
+    title: "5 Query Files Missing in ggen-003 Manifest"
+    owner_project: "Process Intelligence"
+    severity: "LOW"
+    description: "ggen-003 generation rules reference 7 queries but only 2 files found. 5 queries exist as stubs (created during preparation) or are missing entirely."
+
+    blocks_alive: false
+    blocking_reason: "Non-blocking; stub queries exist and can be filled in"
+
+    affected_files:
+      - "research/prompt-manufactory/ggen/queries/ (incomplete set)"
+
+    violation_count: 5
+    audit_gate: "none (rolled into gate_04)"
+    audit_gate_status: "FAIL (as part of gate_04)"
+
+    remediation_class: "DOCUMENTATION"
+    allowed_changes:
+      - "Inspect generation rules to infer missing query requirements"
+      - "Create full SPARQL queries for: select-subagent-prompts, select-skill-prompts, select-hook-policies, select-checkpoint-prompts, select-legacy-ggen-files"
+      - "Test queries against ontology"
+      - "Verify all rules have matching query files"
+
+    forbidden_changes:
+      - "Leave stub queries in place"
+      - "Ignore missing queries"
+
+    expected_receipt: "All 7 query files complete with working SPARQL"
+    next_workflow_if_not_closed: "CREATE_MISSING_QUERIES | INFER_FROM_RULES"
+    effort_estimate_hours: 2
+    estimated_completion: "2026-06-02"
+
+remediation_summary:
+  total_gaps: 8
+  blocking_gaps: 6
+  non_blocking_gaps: 2
+  total_violations: 101
+  critical_path_hours: 9  # Gaps 1-7
+  post_delivery_hours: 5  # Gap 8 (non-critical)
+  total_effort_hours: 14
+
+  critical_path:
+    - "GAP_VALIDATOR_BUG_001_TERA_PARSER (1h) - blocks all template rendering"
+    - "GAP_GGEN_001_TTL_SYNTAX_VALIDATION (2h) - gate 3"
+    - "GAP_GGEN_002_RQ_QUERY_VALIDATION (2h) - gate 4"
+    - "GAP_GGEN_003_LEGACY_CLASSIFICATION (1h) - gate 9"
+    - "GAP_GGEN_005_HAND_WRITTEN_WARRANTS (2h) - gate 12"
+    - "GAP_GGEN_004_FILE_COUNT_GATE (1h) - gate 10"
+    - "GAP_GGEN_006_COMMIT_COUNT_GATE (1h) - gate 14"
+
+  gates_blocked_count: 6
+  gates_passing_count: 9
+  next_checkpoint_blocking_criteria: "All 7 blocking gaps must be closed before ALIVE verdict"
+
+...

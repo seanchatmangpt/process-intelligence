@@ -1,0 +1,154 @@
+# Legacy .ggen File Classification Ledger
+
+**Manufacturing Authority:** Prompt Manufactory
+**Manufacturing Timestamp:** {{ mfg_timestamp }}
+**Remediation Authority:** Process Intelligence Research Foundry
+
+---
+
+## Executive Summary
+
+This ledger classifies all 22 legacy .ggen files discovered in the codebase. Each file is mapped to:
+1. Its declared intent (if present)
+2. Its actual content type
+3. Its conformance status to current naming conventions
+4. Required migration/remediation path
+
+**Total Legacy .ggen Files:** {{ total_ggen_files }}
+**Classified:** {{ classified_count }}
+**Migration Required:** {{ migration_required_count }}
+**Deprecated:** {{ deprecated_count }}
+**Status:** {{ overall_status }}
+
+---
+
+## Classification Matrix
+
+{%- for ggen_file in ggen_files %}
+
+### File: {{ ggen_file.filename }}
+
+| Property | Value |
+|----------|-------|
+| **Path** | {{ ggen_file.path }} |
+| **File Size** | {{ ggen_file.file_size }} bytes |
+| **Created** | {{ ggen_file.created_timestamp }} |
+| **Last Modified** | {{ ggen_file.last_modified }} |
+| **Declared Intent** | {{ ggen_file.declared_intent }} |
+| **Actual Content Type** | {{ ggen_file.actual_content_type }} |
+| **Classification** | {{ ggen_file.classification }} |
+| **Conformance Status** | {{ ggen_file.conformance_status }} |
+
+**Content Summary:**
+```
+{{ ggen_file.content_summary }}
+```
+
+**Classification Rationale:**
+- {{ ggen_file.classification_reason }}
+
+{%- if ggen_file.migration_required %}
+
+**Migration Required:**
+- **Target Path:** {{ ggen_file.migration_target_path }}
+- **New Naming Convention:** {{ ggen_file.new_naming_convention }}
+- **Transformation:** {{ ggen_file.transformation_rule }}
+- **Authority Tier:** {{ ggen_file.authority_tier }}
+
+{%- endif %}
+
+{%- if ggen_file.warnings %}
+
+**Warnings:**
+{%- for warning in ggen_file.warnings %}
+- {{ warning }}
+
+{%- endfor %}
+
+{%- endif %}
+
+---
+
+{%- endfor %}
+
+## Classification Categories
+
+### ✓ VALID & CONFORMANT
+
+Files that follow current naming and organization conventions.
+
+{%- for file in valid_files %}
+- {{ file.filename }} → {{ file.target_path }}
+
+{%- endfor %}
+
+### ⚠ REQUIRES MIGRATION
+
+Files that are valid content but use legacy naming/paths.
+
+{%- for file in migration_required_files %}
+- {{ file.filename }}
+  - Current: {{ file.current_path }}
+  - Target: {{ file.target_path }}
+  - Rule: {{ file.migration_rule }}
+
+{%- endfor %}
+
+### ✗ DEPRECATED
+
+Files that no longer serve a function in current architecture.
+
+{%- for file in deprecated_files %}
+- {{ file.filename }}
+  - Reason: {{ file.deprecation_reason }}
+  - Recommendation: {{ file.recommendation }}
+
+{%- endfor %}
+
+---
+
+## Remediation Plan Summary
+
+**Total Remediation Tasks:** {{ remediation_task_count }}
+
+### Migration Work Packages
+
+{%- for workpackage in remediation_workpackages %}
+
+**WP{{ loop.index }}: {{ workpackage.name }}**
+
+- **Scope:** {{ workpackage.scope }}
+- **File Count:** {{ workpackage.file_count }}
+- **Estimated Effort:** {{ workpackage.estimated_effort }}
+- **Authority:** {{ workpackage.authority }}
+- **Priority:** {{ workpackage.priority }}
+
+Tasks:
+{%- for task in workpackage.tasks %}
+- {{ task.task_name }}
+  - Dependencies: {{ task.dependencies | join(", ") }}
+  - Proof Gate: {{ task.proof_gate }}
+
+{%- endfor %}
+
+---
+
+{%- endfor %}
+
+## Authority & Warrant
+
+- **Binding Doctrine:** {{ binding_doctrine }}
+- **Authority Layer:** {{ authority_layer }}
+- **COVENANT Compliance:** {{ covenant_compliance }}
+- **Immutability Chain:** {{ immutability_chain }}
+
+---
+
+## Final Receipt
+
+```
+receipt_hash: {{ receipt_hash }}
+manufacture_timestamp: {{ manufacture_timestamp }}
+manufacture_chain: {{ manufacture_chain }}
+proof_ledger: {{ proof_ledger }}
+```

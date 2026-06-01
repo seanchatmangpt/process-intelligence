@@ -1,0 +1,85 @@
+# Workflow Warrant: {{ workflow_id }}
+
+**Program:** {{ program_name }}
+**Workflow URI:** {{ workflow_uri }}
+**Authority Layer:** Research Program Law
+**Manufacturing Timestamp:** {{ mfg_timestamp }}
+
+---
+
+## Workflow Identity
+
+| Property | Value |
+|----------|-------|
+| **Workflow ID** | {{ workflow_id }} |
+| **Canonical Name** | {{ workflow_name }} |
+| **Description** | {{ workflow_description }} |
+| **Scope** | {{ workflow_scope }} |
+| **Authority Reference** | {{ authority_ref }} |
+
+---
+
+## Authorized Stages
+
+{%- for stage in workflow_stages %}
+### Stage: {{ stage.name }}
+
+- **Type:** {{ stage.stage_type }}
+- **Purpose:** {{ stage.purpose }}
+- **Proof Gate(s):** {{ stage.proof_gates | join(", ") }}
+- **Success Criteria:** {{ stage.success_criteria }}
+
+{%- endfor %}
+
+---
+
+## Transition Rules
+
+{%- for transition in workflow_transitions %}
+- **From** `{{ transition.from_stage }}` → **To** `{{ transition.to_stage }}`
+  - **Condition:** {{ transition.condition }}
+  - **Warrant:** {{ transition.warrant }}
+
+{%- endfor %}
+
+---
+
+## Forbidden Transitions
+
+{%- for forbidden in forbidden_transitions %}
+- ~~{{ forbidden.from_stage }} → {{ forbidden.to_stage }}~~
+  - **Reason:** {{ forbidden.reason }}
+
+{%- endfor %}
+
+---
+
+## Artifact Lifecycle
+
+{%- for artifact_type in artifact_types %}
+### {{ artifact_type.name }}
+
+- **Proof Gate(s):** {{ artifact_type.proof_gates | join(", ") }}
+- **Receipt Required:** {{ artifact_type.receipt_required }}
+- **Immutability:** {{ artifact_type.immutable }}
+
+{%- endfor %}
+
+---
+
+## Manufacturing Authorization
+
+- **Authorized by:** {{ authorized_by }}
+- **Authority Layer:** {{ authority_layer }}
+- **Binding Doctrine:** {{ binding_doctrine }}
+- **COVENANT Status:** {{ covenant_status }}
+
+---
+
+## Warrant Proof
+
+```
+receipt_hash: {{ receipt_hash }}
+manufacture_chain: {{ manufacture_chain }}
+proof_timestamp: {{ proof_timestamp }}
+```

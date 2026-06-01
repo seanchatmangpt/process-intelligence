@@ -1,34 +1,84 @@
-[program]
+[project]
 name = "PI_RESEARCH_PROGRAM_INTEL_001"
-mode = "research_program_reconciliation"
-hand_coding = false
-scope = "all_referenced_projects"
+version = "0.1.0"
+description = "Research program reconciliation and governance generation"
 
-[inputs]
-wasm4pm = "/Users/sac/process-intelligence/sources/wasm4pm"
-wasm4pm_compat = "/Users/sac/wasm4pm-compat"
-zoeapp = "/Users/sac/zoeapp"
-blue_river_dam = "/Users/sac/blue_river_dam"
-process_intelligence = "/Users/sac/process-intelligence"
+[[inference.rules]]
+name = "normalize"
+description = "Pass-through normalization for DMAIC measurement gate"
+construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
+order = 1
 
 [ontology]
-program = "ontology/pi-program.ttl"
-project_registry = "ontology/project-registry.ttl"
-checkpoint_ledger = "ontology/checkpoint-ledger.ttl"
-research_artifacts = "ontology/research-artifact-ledger.ttl"
-conformance = "ontology/conformance-ledger.ttl"
-graduation = "ontology/graduation-boundary.ttl"
-forbidden = "ontology/forbidden-collapse-law.ttl"
+source = "ontology/pi-program.ttl"
+additional = [
+  "ontology/project-registry.ttl",
+  "ontology/checkpoint-ledger.ttl",
+  "ontology/research-artifact-ledger.ttl",
+  "ontology/conformance-ledger.ttl",
+  "ontology/graduation-boundary.ttl",
+  "ontology/forbidden-collapse-law.ttl",
+  "ontology/pi-ggen-audit-law.ttl",
+  "ontology/pi-ggen-checkpoint-ledger.ttl",
+  "ontology/pi-ggen-generation-ledger.ttl",
+  "ontology/pi-ggen-invalid-extension-ledger.ttl",
+  "ontology/pi-ggen-project-registry.ttl",
+  "ontology/pi-ggen-source-ledger.ttl",
+  "ontology/pi-ggen-unified-run.ttl"
+]
 
-[queries]
-directory = "queries"
+[[generation.rules]]
+name = "checkpoint-ledger"
+query = { file = "queries/select-all-checkpoints.rq" }
+template = { file = "templates/checkpoint-ledger.md.tera" }
+output_file = "../emitted/ggen-validator-remediation/checkpoint-ledger.md"
+mode = "Overwrite"
+description = "Render ledger of all checkpoints with receipt status"
 
-[templates]
-directory = "templates"
+[[generation.rules]]
+name = "generation-rule-ledger"
+query = { file = "queries/select-all-generation-rules.rq" }
+template = { file = "templates/generation-rule-ledger.yaml.tera" }
+output_file = "../emitted/ggen-validator-remediation/generation-rule-ledger.yaml"
+mode = "Overwrite"
+description = "Render ledger of all generation rules with execution status"
 
-[emitted]
-directory = "../emitted"
+[[generation.rules]]
+name = "invalid-ggen-classification"
+query = { file = "queries/select-invalid-ggen-files.rq" }
+template = { file = "templates/invalid-ggen-classification-ledger.md.tera" }
+output_file = "../emitted/ggen-validator-remediation/invalid-ggen-classification-ledger.md"
+mode = "Overwrite"
+description = "Render classification ledger for legacy .ggen files"
 
-[checkpoints]
-partial = "../checkpoints/PI_RESEARCH_PROGRAM_PARTIAL_001.md"
-alive = "../checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md"
+[[generation.rules]]
+name = "rendered-artifact-ledger"
+query = { file = "queries/select-all-rendered-artifacts.rq" }
+template = { file = "templates/rendered-artifact-ledger.yaml.tera" }
+output_file = "../emitted/ggen-validator-remediation/rendered-artifact-ledger.yaml"
+mode = "Overwrite"
+description = "Render ledger of all rendered artifacts with source trace"
+
+# DISABLED: warrant-path-proof template has parsing errors (deferred to Phase 8 recovery)
+# [[generation.rules]]
+# name = "warrant-path-proof"
+# query = { file = "queries/select-warrant-paths.rq" }
+# template = { file = "templates/warrant-path-proof.md.tera" }
+# output_file = "../emitted/ggen-validator-remediation/warrant-path-proof.md"
+# mode = "Overwrite"
+# description = "Prove Prompt Manufactory warrant path through ggen execution"
+
+[query]
+endpoint = "in-memory"
+format = "sparql-11"
+
+[template]
+engine = "tera"
+base_dir = "templates"
+autoescape = true
+strict_variables = true
+
+[output]
+checksum_algorithm = "blake3"
+receipt_format = "json"
+proof_format = "cryptographic-chain"

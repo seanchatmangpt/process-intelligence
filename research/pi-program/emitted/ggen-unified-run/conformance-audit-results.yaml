@@ -1,153 +1,94 @@
 ---
-audit_metadata:
-  program: "process-intelligence"
-  audit_type: "conformance"
-  pipeline: "ggen-unified-run"
-  generated: "2026-06-01T12:00:00Z"
-  authority: "PROCESS_INTELLIGENCE_ALIVE_001"
-  auditor: "Process Intelligence Research Foundry"
-  repository: "/Users/sac/process-intelligence"
-
-summary:
-  total_gates: 15
-  passed: 12
-  failed: 3
-  partial: 0
-  status: "NON_COMPLIANT"
-  critical_violations: 1
-  major_violations: 2
-
-gate_results:
-  - gate_id: 1
-    name: "project-registry-complete"
+audit_run_id: "PI_GGEN_CONFORMANCE_AUDIT_2026_06_01"
+date_emitted: "2026-06-01"
+gates:
+  gate_01_project_registry:
     status: "PASS"
     violations: 0
-
-  - gate_id: 2
-    name: "all-ggen-manifests-classified"
+    description: "Project registry complete (all projects found or marked missing)"
+    affected_files: []
+    remediation_owner: "Process Intelligence"
+  gate_02_ggen_manifests_classified:
     status: "PASS"
     violations: 0
-
-  - gate_id: 3
-    name: "ttl-graphs-parse"
+    ggen_manifests_found:        3
+    description: "All ggen.toml manifests found and classified"
+    affected_files: []
+    remediation_owner: "Process Intelligence"
+  gate_03_ttl_graphs_parse:
     status: "FAIL"
-    violations: 8
-    severity: "MAJOR"
-    affected_files: ["ggen/ontology-extensions.ttl"]
-    remediation_owner: "ontology-owner"
-    remediation_effort_hours: 4
-
-  - gate_id: 4
-    name: "rq-queries-parse"
-    status: "PASS"
-    violations: 0
-
-  - gate_id: 5
-    name: "tera-templates-render"
-    status: "PASS"
-    violations: 0
-
-  - gate_id: 6
-    name: "generation-rules-complete"
-    status: "PASS"
-    violations: 0
-
-  - gate_id: 7
-    name: "artifact-traceability"
-    status: "PASS"
-    violations: 0
-
-  - gate_id: 8
-    name: "no-invalid-ggen-source"
-    status: "PASS"
-    violations: 0
-
-  - gate_id: 9
-    name: "all-legacy-ggen-classified"
+    violations: 23
+    ttl_files_total:       23
+    ttl_parse_failures: 23
+    description: "All TTL ontology files parse without syntax errors"
+    remediation_owner: "Process Intelligence"
+  gate_04_rq_queries_parse:
     status: "FAIL"
-    violations: 12
-    severity: "MAJOR"
-    affected_files:
-      - "ggen/audits/audit-*.sh.ggen (8 files)"
-      - "ggen/templates/*.ggen (4 files)"
-    remediation_owner: "ggen-owner"
-    remediation_effort_hours: 3
-
-  - gate_id: 10
-    name: "no-file-count-alive"
+    violations: 61
+    rq_files_total:       61
+    rq_parse_failures: 61
+    description: "All SPARQL RQ query files parse without syntax errors"
+    remediation_owner: "Process Intelligence"
+  gate_05_tera_templates_render:
+    status: "PASS"
+    violations: 0
+    tera_files_total:       33
+    tera_render_failures: 0
+    description: "All Tera template files exist and are non-empty"
+    remediation_owner: "Process Intelligence"
+  gate_06_generation_rules_complete:
+    status: "PASS"
+    violations: 0
+    generation_rules_found:       12
+    description: "Every generation rule has query, template, and output path"
+    remediation_owner: "Process Intelligence"
+  gate_07_artifact_traceability:
+    status: "PASS"
+    violations: 0
+    receipt_files_found:        8
+    description: "Every rendered artifact has traceability or explicit missing-trace"
+    remediation_owner: "Process Intelligence"
+  gate_08_no_invalid_ggen:
+    status: "PASS"
+    violations: 0
+    ggen_files_total:       24
+    invalid_ggen_count: 0
+    description: "No invalid new .ggen source files (all parse/render)"
+    remediation_owner: "Process Intelligence"
+  gate_09_legacy_ggen_classified:
+    status: "FAIL"
+    violations: 
+    legacy_ggen_files:       13
+    description: "All legacy .ggen files classified (active/deprecated/invalid/moved)"
+    remediation_owner: "Process Intelligence"
+  gate_10_no_file_count_alive:
+    status: "FAIL"
+    violations: 1
+    description: "No ALIVE verdict justified by file counts alone"
+    remediation_owner: "Process Intelligence"
+  gate_11_no_forced_alive:
+    status: "PASS"
+    violations: 0
+    description: "No forced ALIVE on incomplete gates"
+    remediation_owner: "Process Intelligence"
+  gate_12_no_hand_written_warrant:
     status: "FAIL"
     violations: 2
-    severity: "CRITICAL"
-    affected_files:
-      - "checkpoints/ALIVE_GATE_ASSESSMENT.md"
-      - "checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md"
-    violation_class: "VERDICT_JUSTIFICATION_VIOLATION"
-    violation_details: "Uses 12 file-count gates (doctrine>=15, standards>=10, papers>=7, etc.) to justify ALIVE verdict"
-    remediation_owner: "checkpoint-owner"
-    remediation_effort_hours: 8
-
-  - gate_id: 11
-    name: "no-forced-alive"
+    hand_written_warrants: 2
+    description: "No hand-written research warrant (all backed by evidence)"
+    remediation_owner: "Process Intelligence"
+  gate_13_checkpoint_can_emit_partial:
     status: "PASS"
     violations: 0
-
-  - gate_id: 12
-    name: "no-hand-written-warrant"
+    description: "Checkpoint correctly emits PARTIAL (not forced ALIVE)"
+    remediation_owner: "Process Intelligence"
+  gate_14_commit_count_gaming_rejected:
+    status: "FAIL"
+    violations: 1
+    description: "No ALIVE verdict based on commit count"
+    remediation_owner: "Process Intelligence"
+  gate_15_receipts_present_or_missing:
     status: "PASS"
     violations: 0
-
-  - gate_id: 13
-    name: "checkpoint-partial-allowed"
-    status: "PASS"
-    violations: 0
-
-  - gate_id: 14
-    name: "commit-count-gaming-rejected"
-    status: "PASS"
-    violations: 0
-
-  - gate_id: 15
-    name: "receipts-present-or-explicit"
-    status: "PASS"
-    violations: 0
-
-critical_findings:
-  - finding_id: "CRIT_001"
-    gate: 10
-    severity: "CRITICAL"
-    title: "File-Count ALIVE Verdict"
-    location: "checkpoints/ALIVE_GATE_ASSESSMENT.md"
-    remediation_owner: "checkpoint-owner"
-    remediation_class: "VERDICT_JUSTIFICATION_VIOLATION"
-    effort_hours: 8
-
-  - finding_id: "CRIT_002"
-    gate: 9
-    severity: "MAJOR"
-    title: "Unclassified Legacy ggen Files"
-    location: "ggen/audits/, ggen/templates/"
-    remediation_owner: "ggen-owner"
-    remediation_class: "CLASSIFICATION_VIOLATION"
-    effort_hours: 3
-
-  - finding_id: "CRIT_003"
-    gate: 3
-    severity: "MAJOR"
-    title: "TTL Parse Failures"
-    location: "ggen/ontology-extensions.ttl"
-    remediation_owner: "ontology-owner"
-    remediation_class: "SYNTAX_VIOLATION"
-    effort_hours: 4
-
-remediation_summary:
-  total_effort_hours: 15
-  critical_path_gates: 1
-  gates_requiring_re_audit: [3, 9, 10]
-  status: "IN_PROGRESS"
-
-sign_off:
-  auditor: "Process Intelligence Research Foundry"
-  timestamp: "2026-06-01T12:00:00Z"
-  authority: "PROCESS_INTELLIGENCE_ALIVE_001"
-  verdict: "NON_COMPLIANT"
-  re_audit_required: true
+    description: "Receipts present or explicitly marked as missing"
+    remediation_owner: "Process Intelligence"

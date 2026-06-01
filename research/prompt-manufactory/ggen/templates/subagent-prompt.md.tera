@@ -1,0 +1,95 @@
+# Subagent Role Warrant: {{ subagent_role_id }}
+
+**Program:** {{ program_name }}
+**Subagent Role URI:** {{ subagent_role_uri }}
+**Authority Layer:** Research Program Law
+**Manufacturing Timestamp:** {{ mfg_timestamp }}
+
+---
+
+## Role Identity
+
+| Property | Value |
+|----------|-------|
+| **Role ID** | {{ subagent_role_id }} |
+| **Canonical Name** | {{ role_name }} |
+| **Description** | {{ role_description }} |
+| **Authority Reference** | {{ authority_ref }} |
+
+---
+
+## Authorized Responsibilities
+
+{%- for responsibility in responsibilities %}
+### {{ responsibility.name }}
+
+- **Scope:** {{ responsibility.scope }}
+- **Proof Gates:** {{ responsibility.proof_gates | join(", ") }}
+- **Success Metrics:** {{ responsibility.success_metrics | join(", ") }}
+- **Warrant Authority:** {{ responsibility.warrant_authority }}
+
+{%- endfor %}
+
+---
+
+## Bounded Authorities
+
+{%- for authority in bounded_authorities %}
+- **Authority:** {{ authority.name }}
+  - **Scope:** {{ authority.scope }}
+  - **Constraints:** {{ authority.constraints }}
+  - **Revocation Terms:** {{ authority.revocation_terms }}
+
+{%- endfor %}
+
+---
+
+## Forbidden Actions
+
+{%- for forbidden in forbidden_actions %}
+- ~~{{ forbidden.action }}~~
+  - **Reason:** {{ forbidden.reason }}
+  - **Enforcement:** {{ forbidden.enforcement_mechanism }}
+
+{%- endfor %}
+
+---
+
+## Skill Requirements
+
+{%- for skill in required_skills %}
+- {{ skill.name }} ({{ skill.level }})
+  - **Authority:** {{ skill.authority }}
+  - **Proof of Competency:** {{ skill.proof_required }}
+
+{%- endfor %}
+
+---
+
+## Escalation Rules
+
+{%- for escalation in escalation_rules %}
+- **Trigger:** {{ escalation.trigger }}
+  - **Escalate To:** {{ escalation.escalate_to }}
+  - **Notification:** {{ escalation.notification }}
+
+{%- endfor %}
+
+---
+
+## Manufacturing Authorization
+
+- **Authorized by:** {{ authorized_by }}
+- **Authority Layer:** {{ authority_layer }}
+- **Binding Doctrine:** {{ binding_doctrine }}
+- **COVENANT Status:** {{ covenant_status }}
+
+---
+
+## Warrant Proof
+
+```
+receipt_hash: {{ receipt_hash }}
+manufacture_chain: {{ manufacture_chain }}
+proof_timestamp: {{ proof_timestamp }}
+```

@@ -34,13 +34,14 @@ metadata = {
   evidence_backing = "lifecycle state machine + governance rule enforcement"
 }
 
-[[generation.rules]]
-name = "visualizer-dashboard-nextjs"
-description = "Generate NextJS visualizer dashboard pages with conformance-backed claims"
-query = { file = "queries/extract-visualizer-data.rq" }
-template = { file = "templates/visualizer-dashboard.tsx.tera" }
-output_file = "../experiments/visualizer-nextjs/src/app/page.tsx"
-mode = "Overwrite"
+# DISABLED: visualizer-dashboard-nextjs template parse error - deferred to Phase 6 recovery
+# [[generation.rules]]
+# name = "visualizer-dashboard-nextjs"
+# description = "Generate NextJS visualizer dashboard pages with conformance-backed claims"
+# query = { file = "queries/extract-visualizer-data.rq" }
+# template = { file = "templates/visualizer-dashboard.tsx.tera" }
+# output_file = "../experiments/visualizer-nextjs/src/app/page.tsx"
+# mode = "Overwrite"
 
 [query]
 endpoint = "in-memory"

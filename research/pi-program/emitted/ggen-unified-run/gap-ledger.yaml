@@ -1,528 +1,77 @@
 ---
-# PROCESS INTELLIGENCE GAP LEDGER
-# Generated: 2026-06-01
-# Authority: Process Intelligence Research Foundry
-# Source: Conformance audit results + historical gap register + recent checkpoint analysis
-#
-# This ledger documents all structural gaps blocking full lifecycle process intelligence.
-# Every gap includes: classification, severity, ownership, remediation class, allowed changes,
-# forbidden changes, audit gate, expected receipt, and recommended workflow.
-
-metadata:
-  program: "process-intelligence"
-  authority: "PI_RESEARCH_PROGRAM_ALIVE_001"
-  repository: "/Users/sac/process-intelligence"
-  emission_date: "2026-06-01"
-  emission_time: "2026-06-01T12:00:00Z"
-  total_gaps: 11
-  critical_gaps: 4
-  major_gaps: 5
-  minor_gaps: 2
-
+gap_ledger_id: "PI_GGEN_CONFORMANCE_GAP_LEDGER_001"
+date_emitted: "2026-06-01"
+audit_run: "PI_GGEN_CONFORMANCE_AUDIT_2026_06_01"
+total_gaps: 6
 gaps:
-  # CRITICAL GAPS BLOCKING ALIVE
-  - gap_id: "GAP_001"
-    title: "wasm4pm-compat graduation boundary signal not implemented"
-    owner_project: "wasm4pm-compat"
-    severity: "CRITICAL"
-    status: "OPEN"
+  - gap_id: "GAP_GGEN_001_TTL_SYNTAX_VALIDATION"
+    title: "TTL Ontology Files Not Syntax-Validated"
+    description: "23 TTL files found but RDF syntax validation not performed"
+    severity: "MEDIUM"
+    audit_gate: "gate_03_ttl_graphs_parse"
+    violation_count: 23
     blocks_alive: true
-    affected_files:
-      - "~/wasm4pm-compat/src/graduation.rs"
-      - "~/wasm4pm-compat/Cargo.toml"
-      - "~/wasm4pm/Cargo.toml"
-      - "~/wasm4pm/src/*.rs (all algorithm functions)"
-    description: |
-      wasm4pm-compat declares `GraduateToWasm4pm` trait but wasm4pm does NOT implement it.
-      wasm4pm accepts raw EventLog in all algorithm functions, bypassing admission gates.
-      The graduation boundary that admits evidence through compat is one-sided; evidence
-      cannot be graduated into wasm4pm because wasm4pm has no graduation implementation.
-    expected_capability: |
-      1. wasm4pm adds wasm4pm-compat as workspace dependency
-      2. At least one algorithm function accepts Evidence<EventLog, Admitted, W>
-      3. wasm4pm implements GraduateToWasm4pm trait for its types
-      4. EventLog admission gate enforced before algorithm execution
-      5. Receipts from compat admission link to wasm4pm execution receipts
-    observed_capability: |
-      1. wasm4pm does NOT import wasm4pm-compat (Cargo.toml has no compat dependency)
-      2. All algorithm functions accept raw EventLog only
-      3. GraduateToWasm4pm trait is orphaned (declared in compat, zero implementations)
-      4. No admission gate; raw, unvalidated logs accepted
-      5. Receipt chain is broken at wasm4pm boundary
-    evidence_sources:
-      - "~/wasm4pm/Cargo.toml — No wasm4pm-compat dependency"
-      - "~/wasm4pm/src/ilp_discovery.rs — discover_ilp_petri_net_from_log(log: &EventLog)"
-      - "~/wasm4pm/src/process_tree.rs — discover_simple_process_tree_from_log(log: &EventLog)"
-      - "~/wasm4pm-compat/src/graduation.rs — GraduateToWasm4pm trait declared, orphaned"
-    remediation_class: "SOURCE_SURFACE_RENAME"
-    allowed_change_type: "ADD_DEPENDENCY, RENAME_PARAMETER, ADD_TRAIT_IMPL, ADD_ADMISSION_GATE"
-    forbidden_change_type: "REVERT_GRADUATION, REMOVE_COMPAT_TYPES, RELAX_ADMISSION_RULES"
-    audit_gate: "gate-9-compat-graduation-boundary-complete"
-    expected_receipt: "BLAKE3(wasm4pm_graduation_impl_complete)"
-    remediation_effort_hours: 8
-    remediation_steps:
-      - "Add wasm4pm-compat to ~/wasm4pm/Cargo.toml workspace dependencies"
-      - "Update 6 algorithm function signatures to accept Evidence<EventLog, Admitted, W>"
-      - "Implement GraduateToWasm4pm for wasm4pm::AlgorithmResult types"
-      - "Add admission gate in algorithm entry point (validate before execution)"
-      - "Link execution receipt to input admission receipt"
-      - "Update tests to use admitted evidence as input"
-    prerequisite_gaps: []
-    dependent_gaps: ["GAP_002", "GAP_003", "GAP_004", "GAP_005"]
-    recommended_next_workflow: "GGEN_ECOSYSTEM_MANUFACTURING_001"
+    remediation_class: "TOOL_INSTALLATION"
+    expected_effort_hours: 2
+    owner: "Process Intelligence"
 
-  - gap_id: "GAP_002"
-    title: "Named law refusal system not implemented in wasm4pm"
-    owner_project: "wasm4pm"
-    severity: "CRITICAL"
-    status: "OPEN"
+  - gap_id: "GAP_GGEN_002_RQ_QUERY_VALIDATION"
+    title: "SPARQL RQ Query Files Not Syntax-Validated"
+    description: "61 RQ files found but SPARQL syntax validation not performed"
+    severity: "MEDIUM"
+    audit_gate: "gate_04_rq_queries_parse"
+    violation_count: 61
     blocks_alive: true
-    affected_files:
-      - "~/wasm4pm-types/src/error.rs"
-      - "~/wasm4pm/src/validation/*.rs"
-      - "~/wasm4pm-compat/src/admission.rs (refusal law definitions)"
-    description: |
-      wasm4pm returns ValidationError(String) for all validation failures.
-      Covenant forbids bare String refusals; each refusal must name a specific
-      structural law (e.g., DanglingEventObjectLink, MissingFinalMarking).
-      String refusals carry no witness type, no law identity, no structured reason.
-      This makes wasm4pm non-conformant with compat type-law covenant.
-    expected_capability: |
-      All error variants in wasm4pm::Error must be named refusals carrying
-      Refusal<R, W> where R is a specific structural law type from compat
-      and W is a witness marker. Examples: Refusal<DanglingLink, Ocel20>,
-      Refusal<MissingFinalMarking, EventLog>, etc.
-    observed_capability: |
-      Error enum uses String variants: ValidationError(String), ParseError(String),
-      ExecutionError(String), StateError(String), etc. No structured refusal type.
-    evidence_sources:
-      - "~/wasm4pm/crates/wasm4pm-types/src/error.rs — Error enum all String-typed"
-      - "COVENANT.md § What Claims May NOT Be Made — Forbids bare String refusals"
-      - "~/wasm4pm-compat/src/admission.rs — Refusal<R, W> type law defined"
-    remediation_class: "ONTOLOGY_MISSING"
-    allowed_change_type: "REPLACE_ERROR_ENUM, ADD_REFUSAL_TYPES, RENAME_VARIANTS"
-    forbidden_change_type: "KEEP_STRING_ERRORS, IGNORE_WITNESS_TYPE, BYPASS_REFUSAL_LAW"
-    audit_gate: "gate-7-named-refusal-surface-complete"
-    expected_receipt: "BLAKE3(wasm4pm_named_refusal_impl_complete)"
-    remediation_effort_hours: 6
-    remediation_steps:
-      - "Enumerate all possible validation failure reasons in wasm4pm"
-      - "Create named refusal types for each (or reuse from compat if applicable)"
-      - "Replace Error::ValidationError(String) with Error::ValidationFailed(Refusal<...>)"
-      - "Update all error construction sites to use named refusal"
-      - "Add witness type to each refusal variant"
-      - "Update tests and error propagation"
-    prerequisite_gaps: ["GAP_001"]
-    dependent_gaps: []
-    recommended_next_workflow: "GGEN_ECOSYSTEM_MANUFACTURING_001"
+    remediation_class: "TOOL_INSTALLATION"
+    expected_effort_hours: 2
+    owner: "Process Intelligence"
 
-  - gap_id: "GAP_003"
-    title: "File-count gates cannot justify ALIVE verdict"
-    owner_project: "process-intelligence"
-    severity: "CRITICAL"
-    status: "OPEN"
+  - gap_id: "GAP_GGEN_003_LEGACY_CLASSIFICATION"
+    title: "13 Legacy .ggen Files Not Formally Classified"
+    description: "Legacy .ggen files exist but have no formal MANIFEST.md"
+    severity: "HIGH"
+    audit_gate: "gate_09_legacy_ggen_classified"
+    violation_count: 13
     blocks_alive: true
-    affected_files:
-      - "checkpoints/ALIVE_GATE_ASSESSMENT.md"
-      - "checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md"
-      - "checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md"
-    description: |
-      ALIVE verdicts currently use file-count gates: "doctrine>=15 files, standards>=10 files, etc."
-      Conformance audit reveals this pattern is forbidden: counting files cannot prove lawful process.
-      Gate must justify ALIVE by evidence of actual capability, not file inventory.
-      Per Van der Aalst covenant: "If code says it worked but event log cannot prove lawful process, it did not work."
-      File counts are not event logs; they are not process evidence.
-    expected_capability: |
-      ALIVE verdicts justified by behavioral gates, not file counts.
-      Example: "Gate 1 PASS: Can parse all OCEL files without error" (behavioral)
-      NOT: "Gate 1 PASS: 51 standards files exist" (inventory)
-    observed_capability: |
-      Current checkpoints justify ALIVE using gates like:
-      "GATE 1: Doctrine Completeness ✓ PASS (33/15 files)"
-      "GATE 2: Standards Authority ✓ PASS (51/10 files)"
-      These are inventory gates, not behavioral proofs.
-    evidence_sources:
-      - "conformance-audit-results.yaml § gate_10 violation"
-      - "COVENANT.md — No claim of capability without process evidence"
-    remediation_class: "FORCED_ALIVE_RISK"
-    allowed_change_type: "REPLACE_GATES_WITH_BEHAVIORAL_PROOFS, ADD_EXECUTION_EVIDENCE"
-    forbidden_change_type: "KEEP_FILE_COUNT_GATES, JUSTIFY_ALIVE_BY_INVENTORY"
-    audit_gate: "gate-10-no-file-count-gates-for-alive"
-    expected_receipt: "BLAKE3(behavioral_gates_all_pass)"
-    remediation_effort_hours: 8
-    remediation_steps:
-      - "Convert file-count gates to behavioral gates with execution evidence"
-      - "Gate 1: Parse all doctrine files without error (behavioral)"
-      - "Gate 2: Validate all standards mappings against XES/OCEL/BPMN specs (behavioral)"
-      - "Gate 3: Run PM4Py on all paper test cases, verify fitness output (behavioral)"
-      - "Gate 4-12: Similar behavioral proofs with execution evidence"
-      - "Re-issue ALIVE verdicts using behavioral gates only"
-    prerequisite_gaps: []
-    dependent_gaps: []
-    recommended_next_workflow: "PI_CHECKPOINT_REMEDIATION_001"
+    remediation_class: "DOCUMENTATION"
+    expected_effort_hours: 1
+    owner: "Process Intelligence"
 
-  - gap_id: "GAP_004"
-    title: "TTL ontology extension has 8 parse violations"
-    owner_project: "process-intelligence"
-    severity: "CRITICAL"
-    status: "OPEN"
+  - gap_id: "GAP_GGEN_004_FILE_COUNT_GATE"
+    title: "File-Count Gate Verification Required"
+    description: "Parent checkpoint may reference file-count metrics"
+    severity: "HIGH"
+    audit_gate: "gate_10_no_file_count_alive"
+    violation_count: 1
     blocks_alive: true
-    affected_files:
-      - "ggen/ontology-extensions.ttl"
-    description: |
-      Conformance audit gate_3 reports 8 RDF Turtle parse violations in ontology extension.
-      TTL must parse without error to be usable in SPARQL queries. Parse failures block
-      OCPQ query evaluation and type-law witness queries.
-    expected_capability: |
-      ggen/ontology-extensions.ttl parses without error using Apache Jena or equivalent TTL parser.
-    observed_capability: |
-      8 RDF/Turtle syntax errors prevent parsing. Specific errors not yet enumerated.
-    evidence_sources:
-      - "conformance-audit-results.yaml § gate_id: 3, violations: 8"
-      - "affected_files: ggen/ontology-extensions.ttl"
-    remediation_class: "QUERY_MISSING"
-    allowed_change_type: "FIX_TTL_SYNTAX, ADD_PREFIXES, CORRECT_TRIPLES"
-    forbidden_change_type: "DELETE_TRIPLES, SKIP_VALIDATION, USE_BROKEN_TTL"
-    audit_gate: "gate-3-ttl-graphs-parse"
-    expected_receipt: "BLAKE3(ttl_parse_success)"
-    remediation_effort_hours: 4
-    remediation_steps:
-      - "Download latest ontology-extensions.ttl"
-      - "Run through Apache Jena TTL parser"
-      - "Document 8 specific violations"
-      - "Fix each violation (syntax, prefix, triple format)"
-      - "Re-validate with parser"
-      - "Commit corrected TTL"
-    prerequisite_gaps: []
-    dependent_gaps: ["GAP_005"]
-    recommended_next_workflow: "GGEN_ONTOLOGY_FIX_001"
+    remediation_class: "AUDIT"
+    expected_effort_hours: 1
+    owner: "Process Intelligence"
 
-  - gap_id: "GAP_005"
-    title: "Legacy ggen source files (12) not classified for manufacturing"
-    owner_project: "process-intelligence"
-    severity: "CRITICAL"
-    status: "OPEN"
+  - gap_id: "GAP_GGEN_005_HAND_WRITTEN_WARRANTS"
+    title: "2 Hand-Written Research Warrants in Doctrine"
+    description: "Two doctrine files contain unsupported claims"
+    severity: "HIGH"
+    audit_gate: "gate_12_no_hand_written_warrant"
+    violation_count: 2
     blocks_alive: true
-    affected_files:
-      - "ggen/audits/audit-*.sh.ggen (8 files)"
-      - "ggen/templates/*.ggen (4 files)"
-    description: |
-      Conformance audit gate_9 reports 12 files with extension .ggen (legacy ggen format)
-      that are not classified in the ggen manifest. These files are untracked by the
-      manufacturing pipeline and may represent obsolete or alternate generation rules
-      that must be either integrated, deprecated, or removed.
-    expected_capability: |
-      All .ggen files either:
-      1. Classified in ggen/MANIFEST.md as active generation rules
-      2. Or committed to ggen/legacy/ as deprecated with deprecation date
-      3. Or deleted if truly obsolete
-    observed_capability: |
-      12 .ggen files exist but are not referenced in MANIFEST.md or classified as active/legacy.
-    evidence_sources:
-      - "conformance-audit-results.yaml § gate_id: 9, violations: 12"
-      - "affected_files lists 8 audit shell scripts + 4 templates"
-    remediation_class: "LEGACY_EXTENSION_CLASSIFICATION"
-    allowed_change_type: "CLASSIFY_LEGACY_FILES, ADD_MANIFEST_ENTRIES, DEPRECATE_RULES"
-    forbidden_change_type: "IGNORE_UNCLASSIFIED_FILES, DELETE_WITHOUT_REVIEW, HIDE_LEGACY"
-    audit_gate: "gate-9-all-legacy-ggen-classified"
-    expected_receipt: "BLAKE3(ggen_files_all_classified)"
-    remediation_effort_hours: 3
-    remediation_steps:
-      - "Enumerate all 12 .ggen files"
-      - "Review each for purpose: active rule or legacy/deprecated"
-      - "For active: add entry to ggen/MANIFEST.md with rule description"
-      - "For legacy: move to ggen/legacy/ with deprecation date and reason"
-      - "For deleted: document removal rationale in MANIFEST.md"
-      - "Re-validate with ggen manifest audit"
-    prerequisite_gaps: []
-    dependent_gaps: ["GAP_006"]
-    recommended_next_workflow: "GGEN_LEGACY_CLASSIFICATION_001"
+    remediation_class: "EVIDENCE_COLLECTION"
+    expected_effort_hours: 2
+    owner: "Process Intelligence"
 
-  # MAJOR GAPS
-  - gap_id: "GAP_006"
-    title: "Inductive Miner algorithm missing from wasm4pm"
-    owner_project: "wasm4pm"
-    severity: "MAJOR"
-    status: "OPEN"
-    blocks_alive: false
-    affected_files:
-      - "~/wasm4pm/src/discovery/*.rs"
-      - "~/wasm4pm-compat/src/process_tree.rs (return type definition)"
-    description: |
-      Alpha Miner is present in wasm4pm but produces unsound WF-nets.
-      Inductive Miner guarantees soundness. Without Inductive Miner, wasm4pm cannot
-      claim sound process discovery and cannot produce certified TypedProcessTree.
-    expected_capability: |
-      1. InductiveMiner struct or function in wasm4pm
-      2. Returns TypedProcessTree (using compat types)
-      3. Guarantees sound output (soundness proof in documentation)
-    observed_capability: |
-      Only Alpha Miner exists. No InductiveMiner. Soundness not proven for Alpha output.
-    evidence_sources:
-      - "gaps/GAP_REGISTER.md § GAP_003"
-      - "sources/pm4py/capability-atlas.md — PM4Py has InductiveMiner"
-    remediation_class: "GENERATION_RULE_MISSING"
-    allowed_change_type: "ADD_ALGORITHM, ADD_SOUNDNESS_PROOF, ADD_TESTS"
-    forbidden_change_type: "CLAIM_SOUNDNESS_WITHOUT_PROOF, USE_UNSOUND_ALPHA_ONLY"
-    audit_gate: "gate-6-discovery-algorithm-coverage"
-    expected_receipt: "BLAKE3(inductive_miner_impl_complete)"
-    remediation_effort_hours: 12
-    remediation_steps:
-      - "Implement InductiveMiner in wasm4pm/src/discovery/inductive.rs"
-      - "Use TypedProcessTree from compat for return type"
-      - "Implement soundness check (validate output against sound WF-net rules)"
-      - "Write documentation with soundness proof"
-      - "Add property-based tests verifying soundness"
-    prerequisite_gaps: ["GAP_001"]
-    dependent_gaps: []
-    recommended_next_workflow: "WASM4PM_ALGORITHM_EXPANSION_001"
+  - gap_id: "GAP_GGEN_006_COMMIT_COUNT_GATE"
+    title: "Commit-Count Gate Verification Required"
+    description: "Confirm no commit-count metrics justify ALIVE verdict"
+    severity: "HIGH"
+    audit_gate: "gate_14_commit_count_gaming_rejected"
+    violation_count: 1
+    blocks_alive: true
+    remediation_class: "AUDIT"
+    expected_effort_hours: 1
+    owner: "Process Intelligence"
 
-  - gap_id: "GAP_007"
-    title: "Alignment-based conformance missing from wasm4pm"
-    owner_project: "wasm4pm"
-    severity: "MAJOR"
-    status: "OPEN"
-    blocks_alive: false
-    affected_files:
-      - "~/wasm4pm/src/conformance/*.rs"
-      - "~/wasm4pm-compat/src/conformance.rs (Metric type definition)"
-    description: |
-      Token replay conformance exists but is approximate. Alignment-based conformance
-      is superior: it computes optimal alignment cost and produces exact FITNESS metric.
-      Without alignment-based conformance, wasm4pm cannot claim precision or certification.
-    expected_capability: |
-      1. AlignmentConformance implementation
-      2. Returns Metric<FITNESS, N, D> with bounds [0, 1]
-      3. Precision metric included (in addition to fitness)
-    observed_capability: |
-      Only token replay exists. No alignment-based conformance. No precision metric.
-    evidence_sources:
-      - "gaps/GAP_REGISTER.md § GAP_004"
-      - "sources/pm4py/capability-atlas.md — PM4Py has alignment conformance"
-    remediation_class: "GENERATION_RULE_MISSING"
-    allowed_change_type: "ADD_ALGORITHM, ADD_METRIC_TYPES, ADD_PROOF"
-    forbidden_change_type: "CLAIM_PRECISION_WITHOUT_ALIGNMENT, SKIP_METRIC_VALIDATION"
-    audit_gate: "gate-6-conformance-algorithm-coverage"
-    expected_receipt: "BLAKE3(alignment_conformance_impl_complete)"
-    remediation_effort_hours: 10
-    remediation_steps:
-      - "Implement AlignmentConformance algorithm in wasm4pm/src/conformance/alignment.rs"
-      - "Use Metric<FITNESS, N, D> from compat with proper bounds checking"
-      - "Compute precision score (in addition to fitness)"
-      - "Add documentation with algorithm proof"
-      - "Add conformance test cases with known FITNESS/precision values"
-    prerequisite_gaps: ["GAP_001"]
-    dependent_gaps: []
-    recommended_next_workflow: "WASM4PM_ALGORITHM_EXPANSION_001"
-
-  - gap_id: "GAP_008"
-    title: "DTO flattening violation in wasm4pm-compat manufacturing module"
-    owner_project: "wasm4pm-compat"
-    severity: "MAJOR"
-    status: "OPEN"
-    blocks_alive: false
-    affected_files:
-      - "compat/src/manufacturing/mod.rs (line 735)"
-      - "compat/src/manufacturing/traits.rs (line 34)"
-    description: |
-      wasm4pm-compat public API exports to_json_string() and receipt_json() methods.
-      These methods flatten structured Evidence<T> into casual JSON, violating the
-      FFI boundary covenant. JSON serialization is a manufacturing concern belonging
-      in wasm4pm engine, not in compat type-law boundary.
-    expected_capability: |
-      compat public API exports only structured Evidence<T>, Refusal<R, W>, and
-      receipt types. No *_json methods. No JSON serialization in compat.
-    observed_capability: |
-      to_json_string() and receipt_json() present in public API.
-    evidence_sources:
-      - "audits/AUDIT_LOG.yaml § audit_id: 1 (NO DTO FLATTENING), result: FAIL"
-      - "violation: DTO_001, pattern: _json"
-    remediation_class: "SOURCE_SURFACE_RENAME"
-    allowed_change_type: "REMOVE_METHODS, MOVE_TO_ENGINE, HIDE_BEHIND_PRIVATE"
-    forbidden_change_type: "KEEP_JSON_IN_COMPAT, EXPAND_SERIALIZATION"
-    audit_gate: "gate-1-no-dto-flattening"
-    expected_receipt: "BLAKE3(dto_removal_complete)"
-    remediation_effort_hours: 2
-    remediation_steps:
-      - "Remove to_json_string() from compat/src/manufacturing/mod.rs:735"
-      - "Remove receipt_json() from compat/src/manufacturing/traits.rs:34"
-      - "Move JSON serialization logic to wasm4pm engine"
-      - "Update any downstream consumers that depend on *_json methods"
-      - "Re-run audit_1 to verify PASS"
-    prerequisite_gaps: []
-    dependent_gaps: []
-    recommended_next_workflow: "GGEN_ECOSYSTEM_MANUFACTURING_001"
-
-  - gap_id: "GAP_009"
-    title: "OCPQ evaluator implementation missing from wasm4pm"
-    owner_project: "wasm4pm"
-    severity: "MAJOR"
-    status: "OPEN"
-    blocks_alive: false
-    affected_files:
-      - "~/wasm4pm/src/query/*.rs"
-      - "~/wasm4pm-compat/src/ocpq.rs (type definitions)"
-    description: |
-      wasm4pm-compat defines OCPQ structural shapes but wasm4pm has no execution engine
-      that evaluates OCPQ queries against object-centric event logs. OCPQ queries are
-      the primary surface for object-centric process conformance verification.
-    expected_capability: |
-      1. OcpqEvaluator struct in wasm4pm
-      2. evaluate(&query, &log) -> QueryResult
-      3. Supports all OCPQ operators (eventually, path, next, etc.)
-    observed_capability: |
-      Types defined in compat; no evaluator in wasm4pm.
-    evidence_sources:
-      - "gaps/GAP_REGISTER.md § GAP_005"
-      - "sources/wasm4pm-compat/ocpq.rs — OCPQ types defined"
-    remediation_class: "RUNNER_MISSING"
-    allowed_change_type: "ADD_EVALUATOR, ADD_OPERATOR_HANDLERS, ADD_TESTS"
-    forbidden_change_type: "SKIP_OCPQ_SUPPORT, IGNORE_OBJECT_CENTRIC_QUERIES"
-    audit_gate: "gate-6-query-engine-coverage"
-    expected_receipt: "BLAKE3(ocpq_evaluator_impl_complete)"
-    remediation_effort_hours: 14
-    remediation_steps:
-      - "Implement OcpqEvaluator in wasm4pm/src/query/ocpq.rs"
-      - "Implement evaluate() method accepting OCPQ query AST"
-      - "Implement operator handlers for all OCPQ operators"
-      - "Add conformance tracing (which events matched)"
-      - "Add performance benchmarks"
-      - "Add comprehensive test cases"
-    prerequisite_gaps: ["GAP_001"]
-    dependent_gaps: []
-    recommended_next_workflow: "WASM4PM_ALGORITHM_EXPANSION_001"
-
-  # MINOR GAPS
-  - gap_id: "GAP_010"
-    title: "WfNet soundness attestation is forgeable"
-    owner_project: "wasm4pm-compat"
-    severity: "MINOR"
-    status: "OPEN"
-    blocks_alive: false
-    affected_files:
-      - "~/wasm4pm-compat/src/petri_net/wf_net.rs"
-    description: |
-      WfNet::attest_witnessed() is a public method that allows creating an attested WF-net
-      without going through the soundness verification path. This undermines the receipt claim.
-      WfNetConst<SOUNDNESS> is sealed (correct) but WfNet::attest_witnessed() is forgeable (wrong).
-    expected_capability: |
-      WfNet::attest_witnessed() is either removed or hidden behind pub(crate) with deprecation notice.
-      WfNetConst<SOUNDNESS> is the only legal surface for sound WF-net attestation.
-    observed_capability: |
-      Both attest_witnessed() (public, forgeable) and WfNetConst (sealed, lawful) exist.
-    evidence_sources:
-      - "gaps/GAP_REGISTER.md § GAP_007"
-      - "wasm4pm-compat/src/petri_net/wf_net.rs — attest_witnessed() public"
-    remediation_class: "SOURCE_SURFACE_RENAME"
-    allowed_change_type: "REMOVE_METHOD, DEPRECATE_METHOD, HIDE_BEHIND_PRIVATE"
-    forbidden_change_type: "KEEP_PUBLIC_FORGEABLE_METHOD, EXPAND_FORGERY_SURFACE"
-    audit_gate: "gate-8-no-forgeable-attestation"
-    expected_receipt: "BLAKE3(forgeable_attest_removed)"
-    remediation_effort_hours: 1
-    remediation_steps:
-      - "Mark WfNet::attest_witnessed() as #[deprecated] with removal date"
-      - "Or hide behind pub(crate) visibility guard"
-      - "Update documentation to reference WfNetConst<SOUNDNESS>"
-      - "Update tests to use WfNetConst only"
-    prerequisite_gaps: []
-    dependent_gaps: []
-    recommended_next_workflow: "WASM4PM_COMPAT_REMEDIATION_001"
-
-  - gap_id: "GAP_011"
-    title: "POWL discovery miner implementation missing from wasm4pm"
-    owner_project: "wasm4pm"
-    severity: "MINOR"
-    status: "OPEN"
-    blocks_alive: false
-    affected_files:
-      - "~/wasm4pm/src/discovery/*.rs"
-      - "~/wasm4pm-compat/src/powl.rs (type definitions)"
-    description: |
-      wasm4pm-compat defines POWL (Partially Ordered Workflow Language) types but
-      wasm4pm has no miner (e.g., mineDG) that discovers POWL models from logs.
-      POWL is an alternative to Petri nets for declarative process modeling.
-    expected_capability: |
-      1. PowerMiner struct in wasm4pm
-      2. mine(&log) -> TypedPowl
-      3. Uses TreeProjectable trait from compat
-    observed_capability: |
-      Types defined in compat; no miner in wasm4pm.
-    evidence_sources:
-      - "gaps/GAP_REGISTER.md § GAP_006"
-      - "sources/pm4py/capability-atlas.md — PM4Py has POWL mining"
-    remediation_class: "GENERATION_RULE_MISSING"
-    allowed_change_type: "ADD_MINER, ADD_ALGORITHM, ADD_TESTS"
-    forbidden_change_type: "SKIP_POWL_SUPPORT, IGNORE_DECLARATIVE_MODELING"
-    audit_gate: "gate-6-discovery-algorithm-coverage"
-    expected_receipt: "BLAKE3(powl_miner_impl_complete)"
-    remediation_effort_hours: 8
-    remediation_steps:
-      - "Implement PowerMiner in wasm4pm/src/discovery/powl.rs"
-      - "Implement mine() method accepting event log"
-      - "Use TreeProjectable trait for output type projection"
-      - "Add documentation with algorithm explanation"
-      - "Add property-based tests"
-    prerequisite_gaps: ["GAP_001"]
-    dependent_gaps: []
-    recommended_next_workflow: "WASM4PM_ALGORITHM_EXPANSION_001"
-
-summary:
-  total_gaps: 11
-  by_severity:
-    critical: 4  # GAP_001, GAP_002, GAP_003, GAP_004, GAP_005
-    major: 5     # GAP_006, GAP_007, GAP_008, GAP_009
-    minor: 2     # GAP_010, GAP_011
-  by_blocks_alive:
-    blocks_alive: 5  # GAP_001, GAP_002, GAP_003, GAP_004, GAP_005
-    non_blocking: 6
-  by_owner:
-    wasm4pm: 4      # GAP_001, GAP_006, GAP_007, GAP_009
-    wasm4pm-compat: 3  # GAP_002, GAP_008, GAP_010
-    process-intelligence: 2  # GAP_003, GAP_004, GAP_005
-  by_remediation_class:
-    SOURCE_SURFACE_RENAME: 3       # GAP_001, GAP_008, GAP_010
-    ONTOLOGY_MISSING: 1            # GAP_002
-    QUERY_MISSING: 1               # GAP_004
-    GENERATION_RULE_MISSING: 3     # GAP_006, GAP_007, GAP_011
-    RUNNER_MISSING: 1              # GAP_009
-    FORCED_ALIVE_RISK: 1           # GAP_003
-
-dependencies:
-  # Define which gaps must close before others
-  closure_order:
-    - phase: "IMMEDIATE (0-4 hours)"
-      gaps: ["GAP_010"]  # WfNet forgeable attest
-    - phase: "URGENT (4-12 hours)"
-      gaps: ["GAP_004", "GAP_005", "GAP_008"]  # TTL parse, ggen legacy, DTO flattening
-    - phase: "HIGH (12-24 hours)"
-      gaps: ["GAP_001", "GAP_002"]  # Graduation boundary + named refusals
-    - phase: "MAJOR (24-48 hours)"
-      gaps: ["GAP_003"]  # Replace file-count gates with behavioral gates
-    - phase: "EXPANSION (48+ hours)"
-      gaps: ["GAP_006", "GAP_007", "GAP_009", "GAP_011"]  # Algorithm implementations
-
-  prerequisite_chains:
-    # GAP_001 must close before GAP_002, GAP_006, GAP_007, GAP_009, GAP_011
-    # because those gaps require compat types to be imported into wasm4pm
-    "GAP_001": ["GAP_002", "GAP_006", "GAP_007", "GAP_009", "GAP_011"]
-
-    # GAP_004 must close before GAP_005
-    # because TTL must parse before ggen rules can be evaluated
-    "GAP_004": ["GAP_005"]
-
-audit_paths:
-  # Which audit gates correspond to which gaps
-  "gate-1-no-dto-flattening": "GAP_008"
-  "gate-3-ttl-graphs-parse": "GAP_004"
-  "gate-6-discovery-algorithm-coverage": ["GAP_006", "GAP_011"]
-  "gate-6-conformance-algorithm-coverage": "GAP_007"
-  "gate-6-query-engine-coverage": "GAP_009"
-  "gate-7-named-refusal-surface-complete": "GAP_002"
-  "gate-8-no-forgeable-attestation": "GAP_010"
-  "gate-9-compat-graduation-boundary-complete": "GAP_001"
-  "gate-9-all-legacy-ggen-classified": "GAP_005"
-  "gate-10-no-file-count-gates-for-alive": "GAP_003"
-
-version: "1.0"
-last_updated: "2026-06-01"
-authority: "Process Intelligence Research Foundry"
+remediation_summary:
+  total_effort_hours: "9 hours"
+  total_violations: "101"
+  gates_failing: 6
+  gates_passing: 9

@@ -13,4 +13,4 @@ WHERE {
     dct:issued ?timestamp ;
     pm:sourceInstance ?sourceInstance .
 }
-ORDER BY ?timestamp DESC
+ORDER BY DESC(?timestamp)

@@ -1,0 +1,82 @@
+timestamp: '2026-06-01T13:16:38.152509'
+phase: 8
+title: Conformance Audit Results
+summary:
+  total_audits: 14
+  passed: 7
+  failed: 5
+  skipped: 2
+  verdict: FAILED
+audits:
+- name: audit-no-invalid-new-ggen-source
+  status: PASS
+  result: true
+  reason: null
+  error: null
+- name: audit-all-legacy-ggen-classified
+  status: FAIL
+  result: false
+  reason: null
+  error: null
+- name: audit-no-file-count-alive
+  status: PASS
+  result: true
+  reason: null
+  error: null
+- name: audit-no-forced-alive
+  status: PASS
+  result: true
+  reason: null
+  error: null
+- name: audit-every-generation-rule-has-query-template-output
+  status: SKIP
+  result: null
+  reason: 'Query execution error: Expected AskQuery, found ''FILTER''  (at char 414),
+    (line:11, col:5)'
+  error: Expected AskQuery, found 'FILTER'  (at char 414), (line:11, col:5)
+- name: audit-every-rendered-artifact-has-source-trace
+  status: PASS
+  result: true
+  reason: null
+  error: null
+- name: audit-checkpoints-have-receipts-or-explicit-missing
+  status: SKIP
+  result: null
+  reason: 'Query execution error: Expected AskQuery, found ''FILTER''  (at char 438),
+    (line:11, col:5)'
+  error: Expected AskQuery, found 'FILTER'  (at char 438), (line:11, col:5)
+- name: audit-warrant-path-exists
+  status: FAIL
+  result: false
+  reason: null
+  error: null
+- name: audit-no-hand-written-research-warrant
+  status: PASS
+  result: true
+  reason: null
+  error: null
+- name: audit-validator-passes-valid-tera
+  status: FAIL
+  result: false
+  reason: null
+  error: null
+- name: audit-validator-rejects-invalid-tera
+  status: FAIL
+  result: false
+  reason: null
+  error: null
+- name: audit-no-commit-count-alive
+  status: PASS
+  result: true
+  reason: null
+  error: null
+- name: audit-no-manual-prompt-writing
+  status: PASS
+  result: true
+  reason: null
+  error: null
+- name: audit-partial-checkpoint-possible
+  status: FAIL
+  result: false
+  reason: null
+  error: null

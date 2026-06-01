@@ -1,0 +1,114 @@
+# Andon Hook Policy: {{ hook_id }}
+
+**Program:** {{ program_name }}
+**Hook Policy URI:** {{ hook_policy_uri }}
+**Authority Layer:** Research Program Law
+**Manufacturing Timestamp:** {{ mfg_timestamp }}
+
+---
+
+## Policy Identity
+
+| Property | Value |
+|----------|-------|
+| **Hook ID** | {{ hook_id }} |
+| **Policy Name** | {{ policy_name }} |
+| **Description** | {{ policy_description }} |
+| **Trigger Event** | {{ trigger_event }} |
+| **Authority Reference** | {{ authority_ref }} |
+
+---
+
+## Hook Trigger Definition
+
+**Event Pattern:** {{ event_pattern }}
+
+**Preconditions:**
+{%- for precondition in preconditions %}
+- {{ precondition.condition }}
+
+{%- endfor %}
+
+**Activation:** {{ activation_rule }}
+
+---
+
+## Authorized Actions
+
+{%- for action in authorized_actions %}
+### {{ action.name }}
+
+- **Type:** {{ action.action_type }}
+- **Scope:** {{ action.scope }}
+- **Proof Gate:** {{ action.proof_gate }}
+- **Success Criteria:** {{ action.success_criteria }}
+- **Rollback Policy:** {{ action.rollback_policy }}
+
+{%- endfor %}
+
+---
+
+## Notification Protocol
+
+| Recipient | Notification | Urgency | Authority |
+|-----------|--------------|---------|-----------|
+{%- for notification in notifications %}
+| {{ notification.recipient }} | {{ notification.type }} | {{ notification.urgency }} | {{ notification.authority }} |
+{%- endfor %}
+
+---
+
+## Escalation Path
+
+{%- for escalation in escalation_path %}
+**Level {{ loop.index }}:** {{ escalation.level_name }}
+
+- **Trigger:** {{ escalation.trigger }}
+- **Authority:** {{ escalation.authority }}
+- **Time Limit:** {{ escalation.time_limit }}
+- **Next Escalation:** {{ escalation.next_escalation }}
+
+{%- endfor %}
+
+---
+
+## Forbidden Actions Under Hook
+
+{%- for forbidden in forbidden_under_hook %}
+- ~~{{ forbidden.action }}~~
+  - **Reason:** {{ forbidden.reason }}
+  - **Enforcement:** {{ forbidden.enforcement }}
+
+{%- endfor %}
+
+---
+
+## Remediation & Workflow
+
+**Post-Hook Workflow:** {{ post_hook_workflow }}
+
+{%- for step in remediation_steps %}
+**Step {{ loop.index }}:** {{ step.step_name }}
+- {{ step.action }}
+- **Warranty:** {{ step.warranty }}
+
+{%- endfor %}
+
+---
+
+## Manufacturing Authorization
+
+- **Authorized by:** {{ authorized_by }}
+- **Authority Layer:** {{ authority_layer }}
+- **Binding Doctrine:** {{ binding_doctrine }}
+- **COVENANT Status:** {{ covenant_status }}
+
+---
+
+## Warrant Proof
+
+```
+receipt_hash: {{ receipt_hash }}
+manufacture_chain: {{ manufacture_chain }}
+proof_timestamp: {{ proof_timestamp }}
+```

@@ -1,0 +1,118 @@
+# Research Program Warrant Index
+
+**Manufacturing Authority:** Prompt Manufactory
+**Manufacturing Timestamp:** {{ mfg_timestamp }}
+**Output Scope:** Unified Research Program Registry
+
+---
+
+## Executive Summary
+
+This index catalogs all research programs, their authorized sub-programs, and their manufacturing warrants. Each entry is cryptographically sealed against the research law ontology.
+
+**Total Programs:** {{ total_programs }}
+**Total Sub-Programs:** {{ total_sub_programs }}
+**Total Workflows:** {{ total_workflows }}
+**Total Subagent Roles:** {{ total_subagent_roles }}
+**Total Skills:** {{ total_skills }}
+**Total Hook Policies:** {{ total_hook_policies }}
+**Total Checkpoints:** {{ total_checkpoints }}
+
+---
+
+## Programs Ledger
+
+{%- for program in programs %}
+
+### Program: {{ program.name }}
+
+| Property | Value |
+|----------|-------|
+| **Program ID** | {{ program.program_id }} |
+| **URI** | {{ program.uri }} |
+| **Description** | {{ program.description }} |
+| **Authority** | {{ program.authority }} |
+| **Phase** | {{ program.phase }} |
+
+**Sub-Programs:**
+{%- for sub_program in program.sub_programs %}
+- {{ sub_program.name }} ({{ sub_program.sub_program_id }})
+
+{%- endfor %}
+
+**Workflows:**
+{%- for workflow in program.workflows %}
+- {{ workflow.name }} ({{ workflow.workflow_id }})
+
+{%- endfor %}
+
+**Subagent Roles:**
+{%- for role in program.subagent_roles %}
+- {{ role.name }} ({{ role.role_id }})
+
+{%- endfor %}
+
+**Checkpoints:**
+{%- for checkpoint in program.checkpoints %}
+- {{ checkpoint.name }} ({{ checkpoint.checkpoint_id }}) — Verdict: **{{ checkpoint.verdict }}**
+
+{%- endfor %}
+
+---
+
+{%- endfor %}
+
+## Warrant Manufacturing Chain
+
+```
+manufacturing_root: {{ manufacturing_root }}
+ontology_version: {{ ontology_version }}
+total_triples: {{ total_triples }}
+conformance_status: {{ conformance_status }}
+```
+
+---
+
+## Authority Layers
+
+{%- for layer in authority_layers %}
+- **{{ layer.name }}:** {{ layer.description }}
+  - Base Ontology: {{ layer.base_ontology }}
+  - Proof Gates: {{ layer.proof_gates | join(", ") }}
+
+{%- endfor %}
+
+---
+
+## Cross-Reference Matrix
+
+### Programs by Phase
+
+{%- for phase in phases %}
+**{{ phase.phase_name }}:**
+{%- for program_ref in phase.programs %}
+- {{ program_ref.name }} ({{ program_ref.program_id }})
+
+{%- endfor %}
+
+{%- endfor %}
+
+### Skills Ledger
+
+{%- for skill in skills_ledger %}
+- {{ skill.name }} ({{ skill.skill_id }})
+  - Proficiency Levels: {{ skill.levels | join(", ") }}
+  - Required By: {{ skill.required_by_roles | join(", ") }}
+
+{%- endfor %}
+
+---
+
+## Manufacture Receipt
+
+```
+receipt_hash: {{ receipt_hash }}
+manufacture_timestamp: {{ manufacture_timestamp }}
+manufacture_chain: {{ manufacture_chain }}
+proof_ledger: {{ proof_ledger }}
+```

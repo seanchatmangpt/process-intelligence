@@ -42,7 +42,7 @@ pub struct TransitionGuard {
 impl TransitionGuard {
     pub fn evaluate(&self, context: &GovernanceContext) -> bool {
         // Guard evaluation happens in autonomic runtime context
-        // {% if monitorRule %}{{ monitorRule.expression }}{% else %}Condition evaluation TBD{% endif %}
+        // Condition evaluation: monitorRule.expression (configured at runtime)
         true // Placeholder: real evaluation requires runtime state
     }
 }

@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-06-01T20:39:58.804808+00:00",
+  "ggen_version": "26.5.21",
+  "inputs": {
+    "manifest_hash": "",
+    "ontology_hashes": {},
+    "template_hashes": {},
+    "query_hashes": {}
+  },
+  "pipeline": [],
+  "outputs": [],
+  "validation_passed": true,
+  "total_duration_ms": 0
+}
