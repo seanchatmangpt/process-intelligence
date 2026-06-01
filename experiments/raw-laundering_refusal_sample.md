@@ -20,9 +20,17 @@ The engine refuses to process any log that lacks valid transition chain signatur
       "properties": {
         "check_cryptographic_chain": { "type": "boolean" },
         "check_impossible_velocity": { "type": "boolean" },
-        "check_timestamp_monotonicity": { "type": "boolean" }
+        "check_timestamp_monotonicity": { "type": "boolean" },
+        "check_signature_authenticity": { "type": "boolean" },
+        "reject_unhashed_dataframe": { "type": "boolean" }
       },
-      "required": ["check_cryptographic_chain", "check_impossible_velocity", "check_timestamp_monotonicity"]
+      "required": [
+        "check_cryptographic_chain",
+        "check_impossible_velocity",
+        "check_timestamp_monotonicity",
+        "check_signature_authenticity",
+        "reject_unhashed_dataframe"
+      ]
     },
     "refusal_reason": {
       "type": "object",
@@ -50,7 +58,9 @@ A trace was "washed" by inserting a synchronous `Audit_Invoice` event with a fak
   "detection_rules": {
     "check_cryptographic_chain": true,
     "check_impossible_velocity": true,
-    "check_timestamp_monotonicity": true
+    "check_timestamp_monotonicity": true,
+    "check_signature_authenticity": true,
+    "reject_unhashed_dataframe": true
   },
   "refusal_reason": {
     "rule_failed": "check_cryptographic_chain",
@@ -70,11 +80,61 @@ A trace was "washed" by inserting a synchronous `Audit_Invoice` event with a fak
   "detection_rules": {
     "check_cryptographic_chain": true,
     "check_impossible_velocity": true,
-    "check_timestamp_monotonicity": true
+    "check_timestamp_monotonicity": true,
+    "check_signature_authenticity": true,
+    "reject_unhashed_dataframe": true
   }
 }
 ```
 **Wasm Engine Outcome**: Log accepted; proceeds to alignment calculations.
+
+### Case C: Rejected Log (Laundering Detected via Signature Forgery Attempt)
+An adversary altered transition values (timestamps or costs) and attempted to forge system signatures by recalculating them using an unauthorized key.
+
+```json
+{
+  "evaluation_id": "eval_forgery_attack",
+  "analyzed_log_hash_sha256": "3e9b0e271bf1b8ff1db18f3a3a7895085e3b20755efc077d7045b84c3c3eb6fb",
+  "verdict": "REJECTED",
+  "detection_rules": {
+    "check_cryptographic_chain": true,
+    "check_impossible_velocity": true,
+    "check_timestamp_monotonicity": true,
+    "check_signature_authenticity": true,
+    "reject_unhashed_dataframe": true
+  },
+  "refusal_reason": {
+    "rule_failed": "check_signature_authenticity",
+    "trace_id": "trace_99011_laundering_candidate",
+    "detailed_error": "Event 'Create_Order' at index 0 contains a forged or invalid signature."
+  }
+}
+```
+**Wasm Engine Outcome**: Log rejected immediately at the signature verification boundary.
+
+### Case D: Rejected Input (Ingestion Boundary Rejection of Unhashed Pandas DataFrame)
+An adversary attempted to pass a mutable, unhashed `pandas.DataFrame` object directly into the ingestion interface without the required cryptographic wrapper.
+
+```json
+{
+  "evaluation_id": "eval_raw_dataframe",
+  "analyzed_log_hash_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "verdict": "REJECTED",
+  "detection_rules": {
+    "check_cryptographic_chain": false,
+    "check_impossible_velocity": false,
+    "check_timestamp_monotonicity": false,
+    "check_signature_authenticity": false,
+    "reject_unhashed_dataframe": true
+  },
+  "refusal_reason": {
+    "rule_failed": "reject_unhashed_dataframe",
+    "trace_id": "N/A - Direct DataFrame Ingestion",
+    "detailed_error": "Rejected unhashed pandas DataFrame at ingestion boundary. Logs must be immutable, pre-hashed, and signed."
+  }
+}
+```
+**Wasm Engine Outcome**: Log ingestion aborted. The system rejects the dynamic in-memory structure to enforce zero-trust boundary isolation.
 
 ## 3. Linkages to Standards and M&A Claims
 
