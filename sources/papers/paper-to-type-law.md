@@ -51,3 +51,7 @@
 ### Classify: gunther_2007_fuzzy_miner
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: song_2008_organizational_mining
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
