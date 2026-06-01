@@ -15,3 +15,7 @@ Welcome to the central authority for full-lifecycle process intelligence. This r
 
 ## Doctrine
 Our core doctrine is: **Process Intelligence is the research authority; execution cores are the downstream products.** We treat process mining as a verifiable, law-bound science anchored to formal academic models, public standards (OCEL, XES, POWL), and executive board-ready projections (M&A diligence).
+
+
+## Verification Court
+All assertions are verified against the paper canon and type-law oracles.
