@@ -1,16 +1,26 @@
-# Selection Query: Warrant Paths
-# Returns provenance chains from checkpoints to source evidence through receipts
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX gen: <https://process.intelligence/generation-rule/>
+PREFIX chk: <https://process.intelligence/checkpoint/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# SELECT: Warrant Paths (rule -> template -> checkpoint)
+# Returns traceability paths from generation rules through templates to checkpoints
+# Date: 2026-06-01
 
-SELECT ?checkpoint ?artifact ?receipt ?sourceRule ?sourceEvidence ?chainLength
+SELECT ?rule ?ruleTitle ?template ?templateTitle ?checkpoint ?checkpointTitle
 WHERE {
-  ?checkpoint a ggen:Checkpoint .
-  ?checkpoint ggen:grounded ?artifact .
-  ?artifact ggen:receipt ?receipt .
-  ?receipt ggen:traces ?sourceRule .
-  OPTIONAL { ?sourceRule ggen:evidenceSource ?sourceEvidence }
-  OPTIONAL { ?receipt ggen:chainLength ?chainLength }
+    ?rule a pi:GenerationRule .
+    ?rule dcterms:title ?ruleTitle .
+    ?rule pi:template ?templatePath .
+    
+    ?template a pi:Template .
+    ?template dcterms:title ?templateTitle .
+    FILTER (CONTAINS(STR(?templateTitle), SUBSTR(STR(?templatePath), 1)))
+    
+    OPTIONAL {
+        ?checkpoint a pi:Checkpoint .
+        ?checkpoint dcterms:title ?checkpointTitle .
+        FILTER (CONTAINS(STR(?checkpointTitle), "READY"))
+    }
 }
-ORDER BY DESC(?chainLength)
+ORDER BY ?rule ?template

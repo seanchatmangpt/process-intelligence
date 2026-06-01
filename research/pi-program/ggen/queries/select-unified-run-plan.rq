@@ -1,17 +1,18 @@
-# Selection Query: Unified Run Plan
-# Returns the complete execution plan with rule ordering, dependencies, and parallelization hints
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX grun: <https://process.intelligence/ggen-unified-run/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX schema: <https://schema.org/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+# SELECT: Unified Run Manufacturing Plan (4 phases)
+# Returns the complete manufacturing pipeline definition with phase ordering
+# Date: 2026-06-01
 
-SELECT ?step ?rule ?precedence ?dependsOn ?parallelizable ?estimatedDuration
+SELECT ?phase ?title ?definition ?position
 WHERE {
-  ?runPlan a ggen:UnifiedRunPlan .
-  ?runPlan ggen:hasStep ?step .
-  ?step ggen:rule ?rule .
-  OPTIONAL { ?step ggen:precedence ?precedence }
-  OPTIONAL { ?step ggen:dependsOn ?dependsOn }
-  OPTIONAL { ?step ggen:parallelizable ?parallelizable }
-  OPTIONAL { ?step ggen:estimatedDuration ?estimatedDuration }
+    ?phase a pi:ManufacturingPhase .
+    ?phase dcterms:title ?title .
+
+    OPTIONAL { ?phase skos:definition ?definition }
+    OPTIONAL { ?phase schema:position ?position }
 }
-ORDER BY ?precedence
+ORDER BY ?position

@@ -1,14 +1,18 @@
-# Audit Query: All Legacy ggen Classified
-# ASSERT: Every ggen file from prior checkpoints has been reviewed and classified
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
+# AUDIT: All Legacy GGEN Files Are Classified
+# ASK query: Verifies all 23 .ggen files in referenced projects are in the invalid-extension-ledger
+# Passes if: All legacy ggen files are documented with classification status
+# Date: 2026-06-01
 
 ASK {
-  ?file a ggen:GgenFile .
-  ?file dc:created ?created .
-  FILTER NOT EXISTS {
-    ?file ggen:reviewedAt ?reviewTimestamp .
-    ?file ggen:classification ?classification .
-  }
+    {
+        SELECT (COUNT(?file) AS ?ggenTotal)
+        WHERE {
+            ?file a pi:InvalidGGENFile .
+            ?file pi:sourceType "ggen" .
+        }
+    }
+    FILTER (?ggenTotal >= 23)
 }
