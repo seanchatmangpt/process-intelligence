@@ -32,3 +32,6 @@
 
 * **Step: map conformance capability**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map token replay capability**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
