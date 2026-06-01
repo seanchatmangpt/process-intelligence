@@ -342,7 +342,7 @@ class DriftChartRenderer {
         const chartWidth = this.width - padding.left - padding.right;
         const chartHeight = this.height - padding.top - padding.bottom;
 
-        // Draw empty state placeholder if insufficient data
+        // Draw empty state message if insufficient data
         if (!history || history.length < 2) {
             this.ctx.fillStyle = '#94a3b8';
             this.ctx.font = '500 13px "Outfit", sans-serif';

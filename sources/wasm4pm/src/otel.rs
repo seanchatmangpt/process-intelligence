@@ -9,7 +9,7 @@ pub enum OtelError {
     NullPointer,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OtelSpan {
     pub span_id: String,
     pub parent_span_id: Option<String>,
@@ -20,7 +20,7 @@ pub struct OtelSpan {
     pub blake3_receipt: String,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OtelTrace {
     pub trace_id: String,
     pub event_chain_root: String,
@@ -402,7 +402,7 @@ pub fn verify_otel_trace(trace: &OtelTrace) -> Result<bool, &'static str> {
     Ok(true)
 }
 
-fn hex_encode(bytes: &[u8]) -> String {
+pub fn hex_encode(bytes: &[u8]) -> String {
     let mut s = String::with_capacity(bytes.len() * 2);
     for &b in bytes {
         s.push_str(&format!("{:02x}", b));

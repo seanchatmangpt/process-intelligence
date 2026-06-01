@@ -533,10 +533,11 @@ impl AlignmentEngine {
 
         let initial_marking = Marking::initial(source_place);
         let mut heap = std::collections::BinaryHeap::new();
+        let initial_h = self.calculate_heuristic(&initial_marking, 0, trace.len(), &sink_place);
         
         heap.push(AStarState {
             cost: 0,
-            heuristic: 0,
+            heuristic: initial_h,
             trace_index: 0,
             marking: initial_marking,
             moves: Vec::new(),
@@ -578,9 +579,10 @@ impl AlignmentEngine {
                     let next_marking = self.net.fire(t, &state.marking);
                     let mut next_moves = state.moves.clone();
                     next_moves.push((None, Some(t.clone())));
+                    let h = self.calculate_heuristic(&next_marking, state.trace_index, trace.len(), &sink_place);
                     heap.push(AStarState {
                         cost: state.cost + 1,
-                        heuristic: 0,
+                        heuristic: h,
                         trace_index: state.trace_index,
                         marking: next_marking,
                         moves: next_moves,
@@ -595,9 +597,10 @@ impl AlignmentEngine {
                     let next_marking = self.net.fire(next_event, &state.marking);
                     let mut next_moves = state.moves.clone();
                     next_moves.push((Some(next_event.clone()), Some(next_event.clone())));
+                    let h = self.calculate_heuristic(&next_marking, state.trace_index + 1, trace.len(), &sink_place);
                     heap.push(AStarState {
                         cost: state.cost,
-                        heuristic: 0,
+                        heuristic: h,
                         trace_index: state.trace_index + 1,
                         marking: next_marking,
                         moves: next_moves,
@@ -610,9 +613,10 @@ impl AlignmentEngine {
                 let next_event = &trace[state.trace_index];
                 let mut next_moves = state.moves.clone();
                 next_moves.push((Some(next_event.clone()), None));
+                let h = self.calculate_heuristic(&state.marking, state.trace_index + 1, trace.len(), &sink_place);
                 heap.push(AStarState {
                     cost: state.cost + 1,
-                    heuristic: 0,
+                    heuristic: h,
                     trace_index: state.trace_index + 1,
                     marking: state.marking.clone(),
                     moves: next_moves,
@@ -636,6 +640,59 @@ impl AlignmentEngine {
         };
 
         Ok(evidence)
+    }
+
+    /// Finds the shortest transition distance from a place to the sink place.
+    pub fn get_place_distance(&self, place: &str, sink_place: &str) -> usize {
+        if place == sink_place {
+            return 0;
+        }
+
+        let mut queue = std::collections::VecDeque::new();
+        let mut visited = std::collections::HashSet::new();
+        queue.push_back((place.to_string(), 0));
+        visited.insert(place.to_string());
+
+        while let Some((curr_place, dist)) = queue.pop_front() {
+            if curr_place == sink_place {
+                return dist;
+            }
+
+            for t in &self.net.transitions {
+                if let Some(inputs) = self.net.pre.get(t) {
+                    if inputs.contains_key(&curr_place) {
+                        if let Some(outputs) = self.net.post.get(t) {
+                            for out in outputs.keys() {
+                                if !visited.contains(out) {
+                                    visited.insert(out.clone());
+                                    queue.push_back((out.clone(), dist + 1));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        10 // Default penalty if sink is unreachable
+    }
+
+    fn calculate_heuristic(&self, marking: &Marking, trace_index: usize, trace_len: usize, sink_place: &str) -> usize {
+        let log_remaining = trace_len - trace_index;
+        let mut model_remaining = 0;
+        for (place, &tokens) in &marking.tokens {
+            if tokens > 0 {
+                let dist = self.get_place_distance(place, sink_place);
+                if dist > model_remaining {
+                    model_remaining = dist;
+                }
+            }
+        }
+        if log_remaining >= model_remaining {
+            log_remaining - model_remaining
+        } else {
+            model_remaining - log_remaining
+        }
     }
 
     /// Align entire event log and compute aggregate conformance verdicts
@@ -851,5 +908,97 @@ mod tests {
         };
         let fitness = alignment.fitness(10, 5);
         assert!(fitness > 0.0 && fitness < 1.0);
+    }
+
+    #[test]
+    fn test_astar_alignment_correctness_and_performance() {
+        let mut places = std::collections::BTreeSet::new();
+        for p in &["source", "p1", "p2", "sink"] {
+            places.insert(p.to_string());
+        }
+
+        let mut transitions = std::collections::BTreeSet::new();
+        for t in &["Register", "Approve", "Ship"] {
+            transitions.insert(t.to_string());
+        }
+
+        let mut pre = std::collections::BTreeMap::new();
+        let mut post = std::collections::BTreeMap::new();
+
+        // Register
+        let mut t_reg_pre = std::collections::BTreeMap::new();
+        t_reg_pre.insert("source".to_string(), 1);
+        pre.insert("Register".to_string(), t_reg_pre);
+
+        let mut t_reg_post = std::collections::BTreeMap::new();
+        t_reg_post.insert("p1".to_string(), 1);
+        post.insert("Register".to_string(), t_reg_post);
+
+        // Approve
+        let mut t_app_pre = std::collections::BTreeMap::new();
+        t_app_pre.insert("p1".to_string(), 1);
+        pre.insert("Approve".to_string(), t_app_pre);
+
+        let mut t_app_post = std::collections::BTreeMap::new();
+        t_app_post.insert("p2".to_string(), 1);
+        post.insert("Approve".to_string(), t_app_post);
+
+        // Ship
+        let mut t_shp_pre = std::collections::BTreeMap::new();
+        t_shp_pre.insert("p2".to_string(), 1);
+        pre.insert("Ship".to_string(), t_shp_pre);
+
+        let mut t_shp_post = std::collections::BTreeMap::new();
+        t_shp_post.insert("sink".to_string(), 1);
+        post.insert("Ship".to_string(), t_shp_post);
+
+        let net = PetriNet::new(places, transitions, pre, post);
+        let engine = AlignmentEngine::new(net);
+
+        // Check model distance
+        let dist = engine.compute_model_distance("source", "sink");
+        assert_eq!(dist, 3);
+
+        // 1. Fully conforming trace: ["Register", "Approve", "Ship"]
+        let trace1 = vec!["Register".to_string(), "Approve".to_string(), "Ship".to_string()];
+        let start = std::time::Instant::now();
+        let alignment1 = engine.align_trace("case1", &trace1).unwrap().payload;
+        let duration1 = start.elapsed();
+        println!("Conforming alignment duration: {:?}", duration1);
+        assert!(duration1.as_millis() <= 10);
+        assert_eq!(alignment1.cost, 0);
+        assert_eq!(alignment1.moves.len(), 3);
+        for m in &alignment1.moves {
+            assert!(m.0.is_some());
+            assert!(m.1.is_some());
+            assert_eq!(m.0, m.1);
+        }
+
+        // 2. Partially conforming trace (Move on Model): ["Approve", "Ship"] (missing "Register")
+        let trace2 = vec!["Approve".to_string(), "Ship".to_string()];
+        let start = std::time::Instant::now();
+        let alignment2 = engine.align_trace("case2", &trace2).unwrap().payload;
+        let duration2 = start.elapsed();
+        println!("Missing Register alignment duration: {:?}", duration2);
+        assert!(duration2.as_millis() <= 10);
+        assert_eq!(alignment2.cost, 1);
+        assert_eq!(alignment2.moves.len(), 3);
+        assert_eq!(alignment2.moves[0], (None, Some("Register".to_string())));
+        assert_eq!(alignment2.moves[1], (Some("Approve".to_string()), Some("Approve".to_string())));
+        assert_eq!(alignment2.moves[2], (Some("Ship".to_string()), Some("Ship".to_string())));
+
+        // 3. Partially conforming trace (Move on Log): ["Register", "Audit", "Approve", "Ship"] (extra "Audit")
+        let trace3 = vec!["Register".to_string(), "Audit".to_string(), "Approve".to_string(), "Ship".to_string()];
+        let start = std::time::Instant::now();
+        let alignment3 = engine.align_trace("case3", &trace3).unwrap().payload;
+        let duration3 = start.elapsed();
+        println!("Extra Audit alignment duration: {:?}", duration3);
+        assert!(duration3.as_millis() <= 10);
+        assert_eq!(alignment3.cost, 1);
+        assert_eq!(alignment3.moves.len(), 4);
+        assert_eq!(alignment3.moves[0], (Some("Register".to_string()), Some("Register".to_string())));
+        assert_eq!(alignment3.moves[1], (Some("Audit".to_string()), None));
+        assert_eq!(alignment3.moves[2], (Some("Approve".to_string()), Some("Approve".to_string())));
+        assert_eq!(alignment3.moves[3], (Some("Ship".to_string()), Some("Ship".to_string())));
     }
 }

@@ -9,6 +9,7 @@
     <!-- Load Cryptography Ledger & A* Alignment Modules First -->
     <script src="ledger.js"></script>
     <script src="alignment.js"></script>
+    <script src="declare.js"></script>
     <script src="app.js"></script>
 </head>
 <body>
@@ -17,15 +18,47 @@
             <h1>Process Intelligence Simulation Dashboard</h1>
             <p>Execution Engine: WASM4PM Core JS Emulator v2.1.0</p>
         </div>
-        <div class="header-links">
-            <span class="text-muted">References:</span>
-            <a href="file:///Users/sac/process-intelligence/experiments/petri_conformance_sample.md" class="std-link" target="_blank">petri_conformance_sample.md</a> |
-            <a href="file:///Users/sac/process-intelligence/experiments/replay_receipt_sample.md" class="std-link" target="_blank">replay_receipt_sample.md</a> |
-            <a href="file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md" class="std-link" target="_blank">prov-o_provenance_placement.md</a>
+        <div class="header-links" style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+            <div>
+                <span class="text-muted">References:</span>
+                <a href="file:///Users/sac/process-intelligence/experiments/petri_conformance_sample.md" class="std-link" target="_blank">petri_conformance_sample.md</a> |
+                <a href="file:///Users/sac/process-intelligence/experiments/replay_receipt_sample.md" class="std-link" target="_blank">replay_receipt_sample.md</a> |
+                <a href="file:///Users/sac/process-intelligence/standards/prov-o_provenance_placement.md" class="std-link" target="_blank">prov-o_provenance_placement.md</a>
+            </div>
+            <div class="stream-telemetry-hud" style="display: flex; gap: 15px; font-size: 11px; font-family: var(--font-mono); background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 6px; align-items: center;">
+                <span style="color: var(--color-success); display: flex; align-items: center; gap: 4px; font-weight: 700;">
+                    <span class="pulse-dot" style="width: 6px; height: 6px; background-color: var(--color-success); border-radius: 50%; display: inline-block;"></span>
+                    LIVE FEED
+                </span>
+                <span>FPS: <strong id="streamFps" style="color: var(--color-primary);">60.0</strong></span>
+                <span>Latency: <strong id="streamLatency" style="color: var(--color-success);">12ms</strong></span>
+                <span>Frame Drop: <strong id="streamFrameDrops" style="color: var(--color-success);">0.0%</strong></span>
+                <span>OBS Trans: <strong id="obsStatus" style="color: var(--color-success);">CONNECTED</strong></span>
+            </div>
         </div>
     </header>
 
     <main class="dashboard-grid">
+        <!-- GLOBAL METRICS PANEL -->
+        <div class="panel global-metrics-bar">
+            <div class="metric-card">
+                <div class="metric-title">Total Cases</div>
+                <div class="metric-val text-primary" id="statTraces">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Total Events</div>
+                <div class="metric-val text-primary" id="statEvents">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Average Conformance Fitness</div>
+                <div class="metric-val text-success" id="statFitness">100%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Control-Flow Violations</div>
+                <div class="metric-val text-danger" id="statViolations">0</div>
+            </div>
+        </div>
+
         <!-- LEFT SIDEBAR: Simulation Controls & Case History -->
         <section class="sidebar">
             <!-- Simulator Control Panel -->
@@ -61,6 +94,14 @@
                 </div>
             </div>
 
+            <!-- M&A Diligence Claims Panel -->
+            <div class="panel">
+                <div class="panel-title">M&A Claims Verification</div>
+                <div class="control-group" id="maClaimsContainer" style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto;">
+                    <div class="text-center text-muted" style="padding: 10px;">Awaiting simulation data...</div>
+                </div>
+            </div>
+
             <!-- Live Stream Feed Cases -->
             <div class="panel">
                 <div class="panel-title">Live Case Stream</div>
@@ -86,8 +127,8 @@
 
         <!-- MAIN AREA: Petri Net, Alignments, Charts, and Ledger -->
         <section class="main-content">
-            <!-- Row 1: Petri Net & Conformance Alignment -->
-            <div class="row-split">
+            <!-- Row 1: Petri Net, Conformance Alignment, & DECLARE Monitor -->
+            <div class="row-split" style="grid-template-columns: 1.5fr 1fr 1fr;">
                 <!-- Petri Net Visualizer -->
                 <div class="panel">
                     <div class="panel-title">
@@ -111,9 +152,19 @@
                 <!-- Conformance Alignment Visualizer -->
                 <div class="panel">
                     <div class="panel-title">A* Conformance Alignment</div>
-                    <div class="alignment-container" id="alignmentContainer">
+                    <div class="alignment-container" id="alignmentContainer" style="max-height: 250px; overflow-y: auto;">
                         <div class="text-center text-muted" style="padding-top: 50px;">
                             Select a simulated case from the feed list to compute A* alignment moves.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LTL DECLARE Constraint Monitor -->
+                <div class="panel">
+                    <div class="panel-title">LTL DECLARE Monitor</div>
+                    <div class="control-group" id="declareRulesContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto;">
+                        <div class="text-center text-muted" style="padding-top: 50px;">
+                            Awaiting simulation traces...
                         </div>
                     </div>
                 </div>

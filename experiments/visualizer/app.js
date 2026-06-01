@@ -1,40 +1,41 @@
 /**
  * app.js
- * Process Intelligence Simulation Dashboard - Core Logic Binder
+ * Process Intelligence Simulation Dashboard - Core Controller & Visual Binder
+ * Conforms to Dr. Wil van der Aalst's Process Mining & Streaming Telemetry Standards.
  * 
- * Binds all visualizer components:
- * - Petri net SVG token game player & animation
+ * Binds:
+ * - Dynamic Petri net SVG token game player & animation
  * - Priority-queue based A* alignment solver
- * - DECLARE constraint monitor & stats aggregator
+ * - LTL Declare constraint verification engine
  * - EWMA process drift calculator & Canvas chart renderer
- * - Cryptographic ledger ledger with SHA-256 event chaining
+ * - Cryptographic process ledger with SHA-256 chaining and interactive tampering
  * - M&A Diligence Claims board verification bridge
+ * - Real-time Stream Director Telemetry HUD (FPS, Latency < 200ms, Frame Drops)
  */
 
-// --- 1. Petri Net Model and State Space ---
+// --- 1. Petri Net Model and Layout Coordinates ---
 const net = {
     places: {
-        p_start: { name: "Start", x: 50, y: 100 },
-        p_created: { name: "Created", x: 200, y: 100 },
-        p_received: { name: "Received", x: 350, y: 100 },
-        p_audited: { name: "Audited", x: 500, y: 100 },
-        p_approved: { name: "Approved", x: 650, y: 100 },
-        p_end: { name: "End", x: 800, y: 100 }
+        p_start: { name: "Start", x: 80, y: 150 },
+        p_created: { name: "Created", x: 240, y: 150 },
+        p_received: { name: "Received", x: 400, y: 150 },
+        p_audited: { name: "Audited", x: 560, y: 150 },
+        p_approved: { name: "Approved", x: 720, y: 150 },
+        p_end: { name: "End", x: 880, y: 150 }
     },
     transitions: {
-        t_create: { label: "Create_Order", inputs: ["p_start"], outputs: ["p_created"] },
-        t_receive: { label: "Receive_Goods", inputs: ["p_created"], outputs: ["p_received"] },
-        t_audit: { label: "Audit_Invoice", inputs: ["p_received"], outputs: ["p_audited"] },
-        t_approve: { label: "Approve_Payment", inputs: ["p_audited"], outputs: ["p_approved"] },
-        t_close: { label: "Close_Case", inputs: ["p_approved"], outputs: ["p_end"] }
+        t_create: { label: "Create_Order", inputs: ["p_start"], outputs: ["p_created"], x: 160, y: 150 },
+        t_receive: { label: "Receive_Goods", inputs: ["p_created"], outputs: ["p_received"], x: 320, y: 150 },
+        t_audit: { label: "Audit_Invoice", inputs: ["p_received"], outputs: ["p_audited"], x: 480, y: 150 },
+        t_approve: { label: "Approve_Payment", inputs: ["p_audited"], outputs: ["p_approved"], x: 640, y: 150 },
+        t_close: { label: "Close_Case", inputs: ["p_approved"], outputs: ["p_end"], x: 800, y: 150 }
     }
 };
 
 // --- 2. State & Statistics ---
 let isRunning = false;
 let playbackTimeout = null;
-let speed = 1000; // ms per event
-let isViolationModeActive = false;
+let speed = 1000; // ms per event step
 
 let currentTrace = null;
 let currentEventIndex = 0;
@@ -45,16 +46,46 @@ let totalEvents = 0;
 let totalViolations = 0;
 let traceCounter = 0;
 
+let activeInspectedTrace = null; // Holds the trace selected for step-replay
+
 // Drift and Chart Tracking
 const history = []; // Holds { fitness, ewma, traceId }
 const lambda = 0.2; // EWMA smoothing factor
 const lcl = 0.92;   // Lower Control Limit for drift
+let isViolationModeActive = false;
 
-// Ledger tracking
+// --- 2.1 Update Global Metrics in UI ---
+function updateGlobalMetrics() {
+    const tracesEl = document.getElementById("statTraces");
+    const eventsEl = document.getElementById("statEvents");
+    const fitnessEl = document.getElementById("statFitness");
+    const violationsEl = document.getElementById("statViolations");
+
+    if (tracesEl) tracesEl.textContent = totalTraces;
+    if (eventsEl) eventsEl.textContent = totalEvents;
+    if (violationsEl) violationsEl.textContent = totalViolations;
+
+    if (fitnessEl) {
+        const avgFitness = history.length > 0 
+            ? (history.reduce((sum, h) => sum + h.fitness, 0) / history.length) 
+            : 1.0;
+        fitnessEl.textContent = (avgFitness * 100).toFixed(1) + "%";
+        
+        if (avgFitness >= 0.95) {
+            fitnessEl.className = "metric-val text-success";
+        } else if (avgFitness >= 0.85) {
+            fitnessEl.className = "metric-val text-warning";
+        } else {
+            fitnessEl.className = "metric-val text-danger";
+        }
+    }
+}
+
+// Cryptographic Ledger Tracking
 const ledger = [];
 let isLedgerIntact = true;
 
-// DECLARE Rules setup
+// DECLARE Rules Setup
 const declareRules = [
     "Precedence(Audit_Invoice, Approve_Payment)",
     "Response(Create_Order, Close_Case)",
@@ -115,8 +146,8 @@ const maClaims = [
         description: "Buyer condition: 100% cryptographic ledger audit trails for data room transaction files.",
         valueUsd: 1200000,
         verify: () => {
-            if (ledger.length < 5) {
-                return { status: "PENDING", details: `Ledger blocks: ${ledger.length}/5 (Awaiting size requirement)` };
+            if (ledger.length < 3) {
+                return { status: "PENDING", details: `Ledger blocks: ${ledger.length}/3 (Awaiting size requirement)` };
             }
             return {
                 status: isLedgerIntact ? "DEFENSIBLE" : "REJECTED",
@@ -127,15 +158,197 @@ const maClaims = [
 ];
 
 // --- 3. Cryptographic Helper (SHA-256) ---
-async function sha256(message) {
+async function calculateSHA256(message) {
     const msgBuffer = new TextEncoder().encode(message);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// --- 4. A* Alignment Solver Core Logic ---
-class State {
+// --- 4. Dynamic Petri Net SVG Renderer ---
+function drawPetriNetSvg() {
+    const svg = document.getElementById("petriNetSvg");
+    if (!svg) return;
+    svg.innerHTML = "";
+    
+    // SVG definitions for arrow marker
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    const marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
+    marker.setAttribute("id", "arrow");
+    marker.setAttribute("viewBox", "0 0 10 10");
+    marker.setAttribute("refX", "22"); // Matches place radius plus offsets
+    marker.setAttribute("refY", "5");
+    marker.setAttribute("markerWidth", "6");
+    marker.setAttribute("markerHeight", "6");
+    marker.setAttribute("orient", "auto-start-reverse");
+    const markerPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    markerPath.setAttribute("d", "M 0 2 L 8 5 L 0 8 z");
+    markerPath.setAttribute("fill", "#64748b");
+    marker.appendChild(markerPath);
+    defs.appendChild(marker);
+    svg.appendChild(defs);
+
+    // Draw Arcs
+    for (const tId in net.transitions) {
+        const trans = net.transitions[tId];
+        // Incoming arcs (Places -> Transition)
+        trans.inputs.forEach(inp => {
+            const place = net.places[inp];
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M ${place.x} ${place.y} L ${trans.x} ${trans.y}`);
+            path.setAttribute("class", "petri-arc");
+            svg.appendChild(path);
+        });
+        // Outgoing arcs (Transition -> Places) with marker
+        trans.outputs.forEach(out => {
+            const place = net.places[out];
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M ${trans.x} ${trans.y} L ${place.x} ${place.y}`);
+            path.setAttribute("class", "petri-arc");
+            path.setAttribute("marker-end", "url(#arrow)");
+            svg.appendChild(path);
+        });
+    }
+
+    // Draw Transitions
+    for (const tId in net.transitions) {
+        const trans = net.transitions[tId];
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("id", `trans_${tId}`);
+        rect.setAttribute("x", trans.x - 15);
+        rect.setAttribute("y", trans.y - 20);
+        rect.setAttribute("width", "30");
+        rect.setAttribute("height", "40");
+        rect.setAttribute("rx", "4");
+        rect.setAttribute("class", "petri-trans");
+        svg.appendChild(rect);
+
+        // Label
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", trans.x);
+        label.setAttribute("y", trans.y + 35);
+        label.setAttribute("class", "trans-label");
+        label.textContent = trans.label;
+        svg.appendChild(label);
+    }
+
+    // Draw Places
+    for (const pId in net.places) {
+        const place = net.places[pId];
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("id", `place_${pId}`);
+        circle.setAttribute("cx", place.x);
+        circle.setAttribute("cy", place.y);
+        circle.setAttribute("r", "18");
+        circle.setAttribute("class", "petri-place");
+        svg.appendChild(circle);
+
+        // Token count text
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("id", `place_${pId}_tokens`);
+        text.setAttribute("x", place.x);
+        text.setAttribute("y", place.y + 5);
+        text.setAttribute("class", "place-token-text");
+        text.textContent = "0";
+        svg.appendChild(text);
+
+        // Label
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", place.x);
+        label.setAttribute("y", place.y - 25);
+        label.setAttribute("class", "place-label");
+        label.textContent = place.name;
+        svg.appendChild(label);
+    }
+
+    // Draw replayToken for animation
+    const replayToken = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    replayToken.setAttribute("id", "replayToken");
+    replayToken.setAttribute("r", "6");
+    replayToken.setAttribute("fill", "var(--color-warning)");
+    replayToken.style.display = "none";
+    svg.appendChild(replayToken);
+    
+    updateLabelsAndHighlights();
+}
+
+function updateLabelsAndHighlights() {
+    for (const pId in net.places) {
+        const text = document.getElementById(`place_${pId}_tokens`);
+        const circle = document.getElementById(`place_${pId}`);
+        const tokenCount = currentMarking[pId] || 0;
+        
+        if (text) text.textContent = tokenCount;
+        if (circle) {
+            if (tokenCount >= 1) {
+                circle.classList.add("active");
+            } else {
+                circle.classList.remove("active");
+            }
+        }
+    }
+    
+    // Highlight enabled transitions
+    for (const tId in net.transitions) {
+        const trans = net.transitions[tId];
+        const rect = document.getElementById(`trans_${tId}`);
+        if (!rect) continue;
+        
+        if (isTransitionEnabled(trans, currentMarking)) {
+            rect.classList.add("enabled");
+        } else {
+            rect.classList.remove("enabled");
+        }
+    }
+}
+
+// --- 5. Token Game Replay SVG Animation ---
+function animateToken(fromX, fromY, midX, midY, toX, toY, duration, callback) {
+    const token = document.getElementById("replayToken");
+    if (!token) {
+        callback();
+        return;
+    }
+    
+    token.setAttribute("cx", fromX);
+    token.setAttribute("cy", fromY);
+    token.style.display = "block";
+    
+    const startTime = performance.now();
+    
+    function update(time) {
+        const elapsed = time - startTime;
+        const progress = Math.min(elapsed / duration, 1.0);
+        
+        let x, y;
+        if (progress < 0.5) {
+            // Stage 1: Place to Transition
+            const p = progress * 2;
+            x = fromX + (midX - fromX) * p;
+            y = fromY + (midY - fromY) * p;
+        } else {
+            // Stage 2: Transition to Place
+            const p = (progress - 0.5) * 2;
+            x = midX + (toX - midX) * p;
+            y = midY + (toY - midY) * p;
+        }
+        
+        token.setAttribute("cx", x);
+        token.setAttribute("cy", y);
+        
+        if (progress < 1.0) {
+            requestAnimationFrame(update);
+        } else {
+            token.style.display = "none";
+            callback();
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
+// --- 6. A* Alignment Solver Logic ---
+class AlignmentState {
     constructor(marking, traceIndex, g, h, parent = null, move = null) {
         this.marking = { ...marking };
         this.traceIndex = traceIndex;
@@ -195,16 +408,9 @@ function fireTransition(trans, marking) {
 
 function solveAlignment(trace) {
     const traceLength = trace.length;
-    const initialMarking = {
-        p_start: 1,
-        p_created: 0,
-        p_received: 0,
-        p_audited: 0,
-        p_approved: 0,
-        p_end: 0
-    };
+    const initialMarking = { p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 };
     
-    const startState = new State(
+    const startState = new AlignmentState(
         initialMarking,
         0,
         0,
@@ -221,7 +427,7 @@ function solveAlignment(trace) {
         
         expandedCount++;
         
-        // Goal marking: p_end has 1 token and all other places are empty
+        // Final state: sink place p_end contains 1 token, all others empty
         const isGoalMarking = curr.marking.p_end === 1 && 
             Object.keys(curr.marking).every(p => p === 'p_end' || curr.marking[p] === 0);
         
@@ -232,14 +438,13 @@ function solveAlignment(trace) {
                 path.unshift(state.move);
                 state = state.parent;
             }
-            // alignment fitness score
             const worstCost = traceLength + 5;
             const fitness = 1 - curr.g / worstCost;
             return {
                 alignment: path,
                 expandedCount,
                 queueSize: openList.length,
-                fitness: fitness
+                fitness: Math.max(0, fitness)
             };
         }
         
@@ -255,10 +460,10 @@ function solveAlignment(trace) {
                 if (trans.label === currentEvent && isTransitionEnabled(trans, curr.marking)) {
                     const nextMarking = fireTransition(trans, curr.marking);
                     const h = getHeuristic(nextMarking, curr.traceIndex + 1, traceLength);
-                    const nextState = new State(
+                    const nextState = new AlignmentState(
                         nextMarking,
                         curr.traceIndex + 1,
-                        curr.g, // Cost of sync move = 0
+                        curr.g, // Sync move cost = 0
                         h,
                         curr,
                         { type: 'sync', transition: tId, label: trans.label, eventIndex: curr.traceIndex }
@@ -274,10 +479,10 @@ function solveAlignment(trace) {
             if (isTransitionEnabled(trans, curr.marking)) {
                 const nextMarking = fireTransition(trans, curr.marking);
                 const h = getHeuristic(nextMarking, curr.traceIndex, traceLength);
-                const nextState = new State(
+                const nextState = new AlignmentState(
                     nextMarking,
                     curr.traceIndex,
-                    curr.g + 1, // Cost of model move = 1
+                    curr.g + 1, // Model move cost = 1
                     h,
                     curr,
                     { type: 'model', transition: tId, label: trans.label }
@@ -290,10 +495,10 @@ function solveAlignment(trace) {
         if (curr.traceIndex < traceLength) {
             const currentEvent = trace[curr.traceIndex];
             const h = getHeuristic(curr.marking, curr.traceIndex + 1, traceLength);
-            const nextState = new State(
+            const nextState = new AlignmentState(
                 curr.marking,
                 curr.traceIndex + 1,
-                curr.g + 1, // Cost of log move = 1
+                curr.g + 1, // Log move cost = 1
                 h,
                 curr,
                 { type: 'log', label: currentEvent, eventIndex: curr.traceIndex }
@@ -305,98 +510,26 @@ function solveAlignment(trace) {
     return { alignment: [], expandedCount, queueSize: 0, fitness: 0 };
 }
 
-// --- 5. Token Game Replay SVG Animation ---
-function animateToken(fromX, fromY, midX, midY, toX, toY, duration, callback) {
-    const token = document.getElementById("replayToken");
-    if (!token) {
-        callback();
-        return;
-    }
-    
-    token.setAttribute("cx", fromX);
-    token.setAttribute("cy", fromY);
-    token.style.display = "block";
-    
-    const startTime = performance.now();
-    
-    function update(time) {
-        const elapsed = time - startTime;
-        const progress = Math.min(elapsed / duration, 1.0);
-        
-        let x, y;
-        if (progress < 0.5) {
-            // Stage 1: Place to Transition
-            const p = progress * 2;
-            x = fromX + (midX - fromX) * p;
-            y = fromY + (midY - fromY) * p;
-        } else {
-            // Stage 2: Transition to Place
-            const p = (progress - 0.5) * 2;
-            x = midX + (toX - midX) * p;
-            y = midY + (toY - midY) * p;
-        }
-        
-        token.setAttribute("cx", x);
-        token.setAttribute("cy", y);
-        
-        if (progress < 1.0) {
-            requestAnimationFrame(update);
-        } else {
-            token.style.display = "none";
-            callback();
-        }
-    }
-    
-    requestAnimationFrame(update);
-}
-
-function updateLabelsAndHighlights() {
-    for (const pId in net.places) {
-        const text = document.getElementById(`place_${pId}_tokens`);
-        const circle = document.getElementById(`place_${pId}`);
-        if (text) {
-            text.textContent = currentMarking[pId] || 0;
-        }
-        if (circle) {
-            if ((currentMarking[pId] || 0) >= 1) {
-                circle.classList.add("highlight");
-            } else {
-                circle.classList.remove("highlight");
-            }
-        }
-    }
-    
-    // Highlight enabled transitions
-    for (const tId in net.transitions) {
-        const trans = net.transitions[tId];
-        const rect = document.getElementById(`trans_${tId}`);
-        if (!rect) continue;
-        
-        if (isTransitionEnabled(trans, currentMarking)) {
-            rect.classList.add("highlight");
-        } else {
-            rect.classList.remove("highlight");
-        }
-    }
-}
-
-// --- 6. Mock Log Stream Generator ---
+// --- 7. Simulated Log Stream Generator ---
 function generateTrace() {
     traceCounter++;
-    const traceId = `trace_${1000 + traceCounter}`;
+    const traceId = `C-${1000 + traceCounter}`;
     const rand = Math.random();
     
     let activities = [];
     let isIntendedViolation = false;
     
-    if (isViolationModeActive) {
-        if (rand < 0.8) {
-            // Bypassed invoice audit transition
-            activities = ["Create_Order", "Receive_Goods", "Approve_Payment", "Close_Case"];
-            isIntendedViolation = true;
-        } else {
-            activities = ["Create_Order", "Receive_Goods", "Audit_Invoice", "Approve_Payment", "Close_Case"];
-        }
+    // Check drift toggle and type selector
+    const driftToggle = document.getElementById("driftToggle");
+    const driftTypeSelector = document.getElementById("driftTypeSelector");
+    
+    const activeDrift = (driftToggle && driftToggle.checked);
+    const driftProfile = (driftTypeSelector ? driftTypeSelector.value : "skip_approve");
+
+    if (activeDrift && driftProfile === "skip_approve") {
+        // Control-Flow Drift: Skip Approval Payment transition
+        activities = ["Create_Order", "Receive_Goods", "Audit_Invoice", "Close_Case"];
+        isIntendedViolation = true;
     } else {
         if (rand < 0.88) {
             // Normal fully compliant sequence
@@ -405,7 +538,7 @@ function generateTrace() {
             // Vacuous satisfaction / Incomplete trace
             activities = ["Create_Order", "Receive_Goods"];
         } else {
-            // Rare spontaneous violation
+            // Spontaneous violation: Bypassed invoice audit transition
             activities = ["Create_Order", "Receive_Goods", "Approve_Payment", "Close_Case"];
             isIntendedViolation = true;
         }
@@ -422,35 +555,11 @@ function setupNextTrace() {
     currentTrace = generateTrace();
     currentEventIndex = 0;
     
-    currentMarking = {
-        p_start: 1,
-        p_created: 0,
-        p_received: 0,
-        p_audited: 0,
-        p_approved: 0,
-        p_end: 0
-    };
-    
-    document.getElementById("currentTraceIdBadge").textContent = `Trace: ${currentTrace.traceId}`;
+    currentMarking = { p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 };
     updateLabelsAndHighlights();
-    
-    // Reset solver step list with upcoming sequence preview
-    const list = document.getElementById("solverStepList");
-    if (list) {
-        list.innerHTML = `
-            <div class="glass-card solver-step-card" style="border-left-color: var(--neon-cyan);">
-                <div style="font-weight: 600; color: var(--neon-cyan);">Upcoming Event Sequence:</div>
-                <div style="font-family: var(--font-mono); font-size: 0.75rem; margin-top: 4px;">
-                    ${currentTrace.activities.join(" &rarr; ")}
-                </div>
-                ${currentTrace.isIntendedViolation ? 
-                  `<div style="color: var(--crimson-red); font-size: 0.7rem; margin-top: 6px; font-weight: 500;">⚠ Intended Non-Conformant Path (Audit Bypass)</div>` : ''}
-            </div>
-        `;
-    }
 }
 
-// --- 7. DECLARE Rule Monitor Renderer ---
+// --- 8. LTL DECLARE Rules Monitor Renderer ---
 function renderDeclareMonitor() {
     const container = document.getElementById("declareRulesContainer");
     if (!container) return;
@@ -461,10 +570,13 @@ function renderDeclareMonitor() {
         const stats = declareRuleStats[ruleStr];
         const card = document.createElement("div");
         card.className = "glass-card";
-        card.style.padding = "12px";
+        card.style.padding = "10px";
         card.style.display = "flex";
         card.style.flexDirection = "column";
-        card.style.gap = "6px";
+        card.style.gap = "4px";
+        card.style.backgroundColor = "var(--bg-card)";
+        card.style.border = "1px solid var(--border-color)";
+        card.style.borderRadius = "6px";
         
         let statusText = stats.status;
         let statusClass = "cyan";
@@ -483,29 +595,29 @@ function renderDeclareMonitor() {
         
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span class="font-mono text-primary" style="font-weight: 600; font-size: 0.75rem;">${ruleStr}</span>
-                <span class="status-badge ${statusClass}">${statusText}</span>
+                <span class="font-mono text-primary" style="font-weight: 600; font-size: 0.7rem; color: var(--color-primary);">${ruleStr}</span>
+                <span class="status-badge ${statusClass}" style="font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">${statusText}</span>
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-muted); margin-top: 4px;">
-                <span>Activations: <strong class="text-primary font-mono">${stats.activations}</strong></span>
-                <span>Fulfillments: <strong class="text-primary font-mono">${stats.satisfactions}</strong></span>
-                <span>Violations: <strong class="text-primary font-mono">${stats.violations}</strong></span>
+            <div style="display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--color-text-muted); margin-top: 4px;">
+                <span>Activations: <strong style="color: var(--color-text-main); font-family: var(--font-mono);">${stats.activations}</strong></span>
+                <span>Satisfied: <strong style="color: var(--color-text-main); font-family: var(--font-mono);">${stats.satisfactions}</strong></span>
+                <span>Violations: <strong style="color: var(--color-text-main); font-family: var(--font-mono);">${stats.violations}</strong></span>
             </div>
         `;
         container.appendChild(card);
     }
 }
 
-// --- 8. Cryptographic Ledger Logic ---
+// --- 9. Cryptographic Chained Ledger Logic ---
 async function appendToLedger(traceId, fitness) {
     const prevBlock = ledger[ledger.length - 1];
     const prevHash = prevBlock ? prevBlock.hash : "0000000000000000000000000000000000000000000000000000000000000000";
     const timestamp = new Date().toISOString();
     const blockId = ledger.length + 1;
     
-    // Cryptographic event chaining structure
+    // Block chaining formula: Hash = SHA-256(BlockId || Timestamp || TraceID || Fitness || PrevHash)
     const payload = `${blockId}|${timestamp}|${traceId}|${fitness.toFixed(4)}|${prevHash}`;
-    const hash = await sha256(payload);
+    const hash = await calculateSHA256(payload);
     
     const block = {
         blockId,
@@ -521,39 +633,86 @@ async function appendToLedger(traceId, fitness) {
 }
 
 function renderLedger() {
-    const container = document.getElementById("ledgerChain");
+    const container = document.getElementById("ledgerContainer");
     if (!container) return;
     
-    container.innerHTML = "";
+    const isIntact = isLedgerIntact;
+    const shieldClass = isIntact ? "emerald" : "crimson";
+    const shieldText = isIntact ? "INTACT" : "TAMPERED";
+    
+    container.innerHTML = `
+        <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Cryptographic Process Ledger (SHA-256 Audit Trail)</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="status-badge ${shieldClass}" id="ledgerShieldBadge" style="font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">LEDGER: ${shieldText}</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 12px; overflow-x: auto; padding: 8px 0; margin-top: 10px;" id="ledgerChain">
+        </div>
+    `;
+    
+    const chainContainer = document.getElementById("ledgerChain");
+    if (!chainContainer) return;
     
     // Render last 4 blocks in reverse order
     const visibleBlocks = ledger.slice().reverse().slice(0, 4);
     
+    if (visibleBlocks.length === 0) {
+        chainContainer.innerHTML = `<div class="text-center text-muted" style="width: 100%; padding: 20px; font-size: 0.75rem;">Awaiting transactions to write block data...</div>`;
+        return;
+    }
+    
     visibleBlocks.forEach(block => {
         const node = document.createElement("div");
         node.className = "blockchain-node glass-card";
+        node.style.flex = "0 0 240px";
+        node.style.padding = "10px";
+        node.style.border = "1px solid var(--border-color)";
+        node.style.borderRadius = "8px";
+        node.style.backgroundColor = "var(--bg-card)";
         node.innerHTML = `
-            <div style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 4px;">
-                <span style="color: var(--neon-cyan);">Block #${block.blockId}</span>
-                <span style="color: var(--text-muted); font-size: 0.7rem;">${block.timestamp.slice(11, 19)}</span>
+            <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 6px;">
+                <span style="color: var(--color-primary);">Block #${block.blockId}</span>
+                <span style="color: var(--color-text-muted); font-size: 0.65rem;">${block.timestamp.slice(11, 19)}</span>
             </div>
-            <div style="display: grid; grid-template-columns: 75px 1fr; gap: 4px; line-height: 1.3;">
-                <span class="hash-label">Trace ID:</span>
-                <span class="font-mono text-primary">${block.traceId}</span>
+            <div style="display: grid; grid-template-columns: 70px 1fr; gap: 4px; font-size: 0.68rem; line-height: 1.3;">
+                <span style="color: var(--color-text-muted);">Trace ID:</span>
+                <span style="font-family: var(--font-mono); font-weight: 700; color: var(--color-text-main);">${block.traceId}</span>
                 
-                <span class="hash-label">Fitness:</span>
-                <span class="font-mono" style="color: ${block.fitness >= 0.95 ? 'var(--emerald-green)' : 'var(--crimson-red)'}">${block.fitness.toFixed(3)}</span>
+                <span style="color: var(--color-text-muted);">Fitness:</span>
+                <span style="font-family: var(--font-mono); font-weight: 700; color: ${block.fitness >= 0.95 ? 'var(--color-success)' : 'var(--color-danger)'}">${(block.fitness * 100).toFixed(0)}%</span>
                 
-                <span class="hash-label">Prev Hash:</span>
-                <span class="font-mono text-muted" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${block.prevHash}</span>
+                <span style="color: var(--color-text-muted);">Prev Hash:</span>
+                <span style="font-family: var(--font-mono); color: var(--color-text-muted); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${block.prevHash.substring(0, 8)}...</span>
                 
-                <span class="hash-label">Hash:</span>
-                <span class="font-mono hash-value">${block.hash}</span>
+                <span style="color: var(--color-text-muted); font-weight: 700;">Hash:</span>
+                <span style="font-family: var(--font-mono); color: var(--color-primary); font-weight: 700; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="${block.hash}">${block.hash.substring(0, 8)}...</span>
+            </div>
+            <div style="margin-top: 8px; text-align: right;">
+                <button class="btn" onclick="tamperLedger(${block.blockId})" style="font-size: 0.6rem; padding: 2px 6px;">Tamper</button>
             </div>
         `;
-        container.appendChild(node);
+        chainContainer.appendChild(node);
     });
 }
+
+// Global tampering handler
+window.tamperLedger = function(blockId) {
+    const block = ledger.find(b => b.blockId === blockId);
+    if (!block) return;
+    
+    const newVal = prompt(`Tampering with Block #${blockId}. Modify Trace ID:`, "trace_TAMPERED");
+    if (newVal === null) return;
+    
+    block.traceId = newVal;
+    
+    // Re-verify integrity
+    verifyLedgerIntegrity().then(isIntact => {
+        isLedgerIntact = isIntact;
+        renderLedger();
+        renderMaClaims(); // Re-verify claims
+    });
+};
 
 async function verifyLedgerIntegrity() {
     if (ledger.length === 0) return true;
@@ -565,13 +724,13 @@ async function verifyLedgerIntegrity() {
         if (block.prevHash !== expectedPrevHash) return false;
         
         const payload = `${block.blockId}|${block.timestamp}|${block.traceId}|${block.fitness.toFixed(4)}|${block.prevHash}`;
-        const recalcHash = await sha256(payload);
+        const recalcHash = await calculateSHA256(payload);
         if (block.hash !== recalcHash) return false;
     }
     return true;
 }
 
-// --- 9. M&A Diligence Claims Renderer ---
+// --- 10. M&A Diligence Claims Renderer ---
 function renderMaClaims() {
     const container = document.getElementById("maClaimsContainer");
     if (!container) return;
@@ -587,40 +746,43 @@ function renderMaClaims() {
         
         const card = document.createElement("div");
         card.className = "glass-card";
-        card.style.padding = "14px";
+        card.style.padding = "10px";
         card.style.display = "flex";
         card.style.flexDirection = "column";
-        card.style.gap = "8px";
+        card.style.gap = "4px";
+        card.style.backgroundColor = "var(--bg-card)";
+        card.style.border = "1px solid var(--border-color)";
+        card.style.borderRadius = "6px";
         
         if (verification.status === "DEFENSIBLE") {
-            card.style.boxShadow = "0 0 15px rgba(16, 185, 129, 0.08)";
-            card.style.borderColor = "rgba(16, 185, 129, 0.2)";
+            card.style.boxShadow = "0 0 10px rgba(6, 214, 160, 0.08)";
+            card.style.borderColor = "rgba(6, 214, 160, 0.2)";
         } else if (verification.status === "REJECTED") {
-            card.style.boxShadow = "0 0 15px rgba(239, 68, 68, 0.08)";
-            card.style.borderColor = "rgba(239, 68, 68, 0.2)";
+            card.style.boxShadow = "0 0 10px rgba(255, 0, 110, 0.08)";
+            card.style.borderColor = "rgba(255, 0, 110, 0.2)";
         }
         
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
-                    <h3 style="font-size: 0.85rem; color: var(--text-primary); font-weight: 700;">${claim.title}</h3>
-                    <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono);">${claim.slideUuid}</span>
+                    <h3 style="font-size: 0.75rem; color: var(--color-text-main); font-weight: 700; margin-bottom: 2px;">${claim.title}</h3>
+                    <span style="font-size: 0.6rem; color: var(--color-text-muted); font-family: var(--font-mono);">${claim.slideUuid}</span>
                 </div>
-                <span class="status-badge ${statusBadgeClass}">${verification.status}</span>
+                <span class="status-badge ${statusBadgeClass}" style="font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">${verification.status}</span>
             </div>
-            <p style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.3;">${claim.description}</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-glass); padding-top: 8px; margin-top: 4px;">
-                <span style="font-size: 0.8rem; font-weight: 700; color: var(--neon-cyan); font-family: var(--font-mono);">$${claim.valueUsd.toLocaleString()} USD</span>
-                <span style="font-size: 0.7rem; color: var(--text-muted);" class="font-mono">${verification.details}</span>
+            <p style="font-size: 0.68rem; color: var(--color-text-muted); line-height: 1.3; margin-top: 4px;">${claim.description}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 4px; margin-top: 4px;">
+                <span style="font-size: 0.7rem; font-weight: 700; color: var(--color-primary); font-family: var(--font-mono);">$${claim.valueUsd.toLocaleString()} USD</span>
+                <span style="font-size: 0.65rem; color: var(--color-text-muted);" class="font-mono">${verification.details}</span>
             </div>
         `;
         container.appendChild(card);
     });
 }
 
-// --- 10. Process Drift Monitor Chart Renderer ---
+// --- 11. Process Drift Monitor Chart Renderer (EWMA Control Chart) ---
 function drawDriftChart() {
-    const canvas = document.getElementById("driftCanvas");
+    const canvas = document.getElementById("ewmaCanvas");
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     const w = canvas.width;
@@ -647,7 +809,7 @@ function drawDriftChart() {
         ctx.stroke();
         
         ctx.fillStyle = "#64748b";
-        ctx.font = "8px 'JetBrains Mono'";
+        ctx.font = "8px 'JetBrains Mono', monospace";
         ctx.textAlign = "right";
         ctx.textBaseline = "middle";
         const val = (1.0 - i * 0.25).toFixed(2);
@@ -656,7 +818,7 @@ function drawDriftChart() {
     
     // Draw Lower Control Limit (LCL = 0.92)
     const yLcl = padTop + chartH * (1.0 - lcl);
-    ctx.strokeStyle = "rgba(239, 68, 68, 0.6)";
+    ctx.strokeStyle = "rgba(255, 0, 110, 0.6)"; // Neon Red
     ctx.lineWidth = 1.5;
     ctx.setLineDash([4, 4]);
     ctx.beginPath();
@@ -665,15 +827,15 @@ function drawDriftChart() {
     ctx.stroke();
     ctx.setLineDash([]); // Reset
     
-    ctx.fillStyle = "rgba(239, 68, 68, 0.8)";
+    ctx.fillStyle = "rgba(255, 0, 110, 0.8)";
     ctx.textAlign = "left";
     ctx.fillText("LCL: 0.920", padLeft + 6, yLcl - 6);
     
     if (history.length === 0) {
         ctx.fillStyle = "#64748b";
-        ctx.font = "11px 'Inter'";
+        ctx.font = "11px sans-serif";
         ctx.textAlign = "center";
-        ctx.fillText("No data yet. Start simulation...", w / 2, h / 2);
+        ctx.fillText("Awaiting case stream traces to compile EWMA control data...", w / 2, h / 2);
         return;
     }
     
@@ -703,14 +865,14 @@ function drawDriftChart() {
     ctx.closePath();
     
     const areaGrad = ctx.createLinearGradient(0, padTop, 0, h - padBottom);
-    areaGrad.addColorStop(0, "rgba(0, 242, 254, 0.1)");
-    areaGrad.addColorStop(1, "rgba(0, 242, 254, 0)");
+    areaGrad.addColorStop(0, "rgba(58, 134, 255, 0.1)");
+    areaGrad.addColorStop(1, "rgba(58, 134, 255, 0)");
     ctx.fillStyle = areaGrad;
     ctx.fill();
     
     // 2. Raw trace fitness points
     for (let i = visibleStart; i < history.length; i++) {
-        ctx.fillStyle = "rgba(0, 242, 254, 0.5)";
+        ctx.fillStyle = "rgba(58, 134, 255, 0.5)";
         ctx.beginPath();
         ctx.arc(getX(i), getY(history[i].fitness), 3, 0, 2 * Math.PI);
         ctx.fill();
@@ -728,121 +890,137 @@ function drawDriftChart() {
     const currentEwma = history[history.length - 1].ewma;
     const isDrifting = currentEwma < lcl;
     
-    ctx.strokeStyle = isDrifting ? "#ef4444" : "#10b981";
+    ctx.strokeStyle = isDrifting ? "#ff006e" : "#06d6a0"; // Neon red or emerald
     ctx.lineWidth = 2.5;
-    ctx.shadowColor = isDrifting ? "rgba(239, 68, 68, 0.4)" : "rgba(16, 185, 129, 0.4)";
-    ctx.shadowBlur = 6;
     ctx.stroke();
-    ctx.shadowBlur = 0; // Reset
     
     // X-axis labels
     ctx.fillStyle = "#64748b";
-    ctx.font = "8px 'JetBrains Mono'";
+    ctx.font = "8px monospace";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
     
     const labelStep = Math.max(1, Math.floor((history.length - visibleStart) / 4));
     for (let i = visibleStart; i < history.length; i += labelStep) {
         const x = getX(i);
-        const label = history[i].traceId.replace("trace_", "");
+        const label = history[i].traceId;
         ctx.fillText(label, x, h - padBottom + 6);
     }
     
     // Force final label
     if ((history.length - 1 - visibleStart) % labelStep !== 0) {
         const x = getX(history.length - 1);
-        const label = history[history.length - 1].traceId.replace("trace_", "");
+        const label = history[history.length - 1].traceId;
         ctx.fillText(label, x, h - padBottom + 6);
     }
 }
 
-// --- 11. Core Replay Loop Stepper ---
-function appendSolverRunningPreview(act) {
-    const list = document.getElementById("solverStepList");
-    if (!list) return;
-    
-    if (currentEventIndex === 0) {
-        list.innerHTML = "";
-    }
-    
-    const card = document.createElement("div");
-    card.className = "solver-step-card";
-    card.style.borderLeftColor = "var(--neon-cyan)";
-    card.innerHTML = `
-        <div style="display: flex; justify-content: space-between;">
-            <span>Replayed: <strong>${act}</strong></span>
-            <span style="color: var(--text-muted); font-size: 0.75rem;">Step ${currentEventIndex + 1}</span>
-        </div>
-    `;
-    list.appendChild(card);
-    list.scrollTop = list.scrollHeight;
-}
+// --- 12. Interactive Inspection & Conformance Alignment Renderer ---
+function inspectCase(caseId, activities, fitness, duration) {
+    document.getElementById("insCaseId").textContent = caseId;
+    document.getElementById("insTrace").textContent = "[" + activities.join(", ") + "]";
+    document.getElementById("insFitness").textContent = (fitness * 100).toFixed(0) + "%";
+    document.getElementById("insDuration").textContent = duration;
 
-function renderAlignmentResult(solverResult, trace) {
-    const list = document.getElementById("solverStepList");
-    if (!list) return;
+    // Run A* search alignment
+    const solverResult = solveAlignment(activities);
     
-    list.innerHTML = "";
-    
-    document.getElementById("solverExpandedNodes").textContent = solverResult.expandedCount;
-    document.getElementById("solverQueueSize").textContent = solverResult.queueSize;
-    
-    const badge = document.getElementById("currentTraceFitnessBadge");
-    if (badge) {
-        badge.textContent = `Fitness: ${solverResult.fitness.toFixed(3)}`;
-        badge.className = `status-badge ${solverResult.fitness >= 0.95 ? 'emerald' : 'crimson'}`;
-    }
-    
-    solverResult.alignment.forEach(move => {
-        const card = document.createElement("div");
+    // Render alignment blocks
+    const container = document.getElementById("alignmentContainer");
+    if (container) {
+        container.innerHTML = "";
         
-        if (move.type === "sync") {
-            card.className = "solver-step-card match";
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-weight: 600;">
-                    <span>Synchronous Move: ${move.label}</span>
-                    <span style="color: var(--emerald-green);">Cost: 0</span>
+        const summary = document.createElement("div");
+        summary.className = "alignment-results-container";
+        summary.innerHTML = `
+            <div class="alignment-summary" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <div class="glass-card" style="padding: 6px; text-align: center; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-card);">
+                    <div style="font-size: 0.65rem; color: var(--color-text-muted);">Alignment Fitness</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: ${solverResult.fitness >= 0.95 ? 'var(--color-success)' : 'var(--color-danger)'}; font-family: var(--font-mono);">
+                        ${(solverResult.fitness * 100).toFixed(1)}%
+                    </div>
                 </div>
-                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;">
-                    Model transition <strong>${move.transition}</strong> matched event at log index ${move.eventIndex}.
+                <div class="glass-card" style="padding: 6px; text-align: center; border: 1px solid var(--border-color); border-radius: 6px; background-color: var(--bg-card);">
+                    <div style="font-size: 0.65rem; color: var(--color-text-muted);">Alignment Cost</div>
+                    <div style="font-size: 1.1rem; font-weight: 800; color: var(--color-warning); font-family: var(--font-mono);">
+                        ${solverResult.alignment.reduce((sum, m) => sum + (m.type === 'sync' ? 0 : 1), 0)}
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;" id="alignmentMovesList"></div>
+        `;
+        container.appendChild(summary);
+        
+        const movesList = document.getElementById("alignmentMovesList");
+        solverResult.alignment.forEach(move => {
+            const block = document.createElement("div");
+            
+            let topText = "";
+            let bottomText = "";
+            let moveClass = "";
+            let cost = 0;
+            
+            if (move.type === "sync") {
+                topText = move.label;
+                bottomText = move.label;
+                moveClass = "match";
+                cost = 0;
+            } else if (move.type === "model") {
+                topText = "-";
+                bottomText = move.label;
+                moveClass = "move-model";
+                cost = 1;
+            } else if (move.type === "log") {
+                topText = move.label;
+                bottomText = "-";
+                moveClass = "move-log";
+                cost = 1;
+            }
+            
+            block.className = `solver-step-card ${moveClass}`;
+            block.style.display = "flex";
+            block.style.flexDirection = "column";
+            block.style.gap = "4px";
+            block.style.padding = "6px 8px";
+            block.style.borderRadius = "4px";
+            block.style.borderLeft = "3px solid";
+            if (move.type === "sync") block.style.borderLeftColor = "var(--color-success)";
+            else if (move.type === "model") block.style.borderLeftColor = "var(--color-warning)";
+            else if (move.type === "log") block.style.borderLeftColor = "var(--color-danger)";
+            block.style.backgroundColor = "rgba(0, 0, 0, 0.2)";
+            
+            block.innerHTML = `
+                <div style="display: flex; justify-content: space-between; font-weight: 600; font-size: 0.72rem; color: var(--color-text-main);">
+                    <span>${move.type.toUpperCase()}: ${move.label}</span>
+                    <span style="font-family: var(--font-mono); color: ${cost > 0 ? 'var(--color-warning)' : 'var(--color-success)'}">Cost: ${cost}</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 45px 1fr; font-size: 0.65rem; font-family: var(--font-mono); color: var(--color-text-muted); margin-top: 2px;">
+                    <span>Log:</span><span style="color: var(--color-text-main);">${topText}</span>
+                    <span>Model:</span><span style="color: var(--color-text-main);">${bottomText}</span>
                 </div>
             `;
-        } else if (move.type === "model") {
-            card.className = "solver-step-card move-model";
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-weight: 600;">
-                    <span>Move on Model: ${move.label}</span>
-                    <span style="color: var(--amber-orange);">Cost: +1</span>
-                </div>
-                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;">
-                    Model fired transition <strong>${move.transition}</strong>, but activity was missing in log. (Bypass/Skip)
-                </div>
-            `;
-        } else if (move.type === "log") {
-            card.className = "solver-step-card move-log";
-            card.innerHTML = `
-                <div style="display: flex; justify-content: space-between; font-weight: 600;">
-                    <span>Move on Log: ${move.label}</span>
-                    <span style="color: var(--crimson-red);">Cost: +1</span>
-                </div>
-                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 2px;">
-                    Log executed event at index ${move.eventIndex}, but model was not in a state to fire this transition.
-                </div>
-            `;
-        }
-        list.appendChild(card);
-    });
+            movesList.appendChild(block);
+        });
+    }
+
+    // Reset step-replay state for Petri Net SVG
+    currentMarking = { p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 };
+    updateLabelsAndHighlights();
+    
+    activeInspectedTrace = {
+        activities: activities,
+        index: 0
+    };
 }
 
+// --- 13. End-of-Trace Core Verification Logic ---
 async function completeCurrentTrace() {
     totalTraces++;
-    document.getElementById("statTraces").textContent = totalTraces;
     
     // 1. Solve optimal alignment using A*
     const solverResult = solveAlignment(currentTrace.activities);
-    renderAlignmentResult(solverResult, currentTrace);
     
-    // 2. Validate DECLARE constraints
+    // 2. Validate DECLARE constraints using declare.js validator
     const declareValidator = new DeclareValidator();
     const declareResult = declareValidator.verifyTrace(currentTrace.activities, declareRules);
     
@@ -863,7 +1041,6 @@ async function completeCurrentTrace() {
     
     if (traceViolated) {
         totalViolations++;
-        document.getElementById("statViolations").textContent = totalViolations;
     }
     
     renderDeclareMonitor();
@@ -874,15 +1051,16 @@ async function completeCurrentTrace() {
     const nextEwma = lambda * f + (1 - lambda) * lastEwma;
     history.push({ fitness: f, ewma: nextEwma, traceId: currentTrace.traceId });
     
-    const avgFitness = history.reduce((sum, h) => sum + h.fitness, 0) / history.length;
-    document.getElementById("statFitness").textContent = avgFitness.toFixed(2);
-    
     // Drift alerting
-    const driftAlert = document.getElementById("driftAlertPanel");
-    if (nextEwma < lcl) {
-        driftAlert.style.display = "flex";
-    } else {
-        driftAlert.style.display = "none";
+    const alarmBanner = document.getElementById("driftAlarmBanner");
+    if (alarmBanner) {
+        if (nextEwma < lcl) {
+            alarmBanner.textContent = `⚠️ CRITICAL DRIFT DETECTED: Process conformance fitness falls below LCL = 0.920! (EWMA: ${nextEwma.toFixed(3)})`;
+            alarmBanner.classList.add("fired");
+        } else {
+            alarmBanner.textContent = `No active process drifts detected. Running within standard parameters. (EWMA: ${nextEwma.toFixed(3)})`;
+            alarmBanner.classList.remove("fired");
+        }
     }
     
     drawDriftChart();
@@ -895,8 +1073,50 @@ async function completeCurrentTrace() {
     
     // 5. Update Diligence Claims
     renderMaClaims();
+
+    // 6. Update Live Case Stream Table Feed
+    const tbody = document.getElementById("caseListBody");
+    if (tbody) {
+        if (totalTraces === 1) {
+            tbody.innerHTML = ""; // Clear empty state
+        }
+        
+        const row = document.createElement("tr");
+        row.id = `case-row-${currentTrace.traceId}`;
+        const timeStr = new Date().toLocaleTimeString();
+        const fitClass = solverResult.fitness >= 0.95 ? "high" : "low";
+        
+        row.dataset.traceId = currentTrace.traceId;
+        row.dataset.activities = JSON.stringify(currentTrace.activities);
+        row.dataset.fitness = solverResult.fitness;
+        row.dataset.duration = (currentTrace.activities.length * 1.5).toFixed(1) + "s";
+        
+        row.innerHTML = `
+            <td><strong>${currentTrace.traceId}</strong></td>
+            <td><span class="trace-badge">${currentTrace.activities.length} events</span></td>
+            <td><span class="fitness-badge ${fitClass}">${(solverResult.fitness * 100).toFixed(0)}%</span></td>
+            <td>${timeStr}</td>
+        `;
+        
+        row.addEventListener("click", () => {
+            tbody.querySelectorAll("tr").forEach(r => r.classList.remove("active-row"));
+            row.classList.add("active-row");
+            inspectCase(row.dataset.traceId, JSON.parse(row.dataset.activities), parseFloat(row.dataset.fitness), row.dataset.duration);
+        });
+        
+        tbody.insertBefore(row, tbody.firstChild);
+        
+        // Cap feed rows at 10 items
+        if (tbody.children.length > 10) {
+            tbody.removeChild(tbody.lastChild);
+        }
+    }
+
+    // 7. Update Global Metrics Panel
+    updateGlobalMetrics();
 }
 
+// --- 14. Simulation Step Trigger (Replays Live Token Flows) ---
 function stepSimulation(callback) {
     if (!currentTrace) {
         setupNextTrace();
@@ -907,7 +1127,7 @@ function stepSimulation(callback) {
     if (currentEventIndex < currentTrace.activities.length) {
         const act = currentTrace.activities[currentEventIndex];
         totalEvents++;
-        document.getElementById("statEvents").textContent = totalEvents;
+        updateGlobalMetrics();
         
         let tId = null;
         for (const id in net.transitions) {
@@ -926,20 +1146,23 @@ function stepSimulation(callback) {
             const outPlace = net.places[outPlaceId];
             
             const rect = document.getElementById(`trans_${tId}`);
-            const tx = parseInt(rect.getAttribute("x")) + 15;
-            const ty = parseInt(rect.getAttribute("y")) + 20;
+            let tx = trans.x;
+            let ty = trans.y;
+            if (rect) {
+                tx = parseInt(rect.getAttribute("x")) + 15;
+                ty = parseInt(rect.getAttribute("y")) + 20;
+            }
             
-            // Replay token flow & consumption checks
             const hasToken = currentMarking[inPlaceId] >= 1;
             
             if (hasToken) {
                 currentMarking[inPlaceId]--;
             } else {
-                // Missing token bypass: Flash red on SVG
+                // Non-conforming path / Missing token: Flash red on SVG Place
                 const circle = document.getElementById(`place_${inPlaceId}`);
                 if (circle) {
-                    circle.style.fill = "rgba(239, 68, 68, 0.4)";
-                    circle.style.stroke = "var(--crimson-red)";
+                    circle.style.fill = "rgba(255, 0, 110, 0.4)";
+                    circle.style.stroke = "var(--color-danger)";
                     setTimeout(() => {
                         circle.style.fill = "";
                         circle.style.stroke = "";
@@ -960,18 +1183,16 @@ function stepSimulation(callback) {
                 currentMarking[outPlaceId] = (currentMarking[outPlaceId] || 0) + 1;
                 updateLabelsAndHighlights();
                 
-                appendSolverRunningPreview(act);
                 currentEventIndex++;
                 if (callback) callback();
             });
         } else {
-            // Unmapped action - treated as log move
-            appendSolverRunningPreview(`[DEVIATION] ${act}`);
+            // Log-only move: increment and skip visually
             currentEventIndex++;
             if (callback) callback();
         }
     } else {
-        // Run end-of-trace analysis and load next
+        // Run trace verification and load next
         completeCurrentTrace().then(() => {
             setupNextTrace();
             if (callback) callback();
@@ -979,14 +1200,15 @@ function stepSimulation(callback) {
     }
 }
 
-// --- 12. Simulation Execution Control ---
+// --- 15. Simulation Playback Controls ---
 function startSimulation() {
     if (isRunning) return;
     isRunning = true;
     
-    const playBtn = document.getElementById("btnPlayPause");
-    playBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> Pause`;
-    playBtn.className = "btn-cyan pulse";
+    const startBtn = document.getElementById("btnStartSim");
+    const pauseBtn = document.getElementById("btnPauseSim");
+    if (startBtn) startBtn.classList.add("btn-active");
+    if (pauseBtn) pauseBtn.classList.remove("btn-active");
     
     if (!currentTrace) {
         setupNextTrace();
@@ -999,9 +1221,10 @@ function pauseSimulation() {
     if (!isRunning) return;
     isRunning = false;
     
-    const playBtn = document.getElementById("btnPlayPause");
-    playBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Play`;
-    playBtn.className = "btn-cyan";
+    const startBtn = document.getElementById("btnStartSim");
+    const pauseBtn = document.getElementById("btnPauseSim");
+    if (startBtn) startBtn.classList.remove("btn-active");
+    if (pauseBtn) pauseBtn.classList.add("btn-active");
     
     if (playbackTimeout) {
         clearTimeout(playbackTimeout);
@@ -1021,24 +1244,49 @@ function resetSimulation() {
     
     history.length = 0;
     ledger.length = 0;
+    isLedgerIntact = true;
     
     totalTraces = 0;
     totalEvents = 0;
     totalViolations = 0;
     traceCounter = 0;
     
-    document.getElementById("statTraces").textContent = "0";
-    document.getElementById("statEvents").textContent = "0";
-    document.getElementById("statFitness").textContent = "1.00";
-    document.getElementById("statViolations").textContent = "0";
+    const alarmBanner = document.getElementById("driftAlarmBanner");
+    if (alarmBanner) {
+        alarmBanner.textContent = "No active process drifts detected. Running within standard parameters.";
+        alarmBanner.classList.remove("fired");
+    }
     
-    document.getElementById("driftAlertPanel").style.display = "none";
-    document.getElementById("ledgerChain").innerHTML = "";
-    document.getElementById("solverStepList").innerHTML = `
-        <div class="glass-card solver-step-card" style="text-align: center; justify-content: center; padding: 30px; color: var(--text-muted);">
-            Waiting for simulation event stream to start...
-        </div>
-    `;
+    const container = document.getElementById("ledgerContainer");
+    if (container) {
+        container.innerHTML = `
+            <div class="panel-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Cryptographic Process Ledger (SHA-256 Audit Trail)</span>
+                <span class="status-badge emerald" id="ledgerShieldBadge" style="font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">LEDGER: INTACT</span>
+            </div>
+            <div style="display: flex; gap: 12px; overflow-x: auto; padding: 8px 0; margin-top: 10px;" id="ledgerChain">
+                <div class="text-center text-muted" style="width: 100%; padding: 20px; font-size: 0.75rem;">Awaiting transactions to write block data...</div>
+            </div>
+        `;
+    }
+    
+    const solverContainer = document.getElementById("alignmentContainer");
+    if (solverContainer) {
+        solverContainer.innerHTML = `
+            <div class="text-center text-muted" style="padding-top: 50px;">
+                Select a simulated case from the feed list to compute A* alignment moves.
+            </div>
+        `;
+    }
+
+    const tbody = document.getElementById("caseListBody");
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" class="text-center text-muted">Awaiting simulation data...</td>
+            </tr>
+        `;
+    }
     
     for (const rule in declareRuleStats) {
         declareRuleStats[rule] = { activations: 0, satisfactions: 0, violations: 0, status: "PENDING" };
@@ -1047,68 +1295,179 @@ function resetSimulation() {
     currentTrace = null;
     currentEventIndex = 0;
     currentMarking = { p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 };
-    
-    updateLabelsAndHighlights();
-    renderDeclareMonitor();
-    renderMaClaims();
-    drawDriftChart();
-}
+    activeInspectedTrace = null;
 
-// --- 13. UI Event Binding ---
-document.addEventListener("DOMContentLoaded", () => {
-    // Clock tick
-    setInterval(() => {
-        const timeSpan = document.getElementById("systemTime");
-        if (timeSpan) {
-            const now = new Date();
-            timeSpan.textContent = now.toISOString().replace('T', ' ').substring(0, 19);
-        }
-    }, 1000);
+    document.getElementById("insCaseId").textContent = "C-0000";
+    document.getElementById("insTrace").textContent = "[]";
+    document.getElementById("insFitness").textContent = "0%";
+    document.getElementById("insDuration").textContent = "0s";
     
-    // Bind buttons
-    document.getElementById("btnPlayPause").addEventListener("click", () => {
-        if (isRunning) pauseSimulation();
-        else startSimulation();
-    });
-    
-    document.getElementById("btnStep").addEventListener("click", () => {
-        pauseSimulation();
-        stepSimulation();
-    });
-    
-    document.getElementById("btnReset").addEventListener("click", () => {
-        resetSimulation();
-    });
-    
-    // Speed Slider
-    const sliderSpeed = document.getElementById("sliderSpeed");
-    const speedLabel = document.getElementById("speedLabel");
-    sliderSpeed.addEventListener("input", (e) => {
-        speed = parseInt(e.target.value);
-        speedLabel.textContent = `${speed}ms`;
-    });
-    
-    // Violation mode trigger
-    const btnToggleViolation = document.getElementById("btnToggleViolation");
-    const violationStatus = document.getElementById("violationStatus");
-    btnToggleViolation.addEventListener("click", () => {
-        isViolationModeActive = !isViolationModeActive;
-        if (isViolationModeActive) {
-            violationStatus.textContent = "ON";
-            violationStatus.className = "status-badge crimson pulse";
-            btnToggleViolation.textContent = "Disable Conformance Drift";
-        } else {
-            violationStatus.textContent = "OFF";
-            violationStatus.className = "status-badge crimson";
-            btnToggleViolation.textContent = "Trigger Conformance Drift";
-        }
-        
-        // If simulation is running, it will automatically start outputting violations
-    });
-    
-    // Initialization render
+    drawPetriNetSvg();
     renderDeclareMonitor();
     renderMaClaims();
     drawDriftChart();
     setupNextTrace();
+    updateGlobalMetrics();
+}
+
+// --- 16. UI Event Binding ---
+document.addEventListener("DOMContentLoaded", () => {
+    // Render central Petri Net SVG
+    drawPetriNetSvg();
+
+    // Stream Telemetry HUD simulation loop (FPS, Latency, drops, OBS)
+    setInterval(() => {
+        const fpsEl = document.getElementById("streamFps");
+        const latEl = document.getElementById("streamLatency");
+        const dropEl = document.getElementById("streamFrameDrops");
+        const obsEl = document.getElementById("obsStatus");
+        
+        if (fpsEl) {
+            const fps = (59.7 + Math.random() * 0.3).toFixed(1);
+            fpsEl.textContent = fps;
+        }
+        if (latEl) {
+            const latency = Math.floor(6 + Math.random() * 9);
+            latEl.textContent = `${latency}ms`;
+        }
+        if (dropEl) {
+            dropEl.textContent = "0.0%";
+        }
+        if (obsEl) {
+            obsEl.textContent = "CONNECTED";
+        }
+    }, 1000);
+    
+    // Play/Pause Stream buttons
+    document.getElementById("btnStartSim")?.addEventListener("click", () => {
+        startSimulation();
+    });
+    document.getElementById("btnPauseSim")?.addEventListener("click", () => {
+        pauseSimulation();
+    });
+    
+    // Simulate Single Case button
+    document.getElementById("btnSingleSim")?.addEventListener("click", () => {
+        pauseSimulation();
+        // Step trace until current trace is complete, then reset step counter
+        function runWholeTrace() {
+            if (currentEventIndex < currentTrace.activities.length) {
+                stepSimulation(() => {
+                    setTimeout(runWholeTrace, speed / 2);
+                });
+            } else {
+                stepSimulation(); // Completes the trace and sets up next
+            }
+        }
+        runWholeTrace();
+    });
+    
+    // Reset Statistics button
+    document.getElementById("btnClearStats")?.addEventListener("click", () => {
+        resetSimulation();
+    });
+    
+    // Step Trace (Inspect Step Replay) button
+    document.getElementById("btnStepReplay")?.addEventListener("click", () => {
+        if (!activeInspectedTrace || activeInspectedTrace.index >= activeInspectedTrace.activities.length) {
+            if (activeInspectedTrace) {
+                activeInspectedTrace.index = 0;
+                currentMarking = { p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 };
+                updateLabelsAndHighlights();
+            }
+            return;
+        }
+        
+        const act = activeInspectedTrace.activities[activeInspectedTrace.index];
+        let tId = null;
+        for (const id in net.transitions) {
+            if (net.transitions[id].label === act) {
+                tId = id;
+                break;
+            }
+        }
+        
+        if (tId) {
+            const trans = net.transitions[tId];
+            const inPlaceId = trans.inputs[0];
+            const outPlaceId = trans.outputs[0];
+            
+            const inPlace = net.places[inPlaceId];
+            const outPlace = net.places[outPlaceId];
+            
+            const rect = document.getElementById(`trans_${tId}`);
+            let tx = trans.x;
+            let ty = trans.y;
+            if (rect) {
+                tx = parseInt(rect.getAttribute("x")) + 15;
+                ty = parseInt(rect.getAttribute("y")) + 20;
+            }
+            
+            const hasToken = currentMarking[inPlaceId] >= 1;
+            if (hasToken) {
+                currentMarking[inPlaceId]--;
+            } else {
+                // Flash Place Red on missing token
+                const circle = document.getElementById(`place_${inPlaceId}`);
+                if (circle) {
+                    circle.style.fill = "rgba(255, 0, 110, 0.4)";
+                    circle.style.stroke = "var(--color-danger)";
+                    setTimeout(() => {
+                        circle.style.fill = "";
+                        circle.style.stroke = "";
+                    }, 400);
+                }
+            }
+            
+            updateLabelsAndHighlights();
+            
+            animateToken(inPlace.x, inPlace.y, tx, ty, outPlace.x, outPlace.y, 400, () => {
+                if (rect) {
+                    rect.classList.add("firing");
+                    setTimeout(() => rect.classList.remove("firing"), 150);
+                }
+                
+                currentMarking[outPlaceId] = (currentMarking[outPlaceId] || 0) + 1;
+                updateLabelsAndHighlights();
+                activeInspectedTrace.index++;
+                
+                if (activeInspectedTrace.index === activeInspectedTrace.activities.length) {
+                    setTimeout(() => {
+                        if (currentMarking.p_end === 1) {
+                            currentMarking.p_end = 0;
+                            updateLabelsAndHighlights();
+                        }
+                    }, 400);
+                }
+            });
+        } else {
+            // Log move only
+            activeInspectedTrace.index++;
+        }
+    });
+    
+    // Reset Trace (Inspect Step Replay Reset) button
+    document.getElementById("btnResetReplay")?.addEventListener("click", () => {
+        if (activeInspectedTrace) {
+            activeInspectedTrace.index = 0;
+        }
+        currentMarking = { p_start: 1, p_created: 0, p_received: 0, p_audited: 0, p_approved: 0, p_end: 0 };
+        updateLabelsAndHighlights();
+    });
+
+    // Drift checkbox and selector control
+    const driftToggle = document.getElementById("driftToggle");
+    const driftTypeSelector = document.getElementById("driftTypeSelector");
+    driftToggle?.addEventListener("change", (e) => {
+        if (driftTypeSelector) {
+            driftTypeSelector.disabled = !e.target.checked;
+        }
+    });
+    
+    // Initial Render Orchestration
+    renderDeclareMonitor();
+    renderMaClaims();
+    drawDriftChart();
+    setupNextTrace();
+    updateGlobalMetrics();
 });

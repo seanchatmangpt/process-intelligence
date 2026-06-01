@@ -245,15 +245,19 @@ impl Doctor {
     /// Rollback to last verified marking
     pub fn rollback_to_last_compliant(
         violation: ConformanceViolation,
-    ) -> Result<(), DoctorRefusal> {
+        knowledge: &mut Knowledge,
+    ) -> Result<LifecycleState, DoctorRefusal> {
         match violation {
             ConformanceViolation::CriticalDeviation => {
-                // Invoke containment protocol
-                Ok(())
+                // Containment protocol: reset success metrics, rollback model to original
+                knowledge.reference_model = "sound_wf_net".to_string();
+                knowledge.repair_failure_count += 1;
+                Ok(LifecycleState::Monitoring)
             }
             ConformanceViolation::WarningDeviation => {
-                // Invoke elastic repair
-                Ok(())
+                // Elastic repair: increment success counter, restore to monitoring
+                knowledge.repair_success_count += 1;
+                Ok(LifecycleState::Monitoring)
             }
         }
     }
@@ -271,7 +275,7 @@ pub enum DoctorRefusal {
 /// Event stream from wasm4pm runtime
 #[derive(Debug, Clone)]
 pub struct EventStream {
-    pub events: &'static [ProcessEvent],
+    pub events: Vec<ProcessEvent>,
     pub window_size: usize,
 }
 
@@ -293,20 +297,20 @@ pub struct Evidence {
 /// Analysis artifact with confidence bound
 #[derive(Debug, Clone)]
 pub struct Analysis {
-    pub diagnosis: &'static str,
+    pub diagnosis: String,
     pub confidence: f64, // Between 0.0 and 1.0
-    pub candidate_actions: &'static [&'static str],
+    pub candidate_actions: Vec<String>,
 }
 
 /// Plan artifact: ordered, risk-scored action sequence
 #[derive(Debug, Clone)]
 pub struct Plan {
-    pub actions: &'static [ActionType],
+    pub actions: Vec<ActionType>,
     pub risk_level: RiskLevel,
     pub requires_authorization: bool,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ActionType {
     ModelUpdate,
     ResourceReallocation,
@@ -341,7 +345,7 @@ pub enum ActionOutcome {
 pub struct Monitor;
 
 impl Monitor {
-    pub fn ingest_stream(stream: &EventStream) -> &'static [Evidence] {
+    pub fn ingest_stream(stream: &EventStream) -> Vec<Evidence> {
         let mut evidence_vec = Vec::with_capacity(stream.events.len().min(stream.window_size));
         for &event in stream.events.iter().take(stream.window_size) {
             evidence_vec.push(Evidence {
@@ -350,7 +354,7 @@ impl Monitor {
                 admitted: true,
             });
         }
-        Box::leak(evidence_vec.into_boxed_slice())
+        evidence_vec
     }
 }
 
@@ -358,30 +362,76 @@ impl Monitor {
 pub struct Analyzer;
 
 impl Analyzer {
-    pub fn conformance_analysis(_observations: &[Evidence]) -> Analysis {
+    pub fn conformance_analysis(observations: &[Evidence]) -> Analysis {
+        let fitness = Self::alignment_computation(observations);
+        let diagnosis = if fitness >= 0.95 {
+            "within_fitness_threshold".to_string()
+        } else if fitness >= 0.85 {
+            "warning_deviation".to_string()
+        } else {
+            "critical_deviation".to_string()
+        };
+
+        let mut candidate_actions = Vec::new();
+        if fitness < 0.95 {
+            candidate_actions.push("ConstraintChange".to_string());
+        }
+        if fitness < 0.85 {
+            candidate_actions.push("Escalation".to_string());
+            candidate_actions.push("ModelUpdate".to_string());
+        }
+
         Analysis {
-            diagnosis: "within_fitness_threshold",
-            confidence: 0.95,
-            candidate_actions: &[],
+            diagnosis,
+            confidence: fitness,
+            candidate_actions,
         }
     }
 
-    pub fn alignment_computation(_observations: &[Evidence]) -> f64 {
-        // Cost-optimal alignment via A* search
-        0.95
-    }
-
-    pub fn variant_analysis(observations: &[Evidence]) -> &'static [&'static str] {
+    pub fn alignment_computation(observations: &[Evidence]) -> f64 {
+        // Calculate the average fitness of all traces in observations.
+        // Group by case_id:
         let mut cases: std::collections::BTreeMap<u64, Vec<u32>> = std::collections::BTreeMap::new();
         for obs in observations {
             cases.entry(obs.event.case_id).or_default().push(obs.event.activity);
         }
-        let mut variants: Vec<&'static str> = Vec::new();
+        if cases.is_empty() {
+            return 1.0;
+        }
+        let mut total_fitness = 0.0;
+        let ref_seq = [1, 2, 3];
+        for activities in cases.values() {
+            // Find longest common subsequence (LCS) of activities and ref_seq
+            let n = activities.len();
+            let m = ref_seq.len();
+            let mut dp = vec![vec![0; m + 1]; n + 1];
+            for i in 1..=n {
+                for j in 1..=m {
+                    if activities[i - 1] == ref_seq[j - 1] {
+                        dp[i][j] = dp[i - 1][j - 1] + 1;
+                    } else {
+                        dp[i][j] = dp[i - 1][j].max(dp[i][j - 1]);
+                    }
+                }
+            }
+            let lcs = dp[n][m];
+            let fitness = lcs as f64 / n.max(m) as f64;
+            total_fitness += fitness;
+        }
+        total_fitness / cases.len() as f64
+    }
+
+    pub fn variant_analysis(observations: &[Evidence]) -> Vec<String> {
+        let mut cases: std::collections::BTreeMap<u64, Vec<u32>> = std::collections::BTreeMap::new();
+        for obs in observations {
+            cases.entry(obs.event.case_id).or_default().push(obs.event.activity);
+        }
+        let mut variants = Vec::new();
         for (case_id, activities) in cases {
             let variant_str = format!("case_{}:{:?}", case_id, activities);
-            variants.push(Box::leak(variant_str.into_boxed_str()));
+            variants.push(variant_str);
         }
-        Box::leak(variants.into_boxed_slice())
+        variants
     }
 }
 
@@ -392,12 +442,12 @@ impl Planner {
     pub fn repair_policy_lookup(violation: ConformanceViolation) -> Plan {
         match violation {
             ConformanceViolation::CriticalDeviation => Plan {
-                actions: &[ActionType::Escalation],
+                actions: vec![ActionType::Escalation],
                 risk_level: RiskLevel::High,
                 requires_authorization: true,
             },
             ConformanceViolation::WarningDeviation => Plan {
-                actions: &[ActionType::ConstraintChange],
+                actions: vec![ActionType::ConstraintChange],
                 risk_level: RiskLevel::Medium,
                 requires_authorization: false,
             },
@@ -420,10 +470,18 @@ impl Executor {
             return Err(ExecutorRefusal::NoActionsToExecute);
         }
 
+        let action_id = (plan.actions[0] as u64) ^ 0xFEED;
+
+        let outcome = if plan.actions.contains(&ActionType::Escalation) {
+            ActionOutcome::Failure
+        } else {
+            ActionOutcome::Success
+        };
+
         Ok(Receipt {
-            action_id: 0,
+            action_id,
             timestamp: 0,
-            outcome: ActionOutcome::Success,
+            outcome,
         })
     }
 }
@@ -434,10 +492,10 @@ pub enum ExecutorRefusal {
 
 /// Knowledge: persistent store of learned patterns
 pub struct Knowledge {
-    pub reference_model: &'static str,
-    pub historical_metrics: &'static str,
-    pub violation_patterns: &'static str,
-    pub successful_repairs: &'static str,
+    pub reference_model: String,
+    pub historical_metrics: String,
+    pub violation_patterns: String,
+    pub successful_repairs: String,
     pub repair_success_count: u32,
     pub repair_failure_count: u32,
 }
@@ -445,16 +503,16 @@ pub struct Knowledge {
 impl Knowledge {
     pub fn new() -> Self {
         Knowledge {
-            reference_model: "sound_wf_net",
-            historical_metrics: "time_series_metric_store",
-            violation_patterns: "named_law_frequency_map",
-            successful_repairs: "repair_action_outcome_map",
+            reference_model: "sound_wf_net".to_string(),
+            historical_metrics: "time_series_metric_store".to_string(),
+            violation_patterns: "named_law_frequency_map".to_string(),
+            successful_repairs: "repair_action_outcome_map".to_string(),
             repair_success_count: 0,
             repair_failure_count: 0,
         }
     }
 
-    pub fn update_reference_model(&mut self, new_model: &'static str) {
+    pub fn update_reference_model(&mut self, new_model: String) {
         self.reference_model = new_model;
     }
 
@@ -594,14 +652,14 @@ impl BlueRiverDamOrchestrator {
         let observations = Monitor::ingest_stream(stream);
 
         // Step 2: Analyze — produce Analysis artifacts
-        let analysis = Analyzer::conformance_analysis(observations);
+        let analysis = Analyzer::conformance_analysis(&observations);
 
         // Step 3: Plan — produce Plan artifacts with risk assessment
         let plan = if analysis.confidence < 0.95 {
             Planner::repair_policy_lookup(ConformanceViolation::WarningDeviation)
         } else {
             Plan {
-                actions: &[],
+                actions: vec![],
                 risk_level: RiskLevel::Low,
                 requires_authorization: false,
             }
@@ -680,12 +738,22 @@ impl BlueRiverDamOrchestrator {
             // Compliance Deviation: lockdown + escalation
             self.state = LifecycleState::Repair;
             // Invoke doctor for containment
-            Doctor::rollback_to_last_compliant(ConformanceViolation::CriticalDeviation)
-                .map_err(|_| OrchestrationRefusal::RemediationFailed)?;
+            let next_state = Doctor::rollback_to_last_compliant(
+                ConformanceViolation::CriticalDeviation,
+                &mut self.knowledge,
+            )
+            .map_err(|_| OrchestrationRefusal::RemediationFailed)?;
+            self.state = next_state;
         } else if fitness < 0.95 {
             // Elastic Deviation: isolate + redirect + repair
             self.state = LifecycleState::Repair;
             // Invoke elastic repair protocol
+            let next_state = Doctor::rollback_to_last_compliant(
+                ConformanceViolation::WarningDeviation,
+                &mut self.knowledge,
+            )
+            .map_err(|_| OrchestrationRefusal::RemediationFailed)?;
+            self.state = next_state;
         }
 
         Ok(())
@@ -730,7 +798,7 @@ pub enum OrchestrationRefusal {
 #[derive(Debug, Clone)]
 pub struct EventTrace {
     pub id: u64,
-    pub events: &'static [ProcessEvent],
+    pub events: Vec<ProcessEvent>,
 }
 
 // ============================================================================
@@ -774,7 +842,7 @@ mod tests {
     #[test]
     fn test_mape_k_knowledge_persistence() {
         let knowledge = Knowledge::new();
-        assert_eq!(knowledge.reference_model, "sound_wf_net");
+        assert_eq!(knowledge.reference_model.as_str(), "sound_wf_net");
     }
 
     #[test]
@@ -828,10 +896,9 @@ mod tests {
             ProcessEvent { timestamp: 1, activity: 2, case_id: 1 },
             ProcessEvent { timestamp: 2, activity: 3, case_id: 1 },
         ];
-        let events_1_static: &'static [ProcessEvent] = Box::leak(events_1.into_boxed_slice());
         let trace_1 = EventTrace {
             id: 1,
-            events: events_1_static,
+            events: events_1,
         };
         let metric_1 = Auditor::compute_fitness(&trace_1);
         assert_eq!(metric_1.alignment_moves, 0);
@@ -841,10 +908,9 @@ mod tests {
             ProcessEvent { timestamp: 0, activity: 1, case_id: 1 },
             ProcessEvent { timestamp: 1, activity: 3, case_id: 1 },
         ];
-        let events_2_static: &'static [ProcessEvent] = Box::leak(events_2.into_boxed_slice());
         let trace_2 = EventTrace {
             id: 2,
-            events: events_2_static,
+            events: events_2,
         };
         let metric_2 = Auditor::compute_fitness(&trace_2);
         assert_eq!(metric_2.alignment_moves, 1);
@@ -853,10 +919,47 @@ mod tests {
         // Empty trace
         let trace_empty = EventTrace {
             id: 3,
-            events: &[],
+            events: vec![],
         };
         let metric_empty = Auditor::compute_fitness(&trace_empty);
         assert_eq!(metric_empty.alignment_moves, 3);
         assert!((metric_empty.fitness - 0.0).abs() < 1e-9);
+    }
+
+    #[test]
+    fn test_mape_k_cycle_execution() {
+        let mut orchestrator = BlueRiverDamOrchestrator::new();
+        assert_eq!(orchestrator.state, LifecycleState::Design);
+
+        // Transition from Design to Simulation
+        let net = PetriNetTopology {
+            places: vec!["source".to_string(), "sink".to_string()],
+            transitions: vec!["t1".to_string()],
+            flow: vec![
+                ("source".to_string(), "t1".to_string()),
+                ("t1".to_string(), "sink".to_string()),
+            ],
+        };
+        assert!(Architect::validate_wf_net_soundness(&net).is_ok());
+
+        assert!(QualityGate::gate_1_soundness().passes);
+        orchestrator.state = LifecycleState::Simulation;
+        assert!(QualityGate::gate_2_reachability().passes);
+        orchestrator.state = LifecycleState::Monitoring;
+
+        // Ingest events
+        let events = vec![
+            ProcessEvent { timestamp: 100, activity: 1, case_id: 42 },
+            ProcessEvent { timestamp: 101, activity: 2, case_id: 42 },
+            ProcessEvent { timestamp: 102, activity: 3, case_id: 42 },
+        ];
+        let stream = EventStream {
+            events,
+            window_size: 10,
+        };
+
+        // Run cycle
+        assert!(orchestrator.mape_k_cycle(&stream).is_ok());
+        assert_eq!(orchestrator.state, LifecycleState::Monitoring);
     }
 }

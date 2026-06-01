@@ -1056,5 +1056,24 @@ fn test_ffi_get_absolute_ptr() {
     assert!(!abs_ptr.is_null());
 }
 
+#[test]
+fn test_sha256_ledger_compliance() {
+    use wasm4pm::crypto::Sha256;
+
+    // Recalculated genesis block data string matching ledger.js standard
+    let data_str = "009:00:00C-GENESISInitialize Ledger{\"note\":\"Process Intelligence Blockchain Started\"}0000000000000000000000000000000000000000000000000000000000000000";
+    
+    let mut hasher = Sha256::new();
+    hasher.update(data_str.as_bytes());
+    let result = hasher.finalize();
+
+    // Verify compliance with standard SHA-256
+    let expected = [
+        0x78, 0x79, 0x85, 0xdd, 0x49, 0xff, 0x98, 0xf9, 0x80, 0x38, 0x51, 0x09, 0x34, 0x06, 0xbd, 0xfc,
+        0x2e, 0xb7, 0xab, 0x5f, 0x71, 0xb3, 0x74, 0xd0, 0x1d, 0x5b, 0x9a, 0x0e, 0xa9, 0x52, 0xfc, 0x26,
+    ];
+    assert_eq!(result, expected);
+}
+
 
 

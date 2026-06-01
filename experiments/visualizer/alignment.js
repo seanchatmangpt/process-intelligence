@@ -60,8 +60,8 @@ const ProcessAlignment = (() => {
             }
         }
         
-        // Return admissible heuristic (the max of log and model remaining is admissible)
-        return Math.max(logRemaining, modelRemaining);
+        // Return admissible heuristic (the absolute difference of log and model remaining is admissible)
+        return Math.abs(logRemaining - modelRemaining);
     }
 
     /**
