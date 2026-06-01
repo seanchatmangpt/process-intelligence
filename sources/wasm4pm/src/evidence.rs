@@ -23,6 +23,34 @@ impl Blake3Hash {
     }
 }
 
+/// Generic Typestates for Evidence states
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Parsed;
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct ValidatedSound;
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Replayed;
+
+impl SerializeBytes for Parsed {
+    fn serialize_bytes(&self, buf: &mut Vec<u8>) {
+        buf.push(0x11);
+    }
+}
+
+impl SerializeBytes for ValidatedSound {
+    fn serialize_bytes(&self, buf: &mut Vec<u8>) {
+        buf.push(0x22);
+    }
+}
+
+impl SerializeBytes for Replayed {
+    fn serialize_bytes(&self, buf: &mut Vec<u8>) {
+        buf.push(0x33);
+    }
+}
+
 /// Errors returned during evidence validation
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EvidenceError {
@@ -162,11 +190,66 @@ where
 
     /// Validate chronological progression of sequential evidence blocks (Lattice Monotonicity)
     pub fn validate_transition(&self, next: &Self) -> Result<(), EvidenceError> {
-        let joined = self.witness.join(&next.witness);
-        if joined.is_top() || joined != next.witness {
+        if self.witness.is_monotonic_transition(&next.witness) {
+            Ok(())
+        } else {
+            Err(EvidenceError::LatticeViolation)
+        }
+    }
+}
+
+impl<T, Witness> Evidence<T, Parsed, Witness>
+where
+    T: SerializeBytes + Clone,
+    Witness: SerializeBytes + Lattice + Clone,
+{
+    pub fn new_parsed(payload: T, witness: Witness, epoch: u64, signature: IdentitySignature, hash: Blake3Hash) -> Self {
+        Self {
+            payload,
+            state: Parsed,
+            witness,
+            epoch,
+            signature,
+            hash,
+        }
+    }
+
+    pub fn transition_to_validated(self, expected_public_key: &[u8; 32]) -> Result<Evidence<T, ValidatedSound, Witness>, EvidenceError> {
+        self.validate(expected_public_key)?;
+
+        let mut next = Evidence {
+            payload: self.payload,
+            state: ValidatedSound,
+            witness: self.witness,
+            epoch: self.epoch + 1,
+            signature: self.signature,
+            hash: Blake3Hash([0; 32]),
+        };
+        next.hash = next.calculate_hash();
+        Ok(next)
+    }
+}
+
+impl<T, Witness> Evidence<T, ValidatedSound, Witness>
+where
+    T: SerializeBytes + Clone,
+    Witness: SerializeBytes + Lattice + Clone,
+{
+    pub fn transition_to_replayed(self, next_witness: Witness) -> Result<Evidence<T, Replayed, Witness>, EvidenceError> {
+        if !self.witness.is_monotonic_transition(&next_witness) {
             return Err(EvidenceError::LatticeViolation);
         }
-        Ok(())
+
+        let mut next = Evidence {
+            payload: self.payload,
+            state: Replayed,
+            witness: next_witness,
+            epoch: self.epoch + 1,
+            signature: self.signature,
+            hash: Blake3Hash([0; 32]),
+        };
+        next.hash = next.calculate_hash();
+        Ok(next)
     }
 }
 
@@ -192,6 +275,12 @@ pub trait Lattice: Sized + Eq + Clone {
 
     /// Compare two elements in the partial order
     fn partial_cmp(&self, other: &Self) -> Option<Ordering>;
+
+    /// Check if transitioning to another element is monotonic
+    fn is_monotonic_transition(&self, next: &Self) -> bool {
+        let joined = self.join(next);
+        !joined.is_top() && joined == *next
+    }
 }
 
 /// WitnessState enum tracks Petri net token game alignments, cost, and replayed event trace indices.
@@ -211,6 +300,22 @@ impl Lattice for WitnessState {
     fn top() -> Self { WitnessState::Top }
     fn is_top(&self) -> bool { matches!(self, WitnessState::Top) }
     fn is_bottom(&self) -> bool { matches!(self, WitnessState::Bottom) }
+
+    fn is_monotonic_transition(&self, next: &Self) -> bool {
+        match (self, next) {
+            (WitnessState::Top, _) => false,
+            (_, WitnessState::Top) => false,
+            (WitnessState::Bottom, _) => true,
+            (_, WitnessState::Bottom) => false,
+            (WitnessState::PartialReplay { trace_indices: t1, marking: m1, cost: c1 },
+             WitnessState::PartialReplay { trace_indices: t2, marking: m2, cost: c2 }) => {
+                let is_t1_sub = t1.iter().all(|x| t2.contains(x));
+                let is_m1_sub = m1.iter().all(|x| m2.contains(x));
+                let is_c1_le = c1 <= c2;
+                is_t1_sub && is_m1_sub && is_c1_le
+            }
+        }
+    }
 
     fn join(&self, other: &Self) -> Self {
         match (self, other) {
@@ -267,17 +372,19 @@ impl Lattice for WitnessState {
             (_, WitnessState::Top) => Some(Ordering::Less),
             (WitnessState::PartialReplay { trace_indices: t1, marking: m1, cost: c1 },
              WitnessState::PartialReplay { trace_indices: t2, marking: m2, cost: c2 }) => {
-                let is_t1_sub = t1.iter().all(|x| t2.contains(x));
-                let is_t2_sub = t2.iter().all(|x| t1.contains(x));
+                if t1 != t2 {
+                    return None;
+                }
                 let is_m1_sub = m1.iter().all(|x| m2.contains(x));
                 let is_m2_sub = m2.iter().all(|x| m1.contains(x));
+
                 let is_c1_le = c1 <= c2;
                 let is_c2_le = c2 <= c1;
 
-                match (is_t1_sub, is_t2_sub, is_m1_sub, is_m2_sub, is_c1_le, is_c2_le) {
-                    (true, true, true, true, true, true) => Some(Ordering::Equal),
-                    (true, _, true, _, true, _) => Some(Ordering::Less),
-                    (_, true, _, true, _, true) => Some(Ordering::Greater),
+                match (is_m1_sub, is_m2_sub, is_c1_le, is_c2_le) {
+                    (true, true, true, true) => Some(Ordering::Equal),
+                    (true, _, true, _) => Some(Ordering::Less),
+                    (_, true, _, true) => Some(Ordering::Greater),
                     _ => None,
                 }
             }
@@ -387,6 +494,25 @@ impl Lattice for DeclareWitnessState {
     fn is_top(&self) -> bool { matches!(self, DeclareWitnessState::Top) }
     fn is_bottom(&self) -> bool { matches!(self, DeclareWitnessState::Bottom) }
 
+    fn is_monotonic_transition(&self, next: &Self) -> bool {
+        match (self, next) {
+            (DeclareWitnessState::Top, _) => false,
+            (_, DeclareWitnessState::Top) => false,
+            (DeclareWitnessState::Bottom, _) => true,
+            (_, DeclareWitnessState::Bottom) => false,
+            (DeclareWitnessState::Evaluated(m1), DeclareWitnessState::Evaluated(m2)) => {
+                for (key, v1) in m1 {
+                    let v2 = m2.get(key).unwrap_or(&ConstraintValue::Bottom);
+                    let joined = v1.join(v2);
+                    if joined.is_top() || joined != *v2 {
+                        return false;
+                    }
+                }
+                true
+            }
+        }
+    }
+
     fn join(&self, other: &Self) -> Self {
         match (self, other) {
             (DeclareWitnessState::Top, _) | (_, DeclareWitnessState::Top) => DeclareWitnessState::Top,
@@ -494,6 +620,19 @@ impl Lattice for UnifiedWitnessState {
     fn top() -> Self { UnifiedWitnessState::Top }
     fn is_top(&self) -> bool { matches!(self, UnifiedWitnessState::Top) }
     fn is_bottom(&self) -> bool { matches!(self, UnifiedWitnessState::Bottom) }
+
+    fn is_monotonic_transition(&self, next: &Self) -> bool {
+        match (self, next) {
+            (UnifiedWitnessState::Top, _) => false,
+            (_, UnifiedWitnessState::Top) => false,
+            (UnifiedWitnessState::Bottom, _) => true,
+            (_, UnifiedWitnessState::Bottom) => false,
+            (UnifiedWitnessState::Active { replay: r1, declare: d1 },
+             UnifiedWitnessState::Active { replay: r2, declare: d2 }) => {
+                r1.is_monotonic_transition(r2) && d1.is_monotonic_transition(d2)
+            }
+        }
+    }
 
     fn join(&self, other: &Self) -> Self {
         match (self, other) {
@@ -731,7 +870,7 @@ impl FieldElement {
         if carry > 0 || res_gte_p(res) {
             let mut borrow = 0u128;
             for i in 0..4 {
-                let diff = (res[i] as u128) - (Self::P.0[i] as u128) - borrow;
+                let diff = (res[i] as u128).wrapping_sub(Self::P.0[i] as u128).wrapping_sub(borrow);
                 res[i] = diff as u64;
                 borrow = (diff >> 64) & 1;
             }
@@ -823,7 +962,7 @@ fn reduce_512(product: [u64; 8]) -> FieldElement {
         high_x_19[i] = val as u64;
         carry_mul = val >> 64;
     }
-    high_x_19[4] = (carry_mul + carry * 38) as u64; // Handle any remaining overflow bits defensively
+    high_x_19[4] = (carry_mul + carry * 19) as u64; // Handle any remaining overflow bits defensively
     
     let mut sum = [0u64; 5];
     let mut carry_add = 0u128;
@@ -845,24 +984,28 @@ fn reduce_512(product: [u64; 8]) -> FieldElement {
     final_sum[2] = sum[2];
     final_sum[3] = sum[3] & 0x7fffffffffffffff;
     
-    let mut carry_final = sum_high_x_19;
+    let mut carry = sum_high_x_19;
     for i in 0..4 {
-        let val = (final_sum[i] as u128) + carry_final;
+        let val = (final_sum[i] as u128) + carry;
         final_sum[i] = val as u64;
-        carry_final = val >> 64;
+        carry = val >> 64;
     }
     
-    while carry_final > 0 || res_gte_p(final_sum) {
+    if carry > 0 {
+        let mut carry_2 = carry * 38;
+        for i in 0..4 {
+            let val = (final_sum[i] as u128) + carry_2;
+            final_sum[i] = val as u64;
+            carry_2 = val >> 64;
+        }
+    }
+    
+    while res_gte_p(final_sum) {
         let mut borrow = 0u128;
         for i in 0..4 {
-            let diff = (final_sum[i] as u128) - (FieldElement::P.0[i] as u128) - borrow;
+            let diff = (final_sum[i] as u128).wrapping_sub(FieldElement::P.0[i] as u128).wrapping_sub(borrow);
             final_sum[i] = diff as u64;
             borrow = (diff >> 64) & 1;
-        }
-        if carry_final > 0 {
-            carry_final = (carry_final - borrow) as u128;
-        } else {
-            break;
         }
     }
     
@@ -880,25 +1023,25 @@ pub struct CurvePoint {
 
 impl CurvePoint {
     pub const D: FieldElement = FieldElement([
-        0x75eb4dca135978a3, 0x7779e89800700a4d,
+        0x75eb4dca135978a3, 0x00700a4d4141d8ab,
         0x8cc740797779e898, 0x52036cee2b6ffe73,
     ]);
 
     pub const TWO_D: FieldElement = FieldElement([
-        0xebe69b9426b2f147, 0xeeeeefd13000e014,
-        0x198e80f2eeefd130, 0x2406d9dc56dffce7,
+        0xebd69b9426b2f159, 0x00e0149a8283b156,
+        0x198e80f2eef3d130, 0x2406d9dc56dffce7,
     ]);
 
     pub const SQRT_M1: FieldElement = FieldElement([
-        0x4ee1b274a291954, 0x2f431806ad2fe478,
+        0xc4ee1b274a0ea0b0, 0x2f431806ad2fe478,
         0x2b4d00993dfbd7a7, 0x2b8324804fc1df0b
     ]);
 
     pub fn generator() -> Self {
         CurvePoint {
             x: FieldElement([
-                0x11eed3d197e28319, 0x6e8e8154e19069d3,
-                0x10f765373a69a473, 0x216936d3cd6e53fe,
+                0xc9562d608f25d51a, 0x692cc7609525a7b2,
+                0xc0a4e231fdd6dc5c, 0x216936d3cd6e53fe,
             ]),
             y: FieldElement([
                 0x6666666666666658, 0x6666666666666666,
@@ -906,8 +1049,8 @@ impl CurvePoint {
             ]),
             z: FieldElement::one(),
             t: FieldElement([
-                0x66a6a24911d33405, 0x5cc5d5a7d74db627,
-                0xcc06c8cae49c7bc2, 0x5776a30c5e7b2339,
+                0x6dde8ab3a5b7dda3, 0x20f09f80775152f5,
+                0x66ea4e8e64abe37d, 0x67875f0fd78b7665,
             ]),
         }
     }
@@ -1127,7 +1270,7 @@ fn reduce_sha512_mod_l(hash: &[u8; 64]) -> [u8; 32] {
         if val_gte(val, l_shifted) {
             let mut borrow = 0u128;
             for i in 0..8 {
-                let diff = (val[i] as u128) - (l_shifted[i] as u128) - borrow;
+                let diff = (val[i] as u128).wrapping_sub(l_shifted[i] as u128).wrapping_sub(borrow);
                 val[i] = diff as u64;
                 borrow = (diff >> 64) & 1;
             }
@@ -1331,7 +1474,7 @@ mod tests {
             cost: 20,
         };
         let w3 = WitnessState::PartialReplay {
-            trace_indices: vec![1, 2],
+            trace_indices: vec![5, 6],
             marking: vec!["p1".to_string(), "p2".to_string()],
             cost: 15,
         };
@@ -1349,8 +1492,13 @@ mod tests {
             assert_eq!(cost, 30);
         }
 
-        // w1 and w3 have overlapping index 1, so they must join to Top
-        assert_eq!(w1.join(&w3), WitnessState::Top);
+        // w_overlap overlaps with w1 at index 1, so they must join to Top
+        let w_overlap = WitnessState::PartialReplay {
+            trace_indices: vec![1, 5],
+            marking: vec!["p1".to_string()],
+            cost: 5,
+        };
+        assert_eq!(w1.join(&w_overlap), WitnessState::Top);
     }
 
     #[test]
@@ -1434,7 +1582,7 @@ mod tests {
     fn test_ed25519_rfc8032_vector1() {
         // RFC 8032 Section 7.1 Test Vector 1
         let pk_hex = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a";
-        let sig_hex = "e5564300c360ac72908f067b40c10b75a38979b0992c275661497cfd9966b8934785397120b31d47e9ab841b0c9520b9e8198641a2c37087bb310159fb9b8700";
+        let sig_hex = "e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b";
         
         let pk_bytes = hex_decode(pk_hex);
         let sig_bytes = hex_decode(sig_hex);

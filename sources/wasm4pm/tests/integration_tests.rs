@@ -636,7 +636,11 @@ fn test_petri_net_soundness_solver() {
     t1_outputs.insert("p1".to_string(), 1);
     t1_outputs.insert("sink".to_string(), 1);
     post_ub.insert("t1".to_string(), t1_outputs);
-    post_ub.insert("t2".to_string(), make_arc("p1", 2));
+
+    let mut t2_outputs = BTreeMap::new();
+    t2_outputs.insert("p1".to_string(), 2);
+    t2_outputs.insert("sink".to_string(), 1);
+    post_ub.insert("t2".to_string(), t2_outputs);
 
     let net_unbounded = PetriNet::new(places_unbounded, transitions_unbounded, pre_ub, post_ub);
     let result_unbounded = net_unbounded.analyze_soundness();
