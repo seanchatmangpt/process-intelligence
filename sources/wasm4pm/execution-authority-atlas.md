@@ -70,3 +70,6 @@
 
 * **Step: map OCPQ runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: identify duplicated compat law**
+  - Defining engine execution requirements.
