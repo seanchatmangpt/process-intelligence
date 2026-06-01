@@ -16,3 +16,6 @@
 
 * **Step: map LossPolicy/LossReport law**
   - Evaluating type safety and witness validations.
+
+* **Step: map receipt-shaped evidence**
+  - Evaluating type safety and witness validations.
