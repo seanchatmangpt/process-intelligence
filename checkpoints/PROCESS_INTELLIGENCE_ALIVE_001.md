@@ -22,3 +22,6 @@ Total ALIVE_001 compliance is confirmed by the successful verification of the fi
 
 **Status Code:** 0x00 (SUCCESS)
 
+
+## SPR Thesis Anchored
+See doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md for the canonical research program manifesto.
