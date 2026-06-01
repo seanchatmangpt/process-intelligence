@@ -26,3 +26,6 @@
 
 ### Fixtures for aalst_2016_process_mining_action
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for aalst_2004_workflow_patterns
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
