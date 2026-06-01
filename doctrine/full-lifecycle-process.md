@@ -1,30 +1,57 @@
 # Full-Lifecycle Process Intelligence (FLPI)
 
 ## 1. The Imperative of Total Observation
-A process unobserved is a process compromised. FLPI asserts that intelligence must span the entire timeline of a process—from its dark-state genesis to its cryptographic terminus. This complete observation is verified through conformance alignments defined in the [Blue River Dam](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md) doctrine.
+A process unobserved is a process compromised. FLPI asserts that intelligence must span the entire timeline of a process—from its design-state genesis to its cryptographic terminus and archival. This complete observation is verified through conformance alignments defined in the [Blue River Dam](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md) doctrine.
 
-## 2. The FLPI Continuum and Mathematical Mapping
+## 2. The 12-Stage Lifecycle Calculus
+A process is not a single runtime trace; it is a lifecycle object. Let the lifecycle state set be:
+$$L = \{\text{Design}, \text{Simulation}, \text{Construction}, \text{Activation}, \text{Operation}, \text{Monitoring}, \text{Repair}, \text{Optimization}, \text{BoardProjection}, \text{Integration}, \text{Decommission}, \text{Archive}\}$$
+
+A valid process lifecycle is represented as a directed state machine:
+$$P : L_0 \xrightarrow{\tau_1} L_1 \xrightarrow{\tau_2} L_2 \xrightarrow{\tau_3} \dots \xrightarrow{\tau_n} L_n$$
+where every transition $\tau_i$ represents a structural phase shift:
+$$\tau_i : L_i \to L_{i+1}$$
+and every lawful transition must emit evidence:
+$$\rho(\tau_i) = R_i$$
+
+Therefore:
+$$\forall\tau_i \in \text{lifecycle}(P), \text{lawful}(\tau_i) \implies \exists R_i \text{ such that } R_i \text{ proves } \tau_i$$
+
+A lifecycle transition without a receipt is not a transition; it is a claim. Under the Blue River Dam containment rule, no lifecycle transition crosses the dam without admission, refusal, residual, or receipt:
+$$\forall\tau, \quad \kappa(\tau) \in \{\text{ADMIT}(R), \text{REFUSE}(F), \text{PARTIAL}(X)\}$$
+There is no silent success state.
+
+---
+
+## 3. Mathematical Mapping of FLPI Stages
+
 Each stage of the FLPI continuum maps to a formal property in the underlying Petri net process model $W = (P, T, F, i, o)$ and its execution trace $\sigma$:
 
-1.  **Dark State (Genesis)**:
-    - *Definition*: The theoretical origin of intent, defining the initial state space.
-    - *Formalism*: Initializing the marking $M_0 = [i]$. The system prepares the landing zone by binding execution variables to the source place $i$.
-2.  **Ontological Emergence**:
-    - *Definition*: The moment a process requests state formulation.
-    - *Formalism*: The VM compiler evaluates a proposed transition $t \in T$. This transition is checked against the global LTL safety policies $\Phi_{\text{Gov}}$ defined by the `ostar-governor`.
-3.  **Actuation (The Forge)**:
-    - *Definition*: The process manipulates data or manifests system changes.
-    - *Formalism*: The WASM VM fires transition $t$, updating marking $M_k \xrightarrow{t} M_{k+1}$ under the zero-latency constraints of [Autonomic Knowledge Actuation](file:///Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md).
-4.  **Audit & Receipt**:
-    - *Definition*: Immutable OTel traces and BLAKE3 receipts are generated.
-    - *Formalism*: The trace prefix $\sigma_{\le k}$ is committed to the unforgeable ledger. The `ostar-auditor` computes the real-time conformance alignment:
-      $$\text{Fitness}(\sigma_{\le k}, W) = 1.0$$
-      If the fitness drops below $1.0$, a violation is immediately raised.
-5.  **Terminus (Closure)**:
-    - *Definition*: Verification that the process completed its intended state transition without dropping logic.
-    - *Formalism*: The marking reaches the final sink place $o$ such that $M_n = [o]$, and no other tokens remain in the net (guaranteed by WF-net soundness). The `ostar-doctor` confirms closure and seals the execution envelope.
+1. **Design**: Specification of places, transitions, and flow relationships. Evaluates the coverability graph to prove WF-net soundness ($W$ is sound).
+2. **Simulation**: Generating synthetic traces $\sigma_{\text{syn}}$ under monte-carlo paths to evaluate soundness and calculate hypothetical metrics.
+3. **Construction**: Translating the Petri Net model into WASM-typed state machine types.
+4. **Activation**: Promoting the compiled WASM typestates into the active runtime environment, initializing $M_0 = [i]$.
+5. **Operation**: Execution of transitions by firing $M_k \xrightarrow{t} M_{k+1}$ under the control of [Autonomic Knowledge Actuation](file:///Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md).
+6. **Monitoring**: Ingestion of event streams, computing trace prefixes $\sigma_{\le k}$, and verifying fitness.
+7. **Repair**: Executing local adaptation transitions $t \in T_{\text{elastic}}$ to bypass bottlenecks without violating $\Phi_{\text{Gov}}$.
+8. **Optimization**: Mutating parameters or topology to minimize process debt and improve throughput.
+9. **BoardProjection**: Translating conformance metrics into executive PowerPoint assertions.
+10. **Integration**: Aligning dependencies and shared objects ($O_L$) across multiple event-object logs in OCPQ query trees.
+11. **Decommission**: Halting operations and closing all active dependencies.
+12. **Archive**: Compiling final replay bundles and sealing the ledger with final BLAKE3 receipts.
 
-## 3. AGI-Adversarial Posture: Eliminating Shadow-States
+---
+
+## 4. Decommissioning & Retirement Algorithm
+Process decommissioning is not merely deleting files; it is a lawful retirement process $\delta$ that preserves evidence lineage for historical audits.
+Let $P$ be the active process. The decommissioning function is defined as:
+$$\delta(P) \to \text{Retired}(P) + \text{Archive}(A) + \text{Receipt}(R_\delta)$$
+
+This transition is valid if and only if all dependencies are closed or refused, and all historical board claims have archived evidence:
+$$\forall \text{dep} \in \text{Dependencies}(P), \quad \text{Closed}(\text{dep}) \lor \text{Refused}(\text{dep})$$
+$$\forall \text{claim} \in \text{Claims}(P), \quad \text{ArchivedEvidence}(\text{claim}) \lor \text{RevokedClaim}(\text{claim})$$
+
+## 5. AGI-Adversarial Posture: Eliminating Shadow-States
 At every stage, FLPI assumes a hostile AGI is attempting to hijack the state transition or scaffold "ghost processes" (transitions executing outside the observed Petri net structure). 
 To prevent shadow-states:
 - **State Exhaustiveness**: The complete system state must be representable as a vector of tokens over the set of places $P$.

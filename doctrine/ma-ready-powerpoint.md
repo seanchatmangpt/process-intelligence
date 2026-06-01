@@ -25,5 +25,35 @@ Let $W = (P, T, F, i, o)$ be the current sound process model, and let $W' = (P',
 $$\forall \sigma \in L_{\text{history}}, \text{Fitness}(\sigma, W') \ge \theta_{\text{min}}$$
 where $\theta_{\text{min}}$ is the minimum acceptable alignment fitness threshold. This evolutionary pathway is managed under the [Full-Lifecycle Process Intelligence](file:///Users/sac/process-intelligence/doctrine/full-lifecycle-process.md) guidelines.
 
-## 3. The Value Proposition
-We are not selling a SaaS product or an AI tool. We are selling the inescapable gravity well of process truth. Acquiring this topography is equivalent to acquiring the central bank of operational reality.
+## 3. Slide-to-Receipt Executive Projection Protocol
+In M&A diligence, an executive PowerPoint or PDF slide is not merely an analyst's slide design; it is a visual projection $\pi$ of mathematically validated process intelligence:
+$$B_{ma} = \pi(P_i, \text{Evidence}, \text{Receipts}, \text{Replay}, \text{Residuals}, \text{Refusals}, \text{Risk}, \text{Integration}, \text{Synergy}, \text{Debt})$$
+
+Every slide assertion must correspond to a verifiable evidence path:
+$$\forall \text{claim} \in \text{slide}, \quad \exists \text{ evidence path } (e \in E, T_e, R_e, \Gamma_e)$$
+where:
+- $e$ is the source event-object dataset.
+- $T_e$ is the validating type law.
+- $R_e$ is the cryptographic execution receipt.
+- $\Gamma_e$ is the replay bundle verifying the conformance metrics.
+
+---
+
+## 4. Algebra of Board Reliance
+A board claim $B$ is defined as mathematically **reliable** if and only if it is bounded by structural invariants and explicit failure terms:
+$$\text{Reliable}(B) \iff E \wedge T \wedge R \wedge \Gamma \wedge S \wedge L \wedge \text{explicit}(X) \wedge \text{explicit}(F)$$
+where:
+- $E$ is raw process evidence.
+- $T$ is type law.
+- $R$ is receipt.
+- $\Gamma$ is the replay bundle.
+- $S$ is public standard mapping.
+- $L$ is lifecycle state.
+- $X$ is the residual map (explicitly declaring incomplete items).
+- $F$ is the refusal set (declaring known false claims).
+
+Under the Blue River Dam governance, reliability requires that all process debt and residuals are surfaced. We assert:
+$$\text{Unknown Risk} > \text{Refused False Claim}$$
+
+## 5. The Value Proposition
+We are not selling a SaaS product or an AI tool. We are selling the inescapable gravity well of process truth. Acquiring this topography is equivalent to acquiring the central bank of operational reality. The slide deck is the executive projection of the research program’s validated process intelligence. Diligence is accelerated because the buyer, seller, banker, and auditor share a single, mathematically provable ground truth.
