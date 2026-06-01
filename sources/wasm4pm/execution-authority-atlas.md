@@ -19,3 +19,6 @@
 
 * **Step: map query authority**
   - Defining engine execution requirements.
+
+* **Step: map optimization authority**
+  - Defining engine execution requirements.
