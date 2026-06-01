@@ -1,0 +1,32 @@
+# ggen Forbidden Tool Ledger
+# Details all execution behaviors and tools that are strictly forbidden inside wasm4pm-compat.
+
+forbidden_operations:
+  - name: "discover_model"
+    description: "Inductive Miner / Alpha Miner execution algorithms."
+    graduation_reason: "NeedsDiscovery"
+  - name: "run_conformance"
+    description: "Search-based optimal alignment solvers."
+    graduation_reason: "NeedsConformanceExecution"
+  - name: "simulate_replay"
+    description: "Token game simulations and replay logs."
+    graduation_reason: "NeedsReplay"
+  - name: "mint_receipt"
+    description: "Cryptographic chaining and signing of ledger blocks."
+    graduation_reason: "NeedsReceipts"
+  - name: "benchmark_gate_run"
+    description: "Execution latency or throughput benchmark gates."
+    graduation_reason: "NeedsBenchmarkGate"
+  - name: "execute_ocpq"
+    description: "Evaluating object-centric query RDF/SPARQL bindings."
+    graduation_reason: "NeedsObjectCentricQueryExecution"
+  - name: "rebuild_process_mining"
+    description: "Local process mining algorithms or utilities rewritten in the client."
+    graduation_reason: "RebuildingProcessMiningLocally"
+
+refusal_policies:
+  - violation: "Smuggling tool algorithms into compat WASM/TS features"
+    action: "REFUSE: execution-belongs-to-wasm4pm"
+    reasons:
+      - "Simulate replay and compute alignment must not be exported inside compat."
+      - "Compatibility crate is limited to interface structures; execution must graduate to wasm4pm."

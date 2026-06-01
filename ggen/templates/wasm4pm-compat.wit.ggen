@@ -1,0 +1,116 @@
+package {{ package_namespace | default("wasm4pm:compat") }};
+
+/// Types interface containing the structural representations of the Process Intelligence type system.
+interface types {
+    /// The external authority or standard that certifies the evidence shape.
+    enum witness-key {
+        {% for witness in witnesses | default(["ocel20", "xes1849", "wfnet-soundness", "powl-paper", "graduation-covenant"]) %}
+        {{ witness | kebab_case | default(witness) }},
+        {% endfor %}
+    }
+
+    /// The lifecycle tags for the universal evidence carrier.
+    enum evidence-state {
+        {% for state in evidence_states | default(["raw", "parsed", "admitted", "refused", "projected", "exportable", "receipted"]) %}
+        {{ state | kebab_case | default(state) }},
+        {% endfor %}
+    }
+
+    /// The states of the MAPE-K autonomic loop in Blue River.
+    enum lifecycle-state {
+        {% for state in lifecycle_states | default(["design", "simulation", "validation", "monitoring", "optimization", "repair", "decommission"]) %}
+        {{ state | kebab_case | default(state) }},
+        {% endfor %}
+    }
+
+    /// The reason why execution must graduate to the downstream wasm4pm engine.
+    enum graduation-reason {
+        {% for reason in graduation_reasons | default(["needs-discovery", "needs-conformance-execution", "needs-object-centric-query-execution", "needs-replay", "needs-receipts", "rebuilding-process-mining-locally"]) %}
+        {{ reason | kebab_case | default(reason) }},
+        {% endfor %}
+    }
+
+    /// Explicit named law failures represented in the component model.
+    variant refusal-reason {
+        {% for refusal in refusal_reasons | default([
+            "dangling-event-object-link(string)",
+            "missing-final-marking(string)",
+            "empty-trace(string)",
+            "missing-case-id(string)",
+            "invalid-timestamp-order(string)",
+            "unsound-wf-net(string)",
+            "projection-name-required(string)"
+        ]) %}
+        {{ refusal }},
+        {% endfor %}
+    }
+
+    /// A diagnostics wrapper detailing a refusal result.
+    record refusal-dto {
+        reason: refusal-reason,
+        witness-tag: witness-key,
+        message: string,
+    }
+
+    /// DTO wrapping evidence state.
+    record evidence-dto {
+        payload: string,
+        state-tag: evidence-state,
+        witness-tag: witness-key,
+        timestamp-ns: u64,
+    }
+
+    /// Attested admission certificate.
+    record admission-dto {
+        subject-id: string,
+        witness-tag: witness-key,
+        admitted-at-ns: u64,
+        integrity-hash: string,
+    }
+
+    /// Accountability receipt documenting validation actions.
+    record receipt-dto {
+        receipt-id: string,
+        produced-by: string,
+        witness-tag: witness-key,
+        result-hash: string,
+        timestamp-ns: u64,
+    }
+
+    /// Report containing loss metrics for lossy export formats.
+    record loss-report {
+        projection-name: string,
+        discarded-attributes: list<string>,
+        discarded-objects-count: u64,
+        retained-events-count: u64,
+    }
+
+    /// A package carrying structures ready to be sent to the execution engine.
+    record graduation-candidate {
+        candidate-id: string,
+        payload: string,
+        reason-tag: graduation-reason,
+        is-grounded: bool,
+    }
+}
+
+/// The structural compat-world. It does not import or export any computational operations.
+world compat-world {
+    import types;
+    use types.{witness-key, evidence-state, lifecycle-state, graduation-reason, refusal-reason, refusal-dto, evidence-dto, admission-dto, receipt-dto, loss-report, graduation-candidate};
+
+    /// Exported inspection of supported witnesses.
+    export get-witness-catalog: func() -> list<witness-key>;
+
+    /// Exported inspection of supported evidence states.
+    export get-state-tags: func() -> list<evidence-state>;
+
+    /// Structural verification gate: checks format schema compliance and returns an admission proof or a refusal diagnostics record.
+    export validate-admission-preconditions: func(payload: string, witness: witness-key) -> result<admission-dto, refusal-dto>;
+
+    /// Wraps structural data into a candidate ready for transmission to execution wasm4pm.
+    export create-graduation-candidate: func(payload: string, reason: graduation-reason) -> graduation-candidate;
+
+    /// Constructor for formatting loss bounds details.
+    export create-loss-report: func(projection-name: string, discarded-attributes: list<string>, discarded-objects-count: u64, retained-events-count: u64) -> loss-report;
+}

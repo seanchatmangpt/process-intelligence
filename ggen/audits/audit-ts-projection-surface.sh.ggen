@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+
+# Automatically generated audit script to verify TypeScript projection surfaces.
+# Configured via code generator.
+#
+# Variables:
+# - bindings_file: Path to the generated TypeScript bindings file.
+# - expected_types: List of types that must be present in the bindings (space-separated).
+# - casing_rule: Expected field casing rule (camelCase | snake_case | PascalCase | none).
+# - validate_typescript: Boolean (true | false) to run TSC syntax verification.
+
+set -eo pipefail
+
+BINDINGS_FILE="{{ bindings_file }}"
+EXPECTED_TYPES=({{ expected_types }})
+CASING_RULE="{{ casing_rule }}"
+VALIDATE_TYPESCRIPT="{{ validate_typescript }}"
+
+# Formatting colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}[AUDIT] Starting TypeScript type-projection surface audit...${NC}"
+echo -e "${BLUE}[AUDIT] Target Bindings File: ${BINDINGS_FILE}${NC}"
+
+# Checkpoint 1: File Existence
+echo -e "\n${BLUE}[CHECKPOINT 1/5] Checking file existence...${NC}"
+if [ ! -f "$BINDINGS_FILE" ]; then
+    echo -e "${RED}[ERROR] Target bindings file '$BINDINGS_FILE' does not exist!${NC}"
+    exit 1
+fi
+echo -e "${GREEN}[SUCCESS] Bindings file is present.${NC}"
+
+# Checkpoint 2: Core Types Registration Verification
+echo -e "\n${BLUE}[CHECKPOINT 2/5] Verifying expected types are exported...${NC}"
+FAILED_TYPES=0
+for TYPE in "${EXPECTED_TYPES[@]}"; do
+    # Search for exported type alias or interface definitions
+    # Match patterns like: export type TYPE = ... or export interface TYPE ... or export type TYPE<...
+    if ! grep -E -q "export[[:space:]]+(type|interface)[[:space:]]+${TYPE}([[:space:]]*<|[[:space:]]*=|[[:space:]]+\{)" "$BINDINGS_FILE"; then
+        echo -e "${RED}[FAIL] Missing export definition for type: '${TYPE}'${NC}"
+        FAILED_TYPES=$((FAILED_TYPES + 1))
+    else
+        echo -e "${GREEN}[OK] Verified export of: '${TYPE}'${NC}"
+    fi
+done
+
+if [ "$FAILED_TYPES" -gt 0 ]; then
+    echo -e "${RED}[ERROR] Type verification failed. $FAILED_TYPES required type(s) were missing from the projection surface.${NC}"
+    exit 2
+fi
+echo -e "${GREEN}[SUCCESS] All expected types are exported successfully.${NC}"
+
+# Checkpoint 3: Forbidden Anti-Patterns & Safety Checks
+echo -e "\n${BLUE}[CHECKPOINT 3/5] Scanning for forbidden type safety violations...${NC}"
+VIOLATIONS=0
+
+# Scan for unresolved "any" types which indicate fallbacks/unmapped Rust types
+# Exclude lines that are part of comments or standard code words that contain "any" (like company, etc.)
+ANY_COUNT=$(grep -oE "[[:space:]]+any([[:space:]]*;|[[:space:]]*\||[[:space:]]*\[|[[:space:]]*\))" "$BINDINGS_FILE" | wc -l | tr -d ' ')
+if [ "$ANY_COUNT" -gt 0 ]; then
+    echo -e "${YELLOW}[WARNING] Found $ANY_COUNT potential 'any' type references in bindings file. Checking for safety...${NC}"
+    grep -n -E "[[:space:]]+any([[:space:]]*;|[[:space:]]*\||[[:space:]]*\[|[[:space:]]*\))" "$BINDINGS_FILE" || true
+    # We treat 'any' as a critical structural regression if strict safety is demanded
+    VIOLATIONS=$((VIOLATIONS + 1))
+fi
+
+# Check for empty type aliases which represent failed serializations or incomplete structs
+EMPTY_TYPES=$(grep -n -E "export[[:space:]]+type[[:space:]]+[a-zA-Z0-9_]+[[:space:]]*=[[:space:]]*\{\s*\};?" "$BINDINGS_FILE" | wc -l | tr -d ' ')
+if [ "$EMPTY_TYPES" -gt 0 ]; then
+    echo -e "${RED}[FAIL] Found $EMPTY_TYPES empty type definitions (e.g. 'type X = {}'). This indicates serialization errors!${NC}"
+    grep -n -E "export[[:space:]]+type[[:space:]]+[a-zA-Z0-9_]+[[:space:]]*=[[:space:]]*\{\s*\};?" "$BINDINGS_FILE" || true
+    VIOLATIONS=$((VIOLATIONS + 1))
+fi
+
+if [ "$VIOLATIONS" -gt 0 ]; then
+    echo -e "${RED}[ERROR] Anti-patterns and safety checks failed. Please inspect structural integrity.${NC}"
+    exit 3
+fi
+echo -e "${GREEN}[SUCCESS] No forbidden structural patterns detected.${NC}"
+
+# Checkpoint 4: Field Name Casing Enforcement
+echo -e "\n${BLUE}[CHECKPOINT 4/5] Enforcing casing projection rules...${NC}"
+if [ "$CASING_RULE" = "camelCase" ]; then
+    # Look for snake_case keys (containing underscores inside curly braces/definitions)
+    # This regex searches inside struct definition fields for alphanumeric strings with underscores followed by ':'
+    SNAKE_KEYS=$(grep -E -o "[a-z0-9]+_[a-z0-9_]*[[:space:]]*:" "$BINDINGS_FILE" || true)
+    if [ -n "$SNAKE_KEYS" ]; then
+        echo -e "${RED}[FAIL] Casing policy is set to 'camelCase' but snake_case keys were found in the export surface:${NC}"
+        echo "$SNAKE_KEYS" | sed 's/^/  - /'
+        exit 4
+    fi
+    echo -e "${GREEN}[SUCCESS] No snake_case keys found. Casing policy complies with 'camelCase'.${NC}"
+elif [ "$CASING_RULE" = "snake_case" ]; then
+    # Look for camelCase keys (lowercase letter followed by uppercase letter before the colon)
+    CAMEL_KEYS=$(grep -E -o "[a-z0-9]+[A-Z][a-zA-Z0-9_]*[[:space:]]*:" "$BINDINGS_FILE" || true)
+    if [ -n "$CAMEL_KEYS" ]; then
+        echo -e "${RED}[FAIL] Casing policy is set to 'snake_case' but camelCase keys were found in the export surface:${NC}"
+        echo "$CAMEL_KEYS" | sed 's/^/  - /'
+        exit 4
+    fi
+    echo -e "${GREEN}[SUCCESS] No camelCase keys found. Casing policy complies with 'snake_case'.${NC}"
+else
+    echo -e "${YELLOW}[INFO] Casing rule is set to '$CASING_RULE'. Skipping casing checks.${NC}"
+fi
+
+# Checkpoint 5: Optional TSC Syntax Validation
+echo -e "\n${BLUE}[CHECKPOINT 5/5] Running TypeScript compiler syntax validation...${NC}"
+if [ "$VALIDATE_TYPESCRIPT" = "true" ]; then
+    if ! command -v npx &> /dev/null; then
+        echo -e "${YELLOW}[WARNING] npx/npm command not found. Skipping compiler validation.${NC}"
+    else
+        echo -e "${BLUE}[INFO] Running 'npx tsc --noEmit' syntax verification...${NC}"
+        # Create a temp directory for compiling the isolated bindings file
+        TEMP_DIR=$(mktemp -d)
+        cp "$BINDINGS_FILE" "$TEMP_DIR/bindings.ts"
+        
+        # Write a dummy tsconfig.json to compile the file in strict mode
+        cat <<EOF > "$TEMP_DIR/tsconfig.json"
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true
+  },
+  "files": ["bindings.ts"]
+}
+EOF
+        if (cd "$TEMP_DIR" && npx tsc); then
+            echo -e "${GREEN}[SUCCESS] TSC syntax and strict validation passed successfully.${NC}"
+        else
+            echo -e "${RED}[FAIL] TSC compile validation failed on generated bindings!${NC}"
+            rm -rf "$TEMP_DIR"
+            exit 5
+        fi
+        rm -rf "$TEMP_DIR"
+    fi
+else
+    echo -e "${YELLOW}[INFO] TSC validation disabled. Skipping compiler check.${NC}"
+fi
+
+echo -e "\n${GREEN}[AUDIT COMPLETE] TypeScript projection surface matches all mapping laws successfully!${NC}"
+exit 0

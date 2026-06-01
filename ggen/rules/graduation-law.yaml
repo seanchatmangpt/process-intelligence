@@ -1,0 +1,15 @@
+graduation_policy:
+  compat_to_engine:
+    requirements:
+      - 100_percent_test_coverage
+      - ostar_auditor_compliance_receipt
+      - no_forbidden_tools
+  forbidden_tools:
+    - eval
+    - Function_constructor
+    - process_exit
+    - child_process_exec_direct
+  wasm4pm_governance:
+    receipt_requirement:
+      hash_algorithm: BLAKE3
+      log_path: /artifacts/proof_manifest.json

@@ -1,0 +1,189 @@
+# ggen WIT Surface Ledger - wasm4pm-compat
+# Intel asset detailing the exact mapping rules from Rust types to WIT counterparts.
+
+version: "1.0.0"
+doctrine: "Rust structures are projected to WIT DTO records. Zero-sized phantom markers are flattened into enum tags."
+
+mappings:
+  - rust_type: "Evidence<T, State, W>"
+    wit_type: "record evidence-dto"
+    boundary_category: "Structural"
+    description: "The universal process-evidence container wrapping payload T, state tag State, and witness W."
+    projection_rule: "The generic type parameter T is serialized into a string payload (JSON-formatted), and the zero-sized state and witness type markers are projected into enum tags."
+    wit_snippet: |
+      record evidence-dto {
+          payload: string,
+          state-tag: evidence-state,
+          witness-tag: witness-key,
+          timestamp-ns: u64,
+      }
+
+  - rust_type: "Admission<T, W>"
+    wit_type: "record admission-dto"
+    boundary_category: "Structural"
+    description: "Certified admission representation indicating that data T conforms to standard W."
+    projection_rule: "Translates into an admission-dto record carrying the subject reference, the certifying witness key, and the admission timestamp. It drops compile-time phantom assertions."
+    wit_snippet: |
+      record admission-dto {
+          subject-id: string,
+          witness-tag: witness-key,
+          admitted-at-ns: u64,
+          integrity-hash: string,
+      }
+
+  - rust_type: "Refusal<R, W>"
+    wit_type: "record refusal-dto"
+    boundary_category: "Structural"
+    description: "Sealed structural law violation indicating failure to admit evidence under law R certified by witness W."
+    projection_rule: "Converts the generic reason type R into a typed variant of refusal-reason, capturing structural diagnostics alongside the witness tag."
+    wit_snippet: |
+      record refusal-dto {
+          reason: refusal-reason,
+          witness-tag: witness-key,
+          message: string,
+      }
+
+  - rust_type: "Receipt<T, W>"
+    wit_type: "record receipt-dto"
+    boundary_category: "Structural"
+    description: "Cryptographic proof receipt documenting execution outcomes under specific law witnesses."
+    projection_rule: "Maps compile-time receipt variables to flat BLAKE3 hash strings and execution metrics."
+    wit_snippet: |
+      record receipt-dto {
+          receipt-id: string,
+          produced-by: string,
+          witness-tag: witness-key,
+          result-hash: string,
+          timestamp-ns: u64,
+      }
+
+  - rust_type: "LossReport"
+    wit_type: "record loss-report"
+    boundary_category: "Structural"
+    description: "Document reporting lossy translation bounds, indicating discarded schema elements."
+    projection_rule: "Direct structure-to-structure copy. Maps Rust String vectors to WIT string lists."
+    wit_snippet: |
+      record loss-report {
+          projection-name: string,
+          discarded-attributes: list<string>,
+          discarded-objects-count: u64,
+          retained-events-count: u64,
+      }
+
+  - rust_type: "LossPolicy"
+    wit_type: "enum loss-policy"
+    boundary_category: "Structural"
+    description: "Action policy for lossy translation bounds."
+    projection_rule: "Rust enum with unit-variants maps directly to a WIT enum."
+    wit_snippet: |
+      enum loss-policy {
+          refuse-loss,
+          allow-named-projection,
+          allow-loss-with-report,
+      }
+
+  - rust_type: "GraduationCandidate<T>"
+    wit_type: "record graduation-candidate"
+    boundary_category: "Structural"
+    description: "Candidate structure representing an intake shape slated for graduation into the execution engine."
+    projection_rule: "Wraps the serialized target type and the explicit graduation reason tag."
+    wit_snippet: |
+      record graduation-candidate {
+          candidate-id: string,
+          payload: string,
+          reason-tag: graduation-reason,
+          is-grounded: bool,
+      }
+
+  - rust_type: "LifecycleState"
+    wit_type: "enum lifecycle-state"
+    boundary_category: "Structural"
+    description: "The current phase tag of the process intelligence MAPE-K autonomic loop."
+    projection_rule: "Maps Rust unit variants to a kebab-case WIT enum representation."
+    wit_snippet: |
+      enum lifecycle-state {
+          design,
+          simulation,
+          validation,
+          monitoring,
+          optimization,
+          repair,
+          decommission,
+      }
+
+  - rust_type: "WitnessKey"
+    wit_type: "enum witness-key"
+    boundary_category: "Structural"
+    description: "Unique enum tagging external law, standard, or paper grounding the evidence assertions."
+    projection_rule: "Maps registered witness types directly to unique enum fields."
+    wit_snippet: |
+      enum witness-key {
+          ocel20,
+          xes1849,
+          wfnet-soundness,
+          powl-paper,
+          graduation-covenant,
+      }
+
+  - rust_type: "RefusalReason / Named Laws"
+    wit_type: "variant refusal-reason"
+    boundary_category: "Structural"
+    description: "Variant mapping representing all valid named laws and structural check failures."
+    projection_rule: "Each distinct Rust zero-sized struct mapping a named law becomes a variant case in WIT, with a string carrying the diagnostic message."
+    wit_snippet: |
+      variant refusal-reason {
+          dangling-event-object-link(string),
+          missing-final-marking(string),
+          empty-trace(string),
+          missing-case-id(string),
+          invalid-timestamp-order(string),
+          unsound-wf-net(string),
+          projection-name-required(string),
+      }
+
+  - rust_type: "GraduationReason"
+    wit_type: "enum graduation-reason"
+    boundary_category: "Structural"
+    description: "Explicit reason why structure requires execution engine graduation."
+    projection_rule: "Maps the Rust enum directly into WIT enum values."
+    wit_snippet: |
+      enum graduation-reason {
+          needs-discovery,
+          needs-conformance-execution,
+          needs-object-centric-query-execution,
+          needs-replay,
+          needs-receipts,
+          rebuilding-process-mining-locally,
+      }
+
+  - rust_type: "ConformanceVerdict"
+    wit_type: "record conformance-verdict"
+    boundary_category: "Behavioral"
+    description: "Resulting verdict from conformance checks executed in wasm4pm."
+    projection_rule: "Kept strictly in engine exports. Captures fitness/precision rational ratios as decimal values."
+    wit_snippet: |
+      record conformance-verdict {
+          verdict-id: string,
+          fitness: f64,
+          precision: f64,
+          is-admissible: bool,
+          verdict-timestamp-ns: u64,
+      }
+
+wit_worlds:
+  compat:
+    description: "Crate-level structural boundary exports. Must contain only structural definitions and validators."
+    exports:
+      - "get-witness-catalog"
+      - "get-state-tags"
+      - "validate-admission-preconditions"
+      - "create-graduation-candidate"
+      - "create-loss-report"
+  engine:
+    description: "Downstream execution engine world containing computation, token replay, and mining algorithms."
+    imports:
+      - "compat"
+    exports:
+      - "discover-model"
+      - "compute-conformance"
+      - "replay-log"

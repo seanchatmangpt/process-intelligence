@@ -1,0 +1,404 @@
+version: "30.1.2"
+classification: "Allowed Projection Surfaces Authority Map"
+authority: "GGEN Ecosystem Intelligence Layer"
+date: "2026-06-01"
+description: >
+  This map defines which ecosystem tools and standards can be used for projection manufacturing
+  to each of the three target platforms (TypeScript/Browser, WebAssembly/WASM ABI, Component Model).
+  It specifies the projection toolchain for each target and validates that only structural (non-execution)
+  capabilities are exported across each boundary.
+
+projection_targets:
+  ts:
+    name: "TypeScript Browser Projection Lane"
+    description: "Rust types project to TypeScript interface definitions for browser consumption via npm packages."
+    tools:
+      - name: "Specta"
+        role: "Core type introspection and TS code generation"
+        authority: "Specta project"
+        capabilities:
+          - Rust struct/enum inspection
+          - Generic type parameter detection
+          - TS interface generation
+          - Doc comment harvesting
+        constraints:
+          - "All exported types must derive Type"
+          - "All exported types must derive Serialize/Deserialize"
+          - "Generic Evidence<T, State, W> must be monomorphized to concrete DTO"
+          - "Witness markers (Raw, Admitted, Ocel20, etc.) must project as brand tokens in TS"
+          - "All refusal reasons must be named (no catch-all strings)"
+        feature_gate: "ts"
+        required_dependencies:
+          - specta
+          - specta-serde (optional but recommended)
+          - specta-typescript
+          - serde
+
+      - name: "tsify"
+        role: "Rust-to-WASM TypeScript ABI boundary marshaling"
+        authority: "tsify crate"
+        capabilities:
+          - Type signature validation for WASM ABI
+          - Serialization/deserialization across JS-WASM boundary
+          - serde-wasm-bindgen integration
+        constraints:
+          - "All DTO types must derive Tsify"
+          - "Must enforce #[tsify(into_wasm_abi, from_wasm_abi)] annotations"
+          - "No dyn Trait exports"
+          - "No lifetime-bound references"
+          - "No raw pointers"
+        feature_gate: "ts"
+        required_dependencies:
+          - tsify
+          - serde-wasm-bindgen
+          - wasm-bindgen
+
+    output_artifacts:
+      - bindings.ts (TypeScript interface definitions)
+      - package.json (npm metadata)
+      - tsconfig.json (TS compilation config)
+    boundary_validations:
+      - "No execution engines (miners, replay, conformance solvers, OCPQ evaluators)"
+      - "No cryptographic signing or receipt minting"
+      - "No process discovery algorithms"
+      - "All exported functions are structural validators, not executors"
+    graduation_triggers:
+      - "NeedsDiscovery"
+      - "NeedsConformanceExecution"
+      - "NeedsReplay"
+      - "NeedsReceipts"
+      - "NeedsBenchmarkGate"
+      - "NeedsObjectCentricQueryExecution"
+      - "RebuildingProcessMiningLocally"
+
+  wasm:
+    name: "WebAssembly Projection Lane"
+    description: "Rust types and functions project to WASM module boundaries with JS FFI glue; packaged as npm WASM binary."
+    tools:
+      - name: "wasm-bindgen"
+        role: "Low-level WASM-to-JS FFI compiler and glue code generator"
+        authority: "Rust WebAssembly Working Group (RWWG)"
+        capabilities:
+          - FFI function signature generation
+          - ABI-safe type validation
+          - Memory management across WASM boundary
+          - Exported class wrapping
+        constraints:
+          - "Only ABI-safe types (primitives, strings, arrays, structs without traits)"
+          - "No trait objects"
+          - "No lifetime-bound references in exported signatures"
+          - "Classes must be manually freed via .free()"
+        feature_gate: "wasm"
+        required_dependencies:
+          - wasm-bindgen
+
+      - name: "tsify"
+        role: "Rust-to-WASM TypeScript ABI boundary marshaling"
+        authority: "tsify crate"
+        capabilities:
+          - Type-safe serialization across WASM boundary
+          - serde-wasm-bindgen integration
+          - Monomorphization of generic types
+        constraints:
+          - "All exported DTOs must derive Tsify"
+          - "#[tsify(into_wasm_abi, from_wasm_abi)] required"
+          - "No generic Evidence<T, State, W> directly exported"
+          - "All witness markers must resolve to enum tags in DTO"
+        feature_gate: "wasm"
+        required_dependencies:
+          - tsify
+          - serde-wasm-bindgen
+
+      - name: "wasm-pack"
+        role: "Build orchestrator and npm package generator"
+        authority: "Rust WebAssembly Working Group (RWWG)"
+        capabilities:
+          - Cargo build coordination
+          - wasm-bindgen CLI invocation
+          - npm package structure generation
+          - .d.ts type definition bundling
+        constraints:
+          - "Build target must be specified (--target bundler, --target web, --target nodejs)"
+          - "Feature flags must be explicitly passed"
+          - "Generated package.json must have types field pointing to .d.ts"
+        feature_gate: "wasm"
+        required_dependencies:
+          - wasm-pack (CLI tool)
+
+    output_artifacts:
+      - "*.wasm (WebAssembly binary)"
+      - "*.js (JavaScript FFI glue code)"
+      - "*.d.ts (TypeScript type definitions)"
+      - "package.json (npm metadata with types field)"
+    boundary_validations:
+      - "No discovery algorithms"
+      - "No conformance solvers"
+      - "No replay execution"
+      - "No receipt minting or cryptographic operations"
+      - "No OCPQ query evaluation"
+      - "All exported functions are structural validators only"
+    graduation_triggers:
+      - "NeedsDiscovery"
+      - "NeedsConformanceExecution"
+      - "NeedsReplay"
+      - "NeedsReceipts"
+      - "NeedsBenchmarkGate"
+      - "NeedsObjectCentricQueryExecution"
+      - "RebuildingProcessMiningLocally"
+
+  component:
+    name: "Component Model Projection Lane"
+    description: "Rust types project to WIT interface definitions for portable, host-independent component interfaces."
+    tools:
+      - name: "WIT (WebAssembly Interface Type Language)"
+        role: "Language-neutral interface contract definition"
+        authority: "W3C WebAssembly Community Group"
+        capabilities:
+          - Record type definition (Evidence-DTO, Admission-DTO, Refusal-DTO, Receipt-DTO)
+          - Enum and variant definition
+          - Function and method signature specification
+          - World (namespace) definition for compat-world vs. engine-world
+        constraints:
+          - "All Evidence variants map to WIT record with payload, state-tag, witness-tag, timestamp-ns"
+          - "Witness markers must project to enum/variant tags"
+          - "Refusal reasons must be represented as `variant refusal-reason`"
+          - "GraduationCandidate must carry candidate-id, payload, reason-tag, is-grounded fields"
+          - "No execution functions in compat-world exports"
+        feature_gate: "component"
+        required_dependencies:
+          - wit-bindgen
+
+      - name: "wit-bindgen"
+        role: "WIT binding generator and Canonical ABI implementation"
+        authority: "BytecodeAlliance (WASM Component Model reference implementation)"
+        capabilities:
+          - Rust source code generation from WIT definitions
+          - Canonical ABI lifting/lowering implementation
+          - Import/export function signature generation
+          - Resource type lifetime management
+        constraints:
+          - "Generated Rust structs must match WIT record definitions exactly"
+          - "All refusal-reason variants must be represented"
+          - "GraduationCandidate must implement is_grounded() method"
+          - "No solver, replay, or mining logic in generated exports"
+        feature_gate: "component"
+        required_dependencies:
+          - wit-bindgen
+
+    output_artifacts:
+      - "*.wit (WebAssembly Interface Type definitions)"
+      - "src/bindings.rs (wit-bindgen generated bindings)"
+      - "component.wasm (portable component module)"
+    world_boundaries:
+      compat_world:
+        description: "Structural-only exports from wasm4pm-compat"
+        allowed_exports:
+          - "get-witness-catalog (enum WitnessKey variants)"
+          - "get-state-tags (enum EvidenceState variants)"
+          - "validate-admission-preconditions (structural validation)"
+          - "create-graduation-candidate (structuring graduation intent)"
+          - "create-loss-report (documenting lossy projections)"
+        forbidden_exports:
+          - "discover-model"
+          - "compute-conformance"
+          - "replay-log"
+          - "mint-receipt"
+          - "benchmark-gate-run"
+          - "execute-ocpq"
+          - "rebuild-process-mining"
+
+      engine_world:
+        description: "Execution-allowed exports from wasm4pm engine downstream"
+        allowed_exports:
+          - "discover-model (process discovery algorithms)"
+          - "compute-conformance (A* alignment solvers)"
+          - "replay-log (token game simulation)"
+          - "mint-receipt (cryptographic chaining)"
+          - "benchmark-gate-run (performance validation)"
+          - "execute-ocpq (object-centric query evaluation)"
+          - "rebuild-process-mining (full-spectrum mining support)"
+
+    boundary_validations:
+      - "compat-world contains ONLY structural definitions"
+      - "engine-world imports compat-world as a dependency"
+      - "No solver, discovery, or execution logic in compat-world exports"
+      - "All graduation candidates properly grounded (non-empty subject and evidence_ref)"
+    graduation_triggers:
+      - "NeedsDiscovery"
+      - "NeedsConformanceExecution"
+      - "NeedsReplay"
+      - "NeedsReceipts"
+      - "NeedsBenchmarkGate"
+      - "NeedsObjectCentricQueryExecution"
+      - "RebuildingProcessMiningLocally"
+
+# Projection Toolchain Sequences
+toolchains:
+  ts_npm_package:
+    name: "TypeScript to NPM Package"
+    description: "Exports Rust Evidence and Witness types as TypeScript interfaces."
+    sequence:
+      - step: 1
+        tool: "rustdoc"
+        action: "cargo rustdoc --output-format json"
+        output: "Public API schema"
+      - step: 2
+        tool: "Specta"
+        action: "Derive Type on all exportable structs"
+        output: "TypeScript interface definitions"
+      - step: 3
+        tool: "specta-serde"
+        action: "Apply serde attribute transformations"
+        output: "Serialization-aware type definitions"
+      - step: 4
+        tool: "specta-typescript"
+        action: "Generate .ts files"
+        output: "bindings.ts"
+      - step: 5
+        tool: "npm"
+        action: "Package for distribution"
+        output: "npm package (publishable)"
+    feature_gates:
+      - "ts"
+    validation_checkpoints:
+      - "All exported types are projectable (from projectable-type-ledger.yaml)"
+      - "No forbidden execution tools are exported (from forbidden-tool-ledger.yaml)"
+      - "All witness markers preserve generic parameters as brand tokens"
+
+  wasm_npm_package:
+    name: "WebAssembly to NPM Package"
+    description: "Exports Rust functions and DTOs as WASM binary with JS glue and TS types."
+    sequence:
+      - step: 1
+        tool: "Specta"
+        action: "Generate TS interface definitions"
+        output: "TypeScript bindings"
+      - step: 2
+        tool: "tsify"
+        action: "Derive Tsify on all exported DTOs"
+        output: "ABI-marshalable type definitions"
+      - step: 3
+        tool: "wasm-bindgen"
+        action: "Generate FFI glue and attribute macros"
+        output: "JavaScript FFI bindings"
+      - step: 4
+        tool: "wasm-pack"
+        action: "cargo build + wasm-bindgen CLI + npm packaging"
+        output: ".wasm binary, .js glue, .d.ts definitions, package.json"
+      - step: 5
+        tool: "npm"
+        action: "Publish to registry"
+        output: "Published npm WASM package"
+    feature_gates:
+      - "ts"
+      - "wasm"
+    validation_checkpoints:
+      - "All exported functions use ABI-safe type signatures"
+      - "No generic Evidence<T, State, W> exported directly (must monomorphize to DTO)"
+      - "All DTOs derive both Tsify and serde traits"
+      - "No trait objects or lifetime-bound references in FFI signatures"
+
+  component_portable:
+    name: "Component Model Portable Interface"
+    description: "Exports Rust types as WIT definitions for language-neutral component consumption."
+    sequence:
+      - step: 1
+        tool: "rustdoc"
+        action: "Introspect public types"
+        output: "Type schema"
+      - step: 2
+        tool: "WIT"
+        action: "Define record types (Evidence-DTO, Admission-DTO, etc.) and worlds"
+        output: "*.wit interface definitions"
+      - step: 3
+        tool: "wit-bindgen"
+        action: "Generate Rust source from WIT"
+        output: "src/bindings.rs with Canonical ABI implementation"
+      - step: 4
+        tool: "wasm-pack"
+        action: "cargo build --target wasm32-unknown-unknown"
+        output: "component.wasm (portable WASM module)"
+      - step: 5
+        tool: "Component Runtime"
+        action: "Load and instantiate component on host"
+        output: "Language-neutral interface available to host"
+    feature_gates:
+      - "component"
+    validation_checkpoints:
+      - "All WIT records match Rust struct definitions exactly"
+      - "compat-world exports are structural-only"
+      - "GraduationCandidate is properly represented as WIT record with is-grounded field"
+      - "All refusal-reason variants are enumerated"
+
+# Cross-Projection Validation Rules
+cross_projection_rules:
+  monomorphization_rule:
+    description: "Generic types must be monomorphized before crossing boundaries"
+    applies_to:
+      - ts
+      - wasm
+      - component
+    rule: |
+      Generic Evidence<T, State, W> cannot be directly exported to TS/WASM/Component.
+      GGEN must generate concrete monomorphic DTOs:
+      - EvidenceDto { payload: String, state_tag: String, witness_tag: String, timestamp_ns: u64 }
+      - AdmissionDto { subject_id: String, witness_tag: String, admitted_at_ns: u64, integrity_hash: String }
+      - RefusalDto { reason: named_variant, witness_tag: String, message: String }
+      - ReceiptDto { receipt_id: String, produced_by: String, witness_tag: String, result_hash: String, timestamp_ns: u64 }
+
+  named_refusal_rule:
+    description: "No generic error strings; all refusals must map to named law variants"
+    applies_to:
+      - ts
+      - wasm
+      - component
+    rule: |
+      Every refusal in Evidence<T, State, W> must project to a named variant from type-law-atlas:
+      - HashMismatch
+      - TemporalAnomaly
+      - CausalDisconnect
+      - TypeViolation
+      - InvalidSignature
+      - LatticeViolation
+      - DanglingEventObjectLink
+      - MissingFinalMarking
+      - EmptyTrace
+      - MissingCaseId
+      - InvalidTimestampOrder
+      - UnsoundWfNet
+      - ProjectionNameRequired
+
+  witness_lattice_rule:
+    description: "Witness markers must preserve semilattice ordering invariants"
+    applies_to:
+      - ts
+      - wasm
+      - component
+    rule: |
+      Witness lattice can only join upward: W1 ⊆ W2
+      This must be enforced in both Rust type system (via phantom markers) and
+      in exported TS/WASM/Component interfaces (via enum/tag constraints).
+
+  no_tool_smuggling_rule:
+    description: "Absolute ban on execution engine capabilities"
+    applies_to:
+      - ts
+      - wasm
+      - component
+    forbidden_operations:
+      - discover_model (Alpha/Inductive Miner)
+      - run_conformance (A* alignment solvers)
+      - simulate_replay (token game simulation)
+      - mint_receipt (cryptographic chaining)
+      - benchmark_gate_run (performance validation)
+      - execute_ocpq (RDF/SPARQL evaluation)
+      - rebuild_process_mining (local mining implementations)
+    action: "REFUSE: execution-belongs-to-wasm4pm"
+
+# Summary
+summary:
+  total_allowed_projection_tools: 7
+  projection_lanes: 3
+  toolchains: 3
+  cross_projection_rules: 4
+  boundary_world_count: 2

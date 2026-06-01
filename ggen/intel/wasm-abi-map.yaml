@@ -1,0 +1,20 @@
+# ggen Wasm ABI Map
+# Maps exported WASM functions to their generated DTO definitions and receipt paths.
+
+version: "1.0.0"
+
+abi_registry:
+  - export_name: "process_log_replay"
+    dto_type: "ReplayDTO"
+    receipt_path: "/src/compat/receipts/replay.receipt.json"
+    engine_source: "src/wasm_engine/replay.rs"
+
+  - export_name: "validate_trace"
+    dto_type: "TraceValidationDTO"
+    receipt_path: "/src/compat/receipts/validation.receipt.json"
+    engine_source: "src/wasm_engine/validation.rs"
+
+  - export_name: "discover_process_model"
+    dto_type: "ModelDiscoveryDTO"
+    receipt_path: "/src/compat/receipts/discovery.receipt.json"
+    engine_source: "src/wasm_engine/discovery.rs"

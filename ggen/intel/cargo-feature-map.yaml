@@ -1,0 +1,48 @@
+# ggen Cargo Feature Map - wasm4pm-compat
+# Intel asset detailing Cargo features, optional dependency maps, and boundary rules.
+
+features:
+  default:
+    - formats
+  formats:
+    description: "Core compatibility mapping, import/export contracts, and lossy projection reports."
+    dependencies: []
+  strict:
+    description: "Opt-in boundary judgment and stricter type-law enforcement."
+    dependencies: []
+  ts:
+    description: "TypeScript browser-safe law projections using Specta."
+    dependencies:
+      - dep:specta
+      - dep:serde
+      - dep:tsify
+      - dep:wasm-bindgen
+  wasm:
+    description: "WASM ABI boundary projections, state catalogs, and structural validations."
+    dependencies:
+      - dep:wasm-bindgen
+      - dep:serde-wasm-bindgen
+      - dep:tsify
+      - dep:serde
+  component:
+    description: "WebAssembly Component Model WIT interface bindings."
+    dependencies:
+      - dep:wit-bindgen
+  wasm4pm:
+    description: "Bridge traits and explicit graduation candidates toward the execution engine."
+    dependencies: []
+
+feature_unification_effects:
+  unification_rule: "Cargo features are unified globally across the build graph."
+  effect_details:
+    - "Enabling 'ts' or 'wasm' in a downstream application compiles these dependencies for the whole workspace."
+    - "Core algorithms in wasm4pm-compat must remain uninfluenced by feature enablement to preserve correctness."
+    - "Optional dependencies must only add serialization capabilities (derive macros), never run execution logic."
+
+refusal_rules:
+  rule_id: "tool-smuggling-into-compat"
+  trigger: "If features 'ts' or 'wasm' import discovery, replay, conformance, or OCPQ engines."
+  reasons:
+    - "Execution engines belong downstream in wasm4pm; compat is strictly structure-only."
+    - "Smuggling execution code invalidates the thin-client warranty of the compatibility crate."
+  action: "REFUSE: tool-smuggling-into-compat"

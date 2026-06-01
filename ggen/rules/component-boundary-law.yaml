@@ -1,0 +1,72 @@
+# ggen Component Boundary Law - wasm4pm-compat
+# Constitutional rules governing WebAssembly Interface Type (WIT) specifications and Component Model boundaries.
+
+version: "1.0.0"
+doctrine: "Structure belongs in compat-world. Execution belongs in engine-world. Interfaces must prevent raw laundering and tool smuggling."
+
+rules:
+  - id: "wit-world-segregation"
+    description: "The compat-world and engine-world must maintain strict boundary segregation. Compat is structure-only; engine is computation-only."
+    scope: "WIT World definitions"
+    trigger: "Compilation of WIT worlds"
+    prohibition: "Exporting any algorithmic functions inside compat-world."
+    forbidden_symbols:
+      - "replay"
+      - "solver"
+      - "mine"
+      - "discover"
+      - "conformance-fitness"
+      - "alignment"
+      - "compute-conformance"
+    remedy: "Delegate computational tasks downstream. Compile computation targets inside wasm4pm engine-world, importing compat-world structures."
+
+  - id: "first-class-refusal-mapping"
+    description: "All validation and admission functions in WIT must return native results, using specific enum-variants for error cases to prevent error laundering."
+    scope: "Function returns in WIT interfaces"
+    trigger: "Admission or validation function signature"
+    prohibition: "Using generic string-based errors (e.g., result<admission-dto, string>) or catch-all error structures."
+    enforcement: "Must return a result<ok, error> where error is refusal-reason or refusal-dto, and refusal-reason is a variant detailing the specific named law violated."
+    remedy: "Refuse compilation if function output resolves to a generic string type. Force typing using the named law variant."
+
+  - id: "witness-representation-enforcement"
+    description: "All witnesses certifying structural compliance must map to a registered witness-key enum, enforcing compile-time standards."
+    scope: "WIT type mapping"
+    trigger: "Witness tag specification"
+    prohibition: "Using raw strings or unconstrained types as witnesses."
+    enforcement: "Every witness tag field in evidence-dto, admission-dto, or receipt-dto must strictly reference the witness-key enum type."
+    remedy: "Map Rust's zero-sized witness markers (Ocel20, Xes1849, WfNetSoundnessPaper) to explicit witness-key enum variants in WIT."
+
+  - id: "wasi-import-prohibition"
+    description: "The compatibility component must not import runtime systems or system-level capabilities (filesystem, sockets, command-line arguments)."
+    scope: "WIT imports in compat-world"
+    trigger: "WIT import declaration"
+    prohibition: "Importing any WASI system interface."
+    forbidden_imports:
+      - "wasi:filesystem/*"
+      - "wasi:sockets/*"
+      - "wasi:cli/*"
+      - "wasi:http/outgoing-handler"
+    remedy: "Isolate compat from environmental system requests. If I/O is required, it must be performed by the host and passed as structural parameters."
+
+  - id: "no-raw-laundering-gate"
+    description: "Raw logs must not cross directly into behavioral engines without structural admission."
+    scope: "Interface boundary functions"
+    trigger: "Importing logs into engine execution"
+    prohibition: "Accepting a raw string event log directly in engine computational functions without validating structure."
+    enforcement: "Engine functions (e.g., discover-model, compute-conformance) must consume an admission-dto record, which can only be manufactured by compat-world's validate-admission-preconditions."
+    remedy: "Establish structural gatekeeping: require admission-dto as the primary argument, certifying that the log has been verified against the named law."
+
+  - id: "wit-camel-case-alignment"
+    description: "Identifiers and fields in WIT must align with WebAssembly Component Model design guidelines."
+    scope: "WIT file token names"
+    trigger: "Syntax analysis of WIT file"
+    prohibition: "Using snake_case or camelCase for identifiers, field names, or record names."
+    enforcement: "All types, records, fields, variants, and functions must be written in kebab-case."
+    remedy: "Convert Rust identifiers (e.g., EvidenceDto, state_tag) into kebab-case equivalents (e.g., evidence-dto, state-tag) in the WIT projection."
+
+refusal_protocol:
+  rule_id: "wit-boundary-violation"
+  on_detection:
+    - action: "REFUSE"
+      code: "ERR_WIT_BOUNDARY_VIOLATION"
+      message: "The component WIT definition violates compatibility architecture laws. Check world imports/exports, forbidden symbols, or naming conventions."

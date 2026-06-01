@@ -1,0 +1,100 @@
+version: "30.1.2"
+classification: "Graduation Surface Ledger"
+authority: "Antigravity boundary audit"
+date: "2026-06-01"
+
+description: >
+  This ledger specifies the graduation seam defining the precise boundary where execution of process intelligence
+  telemetry must leave the structure-only wasm4pm-compat layer and be graduated to the full wasm4pm execution engine.
+  It maps graduation trigger signals, structural gaps, and capabilities.
+
+graduation_interface:
+  traits:
+    - name: "GraduateToWasm4pm"
+      description: "The seam implemented by any compat structure that wishes to declare itself a candidate for graduation."
+      methods:
+        - signature: "fn candidate(&self) -> GraduationCandidate"
+          description: "Generates a structured candidate package with the reason, subject, and evidence reference."
+
+  structs:
+    - name: "GraduationCandidate"
+      description: "Carries context about the graduation candidate. Must be grounded to be accepted."
+      fields:
+        - name: "reason"
+          type: "GraduationReason"
+          description: "The named trigger reason."
+        - name: "subject"
+          type: "String"
+          description: "Human-readable description of the item being graduated (e.g. 'P2P OCEL log')."
+        - name: "evidence_ref"
+          type: "String"
+          description: "Opaque cryptographic hash reference (e.g. 'blake3:deadbeef') linking the target evidence."
+      methods:
+        - signature: "pub fn is_grounded(&self) -> bool"
+          description: "Returns true if both subject and evidence_ref are non-empty. Ungrounded candidates must be rejected."
+
+  enums:
+    - name: "GraduationReason"
+      description: "Non-exhaustive categorization of execution triggers indicating that the host has reached structural limitations."
+      attributes: "Non-exhaustive (#[non_exhaustive]) to allow backwards-compatible future triggers."
+
+graduation_signals:
+  - variant: "NeedsDiscovery"
+    signal_type: "Hard"
+    tag: "needs_discovery"
+    description: "A process model must be discovered from an event log log."
+    why_compat_cannot_do: "Discovery requires graph traversal, statistical analysis, and complex algorithms (Alpha, Inductive, Heuristics miner) which do not belong in the structure-only compat layer."
+    required_engine_capability: "Process Discovery Engine returning sound Petri nets, process trees, or POWL models from logs."
+
+  - variant: "NeedsConformanceExecution"
+    signal_type: "Hard"
+    tag: "needs_conformance_execution"
+    description: "A conformance score (Fitness, Precision, F1, Simplicity) or trace deviation log must be calculated."
+    why_compat_cannot_do: "The compat layer only carries metric containers and scores (e.g., Metric<Fitness, N, D>). It cannot perform A* search or alignment path computation."
+    required_engine_capability: "Alignment-based Conformance Checker executing optimal state-space search."
+
+  - variant: "NeedsReplay"
+    signal_type: "Hard"
+    tag: "needs_replay"
+    description: "A trace must be replayed against a model to track marking state or trigger transition firings."
+    why_compat_cannot_do: "Petri net structure (petri.rs) does not implement the token-game execution engine or state transition firings."
+    required_engine_capability: "Token Replay Simulator tracking and updating multi-set place markings."
+
+  - variant: "NeedsReceipts"
+    signal_type: "Soft"
+    tag: "needs_receipts"
+    description: "A new cryptographic receipt chain must be minted and signed."
+    why_compat_cannot_do: "The compat layer can represent receipt envelopes (Receipt<T, W>) but does not contain the engine-level private keys or hash-chain consensus logic to mint them."
+    required_engine_capability: "Receipt Minting & Chaining Engine (producing BLAKE3-hashed, signed receipt blocks)."
+
+  - variant: "NeedsBenchmarkGate"
+    signal_type: "Soft"
+    tag: "needs_benchmark_gate"
+    description: "Validation of claimed fitness scores against real execution telemetry."
+    why_compat_cannot_do: "The compat layer represents quality thresholds, but cannot verify them against actual test runs."
+    required_engine_capability: "Benchmark validation harness gating performance and quality metrics."
+
+  - variant: "NeedsObjectCentricQueryExecution"
+    signal_type: "Hard"
+    tag: "needs_object_centric_query_execution"
+    description: "Execution of an Object-Centric Process Query (OCPQ) against an object-centric event log."
+    why_compat_cannot_do: "ocpq.rs only carries static query syntax shapes (OcpqQuery, OcpqPredicate). It contains no query evaluation engine."
+    required_engine_capability: "OCPQ evaluation engine executing relational joins on object-centric structures."
+
+  - variant: "RebuildingProcessMiningLocally"
+    signal_type: "Hard"
+    tag: "rebuilding_process_mining_locally"
+    description: "Host has begun implementing local token replay, local miners, or local metric calculators."
+    why_compat_cannot_do: "This indicates the host is exceeding the boundaries of structural evidence and should adopt the official execution engine."
+    required_engine_capability: "Full-spectrum Process Mining execution support."
+
+consolidation_and_gap_mitigation:
+  - issue: "WfNet Split-Brain Defect"
+    description: "Compat contains both a forgeable WfNet<S> (attest_witnessed() needs no proof) and a non-forgeable WfNetConst (requires SoundnessProof token)."
+    recommendation: "Deprecate and remove WfNet<S> leg; enforce WfNetConst as the sole public surface for sound Petri net representations."
+  - issue: "Multi-Step Pipeline Proof Gap"
+    description: "No compile-fail fixtures in the ALIVE gate verify witness coherence across multi-step chained pipelines."
+    recommendation: "Add pipeline integration fixtures validating that WitnessState merges do not accidentally cross XES/OCEL bounds."
+  - issue: "CausalNet Type Safety"
+    description: "DependencyMeasure lacks type-safety separation from Petri net bipartite arc weights."
+    recommendation: "Introduce unique newtype structures for Heuristics Miner dependency scores to prevent conflation with Petri flow arc weights."

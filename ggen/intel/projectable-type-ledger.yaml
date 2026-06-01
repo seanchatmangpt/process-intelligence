@@ -1,0 +1,229 @@
+version: "30.1.2"
+classification: "Projectable Type Ledger"
+authority: "Antigravity boundary audit"
+date: "2026-06-01"
+
+description: >
+  This ledger lists all public structures, enums, and traits inside the wasm4pm-compat surface that are projectable.
+  Projectable types represent data, markers, tokens, or reports that are allowed to cross system boundaries,
+  be serialized (e.g. to JSON, YAML, TOML, SQLite, or XML), or be passed as parameters across FFI / WASM runtimes.
+
+projectable_types:
+  - category: "Evidence Containers & Signatures"
+    description: "The core wrappers certifying telemetry admissibility and binding security metadata."
+    types:
+      - name: "Evidence"
+        kind: "struct"
+        serialization_formats: ["JSON", "MessagePack", "SQLite"]
+        justification: "Standard evidence carrier enclosing event payloads, marking configurations, and witness states."
+      - name: "IdentitySignature"
+        kind: "struct"
+        serialization_formats: ["JSON", "Binary"]
+        justification: "Ed25519 public key and signature bytes certifying verifying authorities."
+      - name: "Blake3Hash"
+        kind: "struct"
+        serialization_formats: ["Hex String", "Binary"]
+        justification: "Cryptographic binding identifier protecting trace blocks from tamper attempts."
+
+  - category: "Evidence States (Typestate Tokens)"
+    description: "Marker structures indicating lifecycle progression within the process mining pipeline."
+    types:
+      - name: "Raw"
+        kind: "enum/struct"
+        justification: "Unvalidated external telemetry allowed to enter the admission gate."
+      - name: "Parsed"
+        kind: "enum/struct"
+        justification: "Structurally verified but non-admitted trace block."
+      - name: "Admitted"
+        kind: "enum/struct"
+        justification: "Passed all boundary validations, certified to enter process cubes or ledger logs."
+      - name: "Refused"
+        kind: "enum/struct"
+        justification: "Terminal state marking validation failures."
+      - name: "Projected"
+        kind: "enum/struct"
+        justification: "Telemetry that has undergone an accounted lossy projection."
+      - name: "Exportable"
+        kind: "enum/struct"
+        justification: "State cleared to leave the local database boundary."
+      - name: "Receipted"
+        kind: "enum/struct"
+        justification: "Monotonically signed and sealed in a provenance chain."
+
+  - category: "Witness Lattices & Valuations"
+    description: "Data representations of alignment checkpoints and rule check outcomes."
+    types:
+      - name: "WitnessState"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "State containing replayed trace indices, active places, and total transition costs."
+      - name: "ConstraintValue"
+        kind: "enum"
+        serialization_formats: ["JSON", "Integer"]
+        justification: "Represents individual Declare rule states (Bottom, Satisfied, PossiblySatisfied, Violated, Top)."
+      - name: "DeclareWitnessState"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Map of rule identifiers to Declare satisfaction valuations."
+      - name: "UnifiedWitnessState"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Product lattice combining structural simulation tokens and rule constraints."
+
+  - category: "Refusal Reports & Diagnostics"
+    description: "Detailed descriptions of compliance failure events logged to audit ledgers."
+    types:
+      - name: "RefusalReport"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Carries specific parameters mapping to one of the 11 boundary gate failures."
+      - name: "CompatDiagnostic"
+        kind: "enum"
+        serialization_formats: ["JSON", "Text"]
+        justification: "Provides detailed diagnostic codes explaining why a type constraint was violated."
+      - name: "PetriRefusal"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Lists structural reasons why a Petri net failed to qualify (e.g. no source/sink place)."
+      - name: "ProcessTreeRefusal"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Details process tree arity or block violations."
+      - name: "PowlProjectionRefusal"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Marks POWL partial-order components that cannot project cleanly."
+      - name: "ConformanceRefusal"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Explains conformance pipeline execution blockades."
+      - name: "StrictViolation"
+        kind: "enum"
+        serialization_formats: ["JSON"]
+        justification: "Details violations of strict inter-crate boundary checking."
+
+  - category: "Loss Policy & Reports"
+    description: "Structures defining acceptable data loss levels and reporting actual attrition."
+    types:
+      - name: "LossPolicy"
+        kind: "struct"
+        serialization_formats: ["JSON", "YAML"]
+        justification: "Acceptable alignment weights, move percentages, and fitness bounds."
+      - name: "LossReport"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Certifies details of synchronization moves, log-only moves, and model-only moves."
+      - name: "ProjectionName"
+        kind: "struct"
+        serialization_formats: ["Text"]
+        justification: "Simple string newtype identifying the name of a lossy projection."
+
+  - category: "Zero-Cost Identifier Newtypes"
+    description: "Transparent types ensuring semantic separation between primary identifiers."
+    types:
+      - name: "CaseId"
+        kind: "struct"
+        justification: "Prevents case identifiers from being mixed with event or activity strings."
+      - name: "ActivityId"
+        kind: "struct"
+        justification: "Enforces type safety on activity names."
+      - name: "TraceId"
+        kind: "struct"
+        justification: "Enforces type safety on trace identifiers."
+      - name: "EventId"
+        kind: "struct"
+        justification: "Enforces type safety on event keys."
+      - name: "ObjectId"
+        kind: "struct"
+        justification: "Enforces type safety on object identifiers in OCEL."
+      - name: "ObjectTypeId"
+        kind: "struct"
+        justification: "Enforces type safety on object classification identifiers."
+
+  - category: "Structural Model & Event Log Payloads"
+    description: "Static process models and event logs that serve as evidence payloads."
+    types:
+      - name: "OcelLog"
+        kind: "struct"
+        serialization_formats: ["JSON", "SQLite", "XML"]
+        justification: "Object-Centric Event Log structure holding events, objects, and relationships."
+      - name: "XesLog"
+        kind: "struct"
+        serialization_formats: ["XML", "JSON"]
+        justification: "XES Event Log structure conforming to IEEE 1849."
+      - name: "EventLog"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Standard flat event log holding trace lists."
+      - name: "PetriNet"
+        kind: "struct"
+        serialization_formats: ["JSON", "PNML"]
+        justification: "Petri Net graph mapping places, transitions, and bipartite arcs."
+      - name: "ProcessTree"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Block-structured process tree mapping activity hierarchy."
+      - name: "BpmnProcess"
+        kind: "struct"
+        serialization_formats: ["XML", "JSON"]
+        justification: "BPMN 2.0 graph mapping lanes, gateways, tasks, and edges."
+      - name: "CausalNet"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Causal graph mapping statistical heuristics outputs."
+      - name: "DeclareModel"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Declarative LTL template constraints."
+      - name: "DirectlyFollowsGraph"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Simple DFG graph mapping activity transition frequencies."
+      - name: "Workflow"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "General-purpose step-based sequence structures."
+      - name: "OcpqQuery"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Object-centric query representation."
+      - name: "ConformanceVerdict"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Reports final conformance and alignment results."
+
+  - category: "Manufacturing Outputs"
+    description: "Metadata records created during automated code generation processes."
+    types:
+      - name: "ArtifactReceipt"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Certifies build authenticity, blake3 content hash, compile pass, and audit results."
+      - name: "AuditResult"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Summary of compliance evaluations for a generated module."
+      - name: "AuditFinding"
+        kind: "struct"
+        serialization_formats: ["JSON"]
+        justification: "Individual audit event highlighting rule violations."
+      - name: "ModuleSpec"
+        kind: "struct"
+        serialization_formats: ["JSON", "YAML"]
+        justification: "Specifications mapping required features and APIs for code generation."
+      - name: "FunctionSpec"
+        kind: "struct"
+        serialization_formats: ["JSON", "YAML"]
+        justification: "Metadata specifying name, signature, and documentation of a target API function."
+      - name: "ModuleConfig"
+        kind: "struct"
+        serialization_formats: ["TOML"]
+        justification: "TOML configuration metadata mapping to config.toml serialization."
+      - name: "Dependency"
+        kind: "struct"
+        serialization_formats: ["JSON", "YAML"]
+        justification: "Represents cargo package dependency requirements."
+      - name: "CargoTomlBuilder"
+        kind: "struct"
+        serialization_formats: ["TOML"]
+        justification: "Internal config mapping to Cargo.toml file generation."

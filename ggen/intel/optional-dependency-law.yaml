@@ -1,0 +1,73 @@
+# optional-dependency-law.yaml
+# Guidelines and strict laws for isolating browser/WASM-pack dependencies under strict gating.
+
+metadata:
+  law_id: "GGEN-COMPAT-OPTIONAL-DEP-LAW-002"
+  scope: "wasm4pm-compat workspace"
+  status: "ENFORCED"
+  last_updated: "2026-06-01"
+
+declaration_laws:
+  rule_1_optional_declaration:
+    description: "Every browser, JS, WASM FFI, or projection dependency must be declared as optional in the package manifest."
+    manifest_enforcement:
+      cargo_toml:
+        - "specta = { version = '1.0', optional = true }"
+        - "tsify = { version = '0.4', optional = true }"
+        - "wasm-bindgen = { version = '0.2', optional = true }"
+        - "serde-wasm-bindgen = { version = '0.6', optional = true }"
+        - "wit-bindgen = { version = '0.2', optional = true }"
+    rationale: "Default compilation of the core library must have zero external FFI dependencies, reducing the surface area for compilation failures, sandbox escapes, and supply-chain vulnerabilities."
+
+  rule_2_explicit_feature_mapping:
+    description: "Optional dependencies must be grouped under descriptive target features and not exposed on the default pipeline."
+    features_mapping:
+      ts:
+        - "dep:specta"
+        - "dep:tsify"
+      wasm:
+        - "dep:wasm-bindgen"
+        - "dep:serde-wasm-bindgen"
+      component:
+        - "dep:wit-bindgen"
+    default_feature_policy: "The 'default' feature array must only enable safe, format-only features (e.g. 'formats'), and must NEVER enable 'ts', 'wasm', or 'component' features."
+
+source_gating_laws:
+  rule_3_cfg_attributes:
+    description: "All source files, imports, modules, functions, impl blocks, and struct attributes utilizing optional dependencies must be gated with appropriate cfg attributes."
+    concrete_usage:
+      tsify_macro:
+        syntax: "#[cfg_attr(feature = \"ts\", derive(tsify::Tsify))]"
+        instruction: "Place on any structure that needs TypeScript interface generation."
+      specta_macro:
+        syntax: "#[cfg_attr(feature = \"ts\", derive(specta::Type))]"
+        instruction: "Place on structs/enums exposed to browser projections."
+      wasm_bindgen_attributes:
+        syntax: "#[cfg(feature = \"wasm\")] #[wasm_bindgen] impl structures..."
+        instruction: "Gate WebAssembly FFI entry points and conversions under the 'wasm' feature check."
+    enforcement: "Any usage of an optional dependency outside a cfg feature gate will result in a compile error on default builds. This must be verified by running cargo check with --no-default-features."
+
+interface_isolation_laws:
+  rule_4_prevent_signature_leakage:
+    description: "No public API signature in default or format features may leak types from optional dependencies."
+    invariants:
+      - "Function signatures, public struct fields, and public trait bounds must be compile-ready on default features."
+      - "Struct fields of type JsValue, Tsify, or wit_bindgen types must be wrapped in cfg features or projected into standard serializable types (e.g., String, Vec<u8>)."
+    rationale: "If type signatures leak, client code not compilation-configured for WASM will fail to build, breaking backward compatibility."
+
+unification_effects_laws:
+  rule_5_unification_resilience:
+    description: "The design of wasm4pm-compat must be resilient to Cargo feature unification."
+    unification_behavior: "When another crate in the dependency graph enables the 'ts' or 'wasm' feature, Cargo enables it for wasm4pm-compat globally."
+    compliance_rules:
+      - "Feature enablement must be purely additive. Enabling a feature must never change the behavior of core functions or disable default implementations."
+      - "Conditional logic must only extend structs with serialize/projection capabilities (e.g., Specta or Tsify traits), never hook into execution algorithms."
+      - "Active process mining solvers (discovery, replay, conformance) must remain completely decoupled from feature unification. They cannot be activated via features in the compat crate."
+
+wasm_pack_and_compilation_laws:
+  rule_6_wasm_pack_boundary:
+    description: "Packaging via wasm-pack must isolate target code bases from native-only dependencies."
+    target_isolation:
+      - "Ensure no std::fs, std::thread, or standard network features are used in paths compiled for browser targets."
+      - "Compilation for browser targets must be validated via: wasm-pack build --scope wasm4pm -- --features wasm"
+      - "No native execution libraries or host runner utilities (e.g., wasmtime, raw pointers to host memory) are allowed in the wasm-pack compilation path."

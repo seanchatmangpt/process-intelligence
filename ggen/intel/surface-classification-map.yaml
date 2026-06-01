@@ -1,0 +1,402 @@
+version: "30.1.2"
+classification: "Ecosystem Surface Classification Map"
+authority: "GGEN Ecosystem Intelligence Layer"
+date: "2026-06-01"
+description: >
+  Complete enumeration of all ecosystem surfaces required for ggen projection manufacturing.
+  Each item is classified by its role(s) in the type law and projection boundary enforcement.
+
+surfaces:
+  # PART 1: SOURCE COURT AUTHORITIES — Structural & Type Law Sources
+
+  cargo_features:
+    name: "Cargo Features System"
+    authority: "Rust Cargo Book, RFC 1705"
+    categories:
+      - SOURCE_COURT
+    justification: "Defines feature-gating law; GGEN validates that all projection dependencies (specta, tsify, wasm-bindgen, wit-bindgen) are optional and feature-gated."
+    referenced_by:
+      - cargo-feature-map.yaml
+      - dependency-boundary-map.yaml
+
+  cargo_metadata:
+    name: "cargo metadata Command"
+    authority: "Rust Cargo metadata format spec"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Discovers workspace topology and validates that no execution engines are direct dependencies of compat crate itself."
+    referenced_by:
+      - ecosystem-census.md (Part 1.2)
+
+  rustdoc_json:
+    name: "rustdoc JSON Output"
+    authority: "Rust compiler rustdoc module"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Introspects all public types, methods, trait implementations; determines which Rust types are projectable (public, serializable, no dyn traits)."
+    referenced_by:
+      - rust-public-api-map.json
+      - projectable-type-ledger.yaml
+
+  wasm4pm_compat_cargo_toml:
+    name: "wasm4pm-compat/Cargo.toml"
+    authority: "Source-of-truth project configuration"
+    categories:
+      - SOURCE_COURT
+    justification: "Validates feature inventory and confirms absence of execution engine dependencies in default feature."
+    referenced_by:
+      - cargo-feature-map.yaml
+      - dependency-boundary-map.yaml
+
+  type_law_atlas:
+    name: "Type Law Atlas: wasm4pm-compat Surface Inventory"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+    justification: "Primary domain specification defining Evidence<T, State, Witness> admissibility axioms, witness markers (Ocel20, XeS1849, etc.), and named law refusals."
+    location: "/sources/wasm4pm-compat/type-law-atlas.md"
+
+  loss_policy_map:
+    name: "Loss Policy Map: Lossy Projection Boundaries"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+    justification: "Governs lossy translation policy when Rust types cannot project cleanly; mandates explicit LossReport documentation."
+    referenced_by:
+      - wit-surface-ledger.yaml (LossPolicy, LossReport)
+
+  graduation_bridge_covenant:
+    name: "Graduation Bridge Covenant & Rules"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+    justification: "Defines GraduationCandidate structure and 7 graduation reasons; validates that compat recognizes execution boundaries."
+    referenced_by:
+      - graduation-law.yaml
+      - graduation-surface-ledger.yaml
+
+  forbidden_tool_ledger:
+    name: "Forbidden Tool Ledger (Execution Behaviors)"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Explicitly lists operations banned from compat (discover_model, run_conformance, simulate_replay, mint_receipt, etc.). GGEN validates all generated code against this."
+    location: "/ggen/intel/forbidden-tool-ledger.yaml"
+
+  # PART 2: PROJECTION TOOL AUTHORITIES — How Types Project Outward
+
+  specta:
+    name: "Specta & specta-typescript"
+    authority: "Specta project (type-driven TS generator)"
+    categories:
+      - PROJECTION_TOOL
+      - PACKAGE_SURFACE
+    justification: "Generates compile-time TS interface definitions for all public Evidence, Admission, Refusal, Receipt, Witness types. Enforces generic parameter branding in TS."
+    projection_targets:
+      - ts
+    referenced_by:
+      - specta-capability-map.md
+      - cargo-feature-map.yaml (ts feature)
+
+  tsify:
+    name: "tsify (Rust-to-WASM TypeScript Bridge)"
+    authority: "tsify crate (wasm-bindgen + Serde integration)"
+    categories:
+      - PROJECTION_TOOL
+      - ABI_BOUNDARY
+      - PACKAGE_SURFACE
+    justification: "Marks which types can safely cross JS-WASM FFI boundary; validates that generic Evidence<T, State, W> is NOT directly exported (must use concrete DTO monomorphisms)."
+    projection_targets:
+      - wasm
+      - ts
+    referenced_by:
+      - tsify-capability-map.md
+      - wasm-abi-map.yaml
+
+  wasm_bindgen:
+    name: "wasm-bindgen (WASM FFI Compiler)"
+    authority: "Rust WebAssembly Working Group (RWWG)"
+    categories:
+      - PROJECTION_TOOL
+      - ABI_BOUNDARY
+    justification: "Generates FFI glue code and validates that exported functions use only ABI-safe types; enforces no trait objects or lifetime-bound references escape to JS."
+    projection_targets:
+      - wasm
+    referenced_by:
+      - wasm-abi-map.yaml
+      - cargo-feature-map.yaml (wasm feature)
+
+  wasm_pack:
+    name: "wasm-pack (WebAssembly Bundler)"
+    authority: "Rust WebAssembly Working Group (RWWG)"
+    categories:
+      - PROJECTION_TOOL
+      - PACKAGE_SURFACE
+    justification: "Orchestrates Cargo build, runs wasm-bindgen CLI, generates npm package structure with .wasm binary, .js wrapper, and .d.ts type definitions."
+    projection_targets:
+      - wasm
+    referenced_by:
+      - tsify-capability-map.md (section 6)
+
+  # PART 3: COMPONENT MODEL AUTHORITY SURFACES
+
+  wasm_component_model:
+    name: "WebAssembly Component Model (WASM CM v0.2.0+)"
+    authority: "W3C WebAssembly Community Group (CG)"
+    categories:
+      - SOURCE_COURT
+      - PROJECTION_TOOL
+    justification: "Prescribes the boundary between compat-world (structural only) and engine-world (execution allowed). Defines how Evidence, Admission, Refusal, GraduationCandidate are represented as portable component records."
+    projection_targets:
+      - component
+    referenced_by:
+      - component-model-map.md
+      - wit-surface-ledger.yaml
+
+  wit_language:
+    name: "WIT (WebAssembly Interface Type Language)"
+    authority: "W3C WebAssembly Community Group"
+    categories:
+      - SOURCE_COURT
+      - PROJECTION_TOOL
+    justification: "Language-neutral interface contract law defining record types, enum/variant definitions, function signatures. Maps Rust zero-sized phantom markers to enum/variant tags."
+    projection_targets:
+      - component
+    referenced_by:
+      - wit-surface-ledger.yaml
+      - component-model-map.md
+
+  wit_bindgen:
+    name: "wit-bindgen (Component Binding Generator)"
+    authority: "BytecodeAlliance (WASM Component Model reference implementation)"
+    categories:
+      - PROJECTION_TOOL
+      - PACKAGE_SURFACE
+    justification: "Generates Rust source files from WIT definitions; validates that all compat exports are structural-only (no solver/replay/miner functions)."
+    projection_targets:
+      - component
+    referenced_by:
+      - component-model-map.md (section 2)
+      - cargo-feature-map.yaml (component feature)
+
+  # PART 4: DOMAIN AUTHORITY ASSETS
+
+  projectable_type_ledger:
+    name: "Projectable Type Ledger"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Enumerates all types permitted (projectable_types) vs. forbidden (non_projectable_types) in each projection lane. GGEN consults this when deciding whether a Rust type can be exported."
+    location: "/ggen/intel/projectable-type-ledger.yaml"
+
+  non_projectable_type_ledger:
+    name: "Non-Projectable Type Ledger"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Detailed classification of types that cannot project cleanly, with reasons for rejection. Used to generate LossReports."
+    location: "/ggen/intel/non-projectable-type-ledger.yaml"
+
+  dependency_boundary_map:
+    name: "Dependency Boundary Map"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Validates compatibility vs. execution dependencies. Lists forbidden crates (blake3, ed25519-dalek, wasmtime, alignment_solvers) that must never be imported into compat."
+    location: "/ggen/intel/dependency-boundary-map.yaml"
+
+  optional_dependency_law:
+    name: "Optional Dependency Law"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+    justification: "Rules for optional crate activation; ensures feature-dependent import management preserves thin-client warranty of compat."
+    location: "/ggen/intel/optional-dependency-law.yaml"
+
+  # PART 5: AUDIT & VALIDATION SURFACES
+
+  cargo_feature_map:
+    name: "Cargo Feature Map - wasm4pm-compat"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - AUDIT_SURFACE
+    justification: "Specifies feature definitions (ts, wasm, component, wasm4pm, formats, strict) and validates refusal rules against tool-smuggling."
+    location: "/ggen/intel/cargo-feature-map.yaml"
+
+  rust_public_api_map:
+    name: "Rust Public API Map (JSON)"
+    authority: "rustdoc + Process Intelligence"
+    categories:
+      - AUDIT_SURFACE
+    justification: "Summary of Rust public API schema; feeds into type projectability classification."
+    location: "/ggen/intel/rust-public-api-map.json"
+
+  specta_capability_map:
+    name: "Specta Capability Map: Rust-to-TypeScript Projection Lane"
+    authority: "Specta + Process Intelligence"
+    categories:
+      - AUDIT_SURFACE
+    justification: "Details TS projection rules: how generic parameters project to branded TS object types, handling of Option/Vec/HashMap, serde enum tagging."
+    location: "/ggen/intel/specta-capability-map.md"
+
+  tsify_capability_map:
+    name: "tsify Capability Map: Rust-to-WASM ABI Marshaling"
+    authority: "tsify + wasm-bindgen + Process Intelligence"
+    categories:
+      - AUDIT_SURFACE
+    justification: "Specifies ABI boundary marshaling rules; validates which types implement IntoWasmAbi/FromWasmAbi; documents forbidden types (dyn Trait, raw pointers, generic Evidence without monomorphism)."
+    location: "/ggen/intel/tsify-capability-map.md"
+
+  wasm_abi_map:
+    name: "Wasm ABI Map"
+    authority: "wasm-bindgen + Process Intelligence"
+    categories:
+      - AUDIT_SURFACE
+    justification: "Primitive & data carrier ABI mappings; validates ABI-safe type checking at FFI boundary."
+    location: "/ggen/intel/wasm-abi-map.yaml"
+
+  component_model_map:
+    name: "Component Model Map"
+    authority: "WASM Component Model + Process Intelligence"
+    categories:
+      - AUDIT_SURFACE
+    justification: "Portable component interface standards; non-browser binding constraints; validates Component Model compliance."
+    location: "/ggen/intel/component-model-map.md"
+
+  wit_surface_ledger:
+    name: "WIT Surface Ledger"
+    authority: "WIT + wit-bindgen + Process Intelligence"
+    categories:
+      - AUDIT_SURFACE
+    justification: "Maps Rust types to WIT record/enum projections; defines Component world boundaries; specifies compat-world exports vs. engine-world exports."
+    location: "/ggen/intel/wit-surface-ledger.yaml"
+
+  graduation_surface_ledger:
+    name: "Graduation Surface Ledger"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - AUDIT_SURFACE
+      - GRADUATION_SIGNAL
+    justification: "Specifies GraduationCandidate structure and 7 graduation signals (NeedsDiscovery, NeedsConformanceExecution, NeedsReplay, NeedsReceipts, NeedsBenchmarkGate, NeedsObjectCentricQueryExecution, RebuildingProcessMiningLocally)."
+    location: "/ggen/intel/graduation-surface-ledger.yaml"
+
+  # PART 6: RULES & BOUNDARY ENFORCEMENT (in /ggen/rules/)
+
+  graduation_law:
+    name: "Graduation Law"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - GRADUATION_SIGNAL
+    justification: "Bridge traits and graduation candidate grounding rules; validates that code graduating to wasm4pm implements GraduateToWasm4pm trait with non-empty evidence_ref."
+    location: "/ggen/rules/graduation-law.yaml"
+
+  ts_projection_law:
+    name: "TS Projection Law"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Rules governing TypeScript projection lane; enforces compile-time type safety and monomorphization constraints."
+    location: "/ggen/rules/ts-projection-law.yaml"
+
+  wasm_boundary_law:
+    name: "WASM Boundary Law"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Rules for WASM ABI boundary enforcement; validates that exported functions are ABI-safe and graduation candidates are properly ground."
+    location: "/ggen/rules/wasm-boundary-law.yaml"
+
+  component_boundary_law:
+    name: "Component Boundary Law"
+    authority: "Process Intelligence Research Foundry"
+    categories:
+      - SOURCE_COURT
+      - AUDIT_SURFACE
+    justification: "Rules for Component Model world boundaries; validates compat-world structural exports vs. engine-world execution exports."
+    location: "/ggen/rules/component-boundary-law.yaml"
+
+  # PART 7: FORBIDDEN EXECUTION BEHAVIORS (These stay in wasm4pm only)
+
+  discover_model_algorithm:
+    name: "discover_model (Inductive/Alpha Miner)"
+    authority: "Forbidden Tool Ledger"
+    categories:
+      - FORBIDDEN_IN_COMPAT
+    graduation_reason: "NeedsDiscovery"
+    justification: "Discovery requires graph traversal, statistical analysis, and complex algorithms. Does not belong in structure-only compat layer."
+    reference: "forbidden-tool-ledger.yaml"
+
+  run_conformance_algorithm:
+    name: "run_conformance (A* Search-based Alignment)"
+    authority: "Forbidden Tool Ledger"
+    categories:
+      - FORBIDDEN_IN_COMPAT
+    graduation_reason: "NeedsConformanceExecution"
+    justification: "Conformance scoring (Fitness, Precision, F1, Simplicity) and trace deviation computation belong in execution engine only."
+    reference: "forbidden-tool-ledger.yaml"
+
+  simulate_replay_engine:
+    name: "simulate_replay (Token Game Simulation)"
+    authority: "Forbidden Tool Ledger"
+    categories:
+      - FORBIDDEN_IN_COMPAT
+    graduation_reason: "NeedsReplay"
+    justification: "Petri net state transition firings and token-game execution belong in wasm4pm engine only."
+    reference: "forbidden-tool-ledger.yaml"
+
+  mint_receipt_cryptography:
+    name: "mint_receipt (Hash Chaining & Signing)"
+    authority: "Forbidden Tool Ledger"
+    categories:
+      - FORBIDDEN_IN_COMPAT
+    graduation_reason: "NeedsReceipts"
+    justification: "Cryptographic receipt minting and hash-chain consensus require engine-level private keys and belong in wasm4pm only."
+    reference: "forbidden-tool-ledger.yaml"
+
+  benchmark_gate_run_validation:
+    name: "benchmark_gate_run (Performance Validation)"
+    authority: "Forbidden Tool Ledger"
+    categories:
+      - FORBIDDEN_IN_COMPAT
+    graduation_reason: "NeedsBenchmarkGate"
+    justification: "Validation of claimed fitness scores against real execution telemetry belongs in execution engine only."
+    reference: "forbidden-tool-ledger.yaml"
+
+  execute_ocpq_query:
+    name: "execute_ocpq (Object-Centric Query Evaluation)"
+    authority: "Forbidden Tool Ledger"
+    categories:
+      - FORBIDDEN_IN_COMPAT
+    graduation_reason: "NeedsObjectCentricQueryExecution"
+    justification: "OCPQ evaluation engine and relational joins on object-centric structures belong in wasm4pm engine only."
+    reference: "forbidden-tool-ledger.yaml"
+
+  rebuild_process_mining_locally:
+    name: "rebuild_process_mining (Local Mining Implementation)"
+    authority: "Forbidden Tool Ledger"
+    categories:
+      - FORBIDDEN_IN_COMPAT
+    graduation_reason: "RebuildingProcessMiningLocally"
+    justification: "Local token replay, miners, or metric calculators indicate host is exceeding structural boundaries; should adopt official execution engine."
+    reference: "forbidden-tool-ledger.yaml"
+
+# Summary Statistics
+summary:
+  total_surfaces: 44
+  source_court_count: 12
+  projection_tool_count: 6
+  abi_boundary_count: 3
+  package_surface_count: 5
+  audit_surface_count: 12
+  graduation_signal_count: 2
+  forbidden_in_compat_count: 7
+  categorization_complete: true

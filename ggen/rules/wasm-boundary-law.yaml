@@ -1,0 +1,28 @@
+# ggen Wasm Boundary Law
+# Defines the boundary between tsify-generated DTOs and wasm-bindgen execution engine.
+
+version: "1.0.0"
+doctrine: "Structural DTOs generated via tsify belong in /src/compat. Execution engine logic belongs in /src/wasm_engine."
+
+boundary_rules:
+  - module: "dto_boundary"
+    enforcement: "STRICT"
+    rule: "All interfaces crossing the WASM boundary must be annotated with #[tsify] or #[derive(Serialize, Deserialize)]. No engine state pointers allowed in DTOs."
+    remedy: "Refactor complex engine structures into flat, serializable structs (ABI-safe DTOs)."
+
+  - module: "execution_boundary"
+    enforcement: "ISOLATED"
+    rule: "The WASM execution engine (e.g., wasm4pm) must not expose internal raw pointers to JS. All interactions MUST be through the exported `wasm_bindgen` entrypoints."
+    remedy: "Use opaque handles (u64 identifiers) for long-lived objects inside the engine."
+
+  - module: "receipt_validation"
+    enforcement: "REQUIRED"
+    rule: "All generated `.d.ts` files must be mapped to their source of truth in the registry."
+    remedy: "Generate a `ReceiptShape` for each exported `wasm_bindgen` function and maintain in `wasm-abi-map.yaml`."
+
+refusal_protocol:
+  rule_id: "abi-violation"
+  on_detection:
+    - action: "REFUSE"
+      code: "ERR_WASM_ABI_VIOLATION"
+      message: "Detected engine logic leaking into DTO boundary. Accessing raw memory is forbidden."

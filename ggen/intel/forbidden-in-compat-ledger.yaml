@@ -1,0 +1,342 @@
+version: "30.1.2"
+classification: "Forbidden in Compat Ledger"
+authority: "GGEN Ecosystem Intelligence Layer"
+date: "2026-06-01"
+description: >
+  This ledger explicitly enumerates ALL execution behaviors, algorithms, and tool capabilities
+  that are STRICTLY FORBIDDEN inside wasm4pm-compat and must remain exclusively in the wasm4pm
+  execution engine downstream. GGEN validates all generated code against this ledger and REFUSES
+  any feature combination that attempts to include forbidden operations.
+
+execution_domain_boundary: >
+  The wasm4pm-compat crate is limited to STRUCTURE ONLY: type definitions, markers, validators,
+  and structural evidence containers. All EXECUTION—process discovery, conformance checking, replay
+  simulation, receipt minting, query evaluation, and benchmarking—belongs exclusively to the
+  wasm4pm engine. This boundary is absolute.
+
+forbidden_operations:
+
+  discover_model:
+    category: "Process Discovery Algorithms"
+    graduates_to: "NeedsDiscovery"
+    description: "Inductive Miner, Alpha Miner, Heuristics Miner, and any other process discovery algorithm."
+    why_forbidden: >
+      Process discovery requires iterative graph construction, statistical heuristic evaluation,
+      activity frequency analysis, and complex dependency measurement. These are CPU-heavy,
+      stateful algorithms that do not belong in a thin-client compat layer. Discovery must be
+      performed by the wasm4pm execution engine and the results (PetriNet, ProcessTree, CausalNet)
+      passed back to compat for structural representation only.
+    engine_implementation: "wasm4pm/src/mining/ (discover_model function with specific miner implementations)"
+    compat_limitation: >
+      compat can REPRESENT the outputs (PetriNet struct with places/transitions/arcs)
+      but CANNOT COMPUTE them. Attempting to include discovery logic in compat indicates the
+      host is rebuilding process mining locally, which violates the boundary.
+    forbidden_imports:
+      - inductive_miner (or any Inductive Miner crate)
+      - alpha_miner (or any Alpha Miner crate)
+      - heuristics_miner (or any Heuristics Miner crate)
+      - pm4py discovery modules (if exposed to compat)
+      - petri net synthesis algorithms
+      - dependency measure calculators (frequency-based heuristics)
+    refusal_signal: "Tool-smuggling: discovery algorithm in compat"
+    audit_check: "Scan compat Cargo.toml and feature declarations for mining crates"
+
+  run_conformance:
+    category: "Conformance Checking & Alignment Solvers"
+    graduates_to: "NeedsConformanceExecution"
+    description: "A* search-based optimal alignment solvers, token replay with trace deviation measurement, fitness/precision/generalization/simplicity score computation."
+    why_forbidden: >
+      Conformance checking is CPU-intensive and state-space-explosive. Computing optimal alignments
+      via A* search, measuring move distances, and calculating metric scores requires active graph
+      traversal and constraint solving. These operations cannot be exposed in a browser-safe compat layer.
+      The compat layer can REPRESENT metric scores (via Metric<Fitness, N, D> structs) but cannot COMPUTE them.
+    engine_implementation: "wasm4pm/src/conformance/ (run_conformance function implementing alignment solvers)"
+    compat_limitation: >
+      compat can REPRESENT the results (Metric<Fitness, ...>, trace deviation logs, alignment paths)
+      but CANNOT EXECUTE the solver. All conformance computation must happen in the downstream engine.
+    forbidden_imports:
+      - alignment_solver (any A* or Dijkstra-based alignment algorithm)
+      - trace_deviation_measurer
+      - fitness_calculator
+      - precision_calculator
+      - generalization_calculator
+      - simplicity_calculator
+      - pm4py conformance module (if exposed to compat)
+      - model_vs_log comparison algorithms
+    refusal_signal: "Tool-smuggling: conformance solver in compat"
+    audit_check: "Scan compat for active conformance computation; look for fitness/precision/generalization calculation code"
+
+  simulate_replay:
+    category: "Trace Replay & Token Game Simulation"
+    graduates_to: "NeedsReplay"
+    description: "Token game simulation, Petri net firing sequence execution, multi-set place marking tracking, and transitive closure computation."
+    why_forbidden: >
+      Replay simulation requires maintaining Petri net execution state (place markings, enabled transitions,
+      firing sequences) and stepping through traces to track how tokens move. This is stateful simulation logic
+      that does not belong in a static type system. The compat layer can REPRESENT Petri nets structurally
+      (places, transitions, arcs) and can REPRESENT execution traces, but it cannot EXECUTE token games.
+    engine_implementation: "wasm4pm/src/replay/ (simulate_replay function implementing token game semantics)"
+    compat_limitation: >
+      compat can REPRESENT the inputs (PetriNet struct, EventLog struct) and the outputs (ExecutionTrace struct,
+      MarkingSequence struct) but CANNOT EXECUTE the simulation. All token movements must be computed by the engine.
+    forbidden_imports:
+      - token_game_simulator
+      - petri_executor (state machine for Petri net execution)
+      - marking_calculator
+      - enabled_transitions_finder
+      - firing_sequence_generator
+      - transitive_closure_computer
+      - pm4py replay module (if exposed to compat)
+      - state_space_explorer
+    refusal_signal: "Tool-smuggling: replay simulator in compat"
+    audit_check: "Scan compat for active token game state tracking or Petri net execution code"
+
+  mint_receipt:
+    category: "Cryptographic Signing & Receipt Chaining"
+    graduates_to: "NeedsReceipts"
+    description: "Receipt minting, BLAKE3 hash chain generation, Ed25519 signature creation, and cryptographic proof binding."
+    why_forbidden: >
+      Cryptographic receipt minting requires private keys, signature generation, and hash chain consensus logic.
+      These operations must be performed by the sandboxed execution engine with secure memory handling (zeroization).
+      Private key handling CANNOT occur in compat. The compat layer can REPRESENT receipt envelopes (Receipt<T, W> structs)
+      but cannot MINT them.
+    engine_implementation: "wasm4pm/src/cryptography/ (mint_receipt function with private key access and signing)"
+    compat_limitation: >
+      compat can REPRESENT the results (Receipt<T, W> struct with hash, signature fields) and can VALIDATE
+      them against public keys, but CANNOT SIGN them or create new hash chains. All signing must happen in the engine.
+    forbidden_imports:
+      - blake3 (if used for minting, not validation)
+      - ed25519-dalek (or any signing library)
+      - zeroize (memory scrubbing for secrets)
+      - crypto_hash_chain (or hash chaining logic)
+      - signature_signer
+      - receipt_mint_engine
+      - private_key_store
+      - hmac (for signature verification that requires key access)
+    refusal_signal: "Tool-smuggling: receipt minting in compat"
+    audit_check: "Scan compat for private key handling, signature generation, or hash chain construction code"
+
+  benchmark_gate_run:
+    category: "Performance Validation & Benchmarking"
+    graduates_to: "NeedsBenchmarkGate"
+    description: "Execution latency benchmarking, throughput measurement, quality threshold validation against real test runs."
+    why_forbidden: >
+      Benchmark gating requires executing workloads and measuring actual performance metrics (latency, throughput, memory usage).
+      This is inherently an execution-time operation that cannot be performed statically in compat. The compat layer can
+      REPRESENT benchmark thresholds and results but cannot VERIFY them at runtime.
+    engine_implementation: "wasm4pm/src/benchmarking/ (benchmark_gate_run function with timing harness)"
+    compat_limitation: >
+      compat can REPRESENT benchmark configurations (BenchmarkConfig struct) and threshold definitions (Metric<Performance, ...>)
+      but cannot EXECUTE benchmarks or validate claimed scores against real data.
+    forbidden_imports:
+      - benchmark_harness
+      - latency_measurer
+      - throughput_calculator
+      - performance_validator
+      - test_execution_engine
+      - timing_instrumentation
+      - runtime_quality_gating
+    refusal_signal: "Tool-smuggling: benchmark gating in compat"
+    audit_check: "Scan compat for benchmark execution, timing code, or performance validation logic"
+
+  execute_ocpq:
+    category: "Object-Centric Process Query Execution"
+    graduates_to: "NeedsObjectCentricQueryExecution"
+    description: "OCPQ query evaluation, RDF/SPARQL query execution, object-centric relational joins, and OcpqPredicate interpretation."
+    why_forbidden: >
+      Object-Centric Process Query execution requires a relational query engine that can evaluate predicates,
+      perform joins across object-centric event logs, and compute result sets. This is database-like functionality
+      that does not belong in a thin client. The compat layer can REPRESENT query syntax (OcpqQuery, OcpqPredicate structs)
+      but cannot EXECUTE queries.
+    engine_implementation: "wasm4pm/src/query/ (execute_ocpq function with query evaluation engine)"
+    compat_limitation: >
+      compat can REPRESENT static query shapes and predicates (OcpqQuery struct, OcpqPredicate enum) but cannot
+      EXECUTE the query engine or compute result sets. All query evaluation must happen in the engine.
+    forbidden_imports:
+      - ocpq_query_engine
+      - rdf_triple_store (if used for query execution)
+      - sparql_evaluator
+      - relational_join_engine
+      - predicate_interpreter
+      - object_centric_database
+      - graph_query_executor
+      - result_set_computer
+    refusal_signal: "Tool-smuggling: OCPQ query execution in compat"
+    audit_check: "Scan compat for query evaluation code, triple store operations, or predicate interpretation"
+
+  rebuild_process_mining_locally:
+    category: "Local Process Mining Reconstruction"
+    graduates_to: "RebuildingProcessMiningLocally"
+    description: "Client-side implementation of discovery algorithms, replay engines, conformance solvers, or metric calculators that should be delegated to the execution engine."
+    why_forbidden: >
+      This is the catch-all violation: if a host is rebuilding local versions of token replay, miners, or metric calculators
+      inside their compat-dependent code, they are exceeding the structural boundary and should adopt the official wasm4pm
+      execution engine instead. This indicates architectural confusion about where execution belongs.
+    engine_implementation: "Full wasm4pm execution runtime (mining/, replay/, conformance/, query/)"
+    compat_limitation: >
+      compat can REPRESENT the inputs and outputs of mining/execution operations but cannot BE the execution platform.
+      Hosts rebuilding these locally are defeating the purpose of the separation.
+    forbidden_patterns:
+      - "Writing custom Petri net execution logic in host code"
+      - "Implementing discovery heuristics in JavaScript/TypeScript"
+      - "Creating local conformance checkers instead of calling engine API"
+      - "Manually computing fitness scores without engine involvement"
+      - "Building local token simulators instead of using wasm4pm replay"
+      - "Implementing OCPQ evaluation in application code"
+    refusal_signal: "Tool-smuggling: local process mining in host code"
+    audit_check: "Code review of host application; look for discovery/replay/conformance logic that should be delegated"
+
+# Dependency-Level Forbiddens (Crates that must never be imported into compat)
+
+forbidden_crates:
+
+  blake3_for_minting:
+    crate_name: "blake3"
+    scope: "Cryptographic hashing for receipt minting"
+    version_constraint: "any"
+    why_forbidden: >
+      blake3 is used in wasm4pm for minting and chaining cryptographic receipts. If compat includes blake3,
+      it suggests receipt minting logic is being smuggled into compat. Validation of existing hashes is allowed
+      (via reference checks), but minting new ones is forbidden.
+    location_in_wasm4pm: "wasm4pm/src/cryptography/hashing.rs"
+    audit_signal: "If Cargo.toml of compat contains blake3 dependency, trigger REFUSE"
+
+  ed25519_dalek_for_signing:
+    crate_name: "ed25519-dalek"
+    scope: "Signature generation and private key handling"
+    version_constraint: "any"
+    why_forbidden: >
+      ed25519-dalek enables cryptographic signing, which requires access to private keys. This belongs
+      exclusively in the sandboxed wasm4pm execution engine. If compat imports ed25519-dalek, it is attempting
+      to create signatures (FORBIDDEN).
+    location_in_wasm4pm: "wasm4pm/src/cryptography/signing.rs"
+    audit_signal: "If Cargo.toml of compat contains ed25519-dalek, trigger REFUSE"
+
+  zeroize:
+    crate_name: "zeroize"
+    scope: "Memory scrubbing for sensitive data"
+    version_constraint: "any"
+    why_forbidden: >
+      zeroize is used in wasm4pm to securely erase sensitive data (private keys, secrets) from memory.
+      If compat needs zeroize, it suggests secret handling is being performed there, which violates the boundary.
+    location_in_wasm4pm: "wasm4pm/src/sandbox/memory_management.rs"
+    audit_signal: "If Cargo.toml of compat contains zeroize, trigger REFUSE"
+
+  wasmtime:
+    crate_name: "wasmtime"
+    scope: "WASM host runtime execution"
+    version_constraint: "any"
+    why_forbidden: >
+      wasmtime is the WASM runtime host for executing wasm4pm itself. Compat must remain compilable on thin targets
+      (browser, minimal WASM sandboxes). If compat imports wasmtime, it is trying to become a WASM runtime, which
+      violates the thin-client assumption.
+    location_in_wasm4pm: "wasm4pm/src/runtime/host.rs"
+    audit_signal: "If Cargo.toml of compat contains wasmtime, trigger REFUSE"
+
+# Feature-Level Forbiddens (Feature combinations that trigger refusal)
+
+forbidden_feature_combinations:
+
+  ts_with_discovery:
+    features:
+      - "ts"
+      - "*-discovery"
+    why_forbidden: "TypeScript browser code cannot include process discovery algorithms."
+    refusal_reason: "Tool-smuggling: discovery in ts feature"
+    graduation_reason: "NeedsDiscovery"
+
+  ts_with_conformance:
+    features:
+      - "ts"
+      - "*-conformance"
+    why_forbidden: "TypeScript browser code cannot include conformance solvers."
+    refusal_reason: "Tool-smuggling: conformance in ts feature"
+    graduation_reason: "NeedsConformanceExecution"
+
+  wasm_with_replay:
+    features:
+      - "wasm"
+      - "*-replay"
+    why_forbidden: "WASM compat boundary cannot include token replay simulation."
+    refusal_reason: "Tool-smuggling: replay in wasm feature"
+    graduation_reason: "NeedsReplay"
+
+  component_with_cryptography:
+    features:
+      - "component"
+      - "*-signing"
+      - "*-minting"
+    why_forbidden: "Component world exports cannot include signature generation or receipt minting."
+    refusal_reason: "Tool-smuggling: cryptography in component world"
+    graduation_reason: "NeedsReceipts"
+
+# Audit Rules (How GGEN validates against this ledger)
+
+ggen_validation_rules:
+  forbidden_tool_detection:
+    rule_id: "forbidden-tool-detection"
+    description: "GGEN scans all features and dependencies for forbidden operations."
+    procedure:
+      - step: 1
+        action: "Parse Cargo.toml of wasm4pm-compat"
+        look_for: "forbidden crates in dependencies (blake3, ed25519-dalek, zeroize, wasmtime)"
+      - step: 2
+        action: "Read cargo metadata --format-version 1"
+        look_for: "Detect if forbidden crates appear in dependency tree under ts/wasm/component features"
+      - step: 3
+        action: "Introspect each feature's enabled dependencies"
+        look_for: "Verify that ts, wasm, component features do NOT activate any forbidden crates"
+      - step: 4
+        action: "Scan rustdoc JSON for exported symbols"
+        look_for: "Verify no forbidden function names (discover_model, run_conformance, simulate_replay, etc.) in public API"
+      - step: 5
+        action: "Review all public modules for algorithm logic"
+        look_for: "Detect if any execution algorithms are present (miners, solvers, simulators)"
+    action_on_violation: "REFUSE with refusal reason: 'Tool-smuggling: <operation>-belongs-to-wasm4pm'"
+
+  graduation_signal_recognition:
+    rule_id: "graduation-signal-recognition"
+    description: "When forbidden operations are detected, GGEN generates GraduationCandidate with appropriate reason."
+    procedure:
+      - step: 1
+        action: "Identify which forbidden operation was attempted"
+      - step: 2
+        action: "Map to corresponding GraduationReason from graduation-surface-ledger.yaml"
+      - step: 3
+        action: "Generate GraduationCandidate with non-empty subject and evidence_ref"
+      - step: 4
+        action: "Tag the refusal with graduation_reason"
+    graduation_mapping:
+      discover_model: "NeedsDiscovery"
+      run_conformance: "NeedsConformanceExecution"
+      simulate_replay: "NeedsReplay"
+      mint_receipt: "NeedsReceipts"
+      benchmark_gate_run: "NeedsBenchmarkGate"
+      execute_ocpq: "NeedsObjectCentricQueryExecution"
+      rebuild_process_mining: "RebuildingProcessMiningLocally"
+
+# Summary Statistics
+summary:
+  total_forbidden_operations: 7
+  total_forbidden_crates: 5
+  total_forbidden_feature_combinations: 4
+  enforcement_level: "ZERO_TOLERANCE"
+  refusal_action: "REFUSE execution-belongs-to-wasm4pm"
+  graduation_signals_enabled: 7
+
+# Cross-Reference Index
+cross_references:
+  forbidden_tool_ledger: "/ggen/intel/forbidden-tool-ledger.yaml (original list)"
+  graduation_surface_ledger: "/ggen/intel/graduation-surface-ledger.yaml (graduation signals)"
+  cargo_feature_map: "/ggen/intel/cargo-feature-map.yaml (feature definitions)"
+  dependency_boundary_map: "/ggen/intel/dependency-boundary-map.yaml (crate restrictions)"
+  type_law_atlas: "/sources/wasm4pm-compat/type-law-atlas.md (domain law)"
+  ecosystem_census: "/ggen/intel/ecosystem-census.md (complete ecosystem reference)"
+  surface_classification_map: "/ggen/intel/surface-classification-map.yaml (all ecosystem surfaces)"
+  allowed_projection_surfaces: "/ggen/intel/allowed-projection-surfaces.yaml (what IS allowed)"
+
+# Immutability Notice
+immutability: >
+  This ledger is immutable. New forbiddens may be added as addendums with versioning,
+  but existing entries may never be removed or reinterpreted. The boundary between
+  compat (structural) and wasm4pm (execution) is absolute and canonical.

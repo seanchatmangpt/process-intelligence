@@ -1,4 +1,6 @@
+#![forbid(unsafe_code)]
 //! wasm4pm-compat: Type law manufacturing for process intelligence
+
 
 pub mod manufacturing;
 

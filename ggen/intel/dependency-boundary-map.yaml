@@ -1,0 +1,77 @@
+# dependency-boundary-map.yaml
+# Mapping of engine execution dependencies vs compatibility dependencies.
+
+metadata:
+  crate: wasm4pm-compat
+  version: 0.1.0
+  workspace: process-intelligence
+  last_updated: "2026-06-01"
+
+categories:
+  compatibility_dependencies:
+    description: "Crates permitted in wasm4pm-compat for structure serialization, typestate enforcement, and client-safe projections."
+    allowed_list:
+      - name: serde
+        version: "1.0"
+        purpose: "Serialization and deserialization of Evidence states, receipt logs, and witness markers."
+        optional: false
+        gating_feature: null
+      - name: specta
+        version: "1.0"
+        purpose: "Type introspection and TypeScript code generation for client interface validation."
+        optional: true
+        gating_feature: "ts"
+      - name: tsify
+        version: "0.4"
+        purpose: "TypeScript generation for structs/enums crossing WASM/JS boundary."
+        optional: true
+        gating_feature: "ts"
+      - name: wasm-bindgen
+        version: "0.2"
+        purpose: "Low-level JS/WASM bindings and attribute macros."
+        optional: true
+        gating_feature: "wasm"
+      - name: serde-wasm-bindgen
+        version: "0.6"
+        purpose: "Optimized Serde serialization/deserialization across JS/WASM ABI boundaries."
+        optional: true
+        gating_feature: "wasm"
+      - name: wit-bindgen
+        version: "0.2"
+        purpose: "WIT component model bindings generation."
+        optional: true
+        gating_feature: "component"
+
+  engine_execution_dependencies:
+    description: "Crates, modules, and algorithms strictly isolated to the wasm4pm execution engine. Importing or compiling these inside wasm4pm-compat is a boundary violation."
+    forbidden_list:
+      - name: blake3
+        scope: "Execution hashing/chaining"
+        reasons: "Hash chain minting belongs to the execution engine. Compat only represents validation shapes."
+      - name: ed25519-dalek
+        scope: "Signature signing"
+        reasons: "Private key handling and cryptographic signature generation occur downstream in wasm4pm execution engine."
+      - name: zeroize
+        scope: "Memory scrubbing"
+        reasons: "Secrets wiping and execution-time sanitization belong to the sandboxed runtime memory allocator."
+      - name: wasmtime
+        scope: "WASM host compiler"
+        reasons: "Host execution runner must reside strictly downstream; compat must be compilable inside thin targets."
+      - name: alignment_solvers
+        scope: "Conformance algorithms"
+        reasons: "Active trace alignment algorithms require CPU-heavy graph matching (A* solvers) and are forbidden in the compat crate."
+
+boundary_verification_laws:
+  - rule_id: "no-algorithm-smuggling"
+    assertion: "wasm4pm-compat must never contain active logic for process discovery, trace replay, conformance alignments, or OCPQ database querying."
+    trigger: "Importing modules from sources/wasm4pm/src/ (allocator, crypto, ocel, query, sandbox, ffi, otel, evidence, petri, safety, replay, conformance, mining, zeroize, controllers, ltl) into wasm4pm-compat."
+    reasons:
+      - "wasm4pm-compat's boundary represents structural type-law. Execution logic violates its static footprint."
+      - "Smuggling execution logic introduces heavy runtime weights and compromises browser-safety."
+    action: "REFUSE: no-algorithm-smuggling"
+  - rule_id: "dependency-gating-compliance"
+    assertion: "All ABI-boundary and projection libraries (specta, tsify, wasm-bindgen, serde-wasm-bindgen, wit-bindgen) must be declared optional and strictly feature-gated."
+    trigger: "Any configuration where FFI or JS-binding crates are compiled in default compilation path."
+    reasons:
+      - "Default build of wasm4pm-compat must remain dependency-lean with zero third-party FFI footprint."
+    action: "REFUSE: dependency-gating-compliance"

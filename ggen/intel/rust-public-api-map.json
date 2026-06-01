@@ -1,0 +1,520 @@
+{
+  "crate": "wasm4pm-compat",
+  "version": "30.1.2",
+  "description": "Type law manufacturing and structural compatibility substrate for process intelligence execution logs.",
+  "api_surfaces": {
+    "manufacturing_layer": {
+      "description": "Engines, templates, context builders, and audit tools physically implemented in compat/src/",
+      "structs": [
+        {
+          "name": "TemplateContext",
+          "description": "Template variable binding map for Jinja2-style template rendering.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn new() -> Self",
+            "pub fn set(&mut self, key: &str, value: &str)",
+            "pub fn get(&self, key: &str) -> Option<&str>",
+            "pub fn all(&self) -> &HashMap<String, String>"
+          ]
+        },
+        {
+          "name": "RenderEngine",
+          "description": "Regex-free variable substitution and conditional block evaluator for templates.",
+          "projectability": "non-projectable/internal",
+          "methods": [
+            "pub fn new() -> Self",
+            "pub fn with_context(self, context: TemplateContext) -> Self",
+            "pub fn render(&self, template: &str) -> Result<String, RenderError>",
+            "pub fn render_with_conditionals(&self, template: &str) -> Result<String, RenderError>"
+          ]
+        },
+        {
+          "name": "ModuleSpec",
+          "description": "High-level specification defining a target manufactured WASM module.",
+          "projectability": "projectable",
+          "fields": [
+            "pub name: String",
+            "pub witness: String",
+            "pub evidence_carriers: Vec<String>",
+            "pub lifecycle_states: Vec<String>",
+            "pub api_functions: Vec<FunctionSpec>",
+            "pub features: Vec<String>"
+          ]
+        },
+        {
+          "name": "FunctionSpec",
+          "description": "Signature and documentation metadata of a public API function inside a module spec.",
+          "projectability": "projectable",
+          "fields": [
+            "pub name: String",
+            "pub signature: String",
+            "pub doc: String"
+          ]
+        },
+        {
+          "name": "GeneratedModule",
+          "description": "The result of template rendering, containing metadata and source code.",
+          "projectability": "projectable",
+          "fields": [
+            "pub name: String",
+            "pub source_template: PathBuf",
+            "pub output_path: PathBuf",
+            "pub content: String",
+            "pub compiled: bool",
+            "pub compilation_errors: Vec<String>"
+          ]
+        },
+        {
+          "name": "RustGenerator",
+          "description": "Rust module writer with built-in type law and witness injection.",
+          "projectability": "non-projectable/internal",
+          "methods": [
+            "pub fn new(template_dir: PathBuf, output_dir: PathBuf) -> Self",
+            "pub fn generate(&self, template_name: &str, context: TemplateContext) -> Result<GeneratedModule, RenderError>",
+            "pub fn generate_and_write(&self, template_name: &str, context: TemplateContext) -> Result<PathBuf, RenderError>",
+            "pub fn verify_compilation(&self, module_path: &Path) -> Result<bool, String>",
+            "pub fn generate_with_witness(&self, spec: &ModuleSpec, context: &mut TemplateContext) -> Result<GeneratedModule, RenderError>",
+            "pub fn check_unsafe_free(&self, content: &str) -> Result<(), RenderError>",
+            "pub fn check_witness_markers(&self, content: &str) -> Result<(), RenderError>"
+          ]
+        },
+        {
+          "name": "Dependency",
+          "description": "Specification of a Cargo package dependency for code generation.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn new(name: &str, version: &str) -> Self",
+            "pub fn with_features(self, features: Vec<&str>) -> Self",
+            "pub fn optional(self, optional: bool) -> Self"
+          ]
+        },
+        {
+          "name": "CargoTomlBuilder",
+          "description": "Cargo configuration writer mapping dependencies, dev dependencies, and features.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn new(name: &str, version: &str) -> Self",
+            "pub fn add_dependency(&mut self, dep: Dependency) -> &mut Self",
+            "pub fn add_dev_dependency(&mut self, dep: Dependency) -> &mut Self",
+            "pub fn add_feature(&mut self, name: &str, deps: Vec<&str>) -> &mut Self",
+            "pub fn add_author(&mut self, author: &str) -> &mut Self",
+            "pub fn with_documentation(&mut self, url: &str) -> &mut Self",
+            "pub fn build(&self) -> String"
+          ]
+        },
+        {
+          "name": "ModuleConfig",
+          "description": "Model and witness metadata mapping to config.toml serialization.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn to_toml(&self) -> String"
+          ]
+        },
+        {
+          "name": "TomlGenerator",
+          "description": "Configuration code writer creating Cargo.toml and config.toml on disk.",
+          "projectability": "non-projectable/internal",
+          "methods": [
+            "pub fn new(output_dir: PathBuf) -> Self",
+            "pub fn generate_cargo_toml(&self, builder: &CargoTomlBuilder) -> Result<String, RenderError>",
+            "pub fn generate_config_toml(&self, config: ModuleConfig) -> Result<String, RenderError>"
+          ]
+        },
+        {
+          "name": "ArtifactReceipt",
+          "description": "Cryptographic record proving artifact build details and audit status.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn new(content_hash: String, witness: String, template_source: String) -> Self",
+            "pub fn with_compilation(self, compiled: bool) -> Self",
+            "pub fn with_audit(self, passed: bool) -> Self",
+            "pub fn with_context(self, context: HashMap<String, String>) -> Self",
+            "pub fn verify(&self) -> bool",
+            "pub fn to_json_string(&self) -> String"
+          ]
+        },
+        {
+          "name": "ReceiptLedger",
+          "description": "Registry tracking and auditing all generated artifact receipts.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn new() -> Self",
+            "pub fn record(&mut self, artifact_id: &str, receipt: ArtifactReceipt)",
+            "pub fn get(&self, artifact_id: &str) -> Option<&ArtifactReceipt>",
+            "pub fn all(&self) -> Vec<&ArtifactReceipt>",
+            "pub fn verify_all(&self) -> bool",
+            "pub fn count_by_witness(&self) -> HashMap<String, usize>",
+            "pub fn export_report(&self) -> String"
+          ]
+        },
+        {
+          "name": "AuditFinding",
+          "description": "A single compliance finding generated by the auditor.",
+          "projectability": "projectable",
+          "fields": [
+            "pub level: AuditLevel",
+            "pub code: String",
+            "pub message: String",
+            "pub location: String"
+          ]
+        },
+        {
+          "name": "AuditResult",
+          "description": "Accumulation of compliance audit findings indicating success or failure.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn new(artifact_id: &str) -> Self",
+            "pub fn add_finding(&mut self, finding: AuditFinding)",
+            "pub fn is_passed(&self) -> bool",
+            "pub fn export_report(&self) -> String"
+          ]
+        },
+        {
+          "name": "ComplianceAuditor",
+          "description": "Type law validator analyzing module source code and templates.",
+          "projectability": "non-projectable/internal",
+          "methods": [
+            "pub fn audit_module(artifact_id: &str, content: &str, receipt: &ArtifactReceipt) -> AuditResult",
+            "pub fn audit_template(template_name: &str, template_content: &str) -> AuditResult"
+          ]
+        },
+        {
+          "name": "RenderContext",
+          "description": "Configuration context controlling the rendering and auditing process.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn new(template_dir: PathBuf, output_dir: PathBuf) -> Self"
+          ]
+        },
+        {
+          "name": "PowerPointGenerator",
+          "description": "Virtual Data Room (VDR) slide deck renderer binding board claims to compliance receipts.",
+          "projectability": "non-projectable/internal",
+          "methods": [
+            "pub fn render_slide_deck(claims: &[String], evidence: &ReceiptLedger) -> Result<String, RenderError>"
+          ]
+        },
+        {
+          "name": "RQGenerator",
+          "description": "LTL/governance rule compiler generating verifiable Research Question programs.",
+          "projectability": "non-projectable/internal",
+          "methods": [
+            "pub fn render_governance(rules: &[String]) -> Result<String, RenderError>"
+          ]
+        }
+      ],
+      "enums": [
+        {
+          "name": "RenderError",
+          "description": "Error categories returned by rendering and generation components.",
+          "projectability": "projectable",
+          "variants": [
+            "UndefinedVariable(String)",
+            "InvalidSyntax(String)",
+            "RenderFailed(String)",
+            "IoError(String)",
+            "ComplianceViolation(String)"
+          ]
+        },
+        {
+          "name": "AuditLevel",
+          "description": "Severity categorization of compliance findings.",
+          "projectability": "projectable",
+          "variants": [
+            "Error",
+            "Warning",
+            "Info"
+          ]
+        }
+      ],
+      "traits": [
+        {
+          "name": "RenderableModule",
+          "description": "Enables code generation from templates.",
+          "projectability": "projectable",
+          "methods": [
+            "fn module_name(&self) -> &str",
+            "fn template_source(&self) -> &PathBuf",
+            "fn render(&self) -> Result<String, String>",
+            "fn verify_compilation(&self) -> Result<bool, String>"
+          ]
+        },
+        {
+          "name": "Receiptable",
+          "description": "Enables provenance tracking and hash/witness verification.",
+          "projectability": "projectable",
+          "methods": [
+            "fn content_hash(&self) -> &str",
+            "fn witness(&self) -> &str",
+            "fn verify_receipt(&self) -> bool",
+            "fn receipt_json(&self) -> String"
+          ]
+        },
+        {
+          "name": "ManufacturedModule",
+          "description": "Combines rendering and receipts with default lifecycle tags.",
+          "projectability": "projectable",
+          "methods": [
+            "fn lifecycle_state(&self) -> &str",
+            "fn manufacturing_complete(&self) -> bool"
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "render_rust_module",
+          "signature": "pub fn render_rust_module(spec: &ModuleSpec, context: &RenderContext) -> Result<GeneratedModule, RenderError>",
+          "description": "Top-level API generating type-safe Rust module code from specification."
+        },
+        {
+          "name": "render_toml",
+          "signature": "pub fn render_toml(spec: &ModuleSpec, context: &RenderContext) -> Result<String, RenderError>",
+          "description": "Top-level API rendering Cargo.toml configuration."
+        },
+        {
+          "name": "render_slide_deck",
+          "signature": "pub fn render_slide_deck(claims: &[String], evidence: &ReceiptLedger) -> Result<String, RenderError>",
+          "description": "Top-level API creating corporate slide deck with verified receipts."
+        },
+        {
+          "name": "render_governance",
+          "signature": "pub fn render_governance(rules: &[String]) -> Result<String, RenderError>",
+          "description": "Top-level API compiling Research Question governance scripts."
+        }
+      ]
+    },
+    "type_law_kernel": {
+      "description": "Verifiable types, const-generic constraints, lattices, and structural process shapes specified by type-law-atlas.md",
+      "structs": [
+        {
+          "name": "Assert<const OK: bool>",
+          "description": "Primary structural assertion container for compile-time constants.",
+          "projectability": "non-projectable/internal"
+        },
+        {
+          "name": "ConditionCell<const BITS: usize>",
+          "description": "Enforcer type for Blue River Dam constraint limit (BITS <= 8).",
+          "projectability": "non-projectable/internal"
+        },
+        {
+          "name": "Between01<const NUM: u64, const DEN: u64>",
+          "description": "Compile-time rational boundary constraint [0, 1].",
+          "projectability": "non-projectable/internal"
+        },
+        {
+          "name": "Evidence<T, State, Witness>",
+          "description": "Universal cryptographic evidence block wrapping payload, model marking, and witness lattice.",
+          "projectability": "projectable",
+          "methods": [
+            "pub fn raw(payload: T) -> Evidence<T, Raw, WitnessState>",
+            "pub fn calculate_hash(&self) -> Blake3Hash",
+            "pub fn validate(&self) -> Result<(), EvidenceError>",
+            "pub fn validate_transition(&self, next: &Self) -> Result<(), EvidenceError>"
+          ]
+        },
+        {
+          "name": "IdentitySignature",
+          "description": "Ed25519 authority signature structure.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "Blake3Hash",
+          "description": "BLAKE3 cryptographic digest wrapper.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "SoundnessProof",
+          "description": "Sealed soundness certificate token generated only by the execution engine.",
+          "projectability": "non-projectable/internal"
+        },
+        {
+          "name": "WfNetConst<const SOUNDNESS: SoundnessState>",
+          "description": "Const-generic soundness net requiring structural seal.",
+          "projectability": "non-projectable/internal",
+          "methods": [
+            "pub fn witness_soundness(proof: SoundnessProof) -> WfNetConst<{SoundnessState::Witnessed}>"
+          ]
+        },
+        {
+          "name": "ProjectionName",
+          "description": "Static named identifier for lossy process transformations.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "LossReport<From, To, Items>",
+          "description": "Verifiable detail report specifying data discarded during lossy projection.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "ProcessBoundary",
+          "description": "Identifies named boundaries and rules for strict inter-crate validation.",
+          "projectability": "non-projectable/internal"
+        },
+        {
+          "name": "StrictCheck",
+          "description": "Engine checking strict boundary transitions.",
+          "projectability": "non-projectable/internal"
+        },
+        {
+          "name": "GraduationCandidate",
+          "description": "Structured candidate description mapping an engine request seam.",
+          "projectability": "graduation-seam",
+          "methods": [
+            "pub fn is_grounded(&self) -> bool"
+          ]
+        },
+        {
+          "name": "CaseId",
+          "description": "Zero-cost transparent wrapper for Case identifier.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "ActivityId",
+          "description": "Zero-cost transparent wrapper for Activity identifier.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "TraceId",
+          "description": "Zero-cost transparent wrapper for Trace identifier.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "EventId",
+          "description": "Zero-cost transparent wrapper for Event identifier.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "ObjectId",
+          "description": "Zero-cost transparent wrapper for Object identifier.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "ObjectTypeId",
+          "description": "Zero-cost transparent wrapper for Object Type identifier.",
+          "projectability": "projectable"
+        }
+      ],
+      "enums": [
+        {
+          "name": "EvidenceMode",
+          "description": "Const generic parameter representing lifecycle state (Raw, Parsed, Admitted, Refused, etc.)",
+          "projectability": "projectable"
+        },
+        {
+          "name": "ProjectionLaw",
+          "description": "Enforceable rules governing model transformations (Lossless, RefuseLoss, etc.)",
+          "projectability": "projectable"
+        },
+        {
+          "name": "AdmissionLaw",
+          "description": "Covenant gating rules for admitting external telemetry (ParsedOnly, WitnessRequired, etc.)",
+          "projectability": "projectable"
+        },
+        {
+          "name": "FormatKindConst",
+          "description": "Standardized file and event log structures (OCEL, XES, BPMN, PNML).",
+          "projectability": "projectable"
+        },
+        {
+          "name": "SoundnessState",
+          "description": "WF-net correctness typestate variants (Unknown, Claimed, Witnessed).",
+          "projectability": "projectable"
+        },
+        {
+          "name": "WitnessState",
+          "description": "Lattice tracking event replay indexes, net marking, and alignment costs.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "ConstraintValue",
+          "description": "Valuation state of individual Declare LTLf constraints.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "DeclareWitnessState",
+          "description": "Lattice mapping Declare rules to constraint valuation states.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "UnifiedWitnessState",
+          "description": "Lattice product combining Replay and Declare witness structures.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "RefusalReport",
+          "description": "Detailed validation report for rejected evidence blocks.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "LossPolicy",
+          "description": "Replay fitness criteria and cost parameters.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "CompatDiagnostic",
+          "description": "Detailed codes for explaining type law violations.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "GraduationReason",
+          "description": "Categorization of reasons why execution must graduate to the wasm4pm engine.",
+          "projectability": "graduation-seam"
+        }
+      ],
+      "traits": [
+        {
+          "name": "IsTrue",
+          "description": "Gate trait implemented only for Assert<true>.",
+          "projectability": "non-projectable/internal"
+        },
+        {
+          "name": "EvidenceState",
+          "description": "Sealed trait limiting the typestate space for Evidence.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "Lattice",
+          "description": "Core algebraic interface for join-semilattices (ordering, join, bottom, top).",
+          "projectability": "projectable",
+          "methods": [
+            "fn bottom() -> Self",
+            "fn top() -> Self",
+            "fn join(&self, other: &Self) -> Self",
+            "fn partial_cmp(&self, other: &Self) -> Option<Ordering>"
+          ]
+        },
+        {
+          "name": "Admit",
+          "description": "Defines rules for transitioning Evidence from Raw to Admitted state.",
+          "projectability": "projectable",
+          "methods": [
+            "fn admit(raw: Evidence<T, Raw, W>) -> Result<Evidence<T, Admitted, W>, RefusalReport>"
+          ]
+        },
+        {
+          "name": "WfNetQuery",
+          "description": "Interface for extracting soundness state from Petri net variants.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "LossyFormatExport",
+          "description": "Enforces producing a non-empty LossReport during export transitions.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "Project",
+          "description": "Boundary interface for executing lossy projections under a LossPolicy.",
+          "projectability": "projectable"
+        },
+        {
+          "name": "GraduateToWasm4pm",
+          "description": "Trait implemented by boundary elements to provide a graduation candidate description.",
+          "projectability": "graduation-seam",
+          "methods": [
+            "fn candidate(&self) -> GraduationCandidate"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,175 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Ggen Component Boundary Audit Script
+# Verifies that wasm4pm-compat adheres to the Component Boundary Law:
+# 1. Structure belongs in compat; execution belongs in wasm4pm.
+# 2. No forbidden execution symbols or unsafe code.
+# 3. Strict segregation of WIT worlds (compat-world vs engine-world).
+# 4. No WASI system-level capability imports.
+# 5. Adherence to named law refusal patterns.
+# ==============================================================================
+
+set -euo pipefail
+
+# ANSI color codes for rich reporting
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+echo -e "${BLUE}======================================================================${NC}"
+echo -e "${BLUE}           WASM Component Boundary Law Audit Verification             ${NC}"
+echo -e "${BLUE}======================================================================${NC}"
+
+# Define target paths relative to the script execution or repository root
+BASE_DIR="/Users/sac/process-intelligence"
+COMPAT_DIR="${BASE_DIR}/sources/wasm4pm-compat/compat"
+RULES_FILE="${BASE_DIR}/ggen/rules/component-boundary-law.yaml"
+WIT_TEMPLATE="${BASE_DIR}/ggen/templates/wasm4pm-compat.wit.ggen"
+
+# Initialize audit stats
+AUDIT_ERRORS=0
+AUDIT_WARNINGS=0
+
+log_success() {
+    echo -e "${GREEN}[PASS] $1${NC}"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARN] $1${NC}"
+    ((AUDIT_WARNINGS++))
+}
+
+log_error() {
+    echo -e "${RED}[FAIL] $1${NC}"
+    ((AUDIT_ERRORS++))
+}
+
+# --- 1. Validate Rust Crate Constraints ---
+echo -e "\n${BLUE}--- [Step 1] Auditing Rust Crate Code Rules ---${NC}"
+
+# Check for #![forbid(unsafe_code)] in lib.rs
+LIB_RS="${COMPAT_DIR}/src/lib.rs"
+if [ -f "$LIB_RS" ]; then
+    if grep -q "#\!\[forbid(unsafe_code)\]" "$LIB_RS"; then
+        log_success "Crate forbids unsafe code in lib.rs"
+    else
+        log_error "lib.rs is missing '#![forbid(unsafe_code)]' attribute declaration!"
+    fi
+else
+    log_warning "lib.rs not found at $LIB_RS, skipping unsafe check."
+fi
+
+# Check that wasm4pm is not a dependency of wasm4pm-compat (avoiding circular/upstream dependency)
+CARGO_TOML="${COMPAT_DIR}/Cargo.toml"
+if [ -f "$CARGO_TOML" ]; then
+    if grep -q "wasm4pm " "$CARGO_TOML" || grep -q 'wasm4pm = ' "$CARGO_TOML"; then
+        log_error "Dependency smuggling detected: wasm4pm execution engine must not be a dependency of wasm4pm-compat!"
+    else
+        log_success "Dependency segregation maintained: wasm4pm execution engine is not listed as a dependency of compat."
+    fi
+else
+    log_warning "Cargo.toml not found at $CARGO_TOML, skipping dependency verification."
+fi
+
+# Check for unauthorized iteration/computation in sources (No loops over event logs, etc.)
+# We audit for keyword signatures indicating actual definitions or imports of data traversal algorithms
+FORBIDDEN_KEYWORDS=("fire_transition" "token_replay" "conformance_fitness" "heuristics_miner" "alpha_miner" "longest_common_subsequence")
+if [ -d "${COMPAT_DIR}/src" ]; then
+    for keyword in "${FORBIDDEN_KEYWORDS[@]}"; do
+        # Search for actual struct/fn definitions, impl blocks, or use statements to avoid matching raw string literals in tests or templates
+        REG_PATTERN="(fn[[:space:]]+${keyword}|struct[[:space:]]+[a-zA-Z0-9_]*${keyword}|impl[[:space:]]+[a-zA-Z0-9_[:space:]]*${keyword}|use[[:space:]]+[a-zA-Z0-9_:]*${keyword})"
+        if grep -E -rni --exclude-dir=target -i "$REG_PATTERN" "${COMPAT_DIR}/src" >/dev/null 2>&1; then
+            log_error "Computation smuggling detected: Definition or import of forbidden keyword '$keyword' found in compat source code!"
+            grep -E -rni --exclude-dir=target -i "$REG_PATTERN" "${COMPAT_DIR}/src" | sed 's/^/  -> /'
+        fi
+    done
+else
+    log_warning "Source directory ${COMPAT_DIR}/src not found, skipping keyword checks."
+fi
+
+if [ $AUDIT_ERRORS -eq 0 ]; then
+    log_success "No data-traversal algorithms or computational execution modules found in compat source code."
+fi
+
+# --- 2. Auditing WIT Schema definitions ---
+echo -e "\n${BLUE}--- [Step 2] Auditing WIT Boundary Design Rules ---${NC}"
+
+# Search for WIT files and templates to audit
+WIT_FILES=()
+if [ -f "$WIT_TEMPLATE" ]; then
+    WIT_FILES+=("$WIT_TEMPLATE")
+fi
+
+# Search for generated .wit files in sources or build output
+while IFS= read -r -d '' file; do
+    WIT_FILES+=("$file")
+done < <(find "$BASE_DIR" -name "*.wit" -not -path "*/target/*" -print0)
+
+if [ ${#WIT_FILES[@]} -eq 0 ]; then
+    log_warning "No WIT files or templates found to audit."
+else
+    for wit_path in "${WIT_FILES[@]}"; do
+        echo -e "Auditing WIT target: ${YELLOW}$(basename "$wit_path")${NC} ($wit_path)"
+        
+        # Rule: World Segregation - compat-world must not export execution functions
+        # Extract the body of compat-world block
+        COMPAT_WORLD_CONTENT=$(awk '/world compat-world/,/}/' "$wit_path" || true)
+        
+        if [ -n "$COMPAT_WORLD_CONTENT" ]; then
+            FORBIDDEN_WIT_EXPORTS=("replay" "solve" "discover" "mine" "conformance" "verdict")
+            for term in "${FORBIDDEN_WIT_EXPORTS[@]}"; do
+                if echo "$COMPAT_WORLD_CONTENT" | grep -qi "$term"; then
+                    log_error "Symbol smuggling in WIT: Forbidden export/import term '$term' detected inside compat-world!"
+                    echo "$COMPAT_WORLD_CONTENT" | grep -n -i "$term" | sed 's/^/  -> /'
+                fi
+            done
+            
+            # Rule: WASI system capability imports (wasi:filesystem, wasi:sockets, wasi:cli)
+            if echo "$COMPAT_WORLD_CONTENT" | grep -E "import\s+wasi:(filesystem|sockets|cli|http)" >/dev/null; then
+                log_error "WASI capability leak: System interface imports detected inside compat-world!"
+                echo "$COMPAT_WORLD_CONTENT" | grep -E "import\s+wasi:" | sed 's/^/  -> /'
+            fi
+        else
+            log_warning "Could not parse compat-world definition in $wit_path (or block is empty)"
+        fi
+
+        # Rule: Kebab-case compliance for identifiers
+        # Check for camelCase or snake_case inside type or field definitions
+        # e.g., identifying fields like 'witnessKey' or 'state_tag' which should be 'witness-key' and 'state-tag'
+        # We ignore lines containing Tera template directives to avoid false positives on template loops/variables.
+        VIOLATIONS=$(grep -En "record\s+|variant\s+|enum\s+|flags\s+|[a-zA-Z0-9]+_[a-zA-Z0-9]+|[a-z]+[A-Z]+[a-zA-Z]+" "$wit_path" | grep -v -E "package|//|///|import|export|use|[{][{]|[}][}]|[{][%]|[%][}]" || true)
+        if [ -n "$VIOLATIONS" ]; then
+            # Filter specifically for snake_case or camelCase variables inside the fields or identifiers
+            CASE_VIOLATIONS=$(echo "$VIOLATIONS" | grep -E "(_|[a-z][A-Z])" || true)
+            if [ -n "$CASE_VIOLATIONS" ]; then
+                log_error "WIT identifier casing violation: Identifiers must strictly conform to kebab-case!"
+                echo "$CASE_VIOLATIONS" | sed 's/^/  -> /'
+            fi
+        fi
+
+        # Rule: First-class refusal mapping - check that validate-admission returns a result<admission, refusal> and not result<admission, string>
+        # Look for functions in types or worlds returning a result where the error is string
+        STRING_ERR_FUNCS=$(grep -En "func.*->\s*result<[^,]+,\s*string>" "$wit_path" || true)
+        if [ -n "$STRING_ERR_FUNCS" ]; then
+            log_error "Error laundering detected: WIT function uses unconstrained string as error result!"
+            echo "$STRING_ERR_FUNCS" | sed 's/^/  -> /'
+        fi
+    done
+fi
+
+# --- 3. Audit Verdict ---
+echo -e "\n${BLUE}======================================================================${NC}"
+echo -e "                       Audit Verification Summary                     "
+echo -e "${BLUE}======================================================================${NC}"
+echo -e "Errors detected:   $( [ $AUDIT_ERRORS -gt 0 ] && echo -e "${RED}${AUDIT_ERRORS}${NC}" || echo -e "${GREEN}0${NC}" )"
+echo -e "Warnings detected: $( [ $AUDIT_WARNINGS -gt 0 ] && echo -e "${YELLOW}${AUDIT_WARNINGS}${NC}" || echo -e "${GREEN}0${NC}" )"
+
+if [ $AUDIT_ERRORS -gt 0 ]; then
+    echo -e "\n${RED}STATUS: FAILED${NC} - One or more component boundary laws were violated."
+    exit 1
+else
+    echo -e "\n${GREEN}STATUS: PASSED${NC} - The compatibility component boundary is structurally sound."
+    exit 0
+fi
