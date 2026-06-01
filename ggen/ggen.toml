@@ -10,6 +10,8 @@ evidence_sources = ["../receipts", "../checkpoints"]
 
 [ontology]
 source = "ontology-extensions.ttl"
+# wasm4pm-compat law manufacturing uses dedicated ontology
+wasm4pm_compat_source = "wasm4pm-compat.ttl"
 
 [[inference.rules]]
 name = "normalize"
@@ -18,6 +20,50 @@ construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
 order = 1
 
 # Unused M&A rules deactivated for visualizer focus
+
+# wasm4pm-compat Law Manufacturing Rules
+
+[[generation.rules]]
+name = "wasm4pm-compat-witness-markers"
+description = "Extract witness marker projections for Rust enum generation"
+query = { file = "queries/select-witness-projections.rq" }
+template = { file = "templates/witness-marker.tera" }
+output_file = "../sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs"
+mode = "Overwrite"
+metadata = {
+  format = "rust",
+  audience = "wasm4pm-compat Type System",
+  compliance = "Lattice monotonicity (join-semilattice properties)",
+  evidence_backing = "witness lattice completeness audit"
+}
+
+[[generation.rules]]
+name = "wasm4pm-compat-process-forms"
+description = "Extract process form definitions for type-law documentation"
+query = { file = "queries/select-process-forms.rq" }
+template = { file = "templates/process-form.tera" }
+output_file = "../sources/wasm4pm-compat/manufactured/forms/process-forms-20260601.md"
+mode = "Overwrite"
+metadata = {
+  format = "markdown",
+  audience = "Process Intelligence Research Foundry",
+  compliance = "Process form admissibility boundaries",
+  evidence_backing = "type-law atlas + process form coverage matrix"
+}
+
+[[generation.rules]]
+name = "wasm4pm-compat-boundary-law"
+description = "Extract boundary crossing definitions for WebAssembly type-safe export"
+query = { file = "queries/select-boundary-crossings.rq" }
+template = { file = "templates/wasm-boundary.tera" }
+output_file = "../sources/wasm4pm-compat/manufactured/boundaries/boundary-law-20260601.wit"
+mode = "Overwrite"
+metadata = {
+  format = "wit",
+  audience = "wasm4pm Execution Engine",
+  compliance = "WASM component model type safety",
+  evidence_backing = "boundary crossing law enforcement + signature admissibility"
+}
 
 # Generation rules for Blue River orchestrator
 [[generation.rules]]

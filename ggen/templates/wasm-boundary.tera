@@ -1,0 +1,303 @@
+;; WebAssembly Boundary Law Module
+;; Authority: wasm4pm-compat Type-Law Atlas
+;; Generated: 2026-06-01
+;; Purpose: Type-safe process intelligence boundaries exported to WASM
+
+;; Process Intelligence Core Types
+
+(type $WitnessMarker (enum
+  "van-der-aalst-1989"   ;; Petri Net Foundation
+  "van-der-aalst-1998"   ;; Soundness Proof
+  "van-der-aalst-2016"   ;; OCEL Foundation
+  "murata-1989"          ;; Petri Net Theory
+  "weijters-2011"        ;; Heuristics Miner
+  "leemans-2013"         ;; Inductive Miner
+  "adriansyah-2011"      ;; Alignment
+  "blue-river-dam"       ;; Autonomic Actuation
+))
+
+(type $PlaceId (record
+  (field $id u32)
+))
+
+(type $TransitionId (record
+  (field $id u32)
+))
+
+(type $Marking (record
+  (field $places (list (tuple (field $place-id $PlaceId) (field $token-count u8))))
+))
+
+(type $EventId (record
+  (field $id u32)
+))
+
+(type $ObjectId (record
+  (field $id u32)
+))
+
+(type $EventTrace (record
+  (field $events (list (tuple
+    (field $event-id $EventId)
+    (field $timestamp u64)
+    (field $activity s)
+    (field $object-refs (list $ObjectId))
+  )))
+))
+
+(type $OcelEventLog (record
+  (field $events (list (tuple
+    (field $event-id $EventId)
+    (field $timestamp u64)
+    (field $activity s)
+    (field $object-instance-map (list (tuple
+      (field $object-id $ObjectId)
+      (field $event-refs (list $EventId))
+    )))
+  )))
+))
+
+(type $PetriNet (record
+  (field $places (list $PlaceId))
+  (field $transitions (list $TransitionId))
+  (field $source-marking $Marking)
+  (field $sink-place $PlaceId)
+))
+
+(type $ConformanceResult (record
+  (field $fitness f64)
+  (field $precision f64)
+  (field $generalization f64)
+  (field $simplicity f64)
+  (field $witness $WitnessMarker)
+))
+
+(type $ExecutionState (record
+  (field $current-marking $Marking)
+  (field $trace-so-far $EventTrace)
+  (field $witness-so-far $WitnessMarker)
+))
+
+(type $VerificationReceipt (record
+  (field $receipt-id s)
+  (field $content-hash (list u8))
+  (field $witness $WitnessMarker)
+  (field $timestamp u64)
+  (field $signature (list u8))
+  (field $fitness f64)
+  (field $validator-role s)
+))
+
+(type $AutonomicAction (record
+  (field $action-type s)
+  (field $target-component s)
+  (field $parameters s)
+))
+
+;; === BOUNDARY CROSSING 1: Log to Petri Net Discovery ===
+
+(component $log-to-petri-net-discovery
+  (export "discover-petri-net" (func (param $log $EventTrace) (result (expected $PetriNet s))))
+  ;; Algorithm: Alpha Miner
+  ;; Authority Witness: van-der-aalst-1989
+  ;; Type-Law Enforcement: 1-bounded Petri net structure
+)
+
+;; === BOUNDARY CROSSING 2: Log to Process Tree Discovery ===
+
+(component $log-to-process-tree-discovery
+  ;; ProcessTree type definition
+  (type $ProcessTreeNode (record
+    (field $operator s)      ;; "sequence", "choice", "parallel", "loop"
+    (field $activity (option s))  ;; activity name (leaves only)
+    (field $children (list (own $ProcessTreeNode)))
+  ))
+
+  (export "discover-process-tree" (func (param $log $EventTrace) (result (expected $ProcessTreeNode s))))
+  ;; Algorithm: Inductive Miner
+  ;; Authority Witness: leemans-2013
+  ;; Type-Law Enforcement: Block-structured tree nesting
+)
+
+;; === BOUNDARY CROSSING 3: OCEL to Object-Centric Analysis ===
+
+(component $ocel-to-object-centric-analysis
+  (type $ObjectCentricModel (record
+    (field $objects (list (tuple
+      (field $object-id $ObjectId)
+      (field $creation-event $EventId)
+      (field $termination-event $EventId)
+      (field $lifecycle (list s))  ;; State sequence
+    )))
+    (field $event-log $OcelEventLog)
+  ))
+
+  (export "analyze-object-centric" (func (param $log $OcelEventLog) (result (expected $ObjectCentricModel s))))
+  ;; Algorithm: Object-Centric Conformance Analysis
+  ;; Authority Witness: van-der-aalst-2016
+  ;; Type-Law Enforcement: Complete object instance lifetimes
+)
+
+;; === BOUNDARY CROSSING 4: Constraint Evaluation ===
+
+(component $constraint-evaluation
+  (type $ConstraintSatisfactionVector (list (tuple
+    (field $constraint-id s)
+    (field $satisfaction s)  ;; "satisfied", "violated", "unknown"
+  )))
+
+  (type $DeclareConstraintSet (list (tuple
+    (field $constraint-id s)
+    (field $ltl-formula s)
+  )))
+
+  (export "evaluate-constraints" (func
+    (param $constraints $DeclareConstraintSet)
+    (param $trace $EventTrace)
+    (result $ConstraintSatisfactionVector)
+  ))
+  ;; Algorithm: Declare Constraint Evaluation
+  ;; Authority Witness: van-der-aalst-2016
+  ;; Type-Law Enforcement: LTL satisfaction vector consistency
+)
+
+;; === BOUNDARY CROSSING 5: Token Replay Conformance ===
+
+(component $token-replay-conformance
+  (export "replay-tokens" (func
+    (param $model $PetriNet)
+    (param $trace $EventTrace)
+    (result $ConformanceResult)
+  ))
+  ;; Algorithm: Token Replay Conformance Checking
+  ;; Authority Witness: adriansyah-2011
+  ;; Type-Law Enforcement: 1-bounded marking invariant
+)
+
+;; === BOUNDARY CROSSING 6: Process-Log Alignment ===
+
+(component $process-log-alignment
+  (type $AlignmentSequence (list (tuple
+    (field $move-type s)  ;; "synchronous", "model-only", "log-only"
+    (field $model-transition (option $TransitionId))
+    (field $log-event (option $EventId))
+    (field $cost f64)
+  )))
+
+  (export "compute-alignment" (func
+    (param $model $PetriNet)
+    (param $trace $EventTrace)
+    (result (expected $AlignmentSequence s))
+  ))
+  ;; Algorithm: Optimal Process-Log Alignment
+  ;; Authority Witness: adriansyah-2011
+  ;; Type-Law Enforcement: Fitness threshold (0.95 board admissibility)
+)
+
+;; === BOUNDARY CROSSING 7: Receipt Graduation ===
+
+(component $receipt-graduation
+  (export "graduate-receipt" (func
+    (param $state $ExecutionState)
+    (param $witness $WitnessMarker)
+    (result (expected $VerificationReceipt s))
+  ))
+  ;; Algorithm: Evidence Lattice Join and Graduation
+  ;; Authority Witness: blue-river-dam
+  ;; Type-Law Enforcement: JCS canonicalization (RFC 8785), Ed25519 signature admissibility
+)
+
+;; === BOUNDARY CROSSING 8: Autonomic Actuation ===
+
+(component $autonomic-actuation
+  (type $ProcessIntelligenceSignal (record
+    (field $signal-type s)  ;; "state-change", "anomaly", "optimization-hint"
+    (field $payload s)      ;; JSON-encoded signal data
+  ))
+
+  (export "actuate-autonomic" (func
+    (param $signal $ProcessIntelligenceSignal)
+    (result (expected $AutonomicAction s))
+  ))
+  ;; Algorithm: MAPE-K Autonomic Loop Enforcement
+  ;; Authority Witness: blue-river-dam
+  ;; Type-Law Enforcement: Autonomic marking state consistency
+)
+
+;; === BOUNDARY CROSSING 9: WIT World Export ===
+
+(component $wit-world-export
+  (type $ProcessModule (record
+    (field $module-name s)
+    (field $witnesses (list $WitnessMarker))
+    (field $boundary-crossings u32)
+  ))
+
+  (type $WitWorld (record
+    (field $imports (list s))
+    (field $exports (list s))
+    (field $resource-bindings (list s))
+  ))
+
+  (export "export-wit-world" (func
+    (param $module $ProcessModule)
+    (result (expected $WitWorld s))
+  ))
+  ;; Algorithm: Type-Law Projection to WIT
+  ;; Authority Witness: blue-river-dam
+  ;; Type-Law Enforcement: WASM component model type safety
+)
+
+;; === BOUNDARY CROSSING 10: Replay Soundness Verification ===
+
+(component $replay-soundness-verification
+  (type $ReplaySoundnessReport (record
+    (field $lattice-monotonic bool)
+    (field $witness-join-valid bool)
+    (field $state-transitions-valid bool)
+  ))
+
+  (export "verify-replay-soundness" (func
+    (param $trace $EventTrace)
+    (param $witness-log (list $WitnessMarker))
+    (result (expected $ReplaySoundnessReport s))
+  ))
+  ;; Algorithm: Lattice Monotonicity Runtime Verification
+  ;; Authority Witness: van-der-aalst-2016
+  ;; Type-Law Enforcement: Witness lattice join-semilattice properties
+)
+
+;; === BOUNDARY CROSSING 11: Signature Admissibility Check ===
+
+(component $signature-admissibility-check
+  (type $RoleSignature (record
+    (field $role s)  ;; "Auditor", "Runner", "Board", "Validator"
+    (field $public-key (list u8))
+    (field $signature (list u8))
+  ))
+
+  (export "verify-signature-admissibility" (func
+    (param $receipt $VerificationReceipt)
+    (param $role-signature $RoleSignature)
+    (result (expected bool s))
+  ))
+  ;; Algorithm: Ed25519 Signature Verification + Epoch-Based Replay Prevention
+  ;; Authority Witness: blue-river-dam
+  ;; Type-Law Enforcement: Cryptographic binding (BLAKE3) + signature validity
+)
+
+;; === BOUNDARY CROSSING 12: JCS Canonicalization ===
+
+(component $jcs-canonicalization
+  (export "canonicalize-receipt" (func
+    (param $receipt-json s)
+    (result (expected (list u8) s))
+  ))
+  ;; Algorithm: JSON Canonicalization Scheme (RFC 8785)
+  ;; Authority Witness: blue-river-dam
+  ;; Type-Law Enforcement: Deterministic JSON ordering prior to signature
+)
+
+;; === WORLD CONFIGURATION ===
+
+(world "wasm4pm-compat-law" (export "boundary-law" (instance of $receipt-graduation)))
