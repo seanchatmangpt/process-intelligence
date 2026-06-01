@@ -52,3 +52,6 @@
 
 * **Step: map BPMN runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map Petri runtime obligations**
+  - Defining engine execution requirements.
