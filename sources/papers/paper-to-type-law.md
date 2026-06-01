@@ -39,3 +39,7 @@
 ### Classify: aalst_2004_workflow_patterns
 - **Type Law**: Soundness safety constraints.
 - **Execution Law**: Conformance replayer checks.
+
+### Classify: weidlich_2011_profile_conformance
+- **Type Law**: Soundness safety constraints.
+- **Execution Law**: Conformance replayer checks.
