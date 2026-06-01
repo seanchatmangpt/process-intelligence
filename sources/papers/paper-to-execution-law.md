@@ -11,3 +11,6 @@
 
 ### Fixtures for ghahfarokhi_2021_ocel2
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for verbeek_2021_log_trie
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
