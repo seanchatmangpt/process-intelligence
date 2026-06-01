@@ -43,3 +43,6 @@
 
 * **Step: map DFG structural law**
   - Evaluating type safety and witness validations.
+
+* **Step: map OCPQ structural law**
+  - Evaluating type safety and witness validations.
