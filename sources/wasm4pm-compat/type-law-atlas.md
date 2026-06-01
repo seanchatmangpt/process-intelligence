@@ -82,3 +82,6 @@
 
 * **Step: define downstream ggen obligations**
   - Evaluating type safety and witness validations.
+
+* **Step: define downstream M&A claim obligations**
+  - Evaluating type safety and witness validations.
