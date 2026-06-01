@@ -61,3 +61,6 @@
 
 * **Step: map Declare runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map process tree runtime obligations**
+  - Defining engine execution requirements.
