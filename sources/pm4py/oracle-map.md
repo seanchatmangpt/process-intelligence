@@ -50,3 +50,6 @@
 
 * **Step: map prediction capability**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map visualization capability**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
