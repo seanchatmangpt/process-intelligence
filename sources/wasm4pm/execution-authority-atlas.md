@@ -85,3 +85,6 @@
 
 * **Step: identify decommissioning gaps**
   - Defining engine execution requirements.
+
+* **Step: write execution-authority thesis**
+  - Defining engine execution requirements.
