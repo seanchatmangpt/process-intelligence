@@ -25,3 +25,6 @@
 
 * **Step: map XES structural law**
   - Evaluating type safety and witness validations.
+
+* **Step: map BPMN structural law**
+  - Evaluating type safety and witness validations.
