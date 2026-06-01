@@ -48,17 +48,25 @@ A Workflow Net (WF-net) is a Petri Net $N = (P, T, F)$ with a dedicated source p
    $$\forall M \in [M_0\rangle, \quad M_f \in [M\rangle$$
 
 2. **Proper Completion**: If a reachable marking $M$ contains a token in the sink place $o$, it must contain no other tokens:
-   $$\forall M \in [M_0\rangle, \quad M(o) \ge 1 \implies M = [o]$$
+   $$\forall M \in [M_0\rangle, \quad M(o) \ge 1 \implies M = M_f$$
 
 3. **Liveness (No Dead Transitions)**: For any transition $t \in T$, there exists a reachable marking $M$ that enables $t$:
-   $$\forall t \in T, \quad \exists M, M' \in [M_0\rangle \quad \text{s.t. } M \xrightarrow{t} M'$$
+   $$\forall t \in T, \quad \exists M \in [M_0\rangle \quad \text{s.t. } M \xrightarrow{t}$$
 
 4. **Boundedness**: The net is bounded if the token count in all places remains below a positive integer $k$:
    $$\exists k \in \mathbb{N}^+ : \forall M \in [M_0\rangle, \forall p \in P, \quad M(p) \le k$$
 
 wasm4pm embeds static checkers validating these soundness properties in-memory, whereas PM4Py executes post-hoc analysis via python solvers.
 
-### B. Optimal Alignment Calculations
+### B. P-Invariant Conservation Theorem
+Let $C \in \mathbb{Z}^{|P| \times |T|}$ be the incidence matrix of $N$. A place vector $y \in \mathbb{Z}^{|P|}$ is a **P-invariant** if and only if:
+$$y^T \cdot C = \vec{0}^T$$
+The P-invariant conservation theorem states that for any reachable marking $M \in [M_0\rangle$:
+$$y^T \cdot M = y^T \cdot M_0$$
+This is verified algebraically using the state equation $M = M_0 + C \cdot \vec{x}$, where $\vec{x}$ is the transition firing vector:
+$$y^T \cdot M = y^T \cdot (M_0 + C \cdot \vec{x}) = y^T \cdot M_0 + y^T \cdot C \cdot \vec{x} = y^T \cdot M_0 + \vec{0}^T \cdot \vec{x} = y^T \cdot M_0$$
+
+### C. Optimal Alignment Calculations
 When logs contain deviations, simple token replay fails. We calculate the optimal alignment $\gamma_{\text{opt}}$ between a trace $\sigma \in L$ and the WF-net $N$. An alignment is a sequence of moves $(m_x, m_y) \in (T \cup \{\gg\}) \times (\Sigma \cup \{\gg\})$ where $\Sigma$ is the alphabet of activities and $\gg$ represents a skip.
 
 Let $c$ be the cost function:
@@ -74,7 +82,7 @@ $$f(L, N) = 1 - \frac{\sum_{\sigma \in L} L(\sigma) \cdot c(\gamma_{\text{opt}}(
 
 where $\gamma_{\text{worst}}(\sigma, N)$ aligns the trace completely via moves-on-log and model steps to reach $M_f$ from $M_0$. For execution details, see the [Slide-to-Replay Map](file:///Users/sac/process-intelligence/ma/define_slide-to-replay_map.md) and the [Board-Admissible Claim Requirements](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md).
 
-### C. Linear Temporal Logic (LTL) Semantics in Declarative Conformance
+### D. Linear Temporal Logic (LTL) Semantics in Declarative Conformance
 For declarative compliance (e.g., checking DECLARE constraints), compliance rules are formulated as LTL formulas over trace execution. Let a trace be $\sigma = \langle e_1, e_2, \dots, e_n \rangle$ of length $n$. For index $i \in \{1, \dots, n\}$:
 - $\sigma, i \models a \iff \text{activity}(e_i) = a$
 - $\sigma, i \models \neg \varphi \iff \sigma, i \not\models \varphi$

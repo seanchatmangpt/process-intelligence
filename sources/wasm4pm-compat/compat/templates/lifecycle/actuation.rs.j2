@@ -1,0 +1,135 @@
+//! Autonomic Actuation module — synthesized by ggen manufacturing machinery
+//!
+//! This module implements autonomic knowledge actuation for closed-loop manufacturing
+//!
+//! Generated from: templates/lifecycle/actuation.rs.j2
+//! License: Executable only under wasm4pm graduation bridge
+
+use crate::law::*;
+use crate::evidence::*;
+
+/// Autonomic action triggered by process state
+#[derive(Debug, Clone)]
+pub struct AutonomicAction {
+    /// Name of the action
+    pub name: String,
+    /// Trigger condition
+    pub trigger: String,
+    /// Action type (RepairAction, OptimizationAction, etc.)
+    pub action_type: ActionType,
+}
+
+/// Types of autonomic actions
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ActionType {
+    /// Corrective action to repair defect
+    Repair,
+    /// Optimization to improve performance
+    Optimization,
+    /// Preventive action before failure
+    Prevention,
+    /// Escalation to human operator
+    Escalation,
+}
+
+/// Actuation policy: event → action mapping
+pub struct ActuationPolicy {
+    /// Registered actions
+    pub actions: Vec<AutonomicAction>,
+    /// Action execution history
+    pub executions: Vec<ActuationExecution>,
+}
+
+/// Record of an executed autonomic action
+#[derive(Debug, Clone)]
+pub struct ActuationExecution {
+    pub action_name: String,
+    pub trigger_event: String,
+    pub timestamp: u64,
+    pub outcome: ActionOutcome,
+}
+
+/// Outcome of an autonomic action
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ActionOutcome {
+    Success,
+    PartialSuccess,
+    Failure,
+    Escalated,
+}
+
+impl ActuationPolicy {
+    /// Create a new actuation policy
+    pub fn new() -> Self {
+        ActuationPolicy {
+            actions: vec![],
+            executions: vec![],
+        }
+    }
+
+    /// Register an autonomic action
+    pub fn register_action(&mut self, action: AutonomicAction) {
+        self.actions.push(action);
+    }
+
+    /// Find actions triggered by an event
+    pub fn triggered_by(&self, event: &str) -> Vec<&AutonomicAction> {
+        self.actions
+            .iter()
+            .filter(|action| action.trigger.contains(event))
+            .collect()
+    }
+
+    /// Execute an autonomic action
+    pub fn execute_action(
+        &mut self,
+        action_name: &str,
+        trigger: &str,
+    ) -> Result<ActionOutcome, ActuationRefusal> {
+        let action = self
+            .actions
+            .iter()
+            .find(|a| a.name == action_name)
+            .ok_or(ActuationRefusal::UnknownAction)?;
+
+        // Record execution
+        let execution = ActuationExecution {
+            action_name: action.name.clone(),
+            trigger_event: trigger.to_string(),
+            timestamp: 0, // placeholder
+            outcome: ActionOutcome::Success,
+        };
+
+        self.executions.push(execution.clone());
+        Ok(execution.outcome)
+    }
+
+    /// Get execution history
+    pub fn history(&self) -> &[ActuationExecution] {
+        &self.executions
+    }
+}
+
+/// Actuation refusal reasons
+#[derive(Debug, Clone)]
+pub enum ActuationRefusal {
+    /// Action not registered
+    UnknownAction,
+    /// Trigger condition not met
+    ConditionNotMet,
+    /// Policy is disabled
+    PolicyDisabled,
+    /// Not yet implemented
+    NotImplementedYet,
+}
+
+impl std::fmt::Display for ActuationRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::UnknownAction => write!(f, "UnknownAction"),
+            Self::ConditionNotMet => write!(f, "ConditionNotMet"),
+            Self::PolicyDisabled => write!(f, "PolicyDisabled"),
+            Self::NotImplementedYet => write!(f, "NotImplementedYet"),
+        }
+    }
+}

@@ -11,6 +11,8 @@
 
 Process mining on high-throughput event streams requires low-latency alignment checking and temporal constraint verification. Conventional architectures delegate compliance checking to external databases or heavyweight JVM instances, exposing sensitive transaction data to multi-tenant hosts and runtime leakage. We propose executing lightweight WASM modules directly on sidecars. However, executing arbitrary guest-provided models requires formal bounds on execution resources, sandboxed memory spaces, and complete erasure of logs post-replay.
 
+This runtime verification engine forms the core **Monitor** and **Execute** components of the autonomic **MAPE-K (Monitor, Analyze, Plan, Execute, Knowledge)** loop, enabling zero-latency feedback loops by executing safe local process optimizations and enforcing GRC policies dynamically.
+
 ---
 
 ## 2. Mathematical Foundation of Process Conformance
@@ -55,14 +57,36 @@ subject to the projection constraints where the log projection $\pi_L(\gamma) = 
 
 ### 2.4 Linear Temporal Logic (LTL) Compliance
 
-Let $AP$ be the set of atomic propositions representing activity completion states. An execution trace is mapped to a sequence of states $\sigma = s_0 s_1 s_2 \dots$. The satisfaction relation $\sigma, i \models \varphi$ at step $i \ge 0$ is defined inductively:
+Let $AP$ be the set of atomic propositions representing activity completion states. Interpretations are checked on finite traces under Linear Temporal Logic over Finite Traces ($\text{LTL}_f$). Let a trace be $\sigma = s_0 s_1 s_2 \dots s_{m-1}$ of length $m$. The satisfaction relation $\sigma, i \models \varphi$ at step $i \in [0, m)$ is defined inductively:
 * $\sigma, i \models p \iff p \in s_i$ (for $p \in AP$)
 * $\sigma, i \models \neg \varphi \iff \sigma, i \not\models \varphi$
 * $\sigma, i \models \varphi \land \psi \iff \sigma, i \models \varphi \land \sigma, i \models \psi$
-* $\sigma, i \models \bigcirc \varphi \iff \sigma, i+1 \models \varphi$ (Next)
-* $\sigma, i \models \square \varphi \iff \forall j \ge i, \quad \sigma, j \models \varphi$ (Globally)
-* $\sigma, i \models \diamondsuit \varphi \iff \exists j \ge i, \quad \sigma, j \models \varphi$ (Eventually)
-* $\sigma, i \models \varphi \mathbin{U} \psi \iff \exists j \ge i \quad \text{such that} \quad \sigma, j \models \psi \land \forall k \in [i, j), \quad \sigma, k \models \varphi$ (Until)
+* $\sigma, i \models \bigcirc \varphi \iff i < m-1 \land \sigma, i+1 \models \varphi$ (Strong Next)
+* $\sigma, i \models \widetilde{\bigcirc} \varphi \iff i = m-1 \lor \sigma, i+1 \models \varphi$ (Weak Next)
+* $\sigma, i \models \square \varphi \iff \forall j \in [i, m), \quad \sigma, j \models \varphi$ (Globally)
+* $\sigma, i \models \diamondsuit \varphi \iff \exists j \in [i, m), \quad \sigma, j \models \varphi$ (Eventually)
+* $\sigma, i \models \varphi \mathbin{U} \psi \iff \exists j \in [i, m) \quad \text{s.t.} \quad \sigma, j \models \psi \land \forall k \in [i, j), \quad \sigma, k \models \varphi$ (Until)
+
+The Weak-Until operator $\mathbin{\mathcal{W}}$ is defined as:
+$$\varphi \mathbin{\mathcal{W}} \psi \equiv (\varphi \mathbin{\mathcal{U}} \psi) \lor \Box \varphi$$
+
+We verify declarative temporal logic templates:
+- **Response(A, B)**: $\phi_{\text{Response}} = \Box(A \implies \lozenge B)$. If activity $A$ occurs, activity $B$ must eventually occur at or after it.
+- **Precedence(A, B)**: $\phi_{\text{Precedence}} = \neg B \mathbin{\mathcal{W}} A$. Activity $B$ cannot occur unless activity $A$ has occurred before it.
+
+### 2.5 Vacuous Satisfaction in Declarative Checking
+
+A common vulnerability in runtime temporal logic monitoring is **vacuous satisfaction** (vacuous truth), where a constraint evaluates to true simply because its triggering event never occurred.
+
+Let $\alpha_{\phi}$ be the activation condition of a constraint $\phi$. The activation index set is defined as:
+$$\text{Acts}(\sigma, \alpha_{\phi}) = \{ i \in [0, m) \mid \sigma, i \models \alpha_{\phi} \}$$
+
+- **Response(A, B)**: Activation condition $\alpha_{\phi} = A$. Satisfied vacuously if $A$ never occurs:
+  $$\sigma \models_{\text{vac}} \phi_{\text{Response}} \iff \sigma \models \phi_{\text{Response}} \quad \land \quad \text{Acts}(\sigma, A) = \emptyset$$
+- **Precedence(A, B)**: Activation condition $\alpha_{\phi} = B$. Satisfied vacuously if $B$ never occurs:
+  $$\sigma \models_{\text{vac}} \phi_{\text{Precedence}} \iff \sigma \models \phi_{\text{Precedence}} \quad \land \quad \text{Acts}(\sigma, B) = \emptyset$$
+
+Global unary constraints (e.g., `Existence(A)`, `Absence(A)`) represent unconditional behaviors and are assigned $\alpha_{\phi} = \text{True}$; they are never vacuously satisfied. The runtime auditing layer tracks activation cardinality and records `is_vacuously_satisfied: true` when a constraint satisfies the formula but $|\text{Acts}(\sigma, \alpha_{\phi})| = 0$, preventing false-positive compliance approvals.
 
 ---
 
@@ -89,6 +113,12 @@ $$\text{Valid}(p, l) \iff (p \ge B_{\text{start}}) \land (p + l \le B_{\text{sta
 To bypass raw host pointers within FFI interfaces, the runtime uses 32-bit offset indexing. Any guest offset $o \in [0, C)$ is translated to the host virtual address space via:
 $$\text{Addr}_{\text{host}}(o) = B_{\text{start}} + o$$
 If $o \ge C$, the execution engine immediately traps the instruction and aborts with a lifecycle error code `0xFB05`.
+
+### 3.3 Sandboxed Execution Guards & Gas-Metering Limits
+
+To prevent infinite loops, resource starvation, and stack-based heap escapes, execution inside the WASM sandbox is bounded by resource constraints:
+- **Instruction Gas Metering**: The instruction counter is monitored by a deterministic `GasMeter`. Fuel is decremented per execution node. The default gas ceiling is strictly clamped to $10\text{M}$ cycles ($10,000,000$). If cumulative consumption exceeds the allocated fuel, execution traps instantly, aborting with error code `0xFB01` (ERR_CYCLE_OVERFLOW).
+- **Recursion Depth Limits**: The call stack depth is constrained by a `RecursionGuard`. The stack depth is capped at a maximum of $100$ nested execution frames. Violations trigger immediate preemption and abort with error code `0xFB05` (ERR_LIFECYCLE_VIOLATION).
 
 ---
 

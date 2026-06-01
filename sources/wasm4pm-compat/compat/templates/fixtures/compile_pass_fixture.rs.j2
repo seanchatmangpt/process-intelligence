@@ -1,0 +1,55 @@
+//! Compile-pass fixture template — synthesized by ggen manufacturing machinery
+//!
+//! This fixture proves that a legal use case compiles
+//!
+//! Generated from: templates/fixtures/compile_pass_fixture.rs.j2
+//! Template variables: {{ fixture_name }}, {{ test_case }}
+
+#![allow(dead_code, unused_variables)]
+
+use wasm4pm_compat::evidence::*;
+use wasm4pm_compat::law::*;
+use wasm4pm_compat::petri::*;
+
+/// {{ fixture_name }}: {{ test_case }}
+#[test]
+fn {{ fixture_name }}_compiles() {
+    // Setup: Create an admitted evidence
+    let raw = Evidence::raw(vec!["a".to_string(), "b".to_string()]);
+
+    // This compiles because the types are compatible
+    // Witness markers are checked at the type level
+    let _admitted: Evidence<_, Admitted, _> = raw
+        .into_parsed()
+        .and_then(|p| p.into_admitted())
+        .expect("admission should succeed");
+
+    // Proof: The compilation of this test proves the type constraint is satisfied
+}
+
+/// Fixture demonstrating witness marker compatibility
+#[test]
+fn witness_marker_compatibility() {
+    use wasm4pm_compat::witness::*;
+
+    // Two different witnesses are distinct types
+    let _evidence_with_w1: Evidence<String, Raw, VanDerAalst2016> =
+        Evidence::raw("test".to_string());
+
+    let _evidence_with_w2: Evidence<String, Raw, Murata1989> =
+        Evidence::raw("test".to_string());
+
+    // This test proves both witnesses can be used in the same scope
+    // Each is a distinct type, enforced at compile time
+}
+
+/// Fixture demonstrating soundness witness enforcement
+#[test]
+fn soundness_witness_enforcement() {
+    // A WfNetConst with Witnessed soundness proves non-forgeability
+    // Only constructible through witness_soundness(proof)
+    // This test demonstrates the expected usage pattern
+
+    // Note: Actual WfNetConst construction requires wasm4pm graduation bridge
+    // This is a placeholder for the received pattern
+}

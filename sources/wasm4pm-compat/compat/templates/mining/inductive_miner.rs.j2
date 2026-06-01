@@ -1,0 +1,103 @@
+//! Inductive Miner module — synthesized by ggen manufacturing machinery
+//!
+//! Paper: Leemans et al. (2013) "Discovering Block-Structured Process Models from Event Logs"
+//! This module implements the inductive mining algorithm over OCEL event logs
+//!
+//! Generated from: templates/mining/inductive_miner.rs.j2
+//! License: Executable only under wasm4pm graduation bridge
+
+use crate::law::*;
+use crate::evidence::*;
+use crate::process_tree::*;
+use crate::admission::*;
+
+/// Inductive Miner output state: intermediate process tree
+#[derive(Debug, Clone)]
+pub struct InductiveTree {
+    /// Root node of the discovered process tree
+    pub root: TreeNodeDesign,
+    /// Recursion depth
+    pub depth: usize,
+}
+
+/// Tree node under design (before TypedLoopNode constraint satisfaction)
+#[derive(Debug, Clone)]
+pub enum TreeNodeDesign {
+    Leaf(String),
+    Sequence(Vec<TreeNodeDesign>),
+    Parallel(Vec<TreeNodeDesign>),
+    Exclusive(Vec<TreeNodeDesign>),
+    Loop(Box<TreeNodeDesign>, Box<TreeNodeDesign>), // do-body, redo-body
+}
+
+impl InductiveTree {
+    /// Discover a process tree from an admitted OCEL event log
+    pub fn from_ocel<W: 'static>(
+        log: &AdmittedOcelEvidence<Vec<CaseTrace>>,
+        _witness: std::marker::PhantomData<W>,
+    ) -> Result<Self, InductiveRefusal> {
+        let traces = log.inner();
+
+        if traces.is_empty() {
+            return Err(InductiveRefusal::EmptyLog);
+        }
+
+        // Recursively partition traces by activity splitting
+        let root = Self::discover_tree(traces, 0)?;
+
+        Ok(InductiveTree { root, depth: 0 })
+    }
+
+    fn discover_tree(
+        _traces: &[CaseTrace],
+        _depth: usize,
+    ) -> Result<TreeNodeDesign, InductiveRefusal> {
+        // Placeholder: actual discovery algorithm is complex
+        // Requires frequency-based activity splitting, loop detection,
+        // and recursion control
+
+        Err(InductiveRefusal::NotImplementedYet)
+    }
+
+    /// Reify the abstract tree into a typed ProcessTree
+    pub fn into_typed_tree(self) -> Result<ProcessTree, InductiveRefusal> {
+        // Traverse self.root and enforce TypedLoopNode<2> constraint
+        // Any loop node must have exactly 2 children
+
+        Err(InductiveRefusal::NotImplementedYet)
+    }
+}
+
+/// Case trace: sequence of activities for a single object
+#[derive(Debug, Clone)]
+pub struct CaseTrace {
+    pub case_id: String,
+    pub activities: Vec<String>,
+}
+
+/// Inductive miner refusal reasons
+#[derive(Debug, Clone)]
+pub enum InductiveRefusal {
+    /// Log contains no traces
+    EmptyLog,
+    /// Traces are not in admitted state
+    LogNotAdmitted,
+    /// Loop detection failed or loop node has non-2 arity
+    InvalidLoopStructure,
+    /// Recursion depth exceeded safety bound
+    MaxDepthExceeded,
+    /// Not yet implemented
+    NotImplementedYet,
+}
+
+impl std::fmt::Display for InductiveRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::EmptyLog => write!(f, "EmptyLog"),
+            Self::LogNotAdmitted => write!(f, "LogNotAdmitted"),
+            Self::InvalidLoopStructure => write!(f, "InvalidLoopStructure"),
+            Self::MaxDepthExceeded => write!(f, "MaxDepthExceeded"),
+            Self::NotImplementedYet => write!(f, "NotImplementedYet"),
+        }
+    }
+}

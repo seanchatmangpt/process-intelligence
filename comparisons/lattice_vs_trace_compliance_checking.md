@@ -24,11 +24,11 @@ We define the witness space as a bounded join-semilattice $(W, \sqsubseteq, \sqc
 - $\bot$ is the bottom element representing zero evidence (initial state).
 - $\top$ is the top element representing conflict or non-compliance.
 
-The join operator $\sqcup$ is idempotent, commutative, associative, and satisfies absorption:
-- $w \sqcup w = w$
-- $w_1 \sqcup w_2 = w_2 \sqcup w_1$
-- $(w_1 \sqcup w_2) \sqcup w_3 = w_1 \sqcup (w_2 \sqcup w_3)$
-- $w \sqsubseteq u \iff w \sqcup u = u$
+The join operator $\sqcup$ is idempotent, commutative, associative, and compatible with the partial order:
+- **Idempotency**: $\forall w \in W, \quad w \sqcup w = w$
+- **Commutativity**: $\forall w_1, w_2 \in W, \quad w_1 \sqcup w_2 = w_2 \sqcup w_1$
+- **Associativity**: $\forall w_1, w_2, w_3 \in W, \quad (w_1 \sqcup w_2) \sqcup w_3 = w_1 \sqcup (w_2 \sqcup w_3)$
+- **Order Compatibility**: $\forall w, u \in W, \quad w \sqsubseteq u \iff w \sqcup u = u$
 
 For more details on semilattice algebras and properties, see [Witness Lattices Specification](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md) and [Type-Law Atlas](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md).
 

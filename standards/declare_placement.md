@@ -6,16 +6,32 @@ The **Declare** framework (Pesic and van der Aalst 2006) represents a declarativ
 
 ## 1. Ontological Mapping to the Ledger
 
-Declare constraints are defined using Linear Temporal Logic over Finite Traces ($\text{LTL}_f$). The ledger represents and stores these rules using structured templates:
+Declare constraints are defined using Linear Temporal Logic over Finite Traces ($\text{LTL}_f$). The ledger represents and stores these rules using structured templates. Below is the complete mapping of all 21 Declare templates, including their future-only $\text{LTL}_f$ semantic definitions and vacuous satisfaction activation conditions:
 
 | Declare Template Group | $\text{LTL}_f$ Formal Formula | Ledger Class | Activation Condition | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **Existence(n, A)** | $\lozenge A$ (for $n=1$)<br>$\lozenge(A \land \bigcirc \text{Existence}(n-1, A))$ (for $n > 1$) | `MinOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ must occur at least $n$ times in the trace. |
-| **Absence(n, A)** | $\neg \text{Existence}(n, A)$ | `MaxOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ can occur at most $n-1$ times in the trace. |
+| **Existence(A)** | $\lozenge A$ | `MinOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ must occur at least once. |
+| **Existence2(A)** | $\lozenge(A \land \bigcirc \lozenge A)$ | `MinOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ must occur at least twice. |
+| **Existence3(A)** | $\lozenge(A \land \bigcirc \lozenge(A \land \bigcirc \lozenge A))$ | `MinOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ must occur at least three times. |
+| **Absence(A)** | $\Box \neg A$ | `MaxOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ must not occur. |
+| **Absence2(A)** | $\Box \neg A \lor \lozenge(A \land \bigcirc \Box \neg A)$ | `MaxOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ can occur at most once. |
+| **Absence3(A)** | $\Box \neg A \lor \lozenge(A \land \bigcirc (\Box \neg A \lor \lozenge(A \land \bigcirc \Box \neg A)))$ | `MaxOccurrenceConstraint` | $\text{True}$ (Always Active) | Activity $A$ can occur at most twice. |
+| **Init(A)** | $A \lor \text{empty\_trace}$ | `InitConstraint` | $\text{True}$ (Always Active) | If any activity occurs, $A$ must be the first. |
+| **RespondedExistence(A, B)** | $\lozenge A \implies \lozenge B$ | `RespondedExistenceConstraint` | Occurrence of $A$ | If activity $A$ occurs, activity $B$ must also occur (before or after). |
+| **CoExistence(A, B)** | $\lozenge A \iff \lozenge B$ | `CoExistenceConstraint` | Occurrence of $A$ or $B$ | If either activity occurs, the other must also occur. |
 | **Response(A, B)** | $\Box(A \implies \lozenge B)$ | `ResponseConstraint` | Occurrence of $A$ | If activity $A$ occurs, activity $B$ must occur at or after it. |
-| **Precedence(A, B)**| $\Box(\neg B) \lor (\neg B \mathbin{\mathcal{U}} A)$ | `PrecedenceConstraint` | Occurrence of $B$ | Activity $B$ cannot occur unless activity $A$ has occurred before it. |
-| **Succession(A, B)**| $\text{Response}(A,B) \land \text{Precedence}(A,B)$ | `SuccessionConstraint` | Occurrence of $A$ or $B$ | Strict ordered succession of activities $A$ and $B$. |
-| **CoExistence(A, B)**| $\lozenge A \iff \lozenge B$ | `CoExistenceConstraint` | Occurrence of $A$ or $B$ | If either activity occurs, the other must also occur. |
+| **Precedence(A, B)** | $\Box(\neg B) \lor (\neg B \mathbin{\mathcal{U}} A)$ | `PrecedenceConstraint` | Occurrence of $B$ | Activity $B$ cannot occur unless activity $A$ has occurred before it. |
+| **Succession(A, B)** | $\text{Response}(A, B) \land \text{Precedence}(A, B)$ | `SuccessionConstraint` | Occurrence of $A$ or $B$ | Strict ordered succession of activities $A$ and $B$. |
+| **AlternateResponse(A, B)** | $\Box(A \implies \widetilde{\bigcirc}(\neg A \mathbin{\mathcal{W}} B))$ | `AlternateResponseConstraint` | Occurrence of $A$ | Between any two consecutive occurrences of $A$, activity $B$ must occur. |
+| **AlternatePrecedence(A, B)** | $\text{Precedence}(A, B) \land \Box(B \implies \widetilde{\bigcirc}(\neg B \mathbin{\mathcal{W}} A))$ | `AlternatePrecedenceConstraint` | Occurrence of $B$ | Between any two consecutive occurrences of $B$, activity $A$ must occur. |
+| **AlternateSuccession(A, B)** | $\text{AlternateResponse}(A, B) \land \text{AlternatePrecedence}(A, B)$ | `AlternateSuccessionConstraint` | Occurrence of $A$ or $B$ | Both AlternateResponse and AlternatePrecedence must hold. |
+| **ChainResponse(A, B)** | $\Box(A \implies \bigcirc B)$ | `ChainResponseConstraint` | Occurrence of $A$ | Activity $B$ must immediately follow activity $A$. |
+| **ChainPrecedence(A, B)** | $\neg B \land \Box(\bigcirc B \implies A)$ | `ChainPrecedenceConstraint` | Occurrence of $B$ | Activity $A$ must immediately precede activity $B$. |
+| **ChainSuccession(A, B)** | $\text{ChainResponse}(A, B) \land \text{ChainPrecedence}(A, B)$ | `ChainSuccessionConstraint` | Occurrence of $A$ or $B$ | Both ChainResponse and ChainPrecedence must hold. |
+| **NotCoExistence(A, B)** | $\neg(\lozenge A \land \lozenge B)$ | `NotCoExistenceConstraint` | Occurrence of $A$ or $B$ | Activities $A$ and $B$ cannot both occur in the same trace. |
+| **NotSuccession(A, B)** | $\Box(A \implies \Box \neg B)$ | `NotSuccessionConstraint` | Occurrence of $A$ | Activity $A$ cannot be eventually followed by activity $B$. |
+| **NotChainSuccession(A, B)** | $\Box(A \implies \neg \bigcirc B)$ | `NotChainSuccessionConstraint` | Occurrence of $A$ | Activity $B$ cannot immediately follow activity $A$. |
+| **ExclusiveChoice(A, B)** | $(\lozenge A \lor \lozenge B) \land \neg(\lozenge A \land \lozenge B)$ | `ExclusiveChoiceConstraint` | $\text{True}$ (Always Active) | Exactly one of $A$ or $B$ must occur. |
 
 The ledger registers each constraint verification in a validation table, explicitly tracking fulfillment, violation, and vacuous satisfaction counts to check for vacuous truth:
 

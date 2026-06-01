@@ -1,0 +1,102 @@
+//! Step Simulator module — synthesized by ggen manufacturing machinery
+//!
+//! This module implements step-by-step process simulation for validation
+//!
+//! Generated from: templates/replay/step_simulator.rs.j2
+//! License: Executable only under wasm4pm graduation bridge
+
+use crate::law::*;
+use crate::evidence::*;
+use crate::petri::*;
+
+/// Single step in a simulation trace
+#[derive(Debug, Clone)]
+pub struct SimulationStep {
+    /// Activities enabled at this step
+    pub enabled: Vec<String>,
+    /// Activity executed (None if terminated)
+    pub executed: Option<String>,
+    /// Marking after execution
+    pub resulting_marking: Marking,
+}
+
+/// Step-by-step simulator for interactive process exploration
+pub struct StepSimulator<const SOUNDNESS: SoundnessState> {
+    net: WfNetConst<SOUNDNESS>,
+    history: Vec<SimulationStep>,
+    current_marking: Marking,
+}
+
+impl<const SOUNDNESS: SoundnessState> StepSimulator<SOUNDNESS> {
+    /// Create a new step simulator
+    pub fn new(net: WfNetConst<SOUNDNESS>) -> Result<Self, SimulationRefusal> {
+        let current_marking = Marking::default();
+
+        Ok(StepSimulator {
+            net,
+            history: vec![],
+            current_marking,
+        })
+    }
+
+    /// Get all enabled transitions at current step
+    pub fn enabled_activities(&self) -> Vec<String> {
+        // Analyze current_marking and find all enabled transitions
+        vec![]
+    }
+
+    /// Execute next step with given activity
+    pub fn step(&mut self, activity: &str) -> Result<SimulationStep, SimulationRefusal> {
+        let enabled = self.enabled_activities();
+
+        if !enabled.contains(&activity.to_string()) {
+            return Err(SimulationRefusal::ActivityNotEnabled);
+        }
+
+        // Execute transition and update marking
+        let resulting_marking = self.current_marking.clone();
+
+        let step = SimulationStep {
+            enabled,
+            executed: Some(activity.to_string()),
+            resulting_marking,
+        };
+
+        self.history.push(step.clone());
+        self.current_marking = step.resulting_marking.clone();
+
+        Ok(step)
+    }
+
+    /// Reset simulation to initial state
+    pub fn reset(&mut self) {
+        self.history.clear();
+        self.current_marking = Marking::default();
+    }
+
+    /// Get full simulation history
+    pub fn history(&self) -> &[SimulationStep] {
+        &self.history
+    }
+}
+
+/// Simulation refusal reasons
+#[derive(Debug, Clone)]
+pub enum SimulationRefusal {
+    /// Requested activity is not enabled
+    ActivityNotEnabled,
+    /// No final marking defined
+    NoFinalMarking,
+    /// Not yet implemented
+    NotImplementedYet,
+}
+
+impl std::fmt::Display for SimulationRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::ActivityNotEnabled => write!(f, "ActivityNotEnabled"),
+            Self::NoFinalMarking => write!(f, "NoFinalMarking"),
+            Self::NotImplementedYet => write!(f, "NotImplementedYet"),
+        }
+    }
+}

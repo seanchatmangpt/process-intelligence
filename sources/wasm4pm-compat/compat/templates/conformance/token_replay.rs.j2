@@ -1,0 +1,80 @@
+//! Token Replay Conformance module — synthesized by ggen manufacturing machinery
+//!
+//! Paper: van der Aalst (1999) "Event log analysis using conformance checking"
+//! This module implements token replay conformance checking
+//!
+//! Generated from: templates/conformance/token_replay.rs.j2
+//! License: Executable only under wasm4pm graduation bridge
+
+use crate::law::*;
+use crate::evidence::*;
+use crate::petri::*;
+
+/// Token replay conformance result
+#[derive(Debug, Clone)]
+pub struct TokenReplayResult {
+    /// Number of tokens produced (ideal = number of cases)
+    pub tokens_produced: usize,
+    /// Number of tokens missing during replay
+    pub tokens_missing: usize,
+    /// Number of tokens left over after replay
+    pub tokens_remaining: usize,
+    /// Fitness metric: 1.0 - (missing + remaining) / (2 * cases)
+    pub fitness: Between01<{ 0 }, { 1 }>,
+}
+
+/// Token replay engine for a given WfNet
+pub struct TokenReplayEngine<const SOUNDNESS: SoundnessState> {
+    net: WfNetConst<SOUNDNESS>,
+}
+
+impl<const SOUNDNESS: SoundnessState> TokenReplayEngine<SOUNDNESS> {
+    /// Create a new token replay engine for a WfNet
+    pub fn new(net: WfNetConst<SOUNDNESS>) -> Self {
+        TokenReplayEngine { net }
+    }
+
+    /// Replay a case (sequence of activities) through the net
+    pub fn replay_case(&self, activities: &[String]) -> Result<CaseReplay, ReplayRefusal> {
+        // Placeholder: actual token replay algorithm
+        // 1. Initialize with source marking
+        // 2. For each activity, attempt to fire matching transition
+        // 3. Track tokens produced/missing/remaining
+        // 4. Compare final marking with sink
+
+        let _ = (self.net, activities);
+        Err(ReplayRefusal::NotImplementedYet)
+    }
+}
+
+/// Result of replaying a single case
+#[derive(Debug, Clone)]
+pub struct CaseReplay {
+    pub case_id: String,
+    pub missing: usize,
+    pub remaining: usize,
+}
+
+/// Token replay refusal reasons
+#[derive(Debug, Clone)]
+pub enum ReplayRefusal {
+    /// Case sequence is empty
+    EmptyCase,
+    /// Net is not in a usable soundness state
+    UnsoundNet,
+    /// Activity in case is not a transition in the net
+    UnknownActivity,
+    /// Not yet implemented
+    NotImplementedYet,
+}
+
+impl std::fmt::Display for ReplayRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::EmptyCase => write!(f, "EmptyCase"),
+            Self::UnsoundNet => write!(f, "UnsoundNet"),
+            Self::UnknownActivity => write!(f, "UnknownActivity"),
+            Self::NotImplementedYet => write!(f, "NotImplementedYet"),
+        }
+    }
+}

@@ -20,34 +20,46 @@ Let a process model be represented as a Workflow Net (WF-net) $W = (P, T, F, i, 
 The short-circuited net is $\overline{W} = (P, T \cup \{t^*\}, F \cup \{(o, t^*), (t^*, i)\})$.
 
 ### 3.2. Petri Net Soundness and Liveness
+Let $M_0 = [i]$ be the initial marking of $W$, where $[i]$ represents the multiset containing only the source place $i$. The set of reachable markings from $M_0$ is denoted as $[M_0\rangle$.
 A WF-net $W$ is **sound** if and only if:
-1. **Option to complete**: From any marking $M$ reachable from the initial marking $[i]$, there exists a firing sequence $\sigma \in T^*$ leading to the final marking $[o]$:
-   $$\forall M \in [i]\rangle, \exists \sigma \in T^* \text{ s.t. } M \xrightarrow{\sigma} [o]$$
-2. **Proper completion**: For any marking $M$ reachable from $[i]$, if it marks the sink place $o$, then it contains no other tokens:
-   $$\forall M \in [i]\rangle, M(o) \ge 1 \implies M = [o]$$
-3. **No dead transitions**: For every transition $t \in T$, there exists a marking $M \in [i]\rangle$ that enables $t$:
-   $$\forall t \in T, \exists M \in [i]\rangle \text{ s.t. } M \xrightarrow{t}$$
+1. **Option to complete**: From any marking $M$ reachable from the initial marking $M_0$, there exists a firing sequence $\sigma \in T^*$ leading to the final marking $M_f = [o]$:
+   $$\forall M \in [M_0\rangle, \exists \sigma \in T^* \text{ s.t. } M \xrightarrow{\sigma} M_f$$
+2. **Proper completion**: For any marking $M$ reachable from $M_0$, if it marks the sink place $o$, then it contains no other tokens:
+   $$\forall M \in [M_0\rangle, M(o) \ge 1 \implies M = M_f$$
+3. **No dead transitions**: For every transition $t \in T$, there exists a marking $M \in [M_0\rangle$ that enables $t$ (denoted $M \xrightarrow{t}$):
+   $$\forall t \in T, \exists M \in [M_0\rangle \text{ s.t. } M \xrightarrow{t}$$
 
 Theorem: A WF-net $W$ is sound if and only if its short-circuited net $\overline{W}$ is **live** and **bounded**.
 
-### 3.3. Linear Temporal Logic (LTL) Governance Invariants
+### 3.3. P-Invariant Conservation Theorem
+A place vector $y \in \mathbb{Z}^{|P|}$ is a **P-invariant** of the WF-net $W$ with incidence matrix $C \in \mathbb{Z}^{|P| \times |T|}$ if and only if:
+$$y^T \cdot C = \vec{0}^T$$
+where the incidence matrix $C$ is defined by:
+$$C(p, t) = \begin{cases} 1 & \text{if } (t, p) \in F \text{ and } (p, t) \notin F \\ -1 & \text{if } (p, t) \in F \text{ and } (t, p) \notin F \\ 0 & \text{otherwise} \end{cases}$$
+The P-invariant conservation theorem states that for any reachable marking $M \in [M_0\rangle$:
+$$y^T \cdot M = y^T \cdot M_0$$
+This structural invariant ensures that the weighted sum of tokens remains constant throughout any execution sequence, providing a direct mathematical proof of boundedness.
+
+### 3.4. Linear Temporal Logic (LTL) Governance Invariants
 Let $S$ be the set of system states, and $AP$ be atomic propositions. The temporal properties enforced by the Dam's execution compiler are specified in Linear Temporal Logic (LTL). Let $\Phi_{\text{Gov}}$ be the set of safety formulas defined by the `ostar-governor`.
 The primary containment invariant is:
 $$\mathbf{G} (\neg \text{Compliant}(s) \implies \mathbf{X} (\neg \text{Actuated}(s)))$$
 This is realized via typestate proofs where no non-conforming state transition can be compiled into the execution bytecode.
 
-### 3.4. Alignment Conformance Calculations
+### 3.5. Alignment Conformance Calculations
 Let $\sigma \in \Sigma^*$ be an observed trace from an execution log, and let $W$ be the sound process model. An alignment is a sequence of moves:
-$$A = (m_1, m_2, \dots, m_n) \in ((\Sigma \cup \{\gg\}) \times (T \cup \{\gg\}))^*$$
+$$\gamma = (m_1, m_2, \dots, m_k) \in ((T \cup \{\gg\}) \times (\Sigma \cup \{\gg\}))^* \setminus \{(\gg, \gg)\}$$
+whose projection onto the model yields a valid firing sequence $\tau \in T^*$ from $M_0$ to $M_f$, and whose projection onto the log yields $\sigma$.
+
 The cost function $c$ for each move type is:
-- Log-only move: $c(a, \gg) = 1$ for all $a \in \Sigma$
-- Model-only move: $c(\gg, t) = \begin{cases} 0 & \text{if } t \text{ is an invisible transition } (\tau) \\ 1 & \text{otherwise} \end{cases}$
-- Synchronous move: $c(a, t) = \begin{cases} 0 & \text{if } \text{label}(t) = a \\ \infty & \text{otherwise} \end{cases}$
+- **Move on Log**: $c(\gg, a) = 1$ for all $a \in \Sigma$
+- **Move on Model**: $c(t, \gg) = \begin{cases} 0 & \text{if } t \text{ is an invisible transition } (\tau) \\ 1 & \text{otherwise} \end{cases}$
+- **Synchronous Move**: $c(t, a) = \begin{cases} 0 & \text{if } \text{label}(t) = a \\ \infty & \text{otherwise} \end{cases}$
 
-The optimal alignment $A^*$ minimizes the total cost:
-$$\text{cost}^*(\sigma, W) = \min_{A} \sum_{(x, y) \in A} c(x, y)$$
+The optimal alignment $\gamma^*$ minimizes the total deviation cost:
+$$\gamma^* = \operatorname{argmin}_{\gamma \in \text{Align}(\sigma, W)} \sum_{(t, a) \in \gamma} c(t, a)$$
 
-The conformance fitness of trace $\sigma$ is:
+Let $\text{cost}^*(\sigma, W) = \sum_{(t, a) \in \gamma^*} c(t, a)$. The conformance fitness of trace $\sigma$ is:
 $$\text{Fitness}(\sigma, W) = 1 - \frac{\text{cost}^*(\sigma, W)}{\text{cost}^*(\sigma, \text{empty\_model}) + \text{cost}^*(\text{empty\_log}, W)}$$
 
 ## 4. Executive Authority Boundaries

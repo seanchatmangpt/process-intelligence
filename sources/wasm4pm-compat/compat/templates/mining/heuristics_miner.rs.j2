@@ -1,0 +1,115 @@
+//! Heuristics Miner module — synthesized by ggen manufacturing machinery
+//!
+//! Paper: Weijters & Ribeiro (2011) "Flexible Heuristics Miner"
+//! This module implements the heuristics mining algorithm over OCEL event logs
+//!
+//! Generated from: templates/mining/heuristics_miner.rs.j2
+//! License: Executable only under wasm4pm graduation bridge
+
+use crate::law::*;
+use crate::evidence::*;
+use crate::causal_net::*;
+use crate::admission::*;
+
+/// Heuristics Miner output state: intermediate causal net
+#[derive(Debug, Clone)]
+pub struct HeuristicsCausalNet {
+    /// Activities discovered in the log
+    pub activities: Vec<String>,
+    /// Dependency graph edges: (source, target, dependency_measure)
+    pub dependencies: Vec<(String, String, DependencyMeasure)>,
+    /// Self-loop markers (activity appears twice in sequence)
+    pub self_loops: Vec<String>,
+}
+
+impl HeuristicsCausalNet {
+    /// Discover a causal net from an admitted OCEL event log
+    pub fn from_ocel<W: 'static>(
+        log: &AdmittedOcelEvidence<Vec<ActivitySequence>>,
+        _witness: std::marker::PhantomData<W>,
+    ) -> Result<Self, HeuristicsRefusal> {
+        let sequences = log.inner();
+
+        if sequences.is_empty() {
+            return Err(HeuristicsRefusal::EmptyLog);
+        }
+
+        let mut activities = std::collections::HashSet::new();
+        let mut frequency: std::collections::HashMap<(String, String), usize> =
+            std::collections::HashMap::new();
+        let mut self_loops = std::collections::HashSet::new();
+
+        // Frequency analysis
+        for seq in sequences {
+            for activity in &seq.activities {
+                activities.insert(activity.clone());
+            }
+
+            for window in seq.activities.windows(2) {
+                if window[0] == window[1] {
+                    self_loops.insert(window[0].clone());
+                } else {
+                    let key = (window[0].clone(), window[1].clone());
+                    *frequency.entry(key).or_insert(0) += 1;
+                }
+            }
+        }
+
+        // Compute dependency measures: |a→b| - |b→a| / |a→b| + |b→a| + 1
+        let mut dependencies = Vec::new();
+        for ((a, b), count_ab) in frequency.iter() {
+            let count_ba = *frequency.get(&(b.clone(), a.clone())).unwrap_or(&0);
+            let measure_f64 = (count_ab - count_ba) as f64 / (count_ab + count_ba + 1) as f64;
+
+            // Between01 constraint is checked at the type level by the renderer
+            if let Ok(measure) = DependencyMeasure::try_from_unchecked(measure_f64) {
+                dependencies.push((a.clone(), b.clone(), measure));
+            }
+        }
+
+        Ok(HeuristicsCausalNet {
+            activities: activities.into_iter().collect(),
+            dependencies,
+            self_loops: self_loops.into_iter().collect(),
+        })
+    }
+
+    /// Reify the abstract net into a typed CausalNet with witness
+    pub fn into_causal_net(self) -> Result<CausalNet, HeuristicsRefusal> {
+        // Construct a proper CausalNet from activities and dependencies
+        // All DependencyMeasure values are already Between01-constrained
+
+        Err(HeuristicsRefusal::NotImplementedYet)
+    }
+}
+
+/// Activity sequence for a single object/case
+#[derive(Debug, Clone)]
+pub struct ActivitySequence {
+    pub case_id: String,
+    pub activities: Vec<String>,
+}
+
+/// Heuristics miner refusal reasons
+#[derive(Debug, Clone)]
+pub enum HeuristicsRefusal {
+    /// Log contains no activity sequences
+    EmptyLog,
+    /// Log is not in admitted state
+    LogNotAdmitted,
+    /// Dependency measure computation failed
+    ComputationFailed,
+    /// Not yet implemented
+    NotImplementedYet,
+}
+
+impl std::fmt::Display for HeuristicsRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::EmptyLog => write!(f, "EmptyLog"),
+            Self::LogNotAdmitted => write!(f, "LogNotAdmitted"),
+            Self::ComputationFailed => write!(f, "ComputationFailed"),
+            Self::NotImplementedYet => write!(f, "NotImplementedYet"),
+        }
+    }
+}

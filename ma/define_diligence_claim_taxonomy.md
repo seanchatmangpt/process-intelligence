@@ -41,7 +41,7 @@ Diligence claims are divided into four primary domains: Performance, Compliance,
 * **Audit Requirement**: The seller must prove that the mined model does not allow deadlocks and that there are no "hidden" undocumented process loops.
 
 ### D. Resource & Cost Claims
-* **Calculation Rule**: Resource costs are calculated using object-centric relations in OCEL 2.0 (Ghahfarokhi 2021), mapping event resources to transactional costs.
+* **Calculation Rule**: Resource costs are calculated using object-centric relations in OCEL 2.0 (Ghahfarokhi 2023), mapping event resources to transactional costs.
 * **Audit Requirement**: Proving that automation claims (STP) are backed by event attributes indicating system-level execution agents (e.g., API callers, RPA bots) rather than human usernames.
 
 ## 3. Related M&A Validation Documents

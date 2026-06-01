@@ -1,6 +1,6 @@
 # OCEL Standard Ledger Placement
 
-The **Object-Centric Event Log (OCEL 2.0)** standard (Ghahfarokhi 2021) relaxes the traditional process mining assumption that each event is bound to a single case. OCEL supports events linked to multiple heterogeneous objects (e.g., an event "Pack Order" linked to one *order* object and three *item* objects). This document establishes how OCEL structures are mapped, validated, and verified on the process-intelligence ledger.
+The **Object-Centric Event Log (OCEL 2.0)** standard (Ghahfarokhi 2023, building upon the foundational OCEL 1.0 format introduced in Ghahfarokhi 2021) relaxes the traditional process mining assumption that each event is bound to a single case. OCEL supports events linked to multiple heterogeneous objects (e.g., an event "Pack Order" linked to one *order* object and three *item* objects). This document establishes how OCEL structures are mapped, validated, and verified on the process-intelligence ledger.
 
 ---
 

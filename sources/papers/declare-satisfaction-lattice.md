@@ -131,10 +131,26 @@ $$\text{Acts}(\sigma, \alpha_{\phi}) = \{ i \in \{1, \dots, m\} \mid \sigma, i \
     $$\sigma \models_{\text{vac}} \phi \iff \sigma, 1 \models \phi \quad \text{and} \quad \text{Acts}(\sigma, \alpha_{\phi}) = \emptyset$$
 
 ### 3.2 Activation Conditions for Core Templates
-- For `Response(A, B)`, $\alpha_{\phi} = A$. If $A$ never occurs, $\text{Acts}(\sigma, A) = \emptyset$. Since $\phi_{\text{Response}}$ is true, the satisfaction is vacuous.
-- For `Precedence(A, B)`, $\alpha_{\phi} = B$. If $B$ never occurs, $\text{Acts}(\sigma, B) = \emptyset$. Since $\phi_{\text{Precedence}}$ is true (trivially satisfied as $\Box \neg B$ holds), the satisfaction is vacuous.
-- For `Succession(A, B)`, $\alpha_{\phi} = A \lor B$.
-- For `CoExistence(A, B)`, $\alpha_{\phi} = A \lor B$.
+To support full-conformance checking, the activation condition $\alpha_{\phi}$ is defined for each template:
+
+*   **Unary Constraints**: Always active ($\alpha_{\phi} = \text{True}$). Since they specify global occurrence frequency or positioning rather than conditional logic, they are never vacuously satisfied.
+    - `Existence(A)`, `Existence2(A)`, `Existence3(A)`, `Absence(A)`, `Absence2(A)`, `Absence3(A)`, `Init(A)`, `ExclusiveChoice(A, B)` (ExclusiveChoice restricts the entire trace, acting as a global logical constraint).
+*   **Binary Relation Constraints**:
+    - `Response(A, B)`: $\alpha_{\phi} = A$.
+    - `Precedence(A, B)`: $\alpha_{\phi} = B$.
+    - `RespondedExistence(A, B)`: $\alpha_{\phi} = A$.
+    - `CoExistence(A, B)`: $\alpha_{\phi} = A \lor B$.
+    - `Succession(A, B)`: $\alpha_{\phi} = A \lor B$.
+    - `AlternateResponse(A, B)`: $\alpha_{\phi} = A$.
+    - `AlternatePrecedence(A, B)`: $\alpha_{\phi} = B$.
+    - `AlternateSuccession(A, B)`: $\alpha_{\phi} = A \lor B$.
+    - `ChainResponse(A, B)`: $\alpha_{\phi} = A$.
+    - `ChainPrecedence(A, B)`: $\alpha_{\phi} = B$.
+    - `ChainSuccession(A, B)`: $\alpha_{\phi} = A \lor B$.
+*   **Negative / Exclusion Constraints**:
+    - `NotCoExistence(A, B)`: $\alpha_{\phi} = A \lor B$.
+    - `NotSuccession(A, B)`: $\alpha_{\phi} = A$.
+    - `NotChainSuccession(A, B)`: $\alpha_{\phi} = A$.
 
 The runtime engine in [Declare Placement Standard](file:///Users/sac/process-intelligence/standards/declare_placement.md) tracks activations and sets `is_vacuously_satisfied: true` when $\sigma, 1 \models \phi$ but $|\text{Acts}(\sigma, \alpha_{\phi})| = 0$, preventing false-positive compliance audits.
 

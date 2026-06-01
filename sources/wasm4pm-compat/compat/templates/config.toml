@@ -1,0 +1,90 @@
+# Manufacturing Configuration
+# Defines witness markers, lifecycle states, and graduation boundaries
+
+[manufacturing]
+name = "wasm4pm-compat"
+version = "1.0.0"
+status = "substrate-framework"
+description = "ggen manufacturing machinery embedded in wasm4pm-compat"
+
+# Witness markers recognized during graduation
+[witness.markers]
+VanDerAalst1989 = "Petri net soundness foundation"
+VanDerAalst1998 = "WF-net conformance"
+VanDerAalst2016 = "Object-centric process mining"
+Murata1989 = "Petri net theory"
+Weijters2011 = "Heuristics miner algorithm"
+Leemans2013 = "Inductive mining algorithm"
+Adriansyah2011 = "Process-log alignment"
+BlueRiverDam = "Condition cell law"
+
+# Lifecycle states for manufactured artifacts
+[lifecycle.states]
+Created = "Object created"
+Rendered = "Code rendered from template"
+Compiled = "Compilation verified"
+Audited = "Compliance audit passed"
+Sealed = "Receipt sealed in ledger"
+Witnessed = "Witness marker applied"
+Graduated = "Ready for wasm4pm graduation bridge"
+
+# Graduation boundaries
+[graduation]
+compile_pass_fixtures = 406
+compile_fail_fixtures = 398
+type_law_kernel = "law.rs"
+base_profile_modules = ["petri", "process_tree", "powl", "causal_net", "bpmn", "dfg"]
+manufacturing_modules = ["alpha_miner", "inductive_miner", "heuristics_miner", "token_replay", "alignment", "executor", "step_simulator", "state_machine", "actuation"]
+
+# Template categories
+[templates.mining]
+modules = ["alpha_miner", "inductive_miner", "heuristics_miner"]
+output_dir = "compat/src/mining"
+
+[templates.conformance]
+modules = ["token_replay", "alignment"]
+output_dir = "compat/src/conformance"
+
+[templates.replay]
+modules = ["executor", "step_simulator"]
+output_dir = "compat/src/replay"
+
+[templates.lifecycle]
+modules = ["state_machine", "actuation"]
+output_dir = "compat/src/lifecycle"
+
+[templates.fixtures]
+compile_pass = "fixtures/compile_pass_fixture.rs.j2"
+compile_fail = "fixtures/compile_fail_fixture.rs.j2"
+
+# Audit rules
+[audit.rules]
+license_required = true
+witness_reference_required = true
+evidence_boundary_enforcement = true
+soundness_non_forgeability = true
+condition_cell_law = true
+between01_law = true
+
+# Dependencies for manufactured code
+[dependencies.core]
+serde = "1.0"
+serde_json = "1.0"
+blake3 = "1.5"
+
+[dependencies.optional]
+regex = { version = "1.10", optional = true }
+tracing = { version = "0.1", optional = true }
+
+# Receipt ledger configuration
+[receipt]
+ledger_path = "compat/receipts.jsonl"
+format = "jsonl"
+verify_integrity = true
+
+# First render target: prove manufacturing works
+[first_render]
+template = "mining/alpha_miner.rs.j2"
+witness = "VanDerAalst1989"
+target_module = "alpha_miner"
+success_marker = "FIRST_RENDER_SUCCESS.md"

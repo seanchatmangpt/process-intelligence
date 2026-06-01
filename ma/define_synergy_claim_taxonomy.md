@@ -22,7 +22,7 @@ Synergy claims are classified into four categories: Process Harmonization, Opera
 | :--- | :--- | :--- | :--- |
 | **Process Harmonization** | Merging and standardizing target and buyer processes. | Accelerated post-merger integration, reduced training. | Behavioral profile similarity ($Sim \ge 0.85$, Weidlich 2011). |
 | **Operational Cost Reduction (OCR)** | Eliminating redundant manual steps and duplicated approvals. | Direct SG&A and COGS savings. | Activity reduction via Inductive Miner path pruning (Leemans 2013). |
-| **System Rationalization** | Retiring overlapping IT systems and consolidation. | Reduced software license fees and maintenance overhead. | System-to-activity object mapping using OCEL 2.0 (Ghahfarokhi 2021). |
+| **System Rationalization** | Retiring overlapping IT systems and consolidation. | Reduced software license fees and maintenance overhead. | System-to-activity object mapping using OCEL 2.0 (Ghahfarokhi 2023). |
 | **Best-Practice Adoption** | Porting the most efficient process flow from one entity to the other. | Immediate margin uplift on the lower-performing entity. | Cross-entity performance replay against a unified reference model. |
 
 ## 2. Mathematical Synergy Formulation (Anti-Miscalculation Protocols)

@@ -29,8 +29,15 @@ where the output is `None` (unrepresentable / compiler failure) if the safety in
 To prevent autonomic processes from altering safety boundaries or modifying compliance rules under the guise of self-adaptation, the transition set $T$ is strictly partitioned into autonomous and executive domains:
 $$T = T_{\text{elastic}} \uplus T_{\text{compliance}}$$
 
+The autonomic behavior is structured around the canonical **MAPE-K (Monitor, Analyze, Plan, Execute, Knowledge)** dynamic feedback loop:
+- **Monitor**: Continuous real-time ingestion of event streams (XES/OCEL 2.0) and trace alignment calculations.
+- **Analyze**: Evaluation of compliance deviations, bottleneck analysis, process debt computation, and coverability state space checks.
+- **Plan**: Design-time compilation of Petri Net schemas, definition of declarative temporal rules ($\Phi_{\text{Gov}}$), and optimization structures.
+- **Execute**: Enacting modifications, either autonomously via local repairs or through HSM-signed model updates.
+- **Knowledge**: Storing and querying immutable artifacts, including discovered process trees, alignment traces, and cryptographic verification receipts.
+
 ### 4.1. Autonomous Adaptation Transitions ($T_{\text{elastic}}$)
-Transitions in $T_{\text{elastic}}$ represent runtime self-optimization and self-repair actions executed autonomously by the MAPE-K dynamic feedback loop.
+Transitions in $T_{\text{elastic}}$ represent runtime self-optimization and self-repair actions executed autonomously by the MAPE-K loop.
 * **Functional Scope**:
   - **Local Repair**: Modifications isolated to a single S-component $N_s = (P_s, T_s, F_s) \subset W$ satisfying the boundary preservation condition:
     $$\forall p \in P_s, \quad \bullet p \subseteq T_s \land p \bullet \subseteq T_s$$
@@ -63,5 +70,34 @@ Transitions in $T_{\text{compliance}}$ represent high-risk operations that alter
 - **`ostar-operator`**: Has execution privileges to actuate states but cannot generate valid lineage proofs $\Pi$ without executing conforming transitions signed by the VM compiler. Has execution rights for $T_{\text{elastic}}$ transitions but cannot authorize $T_{\text{compliance}}$ transitions.
 - **`ostar-auditor`**: Continuously monitors the output stream of BLAKE3 hashes to ensure the physical ledger matches the mathematical sequence of the Petri net $W$.
 - **`ostar-governor`**: The sole component permitted to generate `GovToken` structures and sign $\Phi_{\text{Gov}}$ modifications, authorizing transitions in $T_{\text{compliance}}$.
+
+## 6. Sandbox Isolation and Gas-Metering Limits
+To prevent denial of service and execution escapes, runtime verification is executed in a sandboxed WebAssembly (WASM) virtual machine. The VM enforces strict resource boundaries through [sandbox.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/sandbox.rs):
+- **Instruction Gas Metering**: The executing thread is bounded by a deterministic instruction-counting fuel system managed by `GasMeter`. The default gas limit is capped at $10\text{M}$ CPU cycles ($10,000,000$). When consumed fuel exceeds the allocated boundary, the execution engine traps instantly and halts with error code `0xFB01` (ERR_CYCLE_OVERFLOW).
+- **Call Stack Depth Bounds**: To block heap-escape exploits via deep recursion, a `RecursionGuard` caps the runtime execution stack depth at a maximum of $100$ frames. Exceeding this boundary triggers immediate preemption with error code `0xFB05` (ERR_LIFECYCLE_VIOLATION).
+- **Linear Memory Shredding**: When execution completes or traps, the Oblivion Protocol initiates three passes of ChaCha20-based cryptographic overwrite to erase residual trace and state space data, ensuring zero-information residue.
+
+## 7. Declarative LTL Compliance & Vacuous Satisfaction
+In addition to structural Petri Net conformance, AKA verifies declarative temporal properties defined in Linear Temporal Logic over Finite Traces ($\text{LTL}_f$). Compliance checks verify templates from the [declare_placement.md](file:///Users/sac/process-intelligence/standards/declare_placement.md) standard.
+
+Let $\sigma = e_1 e_2 \dots e_m$ be a trace of length $m$. For any constraint $\phi$, we define its activation condition as $\alpha_{\phi}$.
+
+### 7.1 Response(A, B) Constraint
+- **Semantic Rule**: If activity $A$ occurs, activity $B$ must eventually occur at or after it.
+- **$\text{LTL}_f$ Specification**:
+  $$\phi_{\text{Response}} = \Box(A \implies \lozenge B)$$
+- **Activation Condition**: $\alpha_{\phi} = A$.
+- **Vacuous Satisfaction**: The constraint is satisfied vacuously if activity $A$ never occurs in the trace:
+  $$\sigma \models_{\text{vac}} \phi_{\text{Response}} \iff \sigma \models \phi_{\text{Response}} \quad \land \quad \text{Acts}(\sigma, A) = \emptyset$$
+
+### 7.2 Precedence(A, B) Constraint
+- **Semantic Rule**: Activity $B$ cannot occur unless activity $A$ has occurred before it.
+- **$\text{LTL}_f$ Specification**:
+  $$\phi_{\text{Precedence}} = \neg B \mathbin{\mathcal{W}} A \equiv (\neg B \mathbin{\mathcal{U}} A) \lor \Box \neg B$$
+- **Activation Condition**: $\alpha_{\phi} = B$.
+- **Vacuous Satisfaction**: The constraint is satisfied vacuously if activity $B$ never occurs in the trace:
+  $$\sigma \models_{\text{vac}} \phi_{\text{Precedence}} \iff \sigma \models \phi_{\text{Precedence}} \quad \land \quad \text{Acts}(\sigma, B) = \emptyset$$
+
+To prevent false-positive compliance audits, the verification system explicitly logs `is_vacuously_satisfied: true` when a constraint is satisfied vacuously, distinguishing it from active compliance.
 
 For the concrete mapping of lifecycle stages to these transition classes, see [Autonomic Knowledge Actuation Map](file:///Users/sac/process-intelligence/lifecycle/define_autonomic_knowledge_actuation_map.md).

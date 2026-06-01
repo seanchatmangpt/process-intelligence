@@ -76,6 +76,23 @@ graph LR
 
 Thus, verification of soundness is reduced to checking the liveness and boundedness of the short-circuited net $\overline{N}$.
 
+### 2.3 Proof of the Option-to-Complete Property under Coverability
+Under the assumption that $\overline{N}$ is live and bounded from the initial marking $M_0 = [i]$, we prove that $N$ satisfies the **Option to Complete** and **Proper Completion** properties.
+
+1. **Liveness of $t^*$**: Since $\overline{N}$ is live under $M_0 = [i]$, for every transition $t \in \overline{T}$ and every reachable marking $M \in [\overline{N}, [i]\rangle$, there exists some marking $M'$ reachable from $M$ (written $M' \in [\overline{N}, M\rangle$) such that $t$ is enabled at $M'$.
+2. **Transition Enabling**: Applying this to the feedback transition $t^*$: for any marking $M$ reachable from $[i]$, there exists a marking $M'$ reachable from $M$ in $\overline{N}$ such that $t^*$ is enabled at $M'$.
+3. **Preset of $t^*$**: Since $\bullet t^* = \{o\}$, the transition $t^*$ is enabled at $M'$ if and only if $M'(o) \ge 1$ (assuming standard arc weight of 1).
+4. **Finiteness & Exact Reachability**: Because $\overline{N}$ is bounded, the set of reachable markings is finite, and the Karp-Miller coverability graph is isomorphic to the exact reachability graph of $\overline{N}$.
+5. **No Token Accumulation**: We show that $M'(o) \ge 1 \implies M' = [o]$. Suppose for contradiction that $M'$ contains other tokens, i.e., $M' \ge [o]$ and $M' \neq [o]$ (which means $\exists p \in P \setminus \{o\}$ such that $M'(p) > 0$).
+   - Firing $t^*$ from $M'$ yields a new marking $M'' = M' - [o] + [i]$.
+   - Since $M' > [o]$, we have $M'' > [i]$.
+   - Because of monotonicity of Petri net firing rules, since $M'' > [i]$, we can fire the same sequence of transitions $\sigma$ that led from $[i]$ to $M'$, resulting in a marking $M''' \in [\overline{N}, M''\rangle$ such that $M''' > M'$.
+   - Repeating this cycle $k$ times allows us to construct a sequence of markings $M^{(k)}$ such that $M^{(k)} > M^{(k-1)} > \ldots > M'$.
+   - This implies that the token count in at least one place grows without bound, which directly contradicts the assumption that $\overline{N}$ is bounded.
+   - Therefore, by contradiction, $M'$ must be exactly $[o]$.
+6. **Reachability in $N$**: Since the transition sequence leading from $M$ to $M' = [o]$ does not fire $t^*$ (as $t^*$ is only enabled at $M'$), this sequence consists entirely of transitions in $T$ (the original transition set of $N$).
+7. Thus, for any marking $M$ reachable in $N$ from $[i]$, the marking $[o]$ is reachable in $N$ from $M$. This proves the **Option to Complete** property.
+
 ---
 
 ## 3. Karp-Miller Coverability Graph Algorithm
@@ -90,43 +107,49 @@ Let $\mathcal{M} = (\mathbb{N} \cup \{\omega\})^{|P|}$ be the set of coverabilit
 4. **Strict Greater-Than**: $M_1 > M_2 \iff (M_1 \ge M_2) \wedge (M_1 \neq M_2)$.
 
 ### 3.2 Formal Algorithm Specification
-- **Input**: Short-circuited Petri Net $\overline{N} = (\overline{P}, \overline{T}, \overline{F})$ and initial marking $M_0 = [i]$.
+- **Input**: Short-circuited Petri Net $\overline{N} = (\overline{P}, \overline{T}, \overline{F})$, initial marking $M_0 = [i]$, and state-limit threshold $MaxStates$.
 - **Output**: Directed Coverability Graph $G = (V, E)$ where:
   - $V$ is a set of nodes labeled with markings $M \in \mathcal{M}$.
   - $E \subseteq V \times \overline{T} \times V$ is the set of labeled edges.
+- **Error Handling**: Aborts if $|V| > MaxStates$ to prevent state-space explosion.
 
 #### Pseudocode
 ```
-Algorithm: ConstructCoverabilityGraph(N_bar, M0)
-Input: Bounded/Unbounded Petri Net N_bar, Initial Marking M0
-Output: Graph G = (V, E)
+Algorithm: ConstructCoverabilityGraph(N_bar, M0, MaxStates)
+Input: Bounded/Unbounded Petri Net N_bar, Initial Marking M0, MaxStates
+Output: Graph G = (V, E) or StateSpaceLimitExceededError
 
 1. Initialize V = {v0}, E = ∅, where v0 is a node labeled M(v0) = M0.
 2. Mark v0 as Unprocessed.
 3. Let Parent(v0) = null.
 4. While there exists an Unprocessed node v in V:
-5.     Mark v as Processed.
-6.     Let M = M(v).
-7.     For each transition t in T_bar:
-8.         If t is enabled at marking M (i.e., ∀p ∈ •t, M(p) ≥ F(p, t)):
-9.             Compute temporary successor marking M_succ:
-10.                ∀p ∈ P_bar, M_succ(p) = M(p) - F(p, t) + F(t, p)  (with ω-arithmetic)
-11.            Let curr_node = v
-12.            While curr_node is not null:
-13.                Let M_anc = M(curr_node)
-14.                If M_succ ≥ M_anc AND M_succ ≠ M_anc:
-15.                    For each place p ∈ P_bar:
-16.                        If M_succ(p) > M_anc(p):
-17.                            M_succ(p) = ω
-18.                curr_node = Parent(curr_node)
-19.            Check if there exists a node w ∈ V such that M(w) = M_succ.
-20.            If no such node exists:
-21.                Create new node w with M(w) = M_succ.
-22.                Let Parent(w) = v.
-23.                Mark w as Unprocessed.
-24.                V = V ∪ {w}.
-25.            E = E ∪ {(v, t, w)}.
-26. Return G = (V, E)
+5.     If |V| > MaxStates:
+6.         Return StateSpaceLimitExceededError
+7.     Mark v as Processed.
+8.     Let M = M(v).
+9.     For each transition t in T_bar:
+10.        If t is enabled at marking M (i.e., ∀p ∈ •t, M(p) ≥ F(p, t)):
+11.            Compute temporary successor marking M_succ:
+12.                For each place p ∈ P_bar:
+13.                    M_succ(p) = M(p) - F(p, t) + F(t, p)  (with ω-arithmetic)
+14.            Let curr_node = v
+15.            While curr_node is not null:
+16.                Let M_anc = M(curr_node)
+17.                If M_succ ≥ M_anc AND M_succ ≠ M_anc:
+18.                    For each place p ∈ P_bar:
+19.                        If M_succ(p) > M_anc(p):
+20.                            M_succ(p) = ω
+21.                curr_node = Parent(curr_node)
+22.            Check if there exists a node w ∈ V such that M(w) = M_succ.
+23.            If no such node exists:
+24.                If |V| >= MaxStates:
+25.                    Return StateSpaceLimitExceededError
+26.                Create new node w with M(w) = M_succ.
+27.                Let Parent(w) = v.
+28.                Mark w as Unprocessed.
+29.                V = V ∪ {w}.
+30.            E = E ∪ {(v, t, w)}.
+31. Return G = (V, E)
 ```
 
 ---
@@ -433,8 +456,14 @@ pub fn verify_wf_net(net: &PetriNet) -> VerificationResult {
 
     let mut is_bounded = true;
     let mut is_safe = true;
+    let mut state_limit_exceeded = false;
+    const MAX_STATES: usize = 10_000;
 
     while let Some(v_idx) = unprocessed.pop_front() {
+        if nodes.len() > MAX_STATES {
+            state_limit_exceeded = true;
+            break;
+        }
         let m = nodes[v_idx].clone();
 
         for &t in &net_bar.transitions {
@@ -463,6 +492,10 @@ pub fn verify_wf_net(net: &PetriNet) -> VerificationResult {
                 let target_idx = if let Some(existing_idx) = nodes.iter().position(|node| *node == m_succ) {
                     existing_idx
                 } else {
+                    if nodes.len() >= MAX_STATES {
+                        state_limit_exceeded = true;
+                        break;
+                    }
                     let new_idx = nodes.len();
                     nodes.push(m_succ.clone());
                     parent_map.insert(new_idx, v_idx);
@@ -473,6 +506,20 @@ pub fn verify_wf_net(net: &PetriNet) -> VerificationResult {
                 edges.push((v_idx, t, target_idx));
             }
         }
+        if state_limit_exceeded {
+            break;
+        }
+    }
+
+    if state_limit_exceeded {
+        return VerificationResult {
+            is_wf_net: true,
+            is_bounded: false,
+            is_safe: false,
+            is_live: false,
+            is_sound: false,
+            error_msg: Some("Verification aborted: State space limit exceeded (potential state-space explosion)".to_string()),
+        };
     }
 
     // 4. Safeness / 1-Boundedness Check

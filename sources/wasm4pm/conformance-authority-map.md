@@ -23,51 +23,82 @@ The core doctrine: **If a model claims to explain the log, but alignment reveals
 
 **Formal Specification:**
 - **Input:** 
-  - Trace $\sigma = \langle e_1, \ldots, e_n \rangle$ (sequence of event activities)
-  - Petri Net $N = (P, T, F, M_0)$ (process model)
+  - Trace $\sigma = \langle e_1, \ldots, e_n \rangle$ (sequence of event activities over alphabet $\Sigma$)
+  - Petri Net $N = (P, T, F)$ with labeling function $\lambda: T \to \Sigma \cup \{\tau\}$, initial marking $M_0 = [i]$, and final marking $M_f = [o]$
 - **Output:** 
-  - Optimal alignment $\gamma = \langle (a_1, t_1), \ldots, (a_m, t_m) \rangle$ where $a_i$ is a log activity and $t_i$ is a model transition (or $\gg$ for silent moves)
-  - Cost: $C(\gamma) = \sum_{i=1}^{m} \text{cost}(a_i, t_i)$
+  - Optimal alignment $\gamma = \langle (a_1, t_1), \ldots, (a_m, t_m) \rangle$ where $a_k \in \Sigma \cup \{\gg\}$ and $t_k \in T \cup \{\gg\}$ (excluding $(\gg, \gg)$) representing log moves, model moves, or synchronous moves, satisfying $\pi_{\text{log}}(\gamma) = \sigma$ and $[i] \xrightarrow{\pi_{\text{model}}(\gamma)} [o]$
+  - Cost: $\operatorname{Cost}(\gamma) = \sum_{k=1}^{m} \operatorname{cost}(a_k, t_k)$
   - Witness: Proof that no cheaper alignment exists
 
 **Cost Function:**
-```
-cost(a, t) = 
-  | 0        if label(t) = a (move on both)
-  | 1        if a = ≫ and t is a visible transition (move on model only)
-  | 0        if a = ≫ and t is silent τ (invisible move)
-  | 1        if t = ≫ (move on log only)
-  | ∞        if label(t) ≠ a (illegal move)
-```
+$$\operatorname{cost}(a, t) = \begin{cases} 0 & \text{if } a \in \Sigma, \, t \in T \text{ and } \lambda(t) = a \\ 1 & \text{if } a = \gg, \, t \in T \text{ and } \lambda(t) \in \Sigma \\ 0 & \text{if } a = \gg, \, t \in T \text{ and } \lambda(t) = \tau \\ 1 & \text{if } a \in \Sigma \text{ and } t = \gg \\ \infty & \text{otherwise} \end{cases}$$
 
 **Alignment-Based Fitness (Adriansyah 2014):**
 For a trace $\sigma$ and Petri Net $N$, the alignment fitness $f_{\text{align}}(\sigma, N)$ is computed using the optimal alignment $\gamma^*$:
-$$f_{\text{align}}(\sigma, N) = 1 - \frac{C(\gamma^*)}{|\sigma| + d_{\text{min}}(i, o)}$$
-where $|\sigma|$ is the trace length and $d_{\text{min}}(i, o)$ is the length of the shortest path from the source place $i$ to the sink place $o$ in $N$ (ignoring silent transitions $\tau$).
+$$f_{\text{align}}(\sigma, N) = 1 - \frac{\operatorname{Cost}(\gamma^*)}{|\sigma| + d_{\text{model}}([i], [o])}$$
+where $|\sigma|$ is the trace length and $d_{\text{model}}([i], [o])$ is the shortest path cost from the initial marking $[i]$ to the final marking $[o]$ using only model moves.
 
 **Algorithm:**
 - **Open set:** Priority queue of `(f_score, g_cost, h_estimate, state)` ordered by ascending `f_score = g_cost + h_estimate`.
 - **Closed set:** Visited marking+position pairs `(marking, trace_index)`.
-- **Heuristic $h(M, p)$:** 
-  $$h(M, p) = \max(0, d_{\text{min}}(M, M_o) - (n - p))$$
+
+### 1.1.1 Reachability Heuristic
+- **Heuristic $h_{\text{reach}}(M, p)$:** 
+  $$h_{\text{reach}}(M, p) = \max(0, d_{\text{min}}(M, M_o) - (n - p))$$
   where $d_{\text{min}}(M, M_o)$ is the shortest path distance (counting only visible transitions) in the Petri Net from the current marking $M$ to the final marking $M_o$, and $n - p$ is the remaining trace length (where $n = |\sigma|$ and $p$ is the current event index being aligned).
   
   *Audit Note on Admissibility & Consistency:*
   The previous heuristic (remaining trace length $h(M, p) = n - p$) was **inadmissible** and **inconsistent**. Because the cost of a move on both is $0$, a sequence of $n - p$ remaining events matching the model perfectly could be aligned with an actual cost of $0$, which is strictly less than the estimated remaining trace length ($n - p > 0$).
   
-  The audited heuristic $h(M, p) = \max(0, d_{\text{min}}(M, M_o) - (n - p))$ is mathematically guaranteed to be:
+  The audited heuristic $h_{\text{reach}}(M, p) = \max(0, d_{\text{min}}(M, M_o) - (n - p))$ is mathematically guaranteed to be:
   1. **Admissible:** It never overestimates the actual remaining cost $h^*(M, p)$. Let $N_L$, $N_M$, and $N_B$ be the number of moves on log, model (visible), and both, respectively, in the optimal remaining alignment to the goal.
      - The remaining cost is $C_{\text{rem}} = 1 \cdot N_L + 1 \cdot N_M + 0 \cdot N_B = N_L + N_M$.
-     - The remaining trace length is $n - p = N_L + N_B$.
-     - The number of visible transitions fired is $V \ge d_{\text{min}}(M, M_o)$, and $V = N_M + N_B$.
-     - Therefore, $N_M = V - N_B$ and $N_L = (n - p) - N_B$.
-     - Substituting these gives $C_{\text{rem}} = ((n - p) - N_B) + (V - N_B) = (n - p) + V - 2 N_B$.
-     - Since $N_B \le n - p$, we have $C_{\text{rem}} \ge V - N_B \ge d_{\text{min}}(M, M_o) - (n - p)$. Since $C_{\text{rem}} \ge 0$, we have $C_{\text{rem}} \ge \max(0, d_{\text{min}}(M, M_o) - (n - p)) = h(M, p)$, proving admissibility.
-  2. **Consistent (Monotonic):** For any step from $(M, p)$ to $(M', p')$ with step cost $c$:
-     - **Move on Log:** $p' = p + 1$, $M' = M$, $c = 1$. Let $d = d_{\text{min}}(M, M_o)$ and $r = n - p$. We check $\max(0, d - r) \le 1 + \max(0, d - (r - 1))$, which holds since $d - r \le d - r + 2$.
-     - **Move on Model (Visible):** $p' = p$, $M \xrightarrow{t} M'$, $c = 1$. Here $d \le 1 + d'$ where $d = d_{\text{min}}(M, M_o)$ and $d' = d_{\text{min}}(M', M_o)$. We check $\max(0, d - r) \le 1 + \max(0, d' - r)$, which holds since $d - r \le d' - r + 1 \le 1 + \max(0, d' - r)$.
-     - **Move on Model (Silent):** $p' = p$, $M \xrightarrow{\tau} M'$, $c = 0$. Since $\tau$ is silent, $d \le d'$. We check $\max(0, d - r) \le 0 + \max(0, d' - r)$, which holds since $d \le d'$.
-     - **Move on Both:** $p' = p + 1$, $M \xrightarrow{t} M'$, $c = 0$. Here $d \le 1 + d'$ since $t$ is visible. We check $\max(0, d - r) \le 0 + \max(0, d' - (r - 1))$. Since $d - r \le d' - r + 1$, this inequality holds.
+     - The remaining trace length is $n - p = N_L + N_B$, which implies $N_L = (n - p) - N_B$.
+     - The number of visible transitions fired is $V = N_M + N_B \ge d_{\text{min}}(M, M_o)$, which implies $N_M = V - N_B$.
+     - Since $N_L \ge 0$, we have $C_{\text{rem}} \ge N_M = V - N_B$.
+     - Since $V \ge d_{\text{min}}(M, M_o)$ and $N_B \le n - p \implies -N_B \ge -(n - p)$, we have:
+       $$C_{\text{rem}} \ge V - N_B \ge d_{\text{min}}(M, M_o) - (n - p)$$
+     - Since cost is non-negative, $C_{\text{rem}} \ge 0$.
+     - Combining these: $C_{\text{rem}} \ge \max(0, d_{\text{min}}(M, M_o) - (n - p)) = h_{\text{reach}}(M, p)$, proving admissibility.
+  2. **Consistent (Monotonic):** For any step from $u = (M, p)$ to $v = (M', p')$ with step cost $c$:
+     Let $d = d_{\text{min}}(M, M_o)$, $d' = d_{\text{min}}(M', M_o)$, $r = n - p$, and $r' = n - p'$. We prove $h_{\text{reach}}(u) \le c + h_{\text{reach}}(v)$ case-by-case:
+     - **Move on Log:** Here, $p' = p + 1 \implies r' = r - 1$, $M' = M \implies d' = d$, and $c = 1$. Since $d - r < d - r + 1$, we have:
+       $$\max(0, d - r) \le \max(0, d - (r - 1)) \le 1 + \max(0, d - r')$$
+     - **Move on Model (Visible):** Here, $p' = p \implies r' = r$, $M \xrightarrow{t} M'$ (visible transition) $\implies d \le d' + 1$, and $c = 1$. Since $d - r \le d' - r + 1$, we have:
+       $$\max(0, d - r) \le \max(0, d' - r + 1) \le 1 + \max(0, d' - r')$$
+     - **Move on Model (Silent):** Here, $p' = p \implies r' = r$, $M \xrightarrow{\tau} M'$ (silent transition) $\implies d \le d'$, and $c = 0$. Since $d - r \le d' - r$, we have:
+       $$\max(0, d - r) \le \max(0, d' - r) = 0 + \max(0, d' - r')$$
+     - **Move on Both:** Here, $p' = p + 1 \implies r' = r - 1$, $M \xrightarrow{t} M'$ (visible transition) $\implies d \le d' + 1$, and $c = 0$. Since $d - r \le d' - r + 1 = d' - r'$, we have:
+       $$\max(0, d - r) \le \max(0, d' - r') = 0 + \max(0, d' - r')$$
+
+### 1.1.2 State Equation Heuristic
+- **Heuristic $h_{\text{SE}}(M, p)$:** 
+  The state equation heuristic computes a lower bound by relaxing the integer reachability problem to a Linear Program (LP). Let $Y \in \mathbb{Z}^{|P| \times |T|}$ be the incidence matrix of the Petri Net, and let $T_{\text{vis}}$ and $T_{\text{sil}}$ represent visible and silent transitions, respectively. For each activity $a \in \Sigma$, let $n(a, p)$ be the number of remaining occurrences of activity $a$ in the suffix trace from index $p$ to $n$.
+  
+  The LP is defined as:
+  $$h_{\text{SE}}(M, p) = \min_{x_m, x_b, x_\tau} \left( (n - p) - \sum_{t \in T_{\text{vis}}} x_b(t) + \sum_{t \in T_{\text{vis}}} x_m(t) \right)$$
+  subject to:
+  $$Y \cdot (x_m + x_b + x_\tau) = M_o - M$$
+  $$\sum_{t \in T_{\text{vis}}: label(t) = a} x_b(t) \le n(a, p) \quad \forall a \in \Sigma$$
+  $$x_m(t) = 0 \quad \forall t \in T_{\text{sil}}$$
+  $$x_b(t) = 0 \quad \forall t \in T_{\text{sil}}$$
+  $$x_\tau(t) = 0 \quad \forall t \in T_{\text{vis}}$$
+  $$x_m, x_b, x_\tau \ge 0$$
+  
+  *Audit Note on Admissibility & Consistency:*
+  1. **Admissibility:** Every valid remaining alignment from state $(M, p)$ to $(M_o, n)$ maps to a sequence of transitions $x \in \mathbb{N}^{|T|}$ that must satisfy the Petri net state equation $Y \cdot x = M_o - M$. Firing sequences are split into Moves on Model ($x_m$, visible only), Moves on Both ($x_b$, visible only), and silent steps ($x_\tau$). The number of synchronous moves $x_b$ for any activity $a$ cannot exceed the trace occurrences $n(a, p)$. Since any real alignment path forms a valid integer solution to the above constraints, the optimal value of the LP relaxation $h_{\text{SE}}(M, p)$ is guaranteed to be a lower bound on the actual minimum remaining cost $h^*(M, p)$, proving admissibility.
+  2. **Consistency (Monotonicity):** Let $u = (M, p)$ and $v = (M', p')$ be search states, and $u \xrightarrow{c} v$ be a move with step cost $c$. Let $(x_m^*, x_b^*, x_\tau^*)$ be the optimal LP solution for state $v$. We construct a feasible LP solution $(\tilde{x}_m, \tilde{x}_b, \tilde{x}_\tau)$ for state $u$:
+     - **Move on Log:** $M' = M$, $p' = p + 1$, $c = 1$. Let $(\tilde{x}_m, \tilde{x}_b, \tilde{x}_\tau) = (x_m^*, x_b^*, x_\tau^*)$. Since $M_o - M = M_o - M'$ and $n(a, p) \ge n(a, p')$, this is feasible for $u$. Its cost is:
+       $$\tilde{C} = (n - p) - \sum \tilde{x}_b(t) + \sum \tilde{x}_m(t) = (n - p' + 1) - \sum x_b^*(t) + \sum x_m^*(t) = h_{\text{SE}}(v) + 1$$
+       Therefore, $h_{\text{SE}}(u) \le h_{\text{SE}}(v) + 1 = h_{\text{SE}}(v) + c$.
+     - **Move on Model (Visible transition $t_0$):** $M \xrightarrow{t_0} M'$ ($t_0 \in T_{\text{vis}}$), $p' = p$, $c = 1$. Let $\tilde{x}_m = x_m^* + e_{t_0}$, $\tilde{x}_b = x_b^*$, $\tilde{x}_\tau = x_\tau^*$. This is feasible for $u$ because $Y \cdot (\tilde{x}_m + \tilde{x}_b + \tilde{x}_\tau) = Y \cdot (x_m^* + x_b^* + x_\tau^*) + Y \cdot e_{t_0} = M_o - M' + M' - M = M_o - M$. Its cost is:
+       $$\tilde{C} = (n - p) - \sum \tilde{x}_b(t) + \sum \tilde{x}_m(t) = h_{\text{SE}}(v) + 1$$
+       Therefore, $h_{\text{SE}}(u) \le h_{\text{SE}}(v) + 1 = h_{\text{SE}}(v) + c$.
+     - **Move on Model (Silent transition $\tau_0$):** $M \xrightarrow{\tau_0} M'$ ($\tau_0 \in T_{\text{sil}}$), $p' = p$, $c = 0$. Let $\tilde{x}_m = x_m^*$, $\tilde{x}_b = x_b^*$, $\tilde{x}_\tau = x_\tau^* + e_{\tau_0}$. This is feasible for $u$ because $Y \cdot (\tilde{x}_m + \tilde{x}_b + \tilde{x}_\tau) = M_o - M' + M' - M = M_o - M$. Its cost is $\tilde{C} = h_{\text{SE}}(v)$. Therefore, $h_{\text{SE}}(u) \le h_{\text{SE}}(v) = h_{\text{SE}}(v) + c$.
+     - **Move on Both (Synchronous transition $t_0$ with label $a_0$):** $M \xrightarrow{t_0} M'$ ($t_0 \in T_{\text{vis}}$), $p' = p + 1$, $c = 0$. Let $\tilde{x}_m = x_m^*$, $\tilde{x}_b = x_b^* + e_{t_0}$, $\tilde{x}_\tau = x_\tau^*$. This is feasible for $u$ because the state equation balances ($M_o - M' + M' - M = M_o - M$) and the activity limit holds as $n(a_0, p) = n(a_0, p') + 1 \ge \sum x_b^*(t) + 1$. Its cost is:
+       $$\tilde{C} = (n - p' + 1) - \left( \sum x_b^*(t) + 1 \right) + \sum x_m^*(t) = h_{\text{SE}}(v)$$
+       Therefore, $h_{\text{SE}}(u) \le h_{\text{SE}}(v) = h_{\text{SE}}(v) + c$.
+
 - **Termination:** When goal marking $M_o$ is reached with no events remaining ($p = n$).
 
 **Receipt Structure:**

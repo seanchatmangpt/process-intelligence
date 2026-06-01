@@ -1,0 +1,124 @@
+//! Lifecycle State Machine module — synthesized by ggen manufacturing machinery
+//!
+//! This module implements object lifecycle state machines for autonomic actuation
+//!
+//! Generated from: templates/lifecycle/state_machine.rs.j2
+//! License: Executable only under wasm4pm graduation bridge
+
+use crate::law::*;
+use crate::evidence::*;
+
+/// Lifecycle state definition
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LifecycleState {
+    /// Object created, not yet initialized
+    Created,
+    /// Object initialized and ready
+    Ready,
+    /// Object processing
+    Active,
+    /// Object waiting for external event
+    Suspended,
+    /// Object completed normally
+    Completed,
+    /// Object completed with error
+    Failed,
+    /// Object cleaned up
+    Terminated,
+}
+
+/// Transition rule between states
+#[derive(Debug, Clone)]
+pub struct StateTransition {
+    pub from: LifecycleState,
+    pub to: LifecycleState,
+    pub guard: String, // predicate name
+    pub action: String, // action name
+}
+
+/// Lifecycle state machine for object-centric processes
+pub struct StateMachine {
+    /// Current state
+    pub state: LifecycleState,
+    /// Valid transitions from each state
+    pub transitions: Vec<StateTransition>,
+    /// Event log (evidence)
+    pub events: Vec<(String, LifecycleState)>,
+}
+
+impl StateMachine {
+    /// Create a new state machine
+    pub fn new() -> Self {
+        StateMachine {
+            state: LifecycleState::Created,
+            transitions: vec![],
+            events: vec![],
+        }
+    }
+
+    /// Register a state transition rule
+    pub fn add_transition(&mut self, transition: StateTransition) {
+        self.transitions.push(transition);
+    }
+
+    /// Attempt to transition to a new state
+    pub fn transition(&mut self, event: &str) -> Result<LifecycleState, StateMachineRefusal> {
+        // Find applicable transition
+        let applicable: Vec<_> = self
+            .transitions
+            .iter()
+            .filter(|t| t.from == self.state)
+            .collect();
+
+        if applicable.is_empty() {
+            return Err(StateMachineRefusal::NoApplicableTransition);
+        }
+
+        // For now, assume first matching transition
+        let target = applicable[0].to;
+
+        // Record event
+        self.events.push((event.to_string(), target));
+        self.state = target;
+
+        Ok(target)
+    }
+
+    /// Check if current state is terminal
+    pub fn is_terminal(&self) -> bool {
+        matches!(
+            self.state,
+            LifecycleState::Completed | LifecycleState::Failed | LifecycleState::Terminated
+        )
+    }
+
+    /// Get all valid next states
+    pub fn enabled_states(&self) -> Vec<LifecycleState> {
+        self.transitions
+            .iter()
+            .filter(|t| t.from == self.state)
+            .map(|t| t.to)
+            .collect()
+    }
+}
+
+/// State machine refusal reasons
+#[derive(Debug, Clone)]
+pub enum StateMachineRefusal {
+    /// No transition defined from current state
+    NoApplicableTransition,
+    /// Guard condition evaluated to false
+    GuardFailed,
+    /// State is already terminal
+    AlreadyTerminal,
+}
+
+impl std::fmt::Display for StateMachineRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::NoApplicableTransition => write!(f, "NoApplicableTransition"),
+            Self::GuardFailed => write!(f, "GuardFailed"),
+            Self::AlreadyTerminal => write!(f, "AlreadyTerminal"),
+        }
+    }
+}

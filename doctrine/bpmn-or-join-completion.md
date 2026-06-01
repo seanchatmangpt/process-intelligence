@@ -63,12 +63,12 @@ In processes containing cyclic control flows (e.g., feedback loops returning to 
 ## 4. Liveness and Soundness Invariants
 
 For a Workflow Net $N$, soundness requires:
-1. **Option to complete**: For every marking $M$ reachable from the initial marking $M_i = [i]$, there exists a firing sequence leading to the final marking $M_o = [o]$.
-   $$\forall M \in [M_i\rangle : M_o \in [M\rangle$$
-2. **Proper completion**: For every marking $M$ reachable from $M_i = [i]$, if $M \ge M_o$, then $M = M_o$.
-   $$\forall M \in [M_i\rangle : M \ge M_o \implies M = M_o$$
-3. **No dead transitions**: For every transition $t \in T$, there exists a marking $M$ reachable from $M_i$ such that $t$ is enabled.
-   $$\forall t \in T : \exists M \in [M_i\rangle : M \vdash [t\rangle$$
+1. **Option to complete**: For every marking $M$ reachable from the initial marking $M_0 = [i]$, there exists a firing sequence leading to the final marking $M_f = [o]$:
+   $$\forall M \in [M_0\rangle, \quad M_f \in [M\rangle$$
+2. **Proper completion**: For every marking $M$ reachable from $M_0$, if $M \ge M_f$, then $M = M_f$:
+   $$\forall M \in [M_0\rangle, \quad M \ge M_f \implies M = M_f$$
+3. **No dead transitions**: For every transition $t \in T$, there exists a marking $M$ reachable from $M_0$ that enables $t$:
+   $$\forall t \in T, \quad \exists M \in [M_0\rangle \quad \text{s.t. } M \xrightarrow{t}$$
 
 Under the Smart-Completion policy, we establish the following invariants:
 - **Liveness Invariant (No Deadlock / Premature Fire)**: If $g$ fires at marking $M$, then all tokens that could ever reach $\bullet g$ before $g$'s consumption have already arrived at $\bullet g$. This prevents premature firing which would leave late-arriving tokens stranded, preserving the "option to complete" and preventing deadlocks.
@@ -91,20 +91,20 @@ We formalize the safety and liveness invariants of the OR-Join using Linear Temp
 
 3. **Liveness (CTL Reachability of Final Marking)**:
    Under the Smart-Completion policy, for all reachable markings $M$:
-   $$A G \left( A F ( M = M_o ) \right)$$
+   $$A G \left( A F ( M = M_f ) \right)$$
 
 ---
 
 ## 6. Conformance and Alignment Calculations
 
 When aligning an event log $L$ against a process model containing an OR-join $g$, the alignment cost is calculated over the state space of the Petri Net.
-- Let $\sigma_L$ be a trace in the event log, and $\sigma_M$ be a sequence of transitions in the Petri net.
-- The alignment problem is to find a sequence of moves (log moves, model moves, synchronous moves) that minimizes the alignment cost:
-  $$\min_{\lambda \in \text{Align}(\sigma_L, \sigma_M)} \sum_{(x, y) \in \lambda} cost(x, y)$$
+- Let $\sigma \in \Sigma^*$ be a trace in the event log, and let $N$ be the process model.
+- The alignment problem is to find a sequence of moves that minimizes the alignment cost:
+  $$\gamma^* = \operatorname{argmin}_{\gamma \in \text{Align}(\sigma, N)} \sum_{(t, a) \in \gamma} c(t, a)$$
 - If the model execution attempts to fire $g$ while the Smart-Completion policy is violated (i.e., some active token is at a blocking place), this transition is illegal in the model under the Smart-Completion semantics.
 - Therefore, a log event representing the firing of $g$ cannot be mapped to a synchronous move of $g$ if there are active blocking tokens. Firing $g$ in the log at this point would require either:
-  1. A **Log Move** on $g$ (cost $c_L$), meaning the log recorded $g$ but the model could not fire it.
-  2. Or multiple **Model Moves** (cost $c_M \times k$) to advance the blocking tokens until they either reach $\bullet g$ or leave the reachability path, thereby satisfying the Smart-Completion safety condition, followed by a synchronous move on $g$.
+  1. A **Log Move** on $g$ (cost $c(\gg, g)$), meaning the log recorded $g$ but the model could not fire it.
+  2. Or multiple **Model Moves** (cost $\sum c(t_j, \gg)$) to advance the blocking tokens until they either reach $\bullet g$ or leave the reachability path, thereby satisfying the Smart-Completion safety condition, followed by a synchronous move on $g$.
 - In either case, the alignment algorithm automatically penalizes deviations from the Smart-Completion policy, ensuring that offline compliance checks (such as those required by [GAP_002_OR_JOIN_AMBIGUITY.md](file:///Users/sac/process-intelligence/gaps/GAP_002_OR_JOIN_AMBIGUITY.md)) will detect and record the exact mismatch.
 
 ---
@@ -112,7 +112,9 @@ When aligning an event log $L$ against a process model containing an OR-join $g$
 ## 7. Compliance and Verification
 
 - **Pathway 9 (AmbiguousBpmnGateway)**: Any process execution using OR-Joins without an explicit smart completion policy is rejected at the admission boundary. See [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md) for transition rules and implementation details.
-- **Verification**: Alignment logs must record the reachability state at the moment of OR-Join firing to allow offline auditors to replay and verify correctness.
+- **Verification Engine**: The underlying process verification engine in [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs) performs dynamic reachability/coverability and 1-boundedness checks to ensure that the workflow net does not exhibit unbounded behavior or token accumulation which would invalidate OR-Join synchronization.
+- **Siphon-Trap Verification**: The engine verifies siphon-trap properties in [petri.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/petri.rs) to confirm structural deadlock-freeness, proving that all siphons contain a marked trap. In the context of OR-joins, this guarantees that tokens cannot become permanently trapped in upstream loops and prevent OR-join completion.
+- **Auditing**: Alignment logs must record the reachability state at the moment of OR-Join firing to allow offline auditors to replay and verify correctness.
 
 ---
 

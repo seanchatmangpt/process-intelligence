@@ -1,0 +1,81 @@
+//! Compile-fail fixture template — synthesized by ggen manufacturing machinery
+//!
+//! This fixture proves that an illegal use case does NOT compile
+//! The ui_test framework catches the expected error
+//!
+//! Generated from: templates/fixtures/compile_fail_fixture.rs.j2
+//! Expected error: {{ expected_error }}
+
+use wasm4pm_compat::evidence::*;
+use wasm4pm_compat::law::*;
+use wasm4pm_compat::petri::*;
+use wasm4pm_compat::witness::*;
+
+/// {{ fixture_name }}: {{ test_case }}
+/// Expected error: {{ expected_error }}
+fn {{ fixture_name }}_does_not_compile() {
+    // This code should NOT compile
+
+    // Setup: Create two distinct witnessed evidences
+    let evidence_ocel: Evidence<Vec<String>, Raw, Ocel20> =
+        Evidence::raw(vec!["test".to_string()]);
+
+    let evidence_xes: Evidence<Vec<String>, Raw, Xes1849> =
+        Evidence::raw(vec!["test".to_string()]);
+
+    // Attempt: Use one witness where another is required
+    // This should fail with E0308 (type mismatch) or similar
+
+    // Proof: The compilation failure proves the witness system is enforced
+    let _: Evidence<Vec<String>, Raw, Ocel20> = evidence_xes; // ERROR: type mismatch
+}
+
+/// Fixture: Witness confusion in multi-step pipeline
+/// Expected error: E0308
+fn witness_consistency_in_pipeline() {
+    let raw_ocel: Evidence<Vec<String>, Raw, Ocel20> =
+        Evidence::raw(vec!["test".to_string()]);
+
+    // Convert to admitted via OCEL path
+    let admitted_ocel: Evidence<Vec<String>, Admitted, Ocel20> = raw_ocel
+        .into_parsed()
+        .and_then(|p| p.into_admitted())
+        .expect("ocel admission succeeds");
+
+    // Attempt: Use OCEL evidence where XES is required
+    // This must fail at compile time
+    let _: Evidence<Vec<String>, Admitted, Xes1849> = admitted_ocel; // ERROR
+}
+
+/// Fixture: Soundness witness is non-forgeable
+/// Expected error: E0451 (field is private) or E0308
+fn soundness_witness_non_forgeable() {
+    use wasm4pm_compat::petri::wfnet_seal::WfNetSeal;
+
+    // Attempt: Forge a WfNetConst with Witnessed soundness
+    // The _seal field is private; unconstructible
+
+    // This should fail
+    let _forged = WfNetConst::<{ SoundnessState::Witnessed }> {
+        _seal: WfNetSeal,
+        // ERROR: field `_seal` is private
+    };
+}
+
+/// Fixture: ConditionCell law violation
+/// Expected error: E0308
+fn condition_cell_law_violation() {
+    // ConditionCell<N> requires N <= 8
+    // This must be enforced at compile time
+
+    let _cell: ConditionCell<9> = todo!(); // ERROR: violates law
+}
+
+/// Fixture: Between01 law violation
+/// Expected error: E0308
+fn between01_law_violation() {
+    // Between01<2, 1> would represent 2/1 = 2.0, outside [0,1]
+    // This must not compile
+
+    let _ratio: Between01<2, 1> = todo!(); // ERROR: violates law
+}

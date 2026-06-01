@@ -32,6 +32,9 @@ pub struct PetriNet {
 }
 
 /// The results of structural and reachability analysis of the WF-net.
+///
+/// See the formal specification at [Workflow Net Verification Specification](file:///Users/sac/process-intelligence/standards/wf-net_verification_specification.md)
+/// and [PETRI_AND_WFNET.md](file:///Users/sac/process-intelligence/standards/PETRI_AND_WFNET.md).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SoundnessResult {
     pub is_wf_net: bool,
@@ -43,6 +46,7 @@ pub struct SoundnessResult {
     pub proper_completion: bool,
     pub option_to_complete: bool,
     pub markings_visited: usize,
+    pub state_limit_exceeded: bool,
 }
 
 impl PetriNet {
@@ -126,6 +130,8 @@ impl PetriNet {
     }
 
     /// Performs the soundness and 1-boundedness reachability/coverability check on the WF-net.
+    ///
+    /// For the formal verification specification, see [Workflow Net Verification Specification](file:///Users/sac/process-intelligence/standards/wf-net_verification_specification.md).
     pub fn analyze_soundness(&self) -> SoundnessResult {
         // 1. Structural WF-net checks
         // Identify source places (in-degree = 0)
@@ -166,10 +172,97 @@ impl PetriNet {
 
         let has_unique_source = source_places.len() == 1;
         let has_unique_sink = sink_places.len() == 1;
-        let is_wf_net = has_unique_source && has_unique_sink;
+        let mut is_wf_net = has_unique_source && has_unique_sink;
 
         let source_place = source_places.first().cloned();
         let sink_place = sink_places.first().cloned();
+
+        if is_wf_net {
+            let src = source_place.as_ref().unwrap();
+            let snk = sink_place.as_ref().unwrap();
+
+            // Check weak path connectivity: every place/transition must lie on a path from src to snk.
+            // 1. Forward reachability from src using BFS
+            let mut visited_from_src = BTreeSet::new();
+            let mut queue = VecDeque::new();
+            visited_from_src.insert(src.clone());
+            queue.push_back(src.clone());
+
+            while let Some(curr) = queue.pop_front() {
+                if self.places.contains(&curr) {
+                    for t in &self.transitions {
+                        if let Some(inputs) = self.pre.get(t) {
+                            if inputs.get(&curr).copied().unwrap_or(0) > 0 {
+                                if !visited_from_src.contains(t) {
+                                    visited_from_src.insert(t.clone());
+                                    queue.push_back(t.clone());
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if let Some(outputs) = self.post.get(&curr) {
+                        for (p, &weight) in outputs {
+                            if weight > 0 {
+                                if !visited_from_src.contains(p) {
+                                    visited_from_src.insert(p.clone());
+                                    queue.push_back(p.clone());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 2. Backward reachability to snk using BFS
+            let mut visited_to_snk = BTreeSet::new();
+            let mut queue_back = VecDeque::new();
+            visited_to_snk.insert(snk.clone());
+            queue_back.push_back(snk.clone());
+
+            while let Some(curr) = queue_back.pop_front() {
+                if self.places.contains(&curr) {
+                    for t in &self.transitions {
+                        if let Some(outputs) = self.post.get(t) {
+                            if outputs.get(&curr).copied().unwrap_or(0) > 0 {
+                                if !visited_to_snk.contains(t) {
+                                    visited_to_snk.insert(t.clone());
+                                    queue_back.push_back(t.clone());
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if let Some(inputs) = self.pre.get(&curr) {
+                        for (p, &weight) in inputs {
+                            if weight > 0 {
+                                if !visited_to_snk.contains(p) {
+                                    visited_to_snk.insert(p.clone());
+                                    queue_back.push_back(p.clone());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // All places and transitions must be in both sets
+            for p in &self.places {
+                if !visited_from_src.contains(p) || !visited_to_snk.contains(p) {
+                    is_wf_net = false;
+                    break;
+                }
+            }
+
+            if is_wf_net {
+                for t in &self.transitions {
+                    if !visited_from_src.contains(t) || !visited_to_snk.contains(t) {
+                        is_wf_net = false;
+                        break;
+                    }
+                }
+            }
+        }
 
         // If it's not a WF-net, or we don't have source/sink, we can't complete full reachability analysis properly.
         if !is_wf_net || source_place.is_none() || sink_place.is_none() {
@@ -183,19 +276,21 @@ impl PetriNet {
                 proper_completion: false,
                 option_to_complete: false,
                 markings_visited: 0,
+                state_limit_exceeded: false,
             };
         }
 
         let src = source_place.clone().unwrap();
         let snk = sink_place.clone().unwrap();
 
-        let m0 = Marking::initial(src);
+        let m0 = Marking::initial(src.clone());
         let final_sink_marking = Marking::initial(snk.clone());
 
         let mut visited = BTreeSet::new();
         let mut edges = BTreeSet::new();
         let mut path = Vec::new();
         let mut is_1_bounded = true;
+        let mut state_limit_exceeded = false;
 
         // Run depth-first search to build reachability graph and check boundedness
         self.explore_reachability(
@@ -204,7 +299,23 @@ impl PetriNet {
             &mut visited,
             &mut edges,
             &mut is_1_bounded,
+            &mut state_limit_exceeded,
         );
+
+        if state_limit_exceeded {
+            return SoundnessResult {
+                is_wf_net,
+                source_place: Some(src.clone()),
+                sink_place: Some(snk.clone()),
+                is_1_bounded: false,
+                has_deadlock: true,
+                dead_transitions: self.transitions.clone(),
+                proper_completion: false,
+                option_to_complete: false,
+                markings_visited: visited.len(),
+                state_limit_exceeded: true,
+            };
+        }
 
         // 2. Deadlock Check
         // A deadlock is a reachable marking M with no enabled transitions and M != final_sink_marking.
@@ -282,6 +393,7 @@ impl PetriNet {
             proper_completion,
             option_to_complete,
             markings_visited: visited.len(),
+            state_limit_exceeded: false,
         }
     }
 
@@ -293,7 +405,18 @@ impl PetriNet {
         visited: &mut BTreeSet<Marking>,
         edges: &mut BTreeSet<(Marking, String, Marking)>,
         is_1_bounded: &mut bool,
+        state_limit_exceeded: &mut bool,
     ) {
+        if *state_limit_exceeded {
+            return;
+        }
+
+        const MAX_STATES: usize = 10_000;
+        if visited.len() >= MAX_STATES {
+            *state_limit_exceeded = true;
+            return;
+        }
+
         // Check 1-boundedness condition: token count > 1
         for p in &self.places {
             if current.get_tokens(p) > 1 {
@@ -333,10 +456,231 @@ impl PetriNet {
             if self.is_enabled(t, &current) {
                 let next_marking = self.fire(t, &current);
                 edges.insert((current.clone(), t.clone(), next_marking.clone()));
-                self.explore_reachability(next_marking, path, visited, edges, is_1_bounded);
+                self.explore_reachability(
+                    next_marking,
+                    path,
+                    visited,
+                    edges,
+                    is_1_bounded,
+                    state_limit_exceeded,
+                );
             }
         }
 
         path.pop();
+    }
+
+    /// Check if a subset of places S is a siphon (non-empty).
+    /// A siphon is a set S where the preset of S is a subset of the postset of S: •S ⊆ S•.
+    pub fn is_siphon(&self, s: &BTreeSet<String>) -> bool {
+        if s.is_empty() {
+            return false;
+        }
+        for (t, outputs) in &self.post {
+            let outputs_to_s = outputs.iter().any(|(p, &w)| w > 0 && s.contains(p));
+            if outputs_to_s {
+                let inputs_from_s = self.pre.get(t)
+                    .map(|inputs| inputs.iter().any(|(p, &w)| w > 0 && s.contains(p)))
+                    .unwrap_or(false);
+                if !inputs_from_s {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    /// Check if a subset of places T is a trap (non-empty).
+    /// A trap is a set T where the postset of T is a subset of the preset of T: T• ⊆ •T.
+    pub fn is_trap(&self, t_set: &BTreeSet<String>) -> bool {
+        if t_set.is_empty() {
+            return false;
+        }
+        for (t, inputs) in &self.pre {
+            let inputs_from_t = inputs.iter().any(|(p, &w)| w > 0 && t_set.contains(p));
+            if inputs_from_t {
+                let outputs_to_t = self.post.get(t)
+                    .map(|outputs| outputs.iter().any(|(p, &w)| w > 0 && t_set.contains(p)))
+                    .unwrap_or(false);
+                if !outputs_to_t {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    /// Recursively find all siphons.
+    pub fn find_siphons(&self) -> Vec<BTreeSet<String>> {
+        let places: Vec<String> = self.places.iter().cloned().collect();
+        let mut result = Vec::new();
+        let mut current = BTreeSet::new();
+        self.siphons_recurse(&places, 0, &mut current, &mut result);
+        result
+    }
+
+    fn siphons_recurse(
+        &self,
+        places: &[String],
+        index: usize,
+        current: &mut BTreeSet<String>,
+        result: &mut Vec<BTreeSet<String>>,
+    ) {
+        if result.len() >= 1000 {
+            return;
+        }
+        if index == places.len() {
+            if self.is_siphon(current) {
+                result.push(current.clone());
+            }
+            return;
+        }
+        self.siphons_recurse(places, index + 1, current, result);
+        current.insert(places[index].clone());
+        self.siphons_recurse(places, index + 1, current, result);
+        current.remove(&places[index]);
+    }
+
+    /// Recursively find all traps.
+    pub fn find_traps(&self) -> Vec<BTreeSet<String>> {
+        let places: Vec<String> = self.places.iter().cloned().collect();
+        let mut result = Vec::new();
+        let mut current = BTreeSet::new();
+        self.traps_recurse(&places, 0, &mut current, &mut result);
+        result
+    }
+
+    fn traps_recurse(
+        &self,
+        places: &[String],
+        index: usize,
+        current: &mut BTreeSet<String>,
+        result: &mut Vec<BTreeSet<String>>,
+    ) {
+        if result.len() >= 1000 {
+            return;
+        }
+        if index == places.len() {
+            if self.is_trap(current) {
+                result.push(current.clone());
+            }
+            return;
+        }
+        self.traps_recurse(places, index + 1, current, result);
+        current.insert(places[index].clone());
+        self.traps_recurse(places, index + 1, current, result);
+        current.remove(&places[index]);
+    }
+
+    /// Verify the siphon-trap property under a marking:
+    /// every siphon contains a trap that is marked (contains at least one token).
+    pub fn check_siphon_trap_property(&self, marking: &Marking) -> bool {
+        let siphons = self.find_siphons();
+        let traps = self.find_traps();
+
+        for siphon in &siphons {
+            let mut has_marked_contained_trap = false;
+            for trap in &traps {
+                if trap.iter().all(|p| siphon.contains(p)) {
+                    let is_marked = trap.iter().any(|p| marking.get_tokens(p) > 0);
+                    if is_marked {
+                        has_marked_contained_trap = true;
+                        break;
+                    }
+                }
+            }
+            if !has_marked_contained_trap {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Check if the Petri Net is free-choice:
+    /// For every pair of transitions t1, t2: if their presets intersect, their presets must be identical.
+    /// In addition, all arc weights in the preset must be 1.
+    pub fn is_free_choice(&self) -> bool {
+        for t1 in &self.transitions {
+            let pre1 = match self.pre.get(t1) {
+                Some(p) => p,
+                None => continue,
+            };
+            for &w in pre1.values() {
+                if w != 1 {
+                    return false;
+                }
+            }
+            for t2 in &self.transitions {
+                if t1 == t2 {
+                    continue;
+                }
+                let pre2 = match self.pre.get(t2) {
+                    Some(p) => p,
+                    None => continue,
+                };
+                let intersect = pre1.keys().any(|k| pre2.contains_key(k));
+                if intersect {
+                    if pre1.len() != pre2.len() {
+                        return false;
+                    }
+                    for k in pre1.keys() {
+                        if !pre2.contains_key(k) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        true
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_siphon_trap_properties() {
+        let places: BTreeSet<String> = vec!["source", "p1", "sink"].into_iter().map(String::from).collect();
+        let transitions: BTreeSet<String> = vec!["t1", "t2"].into_iter().map(String::from).collect();
+
+        let mut pre = BTreeMap::new();
+        let mut t1_pre = BTreeMap::new();
+        t1_pre.insert("source".to_string(), 1);
+        pre.insert("t1".to_string(), t1_pre);
+
+        let mut t2_pre = BTreeMap::new();
+        t2_pre.insert("p1".to_string(), 1);
+        pre.insert("t2".to_string(), t2_pre);
+
+        let mut post = BTreeMap::new();
+        let mut t1_post = BTreeMap::new();
+        t1_post.insert("p1".to_string(), 1);
+        post.insert("t1".to_string(), t1_post);
+
+        let mut t2_post = BTreeMap::new();
+        t2_post.insert("sink".to_string(), 1);
+        post.insert("t2".to_string(), t2_post);
+
+        let net = PetriNet::new(places, transitions, pre, post);
+
+        assert!(net.is_free_choice());
+
+        // Siphons of this net:
+        let siphons = net.find_siphons();
+        let source_set: BTreeSet<String> = vec!["source".to_string()].into_iter().collect();
+        assert!(siphons.contains(&source_set));
+        assert!(net.is_siphon(&source_set));
+
+        // Traps of this net:
+        let traps = net.find_traps();
+        let sink_set: BTreeSet<String> = vec!["sink".to_string()].into_iter().collect();
+        assert!(traps.contains(&sink_set));
+        assert!(net.is_trap(&sink_set));
+
+        // Since {"source"} contains no trap, the siphon-trap property under initial marking (source=1)
+        // should be false because the siphon {"source"} has no contained marked trap.
+        let marking = Marking::initial("source".to_string());
+        assert!(!net.check_siphon_trap_property(&marking));
     }
 }

@@ -8,5 +8,8 @@ pub mod otel;
 pub mod evidence;
 pub mod petri;
 pub mod safety;
+pub mod replay;
+pub mod conformance;
+pub mod mining;
 
 

@@ -1,0 +1,79 @@
+//! Process Executor module — synthesized by ggen manufacturing machinery
+//!
+//! This module implements simulation/execution of process models
+//!
+//! Generated from: templates/replay/executor.rs.j2
+//! License: Executable only under wasm4pm graduation bridge
+
+use crate::law::*;
+use crate::evidence::*;
+use crate::petri::*;
+
+/// Execution context for a process model
+pub struct ExecutionContext<const SOUNDNESS: SoundnessState> {
+    net: WfNetConst<SOUNDNESS>,
+    current_marking: Marking,
+}
+
+impl<const SOUNDNESS: SoundnessState> ExecutionContext<SOUNDNESS> {
+    /// Create a new execution context with source marking
+    pub fn new(net: WfNetConst<SOUNDNESS>) -> Result<Self, ExecutionRefusal> {
+        // Initialize with source place marking
+        let current_marking = Marking::default();
+
+        Ok(ExecutionContext {
+            net,
+            current_marking,
+        })
+    }
+
+    /// Execute a single transition (activity)
+    pub fn execute_transition(&mut self, activity: &str) -> Result<(), ExecutionRefusal> {
+        // Find transition matching activity
+        // Check if transition is enabled
+        // Remove tokens from input places
+        // Add tokens to output places
+        // Update current_marking
+
+        let _ = activity;
+        Err(ExecutionRefusal::NotImplementedYet)
+    }
+
+    /// Get current marking
+    pub fn current_marking(&self) -> &Marking {
+        &self.current_marking
+    }
+
+    /// Check if execution reached final state
+    pub fn is_final(&self) -> Result<bool, ExecutionRefusal> {
+        // Compare current_marking with net's final_marking
+        Err(ExecutionRefusal::NotImplementedYet)
+    }
+}
+
+/// Execution refusal reasons
+#[derive(Debug, Clone)]
+pub enum ExecutionRefusal {
+    /// Transition not enabled (missing input tokens)
+    TransitionNotEnabled,
+    /// Transition not found in model
+    UnknownTransition,
+    /// Deadlock reached; no transition is enabled and process not final
+    Deadlock,
+    /// Final marking is undefined
+    NoFinalMarking,
+    /// Not yet implemented
+    NotImplementedYet,
+}
+
+impl std::fmt::Display for ExecutionRefusal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::TransitionNotEnabled => write!(f, "TransitionNotEnabled"),
+            Self::UnknownTransition => write!(f, "UnknownTransition"),
+            Self::Deadlock => write!(f, "Deadlock"),
+            Self::NoFinalMarking => write!(f, "NoFinalMarking"),
+            Self::NotImplementedYet => write!(f, "NotImplementedYet"),
+        }
+    }
+}

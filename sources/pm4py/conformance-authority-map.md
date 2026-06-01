@@ -97,9 +97,9 @@ Cost function:
 $$\gamma^* = \operatorname{argmin}_{\gamma} \sum_{(t, a) \in \gamma} c(t, a)$$
 
 **Fitness Metric (Adriansyah 2014):**
-$$\text{fitness} = 1 - \frac{\text{alignment\_cost}}{2 \times |σ|}$$
+$$\text{fitness} = 1 - \frac{\text{alignment\_cost}}{|\sigma| + d_{\text{min}}(i, o)}$$
 
-where |σ| = trace length.
+where $|\sigma|$ is the trace length and $d_{\text{min}}(i, o)$ is the shortest path distance (counting only visible transitions) from the initial marking $i$ to the final marking $o$ in the Petri Net model.
 
 **Precision Metric:**
 $$\text{precision} = 1 - \frac{\text{total\_model\_moves}}{\text{total\_log\_moves} + \text{total\_model\_moves}}$$
@@ -137,7 +137,7 @@ Measures overfitting: high precision means the model does not allow much behavio
    - Alignment search times out or returns heuristic approximation
    - Example: net with 10 concurrent transitions × 10-activity trace = 10^10 states
 
-2. **Infeasible Alignment:** If model and log diverge completely, alignment cost = 2 × |σ|.
+2. **Infeasible Alignment:** If model and log diverge completely, alignment cost = |\sigma| + d_{\text{min}}(i, o).
    - Fitness = 0; no information on where divergence occurs
 
 3. **Unobserved Paths:** If model allows a path that never occurs in log, precision penalizes the model.
@@ -418,7 +418,7 @@ OCEL logs track multiple interacting objects. Conformance checks validate:
 | Method | Fitness Formula |
 |--------|-----------------|
 | **TBR** | 0.5 × (1 - m/c) + 0.5 × (1 - r/p) |
-| **Alignment** | 1 - (cost / (2 × \|σ\|)) |
+| **Alignment** | 1 - (cost / (\|σ\| + d\_min(i, o))) |
 | **Footprints** | # matched footprints / # log footprints |
 | **Declare** | 1 - (violations / total_constraints) |
 | **Temporal** | 1 - sum(zeta × violations) |

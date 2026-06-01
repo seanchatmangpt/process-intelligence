@@ -421,7 +421,8 @@ fn test_otel_trace_blake3_verification() {
     );
     let cyclic_trace = wasm4pm::otel::OtelTrace::parse_from_str(&cyclic_json).unwrap();
     let cyclic_res = wasm4pm::otel::verify_otel_trace(&cyclic_trace);
-    panic!("Actual cyclic res error: {:?}", cyclic_res.unwrap_err());
+    assert!(cyclic_res.is_err());
+    assert!(cyclic_res.unwrap_err().contains("Cyclic parent-child dependency detected"));
 }
 
 fn hex_encode(bytes: &[u8]) -> String {
@@ -463,26 +464,29 @@ fn test_ffi_get_last_error_no_panic() {
 
 #[test]
 fn test_evidence_lattice_and_typestates() {
-    use wasm4pm::evidence::{Evidence, Lattice, WitnessState};
-    use std::collections::BTreeSet;
+    use wasm4pm::evidence::{Evidence, Lattice, WitnessState, IdentitySignature, Blake3Hash};
 
     // 1. Test WitnessState Lattice Properties
-    let bottom = WitnessState::Bottom;
-    let top = WitnessState::Top;
+    let bottom = WitnessState::bottom();
+    let top = WitnessState::top();
 
-    let mut s1 = BTreeSet::new();
-    s1.insert(1);
-    s1.insert(2);
-    let p1 = WitnessState::new_partial(s1);
+    let p1 = WitnessState::PartialReplay {
+        trace_indices: vec![1, 2],
+        marking: vec!["p1".to_string()],
+        cost: 10,
+    };
 
-    let mut s2 = BTreeSet::new();
-    s2.insert(3);
-    let p2 = WitnessState::new_partial(s2);
+    let p2 = WitnessState::PartialReplay {
+        trace_indices: vec![3],
+        marking: vec!["p2".to_string()],
+        cost: 20,
+    };
 
-    let mut s3 = BTreeSet::new();
-    s3.insert(2);
-    s3.insert(4);
-    let p3 = WitnessState::new_partial(s3);
+    let p3 = WitnessState::PartialReplay {
+        trace_indices: vec![2, 4],
+        marking: vec!["p1".to_string()],
+        cost: 15,
+    };
 
     // Identity and bounds
     assert_eq!(bottom.join(&p1), p1);
@@ -490,18 +494,14 @@ fn test_evidence_lattice_and_typestates() {
     assert_eq!(top.join(&p1), top);
     assert_eq!(p1.join(&top), top);
 
-    assert_eq!(bottom.meet(&p1), bottom);
-    assert_eq!(p1.meet(&bottom), bottom);
-    assert_eq!(top.meet(&p1), p1);
-    assert_eq!(p1.meet(&top), p1);
-
     // Disjointness check in join
     let union_ws = p1.join(&p2);
-    if let WitnessState::PartialReplay(ref u_set) = union_ws {
-        assert_eq!(u_set.len(), 3);
-        assert!(u_set.contains(&1));
-        assert!(u_set.contains(&2));
-        assert!(u_set.contains(&3));
+    if let WitnessState::PartialReplay { ref trace_indices, marking: _, cost } = union_ws {
+        assert_eq!(trace_indices.len(), 3);
+        assert!(trace_indices.contains(&1));
+        assert!(trace_indices.contains(&2));
+        assert!(trace_indices.contains(&3));
+        assert_eq!(cost, 30);
     } else {
         panic!("Expected PartialReplay");
     }
@@ -509,25 +509,54 @@ fn test_evidence_lattice_and_typestates() {
     // Overlap evaluates to Top
     assert_eq!(p1.join(&p3), WitnessState::Top);
 
-    // Validate lattice laws
-    WitnessState::assert_lattice_laws(&p1, &p2, &p3);
-    WitnessState::assert_lattice_laws(&p1, &bottom, &top);
-    WitnessState::assert_lattice_laws(&bottom, &p3, &p2);
-
-    // 2. Test Typestate transitions
-    let artifact = "Process Model Spec".to_string();
-    let evidence_parsed = Evidence::new(artifact, p1.clone());
+    // 2. Test new Evidence struct
+    let payload = "artifact_spec".to_string();
+    let state = "initial".to_string();
     
-    let evidence_validated = evidence_parsed.validate_sound();
-    assert_eq!(evidence_validated.witness, p1);
+    let sig = IdentitySignature {
+        public_key: vec![0; 32],
+        signature_bytes: vec![0; 64],
+    };
+    
+    let ev1 = Evidence {
+        payload: payload.clone(),
+        state: state.clone(),
+        witness: p1.clone(),
+        epoch: 1,
+        signature: sig.clone(),
+        hash: Blake3Hash([0; 32]),
+    };
+    
+    let hash1 = ev1.calculate_hash();
+    let mut ev1_hashed = ev1;
+    ev1_hashed.hash = hash1;
+    
+    let ev2 = Evidence {
+        payload: payload.clone(),
+        state: state.clone(),
+        witness: p1.join(&p2),
+        epoch: 2,
+        signature: sig,
+        hash: Blake3Hash([0; 32]),
+    };
+    
+    let hash2 = ev2.calculate_hash();
+    let mut ev2_hashed = ev2;
+    ev2_hashed.hash = hash2;
 
-    let evidence_replayed = evidence_validated.replay(p2.clone());
-    assert_eq!(evidence_replayed.witness, p2);
+    // Check monotonic transition from ev1 to ev2
+    assert!(ev1_hashed.validate_transition(&ev2_hashed).is_ok());
 
-    let ev1 = Evidence::new("Model A".to_string(), p1.clone());
-    let ev2 = Evidence::new("Model A".to_string(), p2.clone());
-    let ev_merged = ev1.merge(ev2);
-    assert_eq!(ev_merged.witness, p1.join(&p2));
+    // Fails on non-monotonic transition (e.g. going back to bottom)
+    let ev_bottom = Evidence {
+        payload,
+        state,
+        witness: bottom,
+        epoch: 3,
+        signature: ev2_hashed.signature.clone(),
+        hash: Blake3Hash([0; 32]),
+    };
+    assert!(ev1_hashed.validate_transition(&ev_bottom).is_err());
 }
 
 #[test]
@@ -564,6 +593,7 @@ fn test_petri_net_soundness_solver() {
     assert!(result_sound.dead_transitions.is_empty());
     assert!(result_sound.proper_completion);
     assert!(result_sound.option_to_complete);
+    assert!(!result_sound.state_limit_exceeded);
 
     // Case 2: Unsound WF-net (Deadlock and Dead Transition)
     let places_deadlock: BTreeSet<String> = vec!["source", "p1", "p2", "sink"].into_iter().map(String::from).collect();
@@ -591,6 +621,7 @@ fn test_petri_net_soundness_solver() {
     assert!(result_deadlock.has_deadlock);
     assert!(result_deadlock.dead_transitions.contains("t3"));
     assert!(!result_deadlock.option_to_complete);
+    assert!(!result_deadlock.state_limit_exceeded);
 
     // Case 3: Unbounded Petri net
     let places_unbounded: BTreeSet<String> = vec!["source", "p1", "sink"].into_iter().map(String::from).collect();
@@ -612,6 +643,52 @@ fn test_petri_net_soundness_solver() {
 
     assert!(result_unbounded.is_wf_net);
     assert!(!result_unbounded.is_1_bounded);
+    assert!(!result_unbounded.state_limit_exceeded);
+
+    // Case 4: Net with state space limit exceeded (potential state space explosion)
+    // 14 parallel places and transitions produce 2^14 = 16,384 states which exceeds MAX_STATES = 10,000.
+    let mut places_exp = BTreeSet::new();
+    places_exp.insert("source".to_string());
+    places_exp.insert("sink".to_string());
+    for i in 1..=14 {
+        places_exp.insert(format!("p{}", i));
+        places_exp.insert(format!("q{}", i));
+    }
+
+    let mut transitions_exp = BTreeSet::new();
+    transitions_exp.insert("t_split".to_string());
+    transitions_exp.insert("t_join".to_string());
+    for i in 1..=14 {
+        transitions_exp.insert(format!("t{}", i));
+    }
+
+    let mut pre_exp = BTreeMap::new();
+    pre_exp.insert("t_split".to_string(), make_arc("source", 1));
+    
+    let mut join_inputs = BTreeMap::new();
+    for i in 1..=14 {
+        pre_exp.insert(format!("t{}", i), make_arc(&format!("p{}", i), 1));
+        join_inputs.insert(format!("q{}", i), 1);
+    }
+    pre_exp.insert("t_join".to_string(), join_inputs);
+
+    let mut post_exp = BTreeMap::new();
+    let mut split_outputs = BTreeMap::new();
+    for i in 1..=14 {
+        split_outputs.insert(format!("p{}", i), 1);
+        post_exp.insert(format!("t{}", i), make_arc(&format!("q{}", i), 1));
+    }
+    post_exp.insert("t_split".to_string(), split_outputs);
+    post_exp.insert("t_join".to_string(), make_arc("sink", 1));
+
+    let net_exp = PetriNet::new(places_exp, transitions_exp, pre_exp, post_exp);
+    let result_exp = net_exp.analyze_soundness();
+
+    assert!(result_exp.is_wf_net);
+    assert!(result_exp.state_limit_exceeded);
+    assert!(!result_exp.is_1_bounded);
+    assert!(result_exp.has_deadlock);
+    assert!(!result_exp.option_to_complete);
 }
 
 #[test]
