@@ -5,3 +5,6 @@
 
 ### Fixtures for adriansyah_2014_alignment_conformance
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for leemans_2013_inductive_miner
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
