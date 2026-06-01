@@ -8,3 +8,6 @@
 
 ### Fixtures for leemans_2013_inductive_miner
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for ghahfarokhi_2021_ocel2
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
