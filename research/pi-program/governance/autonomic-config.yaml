@@ -1,0 +1,349 @@
+# Autonomic Governance Engine Configuration
+# MAPE-K Feedback Loop: Monitor → Analyze → Plan → Execute → Knowledge
+
+version: "1.0"
+timestamp: "2026-06-01T00:00:00Z"
+authority: "Process Intelligence Program"
+
+# ============================================================================
+# GLOBAL SETTINGS
+# ============================================================================
+
+global:
+  # Feedback loop execution interval
+  main_loop_interval: "PT5M"  # Run MAPE-K every 5 minutes
+
+  # Maximum concurrent remediation actions
+  max_concurrent_actions: 3
+
+  # Log all decisions to audit trail
+  audit_trail_enabled: true
+  audit_trail_location: "/Users/sac/process-intelligence/research/pi-program/governance/audit-trail.log"
+
+  # OTel instrumentation endpoint
+  otel_collector_endpoint: "http://localhost:4317"
+
+  # Knowledge graph backend
+  kg_backend: "rdf4j"
+  kg_endpoint: "http://localhost:8080/rdf4j-server"
+  kg_repository: "process-intelligence-governance"
+
+# ============================================================================
+# MONITOR LAYER CONFIGURATION
+# ============================================================================
+
+monitor:
+  enabled: true
+  interval: "PT1M"  # Query KPIs every minute
+
+  # Query execution
+  sparql_timeout: "PT30S"
+  max_results_per_query: 10000
+
+  # Data sources
+  sources:
+    - name: "ggen-execution-logs"
+      type: "otel-traces"
+      endpoint: "http://localhost:4317/traces"
+      filter: "service.name=ggen"
+      batch_size: 1000
+
+    - name: "blue-river-receipts"
+      type: "rdf-store"
+      endpoint: "http://localhost:8080/rdf4j-server"
+      query_file: "monitors/monitor-receipt-chain.rq"
+      cache_ttl: "PT5M"
+
+    - name: "pm4py-metrics"
+      type: "prometheus"
+      endpoint: "http://localhost:9090"
+      query: "pm4py_conformance_fitness"
+
+    - name: "api-health"
+      type: "http-check"
+      endpoints:
+        - "http://localhost:8001/health"
+        - "http://localhost:8002/health"
+      timeout: "PT5S"
+
+  # KPI queries
+  kpis:
+    KPI_001:
+      query: "monitors/monitor-manufacturing-rules.rq"
+      interval: "PT5M"
+      alert_on_threshold_breach: true
+
+    KPI_002:
+      query: "monitors/monitor-receipt-chain.rq"
+      interval: "PT1M"
+      alert_on_threshold_breach: true
+      critical: true
+
+    KPI_003:
+      query: "monitors/monitor-fitness-drift.rq"
+      interval: "PT10M"
+      alert_on_threshold_breach: true
+
+    KPI_004:
+      query: "monitors/monitor-pipeline-latency.rq"
+      interval: "PT5M"
+      alert_on_threshold_breach: true
+
+# ============================================================================
+# ANALYZE LAYER CONFIGURATION
+# ============================================================================
+
+analyze:
+  enabled: true
+
+  # Root cause analysis
+  root_cause_engines:
+    - name: "manufacturing-failure-analyzer"
+      input_kpi: "KPI_001"
+      rules: "analyzers/analyze-rule-failures.sparql"
+      timeout: "PT10M"
+      confidence_threshold: 0.6
+
+    - name: "receipt-corruption-analyzer"
+      input_kpi: "KPI_002"
+      rules: "analyzers/analyze-receipt-corruption.sparql"
+      timeout: "PT5M"
+      confidence_threshold: 0.8
+      critical: true
+
+    - name: "fitness-drift-analyzer"
+      input_kpi: "KPI_003"
+      rules: "analyzers/analyze-fitness-drift.sparql"
+      timeout: "PT15M"
+      confidence_threshold: 0.7
+
+  # Pattern detection
+  pattern_detector:
+    enabled: true
+    historical_window: "P7D"  # Look back 7 days
+    min_occurrences: 3  # Need 3+ occurrences to detect pattern
+    anomaly_detection: "isolation-forest"  # or "statistical", "neural"
+
+  # Impact assessment
+  impact_assessment:
+    enabled: true
+    scope_analysis: true  # Determine what breaks if this failure continues
+    dependency_graph: "research/pi-program/knowledge-graph/dependency-graph.ttl"
+
+# ============================================================================
+# PLAN LAYER CONFIGURATION
+# ============================================================================
+
+plan:
+  enabled: true
+
+  # Policy engine
+  policy_engine:
+    policies_file: "policy-rules.ttl"
+    evaluation_timeout: "PT5M"
+    decision_log: "decisions/"
+
+  # Plan generation
+  plan_generator:
+    strategy: "remediation-priority"  # also: "minimal-disruption", "most-effective"
+    consider_dependencies: true
+    generate_rollback_plans: true
+
+  # SLA tracking
+  sla_tracking:
+    enabled: true
+    log_location: "sla-tracking/"
+    breach_escalation: true
+
+  # Resource reservation
+  resource_reservation:
+    enabled: false  # Set to true when resource management is needed
+    cpu_reserve_percent: 10
+    memory_reserve_mb: 256
+    network_reserve_mbps: 10
+
+# ============================================================================
+# EXECUTE LAYER CONFIGURATION
+# ============================================================================
+
+execute:
+  enabled: true
+
+  # Execution modes
+  modes:
+    automatic_remediation:
+      enabled: true  # Set false to disable auto-remediation (manual only)
+      approval_required: false  # Set true for two-phase execution
+      approval_timeout: "PT30M"
+
+    staged_remediation:
+      enabled: true
+      verify_between_stages: true
+      rollback_on_verification_failure: true
+
+  # Handlers / executors
+  handlers:
+    - name: "ggen-remediation"
+      type: "ggen-rules"
+      endpoint: "http://localhost:9001/ggen"
+      timeout: "PT15M"
+      max_retries: 3
+
+    - name: "blue-river-update"
+      type: "governance-update"
+      endpoint: "http://localhost:9002/blue-river"
+      timeout: "PT10M"
+      max_retries: 1  # Limited retries for governance
+
+    - name: "api-failover"
+      type: "infrastructure"
+      endpoint: "http://localhost:9003/infrastructure"
+      timeout: "PT5M"
+      max_retries: 2
+
+    - name: "schema-governance"
+      type: "data-governance"
+      endpoint: "http://localhost:9004/schemas"
+      timeout: "PT30M"
+      max_retries: 1
+
+  # Execution tracking
+  execution_tracking:
+    enabled: true
+    receipt_emission: true
+    receipt_location: "receipts/remediations/"
+    receipt_verification: true
+
+  # Rollback procedures
+  rollback:
+    enabled: true
+    strategy: "last-known-good-state"
+    preserve_logs: true
+    audit_trail: true
+
+# ============================================================================
+# KNOWLEDGE LAYER CONFIGURATION
+# ============================================================================
+
+knowledge:
+  enabled: true
+
+  # Store and recall remediation history
+  remediation_memory:
+    enabled: true
+    storage: "rdf"
+    retention_days: 90
+    queryable: true
+
+  # Pattern learning
+  pattern_learning:
+    enabled: true
+    window_size: "P30D"
+    min_confidence: 0.75
+    auto_update_policies: false  # Requires human review before policy update
+
+  # Feedback loops
+  feedback_loops:
+    enabled: true
+    close_feedback_loop: true  # Monitor effectiveness of remediation
+    effectiveness_threshold: 0.8  # Remediation must be >= 80% effective
+
+  # Continuous improvement
+  continuous_improvement:
+    enabled: true
+    improvement_recommendations: "recommendations/"
+    review_schedule: "P1W"  # Weekly reviews
+
+  # Doctrine updates
+  doctrine_updates:
+    enabled: true
+    require_approval: true
+    approval_authority: "governance-board"
+    versioning: true
+    immutability: true  # Never delete doctrine, only addend
+
+# ============================================================================
+# OBSERVABILITY AND ALERTS
+# ============================================================================
+
+observability:
+  # Metrics export
+  metrics:
+    enabled: true
+    export_format: "prometheus"
+    export_endpoint: "http://localhost:9090/metrics"
+    interval: "PT1M"
+
+  # Logging
+  logging:
+    enabled: true
+    level: "INFO"  # also: DEBUG, WARN, ERROR
+    format: "json"
+    location: "logs/autonomic-governance.log"
+    rotation: "daily"
+    retention_days: 30
+
+  # Distributed tracing
+  tracing:
+    enabled: true
+    collector_endpoint: "http://localhost:4317"
+    sample_rate: 0.1  # 10% of decisions
+
+  # Alerting
+  alerting:
+    enabled: true
+    channels:
+      - type: "pagerduty"
+        integration_key: "${PAGERDUTY_INTEGRATION_KEY}"
+        severity_mapping:
+          CRITICAL: "critical"
+          IMPORTANT: "warning"
+          INFORMATIONAL: "info"
+      - type: "slack"
+        webhook_url: "${SLACK_WEBHOOK_URL}"
+        channel: "#governance-alerts"
+      - type: "email"
+        recipients:
+          - "governance@process-intelligence.local"
+        only_critical: false
+
+# ============================================================================
+# TESTING AND SIMULATION
+# ============================================================================
+
+testing:
+  # Simulated issue injection for testing MAPE-K loop
+  chaos_testing:
+    enabled: false  # Set true to enable chaos testing
+    inject_rule_failures: false
+    inject_receipt_corruption: false
+    inject_latency_spikes: false
+
+  # Simulation mode (test without actually executing remediation)
+  simulation_mode:
+    enabled: false  # Set true to run MAPE-K in dry-run mode
+    log_decisions: true
+    do_not_execute: true
+
+# ============================================================================
+# ADVANCED OPTIONS
+# ============================================================================
+
+advanced:
+  # Timeout and resource limits
+  global_timeout: "PT5M"
+  max_loop_iterations: 10000  # Protect against infinite loops
+  max_concurrent_sparql_queries: 5
+
+  # Feature flags
+  features:
+    automatic_remediation: true
+    predictive_analysis: false  # Coming soon
+    ml_anomaly_detection: false  # Coming soon
+    self_learning: false  # Coming soon
+
+  # Debug options
+  debug:
+    verbose_logging: false
+    dump_query_plans: false
+    profile_query_performance: false

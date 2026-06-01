@@ -1,0 +1,163 @@
+# Analyzer: Receipt Chain Corruption Root Cause Analysis
+# CRITICAL: Determines why receipt chain integrity is broken
+# Input: monitor-receipt-chain.rq output (KPI-002)
+# Output: Corruption detection and containment plan
+
+PREFIX brd: <urn:blue-river-dam:>
+PREFIX crypto: <urn:cryptography:>
+PREFIX gov: <urn:process-intelligence:governance:>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX otel: <urn:opentelemetry:>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# Rule 1: Detect cryptographic hash mismatches (indicates tampering or corruption)
+CONSTRUCT {
+  ?tampering_event a gov:PossibleTampering .
+  ?tampering_event gov:receipt_id ?receipt_id .
+  ?tampering_event gov:position ?chain_position .
+  ?tampering_event gov:declared_hash ?current_hash .
+  ?tampering_event gov:verified_hash ?computed_hash .
+  ?tampering_event gov:parent_receipt ?parent_id .
+  ?tampering_event gov:severity "CRITICAL" .
+  ?tampering_event gov:action "SUSPEND_MANUFACTURING_IMMEDIATELY" .
+  ?tampering_event gov:remediation "Audit Blue River Dam authority; recompute chain from last known valid receipt" .
+}
+WHERE {
+  ?receipt brd:receipt_id ?receipt_id .
+  ?receipt brd:hash ?current_hash .
+  ?receipt brd:chain_position ?chain_position .
+  ?receipt crypto:hash_valid false .
+  ?receipt brd:timestamp ?timestamp .
+
+  # Find the verification computation
+  ?receipt crypto:computed_hash ?computed_hash .
+  ?receipt brd:parent_id ?parent_id .
+
+  FILTER (?current_hash != ?computed_hash)
+  FILTER (?timestamp > NOW() - "PT24H"^^xsd:duration)
+}
+
+# Rule 2: Detect chain breaks (missing intermediate receipts)
+CONSTRUCT {
+  ?chain_break a gov:ChainBreak .
+  ?chain_break gov:last_valid_position ?last_valid_pos .
+  ?chain_break gov:first_broken_position ?broken_pos .
+  ?chain_break gov:gap_size ?gap_size .
+  ?chain_break gov:severity "CRITICAL" .
+  ?chain_break gov:action "SUSPEND_MANUFACTURING_IMMEDIATELY" .
+  ?chain_break gov:remediation "Investigate missing receipts; restore from backup authority or reissue receipts" .
+}
+WHERE {
+  # Find consecutive positions
+  ?receipt1 brd:chain_position ?pos1 .
+  ?receipt1 crypto:hash_valid true .
+  ?receipt1 brd:timestamp ?ts1 .
+
+  ?receipt2 brd:chain_position ?pos2 .
+  ?receipt2 crypto:hash_valid ?valid2 .
+  ?receipt2 brd:timestamp ?ts2 .
+
+  # Detect gap (next position doesn't exist or has invalid hash)
+  FILTER (?pos2 = ?pos1 + 1)
+  FILTER (?ts2 > ?ts1)
+  FILTER (?valid2 = false || !BOUND(?receipt2))
+
+  BIND (?pos1 AS ?last_valid_pos)
+  BIND (?pos2 AS ?broken_pos)
+  BIND (?broken_pos - ?last_valid_pos AS ?gap_size)
+
+  FILTER (?gap_size > 0)
+}
+
+# Rule 3: Detect timestamp anomalies (indicates replay or clock issues)
+CONSTRUCT {
+  ?timestamp_issue a gov:TimestampAnomaly .
+  ?timestamp_issue gov:receipt1 ?receipt_id_1 .
+  ?timestamp_issue gov:receipt2 ?receipt_id_2 .
+  ?timestamp_issue gov:position1 ?pos1 .
+  ?timestamp_issue gov:position2 ?pos2 .
+  ?timestamp_issue gov:time_delta_seconds ?time_delta_seconds .
+  ?timestamp_issue gov:issue_type "TIME_INVERSION" .
+  ?timestamp_issue gov:severity "HIGH" .
+  ?timestamp_issue gov:remediation "Audit clock synchronization; review receipt generation order" .
+}
+WHERE {
+  ?receipt1 brd:receipt_id ?receipt_id_1 .
+  ?receipt1 brd:chain_position ?pos1 .
+  ?receipt1 brd:timestamp ?ts1 .
+
+  ?receipt2 brd:receipt_id ?receipt_id_2 .
+  ?receipt2 brd:chain_position ?pos2 .
+  ?receipt2 brd:timestamp ?ts2 .
+
+  FILTER (?pos2 = ?pos1 + 1)
+  FILTER (?ts2 < ?ts1)  # Later position has earlier timestamp
+
+  BIND ((xsd:dateTime(?ts1) - xsd:dateTime(?ts2)) / xsd:duration("PT1S") AS ?time_delta_seconds)
+}
+
+# Rule 4: Detect authority signature failures (indicates private key compromise or infrastructure attack)
+CONSTRUCT {
+  ?auth_issue a gov:AuthoritySignatureFailure .
+  ?auth_issue gov:affected_receipts ?receipt_count .
+  ?auth_issue gov:authority ?authority .
+  ?auth_issue gov:last_valid_receipt ?last_valid_id .
+  ?auth_issue gov:severity "CRITICAL" .
+  ?auth_issue gov:action "ROTATE_KEYS_IMMEDIATELY" .
+  ?auth_issue gov:remediation "Revoke compromised key; rotate to backup authority; reissue receipts from last known good state" .
+}
+WHERE {
+  # Find multiple consecutive signature failures from same authority
+  ?receipt brd:authority ?authority .
+  ?receipt crypto:signature_valid false .
+  ?receipt brd:timestamp ?timestamp .
+
+  {
+    SELECT ?authority
+           (COUNT(?sig_fail) AS ?receipt_count)
+           (MAX(FILTER(?crypto:signature_valid = true)) AS ?last_valid_id)
+    WHERE {
+      ?sig_fail brd:authority ?authority .
+      ?sig_fail crypto:signature_valid false .
+      ?sig_fail brd:timestamp ?ts .
+      FILTER (?ts > NOW() - "PT1H"^^xsd:duration)
+    }
+    GROUP BY ?authority
+    HAVING (COUNT(?sig_fail) > 3)
+  }
+}
+
+# Rule 5: Detect data corruption patterns (indicates bit-flip or storage corruption)
+CONSTRUCT {
+  ?corruption_pattern a gov:DataCorruptionPattern .
+  ?corruption_pattern gov:affected_receipts ?receipt_list .
+  ?corruption_pattern gov:common_bit_positions ?bit_positions .
+  ?corruption_pattern gov:severity "HIGH" .
+  ?corruption_pattern gov:remediation "Audit storage subsystem; restore from verified backup; implement ECC/parity checks" .
+}
+WHERE {
+  # Group receipts with similar hash mismatches (may indicate systemic corruption)
+  ?receipt1 brd:receipt_id ?receipt_id_1 .
+  ?receipt1 crypto:hash_valid false .
+  ?receipt1 crypto:hash_mismatch_bits ?bits1 .
+
+  ?receipt2 brd:receipt_id ?receipt_id_2 .
+  ?receipt2 crypto:hash_valid false .
+  ?receipt2 crypto:hash_mismatch_bits ?bits2 .
+
+  FILTER (?receipt_id_1 != ?receipt_id_2)
+
+  # Pattern: if multiple receipts have similar bit corruption patterns
+  {
+    SELECT
+           (GROUP_CONCAT(?receipt_id; separator=",") AS ?receipt_list)
+           (GROUP_CONCAT(?bit_position; separator=",") AS ?bit_positions)
+    WHERE {
+      ?r brd:receipt_id ?receipt_id .
+      ?r crypto:hash_valid false .
+      ?r crypto:hash_mismatch_bits ?bits .
+    }
+    GROUP BY ?bits
+    HAVING (COUNT(?bits) > 2)
+  }
+}

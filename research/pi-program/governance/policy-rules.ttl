@@ -1,0 +1,287 @@
+# Autonomic Governance Policy Rules
+# Defines what triggers which remediation actions
+# Format: Turtle RDF triples
+
+@prefix gov: <urn:process-intelligence:governance:> .
+@prefix ggen: <urn:process-intelligence:ggen:> .
+@prefix brd: <urn:blue-river-dam:> .
+@prefix pm4py: <urn:pm4py:> .
+@prefix otel: <urn:opentelemetry:> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+# ============================================================================
+# TIER 1: CRITICAL POLICIES (automatic immediate remediation)
+# ============================================================================
+
+# Policy 1: Receipt Chain Integrity Violation
+gov:POLICY_001_ReceiptChainViolation
+  a gov:CriticalPolicy ;
+  gov:kpi_trigger gov:KPI_002_ReceiptChainIntegrity ;
+  gov:severity gov:CRITICAL ;
+  gov:threshold xsd:decimal("0.99") ;
+  gov:condition "receipt_integrity_rate < 99%" ;
+  gov:alert_latency "PT1M"^^xsd:duration ;
+  gov:automatic_remediation true ;
+  gov:remediation_stages (
+    [ gov:stage "IMMEDIATE_ALERT" ;
+      gov:action "emit PagerDuty alert to on-call engineer" ;
+      gov:timeout "PT1M"^^xsd:duration
+    ]
+    [ gov:stage "SUSPEND_MANUFACTURING" ;
+      gov:action "pause all ggen rule execution" ;
+      gov:timeout "PT5M"^^xsd:duration
+    ]
+    [ gov:stage "RUN_CORRUPTION_ANALYZER" ;
+      gov:action "execute analyze-receipt-corruption.sparql" ;
+      gov:expected_output gov:CorruptionAssessment
+    ]
+    [ gov:stage "ROUTE_TO_BLUE_RIVER" ;
+      gov:action "send assessment to Blue River Dam authority" ;
+      gov:timeout "PT30M"^^xsd:duration ;
+      gov:fallback "escalate to human governance board"
+    ]
+  ) ;
+  gov:recovery_point "last_known_valid_receipt" ;
+  gov:post_remediation_validation "verify_receipt_chain_integrity_100_percent" .
+
+# Policy 2: Manufacturing Rule Failure Rate (Tier 1)
+gov:POLICY_002_HighRuleFailureRate
+  a gov:CriticalPolicy ;
+  gov:kpi_trigger gov:KPI_001_ManufacturingRuleSuccessRate ;
+  gov:severity gov:CRITICAL ;
+  gov:threshold xsd:decimal("0.95") ;
+  gov:condition "success_rate < 95%" ;
+  gov:alert_latency "PT5M"^^xsd:duration ;
+  gov:automatic_remediation true ;
+  gov:remediation_stages (
+    [ gov:stage "ANALYZE_FAILURES" ;
+      gov:action "execute analyze-rule-failures.sparql" ;
+      gov:expected_output gov:RootCauseAssessment ;
+      gov:timeout "PT10M"^^xsd:duration
+    ]
+    [ gov:stage "CLASSIFY_FAILURE_TYPE" ;
+      gov:action "match failure pattern against known issues" ;
+      gov:routes (
+        [ gov:pattern gov:CascadingFailure ;
+          gov:handler "ggen_cascading_failure_remediation" ;
+          gov:timeout "PT15M"^^xsd:duration
+        ]
+        [ gov:pattern gov:ResourceExhaustionDetected ;
+          gov:handler "scale_compute_resources" ;
+          gov:timeout "PT30M"^^xsd:duration
+        ]
+        [ gov:pattern gov:DataQualityIssue ;
+          gov:handler "audit_input_schemas" ;
+          gov:timeout "PT1H"^^xsd:duration
+        ]
+        [ gov:pattern gov:DoctrineImplementationMismatch ;
+          gov:handler "escalate_to_doctrine_auditor" ;
+          gov:timeout "PT2H"^^xsd:duration
+        ]
+      )
+    ]
+    [ gov:stage "IMPLEMENT_FIX" ;
+      gov:action "route to appropriate handler per failure type" ;
+      gov:expected_output gov:ExecutionReceipt
+    ]
+    [ gov:stage "VERIFY_REMEDIATION" ;
+      gov:action "re-run affected rules; verify success_rate >= 98%" ;
+      gov:rollback_if_fails true ;
+      gov:timeout "PT30M"^^xsd:duration
+    ]
+  ) ;
+  gov:escalation_on_failure "escalate to human SRE team" .
+
+# Policy 3: API Uptime Violation
+gov:POLICY_003_APIUptimeViolation
+  a gov:CriticalPolicy ;
+  gov:kpi_trigger gov:KPI_007_APIUptime ;
+  gov:severity gov:CRITICAL ;
+  gov:threshold xsd:decimal("0.999") ;
+  gov:condition "api_uptime < 99.9%" ;
+  gov:alert_latency "PT1M"^^xsd:duration ;
+  gov:automatic_remediation true ;
+  gov:remediation_stages (
+    [ gov:stage "DETECT_FAILURE_MODE" ;
+      gov:action "ping API endpoints; check logs" ;
+      gov:timeout "PT1M"^^xsd:duration ;
+      gov:expected_output gov:FailureModeAssessment
+    ]
+    [ gov:stage "ROUTE_BY_CAUSE" ;
+      gov:routes (
+        [ gov:cause "TIMEOUT" ;
+          gov:action "trigger failover to standby API" ;
+          gov:handler "failover_to_standby"
+        ]
+        [ gov:cause "SERVICE_DOWN" ;
+          gov:action "restart service; if fails, failover" ;
+          gov:handler "restart_or_failover"
+        ]
+        [ gov:cause "RESOURCE_EXHAUSTION" ;
+          gov:action "scale API instances" ;
+          gov:handler "autoscale_api"
+        ]
+      )
+    ]
+    [ gov:stage "VERIFY_RECOVERY" ;
+      gov:action "confirm API responses within SLA; no errors" ;
+      gov:timeout "PT5M"^^xsd:duration
+    ]
+  ) ;
+  gov:escalation_on_failure "page infrastructure on-call" .
+
+# ============================================================================
+# TIER 2: IMPORTANT POLICIES (analyzed hourly, routed for remediation)
+# ============================================================================
+
+# Policy 4: Van der Aalst Fitness Drift (Tier 2)
+gov:POLICY_004_FitnessDrift
+  a gov:ImportantPolicy ;
+  gov:kpi_trigger gov:KPI_003_VanDerAalstFitnessDrift ;
+  gov:severity gov:IMPORTANT ;
+  gov:drift_threshold xsd:decimal("-0.05") ;
+  gov:condition "fitness_drift < -0.05" ;
+  gov:alert_latency "PT30M"^^xsd:duration ;
+  gov:automatic_remediation false ;
+  gov:manual_remediation_steps (
+    [ gov:step "Run pm4py discovery on recent event logs" ;
+      gov:expected_output gov:DiscoveredProcessModel
+    ]
+    [ gov:step "Compare against declared doctrine process" ;
+      gov:expected_output gov:ModelComparisonReport
+    ]
+    [ gov:step "Investigate root causes of drift" ;
+      gov:possible_causes (
+        "Manufacturing rule behavior changed"
+        "Event log instrumentation became incomplete"
+        "Process actually evolved (legitimate change)"
+      )
+    ]
+    [ gov:step "Decide remediation" ;
+      gov:options (
+        [ gov:option "Update doctrine to match actual process" ;
+          gov:requires "governance board review"
+        ]
+        [ gov:option "Fix manufacturing rules to match doctrine" ;
+          gov:requires "ggen rule update + testing"
+        ]
+        [ gov:option "Improve instrumentation" ;
+          gov:requires "OTel audit"
+        ]
+      )
+    ]
+  ) ;
+  gov:routing "to lifecycle_analyzer@governance" .
+
+# Policy 5: Proof Gate Pass Rate (Tier 2)
+gov:POLICY_005_ProofGatePassRate
+  a gov:ImportantPolicy ;
+  gov:kpi_trigger gov:KPI_012_ProofGatePassRate ;
+  gov:severity gov:IMPORTANT ;
+  gov:threshold xsd:decimal("0.94") ;
+  gov:condition "proof_gate_pass_rate < 94%" ;
+  gov:alert_latency "PT20M"^^xsd:duration ;
+  gov:automatic_remediation false ;
+  gov:manual_remediation_steps (
+    [ gov:step "Audit failing artifacts" ;
+      gov:analysis "what criteria are artifacts failing?"
+    ]
+    [ gov:step "Investigate gate rule changes" ;
+      gov:analysis "did gate rules change recently?"
+    ]
+    [ gov:step "Check artifact manufacturing quality" ;
+      gov:analysis "are we manufacturing correct artifacts?"
+    ]
+    [ gov:step "Review gate documentation" ;
+      gov:analysis "are gate criteria accurately reflecting doctrine?"
+    ]
+  ) ;
+  gov:routing "to gate_auditor@governance" .
+
+# ============================================================================
+# TIER 3: OBSERVABILITY POLICIES (batch analysis, continuous improvement)
+# ============================================================================
+
+# Policy 6: Event Log Completeness (Tier 3)
+gov:POLICY_006_EventCompleteness
+  a gov:ObservabilityPolicy ;
+  gov:kpi_trigger gov:KPI_016_EventCompleteness ;
+  gov:severity gov:INFORMATIONAL ;
+  gov:threshold xsd:decimal("0.95") ;
+  gov:condition "event_completeness < 95%" ;
+  gov:batch_analysis true ;
+  gov:batch_window "PT1D"^^xsd:duration ;
+  gov:analysis_action "summarize instrumentation gaps; recommend improvements" ;
+  gov:routing "to instrumentation_auditor@governance" .
+
+# ============================================================================
+# CROSS-CUTTING POLICIES
+# ============================================================================
+
+# Policy 7: Doctrine Completeness (Governance Health)
+gov:POLICY_007_DoctrineCompletion
+  a gov:GovernancePolicy ;
+  gov:kpi_trigger gov:KPI_013_DoctrineCompleteness ;
+  gov:severity gov:IMPORTANT ;
+  gov:threshold xsd:decimal("0.95") ;
+  gov:condition "unsourced_claims > 5% of total" ;
+  gov:alert_latency "P1D"^^xsd:duration ;
+  gov:automatic_remediation false ;
+  gov:manual_remediation_steps (
+    [ gov:step "Identify all unsourced claims in doctrine/" ;
+      gov:tool "doctrine_scanner"
+    ]
+    [ gov:step "For each claim, find or create supporting evidence" ;
+      gov:requirement "cite paper, experiment, or prior checkpoint"
+    ]
+    [ gov:step "Update doctrine files with citations" ;
+      gov:immutability_notice "never delete; only addend"
+    ]
+  ) ;
+  gov:routing "to doctrine_auditor@governance" .
+
+# Policy 8: Gap Resolution Velocity (Program Health)
+gov:POLICY_008_GapResolution
+  a gov:GovernancePolicy ;
+  gov:kpi_trigger gov:KPI_014_GapResolutionVelocity ;
+  gov:severity gov:IMPORTANT ;
+  gov:condition "average_gap_age > 60 days" ;
+  gov:alert_latency "P1W"^^xsd:duration ;
+  gov:analysis_action "identify oldest gaps; prioritize for remediation" ;
+  gov:routing "to program_coordinator@governance" .
+
+# ============================================================================
+# ROUTING AND ESCALATION
+# ============================================================================
+
+gov:RoutingTable
+  a gov:RoutingTable ;
+  gov:route [
+    gov:target gov:CascadingFailurePattern ;
+    gov:handler gov:GGenRemediationEngine ;
+    gov:sla "PT15M"^^xsd:duration ;
+    gov:escalation_target gov:SRETeam ;
+    gov:escalation_delay "PT30M"^^xsd:duration
+  ] ;
+  gov:route [
+    gov:target gov:DataQualityIssue ;
+    gov:handler gov:SchemaGovernance ;
+    gov:sla "PT1H"^^xsd:duration ;
+    gov:escalation_target gov:DataEngineer ;
+    gov:escalation_delay "PT2H"^^xsd:duration
+  ] ;
+  gov:route [
+    gov:target gov:DoctrineImplementationMismatch ;
+    gov:handler gov:DoctrineAuditor ;
+    gov:sla "PT2H"^^xsd:duration ;
+    gov:escalation_target gov:GovernanceBoard ;
+    gov:escalation_delay "P1D"^^xsd:duration
+  ] ;
+  gov:route [
+    gov:target gov:CorruptionAssessment ;
+    gov:handler gov:BlueRiverDamAuthority ;
+    gov:sla "PT30M"^^xsd:duration ;
+    gov:escalation_target gov:SecurityIncidentTeam ;
+    gov:escalation_delay "PT1H"^^xsd:duration
+  ] .
