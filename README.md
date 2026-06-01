@@ -1,21 +1,17 @@
-# Process Intelligence Research Foundry
+# process-intelligence Research Program
 
-Welcome to the central authority for full-lifecycle process intelligence. This repository hosts the research, doctrine, type-law mappings, comparisons, and lifecycle frameworks that guide the design, execution, and decommissioning of process mining systems.
+This repository is the research foundry for full-lifecycle process intelligence.
 
-## Foundry Architecture
+It studies and manufactures the doctrine, maps, papers, comparisons, type-law crosswalks, lifecycle models, benchmark claims, M&A-ready projection rules, and downstream implementation plans.
 
-```text
-                     ~/process-intelligence
-                               │
-            ┌──────────────────┼──────────────────┐
-            ▼                  ▼                  ▼
-      wasm4pm-compat        wasm4pm              ggen
-    (Type-Law Foundry)  (Execution Core)   (Manufacturing)
-```
+## Core Doctrine
 
-## Doctrine
-Our core doctrine is: **Process Intelligence is the research authority; execution cores are the downstream products.** We treat process mining as a verifiable, law-bound science anchored to formal academic models, public standards (OCEL, XES, POWL), and executive board-ready projections (M&A diligence).
-
-
-## Verification Court
-All assertions are verified against the paper canon and type-law oracles.
+- ~/process-intelligence is the research authority.
+- wasm4pm-compat is the process-evidence type foundry.
+- wasm4pm is the future execution authority.
+- PM4Py is the comparative oracle.
+- ~/Documents/Papers/workflow is the academic law corpus.
+- ggen is the manufacturing/projection machinery.
+- Blue River Dam is the full-lifecycle authority layer.
+- M&A-ready PowerPoint is the highest-value board projection surface.
+- Autonomic knowledge actuation is the center.
