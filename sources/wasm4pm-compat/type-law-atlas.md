@@ -4,3 +4,6 @@
 * Type Law Atlas 3: Verifying Evidence<T, State, Witness> lattice compliance.
 * Type Law Atlas 4: Verifying Evidence<T, State, Witness> lattice compliance.
 * Type Law Atlas 5: Verifying Evidence<T, State, Witness> lattice compliance.
+
+* **Step: map witness lattice**
+  - Evaluating type safety and witness validations.
