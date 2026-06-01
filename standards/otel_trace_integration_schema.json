@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OTelTraceBlake3IntegrationSchema",
+  "description": "Standard schema for OpenTelemetry trace telemetry linked to BLAKE3 event-chain roots to guarantee unforgeability.",
+  "type": "object",
+  "properties": {
+    "trace_id": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{32}$",
+      "description": "W3C TraceID represented as a 32-character hexadecimal string."
+    },
+    "event_chain_root": {
+      "type": "string",
+      "pattern": "^[0-9a-fA-F]{64}$",
+      "description": "The BLAKE3 hash of the final event-chain state, attesting to the integrity of the entire trace."
+    },
+    "spans": {
+      "type": "array",
+      "description": "The sequential execution spans that form the deterministic telemetry timeline.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "span_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{16}$",
+            "description": "W3C SpanID represented as a 16-character hexadecimal string."
+          },
+          "parent_span_id": {
+            "type": ["string", "null"],
+            "pattern": "^([0-9a-fA-F]{16})?$",
+            "description": "W3C Parent SpanID or null if it is the root span."
+          },
+          "span_name": {
+            "type": "string",
+            "description": "Canonical activity label or operation name of the execution step."
+          },
+          "start_time_unix_us": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Start timestamp in integer microseconds since the Unix epoch."
+          },
+          "end_time_unix_us": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "End timestamp in integer microseconds since the Unix epoch."
+          },
+          "instruction_count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Cumulative guest instruction execution count at the end of this span."
+          },
+          "blake3_receipt": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{64}$",
+            "description": "The cumulative BLAKE3 receipt hash for this execution step, computed recursively as BLAKE3(PriorReceipt || SpanData)."
+          }
+        },
+        "required": [
+          "span_id",
+          "parent_span_id",
+          "span_name",
+          "start_time_unix_us",
+          "end_time_unix_us",
+          "instruction_count",
+          "blake3_receipt"
+        ]
+      }
+    }
+  },
+  "required": [
+    "trace_id",
+    "event_chain_root",
+    "spans"
+  ]
+}
