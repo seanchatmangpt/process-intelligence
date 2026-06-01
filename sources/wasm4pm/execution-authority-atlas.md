@@ -31,3 +31,6 @@
 
 * **Step: map WASM runtime authority**
   - Defining engine execution requirements.
+
+* **Step: map CLI authority**
+  - Defining engine execution requirements.
