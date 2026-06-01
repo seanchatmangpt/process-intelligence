@@ -1,16 +1,22 @@
-# Audit Query: Every Generation Rule Has Query Template Output
-# ASSERT: All generation rules have associated query surfaces and template surfaces for output
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX gen: <https://process.intelligence/generation-rule/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
+# AUDIT: Every Generation Rule Has Query, Template, and Output
+# ASK query: Verifies READY rules are complete with all required inputs and outputs
+# Passes if: All READY rules declare query, template, and outputFile properties
+# Date: 2026-06-01
 
 ASK {
-  ?rule a ggen:GenerationRule .
-  FILTER NOT EXISTS {
-    ?rule ggen:output ?output .
-    ?output a ggen:QuerySurface .
-  }
-  FILTER NOT EXISTS {
-    ?rule ggen:outputTemplate ?template .
-    ?template a ggen:TemplateSurface .
-  }
+    FILTER NOT EXISTS {
+        ?rule a pi:GenerationRule .
+        ?rule pi:status "READY" .
+        (
+            FILTER NOT EXISTS { ?rule pi:query ?q }
+            OR
+            FILTER NOT EXISTS { ?rule pi:template ?t }
+            OR
+            FILTER NOT EXISTS { ?rule pi:outputFile ?o }
+        )
+    }
 }

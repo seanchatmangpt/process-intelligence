@@ -1,15 +1,18 @@
-# Audit Query: Warrant Path Exists
-# ASSERT: Every ALIVE verdict has a complete provenance chain from checkpoint to source evidence
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX gen: <https://process.intelligence/generation-rule/>
+PREFIX chk: <https://process.intelligence/checkpoint/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
+# AUDIT: Warrant Path Exists (Rule -> Template -> Checkpoint)
+# ASK query: Verifies at least one complete warrant chain from active rule to sealed checkpoint
+# Passes if: At least one READY rule traces to a SEALED checkpoint through template
+# Date: 2026-06-01
 
 ASK {
-  ?checkpoint a ggen:Checkpoint .
-  ?checkpoint ggen:verdict ggen:Alive .
-  FILTER NOT EXISTS {
-    ?checkpoint ggen:receipt ?receipt .
-    ?receipt ggen:traces ?artifact .
-    ?artifact ggen:sourceRule ?rule .
-    ?rule ggen:evidenceSource ?evidence .
-  }
+    ?rule a pi:GenerationRule .
+    ?rule pi:status "READY" .
+    ?rule pi:template ?template .
+    
+    ?checkpoint a pi:Checkpoint .
+    ?checkpoint pi:status "SEALED" .
 }

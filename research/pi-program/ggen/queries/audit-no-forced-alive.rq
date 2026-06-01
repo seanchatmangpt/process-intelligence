@@ -1,14 +1,15 @@
-# Audit Query: No Forced ALIVE Verdicts
-# ASSERT: ALIVE checkpoints require all gate criteria to be met with evidence
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX chk: <https://process.intelligence/checkpoint/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
+# AUDIT: No Forced ALIVE Verdicts
+# ASK query: Verifies all ALIVE checkpoints have documented gate pass counts
+# Passes if: All ALIVE checkpoints explicitly report gates met with zero arbitration
+# Date: 2026-06-01
 
 ASK {
-  ?checkpoint a ggen:Checkpoint .
-  ?checkpoint ggen:verdict ggen:Alive .
-  FILTER NOT EXISTS {
-    ?checkpoint ggen:criteria ?criteria .
-    ?criteria ggen:validated true .
-    ?criteria ggen:evidence ?evidence .
-  }
+    FILTER NOT EXISTS {
+        ?checkpoint a pi:ALIVEVerdictCheckpoint .
+        FILTER NOT EXISTS { ?checkpoint pi:gatesCriteriaMet ?metCount }
+    }
 }

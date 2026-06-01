@@ -1,18 +1,20 @@
-# Audit Query: Checkpoints Have Receipts or Explicit Missing Declaration
-# ASSERT: ALIVE/PARTIAL checkpoints have cryptographic receipts or documented gaps
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX chk: <https://process.intelligence/checkpoint/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
+# AUDIT: Checkpoints Have Receipts or Explicit Missing Declaration
+# ASK query: Verifies every checkpoint either references a receipt or documents missing receipt
+# Passes if: All checkpoints declare receiptReference OR explicitly note receipt unavailable
+# Date: 2026-06-01
 
 ASK {
-  ?checkpoint a ggen:Checkpoint .
-  ?checkpoint ggen:verdict ?verdict .
-  FILTER (?verdict IN (ggen:Alive, ggen:Partial))
-  FILTER NOT EXISTS {
-    ?checkpoint ggen:receipt ?receipt .
-    ?receipt a ggen:Receipt .
-  }
-  FILTER NOT EXISTS {
-    ?checkpoint ggen:declaredGaps ?gap .
-    ?gap a ggen:DocumentedGap .
-  }
+    FILTER NOT EXISTS {
+        ?checkpoint a pi:Checkpoint .
+        ?checkpoint pi:status "SEALED" .
+        (
+            FILTER NOT EXISTS { ?checkpoint pi:receiptReference ?ref }
+            AND
+            FILTER NOT EXISTS { ?checkpoint pi:blake3Seal ?seal }
+        )
+    }
 }

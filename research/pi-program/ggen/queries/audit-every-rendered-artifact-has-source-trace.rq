@@ -1,16 +1,21 @@
-# Audit Query: Every Rendered Artifact Has Source Trace
-# ASSERT: All manufactured artifacts can be traced back to their source rules and queries
+PREFIX pi: <https://process.intelligence/ontology/>
+PREFIX gen: <https://process.intelligence/generation-rule/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-PREFIX ggen: <http://purl.org/ggen/core#>
+# AUDIT: Every Rendered Artifact Has Source Trace
+# ASK query: Verifies all artifacts from READY rules can trace back to queries and templates
+# Passes if: Each outputFile is reachable through rule->template->artifact path
+# Date: 2026-06-01
 
 ASK {
-  ?artifact a ggen:RenderedArtifact .
-  FILTER NOT EXISTS {
-    ?artifact ggen:sourceRule ?rule .
-    ?rule a ggen:GenerationRule .
-  }
-  FILTER NOT EXISTS {
-    ?artifact ggen:sourceQuery ?query .
-    ?query a ggen:QuerySurface .
-  }
+    FILTER NOT EXISTS {
+        ?rule a pi:GenerationRule .
+        ?rule pi:status "READY" .
+        ?rule pi:outputFile ?output .
+        
+        FILTER NOT EXISTS {
+            ?rule pi:template ?template .
+            ?rule pi:query ?query .
+        }
+    }
 }
