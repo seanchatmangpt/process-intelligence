@@ -1,4 +1,4 @@
-# Execution Authority Atlas v30.1.1: wasm4pm
+# Execution Authority Atlas v30.1.2: wasm4pm
 
 ## 0. Inventory Overview
 
@@ -307,9 +307,9 @@ Anticipate AGI meta-learning capable of identifying laundering vectors in underl
 
 ## 9. See Also
 
-- `mining-authority-map.md` — Cycle allocation and resource extraction.
-- `query-authority-map.md` — OCPQ engine and FFI boundaries.
-- `conformance-authority-map.md` — Typestate enforcement and constitutional validation.
-- `replay-authority-map.md` — Temporal verification and immutable logging.
-- `lifecycle-authority-map.md` — Ephemeral execution frames and oblivion protocols.
-- `refactor-roadmap.md` — Multi-phase fortification strategy.
+- [mining-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/mining-authority-map.md) — Cycle allocation and resource extraction.
+- [query-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/query-authority-map.md) — OCPQ engine and FFI boundaries.
+- [conformance-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/conformance-authority-map.md) — Typestate enforcement and constitutional validation.
+- [replay-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/replay-authority-map.md) — Temporal verification and immutable logging.
+- [lifecycle-authority-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm/lifecycle-authority-map.md) — Ephemeral execution frames and oblivion protocols.
+- [refactor-roadmap.md](file:///Users/sac/process-intelligence/sources/wasm4pm/refactor-roadmap.md) — Multi-phase fortification strategy.

@@ -72,4 +72,24 @@ Every query execution produces a signed receipt output block containing:
 - **Type Safety**: Invalid references to non-existent event or object attributes are caught during query compilation, yielding a structured validation error payload and preventing runtime memory violations.
 
 ---
+
+## 5. Boundary Conditions, Memory Isolation, & Non-Determinism Invariants
+
+To secure process querying within the sandboxed environment:
+
+1. **Query & Traversal Boundary Conditions**:
+   - **AST Size Limit**: Maximum allowed query AST length is 1 MB to prevent heap-exhaustion attacks during query parsing.
+   - **Depth-First Traversal Limit**: DFS recursion depth is restricted to $d_{\max} = 100$ to prevent stack overflows. Graph cycles must be tracked via a visited bitset, and any re-entrant path traversal must terminate.
+   - **Index Size Bounds**: The graph index allows up to $10,000,000$ event nodes ($|V_E|$) and $1,000,000$ object nodes ($|V_O|$).
+
+2. **Memory Isolation & Read-Only Traversal**:
+   - The query evaluator traverses OCEL structures in a strictly read-only linear memory view. 
+   - Offset pointers for E2O and O2O relations are verified against the total index bounds before dereferencing to prevent arbitrary guest memory reading.
+   - Output query results must be written to dedicated, isolated guest heap areas and zeroed out post-execution.
+
+3. **Non-Determinism and Temporal Invariants**:
+   - **Deterministic Traversal Ordering**: When multiple outgoing edges exist from event $e_1$ or object $o_1$, they must be traversed in a deterministic order sorted by their numerical index or event ID.
+   - **Microsecond Temporal Precision**: All temporal difference calculations ($\Delta t_{max}$) must be evaluated using 64-bit integer microsecond timestamps to prevent NaN and float rounding discrepancies on diverse hardware (ARM64 JIT vs x86_64 JIT).
+
+---
 *Back to [execution-authority-atlas.md](file:///Users/sac/process-intelligence/sources/wasm4pm/execution-authority-atlas.md)*
