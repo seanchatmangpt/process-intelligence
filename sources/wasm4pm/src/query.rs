@@ -1,7 +1,5 @@
-use crate::ocel::{ZeroCopyOcel, OcelError};
+use crate::ocel::ZeroCopyOcel;
 use crate::sandbox::{GasMeter, RecursionGuard};
-use crate::allocator::{self, AllocError};
-use std::alloc::Layout;
 
 #[derive(Debug, Clone)]
 pub struct OcpqQuery {
@@ -98,7 +96,7 @@ impl O2eIndex {
         })
     }
 
-    fn get_events_for_object(&self, obj_idx: u32, ocel: &ZeroCopyOcel) -> &[u32] {
+    fn get_events_for_object(&self, obj_idx: u32, _ocel: &ZeroCopyOcel) -> &[u32] {
         let idx = obj_idx as usize;
         if idx >= self.offsets.len() {
             return &[];
