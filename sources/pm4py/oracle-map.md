@@ -62,3 +62,6 @@
 
 * **Step: map dataframe assumptions**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map Python runtime assumptions**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
