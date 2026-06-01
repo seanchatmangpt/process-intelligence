@@ -1,0 +1,279 @@
+---
+validation_phase: 5
+validation_date: 2026-06-01
+validator_tool: rapper
+validator_version: "2.0.16"
+gate_status: PASS
+summary:
+  total_files: 22
+  passed: 22
+  failed: 0
+  parse_errors: 0
+  not_found: 0
+  
+files:
+  - path: research/pi-program/ggen/ontology/checkpoint-ledger.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/conformance-ledger.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/forbidden-collapse-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/graduation-boundary.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-ggen-audit-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-ggen-checkpoint-ledger.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-ggen-generation-ledger.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-ggen-invalid-extension-ledger.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-ggen-project-registry.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-ggen-source-ledger.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-ggen-unified-run.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/pi-program.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/project-registry.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/pi-program/ggen/ontology/research-artifact-ledger.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/checkpoint-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/forbidden-collapse-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/hook-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/research-program-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/skill-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/subagent-role-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+    
+  - path: research/prompt-manufactory/ggen/ontology/workflow-law.ttl
+    status: active
+    scope: in_scope
+    validator: rapper
+    parse_result: PASS
+    parse_status: valid_turtle
+    error_line: null
+    error_column: null
+    error_description: null
+    remediation: none_required
+    final_status: PASS
+
+gate_conclusion: PASS — all 22 active TTL files validated successfully using rapper

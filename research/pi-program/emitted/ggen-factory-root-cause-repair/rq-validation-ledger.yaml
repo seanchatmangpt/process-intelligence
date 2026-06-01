@@ -1,0 +1,367 @@
+---
+validation_phase: 6
+validation_date: 2026-06-01
+validator_tool: rdflib
+validator_version: rdflib-python
+gate_status: PASS
+summary:
+  total_files: 63
+  passed: 63
+  failed: 0
+  parse_errors_fixed: 3
+  parse_errors_remaining: 0
+  referenced_in_ggen: 6
+
+remediation_applied:
+  - file: audit-checkpoints-have-receipts-or-explicit-missing.rq
+    error: "Expected AskQuery, found 'FILTER' (improper nesting)"
+    fix: "Corrected FILTER syntax from nested parentheses to proper conjunction"
+    status: FIXED
+
+  - file: audit-every-generation-rule-has-query-template-output.rq
+    error: "Expected AskQuery, found 'FILTER' (improper OR logic)"
+    fix: "Rewrote FILTER condition with || operators instead of nested FILTERs"
+    status: FIXED
+
+  - file: select-subagent-prompts.rq
+    error: "Expected SelectQuery, found 'OPTIONAL' (path expression syntax)"
+    fix: "Expanded property path notation into separate triple patterns with proper OPTIONAL blocks"
+    status: FIXED
+
+pi_program_queries:
+  audit_queries:
+    - query: audit-all-legacy-ggen-classified.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-checkpoint-has-receipts.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-checkpoints-have-receipts-or-explicit-missing.rq
+      type: ASK
+      status: PASS
+      referenced: false
+      remediation: syntax_fix
+
+    - query: audit-closure-invariant.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-commitment-integrity.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-compliance-ledger.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-every-generation-rule-has-query-template-output.rq
+      type: ASK
+      status: PASS
+      referenced: false
+      remediation: syntax_fix
+
+    - query: audit-every-rendered-artifact-has-source-trace.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-evidence-traceability.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-gates-complete.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-client-only-auth.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-commit-count-alive.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-no-dashboard-truth.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-dto-flattening.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-file-count-alive.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-forced-alive.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-no-hand-written-research-warrant.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-no-invalid-ggen-extension.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-invalid-new-ggen-source.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-no-manual-prompt-writing.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-no-realtime-as-evidence.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-telemetry-as-receipt.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-tool-smuggling.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-no-unsigned-verdicts.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-partial-checkpoint-possible.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-partial-has-gaps.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-source-court-citations.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: audit-validator-passes-valid-tera.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-validator-rejects-invalid-tera.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+    - query: audit-warrant-path-exists.rq
+      type: ASK
+      status: PASS
+      referenced: false
+
+  generation_queries:
+    - query: select-all-checkpoints.rq
+      type: SELECT
+      status: PASS
+      referenced: true
+      used_in: checkpoint-ledger generation rule
+
+    - query: select-all-generation-rules.rq
+      type: SELECT
+      status: PASS
+      referenced: true
+      used_in: generation-rule-ledger generation rule
+
+    - query: select-invalid-ggen-files.rq
+      type: SELECT
+      status: PASS
+      referenced: true
+      used_in: invalid-ggen-classification generation rule
+
+    - query: select-all-rendered-artifacts.rq
+      type: SELECT
+      status: PASS
+      referenced: true
+      used_in: rendered-artifact-ledger generation rule
+
+    - query: select-warrant-paths.rq
+      type: SELECT
+      status: PASS
+      referenced: true
+      used_in: warrant-path-proof (disabled)
+
+  selection_queries:
+    - query: select-alive-claims.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-all-ggen-manifests.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-all-ontology-graphs.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-all-projects.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-all-query-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-all-template-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-checkpoints.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-compatibility-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-engine-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-failed-gates.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-forbidden-collapses.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-manufacturing-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-mobile-substrate-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-next-workflows.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-partial-claims.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-proof-cells.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-remediation-candidates.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-telemetry-feedstock-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-unified-run-plan.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-workflow-substrate-surfaces.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+prompt_manufactory_queries:
+  selection_queries:
+    - query: select-checkpoint-prompts.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-hook-policies.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-legacy-ggen-files.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-rendered-prompts.rq
+      type: SELECT
+      status: PASS
+      referenced: true
+      used_in: structural-placeholder generation rule
+
+    - query: select-research-programs.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-skill-prompts.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+    - query: select-subagent-prompts.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+      remediation: syntax_fix
+
+    - query: select-workflow-prompts.rq
+      type: SELECT
+      status: PASS
+      referenced: false
+
+query_type_summary:
+  SELECT: 51
+  ASK: 12
+  CONSTRUCT: 0
+  DESCRIBE: 0
+
+gate_conclusion: PASS — all 63 active RQ files validated and parse correctly. 3 SPARQL syntax errors fixed.

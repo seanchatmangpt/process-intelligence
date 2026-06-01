@@ -11,12 +11,12 @@ ASK {
     FILTER NOT EXISTS {
         ?rule a pi:GenerationRule .
         ?rule pi:status "READY" .
-        (
-            FILTER NOT EXISTS { ?rule pi:query ?q }
-            OR
-            FILTER NOT EXISTS { ?rule pi:template ?t }
-            OR
-            FILTER NOT EXISTS { ?rule pi:outputFile ?o }
+        FILTER (
+            NOT EXISTS { ?rule pi:query ?q }
+            ||
+            NOT EXISTS { ?rule pi:template ?t }
+            ||
+            NOT EXISTS { ?rule pi:outputFile ?o }
         )
     }
 }

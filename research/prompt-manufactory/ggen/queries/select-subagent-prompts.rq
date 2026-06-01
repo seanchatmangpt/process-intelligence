@@ -11,8 +11,12 @@ WHERE {
     rdfs:label ?roleLabel ;
     pm:mission ?roleMission ;
     pm:hasOutputContract ?outputContract .
-  
+
   OPTIONAL { ?role pm:roleId ?roleId . }
-  OPTIONAL { ?program pm:hasPhase/?phase pm:hasSubagentRole ?role . BIND (?program AS ?ownerProgram) . }
+  OPTIONAL {
+    ?program pm:hasPhase ?phase .
+    ?phase pm:hasSubagentRole ?role .
+    BIND (?program AS ?ownerProgram)
+  }
 }
 ORDER BY ?roleLabel

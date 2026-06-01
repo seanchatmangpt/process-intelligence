@@ -11,10 +11,7 @@ ASK {
     FILTER NOT EXISTS {
         ?checkpoint a pi:Checkpoint .
         ?checkpoint pi:status "SEALED" .
-        (
-            FILTER NOT EXISTS { ?checkpoint pi:receiptReference ?ref }
-            AND
-            FILTER NOT EXISTS { ?checkpoint pi:blake3Seal ?seal }
-        )
+        FILTER NOT EXISTS { ?checkpoint pi:receiptReference ?ref }
+        FILTER NOT EXISTS { ?checkpoint pi:blake3Seal ?seal }
     }
 }
