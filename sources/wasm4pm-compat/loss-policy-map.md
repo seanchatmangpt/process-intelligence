@@ -499,9 +499,9 @@ All permissible loss classes are justified and implementable. All terminal loss 
 
 ## Related Documents
 
-- `sources/wasm4pm-compat/type-law-atlas.md` — Type-law surface inventory
-- `sources/wasm4pm-compat/witness-lattices.md` — Witness algebra
-- `sources/wasm4pm-compat/admission-refusal-map.md` — Admission boundary
-- `sources/wasm4pm-compat/structural-gaps.md` — Implementation gaps
-- `sources/wasm4pm-compat/research-verdict.md` — Conformance audit verdict
-- `experiments/xes_loss-policy_sample.md` — XES loss-policy validation example
+- [type-law-atlas.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md) — Type-law surface inventory
+- [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md) — Witness algebra
+- [admission-refusal-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/admission-refusal-map.md) — Admission boundary
+- [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md) — Implementation gaps
+- [research-verdict.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md) — Conformance audit verdict
+- [xes_loss-policy_sample.md](file:///Users/sac/process-intelligence/experiments/xes_loss-policy_sample.md) — XES loss-policy validation example

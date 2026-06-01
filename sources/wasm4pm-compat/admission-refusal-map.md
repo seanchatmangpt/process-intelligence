@@ -388,7 +388,7 @@ pub fn validate_declare_support(model: &ProcessModel) -> Result<(), RefusalRepor
 
 **Refusal Report:** Includes feature name, current version, expected availability version, and rationale.
 
-**Migration Path:** See `research-verdict.md` (Section 6 — Blocking Issues).
+**Migration Path:** See [research-verdict.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md) (Section 6 — Blocking Issues).
 
 ---
 
@@ -565,9 +565,9 @@ All eleven pathways are mathematically defined, rust-implementable, and tested a
 
 ## Related Documents
 
-- `sources/wasm4pm-compat/type-law-atlas.md` — Type-law surface inventory
-- `sources/wasm4pm-compat/witness-lattices.md` — Witness algebra
-- `sources/wasm4pm-compat/loss-policy-map.md` — Loss boundaries
-- `sources/wasm4pm-compat/structural-gaps.md` — Implementation gaps
-- `sources/wasm4pm-compat/research-verdict.md` — Conformance audit verdict
-- `ma/define_board-admissible_claim_requirements.md` — M&A admissibility
+- [type-law-atlas.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md) — Type-law surface inventory
+- [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md) — Witness algebra
+- [loss-policy-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/loss-policy-map.md) — Loss boundaries
+- [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md) — Implementation gaps
+- [research-verdict.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md) — Conformance audit verdict
+- [define_board-admissible_claim_requirements.md](file:///Users/sac/process-intelligence/ma/define_board-admissible_claim_requirements.md) — M&A admissibility

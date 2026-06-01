@@ -61,7 +61,7 @@ Declare constraints may be satisfiable only after the trace completes. For examp
 
 ### 2.3 Phase 3a Obligation
 
-Extend `witness-lattices.md` to define:
+Extend [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md) to define:
 
 1. **Declare Constraint Lattice:**
    - Define $W_{\text{declare}} = \{ \text{constraint satisfaction sets} \}$.
@@ -254,7 +254,7 @@ Define the **runtime verification monitor**:
 
 **Problem:**
 
-M&A operations require receipts to conform to the `ProcessIntelligenceVerificationReceipt` schema defined in `ma/define_slide-to-receipt_map.md`. The compat layer must ensure every receipt-shaped object can be serialized to this schema.
+M&A operations require receipts to conform to the `ProcessIntelligenceVerificationReceipt` schema defined in [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md). The compat layer must ensure every receipt-shaped object can be serialized to this schema.
 
 **Gaps:**
 
@@ -474,7 +474,7 @@ If the wasm4pm core engine allows non-monotonic witness transitions, an attacker
 
 | Blocking Issue | Severity | Target Milestone | Deliverable |
 |---|---|---|---|
-| Declare Constraint Lattice | **BLOCKING** | Phase 3a: wasm4pm refactor | Extended witness-lattices.md, Declare integration tests |
+| Declare Constraint Lattice | **BLOCKING** | Phase 3a: wasm4pm refactor | Extended [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md), Declare integration tests |
 | BPMN OR-Join Policy | **BLOCKING** | Phase 3a: wasm4pm refactor | BPMN profile spec, OR-Join algorithm, tests |
 | Axiom 2 Runtime Verification | **MEDIUM** | Phase 3a: wasm4pm refactor | Runtime monitor spec, rejection semantics, perf analysis |
 | Receipt M&A Schema Alignment | **MEDIUM** | Phase 3b: ggen integration | Authority registry, role enforcement, schema conformance |
@@ -492,8 +492,8 @@ Institute for Process Mining
 
 ## Related Documents
 
-- `sources/wasm4pm-compat/research-verdict.md` — Conformance audit verdict
-- `sources/wasm4pm-compat/witness-lattices.md` — Witness algebra (to be extended in Phase 3a)
-- `prompts/downstream_wasm4pm_refactor.md` — Phase 3a wasm4pm obligations
-- `prompts/downstream_m&a_deck_manufacturing.md` — Phase 3b ggen obligations
-- `prompts/downstream_audit_mesh_expansion.md` — Phase 3c audit obligations
+- [research-verdict.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md) — Conformance audit verdict
+- [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md) — Witness algebra (to be extended in Phase 3a)
+- [downstream_wasm4pm_refactor.md](file:///Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md) — Phase 3a wasm4pm obligations
+- [downstream_m&a_deck_manufacturing.md](file:///Users/sac/process-intelligence/prompts/downstream_m&a_deck_manufacturing.md) — Phase 3b ggen obligations
+- [downstream_audit_mesh_expansion.md](file:///Users/sac/process-intelligence/prompts/downstream_audit_mesh_expansion.md) — Phase 3c audit obligations

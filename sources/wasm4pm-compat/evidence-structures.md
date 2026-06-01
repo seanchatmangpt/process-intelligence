@@ -90,6 +90,7 @@ where
     pub witness: Witness,
     pub epoch: u64,
     pub signature: IdentitySignature,
+    pub hash: Blake3Hash,
 }
 
 impl<T, State, Witness> Evidence<T, State, Witness>
@@ -98,7 +99,7 @@ where
     State: Serialize,
     Witness: Serialize,
 {
-    /// Calculate the BLAKE3 hash of the Evidence fields
+    /// Calculate the BLAKE3 hash of the Evidence fields (payload, state, witness, epoch, signature)
     pub fn calculate_hash(&self) -> Blake3Hash {
         let mut hasher = Hasher::new();
         
@@ -122,9 +123,26 @@ where
     pub fn validate(&self) -> Result<(), EvidenceError> {
         // 1. Verify cryptographic binding
         let computed_hash = self.calculate_hash();
+        if computed_hash != self.hash {
+            return Err(EvidenceError::HashMismatch);
+        }
         
-        // 2. Mock signature validation (real implementation uses ed25519-dalek)
-        if self.signature.public_key.is_empty() || self.signature.signature_bytes.is_empty() {
+        // 2. Verify authority signature using ed25519-dalek
+        let public_key_bytes: &[u8] = &self.signature.public_key;
+        let signature_bytes: &[u8] = &self.signature.signature_bytes;
+        
+        let verifying_key = match ed25519_dalek::VerifyingKey::try_from(public_key_bytes) {
+            Ok(key) => key,
+            Err(_) => return Err(EvidenceError::InvalidSignature),
+        };
+        
+        let signature = match ed25519_dalek::Signature::from_slice(signature_bytes) {
+            Ok(sig) => sig,
+            Err(_) => return Err(EvidenceError::InvalidSignature),
+        };
+        
+        use ed25519_dalek::Verifier;
+        if verifying_key.verify(computed_hash.as_bytes(), &signature).is_err() {
             return Err(EvidenceError::InvalidSignature);
         }
 

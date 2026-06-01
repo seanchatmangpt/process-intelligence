@@ -253,11 +253,12 @@ $$w_1 \sqcup w_2 = \top$$
 
 **Implication of Top:** The system has detected a contradiction. Evidence admission is terminated. An audit alert is issued.
 
-### 4.3 WitnessState Enumeration
+### 4.3 WitnessState and Declare Lattices
 
-Concrete implementation in `wasm4pm-compat`:
+Concrete implementation of witness state types in `wasm4pm-compat`:
 
 ```rust
+// 1. Replay Witness State (for Petri Nets, BPMN, POWL, Process Trees)
 pub enum WitnessState {
     Bottom,                              // No evidence (empty trace, initial marking)
     PartialReplay {
@@ -267,12 +268,38 @@ pub enum WitnessState {
     },
     Top,                                 // Contradiction detected
 }
+
+// 2. Declare Constraint Valuation Value (for LTLf satisfaction checking)
+pub enum ConstraintValue {
+    Bottom,                              // Not yet evaluated
+    PossiblySatisfied,                   // Satisfied under current prefix but could be violated, or requires future events
+    Satisfied,                           // Permanently satisfied (immutable)
+    Violated,                            // Permanently violated (immutable)
+    Top,                                 // Contradiction detected
+}
+
+// 3. Declare Constraints Witness State (maps constraint IDs to their valuation value)
+pub enum DeclareWitnessState {
+    Bottom,                              // Empty constraints or all Bottom
+    Evaluated(std::collections::HashMap<String, ConstraintValue>),
+    Top,                                 // Contradiction in constraint evaluations
+}
+
+// 4. Unified Witness State (product lattice of Replay and Declare witness states)
+pub enum UnifiedWitnessState {
+    Bottom,                              // Both components are Bottom
+    Active {
+        replay: WitnessState,
+        declare: DeclareWitnessState,
+    },
+    Top,                                 // Either component is Top (contradiction)
+}
 ```
 
 **Lattice Operations:**
 
 - **Bottom**: Empty evidence, initial state of all process executions.
-- **PartialReplay**: Cumulative evidence of events replayed and model state reached.
+- **Active / PartialReplay**: Cumulative evidence of events replayed, model state reached, and constraint evaluations.
 - **Top**: Irreconcilable conflict. Halts further evidence integration.
 
 ### 4.4 Model-Specific Conformance Laws

@@ -57,7 +57,7 @@ Witness lattices for BPMN gateways are properly defined:
 
 **Critical Gap Identified:** OR-Join semantics in BPMN 2.0 are notoriously ambiguous and non-local. The wasm4pm-compat lattice correctly represents the complexity but **does not yet specify the concrete OR-Join policy** (e.g., "smart completion" vs. "standard" vs. "asymmetric fork-join" semantics).
 
-**MITIGATION:** Document the specific OR-Join policy as a downstream obligation. See `sources/wasm4pm-compat/structural-gaps.md`.
+**MITIGATION:** Document the specific OR-Join policy as a downstream obligation. See [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md).
 
 ### 1.3 POWL 2.0 Block-Structured Lattices
 
@@ -93,7 +93,7 @@ Declare constraints (LTL-based compliance rules) are **not yet formally integrat
 
 **IMPACT:** Downstream wasm4pm usage of Declare will fail lattice verification. **BLOCKING ISSUE FOR GRADUATION.**
 
-**MITIGATION REQUIRED:** Extend `sources/wasm4pm-compat/witness-lattices.md` to include:
+**MITIGATION REQUIRED:** Extend [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md) to include:
 1. Declare constraint lattice formalization (LTL satisfaction order).
 2. Conflict resolution rules for constraint coalgebras.
 3. Remediation pathways when constraints are unsatisfiable.
@@ -144,7 +144,7 @@ To graduate Axiom 2, the following must be provided:
 2. **Rejection protocol**: If `witness_new.join(witness_old) == Top`, what exact rejection semantics apply? (Halt execution? Emit RefusalReport? Rewind state?)
 3. **Integration test**: A fixture proving that attempted non-monotonic witness transitions are rejected.
 
-**MITIGATION PATH:** See `downstream_wasm4pm_refactor.md` for Phase 3 obligations.
+**MITIGATION PATH:** See [downstream_wasm4pm_refactor.md](file:///Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md) for Phase 3 obligations.
 
 ---
 
@@ -172,9 +172,9 @@ An Evidence block becomes **receipt-shaped** when:
 - **Auditor role enforcement**: How is auditor-vs-runner role distinction verified at runtime?
 - **Receipt serialization**: What JSON/CBOR schema must a receipt-shaped object conform to for downstream M&A usage?
 
-**IMPACT:** Downstream M&A operations will fail if receipts do not conform to the `define_slide-to-receipt_map.md` schema.
+**IMPACT:** Downstream M&A operations will fail if receipts do not conform to the [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md) schema.
 
-**MITIGATION REQUIRED:** Align receipt-shaped object schema with M&A requirements (see `ma/define_slide-to-receipt_map.md`). Add runtime role-checking for auditor signatures.
+**MITIGATION REQUIRED:** Align receipt-shaped object schema with M&A requirements (see [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md)). Add runtime role-checking for auditor signatures.
 
 ---
 
@@ -184,7 +184,7 @@ An Evidence block becomes **receipt-shaped** when:
 
 **Status:** FULLY DOCUMENTED AND ENFORCEABLE
 
-All refusal pathways are specified in `sources/wasm4pm-compat/admission-refusal-map.md`:
+All refusal pathways are specified in [admission-refusal-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/admission-refusal-map.md):
 
 | Refusal Class | Behavior | Enforcement |
 |---|---|---|
@@ -273,7 +273,7 @@ OCEL 2.0 (ISO/IEC 23745) object-centric event log model is fully supported. Obje
 - **Object identity conflicts** (same object ID with contradictory attribute histories).
 - **Multi-valued object relationships** (one event affecting multiple objects with non-commutative results).
 
-**Recommend:** Add conflict-resolution rules to `sources/wasm4pm-compat/structural-gaps.md`.
+**Recommend:** Add conflict-resolution rules to [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md).
 
 ### 6.3 Petri Net Soundness Validation
 
@@ -380,7 +380,7 @@ The **wasm4pm execution core** must:
 4. Implement Declare constraint lattices (blocking issue).
 5. Document OR-Join policy for BPMN (blocking issue).
 
-**Deliverable:** `downstream_wasm4pm_refactor.md` (existing, requires Phase 3 amendments).
+**Deliverable:** [downstream_wasm4pm_refactor.md](file:///Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md) (existing, requires Phase 3 amendments).
 
 ### Phase 3b: ggen M&A Projection Integration
 
@@ -388,9 +388,9 @@ The **ggen** (M&A claim generation engine) must:
 1. Accept only receipt-shaped Evidence blocks.
 2. Validate receipt signatures against auditor public keys.
 3. Serialize receipts to the `ProcessIntelligenceVerificationReceipt` JSON schema.
-4. Map receipt evidence to board-admissible claims (see `ma/define_slide-to-receipt_map.md`).
+4. Map receipt evidence to board-admissible claims (see [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md)).
 
-**Deliverable:** `downstream_m&a_deck_manufacturing.md` (existing, requires Phase 3 amendments).
+**Deliverable:** [downstream_m&a_deck_manufacturing.md](file:///Users/sac/process-intelligence/prompts/downstream_m&a_deck_manufacturing.md) (existing, requires Phase 3 amendments).
 
 ### Phase 3c: Cross-Witness Audit Mesh Expansion
 
@@ -399,7 +399,7 @@ Build a comprehensive **audit mesh** that:
 2. Synthesizes cross-domain witness lattices.
 3. Tests conflict detection and join-to-Top behavior.
 
-**Deliverable:** `downstream_audit_mesh_expansion.md` (existing, requires Phase 3 amendments).
+**Deliverable:** [downstream_audit_mesh_expansion.md](file:///Users/sac/process-intelligence/prompts/downstream_audit_mesh_expansion.md) (existing, requires Phase 3 amendments).
 
 ---
 
@@ -436,11 +436,11 @@ Institute for Process Mining
 
 ## Related Documents
 
-- `sources/wasm4pm-compat/type-law-atlas.md` — Type-law surface inventory
-- `sources/wasm4pm-compat/witness-lattices.md` — Algebraic witness structures
-- `sources/wasm4pm-compat/admission-refusal-map.md` — Boundary control rules
-- `sources/wasm4pm-compat/loss-policy-map.md` — Thermodynamic loss limits
-- `sources/wasm4pm-compat/structural-gaps.md` — Implementation gaps
-- `ma/define_slide-to-receipt_map.md` — M&A receipt schema
-- `lifecycle/define_blue_river_dam_lifecycle_gate_map.md` — Operational gates
-- `doctrine/blue-river-dam.md` — Executive authority framework
+- [type-law-atlas.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md) — Type-law surface inventory
+- [witness-lattices.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md) — Algebraic witness structures
+- [admission-refusal-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/admission-refusal-map.md) — Boundary control rules
+- [loss-policy-map.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/loss-policy-map.md) — Thermodynamic loss limits
+- [structural-gaps.md](file:///Users/sac/process-intelligence/sources/wasm4pm-compat/structural-gaps.md) — Implementation gaps
+- [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md) — M&A receipt schema
+- [define_blue_river_dam_lifecycle_gate_map.md](file:///Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md) — Operational gates
+- [blue-river-dam.md](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md) — Executive authority framework

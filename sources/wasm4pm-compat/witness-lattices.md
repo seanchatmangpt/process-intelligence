@@ -78,7 +78,7 @@ pub trait Lattice: Sized + Eq + Clone {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering>;
 }
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize)]
 pub enum WitnessState {
     Bottom,
     PartialReplay {
@@ -112,30 +112,41 @@ impl Lattice for WitnessState {
             (WitnessState::Bottom, any) | (any, WitnessState::Bottom) => any.clone(),
             (WitnessState::PartialReplay { trace_indices: t1, marking: m1, cost: c1 },
              WitnessState::PartialReplay { trace_indices: t2, marking: m2, cost: c2 }) => {
-                // If they have conflicting markings for the same trace indices, it is invalid
-                if t1 == t2 && m1 != m2 {
+                // If the elements are equal, join must return an equal element (idempotence)
+                if t1 == t2 && m1 == m2 && c1 == c2 {
+                    return self.clone();
+                }
+
+                // Enforce absorption law: if self <= other, return other; if other <= self, return self
+                if let Some(ord) = self.partial_cmp(other) {
+                    match ord {
+                        std::cmp::Ordering::Less | std::cmp::Ordering::Equal => return other.clone(),
+                        std::cmp::Ordering::Greater => return self.clone(),
+                    }
+                }
+
+                // If incomparable, they can only be merged if they represent disjoint event trace indices
+                // (e.g. concurrent branches). If there is any overlap, they represent conflicting claims.
+                let has_overlap = t1.iter().any(|idx| t2.contains(idx));
+                if has_overlap {
                     WitnessState::Top
                 } else {
                     let mut merged_indices = t1.clone();
-                    for idx in t2 {
-                        if !merged_indices.contains(idx) {
-                            merged_indices.push(*idx);
-                        }
-                    }
-                    merged_indices.sort();
-                    
-                    // In a sound WF-net, marking represents union of places if disjoint and concurrent
+                    merged_indices.extend(t2.iter().copied());
+                    merged_indices.sort_unstable();
+                    merged_indices.dedup();
+
                     let mut merged_marking = m1.clone();
                     for place in m2 {
                         if !merged_marking.contains(place) {
                             merged_marking.push(place.clone());
                         }
                     }
-                    
+
                     WitnessState::PartialReplay {
                         trace_indices: merged_indices,
                         marking: merged_marking,
-                        cost: c1 + c2,
+                        cost: c1 + c2, // disjoint costs are additive
                     }
                 }
             }
@@ -150,19 +161,238 @@ impl Lattice for WitnessState {
             (WitnessState::Top, WitnessState::Top) => Some(std::cmp::Ordering::Equal),
             (WitnessState::Top, _) => Some(std::cmp::Ordering::Greater),
             (_, WitnessState::Top) => Some(std::cmp::Ordering::Less),
-            (WitnessState::PartialReplay { trace_indices: t1, marking: m1, cost: _ },
-             WitnessState::PartialReplay { trace_indices: t2, marking: m2, cost: _ }) => {
+            (WitnessState::PartialReplay { trace_indices: t1, marking: m1, cost: c1 },
+             WitnessState::PartialReplay { trace_indices: t2, marking: m2, cost: c2 }) => {
                 let is_t1_sub = t1.iter().all(|x| t2.contains(x));
                 let is_t2_sub = t2.iter().all(|x| t1.contains(x));
-                
+
                 let is_m1_sub = m1.iter().all(|x| m2.contains(x));
                 let is_m2_sub = m2.iter().all(|x| m1.contains(x));
 
-                match (is_t1_sub, is_t2_sub, is_m1_sub, is_m2_sub) {
-                    (true, true, true, true) => Some(std::cmp::Ordering::Equal),
-                    (true, false, true, _) => Some(std::cmp::Ordering::Less),
-                    (false, true, _, true) => Some(std::cmp::Ordering::Greater),
-                    _ => None, // Incomparable elements in the partial order
+                let is_c1_le = c1 <= c2;
+                let is_c2_le = c2 <= c1;
+
+                match (is_t1_sub, is_t2_sub, is_m1_sub, is_m2_sub, is_c1_le, is_c2_le) {
+                    (true, true, true, true, true, true) => Some(std::cmp::Ordering::Equal),
+                    (true, _, true, _, true, _) => {
+                        if t1 == t2 && m1 == m2 && c1 == c2 {
+                            Some(std::cmp::Ordering::Equal)
+                        } else {
+                            Some(std::cmp::Ordering::Less)
+                        }
+                    }
+                    (_, true, _, true, _, true) => {
+                        if t1 == t2 && m1 == m2 && c1 == c2 {
+                            Some(std::cmp::Ordering::Equal)
+                        } else {
+                            Some(std::cmp::Ordering::Greater)
+                        }
+                    }
+                    _ => None, // Incomparable
+                }
+            }
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize)]
+pub enum ConstraintValue {
+    Bottom,
+    PossiblySatisfied,
+    Satisfied,
+    Violated,
+    Top,
+}
+
+impl ConstraintValue {
+    pub fn join(&self, other: &Self) -> Self {
+        match (self, other) {
+            (ConstraintValue::Top, _) | (_, ConstraintValue::Top) => ConstraintValue::Top,
+            (ConstraintValue::Bottom, any) | (any, ConstraintValue::Bottom) => any.clone(),
+            (ConstraintValue::PossiblySatisfied, any) | (any, ConstraintValue::PossiblySatisfied) => any.clone(),
+            (ConstraintValue::Satisfied, ConstraintValue::Satisfied) => ConstraintValue::Satisfied,
+            (ConstraintValue::Violated, ConstraintValue::Violated) => ConstraintValue::Violated,
+            (ConstraintValue::Satisfied, ConstraintValue::Violated) | 
+            (ConstraintValue::Violated, ConstraintValue::Satisfied) => ConstraintValue::Top,
+        }
+    }
+
+    pub fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (ConstraintValue::Bottom, ConstraintValue::Bottom) => Some(std::cmp::Ordering::Equal),
+            (ConstraintValue::Bottom, _) => Some(std::cmp::Ordering::Less),
+            (_, ConstraintValue::Bottom) => Some(std::cmp::Ordering::Greater),
+            (ConstraintValue::Top, ConstraintValue::Top) => Some(std::cmp::Ordering::Equal),
+            (ConstraintValue::Top, _) => Some(std::cmp::Ordering::Greater),
+            (_, ConstraintValue::Top) => Some(std::cmp::Ordering::Less),
+            (ConstraintValue::PossiblySatisfied, ConstraintValue::PossiblySatisfied) => Some(std::cmp::Ordering::Equal),
+            (ConstraintValue::PossiblySatisfied, ConstraintValue::Satisfied) |
+            (ConstraintValue::PossiblySatisfied, ConstraintValue::Violated) => Some(std::cmp::Ordering::Less),
+            (ConstraintValue::Satisfied, ConstraintValue::PossiblySatisfied) |
+            (ConstraintValue::Violated, ConstraintValue::PossiblySatisfied) => Some(std::cmp::Ordering::Greater),
+            (ConstraintValue::Satisfied, ConstraintValue::Satisfied) => Some(std::cmp::Ordering::Equal),
+            (ConstraintValue::Violated, ConstraintValue::Violated) => Some(std::cmp::Ordering::Equal),
+            (ConstraintValue::Satisfied, ConstraintValue::Violated) |
+            (ConstraintValue::Violated, ConstraintValue::Satisfied) => None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize)]
+pub enum DeclareWitnessState {
+    Bottom,
+    Evaluated(std::collections::HashMap<String, ConstraintValue>),
+    Top,
+}
+
+impl Lattice for DeclareWitnessState {
+    fn bottom() -> Self {
+        DeclareWitnessState::Bottom
+    }
+
+    fn top() -> Self {
+        DeclareWitnessState::Top
+    }
+
+    fn is_top(&self) -> bool {
+        matches!(self, DeclareWitnessState::Top)
+    }
+
+    fn is_bottom(&self) -> bool {
+        matches!(self, DeclareWitnessState::Bottom)
+    }
+
+    fn join(&self, other: &Self) -> Self {
+        match (self, other) {
+            (DeclareWitnessState::Top, _) | (_, DeclareWitnessState::Top) => DeclareWitnessState::Top,
+            (DeclareWitnessState::Bottom, any) | (any, DeclareWitnessState::Bottom) => any.clone(),
+            (DeclareWitnessState::Evaluated(m1), DeclareWitnessState::Evaluated(m2)) => {
+                let mut merged = std::collections::HashMap::new();
+                let keys: std::collections::HashSet<&String> = m1.keys().chain(m2.keys()).collect();
+                for key in keys {
+                    let v1 = m1.get(key).unwrap_or(&ConstraintValue::Bottom);
+                    let v2 = m2.get(key).unwrap_or(&ConstraintValue::Bottom);
+                    let v_joined = v1.join(v2);
+                    if v_joined == ConstraintValue::Top {
+                        return DeclareWitnessState::Top;
+                    }
+                    merged.insert(key.clone(), v_joined);
+                }
+                DeclareWitnessState::Evaluated(merged)
+            }
+        }
+    }
+
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (DeclareWitnessState::Bottom, DeclareWitnessState::Bottom) => Some(std::cmp::Ordering::Equal),
+            (DeclareWitnessState::Bottom, _) => Some(std::cmp::Ordering::Less),
+            (_, DeclareWitnessState::Bottom) => Some(std::cmp::Ordering::Greater),
+            (DeclareWitnessState::Top, DeclareWitnessState::Top) => Some(std::cmp::Ordering::Equal),
+            (DeclareWitnessState::Top, _) => Some(std::cmp::Ordering::Greater),
+            (_, DeclareWitnessState::Top) => Some(std::cmp::Ordering::Less),
+            (DeclareWitnessState::Evaluated(m1), DeclareWitnessState::Evaluated(m2)) => {
+                let mut is_less_or_equal = true;
+                let mut is_greater_or_equal = true;
+
+                let all_keys: std::collections::HashSet<&String> = m1.keys().chain(m2.keys()).collect();
+                for key in all_keys {
+                    let v1 = m1.get(key).unwrap_or(&ConstraintValue::Bottom);
+                    let v2 = m2.get(key).unwrap_or(&ConstraintValue::Bottom);
+
+                    match v1.partial_cmp(v2) {
+                        Some(std::cmp::Ordering::Less) => {
+                            is_greater_or_equal = false;
+                        }
+                        Some(std::cmp::Ordering::Greater) => {
+                            is_less_or_equal = false;
+                        }
+                        Some(std::cmp::Ordering::Equal) => {}
+                        None => {
+                            is_less_or_equal = false;
+                            is_greater_or_equal = false;
+                        }
+                    }
+                }
+
+                match (is_less_or_equal, is_greater_or_equal) {
+                    (true, true) => Some(std::cmp::Ordering::Equal),
+                    (true, false) => Some(std::cmp::Ordering::Less),
+                    (false, true) => Some(std::cmp::Ordering::Greater),
+                    (false, false) => None,
+                }
+            }
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize)]
+pub enum UnifiedWitnessState {
+    Bottom,
+    Active {
+        replay: WitnessState,
+        declare: DeclareWitnessState,
+    },
+    Top,
+}
+
+impl Lattice for UnifiedWitnessState {
+    fn bottom() -> Self {
+        UnifiedWitnessState::Bottom
+    }
+
+    fn top() -> Self {
+        UnifiedWitnessState::Top
+    }
+
+    fn is_top(&self) -> bool {
+        matches!(self, UnifiedWitnessState::Top)
+    }
+
+    fn is_bottom(&self) -> bool {
+        matches!(self, UnifiedWitnessState::Bottom)
+    }
+
+    fn join(&self, other: &Self) -> Self {
+        match (self, other) {
+            (UnifiedWitnessState::Top, _) | (_, UnifiedWitnessState::Top) => UnifiedWitnessState::Top,
+            (UnifiedWitnessState::Bottom, any) | (any, UnifiedWitnessState::Bottom) => any.clone(),
+            (UnifiedWitnessState::Active { replay: r1, declare: d1 },
+             UnifiedWitnessState::Active { replay: r2, declare: d2 }) => {
+                let r_joined = r1.join(r2);
+                let d_joined = d1.join(d2);
+                if r_joined.is_top() || d_joined.is_top() {
+                    UnifiedWitnessState::Top
+                } else {
+                    UnifiedWitnessState::Active {
+                        replay: r_joined,
+                        declare: d_joined,
+                    }
+                }
+            }
+        }
+    }
+
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (UnifiedWitnessState::Bottom, UnifiedWitnessState::Bottom) => Some(std::cmp::Ordering::Equal),
+            (UnifiedWitnessState::Bottom, _) => Some(std::cmp::Ordering::Less),
+            (_, UnifiedWitnessState::Bottom) => Some(std::cmp::Ordering::Greater),
+            (UnifiedWitnessState::Top, UnifiedWitnessState::Top) => Some(std::cmp::Ordering::Equal),
+            (UnifiedWitnessState::Top, _) => Some(std::cmp::Ordering::Greater),
+            (_, UnifiedWitnessState::Top) => Some(std::cmp::Ordering::Less),
+            (UnifiedWitnessState::Active { replay: r1, declare: d1 },
+             UnifiedWitnessState::Active { replay: r2, declare: d2 }) => {
+                let r_cmp = r1.partial_cmp(r2);
+                let d_cmp = d1.partial_cmp(d2);
+
+                match (r_cmp, d_cmp) {
+                    (Some(std::cmp::Ordering::Equal), Some(std::cmp::Ordering::Equal)) => Some(std::cmp::Ordering::Equal),
+                    (Some(std::cmp::Ordering::Less | std::cmp::Ordering::Equal),
+                     Some(std::cmp::Ordering::Less | std::cmp::Ordering::Equal)) => Some(std::cmp::Ordering::Less),
+                    (Some(std::cmp::Ordering::Greater | std::cmp::Ordering::Equal),
+                     Some(std::cmp::Ordering::Greater | std::cmp::Ordering::Equal)) => Some(std::cmp::Ordering::Greater),
+                    _ => None,
                 }
             }
         }
