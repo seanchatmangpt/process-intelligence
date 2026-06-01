@@ -31,3 +31,6 @@
 
 * **Step: map Petri/WF-net structural law**
   - Evaluating type safety and witness validations.
+
+* **Step: map POWL structural law**
+  - Evaluating type safety and witness validations.
