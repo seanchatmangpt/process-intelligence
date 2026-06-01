@@ -37,6 +37,14 @@ All FFI transactions use zero-copy index traversal over immutable, read-only off
 The execution stack maintains absolute integrity through shadow stacks and pointer authentication protocols. Typestate transitions map to a directed graph $G_T = (S_T, E_T)$ where all allowed edges are pre-compiled:
 $$\forall (s_1, s_2) \in E_T, \quad \operatorname{hash}(s_1 \to s_2) \in \mathcal{H}_{\text{valid}}$$
 
+#### D. Concrete Rust FFI Boundary Implementation & Memory Hardening
+Under the v30.1.1/v30.1.2 process intelligence protocol, we have implemented and compilation-verified the concrete Rust FFI boundaries that enforce these sandbox properties:
+1. **Unfragmented Double-Buffered Allocator:** The memory is managed via [allocator.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/allocator.rs) which divides the heap into a permanent section and a transient section, enforcing the strict 100MB ceiling constraint.
+2. **Zero-Copy Flat Parsing Schema:** OCEL 2.0 logs are parsed without heap copy or deserialization using [ocel.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/ocel.rs). Offset bounds checks are executed on every query lookup to block out-of-bounds pointer manipulation.
+3. **Execution Guardrails:** Gas-metering limits (10M cycle budget) and stack depth limits ($d_{\max} = 100$) are enforced via [sandbox.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/sandbox.rs) to prevent recursive AGI heap-escape vectors.
+4. **The Oblivion Protocol:** Memory shredding is performed by executing three passes of cryptographically secure random bytes over the global heap using a self-contained ChaCha20 generator in [crypto.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/crypto.rs).
+5. **Panic Trapping:** The FFI entry points in [ffi.rs](file:///Users/sac/process-intelligence/sources/wasm4pm/src/ffi.rs) wrap all execution logic in `std::panic::catch_unwind`, mapping internal failures directly to standard error codes `0xFB01` through `0xFB05` and blocking unwind-based JIT crashes.
+
 ---
 
 ### 3. Execution Defect & Error Code Mappings

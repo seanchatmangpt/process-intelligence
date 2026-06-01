@@ -25,14 +25,14 @@ The ledger represents this bipartite graph structure using primary relation tabl
 
 ## 2. Type Laws and Firing Semantics
 
-The ledger enforces the formal Petri net token game execution laws for ordinary nets where the flow relation is defined as $F: (P \times T) \cup (T \times P) \rightarrow \{0, 1\}$:
+The ledger enforces the formal Petri net token game execution laws for weighted Petri nets where the firing relation is defined by a weight function $W: (P \times T) \cup (T \times P) \rightarrow \mathbb{N}$:
 
-1.  **Enabling Rule**: A transition $t \in T$ is enabled in marking $M$ if and only if each input place $p \in \bullet t$ contains at least one token:
-    $$\forall p \in \bullet t, \quad M(p) \ge 1$$
+1.  **Enabling Rule**: A transition $t \in T$ is enabled in marking $M$ if and only if each input place $p \in \bullet t$ contains at least $W(p, t)$ tokens:
+    $$\forall p \in \bullet t, \quad M(p) \ge W(p, t)$$
 2.  **Firing Rule**: Firing an enabled transition $t$ in marking $M$ results in a new marking $M'$:
-    $$\forall p \in P, \quad M'(p) = M(p) - F(p, t) + F(t, p)$$
-3.  **Incidence Matrix**: The topological structure is represented by the incidence matrix $C \in \{-1, 0, 1\}^{|P| \times |T|}$ where:
-    $$C(p, t) = F(t, p) - F(p, t)$$
+    $$\forall p \in P, \quad M'(p) = M(p) - W(p, t) + W(t, p)$$
+3.  **Incidence Matrix**: The topological structure is represented by the incidence matrix $C \in \mathbb{Z}^{|P| \times |T|}$ where:
+    $$C(p, t) = W(t, p) - W(p, t)$$
 4.  **Marking Consistency**: Transition firing is logged on the ledger as a transaction step, containing:
     $$\text{Tx} = \operatorname{BLAKE3}\left( M_{\text{initial}} \parallel t_{\text{fired}} \parallel M_{\text{final}} \right)$$
 
@@ -69,10 +69,11 @@ A set of places $Q \subseteq P$ is a **Trap** if its post-set is a subset of its
 > **Theorem 2 (Liveness Guarantee)**:
 > 1. For a Free-Choice Petri Net (where for all $p_1, p_2 \in P$, either $p_1\bullet \cap p_2\bullet = \emptyset$ or $p_1\bullet = p_2\bullet$), the net is live if and only if every siphon $S \subseteq P$ contains a trap $Q \subseteq S$ such that:
 >    $$\sum_{p \in Q} M_0(p) \ge 1$$
-> 2. For non-free-choice Petri Nets, liveness is structurally guaranteed if no siphon can ever become empty under any reachable marking:
->    $$\forall S \subseteq P \text{ s.t. } \bullet S \subseteq S\bullet, \quad \forall M \in [N, M_0\rangle, \quad \sum_{p \in S} M(p) \ge 1$$
+> 2. For non-free-choice Petri Nets, a constructive sufficient check for deadlock-freedom dictates that every siphon $S \subseteq P$ contains an initially marked trap $Q \subseteq S$:
+>    $$\sum_{p \in Q} M_0(p) \ge 1$$
+>    If this structural check fails, full state-space verification (e.g., constructing the Karp-Miller tree to analyze coverability and liveness) is required to determine net liveness.
 
-Since traps can never lose all tokens once marked ($\sum_{p \in Q} M(p) \ge 1$ for all reachable $M$), any siphon containing a marked trap will never become empty. Consequently, the transitions in its post-set can never become permanently disabled, preventing structural deadlocks under all choice and parallel execution paths.
+Since traps can never lose all tokens once marked ($\sum_{p \in Q} M(p) \ge \sum_{p \in Q} M_0(p) \ge 1$ for all reachable $M$), any siphon containing a marked trap will never become empty. Consequently, the transitions in its post-set can never become permanently disabled, preventing structural deadlocks under all choice and parallel execution paths.
 
 ### 3.3. Concurrency Edge Cases and Control
 

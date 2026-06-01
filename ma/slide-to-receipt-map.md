@@ -14,11 +14,143 @@ This ledger maps each slide in the executive due diligence presentation deck to 
 
 ## 2. Verification Protocol
 
-The verification protocol is executed by loading the corresponding JSON receipt, detaching the `validator_signature` field, serializing the unsigned receipt using the JSON Canonicalization Scheme (JCS - RFC 8785), and verifying the signature against the pinned public key of the auditor:
+The verification protocol is executed by loading the corresponding JSON receipt, detaching the `validator_signature` field, verifying that the unsigned receipt conforms to the Schema, verifying the validator signature using Ed25519, verifying the file hashes against the target log and process model, and finally re-executing the specified WebAssembly query module on the target event log.
 
-$$\text{Ed25519-Verify}(\text{PK}_{\text{auditor}}, \text{JCS}(R_{\text{unsigned}}), \text{signature}) == \text{True}$$
+### 2.1 Cryptographic Verification Receipt JSON Schema
+
+Every receipt in the ledger must conform to the following comprehensive JSON Schema:
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "M&A Verification Receipt Schema",
+  "type": "object",
+  "properties": {
+    "slide_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the presentation slide."
+    },
+    "slide_title": {
+      "type": "string",
+      "description": "The title of the slide."
+    },
+    "assertion_text": {
+      "type": "string",
+      "description": "The exact textual claim made on the slide."
+    },
+    "target_log_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "BLAKE3 hash of the target event log."
+    },
+    "process_model_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "BLAKE3 hash of the Petri net / process model file."
+    },
+    "query_definition": {
+      "type": "object",
+      "properties": {
+        "engine": {
+          "type": "string",
+          "enum": ["wasm4pm", "pm4py"]
+        },
+        "query_uri": {
+          "type": "string",
+          "format": "uri"
+        },
+        "parameters": {
+          "type": "object"
+        }
+      },
+      "required": ["engine", "query_uri", "parameters"]
+    },
+    "verification_results": {
+      "type": "object",
+      "properties": {
+        "fitness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "precision": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "throughput_days": {
+          "type": "number"
+        },
+        "ebitda_impact_usd": {
+          "type": "number"
+        },
+        "working_capital_released_usd": {
+          "type": "number"
+        },
+        "defensibility_verification": {
+          "type": "object"
+        }
+      },
+      "required": ["fitness", "precision"]
+    },
+    "validator_signature": {
+      "type": "string",
+      "description": "Ed25519 signature of the receipt payload."
+    }
+  },
+  "required": [
+    "slide_id",
+    "slide_title",
+    "assertion_text",
+    "target_log_hash",
+    "process_model_hash",
+    "query_definition",
+    "verification_results",
+    "validator_signature"
+  ]
+}
+```
+
+### 2.2 Hash Matching and Merkle Tree Auditing Details
+
+Auditors verify the integrity of the target log file $L$ and process model file $M$ by matching their BLAKE3 hashes:
+$$\operatorname{BLAKE3}(L) == \text{target\_log\_hash}$$
+$$\operatorname{BLAKE3}(M) == \text{process\_model\_hash}$$
+
+The BLAKE3 hash functions natively construct a binary Merkle tree over the data blocks. The formal mathematical construction for parent-node derivation and padding is as follows:
+
+Let $H^d = \langle h^d_0, h^d_1, \dots, h^d_{N_d - 1} \rangle$ be the sequence of node hashes at level $d$, where $N_d$ is the number of nodes at level $d$.
+1. **Padding Equation (Handling Odd Nodes)**: If the number of nodes at level $d$ is odd, we duplicate the last node to make the count even:
+   $$h^d_{N_d} = h^d_{N_d - 1}, \quad N'_d = N_d + 1$$
+   If $N_d$ is even:
+   $$N'_d = N_d$$
+2. **Parent-Node Construction**: For $i = 0, 1, \dots, \frac{N'_d}{2} - 1$:
+   $$h^{d+1}_i = F(\text{IV}, h^d_{2i} \mathbin{\Vert} h^d_{2i+1}, 0, 64, \text{PARENT})$$
+   where $N_{d+1} = \frac{N'_d}{2}$ is the number of nodes at the next level, and $F$ is the BLAKE3 compression function.
+3. **Root Node Derivation**: At the final parent level $D-1$ where $N_{D-1} = 2$ (after padding if necessary), the root node $H_{\text{root}}$ is derived with the `ROOT` flag:
+   $$H_{\text{root}} = F(\text{IV}, h^{D-1}_0 \mathbin{\Vert} h^{D-1}_1, 0, 64, \text{PARENT} \mid \text{ROOT})$$
+
+### 2.3 Signature Verification Mathematics
+
+To verify the validator's signature without any pre-hashing of the serialized receipt:
+
+1. **JCS Serialization**: Remove the `validator_signature` key to obtain the unsigned receipt $R_{\text{unsigned}}$. Serialize it using the JSON Canonicalization Scheme (JCS - RFC 8785) to get the canonical byte sequence:
+   $$B_{\text{receipt}} = \operatorname{JCS}(R_{\text{unsigned}})$$
+2. **Signature Parsing**: Parse the 64-byte `validator_signature` to obtain the point $R$ (first 32 bytes) and scalar $S$ (last 32 bytes).
+3. **Plausibility & Range Checks**:
+   * Verify that the public key $\operatorname{PK}_{\text{validator}}$ lies on the twisted Edwards curve:
+     $$-x^2 + y^2 = 1 - \frac{121665}{121666} x^2 y^2 \pmod p$$
+     where $p = 2^{255} - 19$.
+   * Ensure $S$ is in the range $[0, L)$, where $L$ is the prime order of the base point $B$:
+     $$L = 2^{252} + 277454108928092425263413932207934334793$$
+4. **Verification Scalar Hashing**: Compute the SHA-512 hash over the concatenated components (the curve point $R$, the validator's public key $\operatorname{PK}_{\text{validator}}$, and the raw canonical receipt bytes $B_{\text{receipt}}$) to obtain the verification scalar $k$:
+   $$k = \operatorname{SHA-512}(R \mathbin{\Vert} \operatorname{PK}_{\text{validator}} \mathbin{\Vert} B_{\text{receipt}}) \pmod L$$
+5. **Edwards Curve Equation Verification**: Verify the relationship on the curve. To clear the curve cofactor of 8 and ensure security against cofactor attacks, verify:
+   $$[8][S]B = [8]R + [8][k]\operatorname{PK}_{\text{validator}}$$
 
 This is followed by re-executing the specified WebAssembly query module on the target event log hash and comparing the resulting metrics to the receipt.
+
 
 ## 3. Related M&A Validation Documents
 

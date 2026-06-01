@@ -37,27 +37,44 @@ The OCPQ abstract syntax tree (AST) maps to ledger relations:
 
 ## 2. Type-System and Query Safety
 
-OCPQ queries must satisfy strict structural, graph-theoretic, and temporal safety rules, which are validated by the query compiler before execution on the ledger. Let a query logic $Q$ be represented as a tuple $Q = (V_E, V_O, E_{\text{E2O}}, C_T)$, where $V_E$ is the set of event variables, $V_O$ is the set of object variables, $E_{\text{E2O}} \subseteq V_E \times V_O$ represents event-to-object bindings, and $C_T$ is the set of temporal constraints.
+OCPQ queries must satisfy strict structural, graph-theoretic, and temporal safety rules, which are validated by the query compiler before execution on the ledger. 
+
+Let the target Object-Centric Event Log (OCEL) be represented as a directed property graph $G = (V, E, \Sigma, \mathcal{T}, \mathcal{A})$ where:
+*   $V = E_{\text{events}} \cup O_{\text{objects}}$ is the set of vertices (partitioned into events and objects).
+*   $E \subseteq (E_{\text{events}} \times O_{\text{objects}}) \cup (O_{\text{objects}} \times O_{\text{objects}})$ is the set of directed edges.
+*   $\Sigma$ is the set of attribute keys, event types, and object classes.
+*   $\mathcal{T}: V \cup E \rightarrow \Sigma$ is the type-labeling function.
+*   $\mathcal{A}: (V \cup E) \times \Sigma \rightarrow \text{Val}$ maps vertices and edges to attribute values.
+
+Let a query logic $Q$ be represented as a query pattern graph $Q = (V_Q, E_Q, \mathcal{T}_Q, \mathcal{C}_Q)$ where $V_Q = V_E \cup V_O$ is the set of query event and object variables, $E_Q \subseteq V_E \times V_O$ represents the required event-to-object bindings, $\mathcal{T}_Q: V_Q \cup E_Q \rightarrow \Sigma$ defines the required types/classes, and $\mathcal{C}_Q$ is the set of temporal and attribute constraints.
+
+A query mapping (or match) of the query $Q$ over the OCEL directed property graph $G$ is defined as finding an injective subgraph isomorphism $g: Q \rightarrow G$, represented by the mapping function $g: V_Q \rightarrow V$ satisfying:
+1.  **Injectivity**: $\forall u, v \in V_Q, \ u \neq v \implies g(u) \neq g(v)$.
+2.  **Edge Preservation**: $\forall (u, v) \in E_Q, \ (g(u), g(v)) \in E$.
+3.  **Type Compatibility**: $\forall v \in V_Q, \ \mathcal{T}(g(v)) = \mathcal{T}_Q(v)$, and $\forall e \in E_Q, \ \mathcal{T}(g(e)) = \mathcal{T}_Q(e)$.
+4.  **Constraint Satisfaction**: The mapped vertices $g(V_Q)$ and edges $g(E_Q)$ satisfy all constraints in $\mathcal{C}_Q$.
+
+To ensure execution safety and avoid unbounded searches, the query compiler enforces:
 
 1.  **Object Association Safety**:
     Every object variable $o \in V_O$ must be connected to at least one event variable in $V_E$ to prevent infinite Cartesian products:
-    $$\forall o \in V_O, \quad \exists e \in V_E \text{ s.t. } (e, o) \in E_{\text{E2O}}$$
+    $$\forall o \in V_O, \quad \exists e \in V_E \text{ s.t. } (e, o) \in E_Q$$
 
 2.  **Temporal Constraint Graph Acyclicity (No Cycle Errors)**:
     Temporal constraints must define a logically satisfiable ordering. We construct a directed temporal dependency graph $G_{\text{temporal}} = (V_E, E_{\text{temporal}})$, where:
-    $$E_{\text{temporal}} = \{ (v_a, v_b) \mid (v_a, v_b, \text{before}, \Delta) \in C_T \lor (v_b, v_a, \text{after}, \Delta) \in C_T \}$$
-    To ensure there are no contradictory temporal constraints (such as $v_a$ occurring before $v_b$ and $v_b$ before $v_a$), $G_{\text{temporal}}$ must be a Directed Acyclic Graph (DAG):
+    $$E_{\text{temporal}} = \{ (v_a, v_b) \mid (v_a, v_b, \text{before}, \Delta) \in \mathcal{C}_Q \lor (v_b, v_a, \text{after}, \Delta) \in \mathcal{C}_Q \}$$
+    To ensure there are no contradictory temporal constraints, $G_{\text{temporal}}$ must be a Directed Acyclic Graph (DAG):
     $$\nexists (v_0, v_1, \dots, v_k) \text{ s.t. } v_0 = v_k \land k \ge 1 \land \forall i \in \{0, \dots, k-1\}, (v_i, v_{i+1}) \in E_{\text{temporal}}$$
 
 3.  **Query Execution Temporal Safety (No Retroactive Anomalies)**:
     Let $T_{\text{exec}}$ be the query execution timestamp. No query match can reference events that occur after the execution time (no future visibility):
-    $$\forall v \in V_E, \quad \text{time}(\operatorname{match}(v)) \le T_{\text{exec}}$$
+    $$\forall v \in V_E, \quad \mathcal{A}(g(v), \text{timestamp}) \le T_{\text{exec}}$$
     Furthermore, the matching events must satisfy the temporal constraints:
-    $$\forall (v_a, v_b) \in E_{\text{temporal}}, \quad \text{time}(\operatorname{match}(v_a)) < \text{time}(\operatorname{match}(v_b))$$
+    $$\forall (v_a, v_b) \in E_{\text{temporal}}, \quad \mathcal{A}(g(v_a), \text{timestamp}) < \mathcal{A}(g(v_b), \text{timestamp})$$
 
 4.  **Determinism and Hashing**:
     The query compiler ensures that execution plans are strictly deterministic. Query execution results are cached and verified against replay attacks using a BLAKE3 hash over the query, target log, execution timestamp, and results:
-    $$\mathcal{H}_{\text{result}} = \operatorname{BLAKE3}\left( \text{QueryID} \parallel \text{QueryLogic}_{\text{canon}} \parallel \text{TargetLogHash} \parallel T_{\text{exec}} \parallel \text{ResultSet}_{\text{canon}} \right)$$
+    $$\mathcal{H}_{\text{result}} = \operatorname{BLAKE3}\left( \text{QueryID} \parallel Q_{\text{canon}} \parallel \text{TargetLogHash} \parallel T_{\text{exec}} \parallel \text{ResultSet}_{\text{canon}} \right)$$
 
 ---
 

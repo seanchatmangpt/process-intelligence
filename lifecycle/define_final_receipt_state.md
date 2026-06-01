@@ -15,12 +15,12 @@ A Final Receipt ($R_{final}$) is a structured, cryptographically signed JSON-LD 
 
 ### 1. Hash-Chaining Protocol
 To ensure that historical audits cannot be altered retrospectively, each receipt incorporates the hash of the preceding receipt, forming a tamper-proof ledger of process changes:
-$$H_{receipt\_n} = \text{SHA256} \left( Payload_n \parallel H_{receipt\_n-1} \right)$$
+$$H_{receipt\_n} = \text{BLAKE3} \left( Payload_n \parallel H_{receipt\_n-1} \right)$$
 
 ### 2. Receipt Payload Schema
 The payload contains the following verified attributes:
-* **Model Signature**: The SHA-256 hash of the compiled Petri Net or POWL tree structure.
-* **Log Signature**: The SHA-256 hash of the associated event logs (XES or OCEL).
+* **Model Signature**: The BLAKE3 hash of the compiled Petri Net or POWL tree structure.
+* **Log Signature**: The BLAKE3 hash of the associated event logs (XES or OCEL).
 * **Conformance Metrics**:
   * **Alignment Fitness** ($f_{align}$): Proving log-to-model fit.
   * **Precision** ($p_{\text{prec}}$): Measuring behavioral specificity.
@@ -35,9 +35,9 @@ The payload contains the following verified attributes:
   "@context": "https://foundry.process-intelligence.org/schemas/receipt.jsonld",
   "@type": "FinalProcessReceipt",
   "receiptId": "REC-2026-0987",
-  "previousReceiptHash": "sha256:8f3c428...",
-  "modelHash": "sha256:d8c55e...",
-  "logHash": "sha256:b2e5a7...",
+  "previousReceiptHash": "blake3:8f3c428...",
+  "modelHash": "blake3:d8c55e...",
+  "logHash": "blake3:b2e5a7...",
   "metrics": {
     "alignmentFitness": 0.978,
     "precision": 0.934,

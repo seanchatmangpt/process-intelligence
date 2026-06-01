@@ -25,7 +25,8 @@ We assign a cost function $c$ to moves:
 * $c(t, \gg) > 0$ (cost for model deviation).
 
 The optimal alignment $\gamma_{\text{opt}}$ minimizes the total deviation cost:
-$$\gamma_{\text{opt}} = \operatorname{argmin}_{\gamma} \sum_{(t, a) \in \gamma} c(t, a)$$
+$$\gamma_{\text{opt}} = \operatorname{argmin}_{\gamma} \sum_{(m_x, m_y) \in \gamma} c(m_x, m_y)$$
+where $(m_x, m_y)$ represents any move in the alignment.
 
 ## 2. Replay Map Specification
 

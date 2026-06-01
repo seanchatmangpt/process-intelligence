@@ -76,12 +76,18 @@ BLAKE3 is an agile, tree-structured cryptographic hash function designed to prev
 3. **Leaf Node Derivation**: For each chunk $C_i$, the leaf hash is computed by compressing the 64-byte blocks of $C_i$ sequentially. For a single-block chunk, the leaf hash is:
    $$H_{\text{leaf}, i} = F(\text{IV}, C_i, i, \text{len}(C_i), \text{CHUNK\_START} \mid \text{CHUNK\_END})$$
 
-4. **Parent Node Compression**: Adjacent leaf/parent node hashes are paired and compressed to form the parent node in the binary tree:
-   $$H_{\text{parent}}(H_{\text{left}}, H_{\text{right}}) = F(\text{IV}, H_{\text{left}} \mathbin{\Vert} H_{\text{right}}, 0, 64, \text{PARENT})$$
+4. **Parent Node Compression**: Adjacent leaf/parent node hashes are paired and compressed to form the parent node in the binary tree. Let $H^d = \langle h^d_0, h^d_1, \dots, h^d_{N_d - 1} \rangle$ be the node hashes at level $d$, where $N_d$ is the number of nodes at level $d$:
+   * **Padding Equation**: If $N_d$ is odd, duplicate the last node:
+     $$h^d_{N_d} = h^d_{N_d - 1}, \quad N'_d = N_d + 1$$
+     If $N_d$ is even:
+     $$N'_d = N_d$$
+   * **Parent-Node Construction**: For $i = 0, 1, \dots, \frac{N'_d}{2} - 1$:
+     $$h^{d+1}_i = F(\text{IV}, h^d_{2i} \mathbin{\Vert} h^d_{2i+1}, 0, 64, \text{PARENT})$$
+     where $N_{d+1} = \frac{N'_d}{2}$, and $F$ is the BLAKE3 compression function.
    This process is repeated hierarchically until a single root hash $H_{\text{root}}$ is obtained.
 
-5. **Root Digest Production**: The final parent compression sets the `ROOT` flag:
-   $$H_{\text{root}} = F(\text{IV}, H_{\text{left}} \mathbin{\Vert} H_{\text{right}}, 0, 64, \text{PARENT} \mid \text{ROOT})$$
+5. **Root Digest Production**: The final parent compression sets the `ROOT` flag. At the final level $D-1$ where $N_{D-1} = 2$ (after padding if necessary), the root node $H_{\text{root}}$ is:
+   $$H_{\text{root}} = F(\text{IV}, h^{D-1}_0 \mathbin{\Vert} h^{D-1}_1, 0, 64, \text{PARENT} \mid \text{ROOT})$$
 
 6. **Log Protection Against Retrospective Modification**:
    - **Native Merkle Tree**: Because BLAKE3 is natively a Merkle tree, any alteration (even a single bit representing an event timestamp or resource) propagates up the tree, invalidating $H_{\text{root}}$.
@@ -108,10 +114,8 @@ To guarantee that the receipt was produced by the certified `wasm4pm` execution 
      where $L = 2^{252} + 277454108928092425263413932207934334793$ is the prime order of the base point $B$. If $S \ge L$, the signature is invalid (this prevents signature malleability attacks).
 
 3. **Scalar Hash Verification**:
-   - Compute the message digest $M$ as the BLAKE3 hash of the canonical serialized receipt:
-     $$M = \operatorname{BLAKE3}(B_{\text{receipt}})$$
-   - Compute the verification scalar $k$ using SHA-512 over the concatenated signature components and message digest:
-     $$k = \operatorname{SHA-512}(R \mathbin{\Vert} \operatorname{PK}_{\text{validator}} \mathbin{\Vert} M) \pmod L$$
+   - Compute the verification scalar $k$ using SHA-512 directly over the concatenated signature components and the canonical JSON byte sequence:
+     $$k = \operatorname{SHA-512}(R \mathbin{\Vert} \operatorname{PK}_{\text{validator}} \mathbin{\Vert} B_{\text{receipt}}) \pmod L$$
 
 4. **Curve Equation Check**:
    - Verify the verification relation:

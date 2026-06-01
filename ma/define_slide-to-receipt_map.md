@@ -74,6 +74,16 @@ To validate a slide claim using the Slide-to-Receipt Map, the auditing system mu
 4. **Log Hash and Merkle Root Audit**:
    * Calculate the BLAKE3 hash of the target log file $L$ and verify it matches the receipt:
      $$\operatorname{BLAKE3}(L) == \text{target\_log\_hash}$$
+   * To audit the log's internal structure against tampering, we formalize the binary Merkle tree parent-node construction and padding equations using BLAKE3. Let $H^d = \langle h^d_0, h^d_1, \dots, h^d_{N_d - 1} \rangle$ be the sequence of node hashes at level $d$, where $N_d$ is the number of nodes at level $d$.
+     * **Padding Equation**: If $N_d$ is odd, duplicate the last node:
+       $$h^d_{N_d} = h^d_{N_d - 1}, \quad N'_d = N_d + 1$$
+       If $N_d$ is even:
+       $$N'_d = N_d$$
+     * **Parent-Node Construction**: For $i = 0, 1, \dots, \frac{N'_d}{2} - 1$:
+       $$h^{d+1}_i = F(\text{IV}, h^d_{2i} \mathbin{\Vert} h^d_{2i+1}, 0, 64, \text{PARENT})$$
+       where $N_{d+1} = \frac{N'_d}{2}$, and $F$ is the BLAKE3 compression function.
+     * **Root Node Derivation**: At the final level $D-1$ where $N_{D-1} = 2$ (after padding if necessary), the root node $H_{\text{root}}$ is:
+       $$H_{\text{root}} = F(\text{IV}, h^{D-1}_0 \mathbin{\Vert} h^{D-1}_1, 0, 64, \text{PARENT} \mid \text{ROOT})$$
    * To prevent event-level insertion or omission, construct a BLAKE3 event hash chain. Let $\mathcal{H}(e_j) = \operatorname{BLAKE3}(e_j \mathbin{\Vert} \mathcal{H}(e_{j-1}) \mathbin{\Vert} \operatorname{Sig}_{\text{system}}(e_j))$ with $\mathcal{H}(e_0) = \operatorname{BLAKE3}(\sigma_{\text{id}})$. Verify that the root of the event hash chains matches the audited Merkle root hash pinned in the transaction's smart contract or signed closing agreement.
 5. **Deterministic Replay**: Load the WASM module specified in `query_definition.query_uri`, execute it on the event log $L$ using the query `parameters`, and verify that the re-calculated fitness ($f_{\text{calc}}$) and precision ($p_{\text{calc}}$) match the receipt's values:
    $$\left| f_{\text{calc}} - f_{\text{receipt}} \right| < 10^{-6} \quad \text{and} \quad \left| p_{\text{calc}} - p_{\text{receipt}} \right| < 10^{-6}$$

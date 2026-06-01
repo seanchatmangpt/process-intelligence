@@ -22,14 +22,14 @@ To prevent "ghost processes" (obsolete models that continue executing and consum
 
 ### 2. Cryptographic Decommissioning Receipt
 The **Decommissioning Receipt** ($R_d$) is a JSON-LD metadata document signed by the process engine authority:
-$$R_d = \text{Sign}_{K_{priv}} \left( \text{Hash}(N) \parallel \text{Hash}(L_{final}) \parallel C_{total} \parallel F_{final} \parallel T_{retire} \right)$$
+$$R_d = \text{Ed25519}_{K_{priv}} \left( \text{BLAKE3}(N) \parallel \text{BLAKE3}(L_{final}) \parallel C_{total} \parallel F_{final} \parallel T_{retire} \right)$$
 where:
-* $\text{Hash}(N)$ is the SHA-256 hash of the Petri Net structure.
-* $\text{Hash}(L_{final})$ is the SHA-256 hash of the final event log.
+* $\text{BLAKE3}(N)$ is the BLAKE3 hash of the Petri Net structure.
+* $\text{BLAKE3}(L_{final})$ is the BLAKE3 hash of the final event log.
 * $C_{total}$ is the total number of process cases processed during the model's active lifecycle.
 * $F_{final}$ is the final calculated alignment fitness of the log against the model.
 * $T_{retire}$ is the retirement timestamp.
-* $\text{Sign}_{K_{priv}}$ is the ECDSA signature of the decommissioning authority.
+* $\text{Ed25519}_{K_{priv}}$ is the Ed25519 signature of the decommissioning authority.
 
 ---
 

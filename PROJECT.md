@@ -8,11 +8,11 @@
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| 1 | M1: Adversarial Audit | Scan doctrine, sources, standards, lifecycle, ma, and experiments for stubs and weak math | none | IN_PROGRESS |
-| 2 | M2: M&A Diligence Rigor | Update slide-to-receipt maps and diligence slide definitions with JSON schemas and verification math | M1 | PLANNED |
-| 3 | M3: Petri Net & OCPQ Rigor | Formalize Petri Net place/transition dynamics and OCPQ bindings in standards/ and lifecycle/ using LaTeX | M1 | PLANNED |
-| 4 | M4: Fixture Upgrades | Review and optimize validation scripts/fixtures in experiments/ and audits/ | M2, M3 | PLANNED |
-| 5 | M5: Final Report & Integration | Align all files to v30.1.1, compile the final audit report, and run Forensic Audit | M4 | PLANNED |
+| 1 | M1: Adversarial Audit | Scan doctrine, sources, standards, lifecycle, ma, and experiments for stubs and weak math | none | DONE |
+| 2 | M2: M&A Diligence Rigor | Update slide-to-receipt maps, cost minimization, and signature verification with JSON schemas and math in `ma/define_slide-to-receipt_map.md`, `ma/define_auditor_evidence_path.md`, `ma/define_slide-to-replay_map.md`, and `ma/slide-to-receipt-map.md` | M1 | IN_PROGRESS |
+| 3 | M3: Petri Net & OCPQ Rigor | Formalize Petri Net place/transition dynamics, stochastic nets, and OCPQ query bindings in `standards/petri_net_placement.md`, `standards/petri-net.md`, and `standards/ocpq_placement.md` using LaTeX | M1 | IN_PROGRESS |
+| 4 | M4: Fixture & Link Upgrades | Review and optimize validation scripts/fixtures in `experiments/` and `audits/`, fix broken links in `standards/reverse-lock-in.md` and checkpoints | M2, M3 | PLANNED |
+| 5 | M5: Final Report & Integration | Resolve `INCOMPLETE` markers in `sources/wasm4pm-compat/`, compile final audit report at `audits/adversarial_audit_v30.1.1.md`, and run Forensic Audit | M4 | PLANNED |
 
 ## Interface Contracts
 ### slide-to-receipt ↔ verification math
