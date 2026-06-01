@@ -20,3 +20,6 @@
 
 ### Fixtures for weske_2019_bpm_principles
 - **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
+
+### Fixtures for rosenberg_2020_cloud_lifecycle
+- **Required**: Minimal sound/unsafe Petri Net models, input XES, and output JSON logs.
