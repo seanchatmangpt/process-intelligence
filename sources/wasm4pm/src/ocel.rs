@@ -9,6 +9,7 @@ pub enum OcelError {
     NullPointer,
 }
 
+#[derive(Debug)]
 pub struct ZeroCopyOcel<'a> {
     data: &'a [u8],
     events_count: u32,
@@ -52,7 +53,8 @@ impl<'a> ZeroCopyOcel<'a> {
 
         // Proactive boundary check: ensure all sections fit in data
         let check_bound = |offset: u32, size: usize| -> Result<(), OcelError> {
-            let end = offset as usize + size;
+            let offset_usize = offset as usize;
+            let end = offset_usize.checked_add(size).ok_or(OcelError::OutOfBounds)?;
             if end > data.len() {
                 Err(OcelError::OutOfBounds)
             } else {
@@ -97,19 +99,23 @@ impl<'a> ZeroCopyOcel<'a> {
         if offset >= self.string_table_size {
             return Err(OcelError::OutOfBounds);
         }
-        let abs_offset = self.string_table_offset as usize + offset as usize;
+        let abs_offset = (self.string_table_offset as usize)
+            .checked_add(offset as usize)
+            .ok_or(OcelError::OutOfBounds)?;
         
         // Ensure we can read length (4 bytes)
-        if abs_offset + 4 > self.data.len() {
+        let end_len = abs_offset.checked_add(4).ok_or(OcelError::OutOfBounds)?;
+        if end_len > self.data.len() {
             return Err(OcelError::OutOfBounds);
         }
-        let len = u32::from_le_bytes(self.data[abs_offset..abs_offset + 4].try_into().unwrap()) as usize;
+        let len = u32::from_le_bytes(self.data[abs_offset..end_len].try_into().unwrap()) as usize;
         
-        if abs_offset + 4 + len > self.data.len() {
+        let end_slice = end_len.checked_add(len).ok_or(OcelError::OutOfBounds)?;
+        if end_slice > self.data.len() {
             return Err(OcelError::OutOfBounds);
         }
 
-        let slice = &self.data[abs_offset + 4..abs_offset + 4 + len];
+        let slice = &self.data[end_len..end_slice];
         std::str::from_utf8(slice).map_err(|_| OcelError::Utf8Error)
     }
 
@@ -118,7 +124,13 @@ impl<'a> ZeroCopyOcel<'a> {
         if index >= self.events_count {
             return Err(OcelError::OutOfBounds);
         }
-        let offset = self.events_offset as usize + index as usize * 24;
+        let offset = (index as usize)
+            .checked_mul(24)
+            .and_then(|val| (self.events_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+        if offset.checked_add(4).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
         let id_offset = u32::from_le_bytes(self.data[offset..offset + 4].try_into().unwrap());
         self.get_string(id_offset)
     }
@@ -127,7 +139,13 @@ impl<'a> ZeroCopyOcel<'a> {
         if index >= self.events_count {
             return Err(OcelError::OutOfBounds);
         }
-        let offset = self.events_offset as usize + index as usize * 24;
+        let offset = (index as usize)
+            .checked_mul(24)
+            .and_then(|val| (self.events_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+        if offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
         let act_offset = u32::from_le_bytes(self.data[offset + 4..offset + 8].try_into().unwrap());
         self.get_string(act_offset)
     }
@@ -136,7 +154,13 @@ impl<'a> ZeroCopyOcel<'a> {
         if index >= self.events_count {
             return Err(OcelError::OutOfBounds);
         }
-        let offset = self.events_offset as usize + index as usize * 24;
+        let offset = (index as usize)
+            .checked_mul(24)
+            .and_then(|val| (self.events_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+        if offset.checked_add(16).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
         let timestamp = i64::from_le_bytes(self.data[offset + 8..offset + 16].try_into().unwrap());
         Ok(timestamp)
     }
@@ -145,7 +169,13 @@ impl<'a> ZeroCopyOcel<'a> {
         if index >= self.events_count {
             return Err(OcelError::OutOfBounds);
         }
-        let offset = self.events_offset as usize + index as usize * 24;
+        let offset = (index as usize)
+            .checked_mul(24)
+            .and_then(|val| (self.events_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+        if offset.checked_add(20).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
         let type_offset = u32::from_le_bytes(self.data[offset + 16..offset + 20].try_into().unwrap());
         self.get_string(type_offset)
     }
@@ -155,7 +185,13 @@ impl<'a> ZeroCopyOcel<'a> {
         if index >= self.objects_count {
             return Err(OcelError::OutOfBounds);
         }
-        let offset = self.objects_offset as usize + index as usize * 12;
+        let offset = (index as usize)
+            .checked_mul(12)
+            .and_then(|val| (self.objects_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+        if offset.checked_add(4).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
         let id_offset = u32::from_le_bytes(self.data[offset..offset + 4].try_into().unwrap());
         self.get_string(id_offset)
     }
@@ -164,7 +200,13 @@ impl<'a> ZeroCopyOcel<'a> {
         if index >= self.objects_count {
             return Err(OcelError::OutOfBounds);
         }
-        let offset = self.objects_offset as usize + index as usize * 12;
+        let offset = (index as usize)
+            .checked_mul(12)
+            .and_then(|val| (self.objects_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+        if offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
         let type_offset = u32::from_le_bytes(self.data[offset + 4..offset + 8].try_into().unwrap());
         self.get_string(type_offset)
     }
@@ -175,12 +217,23 @@ impl<'a> ZeroCopyOcel<'a> {
             return Err(OcelError::OutOfBounds);
         }
         
-        let entry_offset = self.e2o_offset as usize + event_idx as usize * 8;
+        let entry_offset = (event_idx as usize)
+            .checked_mul(8)
+            .and_then(|val| (self.e2o_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+
+        if entry_offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
+        
         let array_offset = u32::from_le_bytes(self.data[entry_offset..entry_offset + 4].try_into().unwrap()) as usize;
         let count = u32::from_le_bytes(self.data[entry_offset + 4..entry_offset + 8].try_into().unwrap()) as usize;
 
-        let abs_start = self.e2o_offset as usize + array_offset;
-        let abs_end = abs_start + count * 4;
+        let abs_start = (self.e2o_offset as usize)
+            .checked_add(array_offset)
+            .ok_or(OcelError::OutOfBounds)?;
+        let count_bytes = count.checked_mul(4).ok_or(OcelError::OutOfBounds)?;
+        let abs_end = abs_start.checked_add(count_bytes).ok_or(OcelError::OutOfBounds)?;
 
         if abs_end > self.data.len() {
             return Err(OcelError::OutOfBounds);
@@ -208,12 +261,23 @@ impl<'a> ZeroCopyOcel<'a> {
             return Err(OcelError::OutOfBounds);
         }
 
-        let entry_offset = self.o2o_offset as usize + object_idx as usize * 8;
+        let entry_offset = (object_idx as usize)
+            .checked_mul(8)
+            .and_then(|val| (self.o2o_offset as usize).checked_add(val))
+            .ok_or(OcelError::OutOfBounds)?;
+
+        if entry_offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+            return Err(OcelError::OutOfBounds);
+        }
+
         let array_offset = u32::from_le_bytes(self.data[entry_offset..entry_offset + 4].try_into().unwrap()) as usize;
         let count = u32::from_le_bytes(self.data[entry_offset + 4..entry_offset + 8].try_into().unwrap()) as usize;
 
-        let abs_start = self.o2o_offset as usize + array_offset;
-        let abs_end = abs_start + count * 4;
+        let abs_start = (self.o2o_offset as usize)
+            .checked_add(array_offset)
+            .ok_or(OcelError::OutOfBounds)?;
+        let count_bytes = count.checked_mul(4).ok_or(OcelError::OutOfBounds)?;
+        let abs_end = abs_start.checked_add(count_bytes).ok_or(OcelError::OutOfBounds)?;
 
         if abs_end > self.data.len() {
             return Err(OcelError::OutOfBounds);
@@ -228,5 +292,88 @@ impl<'a> ZeroCopyOcel<'a> {
 
         let u32_slice = unsafe { std::slice::from_raw_parts(ptr, count) };
         Ok(u32_slice)
+    }
+
+    // Zero-Copy Bitmask Projection for Sub-DFGs
+    // Ensures memory footprint is constant (O(1) allocations) by taking pre-allocated buffers
+    pub fn compute_projected_dfg(
+        &self,
+        bitmask: &[u64],
+        dfg_matrix: &mut [u32], // flat array of size activity_count * activity_count
+        activity_offsets: &[u32], // sorted unique activity offsets in the string table
+        last_event_for_object: &mut [i32], // scratch space of size objects_count, initialized to -1
+    ) -> Result<(), OcelError> {
+        // Clear the DFG matrix
+        dfg_matrix.fill(0);
+        // Clear the scratch space
+        last_event_for_object.fill(-1);
+
+        let act_count = activity_offsets.len();
+
+        // Helper to find the index of an activity offset
+        let find_act_idx = |offset: u32| -> Option<usize> {
+            activity_offsets.binary_search(&offset).ok()
+        };
+
+        // Scan all events
+        for event_idx in 0..self.events_count {
+            // Check if this event is active in the bitmask
+            let word_idx = event_idx as usize / 64;
+            let bit_idx = event_idx as usize % 64;
+            if word_idx >= bitmask.len() {
+                break;
+            }
+            if (bitmask[word_idx] & (1 << bit_idx)) == 0 {
+                continue; // Event is masked out
+            }
+
+            // Get event activity offset
+            let offset = (event_idx as usize)
+                .checked_mul(24)
+                .and_then(|val| (self.events_offset as usize).checked_add(val))
+                .ok_or(OcelError::OutOfBounds)?;
+            if offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+                return Err(OcelError::OutOfBounds);
+            }
+            let act_offset = u32::from_le_bytes(self.data[offset + 4..offset + 8].try_into().unwrap());
+            let act_idx = match find_act_idx(act_offset) {
+                Some(idx) => idx,
+                None => continue, // Unknown activity (should not happen if activity_offsets is complete)
+            };
+ 
+            // Get related objects
+            let related_objs = self.get_event_objects(event_idx)?;
+            for &obj_idx in related_objs {
+                if obj_idx as usize >= last_event_for_object.len() {
+                    return Err(OcelError::OutOfBounds);
+                }
+                let prev_event_idx = last_event_for_object[obj_idx as usize];
+                if prev_event_idx >= 0 {
+                    // There was a previous active event for this object.
+                    // Get its activity index
+                    let prev_offset = (prev_event_idx as usize)
+                        .checked_mul(24)
+                        .and_then(|val| (self.events_offset as usize).checked_add(val))
+                        .ok_or(OcelError::OutOfBounds)?;
+                    if prev_offset.checked_add(8).ok_or(OcelError::OutOfBounds)? > self.data.len() {
+                        return Err(OcelError::OutOfBounds);
+                    }
+                    let prev_act_offset = u32::from_le_bytes(self.data[prev_offset + 4..prev_offset + 8].try_into().unwrap());
+                    if let Some(prev_act_idx) = find_act_idx(prev_act_offset) {
+                        // Increment transition frequency in DFG matrix: (prev_act_idx -> act_idx)
+                        let matrix_idx = prev_act_idx.checked_mul(act_count)
+                            .and_then(|val| val.checked_add(act_idx))
+                            .ok_or(OcelError::OutOfBounds)?;
+                        if matrix_idx < dfg_matrix.len() {
+                            dfg_matrix[matrix_idx] = dfg_matrix[matrix_idx].saturating_add(1);
+                        }
+                    }
+                }
+                // Update last active event for this object
+                last_event_for_object[obj_idx as usize] = event_idx as i32;
+            }
+        }
+ 
+        Ok(())
     }
 }

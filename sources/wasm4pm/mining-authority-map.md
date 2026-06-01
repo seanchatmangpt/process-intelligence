@@ -123,6 +123,42 @@ Unlike the philosophical abstraction in v30.1.1, **v30.1.2 specifies the concret
 }
 ```
 
+### 1.4 Zero-Copy Bitmask Projection for Sub-DFGs
+
+**Authority Claim:** wasm4pm must perform sub-DFG projection using read-only bitmask indexing over the primary event sequence in linear memory. This guarantees that recursive partitioning (e.g., during Inductive Miner decomposition) avoids dynamic log replication and operates with a strictly constant $\mathcal{O}(1)$ memory allocation footprint.
+
+**Formal Specification:**
+Let the raw event log be represented contiguously in linear memory as a sequence of events $E = \langle e_0, e_1, \dots, e_{N_e-1} \rangle$, and a set of objects $O = \{ o_0, o_1, \dots, o_{N_o-1} \}$.
+A sub-DFG projection is defined by an event bitmask $B \in \{0, 1\}^{N_e}$ where $B[i] = 1$ if event $e_i$ is active in the sub-log projection, and $0$ otherwise.
+
+The projected sub-DFG $G_B = (V_B, E_B, f_B)$ is computed directly from $E$ and $B$:
+- **Active Vertex Set:** $V_B = \{ \operatorname{act}(e_i) \mid B[i] = 1 \}$.
+- **Directed Edge Set & Frequency Mapping:** For each object $o \in O$, let the active event sequence project as:
+  $$\sigma_{B, o} = \langle e_{i_1}, e_{i_2}, \dots, e_{i_k} \rangle \quad \text{where } B[i_j] = 1 \text{ and } o \in \operatorname{e2o}(e_{i_j})$$
+  The set of edges $E_B$ consists of all activity pairs $(a, b) = (\operatorname{act}(e_{i_j}), \operatorname{act}(e_{i_{j+1}}))$ for $1 \le j < k$. The frequency $f_B(a, b)$ is the total count of such adjacent transitions summed across all objects $o \in O$.
+
+**Algorithmic Footprint & Allocations ($\mathcal{O}(1)$ Complexity Guarantee):**
+To guarantee zero dynamic memory allocations at runtime, wasm4pm pre-allocates the following scratch regions in the transient memory segment:
+1. **Bitmask Stack:** A pre-allocated bitmask stack of size $d_{\max} \times \lceil N_e / 64 \rceil$ words of `u64`, where $d_{\max}$ is the recursion depth limit (e.g., $128$).
+2. **Frequency Adjacency Matrix:** A flat array of size $|A| \times |A|$ where $|A| \le 1,000$ unique activities, using $\mathcal{O}(|A|^2)$ space.
+3. **Traversal State Index:** A temporary tracking array `last_active_event_for_object` of size $N_o$ (`i32` pointers/indices), storing the index of the last active event per object.
+
+**Single-Pass Projection Construction Algorithm:**
+1. Initialize the adjacency matrix elements to $0$.
+2. Initialize `last_active_event_for_object` array elements to $-1$.
+3. Scan through all event indices $i \in [0, N_e - 1]$:
+   - Compute bit index: `word_idx = i / 64` and `bit_mask = 1 << (i % 64)`.
+   - If `(B[word_idx] & bit_mask) == 0`, skip event $i$.
+   - Retrieve activity index `act_idx` of $e_i$.
+   - For each object index `obj_idx` associated with $e_i$ via the E2O index:
+     - Let `prev_idx = last_active_event_for_object[obj_idx]`.
+     - If `prev_idx >= 0`:
+       - Retrieve activity index `prev_act_idx` of $e_{\text{prev\_idx}}$.
+       - Increment `dfg_matrix[prev_act_idx * |A| + act_idx]` with saturation checking.
+     - Update `last_active_event_for_object[obj_idx] = i`.
+
+This algorithm requires exactly zero heap/arena allocations during the mining process, executing in linear time $\mathcal{O}(N_e \cdot \operatorname{deg}_{\max}(e))$ where $\operatorname{deg}_{\max}(e)$ is the maximum number of objects linked to a single event.
+
 ---
 
 ## 2. Computational Resource Extraction (Cycle Accounting)

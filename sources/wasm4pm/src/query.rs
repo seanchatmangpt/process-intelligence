@@ -61,7 +61,9 @@ impl O2eIndex {
             let related_objs = ocel.get_event_objects(event_idx).map_err(|_| crate::sandbox::ERR_QUERY_TIMEOUT)?;
             for &obj_idx in related_objs {
                 if (obj_idx as usize) < obj_count {
-                    object_event_counts[obj_idx as usize] += 1;
+                    let val = object_event_counts[obj_idx as usize];
+                    let next_val = val.checked_add(1).ok_or(crate::sandbox::ERR_LIFECYCLE_VIOLATION)?;
+                    object_event_counts[obj_idx as usize] = next_val;
                 }
             }
         }
@@ -71,7 +73,7 @@ impl O2eIndex {
         let mut current_offset = 0u32;
         for i in 0..obj_count {
             offsets[i] = current_offset;
-            current_offset += object_event_counts[i];
+            current_offset = current_offset.checked_add(object_event_counts[i]).ok_or(crate::sandbox::ERR_LIFECYCLE_VIOLATION)?;
         }
 
         // Fill event indices array
@@ -84,8 +86,12 @@ impl O2eIndex {
             for &obj_idx in related_objs {
                 if (obj_idx as usize) < obj_count {
                     let write_pos = write_offsets[obj_idx as usize] as usize;
+                    if write_pos >= event_indices.len() {
+                        return Err(crate::sandbox::ERR_LIFECYCLE_VIOLATION);
+                    }
                     event_indices[write_pos] = event_idx;
-                    write_offsets[obj_idx as usize] += 1;
+                    let next_offset = write_offsets[obj_idx as usize].checked_add(1).ok_or(crate::sandbox::ERR_LIFECYCLE_VIOLATION)?;
+                    write_offsets[obj_idx as usize] = next_offset;
                 }
             }
         }

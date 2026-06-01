@@ -110,6 +110,11 @@ impl DoubleBufferedArena {
         self.transient_cursor = self.transient_start;
     }
 
+    #[cfg(test)]
+    pub fn raw_buffer(&self) -> &[u8] {
+        &self.buffer
+    }
+
     pub fn contains_ptr(&self, ptr: *const u8, len: usize) -> bool {
         let start = (self.buffer.as_ptr() as usize) + self.aligned_offset;
         let end = start + self.ceiling;
@@ -189,12 +194,52 @@ pub fn shred_global_arena(prng_bytes: &mut dyn FnMut() -> [u8; 64]) {
     }
 }
 
+#[cfg(test)]
+pub fn get_global_arena_raw_buffer() -> Vec<u8> {
+    let guard = GLOBAL_ARENA.lock().unwrap();
+    if let Some(ref arena) = *guard {
+        arena.raw_buffer().to_vec()
+    } else {
+        vec![]
+    }
+}
+
+#[cfg(test)]
+pub fn fill_global_arena_raw_buffer(val: u8) {
+    let mut guard = GLOBAL_ARENA.lock().unwrap();
+    if let Some(ref mut arena) = *guard {
+        arena.buffer.fill(val);
+    }
+}
+
+
 pub fn validate_pointer(ptr: *const u8, len: usize) -> bool {
     let guard = GLOBAL_ARENA.lock().unwrap();
     if let Some(ref arena) = *guard {
         arena.contains_ptr(ptr, len)
     } else {
         false
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct ArenaBoundaries {
+    pub base_addr: usize,
+    pub transient_start: usize,
+    pub ceiling: usize,
+}
+
+pub fn get_arena_boundaries() -> Option<ArenaBoundaries> {
+    let guard = GLOBAL_ARENA.lock().unwrap();
+    if let Some(ref arena) = *guard {
+        let base_addr = (arena.buffer.as_ptr() as usize) + arena.aligned_offset;
+        Some(ArenaBoundaries {
+            base_addr,
+            transient_start: arena.transient_start,
+            ceiling: arena.ceiling,
+        })
+    } else {
+        None
     }
 }
 

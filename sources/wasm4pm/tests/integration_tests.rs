@@ -307,3 +307,456 @@ fn test_ffi_boundary_safety() {
     let shred_code = ffi::wasm_shred_heap(seed_offset);
     assert_eq!(shred_code, 0);
 }
+
+#[test]
+fn test_otel_trace_blake3_verification() {
+    let _lock = TEST_MUTEX.lock().unwrap_or_else(|e| e.into_inner());
+
+    let trace_id = "4a7b744ce58b88cd28148b5dfbe984f9";
+    
+    // Generate valid span chain
+    let s0_id = "0000000000000001";
+    let s0_name = "StartProcess";
+    let s0_start = 1000i64;
+    let s0_end = 2000i64;
+    let s0_ic = 500i64;
+    
+    let hash0 = wasm4pm::otel::hash_span(
+        None,
+        trace_id,
+        s0_id,
+        None,
+        s0_name,
+        s0_start,
+        s0_end,
+        s0_ic,
+    );
+    let hash0_hex = hex_encode(&hash0);
+    
+    let s1_id = "0000000000000002";
+    let s1_parent = Some(s0_id);
+    let s1_name = "ExecuteStep";
+    let s1_start = 1200i64;
+    let s1_end = 1800i64;
+    let s1_ic = 1200i64;
+    
+    let hash1 = wasm4pm::otel::hash_span(
+        Some(&hash0),
+        trace_id,
+        s1_id,
+        s1_parent,
+        s1_name,
+        s1_start,
+        s1_end,
+        s1_ic,
+    );
+    let hash1_hex = hex_encode(&hash1);
+    
+    let root_hex = &hash1_hex;
+    
+    let valid_json = format!(
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        trace_id, root_hex,
+        s0_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
+        s1_id, s0_id, s1_name, s1_start, s1_end, s1_ic, hash1_hex
+    );
+    
+    // 1. Verify parsing and verification of valid trace
+    let trace = wasm4pm::otel::OtelTrace::parse_from_str(&valid_json).unwrap();
+    let res = wasm4pm::otel::verify_otel_trace(&trace);
+    assert!(res.is_ok());
+    assert!(res.unwrap());
+    
+    // 2. Verify via FFI boundary
+    let ffi_init_code = ffi::wasm_init(10 * 1024 * 1024);
+    assert_eq!(ffi_init_code, 0);
+    
+    let json_len = valid_json.len() as u32;
+    let json_offset = ffi::wasm_alloc(json_len);
+    assert_ne!(json_offset, 0);
+    
+    let json_ptr = allocator::get_absolute_ptr(json_offset).unwrap();
+    unsafe {
+        std::ptr::copy_nonoverlapping(valid_json.as_ptr(), json_ptr, json_len as usize);
+    }
+    
+    let ffi_res = ffi::wasm_verify_otel_trace(json_offset, json_len);
+    assert_eq!(ffi_res, 0);
+    
+    // 3. Verify tampering detection
+    let tampered_json = valid_json.replace(&format!("\"instruction_count\": {}", s1_ic), "\"instruction_count\": 1201");
+    let tampered_trace = wasm4pm::otel::OtelTrace::parse_from_str(&tampered_json).unwrap();
+    let tampered_res = wasm4pm::otel::verify_otel_trace(&tampered_trace);
+    assert!(tampered_res.is_err());
+    assert!(tampered_res.unwrap_err().contains("Span BLAKE3 receipt mismatch"));
+    
+    let tampered_len = tampered_json.len() as u32;
+    let tampered_offset = ffi::wasm_alloc(tampered_len);
+    assert_ne!(tampered_offset, 0);
+    let tampered_ptr = allocator::get_absolute_ptr(tampered_offset).unwrap();
+    unsafe {
+        std::ptr::copy_nonoverlapping(tampered_json.as_ptr(), tampered_ptr, tampered_len as usize);
+    }
+    let ffi_tampered_res = ffi::wasm_verify_otel_trace(tampered_offset, tampered_len);
+    assert_eq!(ffi_tampered_res, sandbox::ERR_REPLAY_ATTESTATION);
+    
+    // 4. Verify parent-child timing constraint violation detection
+    let invalid_timing_json = format!(
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": 900,\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        trace_id, root_hex,
+        s0_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
+        s1_id, s0_id, s1_name, s1_end, s1_ic, hash1_hex
+    );
+    let invalid_timing_trace = wasm4pm::otel::OtelTrace::parse_from_str(&invalid_timing_json).unwrap();
+    let invalid_timing_res = wasm4pm::otel::verify_otel_trace(&invalid_timing_trace);
+    assert!(invalid_timing_res.is_err());
+    assert!(invalid_timing_res.unwrap_err().contains("Parent-child timing constraint violated"));
+    
+    // 5. Verify cyclic dependency detection
+    let cyclic_json = format!(
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        trace_id, root_hex,
+        s0_id, s1_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
+        s1_id, s0_id, s1_name, s0_start, s0_end, s1_ic, hash1_hex
+    );
+    let cyclic_trace = wasm4pm::otel::OtelTrace::parse_from_str(&cyclic_json).unwrap();
+    let cyclic_res = wasm4pm::otel::verify_otel_trace(&cyclic_trace);
+    panic!("Actual cyclic res error: {:?}", cyclic_res.unwrap_err());
+}
+
+fn hex_encode(bytes: &[u8]) -> String {
+    let mut s = String::with_capacity(bytes.len() * 2);
+    for &b in bytes {
+        s.push_str(&format!("{:02x}", b));
+    }
+    s
+}
+
+
+#[test]
+fn test_recursion_guard_clamping() {
+    let mut guard = RecursionGuard::new(150);
+    // Enter 100 times should succeed
+    for _ in 0..100 {
+        assert!(guard.enter().is_ok());
+    }
+    // The 101st enter must fail because it is capped at 100
+    assert_eq!(guard.enter().unwrap_err(), sandbox::ERR_LIFECYCLE_VIOLATION);
+}
+
+#[test]
+fn test_gas_meter_clamping() {
+    let mut meter = GasMeter::new(20_000_000);
+    // Consume 10,000,000 should succeed
+    assert!(meter.consume(10_000_000).is_ok());
+    // Consuming 1 more cycle should fail because budget is capped at 10,000,000
+    assert_eq!(meter.consume(1).unwrap_err(), sandbox::ERR_CYCLE_OVERFLOW);
+}
+
+#[test]
+fn test_ffi_get_last_error_no_panic() {
+    let _lock = TEST_MUTEX.lock().unwrap();
+    // Verify calling wasm_get_last_error does not crash and behaves correctly
+    let err = ffi::wasm_get_last_error();
+    assert!(err == 0 || err == sandbox::ERR_LIFECYCLE_VIOLATION);
+}
+
+#[test]
+fn test_evidence_lattice_and_typestates() {
+    use wasm4pm::evidence::{Evidence, Lattice, WitnessState};
+    use std::collections::BTreeSet;
+
+    // 1. Test WitnessState Lattice Properties
+    let bottom = WitnessState::Bottom;
+    let top = WitnessState::Top;
+
+    let mut s1 = BTreeSet::new();
+    s1.insert(1);
+    s1.insert(2);
+    let p1 = WitnessState::new_partial(s1);
+
+    let mut s2 = BTreeSet::new();
+    s2.insert(3);
+    let p2 = WitnessState::new_partial(s2);
+
+    let mut s3 = BTreeSet::new();
+    s3.insert(2);
+    s3.insert(4);
+    let p3 = WitnessState::new_partial(s3);
+
+    // Identity and bounds
+    assert_eq!(bottom.join(&p1), p1);
+    assert_eq!(p1.join(&bottom), p1);
+    assert_eq!(top.join(&p1), top);
+    assert_eq!(p1.join(&top), top);
+
+    assert_eq!(bottom.meet(&p1), bottom);
+    assert_eq!(p1.meet(&bottom), bottom);
+    assert_eq!(top.meet(&p1), p1);
+    assert_eq!(p1.meet(&top), p1);
+
+    // Disjointness check in join
+    let union_ws = p1.join(&p2);
+    if let WitnessState::PartialReplay(ref u_set) = union_ws {
+        assert_eq!(u_set.len(), 3);
+        assert!(u_set.contains(&1));
+        assert!(u_set.contains(&2));
+        assert!(u_set.contains(&3));
+    } else {
+        panic!("Expected PartialReplay");
+    }
+
+    // Overlap evaluates to Top
+    assert_eq!(p1.join(&p3), WitnessState::Top);
+
+    // Validate lattice laws
+    WitnessState::assert_lattice_laws(&p1, &p2, &p3);
+    WitnessState::assert_lattice_laws(&p1, &bottom, &top);
+    WitnessState::assert_lattice_laws(&bottom, &p3, &p2);
+
+    // 2. Test Typestate transitions
+    let artifact = "Process Model Spec".to_string();
+    let evidence_parsed = Evidence::new(artifact, p1.clone());
+    
+    let evidence_validated = evidence_parsed.validate_sound();
+    assert_eq!(evidence_validated.witness, p1);
+
+    let evidence_replayed = evidence_validated.replay(p2.clone());
+    assert_eq!(evidence_replayed.witness, p2);
+
+    let ev1 = Evidence::new("Model A".to_string(), p1.clone());
+    let ev2 = Evidence::new("Model A".to_string(), p2.clone());
+    let ev_merged = ev1.merge(ev2);
+    assert_eq!(ev_merged.witness, p1.join(&p2));
+}
+
+#[test]
+fn test_petri_net_soundness_solver() {
+    use wasm4pm::petri::PetriNet;
+    use std::collections::{BTreeMap, BTreeSet};
+
+    let make_arc = |place: &str, weight: u32| {
+        let mut map = BTreeMap::new();
+        map.insert(place.to_string(), weight);
+        map
+    };
+
+    // Case 1: Sound WF-net
+    let places: BTreeSet<String> = vec!["source", "p1", "sink"].into_iter().map(String::from).collect();
+    let transitions: BTreeSet<String> = vec!["t1", "t2"].into_iter().map(String::from).collect();
+
+    let mut pre = BTreeMap::new();
+    pre.insert("t1".to_string(), make_arc("source", 1));
+    pre.insert("t2".to_string(), make_arc("p1", 1));
+
+    let mut post = BTreeMap::new();
+    post.insert("t1".to_string(), make_arc("p1", 1));
+    post.insert("t2".to_string(), make_arc("sink", 1));
+
+    let net_sound = PetriNet::new(places, transitions, pre, post);
+    let result_sound = net_sound.analyze_soundness();
+
+    assert!(result_sound.is_wf_net);
+    assert_eq!(result_sound.source_place, Some("source".to_string()));
+    assert_eq!(result_sound.sink_place, Some("sink".to_string()));
+    assert!(result_sound.is_1_bounded);
+    assert!(!result_sound.has_deadlock);
+    assert!(result_sound.dead_transitions.is_empty());
+    assert!(result_sound.proper_completion);
+    assert!(result_sound.option_to_complete);
+
+    // Case 2: Unsound WF-net (Deadlock and Dead Transition)
+    let places_deadlock: BTreeSet<String> = vec!["source", "p1", "p2", "sink"].into_iter().map(String::from).collect();
+    let transitions_deadlock: BTreeSet<String> = vec!["t1", "t2", "t3"].into_iter().map(String::from).collect();
+
+    let mut pre_dl = BTreeMap::new();
+    pre_dl.insert("t1".to_string(), make_arc("source", 1));
+    pre_dl.insert("t2".to_string(), make_arc("source", 1));
+    let mut t3_inputs = BTreeMap::new();
+    t3_inputs.insert("p1".to_string(), 1);
+    t3_inputs.insert("p2".to_string(), 1);
+    pre_dl.insert("t3".to_string(), t3_inputs);
+
+    let mut post_dl = BTreeMap::new();
+    post_dl.insert("t1".to_string(), make_arc("p1", 1));
+    post_dl.insert("t2".to_string(), make_arc("p2", 1));
+    post_dl.insert("t3".to_string(), make_arc("sink", 1));
+
+    let net_deadlock = PetriNet::new(places_deadlock, transitions_deadlock, pre_dl, post_dl);
+    let result_deadlock = net_deadlock.analyze_soundness();
+
+    assert!(result_deadlock.is_wf_net);
+    assert_eq!(result_deadlock.source_place, Some("source".to_string()));
+    assert_eq!(result_deadlock.sink_place, Some("sink".to_string()));
+    assert!(result_deadlock.has_deadlock);
+    assert!(result_deadlock.dead_transitions.contains("t3"));
+    assert!(!result_deadlock.option_to_complete);
+
+    // Case 3: Unbounded Petri net
+    let places_unbounded: BTreeSet<String> = vec!["source", "p1", "sink"].into_iter().map(String::from).collect();
+    let transitions_unbounded: BTreeSet<String> = vec!["t1", "t2"].into_iter().map(String::from).collect();
+
+    let mut pre_ub = BTreeMap::new();
+    pre_ub.insert("t1".to_string(), make_arc("source", 1));
+    pre_ub.insert("t2".to_string(), make_arc("p1", 1));
+
+    let mut post_ub = BTreeMap::new();
+    let mut t1_outputs = BTreeMap::new();
+    t1_outputs.insert("p1".to_string(), 1);
+    t1_outputs.insert("sink".to_string(), 1);
+    post_ub.insert("t1".to_string(), t1_outputs);
+    post_ub.insert("t2".to_string(), make_arc("p1", 2));
+
+    let net_unbounded = PetriNet::new(places_unbounded, transitions_unbounded, pre_ub, post_ub);
+    let result_unbounded = net_unbounded.analyze_soundness();
+
+    assert!(result_unbounded.is_wf_net);
+    assert!(!result_unbounded.is_1_bounded);
+}
+
+#[test]
+fn test_ffi_safety_boundary_checks() {
+    let _lock = TEST_MUTEX.lock().unwrap();
+
+    let init_res = allocator::init_global_arena(10 * 1024 * 1024);
+    assert!(init_res.is_ok());
+
+    let bounds = allocator::get_arena_boundaries().unwrap();
+    let base_ptr = bounds.base_addr as *const u8;
+    let trans_start_ptr = (bounds.base_addr + bounds.transient_start) as *const u8;
+
+    use wasm4pm::safety::FfiSafetyChecker;
+
+    // Overflow check
+    assert!(FfiSafetyChecker::check_overflow(base_ptr, 100));
+    let overflow_ptr = usize::MAX - 10;
+    assert!(!FfiSafetyChecker::check_overflow(overflow_ptr as *const u8, 20));
+
+    // Alignment matching
+    assert!(FfiSafetyChecker::check_alignment(base_ptr, 8));
+    let unaligned_ptr = (bounds.base_addr + 3) as *const u8;
+    assert!(!FfiSafetyChecker::check_alignment(unaligned_ptr, 8));
+    assert!(FfiSafetyChecker::check_alignment(unaligned_ptr, 1));
+
+    // Arena containment
+    assert!(FfiSafetyChecker::check_arena_containment(base_ptr, 100));
+    let outside_ptr = 0x1000 as *const u8;
+    assert!(!FfiSafetyChecker::check_arena_containment(outside_ptr, 100));
+
+    // Memory partition boundaries
+    let inside_perm = base_ptr;
+    assert!(FfiSafetyChecker::check_partition_boundaries(inside_perm, bounds.transient_start));
+    
+    let inside_trans = trans_start_ptr;
+    assert!(FfiSafetyChecker::check_partition_boundaries(inside_trans, 100));
+
+    // Crossing the partition boundary
+    let crossing_ptr = (bounds.base_addr + bounds.transient_start - 50) as *const u8;
+    assert!(!FfiSafetyChecker::check_partition_boundaries(crossing_ptr, 100));
+
+    // Disjointness check
+    let ptr1 = base_ptr;
+    let len1 = 100;
+    let ptr2 = (base_ptr as usize + 100) as *const u8;
+    let len2 = 50;
+    let ptr3 = (base_ptr as usize + 80) as *const u8;
+    let len3 = 50;
+
+    assert!(FfiSafetyChecker::check_disjoint(ptr1, len1, ptr2, len2));
+    assert!(!FfiSafetyChecker::check_disjoint(ptr1, len1, ptr3, len3));
+}
+
+#[test]
+fn test_zero_copy_bitmask_projection() {
+    let _lock = TEST_MUTEX.lock().unwrap();
+    let buf = build_valid_ocel_buffer();
+    let ocel = ZeroCopyOcel::parse(&buf).unwrap();
+
+    let mut dfg_matrix = vec![0u32; 4]; // 2 activities * 2 activities = 4
+    let mut last_event_for_object = vec![-1i32; 1]; // 1 object
+    let bitmask = vec![3u64]; // bits 0 and 1 set: both event 0 and event 1 are active
+
+    // string table offsets for "create_order" (16) and "approve_order" (32)
+    let activity_offsets = vec![16, 32];
+
+    ocel.compute_projected_dfg(
+        &bitmask,
+        &mut dfg_matrix,
+        &activity_offsets,
+        &mut last_event_for_object,
+    ).unwrap();
+
+    // Expect a transition from create_order (index 0) to approve_order (index 1).
+    assert_eq!(dfg_matrix[1], 1);
+}
+
+#[test]
+fn test_heuristics_miner_noisy_trace_hardening() {
+    let _lock = TEST_MUTEX.lock().unwrap_or_else(|e| e.into_inner());
+
+    // 1. Create a buffer that simulates a corrupted/noisy trace with overflowing offsets
+    let mut buf = build_valid_ocel_buffer();
+
+    // We modify events_offset to a huge value to trigger overflow in check_bound
+    // events_offset is at bytes 8..12
+    buf[8..12].copy_from_slice(&0xFFFFFFFFu32.to_le_bytes());
+
+    // Try parsing
+    let res = ZeroCopyOcel::parse(&buf);
+    assert!(res.is_err());
+    assert_eq!(res.err().unwrap(), wasm4pm::ocel::OcelError::OutOfBounds);
+
+    // 2. Create another buffer where string table offsets are corrupted
+    let buf2 = build_valid_ocel_buffer();
+    // Parse it first (should be valid)
+    let ocel2 = ZeroCopyOcel::parse(&buf2).unwrap();
+    // Verify valid parsing
+    assert_eq!(ocel2.events_count(), 2);
+
+    // Now let's construct a buffer where index tables have overflowing count/offset
+    let mut buf3 = build_valid_ocel_buffer();
+    // e2o_offset is at bytes 24..28
+    // We make events count large but valid, and e2o array_offset overflowing
+    // E2O entry 0 offset is at byte 200..204
+    // We set array_offset = u32::MAX - 4, count = 2
+    buf3[200..204].copy_from_slice(&(u32::MAX - 4).to_le_bytes());
+    buf3[204..208].copy_from_slice(&2u32.to_le_bytes());
+
+    let ocel3 = ZeroCopyOcel::parse(&buf3).unwrap();
+    // When we call get_event_objects, it should return OutOfBounds instead of overflowing and returning a slice
+    let res3 = ocel3.get_event_objects(0);
+    assert_eq!(res3.unwrap_err(), wasm4pm::ocel::OcelError::OutOfBounds);
+
+    // 3. FFI Boundary checks
+    let code = ffi::wasm_init(10 * 1024 * 1024);
+    assert_eq!(code, 0);
+
+    // Allocate space and write the malformed buffer
+    let log_len = buf3.len() as u32;
+    let log_offset = ffi::wasm_alloc(log_len);
+    assert_ne!(log_offset, 0);
+    let log_ptr = allocator::get_absolute_ptr(log_offset).unwrap();
+    unsafe {
+        std::ptr::copy_nonoverlapping(buf3.as_ptr(), log_ptr, log_len as usize);
+    }
+
+    let query_str = "create_order,approve_order,10000";
+    let query_len = query_str.len() as u32;
+    let query_offset = ffi::wasm_alloc(query_len);
+    assert_ne!(query_offset, 0);
+    let query_ptr = allocator::get_absolute_ptr(query_offset).unwrap();
+    unsafe {
+        std::ptr::copy_nonoverlapping(query_str.as_ptr(), query_ptr, query_len as usize);
+    }
+
+    // Call wasm_parse_and_query. It should catch the out-of-bounds/overflow and return an error code,
+    // rather than panicking or executing out-of-bounds read/write.
+    let res_encoded = ffi::wasm_parse_and_query(log_offset, log_len, query_offset, query_len);
+    let res_offset = (res_encoded >> 32) as u32;
+    let res_len = (res_encoded & 0xFFFFFFFF) as u32;
+
+    assert_eq!(res_offset, 0); // Should fail
+    assert_eq!(res_len, sandbox::ERR_QUERY_TIMEOUT); // Error code indicating internal query out of bounds
+}
+
+

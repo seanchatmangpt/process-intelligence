@@ -97,31 +97,81 @@ BLAKE3 is an agile, tree-structured cryptographic hash function designed to prev
    - **Incremental Audit Paths**: Auditors can verify a subset of traces or event chunks without hashing the entire file. Given the sibling hashes (audit path) $\Pi_i$ from leaf $C_i$ to the root, verification of $C_i$'s integrity takes $O(\log n)$ time, ensuring that historical segments of the log cannot be silently modified without disrupting the entire tree.
 
 ### 2.2 Ed25519 Signature Validation Procedures
-To guarantee that the receipt was produced by the certified `wasm4pm` execution core and has not been forged or tampered with, auditors must execute the following Ed25519 signature verification procedure:
+
+To guarantee that the receipt was produced by the certified `wasm4pm` execution core and has not been forged or tampered with, and to structurally reject malleable or non-canonical signatures prior to executing algebraic curve verification, auditors must execute the following multi-stage verification procedure:
 
 1. **Deterministic Receipt Serialization**:
    - Remove the `validator_signature` field from the verification receipt JSON object to yield the unsigned receipt $R_{\text{unsigned}}$.
    - Serialize $R_{\text{unsigned}}$ using the **JSON Canonicalization Scheme (JCS - RFC 8785)** to yield a deterministic, system-independent byte sequence:
      $$B_{\text{receipt}} = \operatorname{JCS}(R_{\text{unsigned}})$$
 
-2. **Key and Signature Parsing**:
-   - Parse the 32-byte validator public key $\operatorname{PK}_{\text{validator}}$ and check that it is a valid compressed point representing a curve coordinate on the Edwards curve:
-     $$-x^2 + y^2 = 1 - \frac{121665}{121666} x^2 y^2 \pmod p$$
-     over the field $\mathbb{F}_p$ where $p = 2^{255} - 19$. If it represents a low-order point or is invalidly encoded, reject the signature.
-   - Parse the 64-byte signature and split it into components $R$ (first 32 bytes, representing a curve point) and $S$ (last 32 bytes, representing a scalar).
-   - Check that the scalar $S$ is in the range:
-     $$0 \le S < L$$
-     where $L = 2^{252} + 277454108928092425263413932207934334793$ is the prime order of the base point $B$. If $S \ge L$, the signature is invalid (this prevents signature malleability attacks).
+2. **Structural Validation Checks (Pre-Execution Rejection Phase)**:
+   Before executing any elliptic curve scalar multiplication or point addition, the verification engine MUST structurally validate the input types and encodings to eliminate signature malleability.
+
+   * **A. Size & Type Verification**:
+     - Confirm that the validator public key $\operatorname{PK}_{\text{validator}}$ is exactly 32 bytes in length. If not, reject immediately.
+     - Confirm that the signature is exactly 64 bytes in length. If not, reject immediately.
+     - Split the 64-byte signature into components $R$ (first 32 bytes) and $S$ (last 32 bytes).
+
+   * **B. Public Key Canonical Representation Check**:
+     - The public key bytes $A = \operatorname{PK}_{\text{validator}}$ are parsed as a compressed Edwards point.
+     - Let $y_A$ be the integer represented by the first 255 bits of $A$ (in little-endian format).
+     - **Malleability Protection (Coordinate Bound)**: The field prime for Ed25519 is $p = 2^{255} - 19$. The $y$-coordinate must be strictly less than $p$:
+       $$y_A < 2^{255} - 19$$
+       If $y_A \ge p$, the public key is non-canonical. The signature MUST be rejected immediately.
+     - **Curve Membership Check**: The point $A$ must decode to a valid point on the Edwards curve:
+       $$-x^2 + y^2 = 1 - \frac{121665}{121666} x^2 y^2 \pmod p$$
+       If decoding fails (e.g., $x^2 = \frac{y^2 - 1}{d y^2 + 1}$ is not a quadratic residue modulo $p$), reject immediately.
+
+   * **C. Public Key Small-Order Exclusion Check**:
+     - The public key $A$ must not be a small-order point (order dividing 8) to prevent trivial signature validations and key-substitution attacks.
+     - Check that $A$ is not one of the 8 low-order points on the curve. This is achieved algebraically by checking:
+       $$[8]A \ne \mathcal{O}$$
+       where $\mathcal{O} = (0, 1)$ is the identity/neutral element of the curve. Alternatively, the verifier can reject if $A$ matches any of the 8 canonical compressed representations of low-order points (in hexadecimal):
+       1. $\mathcal{O}$: `0100000000000000000000000000000000000000000000000000000000000000`
+       2. $[2]\mathcal{O}_8$: `ecffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff7f`
+       3. $[4]\mathcal{O}_8$: `0000000000000000000000000000000000000000000000000000000000000000`
+       4. $[4]\mathcal{O}_8'$: `0000000000000000000000000000000000000000000000000000000000000080`
+       5. $\mathcal{O}_8$: `8666666666666666666666666666666666666666666666666666666666666606`
+       6. $\mathcal{O}_8'$: `8666666666666666666666666666666666666666666666666666666666666686`
+       7. $\mathcal{O}_8''$: `7999999999999999999999999999999999999999999999999999999999999979`
+       8. $\mathcal{O}_8'''$: `79999999999999999999999999999999999999999999999999999999999999f9`
+     - If $A$ is a low-order point, reject immediately.
+
+   * **D. Signature Point $R$ Canonical Representation Check**:
+     - The first 32 bytes of the signature representing the point $R$ are parsed.
+     - Let $y_R$ be the integer represented by the first 255 bits of $R$ (in little-endian format).
+     - **Malleability Protection (Coordinate Bound)**: The $y$-coordinate must be strictly less than $p$:
+       $$y_R < 2^{255} - 19$$
+       If $y_R \ge p$, the signature is non-canonical. Reject immediately.
+     - **Curve Membership Check**: The point $R$ must decode to a valid point on the Edwards curve. If decoding fails, reject immediately.
+
+   * **E. Signature Point $R$ Small-Order Exclusion Check**:
+     - The point $R$ must not be a small-order point.
+     - Verify algebraically that:
+       $$[8]R \ne \mathcal{O}$$
+       Or check that $R$ does not match any of the 8 canonical compressed low-order point representations listed in **C**.
+     - If $R$ is a low-order point, reject immediately.
+
+   * **F. Scalar $S$ Canonical Bound Check**:
+     - Parse the last 32 bytes of the signature as a 256-bit little-endian integer representing $S$.
+     - **Malleability Protection (Scalar Bound)**: The scalar $S$ must be strictly less than the group order $L$:
+       $$0 \le S < L$$
+       where $L = 2^{252} + 277454108928092425263413932207934334793$ is the prime order of the base point $B$.
+     - If $S \ge L$ or $S < 0$, the signature is malleable. Reject immediately.
 
 3. **Scalar Hash Verification**:
    - Compute the verification scalar $k$ using SHA-512 directly over the concatenated signature components and the canonical JSON byte sequence:
      $$k = \operatorname{SHA-512}(R \mathbin{\Vert} \operatorname{PK}_{\text{validator}} \mathbin{\Vert} B_{\text{receipt}}) \pmod L$$
 
 4. **Curve Equation Check**:
-   - Verify the verification relation:
-     $$[S]B = R + [k]\operatorname{PK}_{\text{validator}}$$
-     To avoid issues with the cofactor of the curve, clear the cofactor 8:
-     $$[8][S]B = [8]R + [8][k]\operatorname{PK}_{\text{validator}}$$
+   - Verify the verification relation. Depending on the verification profile, one of two mathematically sound checks is executed:
+     * **Cofactorless Verification (Strict/Recommended)**: Verify that:
+       $$[S]B = R + [k]\operatorname{PK}_{\text{validator}}$$
+       This relation prevents any small-order coordinate contributions from succeeding, eliminating cofactored-signature malleability entirely.
+     * **Cofactored Verification (Standard Compat)**: If the system requires cofactored verification, the cofactor 8 is cleared:
+       $$[8][S]B = [8]R + [8][k]\operatorname{PK}_{\text{validator}}$$
+       *Note: Because points $R$ and $\operatorname{PK}_{\text{validator}}$ are guaranteed to have no low-order components (verified in Steps C and E), the cofactored equation is mathematically equivalent to the cofactorless equation, preventing any malleability attacks.*
    - If the equation holds, the receipt signature is certified as valid and authentic; otherwise, verification fails.
 
 ## 3. Auditing Toolchain Requirements

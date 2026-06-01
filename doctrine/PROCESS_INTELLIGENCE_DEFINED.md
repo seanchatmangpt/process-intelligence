@@ -45,7 +45,7 @@ The key terms carry precise meaning:
 ## Five Maturity Levels (Blue River Dam Doctrine)
 
 The five maturity levels define the progressive removal of unresolved process uncertainty
-from execution. Source: Blue River Dam doctrine (wasm4pm-compat/docs/BLUE_RIVER_DAM.md).
+from execution. Source: [Blue River Dam doctrine](file:///Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md).
 
 ### Level 1 — Records Activity
 

@@ -34,9 +34,9 @@ The core doctrine: **If a model claims to explain the log, but alignment reveals
 ```
 cost(a, t) = 
   | 0        if label(t) = a (move on both)
-  | 1        if a = ∞ and t is a visible transition (move on model only)
-  | 0        if a = ∞ and t is silent τ (invisible move)
-  | 1        if t = ∞ (move on log only)
+  | 1        if a = ≫ and t is a visible transition (move on model only)
+  | 0        if a = ≫ and t is silent τ (invisible move)
+  | 1        if t = ≫ (move on log only)
   | ∞        if label(t) ≠ a (illegal move)
 ```
 
@@ -46,10 +46,29 @@ $$f_{\text{align}}(\sigma, N) = 1 - \frac{C(\gamma^*)}{|\sigma| + d_{\text{min}}
 where $|\sigma|$ is the trace length and $d_{\text{min}}(i, o)$ is the length of the shortest path from the source place $i$ to the sink place $o$ in $N$ (ignoring silent transitions $\tau$).
 
 **Algorithm:**
-- Open set: Priority queue of (g_cost, h_estimate, state)
-- Closed set: Visited marking+position pairs
-- Heuristic $h$: Remaining trace length (admissible lower bound)
-- Termination: When goal marking is reached with no events remaining
+- **Open set:** Priority queue of `(f_score, g_cost, h_estimate, state)` ordered by ascending `f_score = g_cost + h_estimate`.
+- **Closed set:** Visited marking+position pairs `(marking, trace_index)`.
+- **Heuristic $h(M, p)$:** 
+  $$h(M, p) = \max(0, d_{\text{min}}(M, M_o) - (n - p))$$
+  where $d_{\text{min}}(M, M_o)$ is the shortest path distance (counting only visible transitions) in the Petri Net from the current marking $M$ to the final marking $M_o$, and $n - p$ is the remaining trace length (where $n = |\sigma|$ and $p$ is the current event index being aligned).
+  
+  *Audit Note on Admissibility & Consistency:*
+  The previous heuristic (remaining trace length $h(M, p) = n - p$) was **inadmissible** and **inconsistent**. Because the cost of a move on both is $0$, a sequence of $n - p$ remaining events matching the model perfectly could be aligned with an actual cost of $0$, which is strictly less than the estimated remaining trace length ($n - p > 0$).
+  
+  The audited heuristic $h(M, p) = \max(0, d_{\text{min}}(M, M_o) - (n - p))$ is mathematically guaranteed to be:
+  1. **Admissible:** It never overestimates the actual remaining cost $h^*(M, p)$. Let $N_L$, $N_M$, and $N_B$ be the number of moves on log, model (visible), and both, respectively, in the optimal remaining alignment to the goal.
+     - The remaining cost is $C_{\text{rem}} = 1 \cdot N_L + 1 \cdot N_M + 0 \cdot N_B = N_L + N_M$.
+     - The remaining trace length is $n - p = N_L + N_B$.
+     - The number of visible transitions fired is $V \ge d_{\text{min}}(M, M_o)$, and $V = N_M + N_B$.
+     - Therefore, $N_M = V - N_B$ and $N_L = (n - p) - N_B$.
+     - Substituting these gives $C_{\text{rem}} = ((n - p) - N_B) + (V - N_B) = (n - p) + V - 2 N_B$.
+     - Since $N_B \le n - p$, we have $C_{\text{rem}} \ge V - N_B \ge d_{\text{min}}(M, M_o) - (n - p)$. Since $C_{\text{rem}} \ge 0$, we have $C_{\text{rem}} \ge \max(0, d_{\text{min}}(M, M_o) - (n - p)) = h(M, p)$, proving admissibility.
+  2. **Consistent (Monotonic):** For any step from $(M, p)$ to $(M', p')$ with step cost $c$:
+     - **Move on Log:** $p' = p + 1$, $M' = M$, $c = 1$. Let $d = d_{\text{min}}(M, M_o)$ and $r = n - p$. We check $\max(0, d - r) \le 1 + \max(0, d - (r - 1))$, which holds since $d - r \le d - r + 2$.
+     - **Move on Model (Visible):** $p' = p$, $M \xrightarrow{t} M'$, $c = 1$. Here $d \le 1 + d'$ where $d = d_{\text{min}}(M, M_o)$ and $d' = d_{\text{min}}(M', M_o)$. We check $\max(0, d - r) \le 1 + \max(0, d' - r)$, which holds since $d - r \le d' - r + 1 \le 1 + \max(0, d' - r)$.
+     - **Move on Model (Silent):** $p' = p$, $M \xrightarrow{\tau} M'$, $c = 0$. Since $\tau$ is silent, $d \le d'$. We check $\max(0, d - r) \le 0 + \max(0, d' - r)$, which holds since $d \le d'$.
+     - **Move on Both:** $p' = p + 1$, $M \xrightarrow{t} M'$, $c = 0$. Here $d \le 1 + d'$ since $t$ is visible. We check $\max(0, d - r) \le 0 + \max(0, d' - (r - 1))$. Since $d - r \le d' - r + 1$, this inequality holds.
+- **Termination:** When goal marking $M_o$ is reached with no events remaining ($p = n$).
 
 **Receipt Structure:**
 ```json
@@ -436,7 +455,7 @@ The following wasm4pm-compat pathways must **not be re-implemented** in wasm4pm 
 
 Let $T$ be the set of transitions in the Petri Net model $N$, and let $\text{freq}(t, L)$ be the total number of times transition $t$ is fired during the optimal alignment replay of all traces in log $L$. The generalization metric is defined as:
 
-$$g(L, N) = \frac{1}{|T|} \sum_{t \in T} \left( 1 - \frac{1}{\text{freq}(t, L) + 1} \right)$$
+$$g(L, N) = \begin{cases} \frac{1}{|T|} \sum_{t \in T} \left( 1 - \frac{1}{\text{freq}(t, L) + 1} \right) & \text{if } |T| > 0 \\ 0.0 & \text{if } |T| = 0 \end{cases}$$
 
 This metric evaluates transition coverage such that transitions with high firing frequencies contribute close to $1.0$, while unused transitions ($\text{freq}(t, L) = 0$) contribute $0.0$, resulting in an average metric $\in [0, 1]$ representing the overall robustness of model paths against overfitting.
 
@@ -496,8 +515,8 @@ Every A* alignment produces a receipt that can be independently verified:
   "model_hash": "<SHA-256 of model>",
   "alignment": [
     { "log_activity": "A", "model_transition": "t1", "cost": 0 },
-    { "log_activity": "B", "model_transition": "∞", "cost": 1 },
-    { "log_activity": "∞", "model_transition": "τ (silent)", "cost": 0 }
+    { "log_activity": "B", "model_transition": "≫", "cost": 1 },
+    { "log_activity": "≫", "model_transition": "τ (silent)", "cost": 0 }
   ],
   "total_cost": <C>,
   "moves": {

@@ -10,14 +10,17 @@ use std::sync::Mutex;
 static LAST_ERROR: Mutex<u32> = Mutex::new(0);
 
 fn set_last_error(code: u32) {
-    if let Ok(mut guard) = LAST_ERROR.lock() {
-        *guard = code;
-    }
+    let mut guard = LAST_ERROR.lock().unwrap_or_else(|e| e.into_inner());
+    *guard = code;
 }
 
 #[no_mangle]
 pub extern "C" fn wasm_get_last_error() -> u32 {
-    LAST_ERROR.lock().map(|g| *g).unwrap_or(0)
+    let result = std::panic::catch_unwind(|| {
+        let guard = LAST_ERROR.lock().unwrap_or_else(|e| e.into_inner());
+        *guard
+    });
+    result.unwrap_or(0)
 }
 
 // 1. Initialize the global arena allocator with the memory ceiling
@@ -108,9 +111,10 @@ pub extern "C" fn wasm_parse_and_query(
             }
         };
 
-        // Validate pointer bounds in linear memory
-        if !allocator::validate_pointer(log_ptr, log_len as usize)
-            || !allocator::validate_pointer(query_ptr, query_len as usize)
+        // Validate pointer bounds in linear memory using FfiSafetyChecker
+        if !crate::safety::FfiSafetyChecker::check_slice(log_ptr, log_len as usize, 1)
+            || !crate::safety::FfiSafetyChecker::check_slice(query_ptr, query_len as usize, 1)
+            || !crate::safety::FfiSafetyChecker::check_disjoint(log_ptr, log_len as usize, query_ptr, query_len as usize)
         {
             set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
             return encode_slice(0, sandbox::ERR_LIFECYCLE_VIOLATION);
@@ -222,7 +226,7 @@ pub extern "C" fn wasm_shred_heap(seed_offset: u32) -> u32 {
                 return sandbox::ERR_LIFECYCLE_VIOLATION;
             }
         };
-        if !allocator::validate_pointer(seed_ptr, 32) {
+        if !crate::safety::FfiSafetyChecker::check_slice(seed_ptr, 32, 1) {
             set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
             return sandbox::ERR_LIFECYCLE_VIOLATION;
         }
@@ -277,3 +281,54 @@ fn hex_encode(bytes: &[u8]) -> String {
     }
     s
 }
+
+// 5. Verifies trace telemetry using the OTel-BLAKE3 event chain.
+// Returns 0 if verification is successful. Returns error code if validation fails.
+#[no_mangle]
+pub extern "C" fn wasm_verify_otel_trace(trace_offset: u32, trace_len: u32) -> u32 {
+    let result = std::panic::catch_unwind(|| {
+        set_last_error(0);
+        let trace_ptr = match allocator::get_absolute_ptr(trace_offset) {
+            Some(p) => p,
+            None => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+        if !crate::safety::FfiSafetyChecker::check_slice(trace_ptr, trace_len as usize, 1) {
+            set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+            return sandbox::ERR_LIFECYCLE_VIOLATION;
+        }
+
+        let trace_slice = unsafe { std::slice::from_raw_parts(trace_ptr, trace_len as usize) };
+        let trace_str = match std::str::from_utf8(trace_slice) {
+            Ok(s) => s,
+            Err(_) => {
+                set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+                return sandbox::ERR_LIFECYCLE_VIOLATION;
+            }
+        };
+
+        let parsed_trace = match crate::otel::OtelTrace::parse_from_str(trace_str) {
+            Ok(t) => t,
+            Err(_) => {
+                set_last_error(sandbox::ERR_REPLAY_ATTESTATION);
+                return sandbox::ERR_REPLAY_ATTESTATION;
+            }
+        };
+
+        match crate::otel::verify_otel_trace(&parsed_trace) {
+            Ok(true) => 0,
+            _ => {
+                set_last_error(sandbox::ERR_REPLAY_ATTESTATION);
+                sandbox::ERR_REPLAY_ATTESTATION
+            }
+        }
+    });
+
+    result.unwrap_or_else(|_| {
+        set_last_error(sandbox::ERR_LIFECYCLE_VIOLATION);
+        sandbox::ERR_LIFECYCLE_VIOLATION
+    })
+}
+
