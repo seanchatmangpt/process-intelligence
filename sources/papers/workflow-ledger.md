@@ -3,3 +3,4 @@
 * Paper Inventory Entry 2: Analyzing structural invariants and concurrency constraints.
 * Paper Inventory Entry 3: Analyzing structural invariants and concurrency constraints.
 * Paper Inventory Entry 4: Analyzing structural invariants and concurrency constraints.
+* Paper Inventory Entry 5: Analyzing structural invariants and concurrency constraints.
