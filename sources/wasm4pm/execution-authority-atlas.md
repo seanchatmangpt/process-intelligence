@@ -4,3 +4,6 @@
 * Execution Atlas 3: Mapping WASM FFI bindings to the raw execution boundaries.
 * Execution Atlas 4: Mapping WASM FFI bindings to the raw execution boundaries.
 * Execution Atlas 5: Mapping WASM FFI bindings to the raw execution boundaries.
+
+* **Step: map mining authority**
+  - Defining engine execution requirements.
