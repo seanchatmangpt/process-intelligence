@@ -37,3 +37,6 @@
 
 * **Step: map receipt validation authority**
   - Defining engine execution requirements.
+
+* **Step: map lifecycle state authority**
+  - Defining engine execution requirements.
