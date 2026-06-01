@@ -55,3 +55,6 @@
 
 * **Step: map pass fixture quality**
   - Evaluating type safety and witness validations.
+
+* **Step: map stderr receipt quality**
+  - Evaluating type safety and witness validations.
