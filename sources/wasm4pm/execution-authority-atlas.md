@@ -64,3 +64,6 @@
 
 * **Step: map process tree runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map DFG runtime obligations**
+  - Defining engine execution requirements.
