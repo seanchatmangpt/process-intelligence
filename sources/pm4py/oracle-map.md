@@ -77,3 +77,6 @@
 
 * **Step: identify replay gaps**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: identify receipt gaps**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
