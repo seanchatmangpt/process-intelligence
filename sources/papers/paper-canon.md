@@ -17,3 +17,6 @@
 
 ### Paper: kuesters_2024_ocpq_tree
 - **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
+
+### Paper: weske_2019_bpm_principles
+- **Formal Objects**: Places, transitions, arcs, and markings representing Workflow Net structure.
