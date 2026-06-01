@@ -13,3 +13,6 @@
 
 * **Step: map Admission/Refusal law**
   - Evaluating type safety and witness validations.
+
+* **Step: map LossPolicy/LossReport law**
+  - Evaluating type safety and witness validations.
