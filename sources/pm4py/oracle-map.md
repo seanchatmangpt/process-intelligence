@@ -38,3 +38,6 @@
 
 * **Step: map alignment capability**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: map filtering capability**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
