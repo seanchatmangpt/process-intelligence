@@ -33,8 +33,8 @@ Every receipt must be stored in the VDR under `/process-intelligence/receipts/` 
     "slide_id": { "type": "string", "description": "UUID of the presentation slide." },
     "slide_title": { "type": "string" },
     "assertion_text": { "type": "string", "description": "The exact textual claim made on the slide." },
-    "target_log_hash": { "type": "string", "description": "SHA-256 hash of the XES/OCEL log file." },
-    "process_model_hash": { "type": "string", "description": "SHA-256 hash of the Petri net / BPMN file." },
+    "target_log_hash": { "type": "string", "description": "BLAKE3 hash of the XES/OCEL log file." },
+    "process_model_hash": { "type": "string", "description": "BLAKE3 hash of the Petri net / BPMN file." },
     "query_definition": {
       "type": "object",
       "properties": {
@@ -72,11 +72,9 @@ To validate a slide claim using the Slide-to-Receipt Map, the auditing system mu
    * Verify the `validator_signature` (an Ed25519 signature) against the pinned auditor public key $\operatorname{PK}_{\text{validator}}$:
      $$\operatorname{Ed25519-Verify}(\operatorname{PK}_{\text{validator}}, B_{\text{receipt}}, \text{validator\_signature}) == \text{True}$$
 4. **Log Hash and Merkle Root Audit**:
-   * Calculate the SHA-256 hash of the target log file $L$ and verify it matches the receipt:
-     $$\operatorname{SHA-256}(L) == \text{target\_log\_hash}$$
-   * To prevent event-level insertion or omission, construct a Merkle Tree over the event hash chains. Let $H_k = h(e_{\text{end}})$ be the final hash of trace $k$. The Merkle root $M_{\text{root}}$ is computed as:
-     $$M_{\text{root}} = \operatorname{Merkle-Root}(H_1, H_2, \dots, H_N)$$
-     Verify that $M_{\text{root}}$ matches the audited Merkle root hash pinned in the transaction's smart contract or signed closing agreement.
+   * Calculate the BLAKE3 hash of the target log file $L$ and verify it matches the receipt:
+     $$\operatorname{BLAKE3}(L) == \text{target\_log\_hash}$$
+   * To prevent event-level insertion or omission, construct a BLAKE3 event hash chain. Let $\mathcal{H}(e_j) = \operatorname{BLAKE3}(e_j \mathbin{\Vert} \mathcal{H}(e_{j-1}) \mathbin{\Vert} \operatorname{Sig}_{\text{system}}(e_j))$ with $\mathcal{H}(e_0) = \operatorname{BLAKE3}(\sigma_{\text{id}})$. Verify that the root of the event hash chains matches the audited Merkle root hash pinned in the transaction's smart contract or signed closing agreement.
 5. **Deterministic Replay**: Load the WASM module specified in `query_definition.query_uri`, execute it on the event log $L$ using the query `parameters`, and verify that the re-calculated fitness ($f_{\text{calc}}$) and precision ($p_{\text{calc}}$) match the receipt's values:
    $$\left| f_{\text{calc}} - f_{\text{receipt}} \right| < 10^{-6} \quad \text{and} \quad \left| p_{\text{calc}} - p_{\text{receipt}} \right| < 10^{-6}$$
 

@@ -8,9 +8,9 @@ No process assertion (e.g., "95% operational efficiency", "zero compliance drift
 
 ### A. Event Log Integrity and Provenance (Anti-Spoofing Protocol)
 * **Standard Formats**: The underlying data must conform to public standards such as IEEE 1849-2016 (XES) or OCEL 2.0 (Object-Centric Event Logs) as defined in [OCEL Process Intelligence Placement](file:///Users/sac/process-intelligence/standards/ocel_process-intelligence_placement.md) and [XES Process Intelligence Placement](file:///Users/sac/process-intelligence/standards/xes_process-intelligence_placement.md).
-* **Cryptographic Event-Chaining**: To prevent post-hoc log laundering or trace modification, every trace $\sigma = \langle e_1, e_2, \dots, e_n \rangle$ must form a hash chain. The cryptographic link $h(e_j)$ is computed as:
-  $$h(e_j) = \operatorname{SHA-256}(e_j \mathbin{\Vert} h(e_{j-1}) \mathbin{\Vert} \operatorname{Sig}_{\text{system}}(e_j))$$
-  with $h(e_0) = \operatorname{SHA-256}(\sigma_{\text{id}})$, where $\operatorname{Sig}_{\text{system}}(e_j)$ is the digital signature of the transactional system (ERP/CRM) generated at transaction commit time.
+* **Cryptographic Event-Chaining**: To prevent post-hoc log laundering or trace modification, every trace $\sigma = \langle e_1, e_2, \dots, e_n \rangle$ must form a hash chain. The cryptographic link $\mathcal{H}(e_j)$ is computed as:
+  $$\mathcal{H}(e_j) = \operatorname{BLAKE3}(e_j \mathbin{\Vert} \mathcal{H}(e_{j-1}) \mathbin{\Vert} \operatorname{Sig}_{\text{system}}(e_j))$$
+  with $\mathcal{H}(e_0) = \operatorname{BLAKE3}(\sigma_{\text{id}})$, where $\operatorname{Sig}_{\text{system}}(e_j)$ is the digital signature of the transactional system (ERP/CRM) generated at transaction commit time.
 * **Extraction Traceability**: The log extraction process must be documented using a W3C PROV-O provenance model mapping each event back to its source transaction ID and its corresponding database Write-Ahead Log (WAL) sequence number.
 
 ### B. Mathematical Conformance Bounds

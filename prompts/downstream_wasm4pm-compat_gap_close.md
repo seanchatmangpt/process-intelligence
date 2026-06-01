@@ -15,6 +15,28 @@ To ensure formal proof of execution, all process artifacts (logs, models, alignm
   - Commutativity: $a \sqcup b = b \sqcup a$
   - Idempotency: $a \sqcup a = a$
 
+### 1.1 Receipt-Shaped Object Graduation Specification
+An `Evidence` instance graduates to a terminal "receipt-shaped" status and is serialized as an immutable, audited execution receipt when:
+1. **Terminal Marking State**: The process state reaches a terminal marking (e.g., a token exists in the sink place $o$, or the process tree completes execution).
+2. **Configurable Fitness Threshold**: The calculated replay fitness $f(\sigma, N)$ meets or exceeds the configurable fitness threshold $\theta_{\text{fit}}$ specified for the context:
+   - **Board Admissibility**: $\theta_{\text{fit}} \geq 0.95$ (requires validator and Board-member signatures for lower values, but is strictly capped at $0.85$ absolute minimum).
+   - **Audit Admissibility**: $\theta_{\text{fit}} \geq 0.85$.
+3. **Role-Based Signature Registry**: The receipt hash is signed by a valid entity matching the `Auditor` or `Validator` role. The compat layer must verify signatures against a role key registry:
+   - Registry roles: `Auditor`, `Runner`, `Board`, `Validator`.
+   - Implement Ed25519 signature verification against public keys corresponding to these registered roles.
+4. **JCS Canonicalization**: Prior to signature generation or verification, the unsigned receipt JSON payload must be serialized according to the **JSON Canonicalization Scheme (JCS - RFC 8785)**:
+   $$B_{\text{receipt}} = \operatorname{JCS}(R_{\text{unsigned}})$$
+   The signature is then validated against $B_{\text{receipt}}$ using the registered role public key:
+   $$\operatorname{Ed25519-Verify}(\operatorname{PK}_{\text{role}}, B_{\text{receipt}}, \text{signature}) == \text{True}$$
+5. **Receipt Schema Conformance**: The graduated object must conform to the `ProcessIntelligenceVerificationReceipt` schema defined in [define_slide-to-receipt_map.md](file:///Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md), which contains:
+   - `slide_id`: Presentation slide UUIDv4.
+   - `slide_title` & `assertion_text`: Metadata and claim details.
+   - `target_log_hash`: SHA-256 hash of the XES/OCEL event log.
+   - `process_model_hash`: SHA-256 hash of the process model.
+   - `query_definition`: Engine identifier (`wasm4pm`), URI, and parameters.
+   - `verification_results`: Calculated `fitness`, `precision`, and `throughput_days` metrics.
+   - `validator_signature`: Cryptographic signature of the execution engine.
+
 ## 2. Admission and Refusal Laws
 - **Strict Schema Admission**: Implement strict parsers that refuse any log failing schema validation (e.g., XML schema for XES, JSON-schema/SQLite schema for OCEL 2.0).
 - **Raw-Laundering Refusal**: Prevent unverified raw logs from bypassing type boundaries. All raw inputs must go through an admission pipeline that verifies:

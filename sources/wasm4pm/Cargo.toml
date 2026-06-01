@@ -1,0 +1,12 @@
+[package]
+name = "wasm4pm"
+version = "30.1.2"
+edition = "2021"
+authors = ["Execution Agent"]
+description = "High-performance cryptographically sandboxed WASM execution engine for process intelligence"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Completely self-contained implementation with zero external dependencies to prevent supply chain and network access issues.
