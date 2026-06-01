@@ -1,0 +1,575 @@
+# Unified ggen Ecosystem Configuration
+# Authority: Process Intelligence Research Foundry
+# Status: Phase 20 Integration Specification
+# Date: 2026-06-01
+
+[metadata]
+name = "process-intelligence-ecosystem"
+version = "1.0.0"
+description = "Unified artifact generation for all five systems"
+license = "MIT"
+authors = ["Process Intelligence Research Foundry"]
+
+[ontology]
+# Single source of truth: TTL law files
+authority = "ttl-ontologies"
+base_uri = "http://process-intelligence.org/"
+
+# All TTL files are ingested into a unified RDF graph
+files = [
+    "ontology/process-law.ttl",           # Process model definitions
+    "ontology/type-law.ttl",              # Evidence<T, State, Witness> lattice
+    "ontology/lifecycle-law.ttl",         # MAPE-K state transitions
+    "ontology/governance-law.ttl",        # Blue River policies + rules
+    "ontology/weaver-law.ttl",            # OTel semantic mappings
+    "ontology/m-and-a-law.ttl"            # M&A claim definitions
+]
+
+# RDF triple store backend
+triple_store = {
+    backend = "memory",        # Can be "memory" or "file"
+    persist_file = "ontology/triple-store.nt"
+}
+
+[generation]
+# One unified pipeline for all artifacts
+pipeline = "unified"
+
+# Global output directory
+output_dir = "artifacts"
+
+# Receipt chain configuration
+receipt_chain = {
+    enabled = true,
+    algorithm = "BLAKE3",
+    chain_file = "receipts/ggen-receipt-chain.json",
+    include_timestamp = true,
+    include_ontology_hash = true,
+    signing_key = "ggen_authority_key"
+}
+
+# Generation rule: Process Model Definition
+[[generation.rules]]
+name = "process-model-definition"
+description = "Generate PNML process models from TTL"
+trigger = "ontology_updated"
+enabled = true
+
+[generation.rules.source]
+type = "sparql"
+query = """
+PREFIX proc: <http://process-intelligence/process#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?processId ?stageName ?stageType ?nextStageId
+WHERE {
+    ?p proc:id ?processId .
+    ?p proc:hasStage ?stage .
+    ?stage proc:name ?stageName .
+    ?stage rdf:type ?stageType .
+    ?stage proc:nextStage ?nextStageId .
+}
+ORDER BY ?processId
+"""
+
+[generation.rules.template]
+file = "templates/process-model.tera"
+format = "pnml"
+
+[generation.rules.output]
+file = "declared_process_model.pnml"
+receipt = true
+validation = [
+    "wasm4pm validate --model {output}",
+    "petri-net-analyzer --model {output} --check soundness"
+]
+
+[generation.rules.deployment]
+target = "zoeapp"
+endpoint = "http://zoeapp:3000/deploy/model"
+method = "POST"
+headers = { "Content-Type" = "application/xml", "X-Signature" = "{receipt.signature}" }
+
+
+# Generation rule: Governance Policies
+[[generation.rules]]
+name = "governance-policy-generation"
+description = "Generate JSON governance policies from TTL"
+trigger = "ontology_updated"
+enabled = true
+
+[generation.rules.source]
+type = "sparql"
+query = """
+PREFIX gov: <http://process-intelligence/governance#>
+PREFIX proc: <http://process-intelligence/process#>
+
+SELECT ?policyId ?lifecycle_state ?allowedRole ?forbiddenFrom ?forbiddenTo
+    ?ratePerMin ?rateBurst ?dataResource ?dataAction ?dataCondition
+WHERE {
+    ?pol gov:policyId ?policyId .
+    ?pol gov:lifecycle_state ?lifecycle_state .
+    ?pol gov:allowedRole ?allowedRole .
+
+    OPTIONAL {
+        ?pol gov:forbidden ?forbid .
+        ?forbid gov:fromState ?forbiddenFrom .
+        ?forbid gov:toState ?forbiddenTo .
+    }
+
+    OPTIONAL {
+        ?pol gov:rateLimit ?rateLimit .
+        ?rateLimit gov:perMinute ?ratePerMin .
+        ?rateLimit gov:burst ?rateBurst .
+    }
+
+    OPTIONAL {
+        ?pol gov:dataAccess ?dataAccess .
+        ?dataAccess gov:resource ?dataResource .
+        ?dataAccess gov:action ?dataAction .
+        ?dataAccess gov:condition ?dataCondition .
+    }
+}
+ORDER BY ?policyId
+"""
+
+[generation.rules.template]
+file = "templates/governance-policy.tera"
+format = "json"
+
+[generation.rules.output]
+file = "governance_policies.json"
+receipt = true
+signing_key = "blue_river_governor_key"
+validation = [
+    "jsonschema validate --schema schemas/governance-policy.json --data {output}"
+]
+
+[generation.rules.deployment]
+targets = [
+    {
+        system = "blue_river_dam",
+        endpoint = "http://blue_river:5000/deploy/policies",
+        method = "POST"
+    },
+    {
+        system = "expo_supabase",
+        endpoint = "https://supabase.example.com/api/governance/deploy",
+        method = "POST"
+    }
+]
+
+
+# Generation rule: Lifecycle State Machine
+[[generation.rules]]
+name = "lifecycle-state-machine"
+description = "Generate Rust state machine from TTL"
+trigger = "ontology_updated"
+enabled = true
+
+[generation.rules.source]
+type = "sparql"
+query = """
+PREFIX lifecycle: <http://process-intelligence/lifecycle#>
+
+SELECT ?state ?nextState ?condition ?conditionType
+WHERE {
+    ?s lifecycle:state ?state .
+    ?s lifecycle:transition ?t .
+    ?t lifecycle:to ?nextState .
+    ?t lifecycle:condition ?condition .
+    ?condition lifecycle:type ?conditionType .
+}
+ORDER BY ?state
+"""
+
+[generation.rules.template]
+file = "templates/lifecycle-sm.tera"
+format = "rust"
+
+[generation.rules.output]
+file = "lifecycle_state_machine.rs"
+receipt = true
+validation = [
+    "rustc --crate-type lib {output} --edition 2021",
+    "petri-net-analyzer --model {output} --check soundness"
+]
+
+[generation.rules.deployment]
+target = "blue_river_dam"
+endpoint = "http://blue_river:5000/deploy/lifecycle"
+method = "POST"
+
+
+# Generation rule: OTel Semantic Conventions
+[[generation.rules]]
+name = "otel-semantic-conventions"
+description = "Generate OTel semantic conventions from TTL"
+trigger = "ontology_updated"
+enabled = true
+
+[generation.rules.source]
+type = "sparql"
+query = """
+PREFIX weaver: <http://process-intelligence/weaver#>
+
+SELECT ?spanName ?spanBrief ?requiredAttribute ?attrType ?attrPattern ?eventName
+WHERE {
+    ?span weaver:spanName ?spanName .
+    ?span weaver:brief ?spanBrief .
+    ?event weaver:eventName ?eventName .
+
+    OPTIONAL {
+        ?span weaver:requires ?attr .
+        ?attr weaver:name ?requiredAttribute .
+        ?attr weaver:type ?attrType .
+        OPTIONAL { ?attr weaver:pattern ?attrPattern . }
+    }
+}
+ORDER BY ?spanName
+"""
+
+[generation.rules.template]
+file = "templates/otel-conventions.tera"
+format = "yaml"
+
+[generation.rules.output]
+file = "semantic-conventions.yaml"
+receipt = true
+validation = [
+    "weaver manifest validate --manifest {output}"
+]
+
+[generation.rules.deployment]
+target = "otel_weaver"
+endpoint = "http://otel-weaver:8080/deploy/conventions"
+method = "POST"
+
+
+# Generation rule: M&A Board Claims
+[[generation.rules]]
+name = "m-and-a-board-claims"
+description = "Generate M&A projections from TTL + governance"
+trigger = "ontology_updated"
+enabled = true
+
+[generation.rules.source]
+type = "sparql"
+query = """
+PREFIX ma: <http://process-intelligence/ma#>
+PREFIX proc: <http://process-intelligence/process#>
+PREFIX gov: <http://process-intelligence/governance#>
+
+SELECT ?claimId ?claimType ?metric ?value ?unit ?evidence_process ?evidence_event
+    ?risk_category ?risk_value ?synergy_category ?synergy_value
+WHERE {
+    ?claim ma:id ?claimId .
+    ?claim ma:type ?claimType .
+    ?claim ma:metric ?metric .
+    ?claim ma:value ?value .
+    ?claim ma:unit ?unit .
+
+    ?claim ma:evidenced_by ?evidence .
+    ?evidence ma:process ?evidence_process .
+    ?evidence ma:event ?evidence_event .
+
+    OPTIONAL {
+        ?claim ma:risk ?risk .
+        ?risk ma:category ?risk_category .
+        ?risk ma:value ?risk_value .
+    }
+
+    OPTIONAL {
+        ?claim ma:synergy ?synergy .
+        ?synergy ma:category ?synergy_category .
+        ?synergy ma:value ?synergy_value .
+    }
+}
+ORDER BY ?claimId
+"""
+
+[generation.rules.template]
+file = "templates/m-and-a-deck.tera"
+format = "json"
+
+[generation.rules.output]
+file = "m-and-a-projections.json"
+receipt = true
+signing_key = "board_audit_key"
+validation = [
+    "jsonschema validate --schema schemas/m-and-a-claim.json --data {output}",
+    "validate-ma-evidence --claims {output} --event-log {project_root}/event_log.ocel"
+]
+
+[generation.rules.deployment]
+targets = [
+    {
+        system = "board_reporting",
+        endpoint = "https://board.example.com/api/claims/ingest",
+        method = "POST",
+        auth = "oauth2_bearer_token"
+    }
+]
+
+
+# Generation rule: Supabase RLS Policies
+[[generation.rules]]
+name = "supabase-rls-policies"
+description = "Generate SQL RLS policies from governance TTL"
+trigger = "ontology_updated"
+enabled = true
+
+[generation.rules.source]
+type = "sparql"
+query = """
+PREFIX gov: <http://process-intelligence/governance#>
+
+SELECT ?policyName ?tableName ?allowedRoles ?condition ?action
+WHERE {
+    ?policy gov:rlsPolicy ?policyName .
+    ?policy gov:table ?tableName .
+    ?policy gov:roles ?allowedRoles .
+    ?policy gov:condition ?condition .
+    ?policy gov:action ?action .
+}
+ORDER BY ?tableName
+"""
+
+[generation.rules.template]
+file = "templates/supabase-rls.tera"
+format = "sql"
+
+[generation.rules.output]
+file = "supabase_rls_policies.sql"
+receipt = true
+validation = [
+    "sqlparse --validate {output}"
+]
+
+[generation.rules.deployment]
+target = "expo_supabase"
+endpoint = "https://supabase.example.com/api/rls/deploy"
+method = "POST"
+
+
+# Generation rule: Expo TypeScript Interfaces
+[[generation.rules]]
+name = "expo-typescript-interfaces"
+description = "Generate TypeScript types from TTL"
+trigger = "ontology_updated"
+enabled = true
+
+[generation.rules.source]
+type = "sparql"
+query = """
+PREFIX proc: <http://process-intelligence/process#>
+PREFIX gov: <http://process-intelligence/governance#>
+
+SELECT ?typeName ?fieldName ?fieldType ?fieldRequired ?fieldDescription
+WHERE {
+    ?type proc:type ?typeName .
+    ?type proc:field ?field .
+    ?field proc:name ?fieldName .
+    ?field proc:type ?fieldType .
+    ?field proc:required ?fieldRequired .
+    OPTIONAL { ?field proc:description ?fieldDescription . }
+}
+ORDER BY ?typeName
+"""
+
+[generation.rules.template]
+file = "templates/expo-types.tera"
+format = "typescript"
+
+[generation.rules.output]
+file = "expo_types.ts"
+receipt = true
+validation = [
+    "tsc --noEmit {output}"
+]
+
+[generation.rules.deployment]
+target = "expo_supabase"
+method = "git_commit"
+path = "src/types/generated.ts"
+
+
+# Validation layer: Post-generation checks
+[validation]
+enabled = true
+continue_on_failure = false  # Stop if any validation fails
+
+[[validation.check]]
+name = "process-model-executable"
+rule = "process-model-definition"
+command = "wasm4pm validate --model {output} --detailed"
+timeout = "30s"
+on_failure = "reject_artifact"
+
+[[validation.check]]
+name = "governance-policy-signature"
+rule = "governance-policy-generation"
+command = "verify-signature --file {output} --key blue_river_governor_key --algorithm ed25519"
+timeout = "10s"
+on_failure = "reject_artifact"
+
+[[validation.check]]
+name = "lifecycle-state-machine-sound"
+rule = "lifecycle-state-machine"
+command = "petri-net-analyzer --model {output} --check soundness"
+timeout = "30s"
+on_failure = "reject_artifact"
+
+[[validation.check]]
+name = "m-and-a-evidence-verified"
+rule = "m-and-a-board-claims"
+command = "validate-ma-evidence --claims {output} --event-log {project_root}/event_log.ocel"
+timeout = "60s"
+on_failure = "reject_artifact"
+
+[[validation.check]]
+name = "otel-schema-compliance"
+rule = "otel-semantic-conventions"
+command = "weaver manifest validate --manifest {output} --strict"
+timeout = "10s"
+on_failure = "reject_artifact"
+
+[[validation.check]]
+name = "typescript-compilation"
+rule = "expo-typescript-interfaces"
+command = "tsc --noEmit {output} --strict --exactOptionalPropertyTypes"
+timeout = "30s"
+on_failure = "reject_artifact"
+
+
+# Deployment orchestration
+[deployment]
+enabled = true
+order = "dependency"  # Deploy in dependency order
+
+[[deployment.target]]
+name = "zoeapp"
+artifacts = ["declared_process_model.pnml"]
+endpoint = "http://zoeapp:3000/api/deploy"
+method = "POST"
+timeout = "60s"
+retry_on_failure = 3
+notification = { channel = "slack", on_success = true, on_failure = true }
+
+[[deployment.target]]
+name = "blue_river_dam"
+artifacts = ["governance_policies.json", "lifecycle_state_machine.rs"]
+endpoint = "http://blue_river:5000/api/deploy"
+method = "POST"
+timeout = "60s"
+retry_on_failure = 3
+depends_on = ["zoeapp"]
+notification = { channel = "slack", on_success = true, on_failure = true }
+
+[[deployment.target]]
+name = "expo_supabase"
+artifacts = ["governance_policies.json", "supabase_rls_policies.sql", "expo_types.ts"]
+endpoint = "https://supabase.example.com/api/deploy"
+method = "POST"
+timeout = "60s"
+retry_on_failure = 3
+depends_on = ["blue_river_dam"]
+auth = { type = "oauth2", token_env = "SUPABASE_SERVICE_ROLE_KEY" }
+notification = { channel = "slack", on_success = true, on_failure = true }
+
+[[deployment.target]]
+name = "otel_weaver"
+artifacts = ["semantic-conventions.yaml"]
+endpoint = "http://otel-weaver:8080/api/deploy"
+method = "POST"
+timeout = "60s"
+retry_on_failure = 3
+depends_on = ["zoeapp", "blue_river_dam", "expo_supabase"]
+notification = { channel = "slack", on_success = true, on_failure = true }
+
+[[deployment.target]]
+name = "board_reporting"
+artifacts = ["m-and-a-projections.json"]
+endpoint = "https://board.example.com/api/claims/ingest"
+method = "POST"
+timeout = "60s"
+retry_on_failure = 2
+auth = { type = "oauth2", token_env = "BOARD_API_TOKEN" }
+notification = { channel = "slack", severity = "high" }
+
+
+# Artifact receipt chain
+[receipts]
+enabled = true
+algorithm = "BLAKE3"
+format = "json"
+chain_file = "receipts/ggen-artifact-chain.json"
+
+[receipts.fields]
+timestamp = true
+artifact_hash = true
+ontology_hash = true
+generation_command = true
+validation_results = true
+deployment_status = true
+signature = true
+
+[receipts.signature]
+enabled = true
+algorithm = "ed25519"
+key_id = "ggen_authority_key"
+
+
+# Logging & Observability
+[logging]
+level = "info"
+format = "json"
+output = "stdout"
+file = "logs/ggen.log"
+
+# OTel instrumentation
+[observability]
+enabled = true
+otel_endpoint = "http://otel-collector:4317"
+trace_sample_rate = 1.0
+metrics_enabled = true
+
+[[observability.spans]]
+name = "ggen.generation"
+attributes = ["rule_name", "input_size", "output_size", "duration_ms"]
+
+[[observability.spans]]
+name = "ggen.validation"
+attributes = ["rule_name", "check_name", "passed", "duration_ms"]
+
+[[observability.spans]]
+name = "ggen.deployment"
+attributes = ["target_name", "artifact_name", "status", "duration_ms"]
+
+
+# Scheduled regeneration
+[scheduling]
+enabled = true
+timezone = "UTC"
+
+[[scheduling.jobs]]
+name = "nightly-regeneration"
+schedule = "0 2 * * *"  # 2 AM daily
+description = "Regenerate all artifacts from latest TTL"
+on_success = "notify_slack"
+on_failure = "escalate_to_operator"
+
+[[scheduling.jobs]]
+name = "hourly-governance-sync"
+schedule = "0 * * * *"  # Hourly
+description = "Sync governance policies if TTL changed"
+on_success = "quiet"
+on_failure = "notify_slack"
+
+
+# Configuration validation
+[validation]
+enabled = true
+schema_file = "schemas/ggen-config.json"
+
+# End of unified-ggen-ecosystem.toml
