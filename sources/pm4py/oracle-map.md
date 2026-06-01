@@ -86,3 +86,6 @@
 
 * **Step: write PM4Py not-to-copy memo**
   - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
+
+* **Step: checkpoint: PM4Py oracle complete**
+  - Analysing PM4Py reference implementation limits vs full-lifecycle requirements.
