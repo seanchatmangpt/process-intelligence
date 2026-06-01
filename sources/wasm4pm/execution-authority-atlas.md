@@ -49,3 +49,6 @@
 
 * **Step: map XES runtime obligations**
   - Defining engine execution requirements.
+
+* **Step: map BPMN runtime obligations**
+  - Defining engine execution requirements.
