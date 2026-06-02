@@ -1,0 +1,15 @@
+registry: PUBLICATION_REGISTRY
+project: linkedin-public-canon
+gate: Fish Gate
+date-initialized: 2026-06-02
+status: INITIALIZED
+
+# Publication counts
+posts_published: 0
+newsletters_published: 0
+landing_page: ABSENT
+manifesto: ABSENT
+public_canon: PARTIAL
+
+# Publication log
+publications: []
