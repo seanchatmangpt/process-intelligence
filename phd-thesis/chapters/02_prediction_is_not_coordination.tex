@@ -1,0 +1,54 @@
+\chapter{Prediction Is Not Coordination}
+\label{chap:prediction_not_coordination}
+
+\section{The Conflation}
+
+Contemporary discourse about artificial intelligence in enterprise settings rests on a conflation that is rarely examined explicitly. The conflation is this: that a system which produces plausible-sounding output thereby advances work. The word ``advances'' is doing substantial labor in that sentence. It is carrying a claim about consequence --- that something downstream of the model's output changes in a way that constitutes progress on a task.
+
+This chapter examines why that claim is false, what the failure mode looks like in practice, and why the failure mode is systematically obscured by the evaluation frameworks most commonly applied to language-model systems.
+
+\section{What Prediction Is}
+
+A language model predicts. More precisely, it manufactures a probability distribution over possible next tokens given a context window, then samples from that distribution. The sampling produces a token. The process repeats. The result is a sequence of tokens that, when decoded, reads as text.
+
+The model is optimized to produce token sequences that human evaluators --- or proxy objectives derived from human evaluation --- rate as high quality. High quality, in the dominant training paradigms, means: fluent, coherent, on-topic, and stylistically consistent with the target distribution.
+
+None of those quality dimensions include: did this output close a work item? Did it produce a receipt? Did it advance a process from one lawful state to another? Did it generate an event that can be replayed against a conforming process model?
+
+Prediction, as defined by the training objective, is indifferent to consequence. A model that produces a fluent sentence describing a completed handoff receives exactly the same reward signal as a model that describes a handoff that did not occur. The training signal cannot distinguish them, because the training signal is not a process oracle. It is a language oracle.
+
+\section{What Coordination Is}
+
+Coordination is a different operation. Coordination requires that an agent --- human or automated --- take an action that moves a shared process from one state to another, and that this state change be observable, verifiable, and durable.
+
+Durability is the critical property. A prediction evaporates when the context window closes. A coordination event does not. It leaves a trace. In process-mining terms, it leaves an event in an event log. That event has a timestamp, a case identifier, an activity label, and a set of attribute values. The event can be replayed. The event can be checked for conformance against a declared process model. The event can be used to derive fitness, precision, generalization, and simplicity scores.
+
+A language-model prediction produces none of these artifacts. It produces text. Text can describe events. Text can assert that events occurred. But text, absent an external anchoring mechanism, cannot be verified against a process oracle. The assertion and the fact are indistinguishable in the text itself.
+
+The Chatman Equation (Chapter~\ref{chap:chatman_equation}) provides the formal statement of what coordination requires. The receipt infrastructure (Chapter~\ref{chap:process_evidence}) provides the mechanism by which coordination is verified. This chapter establishes the conceptual ground: the two operations are not the same, and treating them as interchangeable produces systems that fail customers while appearing to succeed at benchmarks.
+
+\section{The Wrapper Startup Problem}
+
+The commercial AI ecosystem of the 2020s produced a recognizable structure: a company licenses access to a prediction API, wraps it in a product interface, and sells the resulting system to enterprises as a solution to a business problem. This structure --- the wrapper startup --- is not intrinsically misguided. There are narrow, well-scoped problems for which prediction alone is sufficient: draft generation, summarization of known facts, initial classification of inbound items.
+
+The problem emerges when wrapper startups expand their claims beyond those narrow scopes. The expansion is commercially rational. Investors reward large addressable markets. Large addressable markets require claiming that the product solves consequential problems, not narrow ones. The expansion from ``we help you draft emails faster'' to ``we automate your revenue operations'' is not a technical claim. It is a commercial claim that is insufficiently constrained by technical reality.
+
+The technical reality is that revenue operations --- like most consequential enterprise processes --- require coordination, not prediction. A revenue-operations process involves handoffs between sales, legal, finance, and fulfillment. Each handoff must be verifiable. Each state change must be durable. Each exception must be logged and addressable. A prediction system that produces fluent descriptions of these handoffs does not thereby produce the handoffs. It produces the appearance of coordination without the fact of coordination.
+
+Wrapper startups monetize the wrong boundary. The right boundary is the process-event layer: the layer at which predictions are translated into verifiable coordination acts, logged as events, checked for conformance, and receipted as complete. That translation is not free. It requires infrastructure. The research program documented in this dissertation is, in significant part, an account of what that infrastructure requires.
+
+\section{Why the Failure Mode Is Obscured}
+
+The failure mode is obscured by three structural features of the evaluation landscape.
+
+First, benchmark performance is measured on tasks for which prediction is sufficient. Question answering, summarization, code completion, and classification are all tasks where the model's output can be evaluated directly against a ground truth without invoking a process oracle. These benchmarks do not measure coordination capability. They measure prediction capability. A model that scores well on these benchmarks has demonstrated nothing about its ability to advance a process.
+
+Second, enterprise procurement cycles are long, and failure modes are slow to surface. A company that deploys a prediction system in a coordination role will often not discover the failure mode until months after deployment, when process audits reveal that claimed automations did not produce durable state changes, or when compliance reviews find that process events cannot be reconstructed from model output alone.
+
+Third, the language of AI product marketing actively obscures the distinction. Terms like ``workflow automation,'' ``intelligent process automation,'' and ``agentic AI'' all imply coordination capability. They are applied to systems that, at their core, produce predictions. The implication is not warranted by the underlying mechanism.
+
+\section{The Research Program Response}
+
+The research program documented in this dissertation responds to this failure mode at every layer. The Chatman Equation (Chapter~\ref{chap:chatman_equation}) provides the formal statement of what a coordinated action requires. The process-evidence infrastructure (Chapter~\ref{chap:process_evidence}) provides the mechanism by which coordination is verified. The ggen manufacturing machinery (Chapter~\ref{chap:ggen}) provides the artifact-manufacturing layer that operates under law rather than prediction. The evaluation corpus (Chapter~\ref{chap:evaluation}) provides the evidence that the architecture works.
+
+The central claim of this dissertation is not that prediction is worthless. Prediction is a useful capability. The central claim is that prediction is not coordination, that the distinction matters for customers, and that the infrastructure required to bridge the gap --- to convert predictions into verifiable coordination acts --- has been built, receipted, and is documented here.

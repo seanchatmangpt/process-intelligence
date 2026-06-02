@@ -1,0 +1,98 @@
+% FILE: 02_lineage_and_context.tex
+% Project: livestream
+% Thesis Role: real-time-process-broadcast-and-livestream-standards
+
+\section{Lineage and Context}
+\label{sec:livestream-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:livestream-lineage-2016}
+
+The intellectual lineage of the livestream project begins with a 2016 observation
+about local language-model imitation: a model that reproduces the surface form of
+text does not thereby conserve the consequences of that text. A model can emit a
+sentence that resembles a process description without any underlying process having
+occurred. This observation crystallized a distinction that drives the entire
+dissertation: \emph{prediction} (generating text that resembles process outcomes)
+is categorically different from \emph{coordination} (emitting evidence that a
+lawful process actually executed).
+
+The livestream project is the most direct institutional expression of this lesson.
+Its architecture refuses to treat the factory's outputs as self-certifying. Instead,
+it requires that every significant factory event---every Git commit, every subagent
+replay, every doctrine decision---be materialized as an OCEL 2.0 event and subjected
+to conformance checking against a declared model. The model is not inferred from
+the outputs; it is declared in advance (the Blue River Dam thesis Petri net), and
+the conformance check asks whether the observed event sequence is consistent with
+the declared model. This is precisely the structure of van der Aalst conformance
+checking, applied not to a business process but to the factory that produces
+process intelligence artifacts.
+
+\subsection{Enterprise Process Gap}
+\label{sec:livestream-lineage-enterprise-gap}
+
+The enterprise process gap identified in the dissertation is the absence of
+continuous, verifiable process evidence in software development organizations.
+Software factories routinely produce artifacts---commits, builds, deployments,
+test results---but these artifacts are not typically organized as a process-minable
+event log. As a result, claims about the factory's behavior (e.g., ``we follow
+a rigorous review process,'' ``every release is tested,'' ``no code ships without
+conformance checking'') cannot be verified by an external auditor using process
+mining methods. They are literary descriptions, not process evidence.
+
+The livestream project addresses this gap directly. The \texttt{aalst\_broadcaster.js}
+module transforms the Git commit history of the \texttt{process-intelligence}
+repository into an OCEL 2.0 event stream: each commit becomes an event with
+\texttt{ocel:activity}\,=\,``Git Commit'', \texttt{ocel:timestamp} derived from
+the commit date (converted to UTC ISO 8601), and \texttt{ocel:vmap} fields carrying
+the commit hash, author, and subject line. The author object (\texttt{ocel:omap})
+links the event to an object in the OCEL 2.0 object graph. This transforms the
+repository's history---previously legible only to humans reading \texttt{git log}
+output---into a format that pm4py or wasm4pm can ingest for process discovery and
+conformance checking.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:livestream-lineage-chatman-equation}
+
+\textbf{[AUTHOR THESIS]} The Chatman Equation $A = \mu(O^*, T, L)$ defines
+admissible actuation as a function of the object model $O^*$, the declared
+transition system $T$, and the observed event log $L$. The livestream project
+instantiates this equation at the factory level: the factory's own actuation
+(committing code, emitting receipts, authorizing downstream ggen manufacturing)
+is governed by the MAPE-K autonomic controller in \texttt{autonomic.js}, which
+evaluates the current event log against the declared Petri net model and withholds
+authorization when conformance fitness falls below the lower control limit
+(LCL\,=\,0.920).
+
+This is not a metaphorical application of the Chatman Equation. The autonomic
+controller implements the equation's structure directly: it monitors the event
+stream ($L$), analyzes drift against the declared model ($T$), plans a remediation
+action (rate limiting, dynamic route changes, S-component hot-swap), and executes
+the plan through the MAPE-K tick function. The hot-swappable Petri net S-components
+allow the declared model itself to be updated without stopping the factory, which
+corresponds to updating $T$ in response to new information about the object model
+$O^*$.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:livestream-lineage-receipts-replay}
+
+The receipt architecture of the process-intelligence foundry (documented in
+\texttt{receipts/RECEIPT\_REGISTRY.md}) establishes that every major research
+finding must be certified by a receipt: a named artifact that names what was
+produced, by whom, under which witness, and what remains open. The livestream
+project contributes to this architecture in two ways.
+
+First, it provides the \emph{replay} surface: the \texttt{replay\_aggregator.js}
+module consolidates all zoeapp AGI subagent replays from
+\texttt{/Users/sac/zoeapp/replays/} into a single \texttt{master\_conversation.ocel}
+file. This master file is the event log against which the conformance audit
+(Fitness\,=\,0.9880, Precision\,=\,1.0000 against the Blue River Dam thesis model)
+was computed. The conformance audit result is itself a receipt: it certifies that
+the AGI conversation trace is consistent with the declared thesis process model.
+
+Second, the AuditLedger in the browser visualizer implements cryptographic receipt
+chaining at the event level: each ledger block carries a SHA-256 hash that chains
+to the previous block, so that any tampering with a historical event is immediately
+detectable. This extends the receipt architecture from the document level (where
+receipts are YAML or JSON files in the \texttt{receipts/} directory) to the event
+level (where every process event is individually ledgered and chained).

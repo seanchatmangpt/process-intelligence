@@ -1,0 +1,94 @@
+% FILE: 00_project_identity.tex
+% Project: livestream
+% Thesis Role: real-time-process-broadcast-and-livestream-standards
+
+\section{Project Identity: Livestream}
+\label{sec:livestream-identity}
+
+\subsection{Purpose}
+\label{sec:livestream-identity-purpose}
+
+The \texttt{livestream} project is the real-time process broadcast layer of the
+process-intelligence research foundry. Its core purpose is to transform the software
+factory itself---its Git history, its AGI conversation replays, its agent
+interactions---into a continuously observable, process-minable event log governed
+by van der Aalst AGI livestreaming standards (version 30.1.1). Rather than treating
+process evidence as a post-hoc artifact to be reconstructed from logs after the fact,
+the livestream layer emits OCEL 2.0-conformant events as the factory operates,
+making every commit, every subagent replay, and every doctrine decision a first-class
+process event subject to conformance checking, drift detection, and cryptographic
+ledger attestation.
+
+The project answers a concrete engineering question: can a research foundry be made
+continuously self-witnessing, such that its own operation constitutes an event log
+against which process mining algorithms can be applied in real time? The ALIVE verdict
+\texttt{AALST\_LIVESTREAM\_ACTIVE}, attested in \texttt{AALST\_LIVESTREAM\_MANIFEST.md}
+v30.1.1 and cryptographically sealed with SHA-256 signature
+\texttt{ea15dda\ldots{}e6cf}, declares that this infrastructure is operational
+in principle. However, the overall status of this project is \textbf{PARTIAL}: the
+Telemetry Auditor Agent (v30.1.2, 2026-06-01) identified critical non-compliance
+findings in the browser visualizer, including a DOM binding mismatch that halts
+execution and 0\% OCEL 2.0 compliance in the telemetry schema. These findings
+are formally open as of this writing.
+
+\subsection{Repository Surface}
+\label{sec:livestream-identity-repo}
+
+The primary source directory is \texttt{/Users/sac/process-intelligence/livestream/},
+containing four JavaScript modules:
+\begin{itemize}
+  \item \texttt{aalst\_broadcaster.js} --- transforms Git commit history into OCEL 2.0
+    event streams using \texttt{git log --pretty=format:\%H|\%an|\%ai|\%s};
+  \item \texttt{master\_ocel\_stream.js} --- filesystem polling loop on
+    \texttt{/Users/sac/zoeapp/replays}, emitting JSONL to stdout at one-second intervals;
+  \item \texttt{replay\_aggregator.js} --- consolidates OCEL 2.0 event arrays from
+    zoeapp replay JSON files into a single \texttt{master\_conversation.ocel} artifact;
+  \item \texttt{agent\_conversation\_log.js} --- parses Gemini chatlog JSONL files
+    from \texttt{/Users/sac/.gemini/tmp/zoeapp/chats} into typed process events
+    annotated with Admissibility Guard intent records.
+\end{itemize}
+
+The broader browser visualizer surface lives in
+\texttt{/Users/sac/process-intelligence/experiments/visualizer/}, including
+\texttt{autonomic.js} (MAPE-K feedback loop controller), \texttt{app.js} (Petri net
+simulator and alignment solver), and \texttt{ledger.js} (SHA-256 cryptographic chain).
+Manifest and certification documents reside at the repository root:
+\texttt{AALST\_LIVESTREAM\_MANIFEST.md} and \texttt{AALST\_CERTIFIED\_ALIVE.md}.
+
+\subsection{Primary Research Role}
+\label{sec:livestream-identity-role}
+
+Within the dissertation, the livestream project occupies the role of
+\emph{real-time process broadcast and livestream standards}. It provides the empirical
+demonstration that a software factory operating under van der Aalst AGI standards can
+emit a continuous, verifiable, process-minable event stream. This role is distinct from
+the conformance-checking and gap-analysis roles occupied by other projects in the
+foundry: where those projects reason about event logs after they have been collected,
+the livestream project reasons about event emission as it occurs, making the factory
+itself the subject of process intelligence.
+
+The project also instantiates the five-agent AGI livestreaming swarm architecture:
+Stream Director, Telemetry Auditor, A* Alignment Referee, Drift Sentry, and Ledger
+Custodian. Each agent holds an auditing mandate over a distinct facet of the broadcast
+infrastructure, providing a distributed oversight model for real-time process governance.
+
+\subsection{Key Artifacts}
+\label{sec:livestream-identity-artifacts}
+
+The key manufactured artifacts of this project are:
+\begin{enumerate}
+  \item The four JavaScript broadcast modules (\texttt{aalst\_broadcaster.js},
+    \texttt{master\_ocel\_stream.js}, \texttt{replay\_aggregator.js},
+    \texttt{agent\_conversation\_log.js}), committed to the repository on 2026-06-01
+    under \texttt{feat(livestream)} and \texttt{feat(research)}.
+  \item The Petri net snapshot (\texttt{PETRI\_NET\_SNAPSHOT.md}), base64-encoded,
+    recording a final sound marking with the single token at \texttt{[Decommissioning]}
+    state and no deadlocks.
+  \item The conformance audit (\texttt{conformance\_audit.md}), reporting
+    Fitness\,=\,0.9880 and Precision\,=\,1.0000 against the Blue River Dam thesis model.
+  \item The ALIVE certification document \texttt{AALST\_CERTIFIED\_ALIVE.md} v30.1.1,
+    bearing SHA-256 attestation \texttt{ea15dda\ldots{}e6cf}.
+  \item The Stream Director audit (v30.1.2, PASS) and Telemetry Auditor audit
+    (v30.1.2, FAIL), which together constitute the evidentiary record for the
+    PARTIAL status of this project.
+\end{enumerate}

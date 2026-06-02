@@ -1,0 +1,251 @@
+slug: otel-weaver-exp-005-collector-to-intake
+claims:
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-001
+    claim: >-
+      EXP-005 has a PARTIAL status reflecting a complete specification and a
+      fully manufactured harness, but the absence of a live Docker collector run
+      and a materialised pi_intake_events.json artifact.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    evidence_summary: >-
+      GGEN_OTEL_WEAVER_PI_PARTIAL_001.md confirms PARTIAL/COMPLETED DESIGN
+      status; GGEN_OTEL_WEAVER_PI_ALIVE_001.md lists EXP-005 as component E but
+      predates discovery that pi_intake_events.json was never materialised.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-002
+    claim: >-
+      The OTel Collector pipeline uses a three-stage architecture: OTLP
+      dual-protocol receiver (gRPC :4317, HTTP :4318), filter/pi and
+      transform/pi OTTL processors, and a file/pi_json exporter writing OCEL
+      2.0-structured JSON to output/pi_intake_events.json.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/README.md
+    evidence_summary: >-
+      The otel-collector-config.yaml directly declares the otlp receiver with
+      gRPC :4317 and HTTP :4318, the filter/pi and transform/pi processors, and
+      the file/pi_json exporter with the exact output path.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-003
+    claim: >-
+      The filter/pi OTTL processor silently drops any span for which
+      attributes["process.pi.instance_id"] is nil or absent, without emitting
+      an error or producing a refusal record.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+    evidence_summary: >-
+      The actual config YAML shows filter/pi with error_mode: ignore and the
+      condition 'attributes["process.pi.instance_id"] == nil', confirming
+      silent-drop behaviour by specification; live execution has not confirmed
+      this behaviour.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-004
+    claim: >-
+      The transform/pi OTTL processor lowercases the process.pi.activity.name
+      attribute and injects pi.intake.ingested_at (ISO 8601) and
+      pi.intake.collector_version without modifying the upstream span's other
+      attributes.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/README.md
+    evidence_summary: >-
+      The otel-collector-config.yaml contains the exact OTTL set() statements
+      for lowercasing and injecting ingestion metadata fields; no modification
+      to other attributes is present in the config.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-005
+    claim: >-
+      harness.py manufactures three deliberately differentiated spans: Span A
+      (fully compliant with both process.pi.instance_id and
+      process.pi.witness.hash), Span B (missing process.pi.instance_id,
+      expected to be dropped at filter/pi), and Span C (carries
+      process.pi.instance_id but missing process.pi.witness.hash, expected to
+      pass the collector but fail the downstream live-check gate).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/harness.py
+    evidence_summary: >-
+      harness.py code directly implements the three span classes with the
+      specified attribute presence/absence pattern and inline comments
+      confirming each span's intended admissibility behaviour.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-006
+    claim: >-
+      The collector config file uses max_megabytes in the file rotation block,
+      while the README documents max_size_megabytes. This field name mismatch
+      may cause the otel/opentelemetry-collector-contrib:0.98.0 image to reject
+      the config at startup.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/README.md
+    evidence_summary: >-
+      Direct inspection confirms otel-collector-config.yaml uses max_megabytes
+      while the README YAML snippet uses max_size_megabytes; the discrepancy is
+      real and unresolved by any live run.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-007
+    claim: >-
+      harness.py emits a pi.feedstock.operation_count cumulative sum metric
+      tagged with process.pi.instance_id on port 4318, but the collector config
+      declares no metrics pipeline, meaning the metrics payload is silently
+      dropped.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/harness.py
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+    evidence_summary: >-
+      harness.py generate_metrics() emits pi.feedstock.operation_count to
+      METRICS_URL (localhost:4318/v1/metrics), but the collector config declares
+      only a traces/pi_intake pipeline with no metrics section.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-008
+    claim: >-
+      No BLAKE3 receipt exists for any EXP-005 output artifact; the
+      live-check-intake-receipt.json referenced in the ggen manifest has not
+      been materialised because no live collector run has been executed.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    evidence_summary: >-
+      The PARTIAL_001 checkpoint and the known evidence metadata
+      (receipts_found: none) both confirm no receipt has been materialised for
+      this experiment.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-009
+    claim: >-
+      The GGEN_OTEL_WEAVER_PI_ALIVE_001.md checkpoint declared the overall OTel
+      Weaver system ALIVE including EXP-005 as component E, but this verdict
+      predates the discovery that pi_intake_events.json was never materialised.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    evidence_summary: >-
+      ALIVE_001.md lists component E (EXP-005) as verified with status COMPLETE
+      AND ACTIVE, but PARTIAL_001.md documents only a design gate pass, and no
+      live execution artifact exists.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-010
+    claim: >-
+      The filter/pi processor is the operational implementation of the Chatman
+      Equation's ontological substrate requirement: it enforces that only spans
+      with a lawful process instance binding (process.pi.instance_id) are
+      admitted, treating unbound telemetry as non-evidence rather than as
+      refusable spans.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+    evidence_summary: >-
+      The filter/pi silent-drop behaviour is source-supported, but its
+      characterisation as the operational form of the Chatman Equation A =
+      mu(O*) is the author's analytical thesis explicitly labelled as such in
+      02_lineage_and_context.tex.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-011
+    claim: >-
+      EXP-005 is the first experiment in the OTel Weaver series to operate on
+      live OTLP traffic rather than static schema fixtures; EXP-001 through
+      EXP-004 operate offline.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    evidence_summary: >-
+      The ALIVE_001 checkpoint lists experiments A-D as operating on registry,
+      bridge, validator, and codegen artifacts respectively; harness.py targets
+      live OTLP HTTP endpoints, but EXP-005 has never been executed live.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-012
+    claim: >-
+      The transform/pi processor's injection of a collector-clock
+      pi.intake.ingested_at timestamp eliminates clock-skew between emitting
+      services as a source of process ordering uncertainty, satisfying the Van
+      der Aalst temporal conformance criterion.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+    evidence_summary: >-
+      The config confirms pi.intake.ingested_at is injected by the collector
+      rather than the emitter; the clock-skew elimination and temporal
+      conformance connection is the author's analytical framing of this design
+      choice.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-013
+    claim: >-
+      The BridgeRx schema-version translation bridge protects the conformance
+      court from Weaver schema diffs; its implementation is in EXP-003's
+      validator.rs and is outside the direct scope of EXP-005.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/intel/collector-integration-model.yaml
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    evidence_summary: >-
+      The ALIVE_001 checkpoint references bridge.rs in EXP-002 and validator.rs
+      in EXP-003; the collector-integration-model.yaml describes schema
+      transformation pipeline concept; characterising BridgeRx as a
+      manufacturing primitive is the author's framing, labelled as AUTHOR
+      THESIS in the TeX source.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-014
+    claim: >-
+      When the BLAKE3 receipt is materialised by a live collector run, EXP-005
+      will be the first experiment in the OTel Weaver series to produce a
+      receipt-sealed OCEL 2.0 artifact from live OTLP traffic, completing the
+      upstream end of the receipt chain.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    evidence_summary: >-
+      No live run has been executed and no receipt exists; this is a forward
+      projection contingent on completing the deferred live execution and
+      receipt manufacture steps documented in 07_open_questions_and_next_work.tex.
+    confidence: LOW
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_005_COLLECTOR_TO_INTAKE-015
+    claim: >-
+      To advance EXP-005 from PARTIAL to ALIVE, six receipted work items must
+      be completed: resolve the config field name, execute a live Docker
+      collector run, verify Span A/B/C outcomes, execute end-to-end integration
+      with EXP-003 validator.rs, materialise the BLAKE3 receipt, and issue an
+      upgraded checkpoint.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    evidence_summary: >-
+      The six-step sequence is derived from the open gate criteria in
+      05_evidence_receipts_and_gates.tex and 07_open_questions_and_next_work.tex;
+      none of these steps have been executed as confirmed by receipts_found: none.
+    confidence: HIGH
+    allowed_in_pdf: true

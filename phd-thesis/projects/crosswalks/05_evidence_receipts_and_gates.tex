@@ -1,0 +1,99 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:crosswalks-evidence}
+
+\subsection{Tests}
+\label{sec:crosswalks-evidence-tests}
+
+No test fixtures exist in the \texttt{crosswalks/} directory. The crosswalk documents define
+Rust struct definitions and step transition functions for witness automata, but no compilation
+evidence confirms that these definitions are present in the actual \texttt{wasm4pm-compat} crate.
+The \texttt{pm4py\_to\_wasm4pm\_data\_types.md} defines \texttt{OcelEventLog},
+\texttt{XesTrace}, \texttt{ActivityName}, \texttt{Timestamp}, and \texttt{ResourceId} as Rust
+structs with constructor invariants, but no round-trip verification test or cargo test output
+is present in the crosswalks source directory (source: evidence extraction, open questions).
+
+The \texttt{declare\_to\_wasm\_mapping.md} defines four witness automata with concrete step
+transition functions and lattice join operators. These are research-level specifications; no
+compiled test confirms the lattice join produces a \texttt{LatticeViolation} on contradiction
+in the actual runtime. The \texttt{bpmn\_to\_declare\_conformance.md} defines \textsc{LTLf}-to-lattice
+mappings with formal witness transition functions; no Rust implementation evidence is cited.
+
+\textbf{Status:} No passing tests attributable to the crosswalks project can be cited. This
+is a structural gap, not a test failure: the tests have not been written, not failed.
+
+\subsection{Receipts}
+\label{sec:crosswalks-evidence-receipts}
+
+The \texttt{project\_manifest.yaml} records \texttt{receipt\_present: false}. The
+\texttt{ggen-unified-emitted-artifact-census.md} assigns a \textsc{CROSSWALK\_RECEIPT} to the
+directory but describes it as ``implicit; per-crosswalk dating'' --- meaning the receipt is
+inferred from the file modification timestamps of the eight documents, not computed as an
+explicit \textsc{BLAKE3} hash chain.
+
+The \texttt{receipts/RECEIPT\_REGISTRY.md} contains seven canonical research program receipts.
+None of the seven is specifically attributed to the \texttt{crosswalks/} directory as a receipt
+holder. The receipts in \texttt{receipts/} that are relevant to the crosswalks domain are:
+
+\begin{itemize}
+  \item \texttt{rec\_residual\_standard\_005.json} --- standards residual analysis (related to
+        \textsc{ISO} mapping in \texttt{alive\_001\_to\_iso\_compliance.md})
+  \item \texttt{rec\_risk\_compliance\_004.json} --- risk and compliance surface (related to
+        cryptographic binding requirements)
+\end{itemize}
+
+No explicit receipt binding the crosswalks directory as a unit exists. The absence is a known
+gap documented in \texttt{project\_manifest.yaml}.
+
+\subsection{Checkpoints}
+\label{sec:crosswalks-evidence-checkpoints}
+
+The crosswalks project is named in two checkpoint documents:
+
+\begin{enumerate}
+  \item \texttt{checkpoints/ALIVE\_GATE\_ASSESSMENT.md} (assessed 2026-05-31): Criterion 9
+        states \texttt{crosswalks/} file count target $\geq 3$, actual 8, verdict \textbf{MET}.
+        This criterion is one of 12; all 12 were met. The assessment sealed
+        \textsc{PROCESS\_INTELLIGENCE\_ALIVE\_001}.
+  \item \texttt{checkpoints/PI\_RESEARCH\_PROGRAM\_ALIVE\_001.md} (sealed 2026-06-01,
+        verification code \texttt{0x0F\_ALL\_GATES\_PASS}): The authority statement explicitly
+        names ``crosswalks/ directory sealed'' as part of its 12/12 gate pass verdict.
+\end{enumerate}
+
+The \textsc{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001} checkpoint (referenced in
+\texttt{ggen-unified-emitted-artifact-census.md}) validates crosswalk completeness as gate 2
+of its gate sequence.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:crosswalks-evidence-status}
+
+The crosswalks project status is \textbf{PARTIAL}.
+
+The ALIVE evidence present is:
+\begin{itemize}
+  \item Eight crosswalk documents present and assessed (criterion 9 MET in
+        \textsc{ALIVE\_GATE\_ASSESSMENT.md}).
+  \item Named in the \textsc{PROCESS\_INTELLIGENCE\_ALIVE\_001} checkpoint authority statement.
+  \item Formal structural contracts defined for all major projection directions.
+  \item Concrete Rust struct specifications for witness automata, loss policy types, and
+        data type crosswalk.
+\end{itemize}
+
+The evidence preventing a full ALIVE verdict is:
+\begin{itemize}
+  \item No explicit \textsc{BLAKE3}-signed receipt chain for the directory as a unit
+        (\texttt{receipt\_present: false} in \texttt{project\_manifest.yaml}).
+  \item No compilation evidence that the specified Rust structs are implemented in the actual
+        \texttt{wasm4pm-compat} crate.
+  \item No test fixtures or round-trip verification for the witness automata step functions or
+        data type constructor invariants.
+  \item No ontology file (\texttt{ontology\_present: false} in \texttt{project\_manifest.yaml}).
+\end{itemize}
+
+Under the Van der Aalst Constitution (process-mining-chicago-tdd rule): \emph{if the code says
+it worked but the event log cannot prove a lawful process happened, then it did not work}. The
+crosswalks project has defined the law but cannot yet prove the law was executed.
+\textbf{Status: PARTIAL.}

@@ -1,0 +1,98 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Contribution to the Dissertation}
+\label{sec:adversarial-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:adversarial-contribution-prediction}
+
+The central thesis argument distinguishes prediction from coordination. Prediction produces a
+probability estimate about a future state; coordination produces a cryptographically certified
+commitment that a specified state transition occurred. The adversarial corpus demonstrates
+that prediction without coordination is adversarially exploitable: a prediction model trained
+on unverified event logs can be manipulated by an adversary who controls the log, because the
+model has no mechanism to distinguish genuine from forged process evidence.
+
+The simulation engine makes this concrete. Scenario 3 demonstrates that an adversary who
+manufactures traces under a forged key produces event sequences that are structurally
+indistinguishable from genuine traces when viewed as raw timestamps and activity names. Only
+the HMAC-SHA256 signature check against the genuine system key detects the forgery. A
+prediction model that operates on raw event sequences---without a prior coordination layer
+enforcing signature authenticity---would train on the forged trace as if it were genuine
+process behavior, corrupting all downstream predictions.
+
+The adversarial corpus therefore provides the negative proof for the prediction-versus-coordination
+distinction: coordination is not an enhancement to process intelligence; it is the prerequisite
+that makes process intelligence non-exploitable.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:adversarial-contribution-evidence}
+
+The adversarial corpus contributes three specific findings to the process evidence
+literature. First, the PROV-O gap analysis (\texttt{standards/ocel-adversarial-gravity.md})
+establishes that XES and OCEL 2.0 are descriptive serializations, not cryptographically sound
+operational ledgers. Neither standard enforces \texttt{wasGeneratedBy}, \texttt{used}, or
+\texttt{wasAttributedTo} as cryptographic primitives, making them structurally vulnerable to
+the five attack vectors cataloged in the document: XES flat-earth lossy ETL, OCEL 2.0
+phantom record injection, object-to-event desynchronization, time-of-observation versus
+time-of-occurrence manipulation, and lack of actor identity binding.
+
+Second, the adversarial canon (\texttt{sources/papers/adversarial-canon.md}) establishes
+that classical discovery algorithms (Alpha, Heuristics Miner, Inductive Miner) structurally
+fail under Sybil attack. The canonical algorithms rely on temporal proximity and case
+identifiers for correlation; a Sybil attacker can forge thousands of interleaved case
+identifiers and events, causing state-space explosion and invalid spaghetti model discovery.
+The absence of BLAKE3 cryptographic receipts means there is no provenance filter for
+adversarial events.
+
+Third, the Chatman Constraint and the three structural laws
+(\texttt{sources/wasm4pm-compat/adversarial-type-law.md}) contribute a formal type-law
+framework for witness lattice integrity: strict injectivity prevents state-space aliasing,
+exhaustive typestate closure eliminates reachable undefined states, and cryptographic isolation
+via domain separators prevents cross-epoch witness contamination.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:adversarial-contribution-manufacturing}
+
+The adversarial corpus defines the manufacturing pipeline's rejection boundary. The
+CodeManufactory manufacturing pipeline cannot claim that a manufacturing receipt is valid
+unless the ingestion boundary has verified the input against all five detection rules. The
+adversarial corpus is the specification of those rules and the executable test suite that
+verifies them.
+
+The seven challenge categories in \texttt{RED\_TEAM\_SCOPE.md} also contribute to
+manufacturing architecture by defining what constitutes an admissible board artifact. A claim
+that survives all seven challenge categories---unsupported doctrine, inflated type coverage,
+evidence-less board claims, observation-only lifecycle phases, evidence-less comparison
+claims, loss-policy-free crosswalks, and diligence-path-free M\&A claims---is a manufacturing
+receipt. A claim that does not survive is a research claim, appropriately marked and
+sequestered from downstream manufacturing workflows.
+
+The gap remediation sequencing contributed by Finding 010
+(\texttt{adversarial/RED\_TEAM\_FINDINGS\_002.md}) defines the ordered authorization sequence
+for downstream workflow agents: GAP\_007 first (independent, low effort), then GAP\_001
+(critical path unlock), then GAP\_002, then parallel execution of GAP\_003, GAP\_004, and
+GAP\_008, then parallel execution of GAP\_005 and GAP\_006. This sequencing is a direct
+output of the adversarial challenge to board claims without evidence paths.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:adversarial-contribution-capital}
+
+The adversarial corpus establishes the evidentiary requirements for capital-flow
+infrastructure. The OCEL adversarial gravity analysis concludes that deploying XES or OCEL
+without a cryptographic provenance wrapper in high-stakes environments is architectural
+negligence and that M\&A boards cannot rely on process models derived from highly mutable
+ledgers. The Reality Receipt mechanism---wasm4pm acting as an interception proxy that
+encapsulates raw event data in a signed cryptographic envelope---is the minimum viable
+infrastructure for board-admissible process evidence.
+
+Finding 002 (\texttt{adversarial/RED\_TEAM\_FINDINGS\_001.md}) establishes the important
+and self-correcting result that M\&A documents in \texttt{ma/} correctly identify themselves
+as research claims, not manufacturing receipts. The distinction matters for capital-flow
+infrastructure because a capital decision made on the basis of a research claim rather than a
+manufacturing receipt is a governance failure. The adversarial corpus enforces this
+distinction by requiring that every board projection trace to a manufacturing receipt through
+the path: \emph{target OCEL log} $\rightarrow$ \emph{conformance report} $\rightarrow$
+\emph{board projection}.

@@ -1,0 +1,134 @@
+% FILE: 04_implementation_surface.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Implementation Surface}
+\label{sec:research-prompt-manufactory-implementation}
+
+\subsection{Source Files}
+\label{sec:research-prompt-manufactory-implementation-sources}
+
+The Prompt Manufactory source surface consists exclusively of files in three admissible
+formats: Turtle ontologies (\texttt{.ttl}), SPARQL queries (\texttt{.rq}), and Tera
+templates (\texttt{.md.tera}), plus the \texttt{ggen.toml} pipeline configuration.
+
+\textbf{Ontology files} (8 total, all in \texttt{ggen/ontology/}):
+\begin{itemize}
+  \item \texttt{prompt-manufactory.ttl} --- 15 core classes, 8 object properties,
+    7 data properties, SHACL constraint shapes. Grounded in PROV-O, DCTERMS, DCAT,
+    SKOS, SHACL.
+  \item \texttt{research-program-law.ttl} --- 7 seed \texttt{pm:ResearchProgram}
+    instances encoding the programs the Manufactory serves.
+  \item \texttt{workflow-law.ttl} --- INTEL workflow (8 phases) and REMEDIATE workflow
+    (1 phase), with \texttt{pm:hasPhase} links to all phase instances.
+  \item \texttt{subagent-role-law.ttl} --- 15 \texttt{pm:SubagentRole} instances,
+    each with \texttt{pm:mission}, \texttt{pm:ownsSurface}, \texttt{pm:forbidsSurface},
+    \texttt{pm:hasOutputContract}, and \texttt{pm:hasRefusalGate}.
+  \item \texttt{skill-law.ttl} --- 6 \texttt{pm:Skill} instances defining reusable
+    standard-work capabilities (census, classify, audit, and related skills).
+  \item \texttt{hook-law.ttl} --- 6 \texttt{pm:HookPolicy} instances encoding Andon
+    gate policies for deterministic lifecycle enforcement.
+  \item \texttt{checkpoint-law.ttl} --- ALIVE/PARTIAL verdict structure with 10 gate
+    definitions that must all pass for an ALIVE verdict to be emitted.
+  \item \texttt{forbidden-collapse-law.ttl} --- 3 absolute collapse bans plus 22
+    \texttt{pm:InvalidGgenFile} classification instances for all legacy \texttt{.ggen}
+    files found in the research tree.
+\end{itemize}
+
+\textbf{SPARQL query files} (the checkpoint records 2 core queries implemented, with
+12 additional queries specified in \texttt{ggen.toml} for future implementation):
+\begin{itemize}
+  \item \texttt{select-workflow-prompts.rq} --- Joins \texttt{pm:ResearchProgram},
+    \texttt{pm:Workflow}, \texttt{pm:Phase}, \texttt{pm:SubagentRole} across 4 graph hops
+    to extract all data needed to render workflow warrants.
+  \item \texttt{select-subagent-prompts.rq}, \texttt{select-checkpoint-prompts.rq},
+    \texttt{select-skill-prompts.rq}, \texttt{select-hook-policies.rq},
+    \texttt{select-rendered-prompts.rq} --- Additional queries for each warrant type.
+\end{itemize}
+
+\textbf{Tera template files} (8 specified; 1 proof specimen operational):
+\begin{itemize}
+  \item \texttt{workflow-prompt.md.tera} --- Renders \texttt{\{\{ programId \}\}},
+    \texttt{\{\{ mission \}\}}, \texttt{\{\{ workflow \}\}}, and iterates over
+    \texttt{\{\{ phase \}\}} bindings to produce the workflow warrant Markdown.
+  \item \texttt{subagent-prompt.md.tera}, \texttt{checkpoint-prompt.md.tera},
+    \texttt{hook-policy.md.tera}, \texttt{prompt-receipt.md.tera} --- Additional templates
+    specified and syntactically valid; rendering pending full ontology population.
+\end{itemize}
+
+\subsection{Commands}
+\label{sec:research-prompt-manufactory-implementation-commands}
+
+The manufacturing pipeline is executed via ggen v26.5.21. The primary command is:
+
+\begin{verbatim}
+ggen sync
+\end{verbatim}
+
+This command loads all ontology files specified in \texttt{ggen.toml}'s
+\texttt{[ontology]} block, executes each generation rule in order, renders each
+template against its SPARQL result bindings, writes the artifact to the path
+specified by \texttt{output\_file}, and updates
+\texttt{ggen/.ggen/sync-state.json} with the ontology hash, manifest hash,
+and sync timestamp.
+
+The \texttt{ggen.toml} configuration specifies \texttt{on\_change = "manual"}, meaning
+ggen sync must be explicitly invoked rather than triggered automatically on file change.
+\texttt{validate\_after = true} requires RDF validation to pass after each sync.
+\texttt{conflict\_mode = "fail"} halts on any artifact conflict.
+
+Additional audit commands derivable from the ontology constraints:
+\begin{verbatim}
+find . -name '*.ggen'  # Must return zero results in ggen/
+\end{verbatim}
+
+This audit command is specified verbatim in \texttt{forbidden-collapse-law.ttl} as the
+enforcement rule for \texttt{pm:FORBIDDEN\_ggen\_source\_files}.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:research-prompt-manufactory-implementation-data}
+
+The RDF graph loaded during manufacturing is the union of all 8 ontology files. The
+graph uses the namespace prefix \texttt{pm:} bound to
+\texttt{https://pi-research.dev/ontology/prompt-manufactory\#}, with named instances
+in the \texttt{https://pi-research.dev/} URI space (programs, workflows, phases, roles,
+invalid-ggen instances).
+
+The ontology hash recorded in \texttt{ggen/.ggen/sync-state.json} is
+\texttt{01b52b815102f2839b5c852cadf9edb119592635bd8d8436b9574e0aea6bb054}, computed
+at \texttt{2026-06-01T23:08:25Z} from the 7,471-byte primary ontology file. The manifest
+hash is \texttt{dafc71e39589a56a6dbe9fe7621671f1b4010b1e9cb0f0e8993fdd3e72faf5e9}
+from the 2,438-byte \texttt{ggen.toml}.
+
+The SHACL constraint layer enforces three invariants over the loaded graph:
+\begin{enumerate}
+  \item Every \texttt{pm:ResearchProgram} must have at least one \texttt{pm:programId}
+    of type \texttt{xsd:string}.
+  \item Every \texttt{pm:SubagentRole} must have at least one \texttt{pm:mission}
+    of type \texttt{xsd:string}.
+  \item Every \texttt{pm:RenderedPrompt} must have at least one \texttt{pm:derivedFrom}
+    link (message: ``RenderedPrompt must have derivedFrom source (not hand-written)'').
+\end{enumerate}
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:research-prompt-manufactory-implementation-templates}
+
+The template layer is the final rendering stage of the manufacturing pipeline. Each Tera
+template receives a context object populated from the SPARQL SELECT result bindings for
+its corresponding query. The \texttt{workflow-prompt.md.tera} template demonstrates the
+pattern: scalar bindings (\texttt{\{\{ programId \}\}}, \texttt{\{\{ mission \}\}},
+\texttt{\{\{ workflow \}\}}) populate fixed fields, while the \texttt{\{- for phase in
+phase \}} loop iterates over the phase result rows to populate the Workflow Phases
+section.
+
+The manufacturing manifest records 41 artifacts emitted across 6 rules in the
+2026-06-01T23:09:45Z run of ggen v26.5.21: 7 workflow warrants, 17 subagent role
+warrants, 2 checkpoint warrants, 6 skill warrants, 6 hook policy documents, and 3
+indexes (receipt ledger, research program index, invalid-ggen classification ledger).
+Total emitted bytes: 41,867.
+
+The proof-specimen artifact \texttt{emitted/prompts/workflows/PI\_RESEARCH\_PROGRAM\_INTEL\_001.md}
+(size: 4,587 bytes per the receipt ledger) demonstrates the complete manufactured
+warrant structure: program identity block, mission statement, authorized stages,
+transition rules, forbidden transitions, artifact lifecycle specification, and
+authorization block signed by the Research Program Authority.

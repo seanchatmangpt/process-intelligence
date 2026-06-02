@@ -1,0 +1,107 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:comparisons-evidence}
+
+\subsection{Tests}
+\label{sec:comparisons-evidence-tests}
+
+The comparisons corpus itself contains no executable test infrastructure. All
+performance figures are asserted by the source documents rather than measured
+by reproducible benchmark scripts in the comparisons directory. This is a known
+open gap documented in the corpus (see Section~\ref{sec:comparisons-open-gaps}).
+
+The wasm4pm conformance authority module, which implements the type-law
+architecture described by the comparisons corpus, does carry an executable
+test suite of eight unit tests in \texttt{conformance\_authority::tests}:
+\texttt{test\_admission\_gate\_pass}, \texttt{test\_token\_fitness\_perfect},
+\texttt{test\_admission\_gate\_conditional\_with\_override},
+\texttt{test\_token\_fitness\_degraded}, \texttt{test\_admission\_gate\_hard\_reject},
+\texttt{test\_admission\_gate\_conditional\_without\_override},
+\texttt{test\_verdict\_display}, and \texttt{test\_reachability\_heuristic}. All
+eight passed on 2026-06-01 as certified in the conformance authority generation
+receipt. These tests are evidence that the admission gate and fitness computation
+logic behave correctly; they are not in the comparisons directory itself.
+
+\subsection{Receipts}
+\label{sec:comparisons-evidence-receipts}
+
+The following canonical receipts cover the comparison surface, as listed in
+\texttt{receipts/RECEIPT\_REGISTRY.md} (version 001, produced 2026-05-31):
+
+\begin{itemize}
+  \item \textbf{PM4PY\_ORACLE\_RECEIPT} --- maps every PM4Py API function to its
+    wasm4pm equivalent or GAP status. Witness: \texttt{pm4wasm.d.ts} TypeScript
+    interface definitions. Gap severity classified as CRITICAL/HIGH/MEDIUM/LOW.
+    Eight CRITICAL/HIGH gaps remain; tracked in \texttt{gaps/}.
+  \item \textbf{WASM4PM\_GAP\_RECEIPT} --- certifies the gap inventory: eight
+    identified gaps with severity, priority, and wasm4pm-compat bridging path.
+    Witness: PM4Py oracle + wasm4pm-compat graduation surface.
+  \item \textbf{wasm4pm\_conformance\_authority\_generation.md} --- certifies that
+    the conformance authority module was materialized with 47 authority
+    specifications, compiled successfully (0 errors), and passed all 8 unit tests.
+    Blake3 hash: \texttt{75508e6e9e7acccb679e5c8be35ddd2a...}.
+    Authority version: v30.1.2. Date: 2026-06-01.
+  \item \textbf{wasm4pm\_conformance\_generation.md} --- conformance module
+    generation receipt.
+  \item \textbf{wasm4pm\_lifecycle\_generation.md} --- lifecycle module generation
+    receipt.
+  \item \textbf{wasm4pm\_mining\_generation.md} --- mining module generation
+    receipt.
+  \item \textbf{wasm4pm\_replay\_generation.md} --- replay module generation
+    receipt.
+\end{itemize}
+
+The monetization receipts (\texttt{rec\_ebitda\_rework\_001.json},
+\texttt{rec\_wc\_ar\_002.json}, \texttt{rec\_risk\_sla\_003.json},
+\texttt{rec\_risk\_compliance\_004.json}, \texttt{rec\_residual\_standard\_005.json})
+are sample receipts; production receipts require live process data and are noted
+as deferred in the MA\_RECEIPT entry of the registry.
+
+\subsection{Checkpoints}
+\label{sec:comparisons-evidence-checkpoints}
+
+The comparisons corpus contributes to a single sealed checkpoint:
+
+\textbf{PROCESS\_INTELLIGENCE\_ALIVE\_001} --- sealed 2026-05-31. The ALIVE gate
+assessment (\texttt{checkpoints/ALIVE\_GATE\_ASSESSMENT.md}) evaluated 12 criteria.
+The comparisons directory satisfied criterion 8: file count target $\geq 4$,
+actual 11, verdict MET. All 12 of 12 criteria were met. The threshold for ALIVE
+certification is $\geq 10$ of 12, so the verdict is unconditional.
+
+The checkpoint authorizes: board-level claim delivery for any claim traceable to
+a receipt in the registry; M\&A diligence package assembly; wasm4pm graduation
+initiation; PAPERLAW\_ALIVE workflows; and standards-based conformance claims for
+XES, OCEL 2.0, BPMN 2.0, and Petri net soundness.
+
+The checkpoint explicitly prohibits: claims based on unadmitted (raw) event logs;
+conformance scores without a named witness; M\&A claims without corresponding
+receipts in the registry; and wasm4pm integration without \texttt{Admission<T, W>}
+typing at the API boundary.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:comparisons-evidence-status}
+
+\textbf{Status: ALIVE.}
+
+The comparisons corpus is ALIVE as of the PROCESS\_INTELLIGENCE\_ALIVE\_001
+checkpoint sealed 2026-05-31. The three conditions for ALIVE status are all met:
+
+\begin{enumerate}
+  \item \textbf{Receipt}: PM4PY\_ORACLE\_RECEIPT and WASM4PM\_GAP\_RECEIPT cover
+    the comparison surface. The conformance authority generation receipt certifies
+    the type-law implementation described by the corpus.
+  \item \textbf{Checkpoint}: PROCESS\_INTELLIGENCE\_ALIVE\_001 is sealed with
+    12/12 criteria met, criterion 8 covering the comparisons directory.
+  \item \textbf{Tests}: The eight unit tests in the conformance authority module
+    cover the admission gate and fitness computation logic with all passes on
+    2026-06-01, as certified in the generation receipt.
+\end{enumerate}
+
+The performance figures cited in the corpus (8.2M events/sec, 134.7K events/sec,
+$< 1$ms instantiation) are asserted rather than measured by reproducible benchmark
+scripts in this directory, which is a documented open gap but does not affect
+the ALIVE verdict, which is established by the checkpoint and receipts.

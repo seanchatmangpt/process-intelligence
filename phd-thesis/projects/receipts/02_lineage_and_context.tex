@@ -1,0 +1,84 @@
+\section{Lineage and Context}
+\label{sec:receipts-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:receipts-lineage-lm}
+
+The doctoral lineage of the receipts corpus begins with a 2016 experiment in local language
+modelling. The finding of that experiment was precise and consequential: \emph{local text
+imitation does not conserve consequence}. A language model trained to predict the next token
+in a corpus of enterprise communications can reproduce the surface form of decision language
+without preserving the causal chain that makes a decision binding. The model learns to say
+``approved'' without knowing what approval requires, what event log would prove approval
+occurred, or what downstream process state would change as a result.
+
+This lesson is not merely about language models. It is a general finding about any system
+that operates on surface form without consequence binding. The 2016 experiment established
+that fidelity of representation is not a substitute for fidelity of consequence. A claim
+that looks like an M\&A finding is not an M\&A finding unless it is bound to the event
+log that produced it, the process model that defines conformance, and the conformance
+algorithm that computed the fitness score. The receipts corpus is the direct institutional
+response to this finding. It refuses to allow any claim to enter the board record unless
+the consequence chain---from raw event log to signed receipt---is intact and inspectable.
+
+\subsection{Enterprise Process Gap}
+\label{sec:receipts-lineage-gap}
+
+The 2016 finding exposed a structural gap between two enterprise realities. The first
+reality is that enterprise processes leave event traces: transaction logs, ERP audit
+trails, supply-chain timestamps, AR aging records, SLA breach notifications. These traces
+contain the ground truth of process behavior. The second reality is that the claims made
+in M\&A transactions are typically not derived from those traces. They are derived from
+management presentations, normalized EBITDA schedules, and consultant assessments that
+may or may not be grounded in the underlying process evidence.
+
+The gap between process evidence and M\&A claims is the target of this research program.
+The receipts corpus closes this gap for five specific M\&A claim domains: EBITDA rework
+reduction (\$1.25M, fitness $0.982$, precision $0.945$), working capital and AR velocity
+(\$1.37M, fitness $0.978$, replication \texttt{PASSED}), SLA penalty exposure (\$450K
+cap, late delivery rate $2.14\%$, log coverage $98.4\%$), GRC compliance leakage
+(\$0.00, fitness $1.0$, zero violations), and residual process standardization
+($97.5\%$ conformance, drift \texttt{STABLE}). Each of these claims was derived from
+a process-mining computation over an event log, and each is bound to its evidence by
+a signed JSON receipt.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:receipts-lineage-chatman}
+
+The Chatman Equation $A = \mu(O^*)$ defines the core architectural claim of the doctoral
+research: that an autonomous process agent $A$ is properly understood as the expectation
+operator $\mu$ applied to the ensemble of all observable process states $O^*$. This equation
+places the burden of proof on observability. An agent that claims to produce a result cannot
+be treated as having produced that result unless the result is observable---that is, unless
+it appears in the event log of the process the agent is supposed to be governing.
+
+The receipts corpus operationalizes the observability requirement of the Chatman Equation.
+The BLAKE3 \texttt{target\_log\_hash} field in each JSON receipt binds the claim to a
+specific observed event log. The \texttt{process\_model\_hash} binds the conformance
+measurement to a specific process model. Together these hashes make the $O^*$ of the
+Chatman Equation concrete: it is not an abstract ensemble of process states, but a
+specific, content-addressed, tamper-evident record. The fitness score in each receipt
+is the empirical realization of $\mu$: the expectation of conformance computed over
+the observed log. The Ed25519 signature seals the equation---it asserts that a
+specific authority has computed $\mu(O^*)$ and bound the result to an immutable record.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:receipts-lineage-replay}
+
+Within the full doctoral lineage, ``receipts and replay'' names the second major
+contribution after the 2016 language-model lesson. Replay, in the process-mining sense,
+refers to token-based replay fitness: the van der Aalst formula
+$f = 1 - (\sum m / \sum c) - (\sum r / \sum p)$, where missing tokens and remaining
+tokens quantify the gap between an observed trace and a reference process model. A
+replay fitness of $1.0$ means every observed trace conforms perfectly to the model;
+values below $0.95$ fail the \texttt{ConformanceAdmissionGate}.
+
+The receipts in this corpus are the durable output of replay. Each M\&A claim receipt
+carries a \texttt{wasm4pm\_query\_result} that includes the replay fitness value computed
+by the conformance authority module. The receipt is the proof that replay occurred, that
+it produced a specific numeric result, and that the result was computed over a specific
+event log at a specific point in time. Without the receipt, replay is an ephemeral
+computation. With the receipt, replay becomes a permanent, auditable fact in the
+research program's evidence chain. This relationship---replay produces the number,
+the receipt preserves the number with its derivation chain---is the architectural
+core of the cryptographic receipt infrastructure documented in this thesis.

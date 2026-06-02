@@ -1,0 +1,93 @@
+\section{Architecture and Primitives}
+\label{sec:checkpoints-architecture}
+
+\subsection{Core Objects}
+\label{sec:checkpoints-architecture-core-objects}
+
+The checkpoint ledger is built from four core object types. The first is the \emph{verdict document},
+a Markdown file named with a checkpoint identifier encoding verdict type and sequence number
+(e.g., PROCESS\_INTELLIGENCE\_ALIVE\_001, GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001). Each verdict
+document records the date of sealing, the authority issuing the verdict, the gate criteria evaluated,
+the actual counts at assessment time, and the downstream workflows authorized or refused.
+
+The second core object is the \emph{gate criteria record}, encoded in RESEARCH\_CRITERIA.md. This
+document defines the gate table before any verdict is sought, making the threshold pre-declared and
+falsifiable. The gate table specifies twelve directory-level criteria with minimum file counts and
+verification shell commands, plus a commit count threshold (minimum 80 commits, actual 894 at
+program ALIVE assessment).
+
+The third core object is the \emph{receipt}, a BLAKE3- or SHA-256-sealed document in the companion
+\texttt{receipts/} directory. Receipts are the evidence that verdict documents reference. Each
+receipt carries a witness marker (e.g., InductiveWitness, ConformanceWitness, GovernanceWitness)
+that binds the receipt to a specific type-law surface.
+
+The fourth core object is the \emph{cryptographic seal}, a hash string appended to each verdict
+document. PROCESS\_INTELLIGENCE\_ALIVE\_001 carries a verification status code 0x00 (SUCCESS\_ALIVE).
+PI\_RESEARCH\_PROGRAM\_ALIVE\_001 carries a BLAKE3 seal:
+\texttt{e7c8f2d94a71b5c3e9f1d6a4b2c8e5f7a1d3c5b7e9f2d4a6c8e0f1a3b5c7d9}.
+GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001 carries an SHA-256 seal:
+\texttt{d5d7990b798b31a3962d3bf30f0f3531b26f56a310efc35ad1a89b3f021e85a6}.
+
+\subsection{Admissible Transitions}
+\label{sec:checkpoints-architecture-transitions}
+
+The checkpoint ledger enforces a typed state machine over verdict documents. The admissible
+transitions are: (1) from an empty ledger to PARTIAL, which requires only that the research foundry
+has been bootstrapped and criteria are in progress; (2) from PARTIAL to ALIVE, which requires all
+gate criteria to be simultaneously met and all open CRITICAL gaps to have documented remediation
+plans; (3) from ALIVE to a specialized ALIVE (e.g., GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001 sealing after
+PROCESS\_INTELLIGENCE\_ALIVE\_001), which requires the parent ALIVE to be sealed and the specialized
+gate criteria to pass.
+
+The PARTIAL state is a first-class citizen of this state machine. It is not a transient error to be
+hidden; it is a named state with an explicit authorization scope. A PARTIAL verdict authorizes
+continuation of research work toward the missing artifacts. It does not authorize downstream
+implementation work. This distinction is enforced by the authorization lists in each verdict document.
+
+The decommissioning transition $\delta(P)$ is represented in the Petri net snapshot. The base64-
+decoded PETRI\_NET\_SNAPSHOT.md records the final marking: [Decommissioning]:1, [Design]:0,
+[Simulation]:0, [Construction]:0, [Actuation]:0. A single token in the terminal place with no
+tokens in intermediate places satisfies the proper completion criterion: the process is sound because
+it has reached the terminal state from the initial [Design] state with no deadlocks.
+
+\subsection{Boundaries}
+\label{sec:checkpoints-architecture-boundaries}
+
+The checkpoint ledger enforces two critical boundaries that are stated explicitly in the ALIVE
+verdict documents. The first boundary is the \emph{admissibility boundary}: $R \vdash P_i = \mu(O^*, T, L)$.
+No process artifact may be admitted to the manufacturing pipeline without a named witness and a receipt
+in the registry. Claims based on unadmitted raw event logs are explicitly not authorized by any
+checkpoint.
+
+The second boundary is the \emph{authorization boundary}: downstream workflows are authorized only
+when their prerequisites appear in a sealed ALIVE verdict's authorization list. The ALIVE gate
+assessment document records five authorized downstream workflows following PROCESS\_INTELLIGENCE\_ALIVE\_001:
+board-level claim delivery, M\&A diligence package assembly, wasm4pm graduation initiation, PAPERLAW
+downstream workflows, and standards-based conformance claims. It simultaneously records four
+unauthorized workflow classes: claims based on unadmitted event logs, conformance scores without a
+named witness, M\&A claims without corresponding receipts, and wasm4pm integration without
+\texttt{Admission<T, W>} typing at the API boundary.
+
+\subsection{Failure Modes Refused}
+\label{sec:checkpoints-architecture-failure-modes}
+
+The checkpoint architecture explicitly refuses four failure modes that the old regime permits. The
+first is the \emph{forced ALIVE verdict}: issuing an ALIVE certification before all gate criteria are
+met. Gate 12 of the twelve-gate evaluation is titled \textquotedblleft No Forced ALIVE
+Verdicts\textquotedblright{} and passes only when the audit confirms zero forced verdicts in the
+ledger. The PI\_RESEARCH\_PROGRAM\_ALIVE\_001 document records this gate as passing with the
+observation that PROCESS\_INTELLIGENCE\_ALIVE\_001 was sealed only after 12 of 12 gates passed.
+
+The second refused failure mode is the \emph{partial gate treated as passed}. If a gate criterion
+requires 8 lifecycle files and the inventory contains 7, the gate fails and the overall verdict is
+PARTIAL. There is no partial credit.
+
+The third refused failure mode is the \emph{undocumented gap}. Every open item that cannot be closed
+at assessment time must be recorded in the gaps/ directory with a severity classification and a
+remediation plan. The ALIVE gate assessment lists five open gaps (GAP\_001 through GAP\_005), each
+with a documented timeline and blocking status.
+
+The fourth refused failure mode is the \emph{conformance score without a named witness}. The
+ALIVE\_GATE\_ASSESSMENT document records this as an explicit prohibition: conformance scores are not
+admissible in board presentations or M\&A diligence packages unless they carry a named witness
+marker traceable to a receipt in the registry.

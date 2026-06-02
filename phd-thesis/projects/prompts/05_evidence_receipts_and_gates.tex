@@ -1,0 +1,109 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: prompts — Downstream Manufacturing Prompt Corpus
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:prompts-evidence}
+
+\subsection{Tests}
+\label{sec:prompts-evidence-tests}
+
+The corpus specifies four families of test artifacts, none of which have been
+executed as of 2026-05-31. These are authorized specifications, not achieved results.
+
+\textbf{Absence-proof fixtures} (\texttt{execution-plans/absence-proof-fixtures.md}):
+TypeScript fixtures using \texttt{@ts-expect-error} directives in
+\texttt{tests/absence-proofs/}, validated by a custom runner that wraps
+\texttt{tsc --noEmit}. Three fixture categories are specified: cross-boundary
+capability leakage (verifying that \texttt{SandboxedCapability} cannot be passed as
+\texttt{UnrestrictedCapability}), typestate violation (verifying that
+\texttt{WasmModule<Unverified>} cannot be passed to \texttt{linkModule}), and memory
+safety constraints (verifying that \texttt{Pointer<number, "unchecked">} cannot be
+passed to \texttt{view.read32}). Rust-side fixtures use the \texttt{trybuild} crate.
+Success criterion: 100\% of defined illegal states manifest as compilation errors.
+
+\textbf{Structural law compile-fail fixtures} (GAP\_008 from
+\texttt{DOWNSTREAM\_COMPAT\_GAP\_CLOSE.md}): All fixtures in
+\texttt{tests/ui/compile\_fail/} must fail on structural error codes E0308, E0599,
+E0277, or E0080 (not E0425 or E0432). Each fixture must have a matching
+\texttt{.stderr} file. A fixture failing for the wrong error code is treated as a
+defect equivalent to a compile-fail fixture that accidentally passes.
+
+\textbf{PM4Py benchmark tests} (\texttt{downstream\_pm4py\_benchmark\_comparison.md}):
+Seven algorithm comparisons across four dataset scales (10K, 100K, 1M, 50K
+pathological events). Success criteria include: Inductive Miner $\geq 20\times$
+faster than PM4Py; A* alignment $\geq 22\times$ faster; Petri net soundness
+$\geq 30\times$ faster; DFG mining $\geq 25\times$ faster. Correctness tolerances:
+fitness within $\pm0.001$, alignment cost within $\pm0.01$, precision within $\pm0.01$.
+These targets are success criteria, not achieved results; no benchmark receipts exist
+in this directory.
+
+\textbf{Audit mesh tests} (\texttt{downstream\_audit\_mesh\_expansion.md}):
+Automated capability verification with type boundary test requirements. Specifications
+are present; execution artifacts are absent.
+
+\subsection{Receipts}
+\label{sec:prompts-evidence-receipts}
+
+One receipt-bearing artifact exists within the \texttt{prompts/} directory:
+
+\textbf{\texttt{checkpoint\_\_downstream\_prompts\_complete.md}}: The master
+verification checklist. It confirms completeness of twelve downstream directive files
+and specifies that all markdown links must use absolute \texttt{file:///} paths
+without backticks. The checklist is a verification specification, not a cryptographic
+receipt in the BLAKE3/Ed25519 sense. It does not carry a \texttt{validator\_signature}
+field.
+
+No \texttt{ProcessIntelligenceVerificationReceipt} JSON artifacts, no BLAKE3 hashes,
+and no Ed25519 signatures exist as materialized files within the \texttt{prompts/}
+directory. The receipt schemas are specifications of artifacts to be manufactured by
+downstream engineering work.
+
+\subsection{Checkpoints}
+\label{sec:prompts-evidence-checkpoints}
+
+The corpus references one upstream checkpoint as its authorization gate:
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001}. This checkpoint is cited in
+\texttt{downstream\_wasm4pm\_refactor.md} as the precondition for invoking the
+refactor mandate: ``This mandate is authorized for downstream execution ONLY after
+the \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} seal is produced. Do not invoke before
+that seal exists. Invoking before the seal means acting on unverified research
+claims.''
+
+The checkpoint is not materialized within the \texttt{prompts/} directory. Its
+existence must be confirmed by examining \texttt{receipts/} and
+\texttt{checkpoints/} in the parent research program. This is the primary open
+question for the corpus's authorization status.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:prompts-evidence-status}
+
+The status of this corpus is \textbf{PARTIAL} per the evidence examined.
+
+\textbf{What is complete}:
+\begin{itemize}
+  \item All twelve directive files are present and carry explicit authority sources.
+  \item Every completion criterion is expressed as a verifiable artifact type
+    (compile-pass fixture, compile-fail fixture with \texttt{.stderr}, JSON schema,
+    or named Rust type).
+  \item Directive verdicts of ``READY FOR ENGINEERING'' with ``DOCTORAL THESIS
+    (99\% specification completeness)'' confidence are dated 2026-05-31.
+  \item The gap-closure sequence (GAP\_007 $\to$ GAP\_001 $\to$ GAP\_002; parallel
+    GAP\_003/004/008; parallel GAP\_005/006) is formally specified with dependency
+    analysis.
+  \item The Chatman Equation bridge blueprint is complete with BLAKE3/Ed25519
+    cryptographic linkage specified to the field level.
+\end{itemize}
+
+\textbf{What is absent}:
+\begin{itemize}
+  \item The \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} seal is not materialized in
+    this directory. The authorization gate is documented but its issuance is
+    unconfirmed from within the corpus.
+  \item No benchmark receipts exist. The PM4Py speedup targets (20--30$\times$) are
+    success criteria, not achieved measurements.
+  \item No compile-fail \texttt{.stderr} fixture files exist within the corpus.
+    These are specified as required by GAP\_008 but not present here.
+  \item ZKP infrastructure (SNARK/STARK proofs referenced in
+    \texttt{zkp-execution-boundaries.md}) has no implementation in either
+    \texttt{wasm4pm} or \texttt{wasm4pm-compat} and no gap document tracking it.
+\end{itemize}

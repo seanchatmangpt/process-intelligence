@@ -1,0 +1,103 @@
+\section{Implementation Surface}
+\label{sec:checkpoints-implementation}
+
+\subsection{Source Files}
+\label{sec:checkpoints-implementation-source-files}
+
+The checkpoint ledger is implemented entirely in Markdown documents residing in the
+\texttt{checkpoints/} directory of the \texttt{process-intelligence} repository. The authoritative
+source files are:
+
+\begin{itemize}
+  \item \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md} --- Primary ALIVE verdict. Encodes five
+        verified mathematical invariants: admissibility boundary $R \vdash P_i = \mu(O^*, T, L)$,
+        autonomic actuation $\alpha(K, P, L, T) \to \tau$, token game fitness
+        $f(L, N) = 1 - (\sum m / \sum c) - (\sum r / \sum p)$, OCPQ refinement $p \sqsubseteq_L c$,
+        and decommissioning retirement $\delta(P)$. Lists four authorized downstream workflow classes.
+
+  \item \texttt{ALIVE\_GATE\_ASSESSMENT.md} --- Twelve-gate evaluation table with exact artifact
+        counts (doctrine 30, standards 52, papers 15, PM4Py 14, wasm4pm 20, wasm4pm-compat 16,
+        lifecycle 42, comparisons 11, crosswalks 8, M\&A 40, adversarial 5, gaps 4). Records
+        748 total commits at assessment date 2026-05-31.
+
+  \item \texttt{PI\_RESEARCH\_PROGRAM\_ALIVE\_001.md} --- Program-level ALIVE verdict. Documents
+        342 total research artifacts across 12 categories and 894 git commits at assessment.
+        Records three downstream projects confirmed found: wasm4pm (ALIVE), wasm4pm-compat
+        (PARTIAL), ostar (ALIVE). Carries BLAKE3 seal and verification code 0x0F\_ALL\_GATES\_PASS.
+
+  \item \texttt{RESEARCH\_CRITERIA.md} --- Pre-declared gate criteria document with the thirteen-
+        criterion gate table and verification bash script. Encodes the PARTIAL doctrine.
+
+  \item \texttt{SUBSTRATE\_COMPLETE\_001.md} --- Manufacturing substrate ALIVE verdict. Records six
+        completed phases, five sealed BLAKE3 generation receipts, 629-line Blue River Dam orchestrator,
+        11 Jinja2 templates, and five monetization claim sample receipts.
+
+  \item \texttt{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001.md} --- Generative ecosystem intelligence verdict.
+        Documents 45 artifacts across intel, rules, templates, and audit categories; 3 of 4 boundary
+        audits passing; DTO remediation plan for the failing audit.
+
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md} and \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}
+        --- OTel-to-OCEL feedstock boundary verdicts. Runtime verdict carries SHA-256 seal and
+        records 62 tests passing across three packages.
+
+  \item \texttt{PETRI\_NET\_SNAPSHOT.md} --- Base64-encoded Petri net final marking document.
+        Decoded content: [Decommissioning]:1, all intermediate places at 0.
+\end{itemize}
+
+\subsection{Commands}
+\label{sec:checkpoints-implementation-commands}
+
+The gate verification is implemented as an executable bash script embedded in RESEARCH\_CRITERIA.md.
+The script accepts no arguments and runs from the repository root. It iterates over twelve directory
+checks using a \texttt{check()} function that invokes \texttt{ls} against each target directory and
+compares the count to the minimum threshold using integer comparison. It then checks the git commit
+count using \texttt{git log --oneline | wc -l}. The script emits a PASS or FAIL line for each
+criterion and a final verdict of ALIVE\_001 or PARTIAL\_001.
+
+The script is designed to be re-run at any time. Its output is deterministic given the current
+artifact inventory: the same script run against the same repository state produces the same verdict.
+This reproducibility is what makes the ALIVE verdict falsifiable rather than qualitative.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:checkpoints-implementation-data}
+
+The data surfaces used by the checkpoint system are the directory-level file inventories of twelve
+research program directories. These are not formal ontologies; they are file-system facts. The gate
+criteria table in RESEARCH\_CRITERIA.md specifies the directories and minimum counts; the
+ALIVE\_GATE\_ASSESSMENT records the actual counts at assessment time.
+
+The receipt data surface is more structured. Each receipt in the RECEIPT\_REGISTRY.md follows a
+typed format with fields: \texttt{name}, \texttt{produced\_by}, \texttt{witness}, \texttt{result\_type},
+\texttt{criteria\_met}, and \texttt{gaps\_remaining}. The five monetization claim receipts
+(\texttt{rec\_ebitda\_rework\_001.json}, \texttt{rec\_wc\_ar\_002.json}, \texttt{rec\_risk\_sla\_003.json},
+\texttt{rec\_risk\_compliance\_004.json}, \texttt{rec\_residual\_standard\_005.json}) are JSON documents
+carrying BLAKE3 proof chains for board-level claim evidence.
+
+The OTel integration data surface is defined in the \texttt{otel-weaver/} directory referenced by
+GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001: process\_pi.yaml encodes custom OTel semantic conventions;
+otel-collector-config.yaml provides a production-ready collector configuration; the BridgeRx
+component in bridge.rs implements the schema-translation rule that maps Schema Version 2 telemetry
+attributes (\texttt{process.pi.transition.name}) to Schema Version 1 format
+(\texttt{process.pi.activity.name}).
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:checkpoints-implementation-templates}
+
+The SUBSTRATE\_COMPLETE\_001 checkpoint records 11 Jinja2 templates embedded in the wasm4pm-compat
+rendering substrate: three mining templates (inductive\_miner.rs.j2, heuristics\_miner.rs.j2,
+alpha\_miner.rs.j2), two conformance templates (alignment.rs.j2, token\_replay.rs.j2), two replay
+templates (executor.rs.j2, step\_simulator.rs.j2), two lifecycle templates (state\_machine.rs.j2,
+actuation.rs.j2), and two fixture templates (compile\_pass\_fixture.rs.j2,
+compile\_fail\_fixture.rs.j2). These templates are the manufacturing surface that converts governance
+documents into type-law-compliant Rust code.
+
+The GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001 checkpoint records eight ggen templates: specta-exporter.rs.ggen,
+wasm-boundary.rs.ggen, wasm4pm-compat.wit.ggen, wit-world.wit.ggen, feature-plan.yaml.ggen,
+ma-deck.tera, ma-diligence.tera, and blue-river.tera. These templates manufacture the FFI projection
+surfaces (TypeScript bindings, WASM ABI conversions, Component Model WIT schemas) that bridge
+wasm4pm-compat to downstream consumers.
+
+All rendered artifacts carry witness markers injected at rendering time. The SUBSTRATE\_COMPLETE\_001
+type-law compliance registry confirms that all six module families (mining, conformance, replay,
+lifecycle, petri, evidence) implement the \texttt{Evidence<T, State, W>} carrier pattern with lattice
+constraints \texttt{W: Lattice + Eq + PartialOrd + Serialize} and verified round-trip serialization.

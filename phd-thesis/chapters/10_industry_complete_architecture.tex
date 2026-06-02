@@ -1,0 +1,91 @@
+\chapter{Industry-Complete Architecture}
+\label{chap:industry_architecture}
+
+\section{The Coverage Claim}
+
+An industry-complete architecture is one that can be instantiated for any industry, at any integration boundary, without requiring a redesign of the core infrastructure. The claim is not that the same artifacts are produced for every industry. The claim is that the same manufacturing law --- the same Chatman Equation, the same receipt chain, the same command grammar, the same OCEL-compatible event log structure --- can produce industry-appropriate artifacts for every domain.
+
+This claim requires a coverage map: a formal description of the industries covered and the integration boundaries addressed. The North American Industry Classification System (NAICS) provides the canonical taxonomy. NAICS classifies industries at multiple levels of granularity: from two-digit sector codes (Agriculture, Mining, Manufacturing, Retail, Finance, Health Care, and so on) through six-digit industry codes that distinguish, for example, between commercial banking, investment banking, and mortgage banking within the Finance sector.
+
+The industry-complete architecture uses NAICS as its coverage map, not as an exhaustive deployment checklist but as a formal demonstration that no industry is structurally excluded by the architecture's design.
+
+\section{Industry Packs}
+
+An industry pack is the collection of manufacturing artifacts required to deploy the process-intelligence infrastructure for a specific NAICS sector. A pack includes:
+
+\begin{itemize}
+  \item A process model library: the declared process models for the dominant processes in the sector.
+  \item An event-schema library: the OCEL-compatible event schemas for the process events in the sector.
+  \item A command surface: the noun-verb grammar for the sector's operations.
+  \item An ontology alignment: the mapping from the sector's domain vocabulary to the public ontologies that ground its meaning-bearing claims.
+  \item A standards alignment: the mapping from the sector's regulatory frameworks to the receipt chain's compliance evidence structure.
+  \item A receipt template: the receipt format for the sector's consequential actions.
+\end{itemize}
+
+Industry packs are manufactured, not authored. The distinction is the same as the core distinction of Chapter~\ref{chap:ggen}: manufactured artifacts are produced from graph law by the \texttt{ggen} manufacturing engine, traceable to the SPARQL queries and RDF graphs that produced them. Authored artifacts are produced by a person or a prediction system, without verifiable traceability to manufacturing law.
+
+The \texttt{atlas/} project (\textsc{partial}) is the doctrine atlas and thesis chapter surface map --- the structural index that connects the industry-pack architecture to the specific chapters and projects that implement it. The connection between the atlas and the specific industry packs is the crosswalk: the \texttt{crosswalks/} project (\textsc{partial}) defines the type-law crosswalks between public standards and the execution layer that make industry-pack manufacturing possible.
+
+\section{NAICS as Coverage Map}
+
+The NAICS classification provides twenty principal sectors. For each sector, the industry-complete architecture claim can be stated precisely:
+
+\textbf{Sector 11 --- Agriculture, Forestry, Fishing, Hunting}: Process intelligence for supply chain provenance, harvest event logging, and regulatory compliance (USDA, FDA). The dominant integration boundary is farm-management systems and food-safety reporting.
+
+\textbf{Sector 21 --- Mining, Quarrying, Oil and Gas}: Process intelligence for extraction event logging, environmental compliance, and permit tracking. Integration boundaries include operational technology (OT) systems and regulatory reporting.
+
+\textbf{Sector 22 --- Utilities}: Process intelligence for grid-event logging, outage-management process conformance, and tariff-regulatory compliance. Integration boundaries include SCADA systems and grid-management platforms.
+
+\textbf{Sector 23 --- Construction}: Process intelligence for project-lifecycle event logging, subcontractor handoff tracking, and safety-incident process conformance. Integration boundaries include project-management platforms and inspection reporting.
+
+\textbf{Sectors 31--33 --- Manufacturing}: The core industrial domain. Process intelligence for production-event logging, quality-control process conformance, and supply-chain receipt chains. Integration boundaries include ERP systems, MES platforms, and ISO 9001 compliance reporting.
+
+\textbf{Sectors 42, 44--45 --- Wholesale and Retail Trade}: Process intelligence for inventory-event logging, purchase-order process conformance, and customer-journey handoff tracking. Integration boundaries include POS systems, inventory management, and e-commerce platforms.
+
+\textbf{Sectors 48--49 --- Transportation and Warehousing}: Process intelligence for logistics-event logging, carrier-handoff tracking, and customs-compliance process conformance. Integration boundaries include TMS platforms, EDI systems, and customs reporting.
+
+\textbf{Sector 51 --- Information}: Process intelligence for content-delivery event logging, access-control process conformance, and data-governance receipt chains. Integration boundaries include CDN platforms, identity systems, and GDPR compliance reporting.
+
+\textbf{Sector 52 --- Finance and Insurance}: The capital-flow domain of Chapter~\ref{chap:ai_xynz}. Process intelligence for transaction-event logging, settlement-process conformance, and regulatory-compliance receipt chains. Integration boundaries include core-banking systems, trading platforms, and regulatory reporting (SEC, FINRA, FCA).
+
+\textbf{Sector 54 --- Professional, Scientific, Technical Services}: Process intelligence for engagement-lifecycle event logging, deliverable-handoff tracking, and billable-hour process conformance. Integration boundaries include professional-services automation (PSA) platforms and legal-matter management systems.
+
+\textbf{Sector 56 --- Administrative and Support Services}: Process intelligence for workflow-event logging, staffing-process conformance, and service-level-agreement receipt chains. Integration boundaries include workforce-management platforms and BPO service systems.
+
+\textbf{Sector 61 --- Educational Services}: Process intelligence for learning-event logging, credentialing-process conformance, and accreditation receipt chains. Integration boundaries include LMS platforms and accreditation-reporting systems.
+
+\textbf{Sector 62 --- Health Care and Social Assistance}: Process intelligence for clinical-event logging, care-pathway process conformance, and HIPAA-compliance receipt chains. Integration boundaries include EHR systems, billing platforms, and CMS reporting.
+
+\textbf{Sector 71 --- Arts, Entertainment, Recreation}: Process intelligence for booking-event logging, rights-management process conformance, and revenue-distribution receipt chains. Integration boundaries include ticketing platforms and royalty-management systems.
+
+\textbf{Sector 72 --- Accommodation and Food Services}: Process intelligence for reservation-event logging, service-delivery process conformance, and health-inspection receipt chains. Integration boundaries include PMS platforms, POS systems, and health-regulatory reporting.
+
+\textbf{Sector 81 --- Other Services}: Process intelligence for repair-event logging, service-delivery process conformance, and warranty-claim receipt chains. Integration boundaries include field-service management platforms and warranty-administration systems.
+
+\textbf{Sector 92 --- Public Administration}: Process intelligence for regulatory-action event logging, permit-process conformance, and public-accountability receipt chains. Integration boundaries include government ERP systems and public-records management.
+
+\section{Integration Boundary Taxonomy}
+
+Each industry pack addresses integration boundaries: the points at which the process-intelligence infrastructure connects to operational systems. The integration boundary taxonomy classifies these connection points:
+
+\begin{description}
+  \item[Operational Technology (OT)] SCADA, DCS, PLC systems. Event extraction requires OT-compatible adapters.
+  \item[Enterprise Resource Planning (ERP)] SAP, Oracle, Microsoft Dynamics. Event extraction requires ERP-specific change-data-capture configurations.
+  \item[Industry-Specific Platforms] EHR (health care), TMS (transportation), PMS (hospitality), LMS (education). Event extraction requires platform-specific API integration.
+  \item[Regulatory Reporting Systems] Systems that receive compliance reports. Event extraction is the inverse: the report submission is a process event that must be logged in the event log.
+  \item[Financial Market Infrastructure] Trading platforms, clearing systems, settlement networks. Event extraction requires market-data and transaction-data integration.
+\end{description}
+
+The \texttt{comparisons/} project (\textsc{alive}) documents the cross-system capability comparisons that establish which integration approaches are viable for which boundary types.
+
+\section{C4 Diagram Manifest Relationship}
+
+The C4 model (Context, Container, Component, Code) provides a hierarchical architecture-documentation approach suited to the industry-complete architecture's layered structure.
+
+At the \textbf{Context} level, the industry-complete architecture consists of three external actor types: the customer's operational systems (sources of $O^{*}$), the regulatory environment (source of process-model constraints), and the customer's consumers of process intelligence (audit systems, dashboards, compliance platforms).
+
+At the \textbf{Container} level, the architecture consists of: the OTel-to-OCEL ingestion pipeline (\texttt{otel-weaver} family), the process-model library (manufactured by \texttt{ggen} from the \texttt{atlas/} and \texttt{crosswalks/} projects), the conformance-checking engine (\texttt{sources-wasm4pm}), the receipt chain (\texttt{receipts/}), and the industry-specific output layer (dashboards via \texttt{experiments-visualizer} and \texttt{experiments-visualizer-nextjs}).
+
+At the \textbf{Component} level, each container decomposes into the specific projects in this corpus. The manifest relationship --- the mapping from C4 components to project slugs --- is the functional view of the thirty-four-project corpus: each project occupies a specific position in the C4 hierarchy, contributing specific capabilities to the industry-complete architecture.
+
+The \texttt{atlas/} project (\textsc{partial}) is the doctrine atlas that maintains this manifest relationship. When \texttt{atlas/} achieves \textsc{alive} status, the manifest will be a receipted artifact: a document whose correspondence to the actual project structure is verifiable by replay, not merely asserted by its authors.

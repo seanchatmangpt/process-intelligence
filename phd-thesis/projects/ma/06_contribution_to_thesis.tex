@@ -1,0 +1,112 @@
+% FILE: 06_contribution_to_thesis.tex
+% PROJECT: ma — M&A Claim Taxonomy and Board Projection Surface
+
+\section{Contribution to the Dissertation}
+\label{sec:ma-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:ma-contrib-prediction}
+
+The central dissertation argument is that prediction---local text imitation, statistical
+forecasting, AI-generated content---does not conserve consequence, and that the enterprise
+requires coordination: shared, replayable, cryptographically attested process truth. The
+\texttt{ma/} module provides the most economically explicit instantiation of this argument
+in the thesis.
+
+The traditional M\&A synergy model is a prediction artifact. A financial model that projects
+\$50M in post-merger EBITDA improvement is a prediction in the precise sense that fails: it
+asserts an organizational future without being grounded in a replayable record of the
+organizational past. The prediction may be fluent---well-structured, numerically consistent,
+defensible in narrative---while being entirely disconnected from the actual process execution
+history of either party. When this prediction fails post-close, the buyer has paid a merger
+premium for a narration.
+
+The \texttt{ma/} framework replaces this with coordination: every claim is grounded in an
+OCEL 2.0 event log that records actual execution history, verified by a conformance query
+that any party can replay, and sealed by a receipt that any auditor can independently
+re-execute. The EBITDA claim of \$1,250,000 in \texttt{rec\_ebitda\_rework\_001.json} is not
+a prediction---it is a coordinate: a point in the space of verifiable process reality, with
+fitness 0.982 and precision 0.945 certifying that the underlying event log is a faithful
+record of the claimed process.
+
+This is the dissertation's core claim demonstrated at the capital-market surface: coordination
+(receipted, replayable process evidence) has a higher truth value than prediction (spreadsheet
+extrapolation), and this higher truth value is expressible as a merger premium.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:ma-contrib-process-evidence}
+
+The \texttt{ma/} module makes two specific contributions to the process evidence strand of
+the thesis.
+
+\textbf{First}, it defines the evidentiary escalation ladder (T1--T6 Board Claim Taxonomy)
+that translates process mining output into financial claim tiers. This ladder is a bridge
+between the academic process mining literature (Van der Aalst, Adriansyah, Leemans, Weidlich,
+Ghahfarokhi) and the capital-market practice of M\&A diligence. T3 Conformance claims require
+the same alignment-based fitness computation that academic process mining uses for evaluation.
+T4 Performance claims require event timestamp analysis at the same rigor as throughput-time
+benchmarks in the academic literature. The \texttt{ma/} module operationalizes academic
+process mining metrics as capital-market admissible evidence.
+
+\textbf{Second}, it defines the Reverse Porter Five Forces inversion---the claim that process
+evidence permanently restructures competitive dynamics rather than merely defending against
+competitive threats. This is an original thesis contribution (AUTHOR THESIS): the argument
+that a multi-year OCEL event log history is structurally irreproducible by a new entrant, and
+that this irreproducibility constitutes a persistent competitive moat, is not derived from a
+single prior source. It is grounded in the structural logic of retrospective data (a competitor
+who starts logging today cannot produce three years of historical OCEL logs) but the
+capital-market framing of this as a Porter inversion is this thesis's contribution.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:ma-contrib-manufacturing}
+
+The \texttt{ma/} module defines the board-projection surface of the CodeManufactory
+architecture. The Board Projection Renderer is a seven-step manufacturing pipeline: Claims
+JSON is the raw input; sealed PowerPoint and Excel artifacts are the manufactured outputs;
+the intermediate stages (Tera2 templating, pptx-rs assembly, calamine workbook assembly,
+receipt validation, ledger sealing) are manufacturing operators in the CodeManufactory sense.
+
+The receipt chain is a manufacturing lineage record: every manufactured claim artifact traces
+back through the receipt to the event log from which it was derived. This is the
+manufacturing architecture principle---that the provenance of every artifact must be
+independently verifiable from its production inputs---applied to financial claims at the
+capital-market surface.
+
+The VDR structure (\texttt{/event-logs/}, \texttt{/models/}, \texttt{/receipts/},
+\texttt{/conformance/}, \texttt{/provenance/}, \texttt{/synergy/}) is a manufacturing
+artifact repository: a structured archive of all intermediate and final artifacts in the
+pipeline, organized for independent inspection rather than for internal convenience.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:ma-contrib-capital-flow}
+
+The \texttt{ma/} module is the capital-flow layer of the thesis architecture. It is the point
+at which process intelligence---which in \texttt{wasm4pm} and \texttt{ggen} operates at the
+operational and ontological levels---is translated into capital-market claims, merger
+premiums, and acquisition valuations.
+
+The contribution to capital-flow infrastructure is structural. The module establishes that:
+
+\begin{enumerate}
+  \item Operational debt (process spaghetti, compliance deficits, legacy lock-in, shadow IT)
+    is quantifiable as a valuation haircut: 5--30\% depending on debt class and severity. This
+    makes process evidence directly relevant to the term sheet.
+  \item Synergy claims are verifiable via bisimulation equivalence (Process Equivalence Model)
+    and Execution Path Intersection---making the merger premium defensible to a skeptical
+    buyer's auditor rather than merely claimed by the seller's investment banker.
+  \item The diligence compression from 7+ weeks to 3 days, enabled by wasm4pm automated
+    query execution, is a transaction-infrastructure improvement: it reduces the cost of
+    capital by reducing due-diligence friction, making process-intelligent targets more
+    liquid acquisition candidates.
+  \item The Hostile Takeover Receipt (v30.1.1) extends this infrastructure to adversarial
+    contexts, where incumbent management actively conceals operational debt. The HTR taxonomy
+    establishes that ghost dependencies and exception-rate variance can be surfaced by
+    replaying event streams---making process evidence a tool for hostile acquirers as well
+    as friendly ones.
+\end{enumerate}
+
+These contributions position the \texttt{ma/} module as the thesis's primary demonstration
+that process intelligence is not merely an operations analytics discipline but a
+capital-allocation discipline---that the full-lifecycle process intelligence stack terminates
+not in an operations dashboard but in a cryptographically sealed board presentation whose
+every assertion is independently replayable.

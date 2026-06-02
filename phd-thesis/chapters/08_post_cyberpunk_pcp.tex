@@ -1,0 +1,57 @@
+\chapter{Post-Cyberpunk PCP}
+\label{chap:post_cyberpunk}
+
+\section{Naming a Cultural Moment}
+
+``Post-Cyberpunk'' is not an aesthetic term in this dissertation. It is a technical description of a phase transition in the relationship between software systems and truth.
+
+Cyberpunk, as a literary and cultural phenomenon, depicted futures in which technology was simultaneously powerful and untrustworthy: corporations controlled information, systems could be subverted, and the gap between appearance and reality was permanent and exploitable. The defining characteristic of the cyberpunk condition was that technology could not be trusted to report the truth about itself. It could report plausible-sounding output. It could simulate the appearance of function. But the correspondence between its output and reality was always suspect.
+
+The present AI moment is cyberpunk in exactly this sense. Language-model systems produce fluent, confident output. That output may or may not correspond to verifiable facts. The gap between output and reality is not a bug in specific systems --- it is a structural feature of prediction-based architectures. A system optimized to produce plausible text will produce plausible text. Plausibility and truth are not the same relation. The cyberpunk condition is present when plausibility is all that can be verified.
+
+Post-Cyberpunk names the phase after this: the phase in which systems produce receipted output, in which the correspondence between output and reality is not merely claimed but verifiable, and in which the infrastructure of verification is itself a public, inspectable artifact. The transition from present cyberpunk to post-cyberpunk is not a transition in hardware capability. It is a transition in the accountability architecture of software systems.
+
+\section{Hallucination as Output vs. Receipt as Proof}
+
+The technical spine of the post-cyberpunk claim is the distinction between hallucination-as-output and receipt-as-proof.
+
+Hallucination, in the language-model context, is the production of output that asserts facts that are not grounded in evidence. The term is sometimes treated as a performance degradation --- a bug to be engineered away by better training, better retrieval, better prompting. This framing misses the structural point. Hallucination is not a bug. It is the natural consequence of optimizing a system to produce plausible output without a verifiability constraint. A system that is rewarded for plausibility will produce plausible hallucinations. A system that is rewarded for receipt-verifiable output will not.
+
+The shift from hallucination-as-output to receipt-as-proof is a shift in the optimization target. It is not a shift in the model architecture. It is a shift in the accountability requirement imposed on the system's outputs. A system that produces receipted output is constrained: its outputs must be verifiable, must be traceable to the evidence that grounds them, and must survive replay against a declared process model.
+
+This is the post-cyberpunk infrastructure requirement. It is not a requirement that systems be more accurate in a statistical sense. It is a requirement that systems be accountable in a process sense. The distinction is the same as the prediction-vs-coordination distinction in Chapter~\ref{chap:prediction_not_coordination}, expressed at the cultural rather than the technical level.
+
+\section{Post-Present Cyberpunk Platform}
+
+PCP --- Post-Present Cyberpunk Platform --- is the working infrastructure name for the research program's application-layer stack. It is not an aesthetic label. It is a description of the platform's accountability architecture: systems built on PCP produce receipted output, enforce process evidence requirements, and refuse false closure.
+
+The PCP stack is built on Expo and Supabase as primary infrastructure components. This is not an arbitrary technology choice. Each component is selected for specific properties relevant to the post-cyberpunk accountability requirement.
+
+\textbf{Expo} provides cross-platform mobile and web application delivery with a first-class over-the-air update mechanism. The OTA update capability is significant for the receipt chain: application updates can be tracked, receipted, and rolled back with verifiable provenance. An application that self-updates without a receipt chain cannot distinguish an authorized update from a compromised one. Expo's update model, combined with the receipt infrastructure described in Chapter~\ref{chap:process_evidence}, provides the application-delivery layer of the post-cyberpunk stack.
+
+\textbf{Supabase} provides a PostgreSQL-backed application database with row-level security, real-time subscriptions, and a REST/GraphQL query interface. Its significance for the post-cyberpunk stack is its event-sourcing compatibility: Supabase's change-data-capture mechanisms can be configured to emit process-intelligence-compatible events, making the database layer a source of $O^{*}$ rather than a repository of state snapshots. This bridges the enterprise process gap (Chapter~\ref{chap:enterprise_gap}) at the application-database layer.
+
+\section{Why This Is Working Infrastructure, Not Aesthetic Commentary}
+
+The post-cyberpunk framing invites a misreading: that it is cultural commentary, a literary conceit, a branding exercise. This misreading must be addressed directly.
+
+The post-cyberpunk framing is operational. It makes specific technical commitments:
+
+\begin{enumerate}
+  \item Systems built on PCP produce receipted output. Not approximately receipted. Not receipted when convenient. Receipted as a condition of deployment.
+  \item The receipt infrastructure is public and auditable. Not proprietary. Not obfuscated. Inspectable by any party with access to the receipt chain and the public ontologies it references.
+  \item The process model against which outputs are verified is declared before deployment. Not inferred after the fact. Declared, documented, and receipted before the system enters production.
+  \item False closure is refused by the infrastructure, not by policy. A system that cannot produce a valid receipt cannot emit an \textsc{alive} verdict. This is enforced structurally, not by convention.
+\end{enumerate}
+
+These commitments are implemented in the projects documented in this corpus. The \texttt{blue-river-dam} project (\textsc{alive}) implements the lifecycle authority and governance engine. The \texttt{receipts/} project (\textsc{alive}) implements the cryptographic receipt chain. The \texttt{checkpoints/} project (\textsc{alive}) implements the phase-milestone verdict ledger. The \texttt{adversarial/} project (\textsc{alive}) implements the hostile-assumption verification tests that confirm the infrastructure refuses false closure when confronted with adversarial inputs.
+
+Together, these projects constitute working post-cyberpunk infrastructure. The aesthetic commentary --- if any exists --- is secondary to the operational reality. The infrastructure works. It has been tested. It has been receipted. The post-cyberpunk phase transition is not a future state. It is the current state of this research program.
+
+\section{The Customer Accountability Connection}
+
+The post-cyberpunk framing connects directly to the customer-first principle established in the Preface. Customers need systems whose outputs they can verify. They need systems whose process events can be audited. They need systems that refuse to assert completion when completion has not occurred.
+
+The present cyberpunk moment harms customers by providing systems that assert completion without proof. The harm is not always immediate. It surfaces in compliance audits that fail because process events cannot be reconstructed. It surfaces in contract disputes where the claimed automation cannot be demonstrated to have occurred. It surfaces in fraud investigations where the gap between asserted and actual process behavior is forensically significant.
+
+Post-Cyberpunk PCP is customer infrastructure because it closes this harm at the architecture layer. A customer deploying PCP-compliant systems has, by construction, a receipt chain that documents what occurred, when it occurred, under what authority, and in conformance with what process model. The customer's audit exposure, fraud exposure, and compliance exposure are all reduced --- not by assertion, but by architecture.

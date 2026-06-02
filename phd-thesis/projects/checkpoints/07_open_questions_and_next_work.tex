@@ -1,0 +1,107 @@
+\section{Open Questions and Next Work}
+\label{sec:checkpoints-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:checkpoints-open-questions-gaps}
+
+Five open gaps are documented in the gaps/ directory and accepted as non-blocking to the program
+ALIVE verdict. Each is recorded with a severity, a blocking status, and a remediation plan.
+
+\textbf{GAP\_001: wasm4pm-compat Graduation Boundary Signal Implementation.} The
+\texttt{Admission<T, W>} graduation trigger that signals when a compat-layer type should graduate
+to the wasm4pm engine is not yet implemented in code. The research program has specified the
+graduation surface in the graduation-surface-ledger.yaml and graduation-law.yaml documents, and the
+GGEN\_ECOSYSTEM\_INTEL audit 4 (Graduation Boundary) passes against these specifications. However,
+the executable signal that fires the graduation transition at runtime is deferred to Phase 12. This
+gap does not block the current ALIVE verdict; it blocks the full GGEN\_ECOSYSTEM\_MANUFACTURING\_001
+workflow.
+
+\textbf{GAP\_002: OTel Trace Deserialization Rule Completeness.} The full OTel-to-OCEL translation
+rule set is not yet finalized. The GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001 checkpoint establishes the
+boundary axioms (telemetry is feedstock, conformance is court, schema diffs are not process drift),
+and the BridgeRx component implements the Version 2 to Version 1 schema translation. However, the
+complete rule set covering all attribute namespaces, type format variants, and edge cases in
+collector pipeline configuration is an open research question. GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_002
+is pending this completion.
+
+\textbf{GAP\_003: M\&A Deck Rendering Performance Optimization.} The ma-deck.tera template produces
+board-admissible M\&A projection artifacts, but the rendering performance for large diligence
+workbooks (30,639-character master framework document) has not been benchmarked or optimized.
+This is a Phase 12 candidate.
+
+\textbf{GAP\_004: Blue River Dam Orchestrator Fault Tolerance.} The Blue River Dam orchestrator
+(629 lines, 5 of 5 tests passing) encodes LTL invariants for soundness, completeness, consistency,
+conformance, and auditability. The Doctor component implements rollback and remediation protocols.
+However, the fault tolerance behavior under network partition, partial state corruption, or
+concurrent MAPE-K loop contention has not been tested or formally specified. This is a Phase 12
+candidate.
+
+\textbf{GAP\_005: Advanced LTL Verification Coverage Expansion.} The Blue River Dam orchestrator
+encodes a specific set of LTL invariants. Broader LTL property coverage---covering liveness
+properties, fairness constraints, and domain-specific SLA encodings---is an open Phase 13 research
+question. The current implementation provides a foundation; the expansion requires additional formal
+methods research.
+
+\subsection{Deferred Gates}
+\label{sec:checkpoints-open-questions-deferred-gates}
+
+The GGEN\_ECOSYSTEM\_INTEL Audit 1 (No DTO Flattening) is currently failing. The violation is
+specific: \texttt{to\_json\_string()} in \texttt{compat/src/manufacturing/mod.rs} and
+\texttt{receipt\_json()} in \texttt{compat/src/manufacturing/traits.rs} are JSON serialization
+methods that belong in the wasm4pm engine, not the compat layer. The remediation plan is stated in
+GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001: move both methods to wasm4pm, remove DTO flattening from the
+compat public API, re-run the boundary audits, and seal GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_002. The
+estimated timeline is 4 to 6 hours. Until this gate passes, the GGEN manufacturing pipeline is
+halted for projection surface manufacture (TypeScript bindings, WASM ABI, Component Model WIT).
+
+The OTel deserialization gate (GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_002) is deferred pending finalization
+of the complete OTel-to-OCEL translation rule set. The PARTIAL checkpoint
+GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001 records the design gate as passed; the ALIVE verdict requires
+the full experimental suite to be confirmed. The estimated timeline is 2 to 3 hours, and no
+blockers prevent immediate work.
+
+\subsection{Research Risks}
+\label{sec:checkpoints-open-questions-risks}
+
+The principal research risk in the checkpoint architecture is the gap between machine-verified gate
+evidence and assertion-based gate evidence. The current ALIVE gate assessment relies on file counts
+asserted in Markdown documents rather than on CI-logged outputs of the verification bash script.
+RESEARCH\_CRITERIA.md defines the verification script but does not record that it was run and its
+output logged as an artifact. This means an auditor must re-run the script to independently confirm
+the counts rather than examining a stored script output artifact. Future checkpoint generations
+should capture and store the script output as a sealed receipt. [AUTHOR THESIS: this represents
+a structural gap in the current evidence chain that should be addressed before Phase 13 research
+relies on the checkpoint counts for formal theorem proof citations.]
+
+A second research risk is that the checkpoint ledger covers research artifact density (file counts)
+but does not currently cover research artifact quality. Gate 1 certifies that 33 doctrine files
+exist; it does not certify that each doctrine file cites at least one primary source. The
+RESEARCH\_CRITERIA.md does list source citation as an additional ALIVE requirement, but the
+verification script does not check it programmatically. [INTERPRETATION: quality gates will require
+a different mechanism---potentially a separate audit workflow that samples doctrine files and checks
+citation presence---rather than a simple count check.]
+
+\subsection{Next Receipted Work}
+\label{sec:checkpoints-open-questions-next-work}
+
+Three downstream workflows are authorized and ready by the program ALIVE verdict:
+
+\textbf{GGEN\_ECOSYSTEM\_MANUFACTURING\_001} requires DTO remediation (GAP\_002 resolution) before
+manufacturing can begin. Upon completion, it will manufacture TypeScript projection bindings via
+Specta, WASM ABI conversions, and Component Model WIT schemas, and seal the
+GGEN\_ECOSYSTEM\_MANUFACTURING\_ALIVE\_001 checkpoint with a BLAKE3 receipt chain.
+
+\textbf{OTEL\_TRACE\_DESERIALIZATION\_001} can proceed immediately with no blockers. It will finalize
+the OTel-to-OCEL translation rule set, confirm EventLog admission compliance, manufacture integration
+test fixtures, and seal GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_002.
+
+\textbf{M\&A\_DECK\_MANUFACTURING\_PIPELINE\_001} can proceed immediately. It will manufacture the
+board-ready M\&A projection deck, the detailed diligence workbook, and the financial modeling
+spreadsheet against the 42 M\&A claim files, seal each artifact with BLAKE3, and deliver the slide-
+to-receipt map for board presentation. All 42 M\&A claim files are complete; the Synthesis Director
+is authorized to manufacture; board presentation can proceed upon completion.
+
+The next checkpoint to be sealed after these three workflows complete is expected to be
+GGEN\_ECOSYSTEM\_MANUFACTURING\_ALIVE\_001, followed by GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_002, followed
+by the first production M\&A deck delivery receipt. Each sealing will extend the immutable ledger
+and authorize the next tier of downstream manufacturing work.

@@ -1,0 +1,97 @@
+% FILE: 01_research_question.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Research Question}
+\label{sec:lifecycle-question}
+
+\subsection{Problem Statement}
+\label{sec:lifecycle-question-problem}
+
+Enterprise process intelligence, as practiced in M\&A due diligence and operational
+governance, rests on claims that are structurally unverifiable. A seller states that
+their order-to-cash cycle time is 3.2 days, their compliance rate is 98.7\%, and their
+process is ISO~9001 certified. The buyer reviews a deck, interviews management, and
+accepts or rejects these claims based on documentation and interviews. The event log that
+produced the ``3.2 days'' figure is not provided. The ``98.7\% compliance rate'' cannot
+be reproduced because no conformance check is available. The ISO certification refers to
+a point-in-time audit, not continuous conformance. The process model used in the
+certification may not match the process actually running in production.
+
+This is the diligence gap, defined precisely in \texttt{lifecycle/ACQUISITION.md}: the
+claims are real to the seller in the sense that someone computed them, but they are not
+replayable by the buyer. The buyer cannot distinguish an accurate claim from an
+aspirational one. In the absence of replayable evidence, the buyer applies a risk premium
+to cover unquantified uncertainty. The risk premium is not punitive; it reflects real
+epistemic debt. The research problem addressed by the lifecycle project is: what formal
+state machine, with what admissibility criteria, would make process claims replayable by
+construction rather than by negotiation?
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:lifecycle-question-old-regime}
+
+The old-regime assumption challenged by the lifecycle framework is that a process model
+is a document---a BPMN diagram, a flowchart, a slide---that describes intended behavior
+and is updated by human editors when behavior changes. Under this assumption, process
+governance is a documentation discipline: maintaining correspondence between the diagram
+and the process. Conformance is audited periodically, manually, and reported as a
+narrative: ``we believe the process works as follows.''
+
+The lifecycle framework rejects this assumption. A process model is not a document; it is
+a typed artifact with a formally specified state. A WF-net must carry a
+\texttt{WfNetConst<SOUNDNESS>} type witness. An event log must be admitted through
+\texttt{Admit::admit()} before it can participate in conformance computation. A
+conformance score must be expressed as \texttt{Metric<Fitness, NUM, DEN>} bounded by
+\texttt{Between01<NUM, DEN>}. A repair action must produce a \texttt{Receipt}. Without
+these type constraints, the process model is L1 Ad-hoc by definition: no formal models,
+no systematic event log, no replayable conformance. Governance claims are narration.
+
+The old regime further assumes that autonomic behavior is an advanced feature to be added
+after basic governance is established. The lifecycle framework challenges this assumption
+by treating autonomic closure---the full MAPE-K loop with receipted artifacts at every
+stage---as the standard that all formal process governance must eventually reach, with
+maturity levels L1 through L5 measuring progress toward that standard.
+
+\subsection{Hypothesis}
+\label{sec:lifecycle-question-hypothesis}
+
+The dissertation hypothesis, as instantiated in the lifecycle project, is as follows:
+a formally specified 13-state lifecycle, governed by six quality gates derived from
+Petri net soundness theory and alignment-based conformance checking, is sufficient to
+make process intelligence claims replayable, board-defensible, and autonomically
+maintainable without requiring human intervention at each conformance cycle.
+
+More precisely, the hypothesis is that the combination of (1) a typed evidence lifecycle
+$\mathcal{S} = \{\texttt{Raw}, \ldots, \texttt{Receipted}\}$ with type-level state
+enforcement, (2) six gate criteria formalized as mathematical predicates over WF-nets and
+event logs, (3) a MAPE-K loop mapping that assigns each operational stage to its autonomic
+function, and (4) a cryptographic receipt chain that accumulates evidence across the full
+lifecycle, produces a system in which every governance claim resolves to a verifiable
+artifact. The hypothesis is stated as PARTIAL in the lifecycle project's current
+checkpoint status: the doctrine is complete and the type definitions exist in
+\texttt{wasm4pm-compat}, but the execution engine (\texttt{wasm4pm}) is a separate
+downstream product that has not yet closed the loop at runtime.
+
+\subsection{Success Criteria}
+\label{sec:lifecycle-question-success}
+
+The success criteria for the lifecycle project are defined in
+\texttt{lifecycle/checkpoint\_\_lifecycle\_model\_complete.md} as a conjunction of four
+automated assertions. First, \texttt{assert\_soundness(N)}: the process model $N$ is a
+valid WF-net, 1-bounded, live, and free of dead transitions. Second,
+\texttt{assert\_fitness(N, L, 0.95)}: the alignment fitness $\mathrm{fitness}(L, N) \geq
+0.95$ against the active event log. Third,
+\texttt{assert\_no\_ghost\_transitions(N, L)}: every labeled transition in the net is
+fired at least once in the log or is classified as an explicit silent ($\tau$) transition.
+Fourth, \texttt{assert\_decommission\_receipt(R\_d, K\_\mathrm{pub})}: the
+cryptographic decommissioning receipt $R_d$ is structurally valid and carries a verified
+signature against the model hash and final log hash.
+
+The program-level success criterion is the ALIVE verdict issued in
+\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md} with verification status code
+\texttt{0x00} (SUCCESS\_ALIVE). This checkpoint confirms that the mathematical invariant
+checklist---admissibility boundary, autonomic actuation, token game fitness, OCPQ
+refinement, and decommissioning retirement---has been validated at the research program
+level. The lifecycle-module-specific ALIVE verdict, requiring the four assertions above
+to execute against real Petri nets and real event logs in a running \texttt{wasm4pm}
+instance, remains a deferred gate.

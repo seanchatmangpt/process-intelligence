@@ -1,0 +1,120 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Architecture and Primitives}
+\label{sec:experiments-visualizer-arch}
+
+\subsection{Core Objects}
+\label{sec:experiments-visualizer-arch-objects}
+
+The \texttt{experiments-visualizer} defines the following canonical primitives, confirmed by
+direct inspection of the source modules:
+
+\begin{description}
+  \item[\texttt{PetriNetModel}] Defined in \texttt{petrinet.js}. Represents places, transitions,
+        arcs, and markings. Exposes \texttt{fire(transition)} and
+        \texttt{getEnabledTransitions(marking)} as its two canonical methods. The supply-chain
+        WF-net encoded in the model includes a bypass route \texttt{t4 Approve-Bypass} used
+        by the \texttt{TokenGameSimulator} to demonstrate S-component hot-swapping under autonomic
+        control.
+
+  \item[\texttt{TokenGameSimulator}] Defined in \texttt{token-game.js}. Renders multi-case token
+        flight animations on Canvas 2D. Supports concurrent cases and the bypass route activated
+        by the \texttt{AutonomicController} when load exceeds \texttt{loadLimitThreshold=0.75}.
+
+  \item[\texttt{AStarAlignmentSolver}] Defined in \texttt{astar.js}. Implements a
+        \texttt{PriorityQueue}-driven A* search computing three move types against the WF-net:
+        synchronous moves (cost=0), model-only moves (cost=1), and log-only moves (cost=1).
+        The minimum model cost for the supply-chain WF-net is hardcoded as 4. The admissible
+        heuristic ensures optimality of the alignment cost without overestimation.
+
+  \item[\texttt{DeclareValidator}] Defined in \texttt{declare.js}. Evaluates ten LTL-based
+        constraint templates over streaming traces: \texttt{Existence}, \texttt{Absence},
+        \texttt{Exactly1}, \texttt{Init}, \texttt{Absence2}, \texttt{Precedence},
+        \texttt{Response}, \texttt{ChainPrecedence}, \texttt{NotCoExistence}, and
+        \texttt{ChainResponse}. Three domain rules are encoded:
+        \texttt{Precedence(Audit\_Invoice, Approve\_Payment)},
+        \texttt{Response(Create\_Order, Close\_Case)}, and
+        \texttt{NotCoExistence(Create\_Order, Raw\_Laundering)}.
+
+  \item[\texttt{EWMADriftDetector}] Defined in \texttt{drift-detector.js} (with a companion
+        \texttt{drift.js}). Computes Jaccard DFG-profile distances between trace windows using
+        EWMA smoothing ($\lambda=0.20$, $L=3.0$). Maintains UCL/LCL control limits and exposes
+        a \texttt{calibrate()} API for baseline establishment.
+
+  \item[\texttt{CryptographicAuditChain} / \texttt{AuditLedger}] Defined in
+        \texttt{blockchain.js} and \texttt{ledger.js}. The chain is initialized with the genesis
+        message ``Blue River Dam Autonomic Ledger Initialized''. Subsequent blocks are chained via
+        $H_i = \mathrm{SHA\text{-}256}(i \,\|\, t \,\|\, \mathit{case\_id} \,\|\, \mathit{payload} \,\|\, H_{i-1})$.
+        Exposes \texttt{tamperBlock()} for adversarial testing and \texttt{verifyChain()} for
+        integrity confirmation.
+
+  \item[\texttt{AutonomicController}] Defined in \texttt{autonomic.js}. Implements the MAPE-K
+        feedback loop via \texttt{tick(metrics, net)}. Monitor phase reads EWMA fitness and
+        load; Analyze phase compares against \texttt{conformanceThreshold=0.90} and
+        \texttt{loadLimitThreshold=0.75}; Plan/Execute phase applies rate limiting and
+        S-component hot-swapping between \texttt{standardVerificationComponent} and
+        \texttt{hardenedVerificationComponent}.
+
+  \item[\texttt{EvidenceTs<T, State, Witness>}] Declared in \texttt{bindings.d.ts}. WASM
+        boundary typestate wrapper governing the \texttt{EvidenceState} lifecycle:
+        \texttt{Raw | Parsed | Admitted | Refused | Projected | Exportable | Receipted}.
+        Brand tags \texttt{OcelBrand}, \texttt{XesBrand}, and \texttt{WfNetBrand} enforce
+        format provenance at the type level.
+\end{description}
+
+\subsection{Admissible Transitions}
+\label{sec:experiments-visualizer-arch-transitions}
+
+The admissible state transitions are governed by two orthogonal lifecycle machines.
+
+The \textbf{evidence lifecycle} (\texttt{EvidenceState}) admits only forward transitions:
+$\texttt{Raw} \to \texttt{Parsed} \to \texttt{Admitted} \to \texttt{Projected} \to
+\texttt{Exportable} \to \texttt{Receipted}$, with a lateral branch
+$\texttt{Parsed} \to \texttt{Refused}$ when the \texttt{LossPolicyTs} is
+\texttt{RefuseLoss}. The alternative loss policies \texttt{AllowNamedProjection} and
+\texttt{AllowLossWithReport} permit lossy projection with an accompanying
+\texttt{LossReportTs} record. No backward transition is admissible.
+
+The \textbf{autonomic lifecycle} governs the MAPE-K tick: each tick produces either a
+\texttt{RATE\_LIMIT\_TRIGGER} event (when load $> 0.75$), a \texttt{RATE\_LIMIT\_RECOVERY}
+event (when load recovers below threshold), or a no-op. Both events are recorded as
+SHA-256-chained blocks in the audit ledger, ensuring that every autonomic decision is
+permanently auditable.
+
+\subsection{Boundaries}
+\label{sec:experiments-visualizer-arch-boundaries}
+
+The primary architectural boundary is the WASM boundary law declared in \texttt{bindings.d.ts}.
+This boundary separates the JavaScript simulation layer from the Rust wasm4pm execution layer.
+The \texttt{EvidenceTs} wrapper, \texttt{WitnessKey} markers, and brand tags
+(\texttt{OcelBrand}, \texttt{XesBrand}, \texttt{WfNetBrand}) enforce that objects crossing
+this boundary carry their provenance and lifecycle state as compile-time-verifiable type
+annotations rather than runtime assertions.
+
+The secondary boundary is the epistemic containment enforced by the Blue River Dam protocol:
+no metric may be displayed unless it is computable from values recorded in the audit ledger.
+This boundary is enforced by architecture — the \texttt{dashboard.js} rendering layer reads
+from the ledger, not from subsystem internal state.
+
+\subsection{Failure Modes Refused}
+\label{sec:experiments-visualizer-arch-failures}
+
+The architecture explicitly refuses the following failure modes, as confirmed by
+\texttt{LIVESTREAM\_STANDARDS.md} and the \texttt{bindings.d.ts} type contracts:
+
+\begin{itemize}
+  \item \textbf{Mock substitution:} No subsystem may be replaced by a mock, placeholder, or stub.
+        The v30.1.1 conformance claim prohibits all three categories.
+  \item \textbf{Unevidenced graduation:} A \texttt{GraduationCandidateTs} record without a
+        populated \texttt{evidence\_ref} field cannot satisfy the type contract and will produce
+        a compile-time error.
+  \item \textbf{Unwitnessed evidence:} An \texttt{EvidenceTs} object without a \texttt{WitnessKey}
+        cannot be typed as \texttt{Admitted} or \texttt{Receipted}.
+  \item \textbf{Tampered audit chains:} \texttt{verifyChain()} detects any block insertion,
+        deletion, or modification that would break the SHA-256 hash linkage.
+  \item \textbf{Overloaded routes without autonomic response:} The \texttt{AutonomicController}
+        is wired to fire on every tick; load excess without a recorded ledger event is
+        architecturally impossible given the tick-level integration.
+\end{itemize}

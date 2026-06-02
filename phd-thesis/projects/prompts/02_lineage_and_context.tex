@@ -1,0 +1,94 @@
+% FILE: 02_lineage_and_context.tex
+% Project: prompts — Downstream Manufacturing Prompt Corpus
+
+\section{Lineage and Context}
+\label{sec:prompts-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:prompts-lineage-2016}
+
+The thesis lineage begins with a 2016 language-model experiment whose finding was
+that local text imitation does not conserve consequence. A model that could reproduce
+the surface form of a document could not be trusted to reproduce the causal structure
+that made the document's claims binding. This lesson is directly instantiated in the
+prompt corpus: a directive that says ``implement Inductive Miner'' without specifying
+what the return type must be, what fixtures must pass, and what authority authorizes
+the work is a surface-form instruction that does not conserve consequence. The
+downstream engineering team could implement an algorithm that produces a result with
+the right shape but the wrong mathematical guarantees, and no artifact would capture
+the failure.
+
+The corpus answers the 2016 lesson by requiring that every directive specify not just
+the surface behavior but the structural consequence: the Rust type that encodes the
+guarantee (\texttt{TypedProcessTree}), the compile-fail fixture that proves the
+guarantee cannot be bypassed, and the authority source that makes the mandate
+binding. The directive is not a natural-language suggestion; it is a manufacturing
+specification whose acceptance criteria are mechanically verifiable.
+
+\subsection{Enterprise Process Gap}
+\label{sec:prompts-lineage-enterprise}
+
+The enterprise process gap is the observation that process knowledge in organizations
+exists in two incompatible forms: declarative models (BPMN diagrams, process
+documentation, policy statements) and execution evidence (event logs, audit trails,
+transaction records). The gap arises because there is no formal mechanism to compare
+the two. An organization can claim conformance to a process model without any
+evidence that live execution actually follows it, and a software system can pass all
+of its unit tests without any proof that the process it executes is sound.
+
+The prompt corpus addresses the enterprise process gap at the engineering layer. The
+Blue River Dam lifecycle directive (\texttt{downstream\_blue\_river\_dam\_lifecycle\_authority.md})
+requires that every state transition produce a cryptographically signed proof receipt.
+Gate 1 (Design) requires a soundness receipt proving the Petri net $N = (P, T, F)$
+satisfies all four WF-net axioms. Gate 3 (Monitoring Operations) requires that every
+live trace produce a fitness receipt, with explicit admissibility rules:
+fitness $\geq 0.95$ admits automatically; $0.85 \leq f < 0.95$ requires an Executive
+Board override signature; $f < 0.85$ triggers a \texttt{RefusalReport} and the trace
+is rejected. These requirements close the enterprise process gap at the implementation
+level by making it impossible for a process to claim ALIVE status without a complete
+receipt chain.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:prompts-lineage-chatman}
+
+The Chatman Equation $\kappa \circ \rho \circ \alpha \circ \mu$ is the compositional
+identity of the process intelligence architecture. The four operators are:
+$\mu$ (Manufacture) --- initial admission of the WASM payload via
+\texttt{wasm4pm-compat}; $\alpha$ (Attest) --- cryptographic validation and typestate
+enforcement; $\rho$ (Receipt) --- BLAKE3 receipt generation; and $\kappa$ (Keeper)
+--- final execution state within \texttt{wasm4pm}. The equation asserts that a
+process execution claim is only valid when all four operators have composed
+successfully in sequence.
+
+The \texttt{execution-plans/blue-river-dam-bridge.md} blueprint makes this equation
+physically concrete. It specifies a three-phase cryptographic linkage: in the
+Admission Phase, \texttt{wasm4pm-compat} generates a preliminary AST and a BLAKE3
+hash of the raw binary stream; in the Attestation and Receipt phase, the
+\texttt{wasm4pm} engine consumes the preliminary hash and AST, executes a
+deterministic compilation pass, and synthesizes a Receipt object containing
+\texttt{H\_orig} (BLAKE3 hash of original payload), \texttt{H\_exec} (BLAKE3 hash
+of compiled artifact), and \texttt{Sig\_adm} (Ed25519 signature from the compat
+admission enclave); in the Execution Phase, the sandbox verifies \texttt{Sig\_adm}
+and \texttt{H\_exec} before instantiation. Typestate enforcement via Rust's phantom
+type pattern makes the Receipt object the only lawful path to instantiation.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:prompts-lineage-receipts}
+
+The receipts-and-replay design principle is that every claim about process behavior
+must be backed by a cryptographic receipt that can be independently verified and
+replayed to confirm the claim. The prompt corpus extends this principle to the
+manufacturing directive layer itself. The \texttt{ProcessIntelligenceVerificationReceipt}
+JSON schema specified in \texttt{downstream\_ggen\_projection\_integration.md}
+requires: a \texttt{receipt\_id} (UUID), \texttt{target\_log\_hash} (SHA-256 of the
+source event log), \texttt{process\_model\_hash} (SHA-256 of the model), fitness and
+precision values computed by \texttt{wasm4pm}, and a \texttt{validator\_signature}
+(base64-encoded Ed25519). A receipt is refused if any required field is missing, if
+the timestamp is future-dated or stale beyond 90 days, or if the Ed25519 signature
+fails verification against the \texttt{RoleKeyRegistry}.
+
+The ggen integration directive formalizes the replay direction: a board claim is only
+admissible if the supporting receipt can be re-verified by replaying the admission
+pipeline with the same log hash and model hash and obtaining the same signature. This
+makes the M\&A claim manufacturing process fully auditable and replayable, closing
+the loop from execution evidence to capital-flow assertion.

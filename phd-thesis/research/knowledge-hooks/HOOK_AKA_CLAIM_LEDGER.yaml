@@ -1,0 +1,30 @@
+claims:
+  - id: CLM_001
+    claim: Knowledge Hook is a deterministic admission/refusal boundary.
+    term: Knowledge Hook
+    claim_type: SOURCE_SUPPORTED
+    source_paths: ["/Users/sac/zoeapp/src/lib/vkg/hooks/types.ts"]
+    line_refs: ["2"]
+    evidence_excerpt: "ZoeOS / Truex Hook Definition Anatomy"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  - id: CLM_002
+    claim: Autonomic Knowledge Actuation is knowledge -> closure -> action -> receipt.
+    term: AKA
+    claim_type: SOURCE_SUPPORTED
+    source_paths: ["/Users/sac/process-intelligence/ORIGINAL_REQUEST.md"]
+    line_refs: ["120"]
+    evidence_excerpt: "α(K, P, L, T) → τ"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  - id: CLM_003
+    claim: No hook, no consequence. No receipt, no authority.
+    term: Absolute Frame Law
+    claim_type: AUTHOR_THESIS
+    source_paths: ["/Users/sac/zoeapp/docs/vision2030/truex-collaborative-intelligence.md"]
+    line_refs: ["238"]
+    evidence_excerpt: "Knowledge hooks become Truex Hooks."
+    allowed_in_pdf: true
+    confidence: HIGH

@@ -1,0 +1,52 @@
+\chapter{Origin: The 2016 Language-Model Experiment}
+\label{chap:origin}
+
+\section{Context and Motivation}
+
+In 2016, large language models were not a public phenomenon. Transformer architectures had not yet been published. The dominant publicly available language-modeling approaches were recurrent neural networks, n-gram models, and early word-embedding systems. Access to serious computational resources required either institutional affiliation or self-funding. There was no cloud API that returned a fluent paragraph on demand.
+
+The experiment described in this chapter was self-funded. It was conducted as part of an independent study course --- a single tuition block paid out of pocket, with no laboratory access, no research assistant, and no expectation of publication. The goal was narrow and empirical: observe how a language model's output behavior changed as a function of temperature, using a corpus of real-world text as both training material and evaluation surface.
+
+That the experiment would eventually produce a decade-long research program was not the plan. What emerged from those months of observation was a single, durable lesson that no subsequent experiment has contradicted.
+
+\section{The Corpus}
+
+The corpus consisted of approximately 3,000 articles drawn from publicly accessible sources. The articles were selected to represent operational prose: business reporting, regulatory filings, technical documentation, and procedural descriptions. The selection criterion was not literary quality. The criterion was consequential density --- text that described things happening, handoffs between agents, decisions with downstream effects, and states that changed as a result of actions.
+
+This criterion, in retrospect, was the first articulation of what would become the core distinction of the entire research program: the difference between text that describes consequence and text that merely imitates the surface texture of consequential prose.
+
+The corpus was preprocessed, tokenized, and used to train a character-level recurrent model. The training was conducted on consumer hardware over several weeks. The model was small by any contemporary standard.
+
+\section{Temperature Behavior}
+
+The primary observation concerned the model's behavior across the temperature parameter space. Temperature, in language-model sampling, controls the entropy of the output distribution. At low temperature, the model concentrates probability mass on high-likelihood tokens, producing output that is locally coherent but repetitive. At high temperature, the model distributes probability more broadly, producing output that is more varied but less locally consistent.
+
+The observation that emerged from systematic sampling across this parameter range was not novel in a technical sense. Temperature effects on language-model output were already documented in the literature. What was novel was the evaluation lens applied to the output.
+
+The evaluation question was not: does this output look like the training corpus? The evaluation question was: does this output preserve the consequence structure of the training corpus? Specifically: if the training corpus described a handoff --- an agent completing a task and passing responsibility to another agent --- did the model output preserve that handoff as a recoverable structural fact?
+
+The answer was no. At every temperature setting, across every sampling strategy tested, the model produced output that imitated the surface texture of consequence without preserving the consequence structure itself.
+
+\section{Surface Imitation Without Consequence Preservation}
+
+The failure mode had a precise form. Consider a sentence from the training corpus: \textit{The invoice was approved by the accounts-payable clerk and forwarded to the treasury system for settlement.} This sentence encodes a process event: an agent, an action, an artifact state change, a system boundary crossing, and a downstream destination. These are recoverable facts. They can be extracted, modeled, replayed.
+
+The model's output, trained on thousands of sentences of this type, would produce sentences that had the same grammatical structure, the same vocabulary distribution, the same stylistic fingerprint. But the handoffs were not recoverable. The agent names were substituted with plausible-sounding alternatives. The artifact states were described in terms that sounded operational but did not compose. The system boundary crossings were present as surface features --- words like ``forwarded'' and ``transmitted'' and ``processed'' --- but the destinations were not grounded. The output was, in process-mining terms, a trace that could not be replayed against any lawful process model.
+
+This was the lesson: local text imitation does not conserve consequence.
+
+\section{Why This Was Independent Research}
+
+The independence of the experiment was not incidental. An institutional research program would have evaluated the model against standard benchmarks: perplexity, BLEU score, coherence ratings from human evaluators. All of those metrics reward surface quality. None of them measure consequence preservation. An institutional program would have reported a positive result: the model trained well, the output was fluent, the experiment succeeded.
+
+The independent framing allowed a different evaluation question. Because the research was self-funded, there was no institutional output to optimize. The question could be asked purely: does this technology do what its advocates claim it does? The answer, for the specific claim that language-model output could substitute for consequential process work, was no.
+
+That negative finding --- unsupported by any advisor, unrewarded by any publication incentive --- is the origin of this dissertation. Every subsequent chapter is a response to that finding. The enterprise process gap (Chapter~\ref{chap:enterprise_gap}) is the gap that the finding revealed. The Chatman Equation (Chapter~\ref{chap:chatman_equation}) is the formalization of what consequence preservation requires. The receipt chain (Chapter~\ref{chap:process_evidence}) is the mechanism by which consequence preservation is verified.
+
+\section{The Durable Lesson}
+
+The 2016 experiment produced one durable lesson. It has survived every subsequent technology shift. It survived the arrival of transformer models. It survived the scaling laws that produced very large models. It survived the instruction-tuning era, the reinforcement-from-human-feedback era, and the chain-of-thought prompting era.
+
+The lesson is this: a model that predicts the next token, however accurately, does not thereby coordinate the next process step. Prediction and coordination are not the same operation. They do not share the same evidence requirements. They do not produce the same artifacts. They are not interchangeable.
+
+Every wrapper startup built on a prediction API is built on the assumption that they are interchangeable. Every enterprise deployment that substitutes model output for process evidence is built on the same assumption. The research program documented in this dissertation is, in its entirety, a refusal of that assumption --- grounded in a 2016 experiment, formalized in an equation, and verified across thirty-four projects.

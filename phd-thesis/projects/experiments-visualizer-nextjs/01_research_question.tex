@@ -1,0 +1,82 @@
+% FILE: 01_research_question.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Research Question}
+\label{sec:experiments-visualizer-nextjs-rq}
+
+\subsection{Problem Statement}
+\label{sec:experiments-visualizer-nextjs-rq-problem}
+
+Process intelligence research manufactures machine-readable evidence: event logs, conformance
+fitness scores, alignment traces, drift signals, and cryptographic receipts. Each of these
+artefact types carries important epistemic weight, but in their raw form --- OCEL JSON, EWMA
+floating-point series, Rust-typed receipt structs --- they are not inspectable by a human
+researcher or auditor without specialised tooling. The central problem this project addresses is:
+
+\begin{quote}
+\textit{How can a web application render all classes of process-intelligence evidence
+--- Petri net replay state, A{*} alignment moves, EWMA drift alarms, and cryptographic receipt
+ledgers --- in a single, coherent, browser-native observation surface, such that a researcher
+or auditor can verify conformance and provenance without issuing command-line queries?}
+\end{quote}
+
+The problem is not merely one of visualisation aesthetics. Process evidence has strict
+structural constraints: alignment blocks have exactly three lawful move types (sync, log-only,
+model-only); Petri net places are either active or inactive; EWMA alarm banners have a fired
+versus unfired state; ledger block cards are either healthy or tampered. A visualization surface
+that cannot distinguish these states introduces ambiguity into the audit chain and defeats the
+purpose of having manufactured process evidence at all.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:experiments-visualizer-nextjs-rq-old-regime}
+
+The old-regime assumption this project challenges is that process intelligence tooling is
+inherently a back-end concern, accessible only through specialist command-line interfaces,
+Python notebooks, or domain-specific process mining GUIs such as ProM. This assumption
+treats the visualization of process evidence as secondary --- something a researcher builds
+informally, after the fact, in a Jupyter notebook cell or a one-off Matplotlib plot.
+
+The project asserts the opposite: the observation surface is a first-class component of the
+process intelligence architecture. If the evidence chain runs Raw~$\to$ Parsed~$\to$
+Admitted~$\to$ Receipt (as documented in the \texttt{EVIDENCE\_CHAIN\_TRACE.md} of the parent
+experiments corpus), then the observation surface is the terminal stage of that chain --- the
+stage at which evidence becomes auditable by a human principal. Treating it as an afterthought
+means the chain is incomplete even when all upstream stages pass their proof gates.
+
+\subsection{Hypothesis}
+\label{sec:experiments-visualizer-nextjs-rq-hypothesis}
+
+\textbf{AUTHOR THESIS:} A TypeScript/React application built on Next.js 16 App Router, styled
+via a CSS design system that encodes the structural invariants of each process-intelligence
+artefact type as distinct class tokens, can serve as a provably complete web-based observation
+surface for the full evidence chain. The hypothesis has two components:
+
+\begin{enumerate}
+  \item A CSS design system whose class vocabulary is isomorphic to the type algebra of process
+        evidence (sync/log/model alignment moves; healthy/tampered ledger blocks; fired/unfired
+        alarm banners) is a sufficient specification for the visualization surface --- it
+        constrains what can be rendered and thereby enforces structural conformance at the UI layer.
+  \item Implementing that CSS specification in React components wired to a live data source
+        (WASM module, Python API, or static fixture JSON) will produce a human-auditable
+        process-intelligence dashboard that satisfies the proof gates of the research program.
+\end{enumerate}
+
+\subsection{Success Criteria}
+\label{sec:experiments-visualizer-nextjs-rq-success}
+
+The project graduates from PARTIAL to ALIVE when all of the following conditions are met:
+
+\begin{itemize}
+  \item \texttt{page.tsx} is replaced by React components that consume real process-intelligence
+        data and apply the CSS classes defined in \texttt{globals.css}.
+  \item Each visual subsystem (Petri net panel, alignment block sequence, EWMA chart, ledger
+        explorer) renders a lawful state from actual research-program artefacts --- not
+        placeholder or mock data.
+  \item A suite of component-level tests asserts that each CSS class is applied only when its
+        corresponding structural condition holds (e.g., \texttt{.alignment-block.sync} is
+        rendered only for sync moves).
+  \item A receipt is emitted documenting the first successful full-chain rendering session,
+        linking the dashboard \texttt{BUILD\_ID} to the upstream experiment receipts.
+  \item A project-specific checkpoint file records an ALIVE verdict referencing all of the above.
+\end{itemize}

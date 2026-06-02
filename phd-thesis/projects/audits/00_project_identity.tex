@@ -1,0 +1,110 @@
+% FILE: 00_project_identity.tex
+% Project: audits
+% Role: completeness-audit-and-compliance-verification-corpus
+
+\section{Project Identity: Audits Corpus}
+\label{sec:audits-identity}
+
+\subsection{Purpose}
+\label{sec:audits-identity-purpose}
+
+The audits corpus is the Van der Aalst conformance auditing program for the
+process-intelligence research foundry. Its operative doctrine is stated in
+\texttt{README\_AUDITS.md}: \emph{``If code says it worked but the event log
+cannot prove a lawful process happened, then it did not work.''}
+
+This principle, drawn directly from Van der Aalst's process-mining canon,
+governs the corpus's entire structure. The audits directory does not accumulate
+reports as documentation artifacts; it accumulates \emph{deterministic,
+re-executable receipts} that must be replayed verbatim to confirm the
+projection boundaries of the \texttt{wasm4pm-compat} crate remain sound. Every
+audit is a reproducible shell script whose output is committed as a receipt.
+Re-running any audit must produce byte-identical output, making the corpus a
+living executable contract rather than a static archive.
+
+The corpus serves two downstream roles. First, it is the graduation gate for
+the \texttt{wasm4pm-compat} projection layer: no checkpoint labeled
+\texttt{PROCESS\_INTELLIGENCE\_COMPAT\_CONFORMANCE\_001} may be declared while
+any deterministic audit returns \textsc{fail}. Second, it supplies the
+board-claim traceability chain: every M\&A claim type must resolve through an
+audit-verified receipt before it can be submitted as board-admissible evidence.
+
+\subsection{Repository Surface}
+\label{sec:audits-identity-surface}
+
+The audits directory contains 35 files as of 2026-06-01. The surface divides
+into five layers.
+
+\textbf{Deterministic shell audits} (\texttt{run\_audit\_1.sh} through
+\texttt{run\_audit\_5.sh}) are the executable core. Each script encodes a
+single process law as a pattern-matching or structural traversal program and
+emits a \textsc{pass} or \textsc{fail} receipt to a paired \texttt{.txt} file.
+
+\textbf{Receipt files} (\texttt{audit-no-dto-flattening.txt},
+\texttt{audit-no-tool-smuggling.txt}, \texttt{audit-feature-isolation.txt},
+\texttt{audit-projection-receipt.txt}, \texttt{audit-graduation-boundary.txt})
+record the committed output of each script execution.
+
+\textbf{Machine-readable consolidation} (\texttt{AUDIT\_LOG.yaml}) captures all
+violations, remediation steps, \texttt{GraduationReason} mappings, feature
+isolation rules, and the Van der Aalst conformance checklist in structured YAML
+format, enabling programmatic downstream consumption.
+
+\textbf{Agent audit reports} cover specialized domains: A* alignment
+correctness (\texttt{alignment\_referee\_audit.md}), EWMA concept drift
+detection (\texttt{drift\_sentry\_audit.md}), Petri net soundness
+(\texttt{petri\_net\_soundness\_audit.md}), SHA-256 ledger integrity
+(\texttt{ledger\_custodian\_audit.md}), telemetry XES/OCEL compliance
+(\texttt{telemetry\_auditor\_audit.md}), and adversarial corpus certification
+(\texttt{adversarial\_audit\_v30.1.1.md}).
+
+\textbf{Research-grade audit documents} cover type-law quality
+(\texttt{AUDIT\_TYPE\_LAW\_QUALITY.md}), paper coverage
+(\texttt{AUDIT\_PAPER\_COVERAGE.md}), fixture quality
+(\texttt{AUDIT\_FIXTURE\_QUALITY.md}), lifecycle completeness
+(\texttt{audit-lifecycle-completeness.md}), board claim support
+(\texttt{audit-board-claim-support.md}), execution boundaries
+(\texttt{audit-execution-boundaries.md}), and neuro-symbolic verification
+(\texttt{neuro-symbolic-verification.md}).
+
+\subsection{Primary Research Role}
+\label{sec:audits-identity-role}
+
+Within the dissertation, the audits corpus occupies the role of
+\emph{completeness audit and compliance verification}. It is the layer that
+answers the question: given that a manufacturing pipeline has been declared, can
+a process-mining audit of the event evidence confirm that the lawful pipeline
+was actually the one that executed?
+
+This role is not administrative. The audits corpus is a direct instantiation of
+process-mining Chicago TDD~--- the Van der Aalst Constitution applied to the
+research foundry's own codebase. The foundry audits itself using the same event-
+log derivation, model-vs-log comparison, and conformance-checking methodology
+that the foundry is being built to supply to enterprise customers. The corpus
+therefore serves as both a quality control layer and a \emph{proof of concept}
+that the methodology is self-applicable.
+
+\subsection{Key Artifacts}
+\label{sec:audits-identity-artifacts}
+
+The key artifacts, in priority order, are:
+
+\begin{enumerate}
+  \item \textbf{Five deterministic shell audits} (\texttt{run\_audit\_1.sh}
+    through \texttt{run\_audit\_5.sh}) with their paired receipt files, forming
+    the graduation gate for \texttt{wasm4pm-compat}.
+  \item \textbf{\texttt{AUDIT\_LOG.yaml}} --- machine-readable consolidated
+    results, violation records, and remediation steps.
+  \item \textbf{\texttt{CONFORMANCE\_REPORT.md}} and
+    \textbf{\texttt{VAN\_DER\_AALST\_AUDIT\_SUMMARY.txt}} --- human-readable
+    executive summaries of the 4/5 PASS / 1 FAIL current status.
+  \item \textbf{199 compile-fail fixtures} in
+    \texttt{sources/wasm4pm-compat/tests/ui/compile\_fail/} --- the type-law
+    receipt corpus with 97.7\% valid law-proving error codes.
+  \item \textbf{\texttt{adversarial\_audit\_v30.1.1.md}} --- the
+    \texttt{ALIVE\_001} certification covering 567 commits across 12 corpus
+    directories, signed with BLAKE3 + Ed25519.
+  \item \textbf{\texttt{forensic\_audit\_verdict.md}} --- the clean-room
+    forensic verdict confirming 84 passing tests with zero stubs, mocks, or
+    hardcoded outputs.
+\end{enumerate}

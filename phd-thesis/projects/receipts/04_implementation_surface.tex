@@ -1,0 +1,98 @@
+\section{Implementation Surface}
+\label{sec:receipts-implementation}
+
+\subsection{Source Files}
+\label{sec:receipts-implementation-source}
+
+The receipts corpus is realized across fifteen source files spanning three organizational
+layers. The M\&A claim receipt layer contains five signed JSON documents. The
+\texttt{rec\_ebitda\_rework\_001.json} receipt encodes the EBITDA rework reduction claim
+(\$1.25M), carrying fitness $0.982$ and precision $0.945$ from the conformance authority
+query. The \texttt{rec\_wc\_ar\_002.json} receipt encodes the working capital and accounts
+receivable velocity claim (\$1.37M), carrying fitness $0.978$ with replication verdict
+\texttt{PASSED}. The \texttt{rec\_risk\_sla\_003.json} receipt encodes the SLA penalty
+exposure cap (\$450K), with a late delivery rate of $2.14\%$ and log coverage of $98.4\%$.
+The \texttt{rec\_risk\_compliance\_004.json} receipt encodes the GRC compliance leakage
+claim (\$0.00 leakage, fitness $1.0$, zero violations). The
+\texttt{rec\_residual\_standard\_005.json} receipt encodes the residual process
+standardization claim ($97.5\%$ conformance, drift status \texttt{STABLE}).
+
+The module generation receipt layer contains five Markdown documents. The
+\texttt{wasm4pm\_conformance\_authority\_generation.md} is the most structurally significant,
+documenting version \texttt{v30.1.2} of the 664-line Rust conformance authority module with
+Blake3 hash \texttt{75508e6e9e7acccb679e5c8be35ddd2adc9c4732f1fc331047d755703c9107c3} and
+a record of $8/8$ unit tests passing. The \texttt{wasm4pm\_mining\_generation.md},
+\texttt{wasm4pm\_replay\_generation.md}, and \texttt{wasm4pm\_lifecycle\_generation.md}
+document the mining, replay, and lifecycle module manufacturing pipelines respectively.
+The \texttt{blue\_river\_generation.md} documents the Blue River Dam orchestrator receipt
+with status \texttt{ORCHESTRATOR\_ALIVE} and $5/5$ unit tests passing.
+
+The governance layer contains three documents: the \texttt{RECEIPT\_REGISTRY.md} enumerating
+seven canonical receipt types, the \texttt{ma\_deck\_rendering\_authority\_assessment.md}
+confirming the seven-step board presentation pipeline, and the related checkpoint files
+in \texttt{checkpoints/}.
+
+\subsection{Commands}
+\label{sec:receipts-implementation-commands}
+
+The manufacturing pipeline for M\&A receipts is driven by the \texttt{wasm4pm} Rust binary
+compiled from the conformance authority module. The conformance authority exposes a
+\texttt{ConformanceAdmissionGate} callable from the module's public interface. The
+gate evaluates a \texttt{ConformanceVerdicts} struct and either passes the receipt
+forward for signing or emits a hard-reject verdict.
+
+Module integrity is verified through the \texttt{cargo check} command, which confirmed
+zero compilation errors across the conformance authority module (8 warnings unrelated to
+conformance authority logic). The full test suite is exercised via \texttt{cargo test},
+which executes the seven named unit tests: \texttt{test\_admission\_gate\_pass},
+\texttt{test\_token\_fitness\_perfect}, \texttt{test\_admission\_gate\_conditional\_with\_override},
+\texttt{test\_token\_fitness\_degraded}, \texttt{test\_admission\_gate\_hard\_reject},
+\texttt{test\_verdict\_display}, and \texttt{test\_reachability\_heuristic}.
+
+The Blue River Dam orchestrator, documented in \texttt{blue\_river\_generation.md}, is compiled
+and tested with the same \texttt{cargo check} and \texttt{cargo test} workflow, producing
+$5/5$ test passes for \texttt{test\_governance\_hierarchy}, \texttt{test\_lifecycle\_state\_machine},
+\texttt{test\_quality\_gate\_soundness}, \texttt{test\_conformance\_metric}, and
+\texttt{test\_mape\_k\_knowledge\_persistence}.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:receipts-implementation-data}
+
+The data surface of the receipts corpus is defined by the JSON schema of the M\&A claim
+receipts and the Markdown schema of the generation receipts. The JSON receipts follow
+JCS canonical form (RFC 8785) to ensure deterministic serialization for BLAKE3 hashing
+and Ed25519 signing. The \texttt{target\_log\_hash} field in each JSON receipt is a
+BLAKE3 hash of the XES or OCEL event log file from which the conformance measurement
+was derived. The \texttt{process\_model\_hash} field is a BLAKE3 hash of the process
+model (typically a Petri net or process tree) used as the reference for conformance checking.
+
+The receipt registry defines an ontology of seven canonical receipt types, each with
+a named witness list and a gap inventory. This registry is the authority for what
+constitutes a receipted fact in the research program versus an asserted claim. The
+registry distinguishes between \texttt{PAPER\_CANON} receipts (anchoring paper-to-type-law
+mappings), \texttt{PM4PY\_ORACLE} receipts (anchoring pm4py capability assessments),
+\texttt{WASM4PM\_GAP} receipts (anchoring gap findings), \texttt{LIFECYCLE} receipts
+(anchoring state machine transitions), \texttt{MA} receipts (the five financial claim
+receipts), \texttt{STANDARDS} receipts (anchoring standards compliance maps), and
+\texttt{ADVERSARIAL} receipts (anchoring hostile test case results).
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:receipts-implementation-templates}
+
+The board presentation layer of the receipts corpus is implemented through two Tera2
+templates: \texttt{ma-deck.tera} (202 lines) for the executive PowerPoint presentation
+and \texttt{ma-diligence.tera} (283 lines) for the technical due diligence workbook.
+These templates consume the signed JSON receipts as data sources, binding each slide
+and worksheet cell to a specific receipt field. The rendering pipeline uses the Rust
+libraries \texttt{pptx-rs} for PowerPoint artifact manufacture and \texttt{calamine}
+for Excel workbook rendering.
+
+The \texttt{ma\_deck\_rendering\_authority\_assessment.md} confirms that all seven
+steps of this board presentation pipeline are either \texttt{VERIFIED} (template exists,
+data binding confirmed) or \texttt{EXECUTABLE} (pipeline ready, awaiting final execution
+trigger). As of the \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} checkpoint, the pipeline
+is assessed as complete and ready for execution. The final rendered artifacts---the
+\texttt{.pptx} board deck and the \texttt{.xlsx} due diligence workbook---are identified
+as \texttt{FUTURE WORK}: they are designated in the pipeline but have not yet been
+materialized as files in the repository. This is documented as an open gap in
+Section~\ref{sec:receipts-questions-gaps}.

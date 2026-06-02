@@ -1,0 +1,105 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:experiments-core-evidence}
+
+\subsection{Tests}
+\label{sec:experiments-core-evidence-tests}
+
+Three Python scripts constitute the executable test layer. All three pass with zero
+assertion failures as of the checkpoint date documented in
+\texttt{checkpoint\_\_experiments\_complete.md}.
+
+\textbf{\texttt{validate\_log\_fitness.py}} exercises five token replay scenarios:
+\begin{itemize}
+  \item Perfect conformance: $m=0$, $c=5$, $r=0$, $p=5$ $\Rightarrow$ fitness = 1.0.
+  \item Partial replay: $m=2$, $c=3$, $r=0$, $p=3$ $\Rightarrow$ fitness $\approx$ 0.3333.
+  \item One missing token: $m=1$, $c=4$, $r=0$, $p=4$ $\Rightarrow$ fitness = 0.5.
+  \item Combined multi-trace log: aggregate $\Rightarrow$ fitness = 5/7.
+  \item Zero-consumed edge case (no transitions fired).
+\end{itemize}
+Each case uses the equation
+$f = 1 - \frac{\sum \mathit{freq} \cdot m}{\sum \mathit{freq} \cdot c} - \frac{\sum \mathit{freq} \cdot r}{\sum \mathit{freq} \cdot p}$
+with exact floating-point assertions.
+
+\textbf{\texttt{validate\_ocpq\_refinement.py}} exercises four refinement cases:
+reflexivity ($p \leq_L p$ always), extension ($p \leq_L c$ when $c$ adds new
+variables), conflict ($p \not\leq_L c$ when variable values differ), and missing
+domain ($p \not\leq_L c$ when $\mathrm{dom}(p) \not\subseteq \mathrm{dom}(c)$).
+
+\textbf{\texttt{verify\_equations.py}} is the unified gate. It runs all five fitness
+cases and all four OCPQ cases in a single pass and reports ``100\% correctness'' on
+success. This is the file that must be cited by downstream manufacturing stages as
+the equation-verification receipt.
+
+\textbf{\texttt{visualizer/visualizer-validation.ts}} validates ten WASM boundary
+types at the TypeScript type level. This validation operates at compile time only---no
+runtime assertion failures are possible from a pure type check.
+
+\subsection{Receipts}
+\label{sec:experiments-core-evidence-receipts}
+
+Five receipt artifacts are present in the experiments directory:
+
+\begin{enumerate}
+  \item \texttt{replay\_receipt\_sample.md}: \texttt{CryptographicReplayReceipt}
+    JSON schema with a concrete instance. The instance records fitness = 0.982
+    (typed as the ratio 982/1000), a BLAKE3 hash of the process model, a BLAKE3
+    hash of the event log, an Ed25519 signature, and a timestamp.
+  \item \texttt{decommission\_receipt\_sample.md}: \texttt{DecommissionReceipt}
+    schema documenting the receipt emitted when a process object is lawfully retired.
+  \item \texttt{decommission\_receipt\_sample\_detailed.md}: Extended decommission
+    receipt including a residual token trace, documenting the exact state of the
+    Petri net at decommission time.
+  \item \texttt{lifecycle\_receipts\_sample.md}: A chain of lifecycle receipt
+    samples covering the full object lifecycle from creation through admission,
+    conformance, and decommission.
+  \item \texttt{otel\_trace\_integration\_sample.md}: OTel-BLAKE3 chain roots
+    with span-level receipts, demonstrating the formula
+    $R_i = \mathrm{BLAKE3}(R_{i-1} \;\|\; \mathrm{TraceID} \;\|\; \mathrm{SpanID} \;\|\; \ldots \;\|\; \mathrm{InstructionCount})$.
+\end{enumerate}
+
+All five receipts are schema-level demonstrations with concrete JSON instances.
+None of them were manufactured by a running wasm4pm engine producing a live
+\texttt{Receipt<Metric<FITNESS, NUM, DEN>, Ocel20>} object; they are authored
+instances that demonstrate the schema. [AUTHOR THESIS: The distinction between
+an authored receipt instance and a receipted receipt manufactured by the engine
+under type-law enforcement is architecturally significant and constitutes a
+prerequisite for closing GAP\_001.]
+
+\subsection{Checkpoints}
+\label{sec:experiments-core-evidence-checkpoints}
+
+Two checkpoint files are present:
+
+\textbf{\texttt{checkpoint\_\_experiments\_complete.md}} declares VERIFIED \& COMPLETE
+for the experiment-coverage and equation-verification gates. This checkpoint is
+based on: (a)~the 18/18 audit pass recorded in \texttt{audit\_\_experiment\_completeness.md};
+(b)~the three Python script assertion passes; and (c)~the concrete JSON fixture
+instances across all 18 experiment domains.
+
+\textbf{\texttt{EVIDENCE\_CHAIN\_TRACE.md}} documents the 7-step evidence chain
+and declares it structurally sound with one named defect: GAP\_001. The document
+is not a checkpoint in the ALIVE/PARTIAL/FAILED sense; it is a structural audit
+that informs the overall status verdict.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:experiments-core-evidence-status}
+
+The overall status of this project is \textbf{PARTIAL}.
+
+The ALIVE gate requires: receipts, tests, and a checkpoint, all present and
+consistent. Tests are present and pass. A checkpoint is present. Receipt schemas
+with concrete authored instances are present. However, the ALIVE gate is not
+satisfied for three reasons: (1)~GAP\_001 is documented but not closed---the
+full evidence chain from raw OCEL to board-admissible receipt cannot be manufactured
+end-to-end without manual type laundering; (2)~the \texttt{ma-deck-projection/}
+and \texttt{wasm4pm-gap-analysis/} subdirectories are completely empty, representing
+declared experiments that have not yet been manufactured; and (3)~the ZKP benchmark
+results ($2^{18}$ cycles, 142\,s proof, 220\,KB STARK) are not reproducible from
+the artifacts in the repository---no harness, log subset, or zkVM configuration
+is present. The project is therefore classified PARTIAL: equation verification is
+complete, experiment coverage is complete, but the full evidence chain is broken
+at the GAP\_001 boundary and two experiment subdirectories are empty.

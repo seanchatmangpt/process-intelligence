@@ -1,0 +1,107 @@
+% FILE: 04_implementation_surface.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Implementation Surface}
+\label{sec:schemas-implementation}
+
+\subsection{Source Files}
+\label{sec:schemas-implementation-source}
+
+The implementation surface of the schemas project is deliberately minimal. Two JSON Schema files
+constitute the entire normative surface:
+
+\begin{description}
+  \item[\texttt{schemas/slide\_verification\_ledger.schema.json}] 65 lines. Defines the
+    \texttt{SlideVerificationLedger} type using JSON Schema draft-07. Uses
+    \texttt{patternProperties} with a UUIDv4 regex key pattern to admit only UUID-identified
+    slide receipts. Eight required fields per receipt entry. Strict enforcement via
+    \texttt{additionalProperties: false}.
+  \item[\texttt{standards/otel\_trace\_integration\_schema.json}] 75 lines. Defines the
+    \texttt{OTelTraceBlake3IntegrationSchema} type. Requires W3C TraceID, BLAKE3 event-chain root,
+    and a spans array. Each span element requires W3C SpanID, parent pointer, activity label,
+    microsecond timestamps, cumulative instruction count, and a per-span BLAKE3 receipt.
+\end{description}
+
+Five production receipt files in \texttt{receipts/} implement the schema contract:
+
+\begin{description}
+  \item[\texttt{rec\_ebitda\_rework\_001.json}] Slide 1 receipt. Asserts \$1,250,000 annual EBITDA
+    improvement. Engine: \texttt{wasm4pm}. Query URI:
+    \texttt{file:///\ldots/queries/ebitda\_rework\_reduction.wasm}. Fitness: 0.982. Precision: 0.945.
+    BLAKE3 hashes: \texttt{ee9ab723\ldots} (log), \texttt{81f7dca2\ldots} (model).
+  \item[\texttt{rec\_wc\_ar\_002.json}] Slide 2 receipt. Asserts \$1,369,863 working capital
+    release via AR velocity acceleration (42.5-day to 32.5-day cycle time reduction on
+    \$50M annual credit sales). Fitness: 0.978. Precision: 0.923.
+  \item[\texttt{rec\_risk\_sla\_003.json}] Slide 3 receipt. Asserts SLA penalty liability capped
+    at \$450,000 with late delivery rates below 2.5\%.
+  \item[\texttt{rec\_risk\_compliance\_004.json}] Slide 4 receipt. Asserts \$0 compliance leakage
+    with zero SoD or SOX/GDPR/AML violations in procurement workflows.
+  \item[\texttt{rec\_residual\_standard\_005.json}] Slide 5 receipt. Asserts 97.5\% conformance
+    standardization with residual weight $W_R \le 0.025$ and residual entropy $H_R = 0.85$.
+\end{description}
+
+All five receipts carry \texttt{validator\_signature} values prefixed \texttt{ed25519\_sig\_} with
+UUIDs and 64-byte hex payloads, conforming to the 128-hex pattern. All five reference
+\texttt{\$schema: https://json-schema.org/draft/2020-12/schema} (using the draft-2020-12 URI
+despite the schema file itself targeting draft-07---a minor inconsistency in the sample receipts
+that is noted but does not affect structural conformance of the fields).
+
+\subsection{Commands}
+\label{sec:schemas-implementation-commands}
+
+No build system, CLI tool, or automated validation command is attached to the schemas project at
+time of assessment. Schema validation must be performed manually or via an external tool such as
+\texttt{ajv} (Node.js) or \texttt{jsonschema} (Python). This is the primary gap in the
+implementation surface: the contract exists but is not enforced programmatically at commit time.
+
+The M\&A deck rendering authority assessment (2026-06-01) defines a seven-step rendering pipeline
+that includes a validation step (Step~6) which verifies receipt structure against the schema.
+However, this validation step is defined as a protocol specification, not as an executed command
+with a recorded output. The command that would implement it does not exist as a committed artifact.
+
+\AUTHORINTERPRETATION{} The absence of an automated validation command is the single most
+consequential structural gap in the schemas project. It means the schema is a specification, not
+an enforced law.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:schemas-implementation-data}
+
+The schemas project intersects the ontology surface of the research program at the
+\texttt{query\_definition.engine} field. The enum values \texttt{wasm4pm} and \texttt{pm4py}
+name the two execution engines recognized by the research program. This naming is consistent with
+the wasm4pm authority maps in \texttt{sources/wasm4pm/} and the pm4py oracle surface in
+\texttt{sources/pm4py/}.
+
+The BLAKE3 hash fields intersect the cryptographic receipt doctrine defined in
+\texttt{doctrine/RECEIPT\_DOCTRINE.md}. That document establishes that a receipt must be a
+typed, witnessed, bound evidence artifact. The schema operationalizes ``bound'' by requiring
+that the receipt carry content addresses (BLAKE3 hashes) of both the event log and the process
+model it references.
+
+The JCS canonical serialization requirement (RFC~8785) for the Ed25519 signature computation is
+specified in the slide-to-receipt map (\texttt{ma/slide-to-receipt-map.md}) but not in the schema
+itself. The schema pattern for \texttt{validator\_signature} (\verb|^[0-9a-fA-F]{128}$|) admits
+any 128-hex string, without requiring that the string represent a valid Ed25519 signature over
+a JCS-canonical payload. The binding between the pattern and the signing protocol is therefore
+extra-schematic---a documentation gap.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:schemas-implementation-templates}
+
+The schema is consumed by two Tera2 templates:
+
+\begin{description}
+  \item[\texttt{ggen/templates/ma-deck.tera}] (202 lines) The PowerPoint rendering template.
+    References receipt hashes (first 16 characters) in slide-level claim detail slides. Computes
+    board admissibility as \texttt{status = "ADMISSIBLE"} if \texttt{verdictFitness} $\ge 0.95$
+    and \texttt{verdictPrecision} $\ge 0.90$; else \texttt{"REJECTED"}.
+  \item[\texttt{ggen/templates/ma-diligence.tera}] (283 lines) The Excel rendering template.
+    Exposes receipt hashes in the Synergy\_Claims and Replay\_Traces sheets, enabling auditors to
+    cross-reference the Excel workbook against the receipt files in the VDR.
+\end{description}
+
+Both templates consume claims data as a JSON array whose \texttt{receiptHash} and \texttt{receipt}
+fields reference the ledger. The templates do not validate schema conformance---that is the
+responsibility of Step~6 in the rendering pipeline. The templates assume that any receipt hash
+they receive has already been validated against the schema.

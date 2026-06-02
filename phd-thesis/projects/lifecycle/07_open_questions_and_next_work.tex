@@ -1,0 +1,135 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Open Questions and Next Work}
+\label{sec:lifecycle-open}
+
+\subsection{Known Gaps}
+\label{sec:lifecycle-open-gaps}
+
+Four open questions are documented as known gaps in the lifecycle project.
+
+\textbf{Gap 1: Executable test suite absent.} The checkpoint
+\texttt{checkpoint\_\_lifecycle\_model\_complete.md} defines ALIVE as requiring
+$\texttt{assert\_soundness}(N) \land \texttt{assert\_fitness}(N, L, 0.95) \land
+\texttt{assert\_no\_ghost\_transitions}(N, L)$, but no executable test suite in
+\texttt{lifecycle/} implements these assertions against real Petri nets or event logs.
+The assertion blueprints are Python pseudocode specification artifacts. Until an
+executable suite is authored and passes against \texttt{wasm4pm}-managed nets and
+logs, the module-level ALIVE verdict cannot be issued. This is the primary gap between
+the lifecycle project's PARTIAL status and an ALIVE status.
+
+\textbf{Gap 2: wasm4pm execution obligations unresolved.} The MAPE-K mapping matrix
+in \texttt{MAPE\_K\_MAP.md} lists eight capabilities required in \texttt{wasm4pm}
+(online token replay, alignment computation, variant enumeration, repair plan evaluation,
+actuation layer, receipt emitter, model store, metric time-series store) that are not
+present in \texttt{wasm4pm-compat}. These obligations are extensively documented per
+lifecycle phase, but \texttt{wasm4pm} is described as a separate downstream product.
+The gap between lifecycle doctrine and \texttt{wasm4pm} execution authority is
+explicitly unresolved. A crate that conflates the structure layer and the execution
+layer is a structural defect, as stated in \texttt{MAPE\_K\_MAP.md}.
+
+\textbf{Gap 3: Board Projection Holography formal connection absent.} The Board
+Projection Holography (BPH) framework is introduced in
+\texttt{board-projection-holography.md} as a paradigm for manufacturing board
+projections directly from autonomic process ledgers. However, no formal connection
+between BPH and the receipt chain data types or the \texttt{wasm4pm} types has been
+established through a compiled, running bridge. The document references the
+``Ostar Governor'' as the authority for mathematical closure of projections, but
+the Ostar Governor is not formally defined within the lifecycle directory.
+
+\textbf{Gap 4: PRL vs.\ Maturity Model canonicality unresolved.} The Process
+Readiness Levels (PRL 0--5) defined in the readiness taxonomy parallel the five-level
+Maturity Model (L1--L5) in \texttt{MATURITY\_MODEL.md} but differ in framing. PRL
+characterizes the operational readiness of a specific process artifact; the Maturity
+Model characterizes the governance maturity of a process as a whole. The relationship
+between PRL classification and maturity level assignment, and which is canonical for
+M\&A due diligence valuation purposes, is not explicitly resolved in any lifecycle
+document.
+
+\subsection{Deferred Gates}
+\label{sec:lifecycle-open-deferred}
+
+Three formal gates are deferred pending downstream work.
+
+The \textbf{module-level ALIVE gate} is deferred pending (a) authorship of an
+executable test suite implementing the four assertion blueprints, (b) a running
+\texttt{wasm4pm} instance capable of managing Petri net artifacts and event logs,
+and (c) passage of all four assertions against real nets and logs. The program-level
+ALIVE checkpoint (\texttt{0x00}) does not substitute for this module-level gate.
+
+The \textbf{MAPE-K loop closure gate} is deferred pending \texttt{wasm4pm} execution
+engine implementation. The loop closure criterion requires that every Monitor
+observation is a typed admitted artifact, every Analyze conclusion carries a bounded
+confidence score, every Plan is typed and risk-scored, every Execute action produces a
+receipt, and the Knowledge component can replay any past loop cycle. Condition 5
+(historical replay from Knowledge) is the distinguishing criterion between a reactive
+system and an autonomic one, and it requires the \texttt{wasm4pm} model store and
+metric time-series store to be implemented.
+
+The \textbf{Board Projection formal bridge gate} is deferred pending formal definition
+of the projection engine's connection to the BLAKE3 receipt chain and the
+\texttt{wasm4pm} typed artifact store. Until this bridge is specified and compiled,
+BPH remains a research model (v30.1.1 designation) rather than an implemented
+capability.
+
+\subsection{Research Risks}
+\label{sec:lifecycle-open-risks}
+
+Three research risks are identified. [\textsc{Author Thesis / Interpretation}]
+
+\textbf{Risk 1: Doctrine-execution divergence.} The lifecycle doctrine is specified
+at high formality with Petri net mathematics, typed state machines, and formal gate
+criteria. As \texttt{wasm4pm} is implemented, there is a risk that the execution
+engine's type system will be unable to fully express the const generic constraints
+(e.g., \texttt{WfNetConst<SOUNDNESS>}, \texttt{Between01<NUM, DEN>}) without nightly
+Rust compiler features that may not stabilize on the required timeline. The intermediate
+type alias workaround for E0391 variance cycles is already documented in the lifecycle
+spec; additional workarounds may be required.
+
+\textbf{Risk 2: Fitness threshold rigidity.} The 0.95 alignment fitness threshold at
+Gate 3 is a declared board-level standard, not a derived empirical value. In real
+enterprise processes, particularly those with high variance or seasonal patterns, a
+0.95 threshold may trigger excessive $T_{\mathrm{elastic}}$ actuation without improving
+governance. The threshold should be treated as a configurable parameter with formal
+justification required for any value below 0.95. This is a risk to the lifecycle
+framework's claim that Gate 3 is sufficient as stated.
+
+\textbf{Risk 3: M\&A receipt chain scope.} The five JSON receipts in the parent
+\texttt{receipts/} directory are explicitly noted as sample receipts requiring live
+data for production use. If the lifecycle framework is deployed in an M\&A context
+before production receipt infrastructure is in place, the sample receipts could be
+mistaken for evidence of operational conformance. The RECEIPT\_REGISTRY's explicit
+note that ``production receipts require live data'' must be preserved in all downstream
+documentation.
+
+\subsection{Next Receipted Work}
+\label{sec:lifecycle-open-next}
+
+The next receipted work items, in priority order, are as follows.
+
+First, author an executable Python or Rust test suite implementing
+\texttt{assert\_soundness}, \texttt{assert\_fitness}, \texttt{assert\_no\_ghost\_transitions},
+and \texttt{assert\_decommission\_receipt} against at least one WF-net artifact and
+one event log. Passage of all four assertions constitutes the lifecycle module-level
+ALIVE gate and allows the PARTIAL status to be upgraded. This work does not require
+\texttt{wasm4pm}; it requires only a pm4py or equivalent Python process mining library
+and a well-formed WF-net.
+
+Second, specify the \texttt{wasm4pm} capability surface required for online token
+replay and receipt emission as a formal API contract (not prose description). This
+specification should be expressed in the same typestate language as
+\texttt{wasm4pm-compat} so that conformance between the specification and the
+implementation is checkable at the type level.
+
+Third, define the Board Projection Holography bridge as a formal type mapping from the
+BLAKE3 receipt chain to the BPH projection engine inputs. The bridge should be
+specifiable without a running \texttt{wasm4pm} instance, using the same
+\texttt{wasm4pm-compat} types that the lifecycle framework already references.
+
+Fourth, resolve the PRL vs.\ Maturity Model canonicality question by authoring a
+single mapping document that assigns each PRL level to a Maturity Level and specifies
+which is the canonical measure for M\&A due diligence valuation. This is a doctrine
+document, not an implementation task, and can be completed without downstream
+engineering work.

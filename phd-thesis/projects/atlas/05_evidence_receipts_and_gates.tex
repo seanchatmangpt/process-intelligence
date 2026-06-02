@@ -1,0 +1,155 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: atlas
+% Status: PARTIAL — atlas has no receipt or checkpoint of its own.
+%         The foundry it maps is ALIVE per PI_RESEARCH_PROGRAM_ALIVE_001.
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:atlas-evidence}
+
+\subsection{Tests}
+\label{sec:atlas-evidence-tests}
+
+The atlas directory contains no tests. This is not an omission but a structural
+property: the atlas is a naming and bounding surface, not an executable
+artifact. There are no compile-fail fixtures, no pytest suites, no trybuild
+tests, and no SPARQL validation queries internal to the atlas.
+
+The foundry surrounding the atlas has extensive test surfaces. The
+PROCESS\_INTELLIGENCE\_ALIVE\_001 checkpoint certifies that compile-time
+state-space bounds were validated, typestate compile-fail loops preventing
+invalid state transitions were verified, and token game fitness
+$f(L, N) = 1 - \frac{\sum m}{\sum c} - \frac{\sum r}{\sum p}$ was verified via
+automated execution gate. However, none of these tests belong to the atlas
+itself; they belong to the implementation repositories (wasm4pm, wasm4pm-compat,
+ggen) that the atlas maps.
+
+\textbf{[FUTURE WORK]} An ALIVE verdict for the atlas would require at minimum:
+(1) a SPARQL validation suite confirming that each of the seven doctrine files
+is parseable as a named, bounded module; (2) a cross-reference lint confirming
+that no atlas module name conflicts with another; and (3) a dissertation
+chapter citation check confirming that each atlas anchor is used at least once
+in the thesis body. None of these tests currently exist.
+
+\subsection{Receipts}
+\label{sec:atlas-evidence-receipts}
+
+The atlas does not emit its own receipts. The receipt chain relevant to the
+atlas is the seven canonical research program receipts defined in
+\texttt{receipts/RECEIPT\_REGISTRY.md}:
+
+\begin{description}
+  \item[\texttt{PAPER\_CANON\_RECEIPT}] Certifies the classified paper inventory
+        with formal object mapping ($\geq 14$ papers, all classified by discovery,
+        conformance, prediction, OCEL, Petri net, BPMN, POWL). Produced by the
+        \texttt{sources/papers/} inventory workflow; witness: van der Aalst corpus
+        + IEEE/ACM process mining bibliography.
+
+  \item[\texttt{PM4PY\_ORACLE\_RECEIPT}] Certifies the PM4Py API surface mapped
+        to wasm4pm gap status ($\geq 14$ functions). Produced by the
+        \texttt{sources/pm4py/} mapping workflow; witness: \texttt{pm4wasm.d.ts}
+        TypeScript interface definitions.
+
+  \item[\texttt{WASM4PM\_GAP\_RECEIPT}] Certifies the gap inventory (8 identified
+        gaps, each with severity, priority, and compat path). Produced by the
+        \texttt{gaps/} analysis workflow; witness: PM4Py oracle + wasm4pm-compat
+        graduation surface.
+
+  \item[\texttt{LIFECYCLE\_RECEIPT}] Certifies 42 lifecycle phase definitions
+        (ingest through archive). Produced by the \texttt{lifecycle/} phase
+        definition workflow; witness: process mining lifecycle literature +
+        wasm4pm-compat typestate.
+
+  \item[\texttt{MA\_RECEIPT}] Certifies 8 M\&A claim categories with evidence
+        path requirements ($\geq 40$ files). Produced by the \texttt{ma/} claim
+        category workflow; witness: M\&A process diligence literature + board
+        claim doctrine.
+
+  \item[\texttt{STANDARDS\_RECEIPT}] Certifies $\geq 52$ standards placed with
+        board claim mapping. Produced by the \texttt{standards/} inventory
+        workflow; witness: IEEE, ISO, WfMC, OASIS, XES Working Group publications.
+
+  \item[\texttt{ADVERSARIAL\_RECEIPT}] Certifies adversarial challenges to each
+        major claim (3 challenges: raw laundering, metric fabrication, conformance
+        theater). Produced by the \texttt{adversarial/} challenge workflow;
+        witness: Chicago TDD hostile assumptions doctrine.
+\end{description}
+
+Additional receipts referenced in the atlas ecosystem:
+
+\begin{itemize}
+  \item \texttt{receipts/blue\_river\_generation.md} --- Blue River Dam lifecycle
+        authority receipt
+  \item \texttt{receipts/wasm4pm\_conformance\_authority\_generation.md} ---
+        wasm4pm conformance authority receipt
+  \item \texttt{receipts/rec\_ebitda\_rework\_001.json},
+        \texttt{rec\_wc\_ar\_002.json}, \texttt{rec\_risk\_sla\_003.json},
+        \texttt{rec\_risk\_compliance\_004.json},
+        \texttt{rec\_residual\_standard\_005.json} --- sample M\&A monetization
+        receipts (production receipts require live data)
+\end{itemize}
+
+\subsection{Checkpoints}
+\label{sec:atlas-evidence-checkpoints}
+
+The following checkpoints provide the evidentiary backbone for the foundry the
+atlas maps:
+
+\begin{itemize}
+  \item \textbf{PI\_RESEARCH\_PROGRAM\_ALIVE\_001} (2026-06-01): Program ALIVE.
+        All 12 audit gates PASS. 342 research artifacts. BLAKE3:
+        \texttt{e7c8f2d94a71b5c3e9f1d6a4b2c8e5f7a1d3c5b7e9f2d4a6c8e0f1a3b5c7d9}.
+        Verification Code: \texttt{0x0F\_ALL\_GATES\_PASS}.
+
+  \item \textbf{PROCESS\_INTELLIGENCE\_ALIVE\_001} (2026-06-01): Phase checkpoint.
+        All five mathematical invariants verified: admissibility boundary
+        $R \vdash P_i = \mu(O^*, T, L)$, autonomic actuation
+        $\alpha(K, P, L, T) \to \tau$, token game fitness, OCPQ refinement
+        $p \sqsubseteq_L c$, and decommissioning retirement $\delta(P)$.
+
+  \item \textbf{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001} (2026-06-01): GGEN ecosystem
+        intelligence sealed (3/4 audits PASS; 1 remediation for DTO flattening).
+
+  \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001} (2026-06-01): OpenTelemetry
+        integration ALIVE; OTel trace deserialization boundary PARTIAL (open).
+
+  \item \textbf{SUBSTRATE\_COMPLETE\_001} (2026-06-01): Foundation complete.
+\end{itemize}
+
+The atlas has no checkpoint of its own.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:atlas-evidence-status}
+
+\textbf{Status: PARTIAL.}
+
+The atlas is PARTIAL for the following precisely bounded reasons, consistent
+with the COVENANT.md definition of PARTIAL (``some gate criteria are met and
+documented; the remaining criteria constitute a bill of materials for the next
+transition; no false completion claim has been made''):
+
+\begin{enumerate}
+  \item \textbf{No internal receipt.} The atlas directory has no receipt,
+        checkpoint, or ALIVE file. The foundry it maps is ALIVE; the atlas
+        itself has not been receipted.
+
+  \item \textbf{Thin modules.} The \texttt{agi\_adversarial\_defenses.md} file
+        contains four bullet points and lacks depth. The
+        \texttt{zoeapp\_ministry\_ontology.md} file references a livestream state
+        machine (healthy/degraded/critical) but does not specify the formal
+        Petri net or typestate encoding.
+
+  \item \textbf{No manufactured warrants per module.} The GGEN Prompt
+        Manufactory doctrine defines the chain TTL $\to$ RQ $\to$ TERA $\to$
+        Prompt, but the atlas does not cross-reference which specific TTL/RQ/TERA
+        files instantiate this chain for each of the seven doctrine modules.
+
+  \item \textbf{Demonstration-mode Supabase tables.} The five
+        \texttt{actor\_*} tables in the Supabase Law Substrate operate under
+        ``Allow public access'' policies and are flagged for secondary audit
+        before production hardening. This audit has not been scheduled or
+        receipted.
+\end{enumerate}
+
+PARTIAL is not failure. Per the COVENANT.md: ``PARTIAL is the bill of materials
+for the next transition.'' The foundry the atlas maps is fully ALIVE; the atlas
+itself requires the four items above to advance from PARTIAL to ALIVE.

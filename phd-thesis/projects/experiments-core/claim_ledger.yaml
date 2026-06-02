@@ -1,0 +1,241 @@
+slug: experiments-core
+claims:
+  - id: CLM-EXPERIMENTS_CORE-001
+    claim: >-
+      The verify_equations.py script runs five fitness cases and four OCPQ
+      refinement cases in a single gate and reports 100% correctness with zero
+      assertion failures.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/verify_equations.py
+      - /Users/sac/process-intelligence/experiments/checkpoint__experiments_complete.md
+    evidence_summary: >-
+      verify_equations.py exits with code 0 after asserting all nine cases; the
+      checkpoint file records VERIFIED & COMPLETE for the equation-verification
+      gate.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-002
+    claim: >-
+      The validate_log_fitness.py script verifies the Van der Aalst weighted log
+      fitness equation on four Petri net token replay scenarios: perfect
+      conformance (fitness=1.0), partial replay (fitness=1/3), remaining-only
+      (fitness=0.5), and a combined multi-trace log (fitness=5/7).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/validate_log_fitness.py
+    evidence_summary: >-
+      The script contains explicit assert statements for all four cases with
+      exact floating-point tolerances; all assertions are confirmed by the
+      checkpoint.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-003
+    claim: >-
+      The replay_receipt_sample.md provides a CryptographicReplayReceipt JSON
+      schema with a concrete instance recording fitness=0.982, BLAKE3 hashes of
+      the process model and event log, and an Ed25519 signature.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/replay_receipt_sample.md
+    evidence_summary: >-
+      The file contains both the full JSON schema (draft-07) and a concrete
+      instance with fitness_score 0.982, model_blake3, log_blake3, and ed25519
+      signature_bytes fields.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-004
+    claim: >-
+      The audit__experiment_completeness.md records 18 out of 18 experiments as
+      PASSED with concrete JSON schemas and no stubs or mocks.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/audit__experiment_completeness.md
+    evidence_summary: >-
+      The audit matrix lists all 18 experiment files with Concrete Schema=Yes,
+      Concrete Fixture=Yes, and Status=PASSED; verdict is 100% COMPLETE &
+      STRUCTURALLY SOUND.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-005
+    claim: >-
+      The EVIDENCE_CHAIN_TRACE.md documents a 7-step lawful evidence chain from
+      Raw OCEL through Parse, Admit, Token Replay/Alignment, Metric, Receipt, to
+      Board Claim, and identifies GAP_001 as a blocking defect in that chain.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/EVIDENCE_CHAIN_TRACE.md
+    evidence_summary: >-
+      The file defines all 7 steps with typed Rust pseudocode and contains a
+      dedicated GAP_001 summary table showing current defective vs. required
+      correct API signatures.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-006
+    claim: >-
+      GAP_001 is a blocking defect: wasm4pm's token_replay and alignment APIs
+      currently accept a flat EventLog and bare PetriNet rather than
+      Admission<OcelLog, Ocel20> and WfNetConst<Sound>, meaning a
+      board-admissible receipt with the Ocel20 witness cannot be manufactured
+      end-to-end without manual type laundering.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/EVIDENCE_CHAIN_TRACE.md
+    evidence_summary: >-
+      EVIDENCE_CHAIN_TRACE.md explicitly documents the current defective API
+      signatures versus the required correct signatures and declares the Ocel20
+      witness thread broken at Step 4.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-007
+    claim: >-
+      The pm4py-comparison benchmark matrix records DFG Discovery at 37.5x,
+      Alpha Miner at 34.2x, and Token Replay at 39.3x speedup for wasm4pm over
+      PM4Py.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/pm4py-comparison/matrix.md
+    evidence_summary: >-
+      matrix.md contains a performance gap table with PM4Py times (450ms, 1.2s,
+      3.5s) versus wasm4pm times (12ms, 35ms, 89ms) yielding the stated
+      multipliers.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-008
+    claim: >-
+      The ZKP benchmark results show wasm4pm completing 10,000-event conformance
+      in 2^18 cycles (approximately 142 seconds proof time, 220KB STARK) versus
+      PM4Py timing out at 2^30+ cycles using the BPI Challenge 2017 log subset.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/pm4py-comparison/zero-knowledge-benchmarks.md
+    evidence_summary: >-
+      zero-knowledge-benchmarks.md states these exact cycle counts and proof
+      metrics in Section 4; no reproducible harness, BPI log subset, or zkVM
+      configuration file exists in the repository to independently verify them
+      (GAP_004).
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-009
+    claim: >-
+      The ZKP benchmark results are not reproducible from the repository
+      artifacts because no benchmark harness, BPI Challenge 2017 log subset, or
+      zkVM configuration file is present; they may represent aspirational rather
+      than empirical performance characteristics.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/experiments-core/07_open_questions_and_next_work.tex
+      - /Users/sac/process-intelligence/experiments/pm4py-comparison/zero-knowledge-benchmarks.md
+    evidence_summary: >-
+      The TeX file explicitly labels GAP_004 and flags the benchmark methodology
+      as insufficient for independent reproduction; the experiments directory
+      confirms no harness files exist.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-010
+    claim: >-
+      All five receipt artifacts (replay, decommission, decommission-detailed,
+      lifecycle chain, OTel-BLAKE3) are authored schema-level demonstrations
+      with concrete JSON instances; none were manufactured by a running wasm4pm
+      engine under type-law enforcement.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/experiments/replay_receipt_sample.md
+      - /Users/sac/process-intelligence/experiments/decommission_receipt_sample.md
+      - /Users/sac/process-intelligence/experiments/otel_trace_integration_sample.md
+    evidence_summary: >-
+      The TeX file (05_evidence_receipts_and_gates.tex) explicitly labels this
+      distinction as AUTHOR THESIS; receipt files are hand-authored JSON, not
+      engine output.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-011
+    claim: >-
+      The visualizer/visualizer-validation.ts validates ten WASM boundary types
+      (EvidenceTs, AdmissionTs, RefusalTs, ReceiptShapeTs,
+      GraduationCandidateTs, and five supporting types) at the TypeScript type
+      level only, with no runtime assertions; the WASM interface is not yet
+      wired to an actual compiled .wasm module.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+    evidence_summary: >-
+      The known evidence inventory confirms 10 wasm boundary types are
+      validated; the TeX files note no tsconfig.json is present, making
+      compilation non-reproducible from artifacts alone, and that the linkage is
+      evidenced by type declarations only.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-012
+    claim: >-
+      The ma-deck-projection/ and wasm4pm-gap-analysis/ subdirectories are
+      completely empty (64 bytes each, containing no files), representing
+      declared experiments that have not yet been manufactured.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/EVIDENCE_CHAIN_TRACE.md
+    evidence_summary: >-
+      Filesystem inspection confirms both directories contain only the directory
+      entry (64 bytes) with no files; the TeX file labels these GAP_002.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-013
+    claim: >-
+      Closing GAP_001 requires refactoring wasm4pm's public API, constituting a
+      breaking change that cannot be undertaken without authorization from the
+      process-intelligence research program as specified in CLAUDE.md.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/experiments-core/07_open_questions_and_next_work.tex
+      - /Users/sac/process-intelligence/experiments/EVIDENCE_CHAIN_TRACE.md
+    evidence_summary: >-
+      The open-questions TeX file labels this the primary research risk and
+      cites the CLAUDE.md directive requiring research program authorization
+      before any wasm4pm refactor.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-014
+    claim: >-
+      The paper-fixture-design/spec.md describes GAN-based adversarial trace
+      generation with hyper-concurrent loops, invisible prime branches, and 15%
+      missing events, but no GAN implementation or fixture files are present in
+      the repository (GAP_003).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/experiments-core/07_open_questions_and_next_work.tex
+    evidence_summary: >-
+      The TeX file explicitly labels this GAP_003 and states the specification
+      exists while fixtures do not; the audit confirms 18/18 non-adversarial
+      experiments passed but adversarial fixture manufacturing is absent.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_CORE-015
+    claim: >-
+      Translating a conformance receipt into a dollar-denominated M&A synergy
+      projection linking the fitness metric to a process efficiency estimate must
+      be deferred until the ma-deck-projection/ subdirectory is populated and
+      GAP_001 is closed.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/experiments-core/06_contribution_to_thesis.tex
+      - /Users/sac/process-intelligence/phd-thesis/projects/experiments-core/07_open_questions_and_next_work.tex
+    evidence_summary: >-
+      The contribution TeX file explicitly labels this FUTURE WORK; the
+      ma-deck-projection/ directory is confirmed empty, and no M&A projection
+      has been manufactured.
+    confidence: HIGH
+    allowed_in_pdf: true

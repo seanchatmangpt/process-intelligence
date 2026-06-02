@@ -1,0 +1,144 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: atlas
+% Role: doctrine-atlas-and-thesis-chapter-surface-map
+
+\section{Architecture and Primitives}
+\label{sec:atlas-arch}
+
+\subsection{Core Objects}
+\label{sec:atlas-arch-objects}
+
+The atlas encodes seven doctrine modules, each built around one or more named
+primitives drawn from the formal object system of the SPR thesis. The
+primitives, as defined in \texttt{doctrine/PROCESS\_INTELLIGENCE\_SPR\_THESIS.md},
+are:
+
+\begin{description}
+  \item[\textbf{Aalst Broadcaster}] The primary mechanism for transforming raw
+        Git history into an OCEL (Object-Centric Event Log) stream. The
+        Broadcaster maps every commit, author interaction, and state transition
+        to formalized OCEL activities using scripts (\texttt{aalst\_broadcaster.js}
+        is the canonical example). The Conformance Stream that accompanies it
+        provides ZKP (Zero-Knowledge Proof) validation diagnostics and
+        structural alignment checking against WF-net or Petri Net specifications
+        in real time.
+
+  \item[\textbf{Evidence}\texttt{<T, State, Witness>}] The typed receipt
+        structure defined in the SPR thesis as the non-forgeable evidence record
+        of a lawful transition. The Witness $W$ is non-forgeable:
+        \texttt{Evidence<T, Admitted, Ocel20>} cannot be confused with
+        \texttt{Evidence<T, Admitted, Xes1849>} at the type level. The atlas
+        modules (particularly WASM Boundary Law) rely on this typed structure to
+        enforce membrane integrity.
+
+  \item[\textbf{Blue River Dam Operator Chain}]
+        $\kappa(\rho(\alpha(\mu(O^*)))) \to \textsc{ALIVE} \mid \textsc{PARTIAL}
+        \mid \textsc{REFUSED}$. The four operators are: $\mu$ (manufacture a
+        process instance from $O^*$), $\alpha$ (actuate knowledge against the
+        instance), $\rho$ (emit evidence from the actuation), and $\kappa$ (gate
+        the evidence). The Blue River Dam never produces an ungated outcome;
+        there is no fourth option.
+
+  \item[\textbf{GGEN Transformation Chain}]
+        TTL (Ontology) $\to$ RQ (SPARQL) $\to$ TERA (Templating) $\to$ Prompt
+        (Manufactured Research Warrant). Each arrow is a typed manufacturing
+        step, not a textual transformation. The chain converts human prose intent
+        into machine-executable warrants grounded in the ontology.
+
+  \item[\textbf{Supabase RLS Authorization Court}] Row Level Security as the
+        final arbiter of truth: every SQL command (SELECT, INSERT, UPDATE, DELETE)
+        is intercepted by the Postgres engine and evaluated against immutable
+        RLS policies. The law ``React state is not authorization'' is the
+        defining negative claim of this module.
+
+  \item[\textbf{Specta / tsify / wasm-bindgen Boundary}] Specta governs the
+        Type Surface (TypeScript control); tsify and wasm-bindgen govern the
+        Binary Surface (WASM ABI). The separation is enforced to maintain
+        stability and receipt integrity across the WASM membrane.
+
+  \item[\textbf{ZoeApp Ministry Process-Laws}] Connect, Give, Watch, Serve, and
+        Pray are codified as process-laws using the manufacturing pipeline.
+        Livestream health is modeled as a three-state machine (healthy, degraded,
+        critical) with a formal recovery path back to service.
+
+  \item[\textbf{AGI Adversarial Defenses}] Four Iron Law safeguards:
+        Schr\"odinger's Interface Fallback (deterministic UI under uncertainty),
+        Turing Trap Circuit Breakers (preventing infinite reasoning loops),
+        Causal Window P2P Constraints (bounding temporal causality), and Hardware
+        Attestation via ZKP (non-forgeable hardware-level proof).
+\end{description}
+
+\subsection{Admissible Transitions}
+\label{sec:atlas-arch-transitions}
+
+Within the atlas, admissible transitions are those that move a doctrine module
+from named (a file exists with a title and core claim) to bounded (the module's
+key primitives are listed and distinguished from adjacent modules) to citable
+(the module can be referenced from a dissertation chapter with a precise pointer).
+
+The Blue River Dam doctrine specifies the general transition law:
+$\kappa(\tau) \in \{\textsc{ADMIT}(R), \textsc{REFUSE}(F), \textsc{PARTIAL}(X)\}$.
+For the atlas specifically, the Lifecycle Calculus applies at the documentation
+level: Design (atlas files exist) $\to$ Simulation (primitives are named and
+bounded) $\to$ Construction (cross-chapter citations are established) $\to$
+Activation (dissertation chapters are written against atlas anchors). The atlas
+is currently between Design and Simulation: all seven files exist, but several
+(AGI Adversarial Defenses, ZoeApp Ministry Ontology) are thin enough that their
+Simulation gate has not yet passed.
+
+\subsection{Boundaries}
+\label{sec:atlas-arch-boundaries}
+
+The atlas enforces three explicit boundaries:
+
+\begin{enumerate}
+  \item \textbf{The atlas does not replace implementation receipts.} Each module
+        named in the atlas has its receipts in the corresponding implementation
+        repository (wasm4pm, ggen, ostar, wasm4pm-compat). The atlas names the
+        module; it does not absorb the receipt.
+
+  \item \textbf{The atlas does not claim ALIVE for any module.} ALIVE verdicts
+        require receipt + tests + checkpoint. The atlas is a naming surface; it
+        reports the ALIVE/PARTIAL status of the foundry as a whole
+        (PI\_RESEARCH\_PROGRAM\_ALIVE\_001) and notes which specific modules are
+        thin (AGI Adversarial Defenses, ZoeApp Ministry Ontology).
+
+  \item \textbf{The Supabase Law Substrate distinguishes authorization from
+        projection.} The client (React state) is a projection; the database (RLS
+        policy) is the host. Any system component that treats a client-side
+        projection as an authorization decision violates the boundary law of this
+        module.
+\end{enumerate}
+
+\subsection{Failure Modes Refused}
+\label{sec:atlas-arch-failure}
+
+The following failure modes are explicitly refused by the atlas doctrine:
+
+\begin{itemize}
+  \item \textbf{Silent success.} A module that produces no evidence receipt did
+        not transition lawfully. The Blue River Dam operating equation
+        $\kappa(\rho(\alpha(\mu(O^*)))) \to \textsc{ALIVE} \mid \textsc{PARTIAL}
+        \mid \textsc{REFUSED}$ admits no ungated fourth option.
+
+  \item \textbf{Conflation of type surface and binary surface.} The WASM
+        Boundary Law refuses transitions that treat a Specta-derived TypeScript
+        type as equivalent to a tsify/wasm-bindgen binary ABI. Stability and
+        receipt integrity across the membrane require their separation.
+
+  \item \textbf{Client-side authorization.} The Supabase Law Substrate refuses
+        any system design in which React state, local storage, or a frontend
+        session variable serves as the authoritative access control decision.
+
+  \item \textbf{Description substituted for evidence.} The GGEN Prompt
+        Manufactory refuses to accept human prose as a manufactured research
+        warrant. The TTL $\to$ RQ $\to$ TERA $\to$ Prompt chain must be
+        traversed; shortcutting it produces an unreceipted output that is not
+        admissible as a research warrant.
+
+  \item \textbf{Forced ALIVE on thin modules.} The AGI Adversarial Defenses
+        file contains four bullet points. The ZoeApp Ministry Ontology contains
+        two paragraphs. Neither has a receipt chain sufficient for an ALIVE
+        verdict. The atlas explicitly refuses to declare these modules ALIVE and
+        marks them as open manufacturing tasks.
+\end{itemize}

@@ -1,0 +1,88 @@
+% FILE: 01_research_question.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Research Question}
+\label{sec:crosswalks-rq}
+
+\subsection{Problem Statement}
+\label{sec:crosswalks-rq-problem}
+
+Process mining tools routinely translate process artifacts between formalisms: from \textsc{BPMN}
+to Petri nets for conformance checking, from \textsc{OCEL} to \textsc{XES} for trace-level
+analysis, from process trees to WF-nets for alignment computation. Each such translation can
+destroy structural information. The problem is not that information is destroyed --- loss is
+sometimes mathematically unavoidable --- but that the destruction is \emph{silent}.
+
+\textsc{PM4Py}'s \texttt{convert\_to\_petri\_net(bpmn)} silently approximates
+\textsc{OR}-gateways as \textsc{XOR} or \textsc{AND}, drops data objects, annotations, and
+lane structure, and returns a \texttt{(PetriNet, Marking, Marking)} triple with no record of
+what was lost (source: \texttt{BPMN\_TO\_WFNET.md}). Its \texttt{convert\_to\_event\_log(ocel)}
+picks a default case notion without declaration, drops all non-chosen object types, and produces
+a \textsc{XES} log with no indication that it was projected from a multi-object \textsc{OCEL}
+source (source: \texttt{OCEL\_TO\_XES.md}). The caller has no structural basis for knowing
+whether the translated artifact faithfully represents its source.
+
+The research question is: \emph{can every cross-formalism projection in the process intelligence
+stack be given a formal type-law contract that names each category of loss, requires an explicit
+policy decision before loss occurs, and refuses the projection when loss is not permitted?}
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:crosswalks-rq-oldregime}
+
+The old-regime assumption is that format conversion is a utility function: it accepts an artifact
+in one format and returns an artifact in another format. Loss is considered an implementation
+detail, not a first-class structural event. This assumption is instantiated in \textsc{PM4Py}'s
+design: conversion functions return converted objects, not conversion verdicts. There is no
+type-level distinction between a lossless conversion and an approximating one.
+
+This assumption is challenged on two grounds. First, it is epistemically dishonest: a conformance
+score computed on an approximated Petri net is not a conformance score for the original \textsc{BPMN}
+process. The score measures conformance to the approximation, not to the model the analyst intended
+to check. Second, it is architecturally unsafe for an evidence-grounded system: if the translation
+layer can destroy information silently, then the downstream evidence chain --- receipt, checkpoint,
+conformance verdict --- is built on an unaudited foundation.
+
+\subsection{Hypothesis}
+\label{sec:crosswalks-rq-hypothesis}
+
+\textbf{[AUTHOR THESIS]:} Every projection between the process intelligence formalisms
+(\textsc{BPMN}, \textsc{OCEL}, \textsc{XES}, Declare, WF-net, \textsc{POWL}, Process Tree) can
+be characterised by a typed \texttt{LossPolicy} contract. This contract requires the caller to
+declare --- before the projection executes --- whether loss is refused, permitted with a named
+projection, or permitted with a full \texttt{LossReport}. When the policy is \texttt{RefuseLoss}
+and loss is structurally inherent (as in \textsc{OCEL} $\to$ \textsc{XES}), the projection
+returns a typed \texttt{Refusal} rather than a silently approximated artifact. When the policy
+is \texttt{AllowLossWithReport}, the \texttt{LossReport<From, To, DroppedItems>} becomes a
+first-class companion to the converted artifact, carrying the audit trail that \textsc{PM4Py}
+discards.
+
+The eight crosswalk documents define this contract for each projection direction. The contracts
+are research specifications; their enforcement in \texttt{wasm4pm-compat} is the downstream
+authorization subject.
+
+\subsection{Success Criteria}
+\label{sec:crosswalks-rq-success}
+
+The crosswalks project succeeds when:
+
+\begin{enumerate}
+  \item Every major projection direction in the stack has a named \texttt{LossPolicy} contract
+        that specifies whether it is universally lossless, conditionally lossless, or inherently
+        lossy.
+  \item Every category of information destroyed in a lossy projection has a named type
+        (e.g.\ \texttt{BpmnToWfNetRefusal::InclusiveGatewayNotRepresentable},
+        \texttt{XesExportRefusal::LossRefused}).
+  \item The lossless direction (Process Tree $\to$ WF-net) is proven lossless by citation to
+        the block-structure theorem (van der Aalst \& Weijters, 2004; Leemans, 2022) and
+        enforced at compile time by \texttt{TypedLoopNode<ARITY>} with
+        \texttt{Require<\{ ARITY == 2 \}>: IsTrue}.
+  \item The \textsc{ALIVE\_001} gate criterion 9 (\texttt{crosswalks/} file count $\geq 3$) is
+        met --- verified as MET with actual count 8 (source: \texttt{ALIVE\_GATE\_ASSESSMENT.md}).
+\end{enumerate}
+
+The crosswalk status is currently \textbf{PARTIAL}: the structural contracts are defined, but no
+explicit \textsc{BLAKE3}-signed receipt chain exists for the directory, and no compilation
+evidence confirms that the defined Rust structs are implemented in the actual
+\texttt{wasm4pm-compat} crate (source: \texttt{project\_manifest.yaml},
+\texttt{receipt\_present: false}).

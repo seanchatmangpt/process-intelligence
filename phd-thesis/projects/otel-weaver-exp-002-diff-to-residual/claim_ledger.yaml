@@ -1,0 +1,231 @@
+slug: otel-weaver-exp-002-diff-to-residual
+claims:
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-001
+    claim: >-
+      EXP-002 implements a Rust library crate named exp-002-weaver-diff-to-pi-residual with a
+      library target called bridge declared in Cargo.toml with source path src/bridge.rs and three
+      serde-family dependencies (serde v1.0, serde_json v1.0, serde_yaml v0.9).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/Cargo.toml
+    evidence_summary: >-
+      Cargo.toml declares the package name, lib target name, path, and exact dependency versions
+      exactly as stated in the TeX file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-002
+    claim: >-
+      The PI Conformance Residual is formally defined as R_Delta = |f_S1(L2, M) - f_S2(L2, M)|
+      and EXP-002 proves this residual can be driven to zero by inserting a BridgeRx translation
+      layer before the conformance algorithm fires.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/README.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >-
+      README.md defines the mathematical framework, bridge.rs operationalizes it, and
+      GGEN_OTEL_WEAVER_PI_RUNTIME_001.md confirms the S2-to-S1 translation path was verified
+      at runtime.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-003
+    claim: >-
+      The categorical invariant Delta_W(S1, S2) != delta_P(L1, L2) — asserting that a Weaver Diff
+      (schema metadata plane) must never be evaluated inside the process behavioral deviation court
+      — is anchored in doctrine file registry-diff-is-not-process-drift.md at
+      REGISTRY_DIFF_NOT_DRIFT_001.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/registry-diff-is-not-process-drift.md
+    evidence_summary: >-
+      The doctrine file exists at the stated path and anchors REGISTRY_DIFF_NOT_DRIFT_001; the
+      invariant and anchor ID are directly referenced from this file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-004
+    claim: >-
+      The inline unit test test_bridge_translation_equivalence asserts that a TelemetryFeedstockS2
+      record with transition_name="approve_loan" and witness_hash="blake3_signature_data_here" is
+      translated to a TelemetryFeedstockS1 record with activity_name="approve_loan" and the
+      witness_hash preserved unchanged.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+    evidence_summary: >-
+      The inline #[cfg(test)] module in src/bridge.rs contains test_bridge_translation_equivalence,
+      confirmed in the known evidence list with the specific field assertions described in the TeX.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-005
+    claim: >-
+      The BLAKE3 witness hash is preserved by BridgeRx::translate() through direct field assignment
+      (witness_hash: input.witness_hash) with no transformation, ensuring audit chain integrity
+      across the schema normalization boundary.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+    evidence_summary: >-
+      src/bridge.rs implements translate() with direct field assignment of witness_hash; the unit
+      test asserts this preservation as a first-class correctness property.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-006
+    claim: >-
+      Two formal boundary rules — drift_isolation_rule_1 (missing field due to schema diff routes
+      to Weaver Diff Log, not process drift court) and drift_isolation_rule_2 (missing field
+      present in current schema reports process drift) — are declared in
+      mappings/registry-diff-to-pi-drift-map.yaml.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/mappings/registry-diff-to-pi-drift-map.yaml
+    evidence_summary: >-
+      The YAML mapping file exists at the stated path and declares both drift_isolation_rule_1 and
+      drift_isolation_rule_2 as confirmed by the known source_files list for this project.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-007
+    claim: >-
+      The GGEN_OTEL_WEAVER_PI_RUNTIME_001 checkpoint certifies that 62 tests across wasm4pm,
+      wasm4pm-compat, and blue_river_dam compile and pass with zero side effects, and specifically
+      confirms that S2 telemetry with process.pi.transition.name is translated by BridgeRx to S1
+      format expected by the court's validators.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >-
+      The checkpoint file text explicitly states the BridgeRx S2-to-S1 translation path and the
+      62 passing tests, verified by reading the checkpoint markdown.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-008
+    claim: >-
+      The current experiment status is PARTIAL rather than ALIVE because four gate criteria remain
+      unmet: (1) no isolated cargo test transcript for test_bridge_translation_equivalence exists;
+      (2) the bridge rlib is absent from materialized target/debug/deps; (3) token_color is
+      silently dropped during translate() with no LossReport receipt; (4) no TTL/RDF ontology
+      surface exists for S1/S2 types or BridgeRx semantics.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/Cargo.toml
+    evidence_summary: >-
+      All four gaps are directly verifiable: no receipts/ dir in exp-002, ls target/debug/deps
+      confirms no bridge rlib, bridge.rs shows token_color dropped without LossReport, and no
+      .ttl file exists under exp-002.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-009
+    claim: >-
+      OTel Weaver is a surface-structure validator that confirms field names and value types but
+      cannot assert that a described activity occurred in a lawful sequence relative to other
+      activities; therefore telemetry schema compliance is not a sufficient proxy for process
+      conformance.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/otel-weaver-is-feedstock.md
+    evidence_summary: >-
+      Doctrine file otel-weaver-is-feedstock.md (OTEL_WEAVER_FEEDSTOCK_001) states "Structural
+      alignment is merely the verification that our instruments are recording within expected
+      parameters. It is an engineering metric," as quoted in the TeX lineage section.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-010
+    claim: >-
+      The Rust type system enforces the categorical law Delta_W != delta_P at compile time:
+      TelemetryFeedstockS2 and TelemetryFeedstockS1 are distinct types with no implicit coercion,
+      and translate() is the only lawful path between them, making category separation a build-time
+      guarantee rather than a runtime convention.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+    evidence_summary: >-
+      The distinct struct types are present in bridge.rs; the compile-time enforcement claim is
+      the author's architectural interpretation of Rust's type system semantics as applied to the
+      two structs.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-011
+    claim: >-
+      The Chatman Equation A = mu(O*) asserts that organizational authority is a function of the
+      observable state of the organization's process artifacts, and EXP-002 ensures that what
+      enters the O* observable surface is process evidence rather than schema noise.
+    claim_type: AUTHOR_THESIS
+    source_files: []
+    evidence_summary: >-
+      The TeX file marks this passage explicitly as [AUTHOR THESIS / INTERPRETATION]; the Chatman
+      Equation is the author's own theoretical construct without external citation.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-012
+    claim: >-
+      The BridgeRx rename_map is hardcoded at construction time with a single entry and is not
+      driven by Weaver diff output at runtime, meaning the bridge does not generalize to arbitrary
+      schema diffs and must be manually updated for each new diff.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+    evidence_summary: >-
+      bridge.rs implements BridgeRx::new() with a hardcoded string pair; this is a directly
+      observable property of the source code and a documented research risk.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-013
+    claim: >-
+      Whether the S1/S2 struct definitions in bridge.rs were manually authored or manufactured
+      from a Weaver template run is not documented in the repository; EXP-004's registry-driven
+      code generation pattern is intended to eventually replace manual authorship.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/README.md
+    evidence_summary: >-
+      The TeX file marks this as [AUTHOR THESIS / INTERPRETATION]; no template provenance evidence
+      exists in the repository for the S1/S2 structs, and the relationship to exp-004 is an
+      architectural projection not yet implemented.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-014
+    claim: >-
+      EXP-002's categorical law is a precondition for trustworthy capital-flow evidence: a schema
+      rename causing the conformance court to report that an approval activity did not execute
+      propagates as an incorrect dispute signal into a financial settlement layer built on this
+      architecture.
+    claim_type: AUTHOR_THESIS
+    source_files: []
+    evidence_summary: >-
+      The TeX file marks this passage explicitly as [AUTHOR THESIS / INTERPRETATION]; no
+      capital-flow or settlement system is implemented or tested in this experiment, making this
+      a theoretical projection.
+    confidence: LOW
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_002_DIFF_TO_RESIDUAL-015
+    claim: >-
+      The exp-003 (live-check to refusal) ALIVE declaration depends on exp-002's ALIVE gate being
+      passed, since the live-check validator is designed to receive records already normalized by
+      BridgeRx.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    evidence_summary: >-
+      The dependency relationship is stated as an architectural design constraint in the TeX open
+      questions section; the suite-level ALIVE checkpoint is consistent with this dependency but
+      does not explicitly document it as a gate-blocking relationship at the individual experiment
+      level.
+    confidence: MEDIUM
+    allowed_in_pdf: true

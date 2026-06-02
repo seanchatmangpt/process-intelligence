@@ -1,0 +1,103 @@
+% FILE: 01_research_question.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: phd-thesis/ledgers/PROJECT_INDEX.yaml, checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+
+\section{Research Question}
+\label{sec:phd-thesis-question}
+
+\subsection{Problem Statement}
+\label{sec:phd-thesis-question-problem}
+
+The central problem this dissertation addresses is the systematic gap between what enterprise
+software systems \emph{declare} they do and what the event log \emph{proves} they do. This gap
+is not a logging deficiency or a monitoring failure; it is a structural property of systems that
+optimize for prediction and automation while leaving process consequence --- the lawful ordering
+of activities, the documented transfer of custody, the admissible evidence of conformance ---
+unmeasured and therefore unmanageable.
+
+The problem manifests across three observable failure modes. First, conformance theater: a
+system reports process compliance without a named witness, without a fitness score derived from
+replay against a declared model, and without a receipt binding the claim to a specific event log.
+Second, metric fabrication: EBITDA projections, rework rates, and throughput figures are
+presented to boards without the process model hash and log hash that would allow independent
+verification. Third, variant explosion: the declared process is a single trace while the
+discovered process --- mined from the actual event log --- reveals hidden loops, rework paths,
+and unauthorized shortcuts that were invisible to the system's own reporting layer.
+
+The Van der Aalst Constitution (\texttt{\textasciitilde/.claude/rules/process-mining-chicago-tdd.md})
+states this as a hostile assumption: ``The declared manufacturing pipeline is not the real
+runtime process.'' The dissertation takes this assumption as its foundational axiom and asks
+what infrastructure is required to close the gap.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:phd-thesis-question-old-regime}
+
+The old-regime assumption under challenge is that prediction is a sufficient substitute for
+coordination. In the prediction regime, an AI or rule-based system forecasts the next state of
+a process and acts on that forecast. The process model is implicit in the system's weights or
+business rules; the event log is a side channel, not the primary authority. Conformance is
+inferred from accuracy metrics rather than derived from replay.
+
+This assumption fails when the consequences of process execution become legally, financially,
+or operationally binding. A board receiving an M\&A diligence package cannot accept a
+conformance claim grounded in prediction accuracy; it requires a named witness, a process model
+hash, an event log hash, and a fitness score computed by replaying the log against the model.
+A regulatory audit cannot accept an SLA compliance claim grounded in a monitoring dashboard;
+it requires an object-centric event log traceable to individual process objects and activities.
+
+The dissertation documents this failure through the 2016 language-model experiment (see
+Section~\ref{sec:phd-thesis-lineage-2016}), which demonstrated that local text imitation does
+not conserve consequence --- a finding that motivated the entire research program recorded in
+this foundry. The thesis lineage, as captured in \texttt{ledgers/PROJECT\_INDEX.yaml}, traces
+directly from that experiment through the Chatman Equation, receipt infrastructure, ggen,
+wasm4pm, and the full-lifecycle process intelligence architecture.
+
+\subsection{Hypothesis}
+\label{sec:phd-thesis-question-hypothesis}
+
+The hypothesis of this dissertation is: \emph{Full-lifecycle process intelligence --- defined
+as the capacity to ingest, validate, replay, discover, conform, simulate, repair, optimize,
+monitor, and decommission process evidence under a single, receipted type-law --- is a
+necessary and sufficient foundation for board-admissible process claims.}
+
+This hypothesis is operationalized through the Chatman Equation
+$A = \mu(O^*)$, which asserts that process authority ($A$) is the application of the process
+mining function ($\mu$) to the full object-centric process state ($O^*$). The equation is
+cited in the thesis lineage recorded in \texttt{ledgers/PROJECT\_INDEX.yaml} and in the
+mathematical invariants listed in checkpoint
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md}, which includes the admissibility boundary
+$R \vdash P_i = \mu(O^*, T, L)$.
+
+The hypothesis implies three testable claims: (1)~every process claim can be grounded in a
+specific event log, process model, and fitness score; (2)~every receipt chain is
+cryptographically verifiable and can be audited independently of the system that emitted it;
+(3)~every gap in the process evidence --- missing activities, unauthorized variants, object
+lifecycle violations --- can be identified, documented, and traced to a structural defect
+rather than a data quality problem.
+
+\subsection{Success Criteria}
+\label{sec:phd-thesis-question-success}
+
+Success for this dissertation is defined by the ALIVE verdict criteria recorded in
+\texttt{phd-thesis/README.md}. Specifically, the dissertation artifact is ALIVE when:
+
+\begin{enumerate}
+  \item TeX source files exist in the declared locations under \texttt{chapters/} and
+    \texttt{frontmatter/}.
+  \item The source ledger (\texttt{ledgers/PROJECT\_INDEX.yaml}) is present and populated ---
+    a condition already met (34 projects catalogued as of 2026-06-01).
+  \item The claim ledger prohibitions (\texttt{ledgers/DO\_NOT\_CLAIM\_LEDGER.md}) have been
+    respected throughout manufacture --- verified by the absence of prohibited terms in all
+    artifacts.
+  \item The PDF compiles without error from the TeX sources using pdfTeX 3.141592653-2.6-1.40.26
+    (TeX Live 2024), as confirmed available in \texttt{ledgers/WORKFLOW\_RECEIPT.yaml}.
+  \item The compiled PDF hash is recorded in the receipt chain, binding the final artifact to
+    the specific source commit and toolchain invocation that produced it.
+\end{enumerate}
+
+The broader research program has met its own ALIVE criteria: PI\_RESEARCH\_PROGRAM\_ALIVE\_001
+sealed 2026-06-01 with 12/12 audit gates PASS across 342 research artifacts. The dissertation
+workspace is PARTIAL pending TeX manufacture and PDF compilation, which are the next receipted
+work items.

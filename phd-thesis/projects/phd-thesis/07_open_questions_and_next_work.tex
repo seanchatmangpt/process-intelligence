@@ -1,0 +1,151 @@
+% FILE: 07_open_questions_and_next_work.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: ledgers/PROJECT_INDEX.yaml (open questions section),
+%            checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md (gaps and remediations),
+%            phd-thesis/README.md (ALIVE criteria),
+%            ledgers/WORKFLOW_RECEIPT.yaml (phase: SETUP_COMPLETE)
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+
+\section{Open Questions and Next Work}
+\label{sec:phd-thesis-open}
+
+\subsection{Known Gaps}
+\label{sec:phd-thesis-open-gaps}
+
+The following gaps are documented in the evidence extracted for this workspace. Each is an
+honest gap record, not a prediction or a claim about future resolution.
+
+\textbf{Gap 1: TeX sources and compiled PDF do not exist.}
+The \texttt{chapters/}, \texttt{frontmatter/}, \texttt{build/}, and \texttt{scripts/}
+directories are all empty stubs. No TeX chapter sources have been manufactured. No master
+TeX file has been written. No pdflatex compilation has been attempted. The ALIVE criteria
+(criteria 4 and 5: PDF compiles without error; PDF hash recorded) are not met. This is the
+primary structural gap of the workspace.
+
+\textbf{Gap 2: WORKFLOW\_RECEIPT.yaml phase is SETUP\_COMPLETE with no manufacturing phase.}
+The workflow receipt records only the setup phase. No manufacturing phase receipt exists.
+When chapter manufacture begins, a new phase receipt must be emitted and recorded in the
+receipt chain. The mechanism for this emission --- whether ggen, a custom script, or a
+manual receipt entry --- has not been specified.
+
+\textbf{Gap 3: BLAKE3 toolchain availability not recorded.}
+The receipt doctrine requires BLAKE3 hashing of the compiled PDF. The WORKFLOW\_RECEIPT.yaml
+records pdflatex, Python, git, and ripgrep, but does not record a BLAKE3 tool. This must be
+remediated before the PDF compilation phase can produce a valid receipt.
+
+\textbf{Gap 4: No ggen.toml for the thesis chapter pipeline.}
+The ggen manufacturing engine (\texttt{ggen/ggen.toml}) exists and is operational, but no
+thesis-chapter-specific ggen.toml has been confirmed present in the \texttt{phd-thesis}
+workspace. The open question recorded in the evidence is: is ggen the intended chapter
+manufacturing engine, and does a ggen.toml for the thesis chapter pipeline exist? At the
+time of writing, the answer is no.
+
+\textbf{Gap 5: 2016 LM experiment not documented in the 34 project manifests.}
+The thesis lineage in \texttt{ledgers/PROJECT\_INDEX.yaml} begins with the 2016
+language-model experiment, but this experiment is not documented in any of the 34 project
+manifests or receipts found in the foundry. Its source materials predate the
+\texttt{process-intelligence} repository. The dissertation must either locate the experiment
+evidence, create a manifest entry for it, or clearly mark all citations of it as AUTHOR
+THESIS.
+
+\textbf{Gap 6: DTO flattening remediation in wasm4pm-compat is open.}
+As documented in PI\_RESEARCH\_PROGRAM\_ALIVE\_001, the \texttt{to\_json\_string()} and
+\texttt{receipt\_json()} methods in \texttt{compat/src/manufacturing/} violate the FFI
+boundary law. This is non-blocking to Program ALIVE and non-blocking to the dissertation
+workspace, but any dissertation chapter that cites GGEN\_ECOSYSTEM\_INTEL as fully ALIVE
+must reflect that GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001 has 3/4 audits PASS with 1
+remediation open.
+
+\subsection{Deferred Gates}
+\label{sec:phd-thesis-open-deferred}
+
+The following proof gates are deferred to the next manufacturing phase:
+
+\begin{itemize}
+  \item \textbf{PDF compilation gate}: pdflatex must compile the master TeX file without
+    error. This gate cannot be attempted until the master TeX file and all chapter sources
+    are manufactured.
+  \item \textbf{PDF hash gate}: The compiled PDF's BLAKE3 hash must be recorded in the
+    receipt chain. This gate cannot be attempted until the PDF compilation gate passes.
+  \item \textbf{ALIVE declaration gate}: The workspace cannot be declared ALIVE until
+    all five ALIVE criteria are met. This gate is deferred until PDF hash is recorded.
+  \item \textbf{OTel trace deserialization gate}:
+    GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001 is open. The OTel trace consumption boundary
+    is not yet finalized. Any chapter citing the OTel-to-OCEL pipeline as fully complete
+    must reflect this PARTIAL status.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:phd-thesis-open-risks}
+
+The following research risks are honest assessments based on the evidence extracted
+(INTERPRETATION where indicated):
+
+\textbf{Risk 1: Chapter manufacturing pipeline is undefined} (AUTHOR THESIS).
+The workspace has no scripts, no ggen.toml for chapters, and no declared chapter
+manufacturing procedure. The risk is that the chapter manufacturing phase will require
+significant scoping work before it can produce receipted artifacts. The mitigating factor is
+that the toolchain is verified and the corpus index is complete, providing a clear map of
+the evidentiary sources.
+
+\textbf{Risk 2: Lineage traceability gap for the 2016 experiment} (documented gap).
+If the 2016 language-model experiment cannot be documented with a local artifact, the
+dissertation's foundational claim --- local text imitation does not conserve consequence ---
+will rest on author testimony alone. This is permissible under the DO\_NOT\_CLAIM\_LEDGER
+if marked AUTHOR THESIS, but weakens the evidentiary chain at the thesis's most fundamental
+point.
+
+\textbf{Risk 3: DTO remediation timeline uncertainty}.
+PI\_RESEARCH\_PROGRAM\_ALIVE\_001 estimates the DTO flattening remediation at 4--6 hours.
+If this remediation is not completed before the dissertation's wasm4pm-compat chapter is
+finalized, that chapter must cite the compat layer as PARTIAL rather than ALIVE.
+
+\textbf{Risk 4: Receipt chain for dissertation artifacts is currently shallow}.
+The five canonical receipts cover M\&A claims, not dissertation manufacture. The dissertation
+manufacturing phase will need to produce its own receipt chain --- for each chapter
+manufactured, for the PDF compilation, and for the final artifact hash. This is a new receipt
+surface that does not yet exist.
+
+\subsection{Next Receipted Work}
+\label{sec:phd-thesis-open-next}
+
+The following work items are the authorized next steps for the \texttt{phd-thesis} workspace,
+in receipted order:
+
+\begin{enumerate}
+  \item \textbf{Emit CHAPTER\_MANUFACTURING\_START receipt}: Record the transition from
+    \texttt{SETUP\_COMPLETE} to \texttt{CHAPTER\_MANUFACTURING} in the WORKFLOW\_RECEIPT.yaml.
+    Include: source commit, manufacturing agent, declared chapter list, and ggen configuration
+    reference (once a chapter ggen.toml is specified).
+
+  \item \textbf{Manufacture frontmatter}: Write \texttt{frontmatter/title.tex},
+    \texttt{frontmatter/abstract.tex}, \texttt{frontmatter/acknowledgments.tex}, and
+    \texttt{frontmatter/toc.tex}. Each file must respect the DO\_NOT\_CLAIM\_LEDGER and cite
+    source artifacts for every non-trivial claim.
+
+  \item \textbf{Manufacture chapter TeX sources}: Write chapter files under
+    \texttt{chapters/} for each major dissertation theme: process evidence type law,
+    conformance as law, receipt doctrine, full-lifecycle process intelligence, M\&A claim
+    admissibility, ggen manufacturing architecture, and the Chatman Equation proof. Each
+    chapter must cite a backing artifact in the \texttt{ledgers/PROJECT\_INDEX.yaml}.
+
+  \item \textbf{Write master TeX file}: Manufacture \texttt{chapters/master.tex} that
+    \texttt{\textbackslash input}\{\} all chapter sources and compiles to a single document.
+
+  \item \textbf{Run pdflatex}: Compile \texttt{master.tex} using pdfTeX 3.141592653-2.6-1.40.26
+    (TeX Live 2024, confirmed available in WORKFLOW\_RECEIPT.yaml). Fix all compilation errors.
+    Record the successful compilation in a phase receipt.
+
+  \item \textbf{Hash the compiled PDF}: Compute the BLAKE3 hash of the compiled PDF.
+    Record the hash in the receipt chain under a new receipt entry.
+    Declare the workspace ALIVE once all five criteria are met.
+
+  \item \textbf{Seal PI\_THESIS\_ALIVE\_001}: Emit the ALIVE checkpoint for the
+    dissertation workspace, binding the PDF hash, the source commit, and the toolchain
+    invocation into an immutable checkpoint record.
+\end{enumerate}
+
+These work items are sequenced by dependency. Items 2--4 may be parallelized; item 5 depends
+on all of them. Items 6--7 depend on item 5. No item may be skipped or reordered without
+invalidating the receipt chain.

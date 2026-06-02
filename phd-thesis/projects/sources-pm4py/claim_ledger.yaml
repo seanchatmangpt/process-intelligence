@@ -1,0 +1,227 @@
+slug: sources-pm4py
+claims:
+  - id: CLM-SOURCES_PM4PY-001
+    claim: >-
+      The sources/pm4py corpus catalogues approximately 120 distinct PM4Py capabilities across
+      process discovery, conformance checking, filtering, variant analysis, I/O, and organizational
+      mining, and records three verdicts per capability: WASM bridge exposure, wasm4pm-compat type
+      surface coverage, and anti-pattern status.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/CAPABILITY_ATLAS.md
+      - /Users/sac/process-intelligence/sources/pm4py/ALGORITHM_CROSSWALK.md
+      - /Users/sac/process-intelligence/sources/pm4py/ORACLE_MAP.md
+    evidence_summary: >-
+      CAPABILITY_ATLAS.md enumerates capabilities in ten sections with WASM-bridge status per
+      entry; ALGORITHM_CROSSWALK.md documents the 37-algorithm gap count with COVERED/PARTIAL/MISSING
+      per algorithm.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-002
+    claim: >-
+      The ALGORITHM_CROSSWALK.md records 37 assessed algorithms with 2 COVERED, 16 PARTIAL, and
+      19 MISSING wasm4pm-compat type surfaces.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/ALGORITHM_CROSSWALK.md
+    evidence_summary: >-
+      The Summary Table in ALGORITHM_CROSSWALK.md explicitly states Total 37, COVERED 2, PARTIAL
+      16, MISSING 19, broken down by category (Process Discovery, Conformance Checking, Variant
+      Analysis, Object-Centric).
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-003
+    claim: >-
+      The PM4PY_ORACLE_RECEIPT in the research program's receipt registry, witnessed by
+      pm4wasm.d.ts TypeScript interface definitions, certifies that every PM4Py function has a
+      signed WASM equivalent or documented GAP status entry, with 8 CRITICAL/HIGH gaps remaining.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >-
+      RECEIPT_REGISTRY.md entry PM4PY_ORACLE_RECEIPT explicitly states every pm4py function has
+      a signature, wasm4pm equivalent or GAP status; gap severity classified CRITICAL/HIGH/MEDIUM/LOW;
+      8 CRITICAL/HIGH gaps remain tracked in gaps/ directory.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-004
+    claim: >-
+      PM4Py accepts Union[EventLog, pd.DataFrame] at nearly every function boundary, performs
+      runtime isinstance checks, and branches silently into DataFrame-specific code paths,
+      representing a type-erasure architectural pattern incompatible with wasm4pm's
+      Evidence<T, State, Witness> type surface.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/NOT_TO_COPY.md
+    evidence_summary: >-
+      NOT_TO_COPY.md anti-pattern 1 documents this behavior with Python code examples showing the
+      Union[EventLog, pd.DataFrame] signature and check_is_pandas_dataframe() branching, identifying
+      DataFrame-first type erasure as an architectural boundary violation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-005
+    claim: >-
+      The EBITDA rework receipt (rec_ebitda_rework_001.json) records fitness 0.982, precision
+      0.945, and throughput 4.12 days on a Purchase Order rework-reduction query, with a
+      BLAKE3-anchored log hash and ed25519 validator signature, asserting a $1,250,000 annual
+      EBITDA increase.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+    evidence_summary: >-
+      The receipt file rec_ebitda_rework_001.json is a known evidence artifact; its specific field
+      values (fitness, precision, throughput, BLAKE3 hashes, EBITDA claim) are documented in the
+      receipt and cross-referenced in 04_implementation_surface.tex with slide_id
+      8a3e811c-2290-482a-a5f1-3215903b41fa.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-006
+    claim: >-
+      PM4Py's 120 capabilities divide into three structurally distinct groups requiring different
+      handling: approximately 75 deterministic capabilities requiring exact algorithmic equivalence,
+      approximately 40 heuristic or rendering capabilities admitting safe divergence, and 10
+      architectural anti-patterns that must never be replicated.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/divergence-matrix.md
+      - /Users/sac/process-intelligence/sources/pm4py/NOT_TO_COPY.md
+    evidence_summary: >-
+      The TeX file explicitly marks this claim [AUTHOR THESIS] in 01_research_question.tex; the
+      divergence matrix and NOT_TO_COPY manifest provide underlying classifications but the
+      tripartite framing at these specific approximate counts is the author's analytical synthesis.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-007
+    claim: >-
+      The WfNetConst<SOUNDNESS> type in wasm4pm-compat src/petri.rs is the only COVERED
+      conformance type in the algorithm crosswalk, providing a non-forgeable compile-time soundness
+      witness absent from PM4Py's Python runtime.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/ALGORITHM_CROSSWALK.md
+    evidence_summary: >-
+      ALGORITHM_CROSSWALK.md Summary Table shows COVERED count of 2 total, both in Conformance
+      Checking: POWL Structural Validation and Petri Net Soundness both mapped to
+      WfNetConst<SOUNDNESS> with src/petri.rs reference.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-008
+    claim: >-
+      The DecisionGraph class (Kourani, Park, van der Aalst, arXiv:2505.07052, 2025) is
+      implemented in PM4Py but has no corresponding type in wasm4pm-compat src/powl.rs, preventing
+      POWL 2.0 choice-graph-based discovery from producing a named-law receipt.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/ALGORITHM_CROSSWALK.md
+      - /Users/sac/process-intelligence/sources/pm4py/POWL_CHOICEGRAPH_ANALYSIS.md
+    evidence_summary: >-
+      ALGORITHM_CROSSWALK.md records POWL 2.0 ChoiceGraph / mineDG as MISSING with note
+      'src/powl.rs has no DecisionGraph type; this is the key gap (see POWL_CHOICEGRAPH_ANALYSIS.md)';
+      POWL_CHOICEGRAPH_ANALYSIS.md traces this to specific lines in src/powl.rs.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-009
+    claim: >-
+      OCEL 2.0 support is entirely absent from the WASM bridge (all NO) despite OCEL type surfaces
+      existing in wasm4pm-compat src/ocel.rs, creating a type-surface-present but
+      WASM-bridge-absent gap for all object-centric capabilities.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/CAPABILITY_ATLAS.md
+      - /Users/sac/process-intelligence/sources/pm4py/ALGORITHM_CROSSWALK.md
+    evidence_summary: >-
+      CAPABILITY_ATLAS.md shows OCEL 2.0 import and export as NO; ALGORITHM_CROSSWALK.md shows
+      OC-DFG and OCPQ as PARTIAL (OCEL types exist in src/ocel.rs but WASM bridge does not expose
+      them), confirming the type-present/bridge-absent gap pattern.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-010
+    claim: >-
+      The PROCESS_INTELLIGENCE_ALIVE_001 checkpoint was sealed 2026-05-31 with all 12 of 12 ALIVE
+      gate criteria met; criterion 4 (sources/pm4py file count >= 4) was satisfied with an actual
+      count of 14 files.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >-
+      PM4PY_ORACLE_RECEIPT in RECEIPT_REGISTRY.md confirms 'sources/pm4py >= 4 (actual: 14+)' as
+      a criteria_met entry; the alive_status known evidence confirms the ALIVE verdict.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-011
+    claim: >-
+      The ed25519 signing infrastructure for the five JSON receipts — key management, signature
+      verification workflow, and the path from signature to wasm4pm engine execution to PM4Py
+      oracle comparison — is not documented in the sources/pm4py corpus, leaving the receipt
+      verification chain unclosed.
+    claim_type: AUTHOR_THESIS
+    source_files: []
+    evidence_summary: >-
+      The TeX file (05_evidence_receipts_and_gates.tex) explicitly acknowledges this as a known
+      open question and marks it as a deferred gate; no source file in sources/pm4py contradicts
+      this admission, making it an honest self-assessment by the author.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-012
+    claim: >-
+      Predictive ML capabilities (next-activity prediction, remaining time, outcome prediction,
+      decision-point mining) are all non-WASM-bridged by deliberate design boundary, not by gap,
+      because predictive outputs cannot carry a deterministic named-law receipt traceable to a
+      specific event log, algorithm, and parameterisation.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/CAPABILITY_ATLAS.md
+      - /Users/sac/process-intelligence/sources/pm4py/NOT_TO_COPY.md
+    evidence_summary: >-
+      CAPABILITY_ATLAS.md confirms all pm4py.ml.* capabilities are NO in WASM bridge; NOT_TO_COPY.md
+      anti-pattern 9 identifies LLM/DSPy integration as an architectural boundary; the design-intent
+      framing (deliberate boundary not a gap) is the author's thesis, marked [AUTHOR THESIS /
+      INTERPRETATION] in 06_contribution_to_thesis.tex.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-013
+    claim: >-
+      There is an unresolved tension between treating PM4Py as an adversarially vulnerable system
+      and simultaneously using it as the authoritative baseline for deterministic divergence checks;
+      floating-point ordering, NumPy broadcasting, or Pandas NaN coercion could compromise oracle
+      comparison.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/oracle-vulnerability.md
+      - /Users/sac/process-intelligence/sources/pm4py/divergence-matrix.md
+    evidence_summary: >-
+      oracle-vulnerability.md documents PM4Py's architectural vulnerabilities while
+      divergence-matrix.md uses PM4Py as baseline truth; the tension between these two framings is
+      identified in 07_open_questions_and_next_work.tex as Research Risk 1, marked [AUTHOR THESIS /
+      open question].
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PM4PY-014
+    claim: >-
+      The ALGORITHM_CROSSWALK.md gap count of 19 MISSING may overstate the wasm4pm-compat crate's
+      deficiency because annotations do not consistently distinguish between 'type surface missing'
+      (a genuine compat gap) and 'engine logic not ported' (correctly absent from compat, belonging
+      in the wasm4pm engine).
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/pm4py/ALGORITHM_CROSSWALK.md
+    evidence_summary: >-
+      ALGORITHM_CROSSWALK.md itself notes 'COVERED count is intentionally low — wasm4pm-compat is
+      a type-law and structure crate'; the ambiguity risk regarding MISSING count interpretation is
+      the author's analytical observation, identified in 07_open_questions_and_next_work.tex as
+      Research Risk 2.
+    confidence: MEDIUM
+    allowed_in_pdf: true

@@ -1,0 +1,78 @@
+% FILE: 06_contribution_to_thesis.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Contribution to the Dissertation}
+\label{sec:experiments-core-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:experiments-core-contribution-prediction}
+
+The central thesis claim---that enterprise software has historically been built for
+prediction rather than coordination---rests on the empirical observation that existing
+process-mining tools treat conformance as a retroactive scalar measurement rather than
+a compile-time type invariant. The benchmark comparison between PM4Py and wasm4pm
+provides the quantitative substrate for this claim. PM4Py's inability to complete
+ZKP conformance within any practical bound ($2^{30}+$ cycles) is not merely a
+performance deficiency; it reflects a design that was never intended to participate
+in a zero-knowledge proof system, which in turn reflects a design that was never
+intended to produce board-admissible evidence in real time. The 37.5$\times$ to
+39.3$\times$ speedup figures for DFG Discovery, Alpha Miner, and Token Replay
+document the overhead of the prediction paradigm when applied to coordination
+tasks. The contribution to the prediction-vs.-coordination argument is therefore
+the provision of a concrete, cited benchmark that demonstrates the cost of the
+old paradigm and the existence of an alternative---not merely in theory, but in
+measured performance across three conformance algorithms.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:experiments-core-contribution-evidence}
+
+The experiments directory makes the single most direct contribution to the process
+evidence thesis strand. It provides the only location in the research program where
+the Van der Aalst weighted log fitness equation is verified by executable code.
+The equation $f(L,N) = 1 - \frac{\sum \mathit{freq} \cdot m}{\sum \mathit{freq} \cdot c} - \frac{\sum \mathit{freq} \cdot r}{\sum \mathit{freq} \cdot p}$
+is not stated as a citation in this directory---it is tested against five concrete
+token-replay scenarios with exact floating-point assertions. Similarly, the OCPQ
+refinement relation $p \leq_L c$ is not stated as a definition---it is verified
+against four concrete partial-map cases. This level of empirical grounding transforms
+process evidence from a theoretical construct into a reproducible experimental result.
+The contribution is foundational: any downstream manufacturing stage that cites
+the fitness equation as established must ultimately trace its authority to the
+\texttt{verify\_equations.py} execution record documented in
+\texttt{checkpoint\_\_experiments\_complete.md}.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:experiments-core-contribution-manufacturing}
+
+The experiments directory contributes two architectural patterns to the manufacturing
+layer. The first is the \emph{typed evidence chain}: the 7-step sequence from
+Raw OCEL through Admission to Receipt, with each transition defined by a typed
+operator that refuses invalid inputs. This chain is documented in
+\texttt{EVIDENCE\_CHAIN\_TRACE.md} and operationalized in the Python scripts and
+visualizer components. The second pattern is the \emph{cross-runtime receipt}:
+the demonstration that a BLAKE3-signed receipt can be manufactured in Rust, projected
+into TypeScript via WASM bindings, chained in JavaScript via SHA-256, and fed by
+Python-verified equations---without any of these layers needing to trust the others,
+because the receipt itself is the trust anchor. GAP\_001 identifies the precise
+location where this pattern is currently broken: wasm4pm does not yet enforce the
+Admission gate as a type-level prerequisite for conformance, meaning the receipt
+produced by the current implementation cannot carry the Ocel20 witness that makes
+it board-admissible. Documenting this gap is itself a manufacturing contribution---it
+specifies the exact fix required and the exact test that will verify the fix.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:experiments-core-contribution-capital}
+
+The M\&A claim mapping experiment sample (\texttt{paper-to-m\&a-claim\_mapping\_sample.md})
+and the empty \texttt{ma-deck-projection/} subdirectory together define the boundary
+between the process-evidence layer and the capital-flow layer. A board-admissible
+conformance claim---one backed by a \texttt{Receipt<Metric<FITNESS, NUM, DEN>, Ocel20>}
+with an Ed25519 signature---is a precondition for any M\&A synergy projection that
+cites process performance as a value driver. The experiments directory establishes
+the upstream side of this precondition: it demonstrates that conformance receipts
+can be manufactured, schemas them concretely, and names the equation whose output
+they certify. The downstream side---translating a conformance receipt into a
+dollar-denominated synergy projection---is deferred to the \texttt{ma-deck-projection/}
+subdirectory, which remains empty. [FUTURE WORK: The M\&A projection experiment
+must be manufactured before the full capital-flow infrastructure chain can be
+declared ALIVE.]

@@ -1,0 +1,78 @@
+% FILE: 00_project_identity.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Project Identity}
+\label{sec:crosswalks-identity}
+
+\subsection{Purpose}
+\label{sec:crosswalks-identity-purpose}
+
+The \texttt{crosswalks/} directory is the translation layer of the process intelligence research
+foundry. Its purpose is to define, with formal precision, how structural information is preserved
+or destroyed when a process model or event log is projected from one formalism to another. Each
+crosswalk document specifies: (1) whether the projection is lossless or lossy, (2) if lossy, which
+information is destroyed and under what named \texttt{LossPolicy}, and (3) the Rust type-law
+contract that enforces this policy in \texttt{wasm4pm-compat} at compile time and at admission time.
+
+The eight crosswalk documents collectively address every major translation surface in the process
+intelligence stack: \textsc{BPMN} to WF-net, \textsc{OCEL} 2.0 to \textsc{XES}, Process Tree to
+WF-net, WF-net to \textsc{POWL}, Declare to \textsc{WASM} witness automata, \textsc{PM4Py} Python
+types to \texttt{wasm4pm-compat} Rust structs, \textsc{ALIVE\_001} gate criteria to
+\textsc{ISO/IEC} compliance standards, and \textsc{BPMN} structural components to Declare
+conformance constraints via \textsc{LTLf} lattice algebra.
+
+Without this translation layer, a process intelligence system can silently discard object types,
+structural constraints, and causal links while appearing to produce valid output. The crosswalks
+make that destruction visible, named, and refusable.
+
+\subsection{Repository Surface}
+\label{sec:crosswalks-identity-surface}
+
+The crosswalks project occupies the directory \texttt{/Users/sac/process-intelligence/crosswalks/}
+within the process-intelligence research foundry. It contains exactly eight Markdown documents,
+each defining one crosswalk mapping. The directory was assessed on 2026-05-31 as part of the
+\textsc{ALIVE\_001} gate evaluation. Criterion 9 of the \texttt{ALIVE\_GATE\_ASSESSMENT.md}
+checkpoint set a target of $\geq 3$ files; the actual count of 8 was verified as \textbf{MET}.
+
+The \texttt{project\_manifest.yaml} records the following detected surfaces: \texttt{type-law},
+\texttt{conformance-checking}, and \texttt{standards-compliance}. The manifest also records that
+no \texttt{README.md}, no receipt file, and no ontology file are present directly in the
+\texttt{crosswalks/} directory at the time of assessment.
+
+The \texttt{ggen-unified-emitted-artifact-census.md} assigns a \textsc{CROSSWALK\_RECEIPT} to
+the directory and states that \textsc{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001} gate 2 validates
+crosswalk completeness. The receipt is described as ``implicit; per-crosswalk dating'' --- no
+explicit \textsc{BLAKE3}-signed receipt chain exists for this directory as a unit.
+
+\subsection{Primary Research Role}
+\label{sec:crosswalks-identity-role}
+
+The thesis role assigned to this project is \textbf{type-law-crosswalk-between-standards-and-execution}
+(source: \texttt{project\_manifest.yaml}, field \texttt{likely\_thesis\_role}). This role
+positions the crosswalks project as the formal interface between the heterogeneous world of
+process mining standards --- \textsc{BPMN} 2.0, \textsc{OCEL} 2.0, \textsc{XES} 1849,
+Declare, WF-nets, \textsc{POWL}, Process Trees --- and the type-safe, memory-safe execution
+surface of the \texttt{wasm4pm} WebAssembly engine.
+
+The crosswalks are not implementation code. They are research specifications of projection laws.
+They define what \emph{must} be enforced at the \texttt{wasm4pm-compat} API boundary: which
+projections are lawful, which are lossy by necessity, which must be refused when loss is not
+permitted, and how loss is quantified when it is permitted. The downstream authorization to
+implement these laws in \texttt{wasm4pm-compat} flows from this research layer.
+
+\subsection{Key Artifacts}
+\label{sec:crosswalks-identity-artifacts}
+
+The eight source files that constitute the crosswalks project are:
+
+\begin{enumerate}
+  \item \texttt{BPMN\_TO\_WFNET.md} --- Lossy projection with \texttt{BpmnToWfNetRefusal::InclusiveGatewayNotRepresentable}.
+  \item \texttt{OCEL\_TO\_XES.md} --- Inherently lossy projection; \texttt{XesExportRefusal} named enum; \texttt{ProjectionName} newtype audit trail.
+  \item \texttt{PROCESS\_TREE\_TO\_WFNET.md} --- Lossless projection; \texttt{TypedLoopNode<ARITY>} compile-time Leemans law enforcement.
+  \item \texttt{WFNET\_TO\_POWL.md} --- Conditionally lossless; \texttt{WfNetToPoWlRefusal::NonBlockStructured} on non-block-structured nets.
+  \item \texttt{declare\_to\_wasm\_mapping.md} --- Declare template to \textsc{LTLf} to Rust witness struct mapping; lattice join (\(\sqcup\)) with \texttt{LatticeViolation}.
+  \item \texttt{pm4py\_to\_wasm4pm\_data\_types.md} --- \textsc{PM4Py} Python class to \texttt{wasm4pm-compat} Rust newtype crosswalk; referential integrity invariants.
+  \item \texttt{alive\_001\_to\_iso\_compliance.md} --- \textsc{ALIVE\_001} gates to \textsc{ISO/IEC} 23745, 9001:2015, 27001, and 12207:2017.
+  \item \texttt{bpmn\_to\_declare\_conformance.md} --- \textsc{BPMN} gateway structure to Declare constraint via \textsc{LTLf} lattice algebra.
+\end{enumerate}

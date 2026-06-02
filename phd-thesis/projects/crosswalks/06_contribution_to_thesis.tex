@@ -1,0 +1,95 @@
+% FILE: 06_contribution_to_thesis.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Contribution to the Dissertation}
+\label{sec:crosswalks-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:crosswalks-contribution-prediction}
+
+The central thesis argument distinguishes between systems that \emph{predict} what a process will
+do and systems that \emph{coordinate} what a process lawfully may do. Prediction systems imitate
+surface distributions; coordination systems enforce structural constraints. The crosswalks project
+contributes to this argument by demonstrating that the translation layer between process formalisms
+is itself a site where this distinction matters.
+
+When \textsc{PM4Py} converts \textsc{OCEL} to \textsc{XES} by silently selecting a case notion,
+it performs a prediction-style operation: it chooses what looks like a complete event log without
+coordinating with the analyst about which object types are being discarded. The resulting
+\textsc{XES} log is a prediction of what the analyst wanted, not a coordination with the analyst's
+explicit structural intent.
+
+The \texttt{OCEL\_TO\_XES.md} crosswalk replaces this with a coordination contract: the analyst
+must declare a \texttt{ProjectionName}, must acknowledge the \texttt{LossReport}, and must
+explicitly permit the loss before the projection proceeds. The projection output is not a
+prediction of the intended artifact --- it is the artifact the analyst explicitly authorised,
+with the authorisation recorded. This is the structural difference between prediction and
+coordination at the translation layer.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:crosswalks-contribution-evidence}
+
+The crosswalks project establishes that process evidence has a provenance structure that extends
+beyond the event log itself. An \textsc{OCEL} log projected to \textsc{XES} without a
+\texttt{LossReport} is evidence that has been laundered: its structural ancestry has been erased.
+The receipt chain that binds it cryptographically binds a laundered artifact, not the original
+multi-object process.
+
+The \texttt{alive\_001\_to\_iso\_compliance.md} crosswalk formalises the evidence integrity
+requirement under \textsc{ISO/IEC} 27001: every evidence block must carry a \textsc{BLAKE3}
+hash over its serialised payload, state, witness, and epoch, verified by an Ed25519 signature.
+The crosswalk connects this cryptographic requirement to the \textsc{ALIVE\_001} gate on
+cryptographic binding, grounding the receipt doctrine in an international information security
+standard.
+
+\textbf{[AUTHOR THESIS]:} The crosswalks project contributes to process evidence by defining
+the \emph{pre-receipt} layer: the admission, projection, and loss-accounting steps that must
+complete before an artifact is eligible to enter the receipt chain. Without this layer, a
+receipt chain is a chain of laundered evidence. With it, a receipt chain is a chain of
+explicitly authorised, loss-acknowledged, structurally grounded artifacts.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:crosswalks-contribution-manufacturing}
+
+The crosswalks project contributes to the manufacturing architecture of the process intelligence
+foundry by defining the type-law surface that \texttt{wasm4pm-compat} must enforce. The
+manufacturing pipeline in the Chatman Equation framework is:
+
+\[
+  \text{raw external data}
+  \to \text{admitted compat}
+  \to \text{explicit projection with LossPolicy}
+  \to \text{LossReport}
+  \to \text{receipt-eligible artifact}
+\]
+
+The crosswalks project specifies each operator in this pipeline for each formalism pair. The
+\texttt{PROCESS\_TREE\_TO\_WFNET.md} crosswalk specifies the lossless operator; the
+\texttt{BPMN\_TO\_WFNET.md} specifies the conditionally lossy operator with named refusals;
+the \texttt{OCEL\_TO\_XES.md} specifies the inherently lossy operator with mandatory
+\texttt{ProjectionName} audit.
+
+The Leemans loop arity enforcement --- \texttt{TypedLoopNode<const ARITY: usize>} with
+\texttt{Require<\{ ARITY == 2 \}>: IsTrue} --- is a concrete example of how a manufacturing
+architecture can enforce a mathematical theorem (Leemans, 2022, loop definition) at the
+type-system level, making it impossible to manufacture a malformed loop node.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:crosswalks-contribution-capital}
+
+\textbf{[AUTHOR THESIS / INTERPRETATION]:} The crosswalks project contributes to capital-flow
+infrastructure by providing the type-law foundation for cross-formalism evidence that can
+underpin M\&A diligence claims. An M\&A claim based on a conformance score is only admissible
+as a board-level claim if the conformance score is grounded in a lawful evidence chain. If the
+WF-net used for conformance checking was projected from a \textsc{BPMN} process with silent
+\textsc{OR}-gateway approximation, the score is not grounded --- and the claim is not admissible
+(source: \texttt{ALIVE\_GATE\_ASSESSMENT.md}, ``What Is Not Authorized'': ``Conformance scores
+without a named witness'').
+
+The \textsc{ALIVE\_001} gate-to-\textsc{ISO} crosswalk (\texttt{alive\_001\_to\_iso\_compliance.md})
+connects the foundry's checkpoint gates to \textsc{ISO} 9001:2015 (replay soundness), \textsc{ISO/IEC}
+23745 (schema completeness), \textsc{ISO/IEC} 27001 (cryptographic binding), and \textsc{ISO/IEC}
+12207:2017 (lifecycle state soundness). These are the compliance mappings that an M\&A diligence
+package would cite as the regulatory basis for process intelligence claims. The crosswalks project
+is the research artefact that grounds those citations.

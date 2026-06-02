@@ -1,0 +1,145 @@
+\section{Architecture and Primitives}
+\label{sec:doctrine-architecture}
+
+\subsection{Core Objects}
+\label{sec:doctrine-architecture-objects}
+
+The doctrine corpus defines a formal object taxonomy with precise type-theoretic
+specifications. The following primitives are the load-bearing objects of the entire
+process intelligence architecture.
+
+\paragraph{\texttt{Evidence\textless{}T, State, W\textgreater{}} --- Universal Typed Carrier.}
+Defined in \texttt{EVIDENCE\_CHAIN.md} and the \texttt{FORMAL\_OBJECTS\_TAXONOMY.md}.
+\texttt{T} is the payload type (an \texttt{OcelLog}, a \texttt{WfNetConst\textless
+SOUNDNESS\textgreater{}}, a \texttt{ProcessTree}, or any process evidence shape). \texttt{State}
+is one of the lifecycle state tokens: \texttt{Raw}, \texttt{Parsed}, \texttt{Admitted},
+\texttt{Refused}, \texttt{Projected}, \texttt{Exportable}, \texttt{Receipted}. These are
+empty enums --- zero-sized type-level tags, not runtime values. \texttt{W} is the witness
+marker naming the external authority (e.g., \texttt{Ocel20}, \texttt{Xes1849},
+\texttt{WfNetSoundnessPaper}, \texttt{PowlPaper}). The carrier enforces that
+\texttt{Evidence\textless{}T, Admitted, Ocel20\textgreater{}} and
+\texttt{Evidence\textless{}T, Admitted, Xes1849\textgreater{}} are different types at compile
+time.
+
+\paragraph{\texttt{Receipt\textless{}T, W\textgreater{}} --- Typed Witnessed Proof Artifact.}
+Carries the result type \texttt{T} and witness \texttt{W}. BLAKE3 chaining formula:
+$\text{Receipt}_n = \text{BLAKE3}(\text{Receipt}_{n-1} \mid\mid \text{new\_action} \mid\mid
+\text{new\_state} \mid\mid \text{signature})$. A receipt is not a hash; it is proof that a
+named law was applied by a named witness within a lawful object lifecycle.
+
+\paragraph{\texttt{Refusal\textless{}R, W\textgreater{}} --- Named Law Refusal.}
+\texttt{R} must be a specific named reason type, not a string. Named law inventory drawn
+from \texttt{NAMED\_LAW\_REFUSAL.md}: \texttt{DanglingEventObjectLink},
+\texttt{MissingFinalMarking}, \texttt{EmptyTrace}, \texttt{MissingCaseId},
+\texttt{InvalidTimestampOrder}, \texttt{UnsoundWfNet}, \texttt{ProjectionNameRequired}.
+The bare \texttt{ValidationError(String)} pattern found in the current wasm4pm error surface
+is the forbidden anti-pattern that GAP\_001 documents.
+
+\paragraph{\texttt{Metric\textless{}KIND, NUM, DEN\textgreater{}} with \texttt{Between01\textless{}NUM,DEN\textgreater{}}.}
+Const-generic fitness and precision bounds enforced at compile time via the bound
+\texttt{Require\textless{}\{NUM <= DEN\}\textgreater{}: IsTrue}. Applies to
+\texttt{Metric\textless{}FITNESS, NUM, DEN\textgreater{}},
+\texttt{Metric\textless{}PRECISION, NUM, DEN\textgreater{}}, and
+\texttt{Metric\textless{}F1, NUM, DEN\textgreater{}}. A fitness value that escapes $[0,1]$
+is a type error, not a runtime exception.
+
+\paragraph{\texttt{WfNetConst\textless{}SOUNDNESS\textgreater{}} --- Non-Forgeable Soundness Witness.}
+Workflow net with a const-generic soundness witness that cannot be forged without passing
+through the admission gate. Structural types \texttt{PlaceToTransitionArc} and
+\texttt{TransitionToPlaceArc} are the bipartite arc types owned by the compat layer.
+
+\paragraph{\texttt{OcelLog}, \texttt{EventObjectLink}, \texttt{ObjectObjectLink} --- OCEL 2.0 Structures.}
+Object-centric log structures resolving the divergence/convergence defects of flat event logs
+as documented in the \texttt{OBJECT\_CENTRIC\_SUPREMACY.md} doctrine file. These types
+ground the OCEL 2.0 witness marker \texttt{Ocel20}.
+
+\paragraph{\texttt{GraduationCandidate\textless{}T\textgreater{}} --- Bridge Type.}
+Bridge type from the compat layer to wasm4pm. Currently one-sided: wasm4pm-compat declares
+the \texttt{GraduateToWasm4pm} trait but wasm4pm has no corresponding import or
+implementation. This is the GAP\_001 structural defect.
+
+\subsection{Admissible Transitions}
+\label{sec:doctrine-architecture-transitions}
+
+The evidence lifecycle is a typed one-way door enforced by the type system. The lawful
+transition graph, taken from \texttt{EVIDENCE\_CHAIN.md}, is:
+
+\[
+  \text{Raw} \xrightarrow{\texttt{into\_parsed}} \text{Parsed}
+  \xrightarrow{\texttt{Admit::admit()}} \text{Admitted}
+  \to \begin{cases}
+    \text{Projected} \\
+    \text{Exportable} \\
+    \text{Receipted}
+  \end{cases}
+\]
+
+with a refusal arm:
+
+\[
+  \text{Raw/Parsed} \xrightarrow{\text{law violation}} \text{Refused (terminal)}
+\]
+
+\texttt{Evidence::raw(v)} is the only free constructor; it produces
+\texttt{Evidence\textless{}T, Raw, W\textgreater{}}. The \texttt{Admitted} constructor is
+\texttt{pub(crate)}: there is no \texttt{Evidence::admitted(v)} and no
+\texttt{Evidence::force\_admit(v)}. The only lawful path from Raw to Admitted passes through
+\texttt{Admit::admit()}, which returns
+\texttt{Result\textless{}Admission\textless{}T,W\textgreater{},
+Refusal\textless{}R,W\textgreater{}\textgreater{}}.
+
+The MAPE-K autonomic actuation loop follows a parallel transition structure: Monitor
+$\to$ Analyze $\to$ Plan $\to$ Execute $\to$ Knowledge, where every Execute step emits a
+receipt and the Knowledge base accumulates only typed, receipted prior actuations --- not
+external data or ungrounded inference.
+
+\subsection{Boundaries}
+\label{sec:doctrine-architecture-boundaries}
+
+Three authority boundaries are defined and must not be crossed without explicit authorization.
+
+\paragraph{The Format Covenant Boundary.}
+No raw format-to-format laundering. The lawful path is: recognized external format $\to$
+typed admitted compat structure $\to$ recognized external format or full wasm4pm. Lossy
+projection requires: named projection $+$ \texttt{LossPolicy} $+$ \texttt{LossReport} $+$
+witness $+$ refusal path. Hidden flattening is a named refusal, not a convenience feature.
+
+\paragraph{The Structure/Execution Boundary.}
+Structure belongs in wasm4pm-compat. Execution belongs in wasm4pm. The algorithm taxonomy in
+\texttt{ALGORITHM\_TAXONOMY.md} maps this boundary for all fifteen algorithm families: compat
+owns the type shapes (e.g., \texttt{FitnessConst}, \texttt{AlignmentResult},
+\texttt{ProcessTree}); wasm4pm owns all data traversal (e.g., token firing, A* cost search,
+IM cut detection). Any algorithm that traverses data in compat is a boundary violation.
+
+\paragraph{The Elastic/Compliance Subnet Boundary.}
+In the MAPE-K autonomic loop, the Plan component may only select from the elastic subnet
+(dynamic resource reallocation, safe path selection, elastic rate limiting, retry with
+backoff). The compliance subnet (financial approvals, security gate transitions, KYC
+verification, receipt issuance for high-value artifacts) is frozen: any attempt to
+auto-actuate inside the compliance subnet halts execution and requires board override.
+
+\subsection{Failure Modes Refused}
+\label{sec:doctrine-architecture-failures}
+
+The doctrine corpus names seven explicit failure modes that the type system is designed to
+prevent:
+
+\begin{enumerate}
+  \item \textbf{Raw Laundering}: consuming \texttt{Evidence\textless{}T, Raw, W\textgreater{}}
+    as if admitted, skipping \texttt{Admit::admit()}. Type-system prevention: \texttt{into\_projected()}
+    on \texttt{Raw} evidence does not compile.
+  \item \textbf{Hidden Loss}: a lossy OCEL $\to$ XES flattening without \texttt{LossReport}
+    and \texttt{LossPolicy}. Compile-time enforcement via the \texttt{LossyFormatExport}
+    trait.
+  \item \textbf{Unsigned Projection}: a projection declaring no \texttt{ProjectionName}.
+    \texttt{LossPolicy::AllowNamedProjection} requires a non-empty name.
+  \item \textbf{String-Typed Refusal}: \texttt{ValidationError(String)} catch-alls that do
+    not name a specific violated law. Forbidden by the Named Law Refusal doctrine.
+  \item \textbf{Fake ALIVE}: declaring ALIVE without meeting all gate criteria. The gate
+    requires receipt + tests + checkpoint; none may be omitted.
+  \item \textbf{Unclosed Process}: a process instance that reaches its final marking without
+    a closure receipt. ``A process is not decommissioned until the closure receipt exists.''
+  \item \textbf{Unauthorized Downstream Refactor}: issuing a refactor mandate to a downstream
+    repository before the research authority ALIVE gate is sealed. Produces commits that
+    cannot be receipted against doctrine.
+\end{enumerate}

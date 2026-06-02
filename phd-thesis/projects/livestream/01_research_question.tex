@@ -1,0 +1,87 @@
+% FILE: 01_research_question.tex
+% Project: livestream
+% Thesis Role: real-time-process-broadcast-and-livestream-standards
+
+\section{Research Question}
+\label{sec:livestream-rq}
+
+\subsection{Problem Statement}
+\label{sec:livestream-rq-problem}
+
+Process mining research has historically operated on \emph{post-hoc} event logs:
+a process executes, its trace is recorded, and analysts subsequently apply discovery
+or conformance algorithms to the collected data. This regime treats process evidence
+as a retrospective artifact rather than a live observable. The problem addressed by
+the livestream project is whether a software factory---specifically the
+process-intelligence research foundry---can be instrumented to emit a continuous,
+real-time, OCEL 2.0-conformant event stream such that process mining algorithms can
+be applied \emph{as the factory operates}, without waiting for batch collection.
+
+The technical challenge is non-trivial. The factory's events originate from
+heterogeneous sources: Git commit history, AGI subagent conversation replays stored
+as JSONL files, browser-side Petri net simulation events, and cryptographic ledger
+blocks. Each source has a different emission cadence, schema, and object model.
+Unifying these into a single OCEL 2.0 property graph stream---with proper
+event-to-object (E2O) and object-to-object (O2O) links---requires a coherent
+broadcast architecture and a standards-compliant telemetry schema. The Telemetry
+Auditor audit (v30.1.2, 2026-06-01) confirmed that this unification is not yet
+achieved: the browser visualizer telemetry is 0\% OCEL 2.0 compliant and scores
+2/5 on XES (IEEE 1849-2016) due to missing \texttt{lifecycle:transition} attributes
+and non-UTC timestamps.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:livestream-rq-old-regime}
+
+The old regime assumes that process evidence is collected offline and analyzed
+offline. This assumption is embedded in the standard XES workflow: events are
+written to a file, the file is imported into a tool such as pm4py, and conformance
+checking proceeds as a batch computation. The livestream project challenges this
+assumption by asserting that a factory operating under van der Aalst AGI
+livestreaming standards must emit evidence \emph{continuously} and that any
+gap between emission and analysis represents an interval during which non-conforming
+execution could proceed undetected. The MAPE-K autonomic controller implemented in
+\texttt{autonomic.js} formalizes this challenge: the Monitor-Analyze-Plan-Execute
+loop runs on every tick, not on every batch, and the EWMA drift detector (alpha\,=\,0.15,
+LCL\,=\,0.920) raises an alert the moment conformance fitness crosses the lower
+control limit. Under the old regime, such a crossing would only be discovered after
+the fact.
+
+\subsection{Hypothesis}
+\label{sec:livestream-rq-hypothesis}
+
+\textbf{[AUTHOR THESIS]} The hypothesis of this project is that a software factory
+can be made continuously self-witnessing by: (1) instrumenting each source of
+process events with an OCEL 2.0-conformant emitter; (2) routing all event streams
+through a unified broadcast layer; (3) subjecting the unified stream to real-time
+conformance checking against a declared Petri net model; and (4) governing the
+factory's own behavior through an autonomic feedback loop that responds to
+conformance drift. When this architecture is fully instantiated, the gap between
+process execution and process evidence collapses to the latency of the broadcast
+layer---measured in the Stream Director audit (v30.1.2) at 6--15\,ms per frame,
+well within the 200\,ms bound specified by the livestreaming standard.
+
+\subsection{Success Criteria}
+\label{sec:livestream-rq-success}
+
+Success requires satisfying all of the following gate criteria simultaneously:
+\begin{enumerate}
+  \item All four broadcast modules emit OCEL 2.0-conformant events with proper
+    \texttt{ocel:activity}, \texttt{ocel:timestamp} (UTC ISO 8601),
+    \texttt{ocel:vmap}, and \texttt{ocel:omap} fields, and the visualizer telemetry
+    achieves $\geq$\,4/5 on the XES compliance checklist.
+  \item The browser visualizer executes without DOM binding errors; the Stream
+    Director remediation (v30.1.2) must survive an independent re-audit.
+  \item The EWMA drift detector correctly identifies injected non-conforming traces
+    and triggers the autonomic controller to execute a remediation plan.
+  \item The SHA-256 cryptographic ledger chain ($H_i = \text{SHA-256}(i \| t \|
+    \text{case\_id} \| \text{payload} \| H_{i-1})$) is verified tamper-evident
+    by the Ledger Custodian agent.
+  \item Conformance metrics against the declared Petri net model reach
+    Fitness\,$\geq$\,0.95 and Precision\,$\geq$\,0.95 on live stream data,
+    corroborating the offline conformance audit result of Fitness\,=\,0.9880
+    and Precision\,=\,1.0000.
+\end{enumerate}
+
+As of 2026-06-01, criteria 3 and 4 are partially supported by the autonomic
+controller implementation and the ledger tamper test, but criteria 1 and 2 remain
+formally open due to the Telemetry Auditor FAIL verdict.

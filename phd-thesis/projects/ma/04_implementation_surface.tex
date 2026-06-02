@@ -1,0 +1,127 @@
+% FILE: 04_implementation_surface.tex
+% PROJECT: ma — M&A Claim Taxonomy and Board Projection Surface
+
+\section{Implementation Surface}
+\label{sec:ma-implementation}
+
+\subsection{Source Files}
+\label{sec:ma-impl-source-files}
+
+The \texttt{ma/} module is implemented entirely as a doctrinal and specification layer. It
+contains no executable code. Its implementation surface is a corpus of 40+ Markdown
+specification files organized in the following groups:
+
+\paragraph{Master Consolidation.}
+\texttt{MASTER\_m\&a-ready\_process\_intelligence\_framework.md} (598 lines, 31,250 bytes)
+consolidates all nine claim taxonomies with full mathematical formulas, the Four-Pillar
+Admissibility Protocol, the Five-Step Auditor Evidence Path, the Cryptographic Receipt Schema,
+the Synergy Proof Models, and the Operational Debt Taxonomy. It is the single authoritative
+reference for the complete framework.
+
+\paragraph{Claim Taxonomy Definitions.}
+Nine \texttt{define\_*.md} files, one per claim taxonomy:
+\texttt{define\_board\_claim\_taxonomy.md}, \texttt{define\_diligence\_claim\_taxonomy.md},
+\texttt{define\_synergy\_claim\_taxonomy.md}, \texttt{define\_control\_claim\_taxonomy.md},
+\texttt{define\_process\_asset\_claim\_taxonomy.md},
+\texttt{define\_process\_liability\_claim\_taxonomy.md},
+\texttt{define\_integration\_risk\_taxonomy.md},
+\texttt{define\_operational\_debt\_taxonomy.md},
+\texttt{define\_scalability\_claim\_taxonomy.md}.
+
+\paragraph{Validation Framework Definitions.}
+Four files defining the stakeholder evidence requirements:
+\texttt{define\_buyer\_reliance\_requirements.md} (replication bounds, VDR completeness rules),
+\texttt{define\_seller\_defensibility\_requirements.md} (behavioral profiles, process drift
+audits), \texttt{define\_board-admissible\_claim\_requirements.md} (Four-Pillar Protocol),
+\texttt{define\_auditor\_evidence\_path.md} (Five-Step Protocol).
+
+\paragraph{Slide-to-Evidence Mapping Files.}
+Four mapping specifications:
+\texttt{define\_slide-to-receipt\_map.md} (cryptographic JSON receipt schema),
+\texttt{define\_slide-to-replay\_map.md} (token game replay, optimal alignments),
+\texttt{define\_slide-to-residual\_map.md} (residual weight and entropy),
+\texttt{define\_slide-to-public-standard\_map.md} (XES, OCEL 2.0, BPMN, POWL conformance).
+
+\paragraph{Strategic Frameworks.}
+\texttt{REVERSE\_PORTER\_FIVE.md} (process evidence as structural barrier to entry),
+\texttt{hostile-takeover-receipts.md} (v30.1.1 HTR taxonomy),
+\texttt{synergy-proof-claims-v30.md} (Process Equivalence Model, Execution Path Intersection,
+Capability Subsumption Theorem),
+\texttt{ACQUISITION\_READY\_PROCESS\_INTELLIGENCE.md},
+\texttt{EXECUTIVE\_BRIEF\_\_acquisition-ready-process-intelligence.md}.
+
+\paragraph{Renderer Specification.}
+\texttt{M\&A\_BOARD\_PROJECTION\_RENDERER\_SPECIFICATION.md} (25,258 bytes) defines the
+seven-step pipeline from claims JSON to sealed PowerPoint and Excel artifacts.
+
+\subsection{Commands}
+\label{sec:ma-impl-commands}
+
+The \texttt{ma/} module defines no CLI commands directly. It specifies the contract for
+commands that the Board Projection Renderer must expose. Per the Renderer Specification, the
+invocation sequence is:
+
+\begin{enumerate}
+  \item Populate claims JSON array from transaction data room.
+  \item Execute \texttt{wasm4pm} queries to produce receipt JSON files.
+  \item Invoke \texttt{Tera2} template engine against claims JSON and receipt files.
+  \item Invoke \texttt{pptx-rs} to assemble the PowerPoint deck.
+  \item Invoke \texttt{calamine} to assemble the Excel workbook.
+  \item Execute validation protocol: verify all receipts and witness markers.
+  \item Seal receipt ledger with cryptographic signatures.
+\end{enumerate}
+
+The Readiness Report (\texttt{ma-deck-rendering-readiness.md}, status: AUTHORITY STACK
+COMPLETE, 2026-06-01) confirms that steps 3--7 are fully specified and await only the
+claims data (step 1) and receipt generation (step 2) from a live transaction data room.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:ma-impl-data}
+
+\paragraph{Event Log Standards.}
+The module mandates XES (IEEE 1849-2016) or OCEL 2.0 as the only admissible event log
+formats. XES provides case/activity/timestamp structure for single-object processes; OCEL 2.0
+provides object-type/event/relationship structure for multi-object processes (Order-to-Cash,
+Procure-to-Pay). All logs must include W3C PROV-O provenance metadata mapping events to
+source system WAL sequence numbers.
+
+\paragraph{Process Model Formats.}
+Petri nets (WF-nets), process trees, POWL structures, and BPMN with formal semantics are all
+admissible. All submitted models must carry a soundness certificate. For financial processes,
+$k$-boundedness $k \le 5$ is required.
+
+\paragraph{Receipt Schema.}
+The JSON receipt schema follows RFC 8785 JCS canonical form. Required fields: \texttt{slide\_id}
+(UUID), \texttt{slide\_title}, \texttt{assertion\_text}, \texttt{target\_log\_hash} (BLAKE3),
+\texttt{process\_model\_hash} (BLAKE3), \texttt{query\_definition} (engine, query URI,
+parameters), \texttt{verification\_results} (fitness, precision, throughput, financial
+impact), \texttt{validator\_signature} (Ed25519).
+
+\paragraph{VDR Structure.}
+The Virtual Data Room is organized as six subdirectories:
+\texttt{/event-logs/} (XES/OCEL 2.0 files),
+\texttt{/models/} (Petri nets, process trees, POWL),
+\texttt{/receipts/} (JSON receipt files),
+\texttt{/conformance/} (alignment reports),
+\texttt{/provenance/} (PROV-O lineage files),
+\texttt{/synergy/} (behavioral similarity reports, bisimulation proofs).
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:ma-impl-templates}
+
+\paragraph{Board Presentation Template.}
+The Renderer Specification defines a \texttt{Tera2}-templated PowerPoint deck structure. Each
+slide receives: a claim identifier, the assertion text, the supporting formula, the numeric
+result (fitness, precision, financial impact), and a receipt UUID watermark. The watermark
+enables auditors to locate the corresponding VDR receipt file by UUID.
+
+\paragraph{Excel Workbook.}
+The \texttt{calamine}-assembled workbook provides tabular representations of all claim
+formulas, input parameters, computed outputs, and receipt links. It enables buyers to inspect
+the arithmetic behind each board slide independently of the presentation layer.
+
+\paragraph{Receipt Ledger.}
+The sealed receipt ledger is a JSON Lines file containing all receipt records, ordered by
+slide sequence, with a final ledger root hash (BLAKE3 over all receipt hashes in order) and
+an Ed25519 signature over the root hash. The ledger root hash is embedded in the PowerPoint
+file metadata, binding the presentation to its evidentiary substrate.

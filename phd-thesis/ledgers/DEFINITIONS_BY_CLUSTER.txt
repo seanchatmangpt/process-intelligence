@@ -1,0 +1,410 @@
+================================================================================
+DEFINITIONS BY CLUSTER — Quick Reference Index
+Generated: 2026-06-01
+Source: SEARCH_ANALYSIS.md
+================================================================================
+
+CLUSTER 1: PRIMARY THESIS (Authority Level: ALIVE)
+───────────────────────────────────────────────────────────────────────────────
+
+[1.1] AUTONOMIC KNOWLEDGE ACTUATION (5-Point System)
+Location: AUTONOMIC_KNOWLEDGE_ACTUATION.md:14
+Specificity: HIGH
+Citation Depth: 8 internal references
+
+Definition:
+  Autonomic knowledge actuation is the system that:
+  1. Monitors — continuously observes execution conformance against declared process law
+  2. Analyzes — identifies root causes of model-log divergence using formal process evidence
+  3. Plans — selects remediation actions within authorized elastic subnets
+  4. Executes — actuates corrections with cryptographic receipt emission
+  5. Knows — accumulates a typed knowledge base of lawful and unlawful execution patterns
+
+Core Constraint:
+  "A process is not decommissioned until the closure receipt exists."
+
+Evidence Law:
+  "A process that cannot replay its receipt chain is PARTIAL, not complete."
+
+────────────────────────────────────────────────────────────────────────────
+
+[1.2] FULL-LIFECYCLE MANUFACTURING
+Location: PROCESS_INTELLIGENCE_SPR_THESIS.md:14
+Specificity: HIGH
+Citation Depth: Multiple thesis sections
+
+Definition:
+  Process intelligence is the full lifecycle manufacturing of lawful process reality.
+
+Encompasses:
+  - Define state (formal model)
+  - Design state (topology authorization)
+  - Simulation state (hypothesis testing)
+  - Monitoring state (live conformance)
+  - Optimization state (elastic remediation)
+  - Repair state (violation correction)
+  - Decommission state (closure receipt)
+
+────────────────────────────────────────────────────────────────────────────
+
+[1.3] MAPE-K CANONICAL ARCHITECTURE
+Location: AUTONOMIC_KNOWLEDGE_ACTUATION.md:28
+Authority: IBM Autonomic Computing Manifesto (2003)
+Specificity: MEDIUM-HIGH
+
+Definition:
+  Monitor (Observe) → Analyze (Understand) → Plan (Decide) → Execute (Act)
+  ↑────────────────────────────────────────────────────────────────────────↓
+  └──────────────────── Knowledge Base ────────────────────────────────────┘
+
+Knowledge Base Components:
+  - Lawful patterns (execution sequences achieving targets)
+  - Unlawful patterns (sequences causing fitness degradation)
+  - Repair outcomes (which remediations restored conformance)
+  - Decommission receipts (final closure proofs)
+  - Predictive models (estimated fitness trajectory)
+
+Constraint:
+  "Knowledge is the only thing that may feed Plan."
+  External data, human intuition, LLM inference are NOT valid inputs without process evidence.
+
+================================================================================
+
+CLUSTER 2: MATHEMATICAL SPECIFICATION (Authority Level: ALIVE)
+───────────────────────────────────────────────────────────────────────────────
+
+[2.1] GATE LOGIC OPERATOR: kappa(τ)
+Location: full-lifecycle-process.md:21
+Specificity: MAXIMUM
+Type: Formal three-valued logic
+
+Definition:
+  ∀τ,  kappa(τ) ∈ {ADMIT(R), REFUSE(F), PARTIAL(X)}
+
+Outcomes:
+  - ADMIT(R):   Receipt issued; lifecycle advances; knowledge updated
+  - REFUSE(F):  Violation detected; repair route triggered; reason named in law
+  - PARTIAL(X): Insufficient evidence for admission; wait state; audit required
+
+Usage Context:
+  Every transition τ must produce exactly one of these three outcomes.
+  No silent transitions. No undefined states.
+
+Citation Count: 9x
+
+────────────────────────────────────────────────────────────────────────────
+
+[2.2] ACTUATION OPERATOR: alpha(K, P, L, T)
+Location: PROCESS_INTELLIGENCE_SPR_THESIS.md:47
+Specificity: MAXIMUM
+Type: Knowledge-to-action mapping
+
+Definition:
+  alpha(K, P, L, T) → τ: knowledge actuating a transition — not describing it
+
+Semantics:
+  K = Knowledge (typed evidence patterns)
+  P = Process (Petri net topology)
+  L = Law (LTL governance invariants)
+  T = Typed constraints (authority boundaries)
+  τ = Permitted transition output
+
+Constraint:
+  "Actuation is making what you know consequential."
+  Knowledge that does not actuate is PARTIAL, not ALIVE.
+
+Citation Count: 7x
+
+────────────────────────────────────────────────────────────────────────────
+
+[2.3] RECEIPT OPERATOR: rho(τ_i)
+Location: full-lifecycle-process.md:15
+Specificity: MAXIMUM
+Type: Transition-to-proof binding
+
+Definition:
+  rho(τ_i) = R_i
+
+Semantics:
+  τ_i = i-th transition executed
+  R_i = Typed receipt binding action → pre_state → post_state → witness marker
+
+Structure:
+  Receipt = BLAKE3(action || pre_state || post_state || timestamp || elastic_subnet_proof)
+  Receipt_n = BLAKE3(Receipt_{n-1} || new_action || new_state || signature)
+
+Receipt Doctrine:
+  "Executions that do not emit receipts are not closures. They are narration."
+
+Citation Count: 6x
+
+────────────────────────────────────────────────────────────────────────────
+
+[2.4] SOUNDNESS THEOREM (Petri Net)
+Location: blue-river-dam.md:Section 3.2
+Specificity: MAXIMUM
+Type: Formal verification property
+
+Theorem:
+  A WF-net W is sound if and only if its short-circuited net W̄ is LIVE and BOUNDED.
+
+Conditions:
+  1. Liveness:         ∀t ∈ T, ∃M ∈ [M_0⟩ s.t. M →^t
+  2. Proper completion: ∀M ∈ [M_0⟩, M(o) ≥ 1 ⟹ M = M_f (sole sink place marked)
+  3. No dead transitions: Every transition t can fire from some reachable state
+
+P-Invariant Conservation:
+  ∀M ∈ [M_0⟩,  y^T · M = y^T · M_0
+  (Weighted token sum remains constant across all reachable markings)
+
+Usage:
+  All process topologies must be proven sound before authorization by ostar-architect.
+
+────────────────────────────────────────────────────────────────────────────
+
+[2.5] CONFORMANCE FITNESS FUNCTION
+Location: blue-river-dam.md:Section 3.5
+Specificity: MAXIMUM
+Type: Alignment cost minimization
+
+Definition:
+  Fitness(σ, W) = 1 - [cost*(σ, W)] / [cost*(σ, empty_model) + cost*(empty_log, W)]
+
+Move Cost Functions:
+  - Move on Log:      c(≫, a) = 1 (event not in model)
+  - Move on Model:    c(t, ≫) = 0 if invisible transition τ; 1 otherwise
+  - Synchronous:      c(t, a) = 0 if label(t) = a; ∞ otherwise
+
+Optimal Alignment:
+  γ* = argmin_(γ ∈ Align(σ, W)) Σ_(t,a ∈ γ) c(t, a)
+
+Trigger Condition (Auditor):
+  If Fitness(σ, W) < 1.0, raise high-priority violation alert to ostar-doctor.
+
+Citation Count: Multiple (blue-river-dam.md, autonomic-knowledge-actuation.md)
+
+────────────────────────────────────────────────────────────────────────────
+
+[2.6] LTL GOVERNANCE INVARIANTS
+Location: blue-river-dam.md:Section 3.4
+Specificity: MAXIMUM
+Type: Safety property enforcement
+
+Definition:
+  Primary containment invariant:
+  G (¬Compliant(s) ⟹ X (¬Actuated(s)))
+
+Semantics:
+  G = Always (temporal operator)
+  X = Next state
+  Compliant(s) = State s satisfies all LTL safety policies Φ_Gov
+  Actuated(s) = Compiler permits bytecode emission for transitions from s
+
+Enforcement:
+  Realized via typestate proofs where no non-conforming state transition
+  can be compiled into execution bytecode.
+
+Authority:
+  Only ostar-governor writes and seals Φ_Gov (stored in read-only HSMs).
+
+================================================================================
+
+CLUSTER 3: OPERATIONAL LAW (Authority Level: ALIVE)
+───────────────────────────────────────────────────────────────────────────────
+
+[3.1] AUTHORITY HIERARCHY (Five-Tier Nested Permissions)
+Location: blue-river-dam.md:Section 4
+Specificity: HIGH
+Type: Permission model
+
+Tier 1 — ostar-governor (Root Authority)
+  Scope: Write and seal global LTL safety policies Φ_Gov
+  Constraint: Policies cryptographically signed, stored in read-only HSMs
+  Escalation: IMPOSSIBLE (HSM hardware enforced)
+
+Tier 2 — ostar-architect (Topology Designer)
+  Scope: Design process topologies (Petri nets)
+  Constraint: All topologies must be proven sound (Liveness + Boundedness) before signing
+  Authority Over: Process structure only
+  No Authority Over: LTL policies, execution decisions
+
+Tier 3 — ostar-operator (Execution Authority)
+  Scope: Launch and execute approved topology instances
+  Constraint: No authority to alter Φ_Gov or bypass alignment checks
+  Responsibility: Emit receipts upon all state transitions
+
+Tier 4 — ostar-auditor (Conformance Monitor)
+  Scope: Compute optimal alignment A*, monitor trace fitness
+  Constraint: Raises high-priority violation if Fitness(σ, W) < 1.0
+  No Authority Over: Remediation actions (read-only observation)
+
+Tier 5 — ostar-doctor (Remediation Authority)
+  Scope: Rollback system state to last verified marking M
+  Constraint: Receives violation alerts from auditor only; executes containment protocols
+  Escalation: Can HALT execution but cannot violate Φ_Gov
+
+Non-Bypassable Property:
+  "No component can escalate authority. No component can modify scopes of other components."
+
+────────────────────────────────────────────────────────────────────────────
+
+[3.2] ELASTIC vs. COMPLIANCE PARTITION (Autonomy Boundary)
+Location: AUTONOMIC_KNOWLEDGE_ACTUATION.md:90-107
+Specificity: HIGH
+Type: Autonomic decision boundary
+
+ELASTIC SUBNET (Autonomous Authority — Auto-Actuation Permitted)
+  • Dynamic resource reallocation (task queue reassignment)
+  • Safe path selection (branch redirection in exclusive choice operators)
+  • Elastic rate limiting (input throttling to prevent token accumulation)
+  • Retry with backoff on transient failures
+
+COMPLIANCE SUBNET (Executive Authority — FROZEN)
+  • Financial approvals
+  • Security gate transitions
+  • KYC verification stages
+  • Receipt issuance for high-value artifacts
+
+Hard Block:
+  "Any attempt to auto-actuate outside the elastic subnet halts execution
+   and requires board override. The planner must check subnet membership
+   before selecting any action."
+
+Verification:
+  Plan component must emit subnet membership confirmation for every action
+  before Execute component accepts the action.
+
+────────────────────────────────────────────────────────────────────────────
+
+[3.3] RECEIPT CHAINING (Cryptographic Binding)
+Location: AUTONOMIC_KNOWLEDGE_ACTUATION.md:118-125
+Specificity: MAXIMUM
+Type: Proof-of-execution artifact
+
+Single Receipt:
+  Receipt = BLAKE3(action || pre_state || post_state || timestamp || elastic_subnet_proof)
+
+Chained Receipt:
+  Receipt_n = BLAKE3(Receipt_{n-1} || new_action || new_state || signature)
+
+Semantics:
+  - Each receipt binds exactly one transition to its predecessor
+  - Hash chain enforces temporal ordering (receipt_n cannot exist before receipt_n-1)
+  - Witness marker tracks which authority (operator, doctor, etc.) issued receipt
+  - BLAKE3 provides cryptographic proof that transition was executed with specific pre_state
+
+Decommissioning Law:
+  "A process is not decommissioned until the closure receipt exists."
+  Closure receipt = typed proof that final marking M_f was reached and verified.
+
+Replay Validation:
+  Knowledge base updated only after receipt chain replayed and validated against declared model.
+
+────────────────────────────────────────────────────────────────────────────
+
+[3.4] REFUSAL DOCTRINE (Named Law Required)
+Location: NAMED_LAW_REFUSAL.md (implicit)
+Specificity: HIGH
+Type: Constraint enforcement
+
+Principle:
+  "Every refusal must name a law."
+
+Semantics:
+  When kappa(τ) = REFUSE(F), the refusal must specify:
+    - Which LTL policy was violated
+    - Which formal constraint was breached
+    - Repair route authorized by governance law
+    - Evidence (OTel trace, OCEL log snippet) supporting refusal
+
+Non-Compliance:
+  Refusal that names only a string description is PARTIAL.
+  Refusal that names a formal law with evidence is ALIVE.
+
+────────────────────────────────────────────────────────────────────────────
+
+[3.5] CLOSURE RECEIPT REQUIREMENT
+Location: AUTONOMIC_KNOWLEDGE_ACTUATION.md:164-166
+Specificity: HIGH
+Type: Decommissioning law
+
+Requirement:
+  "A process is not decommissioned until the closure receipt exists.
+   A process that cannot replay its receipt chain is PARTIAL, not complete."
+
+Closure Receipt Structure:
+  Receipt_final = BLAKE3(
+    Receipt_n ||
+    final_marking M_f ||
+    lifecycle_complete_proof ||
+    knowledge_base_updated_timestamp ||
+    decommission_authority_signature
+  )
+
+Validation Steps:
+  1. Emit receipt for final transition to M_f
+  2. Replay entire receipt chain from receipt_1 to receipt_final
+  3. Verify each receipt (t_i, S_i, S_{i+1}) against declared process model
+  4. Update knowledge base with lawful execution pattern
+  5. Emit closure receipt with decommission authority signature
+  6. Only then is process decommissioned
+
+Without Closure Receipt:
+  Process lingers in PARTIAL state.
+  Resources remain allocated.
+  Receipt chain remains open (no final marking proof).
+
+================================================================================
+
+RECURRING TERM TAXONOMY
+───────────────────────────────────────────────────────────────────────────────
+
+TIER 1 — Foundational Concepts (>30 occurrences)
+  process (89x)      — Object being manufactured/managed
+  receipt (53x)      — Proof artifact
+  evidence (43x)     — Ground truth for analysis
+  execution (38x)    — Runtime behavior observable in logs
+  lifecycle (36x)    — Temporal state progression
+  transition (32x)   — Permitted state change
+  lawful (29x)       — Frame-compliant behavior
+
+TIER 2 — Secondary Concepts (15-30 occurrences)
+  claim (27x)        — Manufactured/asserted knowledge
+  knowledge (23x)    — MAPE-K K component
+  refusal (23x)      — kappa() outcome (REFUSE branch)
+  typed (22x)        — Type-safe binding
+  intelligence (22x) — Full-lifecycle manufacturing discipline
+  authority (20x)    — Permission hierarchy
+  state (20x)        — Configuration at point-in-time
+  replay (19x)       — Receipt chain verification
+
+TIER 3 — Constraint Terms (10-15 occurrences)
+  conformance (14x)  — Model-log alignment fitness
+  repair (12x)       — Elastic-subnet remediation
+  elasticity (8x)    — Autonomous decision boundary
+  admission (7x)     — kappa() outcome (ADMIT branch)
+  partial (6x)       — kappa() outcome (PARTIAL branch)
+
+================================================================================
+
+FRAME LAW ALIGNMENT VERIFICATION
+───────────────────────────────────────────────────────────────────────────────
+
+Frame Law Concept          | Corpus Equivalent                      | Status
+─────────────────────────────────────────────────────────────────────────────
+Knowledge Hook             | pm:HookPolicy / Andon Gate             | ✓ ALIGNED
+Admission/Refusal          | kappa(τ) ∈ {ADMIT, REFUSE, PARTIAL}   | ✓ ALIGNED
+Durable Motion             | T_elastic / T_compliance              | ✓ ALIGNED
+Receipt                    | Receipt<T,W> typed proof              | ✓ ALIGNED
+Replay                     | Receipt chain validation               | ✓ ALIGNED
+Accounting                 | MAPE-K Knowledge Base                 | ✓ ALIGNED
+Promotion                  | Graduation Law                        | ✓ ALIGNED
+─────────────────────────────────────────────────────────────────────────────
+
+OVERALL VERDICT: FRAME-LAW ALIGNED
+  All core frame law concepts present in doctrine with canonical terminology.
+  No violations detected. Zero outstanding frame defects.
+
+================================================================================
+EOF
+cat /Users/sac/process-intelligence/phd-thesis/ledgers/DEFINITIONS_BY_CLUSTER.txt

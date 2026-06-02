@@ -1,0 +1,84 @@
+% FILE: 00_project_identity.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Project Identity}
+\label{sec:experiments-visualizer-identity}
+
+\subsection{Purpose}
+\label{sec:experiments-visualizer-identity-purpose}
+
+The \texttt{experiments-visualizer} is a live process intelligence simulation dashboard implemented
+as a zero-dependency, pure browser-based JavaScript single-page application. Its stated purpose,
+confirmed by the \texttt{README.md} and \texttt{LIVESTREAM\_STANDARDS.md} artifacts in the source
+tree, is to provide a unified interactive surface where all seven subsystems of the process
+intelligence doctrine stack execute simultaneously and visibly: token game simulation, A*
+alignment solving, DECLARE constraint validation, EWMA concept drift detection, cryptographic
+audit chaining, autonomic MAPE-K feedback control, and TypeScript boundary-law projection.
+
+The application self-identifies its execution engine as ``WASM4PM Core JS Emulator v2.1.0'' and
+is governed under the Blue River Dam Epistemic Containment Protocol, with explicit references to
+doctrine files residing at \texttt{\textasciitilde/process-intelligence/doctrine/}. This
+containment protocol prohibits epistemic overshoot: the dashboard may only assert what the event
+evidence supports. Every rendered metric is backed by a computable formula whose inputs are
+visible in the source modules.
+
+The dashboard therefore serves two simultaneous audiences: a live demonstration surface for the
+thesis claims about full-lifecycle process intelligence, and a conformance oracle that can be
+inspected line-by-line to verify that no module substitutes assertion for evidence.
+
+\subsection{Repository Surface}
+\label{sec:experiments-visualizer-identity-surface}
+
+The repository surface occupies \texttt{/Users/sac/process-intelligence/experiments/visualizer/}
+and consists of 13 JavaScript modules totalling 6,947 lines, one HTML entry point
+(\texttt{index.html}), one TypeScript validation file (\texttt{visualizer-validation.ts}), one
+TypeScript boundary-law declaration file (\texttt{bindings.d.ts}), and supporting configuration
+files (\texttt{package.json}, \texttt{tsconfig.json}). The only entry in \texttt{node\_modules/}
+is the TypeScript compiler, preserving the zero-runtime-dependency contract stated in
+\texttt{LIVESTREAM\_STANDARDS.md}.
+
+The 13 JS modules decompose along subsystem boundaries:
+\texttt{petrinet.js}, \texttt{token-game.js}, \texttt{alignment.js}, \texttt{astar.js},
+\texttt{declare.js}, \texttt{drift.js}, \texttt{drift-detector.js}, \texttt{autonomic.js},
+\texttt{blockchain.js}, \texttt{ledger.js}, \texttt{dashboard.js}, \texttt{app.js},
+and the coordination layer exposed through \texttt{index.html}. Upstream checkpoint evidence
+resides in \texttt{/Users/sac/process-intelligence/checkpoints/} and experiment completion
+evidence in \texttt{/Users/sac/process-intelligence/experiments/checkpoint\_\_experiments\_complete.md}.
+
+\subsection{Primary Research Role}
+\label{sec:experiments-visualizer-identity-role}
+
+Within the dissertation, the \texttt{experiments-visualizer} occupies the role of
+\emph{process-intelligence-simulation-dashboard}: the artifact that makes all theoretical claims
+simultaneously observable in a single browser session without external services, databases, or
+network calls. It is not a toy prototype. The \texttt{LIVESTREAM\_STANDARDS.md} conformance claim
+asserts v30.1.1 ultimate standard compliance, explicitly prohibiting mocks, placeholders, and
+stubs. The seven subsystems are wired together through \texttt{app.js} and \texttt{dashboard.js}
+so that the output of one subsystem (e.g.\ the EWMA drift score) feeds the input of another
+(e.g.\ the AutonomicController conformance threshold comparison) within the same tick cycle.
+
+This integration role makes the visualizer the primary empirical instrument for demonstrating
+that prediction and coordination can co-exist in a single stateless browser runtime without
+collapsing into either pure UI rendering or pure algorithmic computation.
+
+\subsection{Key Artifacts}
+\label{sec:experiments-visualizer-identity-artifacts}
+
+The key artifacts manufactured by and for this project are:
+
+\begin{itemize}
+  \item \texttt{bindings.d.ts} — TypeScript boundary-law declarations projecting the wasm4pm
+        WASM type surface (\texttt{EvidenceTs}, \texttt{EvidenceState}, \texttt{WitnessKey},
+        \texttt{ReceiptShapeTs}, \texttt{GraduationCandidateTs}) into the browser runtime.
+  \item \texttt{visualizer-validation.ts} — compile-time structural validation exercising all
+        10 type projections with concrete values including a BLAKE3 process hash and a fitness
+        score of 0.982 matching the \texttt{replay\_receipt\_sample.md} fixture.
+  \item \texttt{replay\_receipt\_sample.md} — the canonical replay receipt fixture confirming
+        the fitness formula $f(L,N) = 1 - \sum m / \sum c - \sum r / \sum p$ against the
+        supply-chain WF-net.
+  \item \texttt{checkpoint\_\_experiments\_complete.md} — confirming all 16 experiment fixtures
+        verified with no deferred TODOs.
+  \item \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md} — the GRADUATION VERIFIED verdict for the
+        broader process intelligence program, covering the token game fitness formula.
+\end{itemize}

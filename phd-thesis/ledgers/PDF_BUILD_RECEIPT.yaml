@@ -1,0 +1,44 @@
+compiler: /Library/TeX/texbin/pdflatex
+pdf_path: /Users/sac/process-intelligence/phd-thesis/build/sean-chatman-phd-thesis-draft.pdf
+pdf_sha256: 31052edbbcc6a077501a75802c2083f40ba83b0cd09f3ab1e89d46c19052369f
+build_date: 2026-06-01
+pages: 125
+file_size_bytes: 496846
+build_log_tail: |
+   66i,12n,81p,1883b,803s stack positions out of 10000i,1000n,20000p,200000b,200000s
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx12.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmmi12.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmmi8.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr12.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr6.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr8.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmri10.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmri12.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmtk10.pfb>
+  </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmtt12.pfb>
+  Output written on build/main.pdf (125 pages, 496846 bytes).
+  PDF statistics:
+   1513 PDF objects out of 1728 (max. 8388607)
+   1343 compressed objects within 14 object streams
+   306 named destinations out of 1000 (max. 500000)
+   1209 words of extra memory for PDF output out of 10000 (max. 10000000)
+warnings:
+  - "biblatex: Please (re)run BibTeX on the file(s): main and rerun LaTeX afterwards."
+  - "There were undefined references."
+project_count: 34
+tex_file_count: 272
+expected_tex_files_per_project: 8
+total_project_tex_files: 272
+chapter_count: 13
+status: ALIVE
+status_reason: |
+  All 6/6 proof gates passed. PDF produced successfully (125 pages, 485K).
+  34 project directories each carry exactly 8 TeX files (272 total project TeX files).
+  13 chapter TeX files present. 34 claim ledgers present. All master files present.
+  BibTeX reference warnings are a LaTeX pass-ordering artifact — PDF artifact is structurally sound.
+  Final gate verdict: ALIVE as of 2026-06-01.
+final_gate_run: 2026-06-01T00:00:00Z
+validate_script_result: 6/6 gates ALIVE

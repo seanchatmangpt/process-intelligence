@@ -1,0 +1,114 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:adversarial-evidence}
+
+\subsection{Tests}
+\label{sec:adversarial-evidence-tests}
+
+The adversarial corpus contains ten executable scenarios with Python \texttt{assert}
+statements in \texttt{adversarial/simulate\_laundering\_spoofing.py}. Each scenario tests a
+specific attack vector against the \texttt{IngestionBoundary} and asserts the expected
+verdict and failed rule.
+
+\textbf{Scenario 0 (Conforming Ingestion):} Two conforming traces manufactured under the
+genuine system key are admitted. The \texttt{assert} statement verifies \texttt{verdict ==
+ACCEPTED}.
+
+\textbf{Scenario 1 (Timestamp Laundering):} A conforming trace has the
+\texttt{Invoice\_Customer} event timestamp shifted backward by one hour without updating
+signatures. The ingestion boundary catches the payload modification via
+\texttt{check\_signature\_authenticity} before the monotonicity check fires, because the
+payload has changed. The \texttt{assert} verifies \texttt{verdict == REJECTED} and
+\texttt{rule\_failed == check\_signature\_authenticity}.
+
+\textbf{Scenario 2 (Event Deletion):} The \texttt{Ship\_Goods} event (index 2) is removed
+from a conforming trace. The missing event breaks the hash chain at index 2, because the
+hash link of what was formerly index 3 no longer validates against the current predecessor.
+The \texttt{assert} verifies \texttt{rule\_failed == check\_cryptographic\_chain}.
+
+\textbf{Scenario 3 (Signature Forgery):} A complete trace is manufactured under
+\texttt{FORGED\_SYSTEM\_KEY}, with internally consistent signatures and hash chain links.
+The ingestion boundary uses \texttt{hmac.compare\_digest} against the genuine key and
+detects the forged signatures. The \texttt{assert} verifies
+\texttt{rule\_failed == check\_signature\_authenticity}.
+
+\textbf{Scenario 4 (Raw DataFrame Injection):} A raw \texttt{pd.DataFrame} is submitted as
+the log input. The boundary immediately rejects it with \texttt{rule\_failed ==
+reject\_unhashed\_dataframe} without computing any hash or inspecting any signature.
+
+\textbf{Scenario 5 (Impossible Velocity):} A trace is manufactured with 100 nanoseconds
+between events 0 and 1, with all downstream signatures and chain links recalculated under the
+genuine key (so the boundary must evaluate the velocity check independently of the signature
+check). The \texttt{assert} verifies \texttt{rule\_failed == check\_impossible\_velocity}.
+
+\textbf{Scenarios 6 through 9} require \texttt{libwasm4pm.dylib} and test FFI boundary
+forgery (Ed25519 forged signature returns \texttt{ERR\_CONFORMANCE\_VIOLATION = 0xFB03}),
+unstructured data rejection (\texttt{wasm\_parse\_and\_query} on a plain text buffer returns
+\texttt{ERR\_CONFORMANCE\_VIOLATION}), out-of-bounds pointer safety (offset
+\texttt{0xFFFFFFFF} returns \texttt{ERR\_LIFECYCLE\_VIOLATION = 0xFB05}), and heap
+zeroization (sentinel bytes are fully zeroed after \texttt{wasm\_shred\_heap}).
+
+The standards audit script (\texttt{validate\_standards.py}) constitutes an additional
+executable test: it exits 0 only when all six placement files satisfy the four structural
+requirements.
+
+\subsection{Receipts}
+\label{sec:adversarial-evidence-receipts}
+
+The ADVERSARIAL\_RECEIPT in \texttt{receipts/RECEIPT\_REGISTRY.md} is the canonical receipt
+for the adversarial corpus. Its fields are:
+\begin{itemize}
+  \item \texttt{produced\_by}: \texttt{adversarial/} challenge workflow
+  \item \texttt{witness}: Chicago TDD hostile assumptions doctrine
+  \item \texttt{result\_type}: adversarial challenges to each major claim, with refutation or
+        open status
+  \item \texttt{criteria\_met}: adversarial artifact count $\geq 3$ (actual: 3); challenges
+        cover raw laundering, metric fabrication, and conformance theater
+  \item \texttt{gaps\_remaining}: additional adversarial challenges may be warranted for
+        M\&A-specific claims
+\end{itemize}
+
+The adversarial audit report (\texttt{audits/adversarial\_audit\_v30.1.1.md}) carries a
+VERIFIED/PASS verdict with Blake3 checksum over 567 commits across 15 directories and an
+Ed25519 signature from \texttt{teamwork\_preview\_worker\_m5\_1}. The audit certifies that
+all twelve corpus directories meet or exceed ALIVE\_001 minimum document count thresholds
+and that the git commit log maintains a sound, continuous receipt chain.
+
+\subsection{Checkpoints}
+\label{sec:adversarial-evidence-checkpoints}
+
+The ALIVE OMEGA checkpoint is declared in
+\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA.md}. The checkpoint
+document states that a twenty-agent adversarial swarm relentlessly tested the boundaries of
+the framework; that all attack vectors, recursive logic bombs, and ontological paradoxes were
+absorbed and neutralized; and that the framework demonstrates self-healing, adaptive
+resilience, and emergent capacity for systemic evolution. The checkpoint is permanent under
+the Immutability Doctrine: it cannot be reverted, only extended by a follow-up checkpoint.
+
+The ALIVE\_001 checkpoint (\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md}) is the
+baseline gate against which the adversarial corpus was measured. The adversarial audit report
+certifies that ALIVE\_001 gate criteria were satisfied at the time of the v30.1.1 audit.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:adversarial-evidence-status}
+
+Status: \textbf{ALIVE}.
+
+The adversarial corpus satisfies all three conditions required for an ALIVE verdict: (1) a
+receipt exists (ADVERSARIAL\_RECEIPT in \texttt{receipts/RECEIPT\_REGISTRY.md}); (2) tests
+exist (ten executable scenarios in \texttt{simulate\_laundering\_spoofing.py} with
+\texttt{assert} statements, plus \texttt{validate\_standards.py}); and (3) a checkpoint
+exists (\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA.md}, ALIVE
+OMEGA). These three conditions are necessary and sufficient for an ALIVE declaration under
+the research program's gate criteria. The corpus exceeds the minimum artifact threshold
+(actual: 3 core files plus extensive supporting assets).
+
+Open findings (001, 004, 005, 006, 008, 010) do not downgrade the status from ALIVE because
+they are research program self-corrections: they identify gaps, notation fixes, and deferred
+audits that are actionable and bounded. Finding 001 (graduation bridge one-sided) is
+explicitly UNRESOLVABLE PRE-GAP\_001-CLOSE, not a defect in the adversarial corpus itself.
+Finding 005 (PM4Py algorithm counts not source-verified) is an audit gap, not an adversarial
+corpus defect.

@@ -1,0 +1,1119 @@
+BATCH 2 CRAWL REPORT (ROOTS 16-30)
+================================================================================
+Generated: 2026-06-01T17:30:37.987897
+Total scanned roots: 9
+Total relevance hits: 818
+
+CLASSIFICATION SUMMARY
+--------------------------------------------------------------------------------
+MUST_CRAWL: 8
+SHOULD_CRAWL: 1
+MAYBE_CRAWL: 5
+SKIP: 1
+
+DETAILED CLASSIFICATION
+--------------------------------------------------------------------------------
+
+[16] ~/home
+    Classification: MAYBE_CRAWL
+    Searched: False
+    Hits: 0
+    Reason: Unrecognized custom directory with 1 items.
+    Notes: Custom user directory
+
+[17] ~/.cursor
+    Classification: SHOULD_CRAWL
+    Searched: True
+    Hits: 56
+    Reason: Contains repository config files.
+    Notes: Has basic repo configs
+    Markers: .gitignore
+
+[18] ~/helloworld
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 0
+    Reason: Contains project markers: package.json
+    Notes: Matches MUST_CRAWL
+    Markers: package.json
+
+[19] ~/cns_forge
+    Classification: MAYBE_CRAWL
+    Searched: False
+    Hits: 0
+    Reason: Unrecognized custom directory with 3 items.
+    Notes: Custom user directory
+
+[20] ~/.genkit
+    Classification: MAYBE_CRAWL
+    Searched: False
+    Hits: 0
+    Reason: Unrecognized custom directory with 1 items.
+    Notes: Custom user directory
+
+[21] ~/.rest-client
+    Classification: SKIP_SECRETS
+    Searched: False
+    Hits: 0
+    Reason: Directory likely contains credentials or keys.
+    Notes: Secrets skipped
+
+[22] ~/bitactor
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 0
+    Reason: Contains project markers: *.ttl, src/
+    Notes: Matches MUST_CRAWL
+    Markers: *.ttl, src/
+
+[23] ~/clnrm
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 2
+    Reason: Contains project markers: *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.ttl, Cargo.toml, README.md, book/, crates/, docs/, memory/, src/, templates/
+    Notes: Matches MUST_CRAWL
+    Markers: *.md, *.ttl, Cargo.toml, README.md, book/, crates/, docs/, memory/, src/, templates/
+
+[24] ~/gitvan
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 760
+    Reason: Contains project markers: *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.md, *.ttl, README.md, coordination/, docs/, hooks/, memory/, package.json, queries/, src/, templates/, workflows/
+    Notes: Matches MUST_CRAWL
+    Markers: *.md, *.ttl, README.md, coordination/, docs/, hooks/, memory/, package.json, queries/, src/, templates/, workflows/
+
+[25] ~/.expo
+    Classification: MAYBE_CRAWL
+    Searched: False
+    Hits: 0
+    Reason: Unrecognized custom directory with 7 items.
+    Notes: Custom user directory
+
+[26] ~/.kaggle
+    Classification: MAYBE_CRAWL
+    Searched: False
+    Hits: 0
+    Reason: Unrecognized custom directory with 1 items.
+    Notes: Custom user directory
+
+[27] ~/pigsty-supabase-osx
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 0
+    Reason: Contains project markers: README.md, docs/
+    Notes: Matches MUST_CRAWL
+    Markers: README.md, docs/
+
+[28] ~/cell8
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 0
+    Reason: Contains project markers: docs/, src/
+    Notes: Matches MUST_CRAWL
+    Markers: docs/, src/
+
+[29] ~/.speckit-ralph
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 0
+    Reason: Contains project markers: *.md
+    Notes: Matches MUST_CRAWL
+    Markers: *.md
+
+[30] ~/ai-first-2026
+    Classification: MUST_CRAWL
+    Searched: True
+    Hits: 0
+    Reason: Contains project markers: *.md, README.md, package.json
+    Notes: Matches MUST_CRAWL
+    Markers: *.md, README.md, package.json
+
+
+HIGH-RELEVANCE HITS
+--------------------------------------------------------------------------------
+
+~/.cursor (56 hits, 2191 files scanned)
+  ~/.cursor/plans/knowledge_hooks_event_integration_7ff0ce58.plan.md
+    Line 2: name: Knowledge Hooks Event Integration
+    Line 3: overview: Extend the knowledge hooks ontology to support Claude Code event-based hooks while maintai
+    Line 82: content: Create docs/knowledge-hooks-claude-integration.md documenting Claude hooks → knowledge hook
+    Line 89: # Knowledge Hooks: Claude Code Event Integration
+    Line 93: Extend the knowledge hooks system to support event-based execution triggered by Claude Code runtime 
+    Line 237: **Add Knowledge Hooks Integration Guide:**
+    Line 239: - Create `docs/knowledge-hooks-claude-integration.md`:
+    Line 240: - Explains Claude hooks → knowledge hooks mapping
+    Line 252: 6. `docs/knowledge-hooks-claude-integration.md` - New file for integration guide
+    Line 271: 1. Implement knowledge hook runner that:
+    Line 281: - Python entrypoint: `knowledge_hook_runner(event, payload)`
+  ~/.cursor/plans/knowledge_hook_engine_implementation_b83ab507.plan.md
+    Line 2: name: Knowledge Hook Engine Implementation
+    Line 3: overview: Implement the production line controller hook engine that executes event-based knowledge h
+    Line 6: content: Create src/specify_cli/ofmf/knowledge_hook_engine.py with HookEngine class, safety guards (
+    Line 39: content: Create tests/ofmf/test_knowledge_hook_engine.py with tests for pack gating, planning, execu
+    Line 44: content: Update docs/knowledge-hooks-claude-integration.md and docs/hook-authoring-guide.md with eng
+    Line 50: # Knowledge Hook Engine: Production Line Controller
+    Line 54: Implement the hook engine that executes event-based knowledge hooks with strict safety guards. The e
+    Line 71: ### 1. Create Hook Engine Module (`src/specify_cli/ofmf/knowledge_hook_engine.py`)
+    Line 212: """Execute event-based knowledge hooks."""
+    Line 215: ### 9. Add Tests (`tests/ofmf/test_knowledge_hook_engine.py`)
+    Line 233: - `docs/knowledge-hooks-claude-integration.md` - Add engine architecture section
+    Line 239: 1. `src/specify_cli/ofmf/knowledge_hook_engine.py` - Main engine class
+    Line 245: 7. `tests/ofmf/test_knowledge_hook_engine.py` - Test suite
+    Line 251: 3. `docs/knowledge-hooks-claude-integration.md` - Document engine
+  ~/.cursor/plans/knowledge_hook_engine_retrofit_0ee98ad6.plan.md
+    Line 2: name: Knowledge Hook Engine Retrofit
+    Line 3: overview: Retrofit the existing OFMFEngine to support event-based knowledge hooks by extending exist
+    Line 48: content: Create tests/ofmf/test_knowledge_hook_engine.py with tests for event-based hooks, pack gati
+    Line 54: # Knowledge Hook Engine: Retrofit Existing Implementation
+    Line 58: Retrofit the existing `OFMFEngine` to support event-based knowledge hooks by extending existing comp
+    Line 279: """Execute event-based knowledge hooks."""
+    Line 284: **File:** `tests/ofmf/test_knowledge_hook_engine.py` (new file)
+    Line 319: 5. `tests/ofmf/test_knowledge_hook_engine.py` (new):
+  ~/.cursor/plans/unified_knowledge_hook_engine_f47ff214.plan.md
+    Line 2: name: Unified Knowledge Hook Engine
+    Line 48: content: "Update documentation to reflect unified execution model: knowledge-hooks-claude-integratio
+    Line 54: # Unified Knowledge Hook Engine: Single Implementation
+    Line 112: - `KH = Namespace("urn:ofmf:kh#")` - Knowledge Hooks namespace (already correct)
+    Line 425: - `docs/knowledge-hooks-claude-integration.md` - Document unified execution model
+  ~/.cursor/projects/Users-sac-unrdf/terminals/671265.txt
+    Line 32: npm notice 4.4kB  ARTIFACTS/diataxis/@unrdf/chatman-equation/diataxis.json
+    Line 258: npm notice 1.0kB  OUT/@unrdf/chatman-equation/explanation/explanation.md
+    Line 259: npm notice 715B   OUT/@unrdf/chatman-equation/how-to/howto-howto-handle-errors.md
+    Line 260: npm notice 780B   OUT/@unrdf/chatman-equation/how-to/howto-howto-integrate-with-chatman-equation.md
+    Line 261: npm notice 710B   OUT/@unrdf/chatman-equation/how-to/howto-howto-use-the-cli.md
+    Line 262: npm notice 963B   OUT/@unrdf/chatman-equation/index.md
+    Line 263: npm notice 982B   OUT/@unrdf/chatman-equation/reference/reference.md
+    Line 264: npm notice 817B   OUT/@unrdf/chatman-equation/tutorials/tutorial-tutorial-getting-started-with-unrdf
+    Line 1600: npm notice 2.0kB  examples/knowledge-hook-manager-usage.mjs
+    Line 1632: npm notice 10.7kB src/hooks/knowledge-hook-engine.mjs
+    Line 1633: npm notice 6.6kB  src/hooks/knowledge-hook-manager.mjs
+    Line 2031: npm notice 📦  @unrdf/chatman-equation@26.4.3
+    Line 2069: npm notice 2.8kB  generated/reference/chatman-equation-api.md
+    Line 2099: npm notice 2.8kB  test/.test-output/reference/chatman-equation-api.md
+    Line 2118: npm notice name:          @unrdf/chatman-equation
+    Line 2120: npm notice filename:      unrdf-chatman-equation-26.4.3.tgz
+    Line 2128: + @unrdf/chatman-equation@26.4.3
+    Line 2573: npm notice 15.0kB src/knowledge-hook-manager.mjs
+
+~/clnrm (2 hits, 868 files scanned)
+  ~/clnrm/crates/clnrm-core/src/truex/admission.rs
+    Line 3: //! Enforces the core mathematical invariant: `R ⊢ A = μ(O*)`
+  ~/clnrm/crates/clnrm-core/src/synthesis/mod.rs
+    Line 127: //! - **AHI Integration**: Closed-loop with A = μ(O) universe
+
+~/gitvan (760 hits, 843 files scanned)
+  ~/gitvan/docs/FINAL_RELEASE_REVIEW_v4.0.0.md
+    Line 124: 2. **Knowledge Hooks** (validation/knowledge-hooks.london.test.mjs)
+    Line 349: 2. Knowledge Hooks (predicate evaluation)
+  ~/gitvan/docs/V3-PREPARATION-FINAL-SUMMARY.md
+    Line 94: - ✅ **Knowledge Hooks**: Operational
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-GIT-LIFECYCLE-REPORT.md
+    Line 1: # Knowledge Hooks Git Lifecycle Integration - Complete Report
+    Line 8: Knowledge hooks now work seamlessly with the full Git lifecycle. The integration between Git operati
+    Line 13: - ✅ Created `jobs/knowledge-hooks-git-integration.mjs`
+    Line 14: - ✅ Integrates Knowledge Hooks with Git lifecycle events
+    Line 17: - ✅ Triggers knowledge hook evaluation with Git context
+    Line 39: ✓ should evaluate knowledge hooks on commit
+    Line 47: ✅ Test 1: Evaluating Knowledge Hooks - PASSED
+    Line 49: ✅ Test 3: Evaluating Knowledge Hooks after commit - PASSED
+    Line 51: ✅ Test 5: Evaluating Knowledge Hooks after merge - PASSED
+    Line 64: ## 🧠 Knowledge Hooks Functionality
+    Line 69: 3. **Knowledge Hook Job Executes** (`knowledge-hooks-git-integration`)
+    Line 71: 5. **Knowledge Hooks Evaluated** (predicates checked against knowledge graph)
+    Line 92: Git Operation → Git Hook → Knowledge Hook Job → Hook Orchestrator → Workflow Execution
+    Line 111: - Knowledge hooks detect when code changes
+    Line 133: 1. ✅ **Integration Complete** - Knowledge hooks work with Git lifecycle
+    Line 153: Knowledge hooks now work seamlessly with the full Git lifecycle, providing a powerful foundation for
+  ~/gitvan/docs/PHASES-1-4-FINAL-REPORT.md
+    Line 562: 3. **Hook System** - Integrates with knowledge hooks
+  ~/gitvan/docs/GIT-NATIVE-STRESS-TEST-REPORT.md
+    Line 5: The Git-native architecture has been successfully implemented and integrated with the Knowledge Hook
+    Line 130: The Git-native architecture has been successfully implemented and integrated with the Knowledge Hook
+    Line 138: The system is ready for production use with the Git-native architecture providing a solid foundation
+    Line 144: ✅ Knowledge Hook Evaluation: WORKING
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-END-TO-END-VERIFICATION-REPORT.md
+    Line 1: # Knowledge Hooks End-to-End Verification Report
+    Line 5: **Scope:** Comprehensive end-to-end testing of GitVan Knowledge Hook capabilities
+    Line 9: Successfully verified that all Knowledge Hook capabilities work end-to-end. The GitVan Knowledge Hoo
+    Line 14: - **Knowledge Hooks Suite Test**: 6/6 tests passed
+    Line 132: The GitVan Knowledge Hook system has been **successfully verified** to work end-to-end with:
+    Line 157: The Knowledge Hook system is now a **fully functional, enterprise-grade knowledge automation platfor
+    Line 162: **Verification Scope**: Complete end-to-end Knowledge Hook functionality
+  ~/gitvan/docs/SCRUM-AT-SCALE-SYSTEM-REPORT.md
+    Line 4: Successfully implemented a fully working Scrum at Scale system with knowledge hooks integration.
+    Line 24: ### Knowledge Hooks Executed
+    Line 36: - **Knowledge Hooks**: 5/5 active
+  ~/gitvan/docs/CLI_REFERENCE.md
+    Line 95: 3. **Hook Commands** - Knowledge hook management
+    Line 440: List all knowledge hooks.
+    Line 493: Enable a knowledge hook.
+    Line 507: Disable a knowledge hook.
+    Line 520: Test a knowledge hook.
+    Line 1080: - **Hook Commands**: Knowledge hook management
+  ~/gitvan/docs/V3-PREPARATION-PLAN.md
+    Line 17: - **Knowledge Hook Engine**: SPARQL-driven autonomous intelligence
+    Line 56: #### 7. **🔴 CRITICAL: Knowledge Hooks Gaps**
+  ~/gitvan/docs/RISK_MITIGATION_ACTION_PLAN_v4.0.0.md
+    Line 159: npm test -- tests/developer-workflow-knowledge-hooks.test.mjs
+  ~/gitvan/docs/OLLAMA-RDF-INTEGRATION-REPORT.md
+    Line 5: ✅ **Successfully implemented comprehensive Ollama RDF integration** using the [Ollama AI Provider V2
+    Line 21: - ✅ **Knowledge Hook Generation**: Generate Knowledge Hook definitions using AI
+    Line 28: - ✅ **Knowledge Hook Systems**: Generate complete Knowledge Hook systems
+    Line 41: - ✅ **Advanced Features**: Complete workflows, Knowledge Hook systems, streaming
+    Line 74: 6. **Knowledge Hook Generation**
+    Line 94: 2. **Knowledge Hook System Generation**
+    Line 130: ### **Knowledge Hook System**
+    Line 154: - ✅ **Knowledge Hook Generation**: Working
+    Line 188: ### **GitVan Knowledge Hook Integration**
+    Line 189: - 🎯 **Hook Generation**: Generate Knowledge Hook definitions using AI
+    Line 202: The Ollama RDF integration provides a powerful AI-powered RDF processing system that seamlessly inte
+    Line 207: - **Generate Knowledge Hooks** for the GitVan system
+    Line 213: - 🛠️ **GitVan Integration**: Seamless integration with Knowledge Hooks
+    Line 218: The system is ready for production use and provides a robust foundation for AI-powered RDF data proc
+  ~/gitvan/docs/GITVAN-HOOKS-ARCHITECTURE-AUDIT-REPORT.md
+    Line 5: **Objective:** Transition from Git hooks to Knowledge Hook architecture where Git hooks only serve a
+    Line 9: The audit reveals that GitVan currently has a **mixed architecture** with both traditional Git hooks
+    Line 18: - **Impact:** Bypasses Knowledge Hook system entirely
+    Line 29: - **Problem:** Creates actual `.git/hooks` files that bypass Knowledge Hook system
+    Line 35: - **Impact:** Inconsistent architecture between Git hooks and Knowledge hooks
+    Line 39: #### 1. **Knowledge Hook System**
+    Line 47: - **Function:** Git hooks as signals triggering Knowledge Hook evaluation
+    Line 49: #### 3. **Knowledge Hooks Suite**
+    Line 50: - **Location:** `hooks/knowledge-hooks-suite/`
+    Line 65: // SHOULD BE (KNOWLEDGE HOOK):
+    Line 66: // Git hook triggers Knowledge Hook evaluation via HookOrchestrator
+    Line 74: // SHOULD BE (KNOWLEDGE HOOK):
+    Line 75: // Git hooks should only trigger Knowledge Hook evaluation
+    Line 87: // SHOULD BE (KNOWLEDGE HOOK):
+    Line 93: #### 1. **Knowledge Hook Orchestrator** (`src/hooks/HookOrchestrator.mjs`)
+    Line 100: - ✅ Triggers Knowledge Hook evaluation
+    Line 103: #### 3. **Knowledge Hooks Suite** (`hooks/knowledge-hooks-suite/`)
+    Line 115: // REPLACE: With Knowledge Hook integration
+    Line 126: // REPLACE: With Knowledge Hook evaluation
+    Line 133: // REPLACE: With Knowledge Hook signal setup
+    Line 135: // Git hooks should only trigger Knowledge Hook evaluation
+    Line 147: // Git hooks trigger Knowledge Hook evaluation
+    Line 151: #### 2.2 **Create Knowledge Hook Registry**
+    Line 153: // NEW: Central registry for all Knowledge Hooks
+    Line 158: ### **Phase 3: Implement Pure Knowledge Hook Architecture**
+    Line 162: // Git hooks ONLY trigger Knowledge Hook evaluation
+    Line 167: #### 3.2 **Knowledge Hook Evaluation**
+    Line 179: 3. **Create Knowledge Hook integration** - All hooks through HookOrchestrator
+    Line 183: 2. **Update CLI commands** - Integrate with Knowledge Hook system
+    Line 187: 1. **Optimize performance** - Knowledge Hook evaluation efficiency
+    Line 188: 2. **Add more SPARQL predicates** - Expand Knowledge Hook capabilities
+    Line 194: - ✅ **Pure Knowledge Hook System** - All automation through SPARQL predicates
+    Line 203: - ✅ **Performance Optimized** - Efficient Knowledge Hook evaluation
+    Line 207: The audit reveals that GitVan needs to transition from a **mixed architecture** to a **pure Knowledg
+    Line 212: 3. **Standardize all hook references** to use Knowledge Hook system
+    Line 215: This transition will ensure that GitVan leverages its full Knowledge Hook Engine capabilities and ma
+  ~/gitvan/docs/GitVan-v3.3.0-BlueOcean-PhD-Thesis.tex
+    Line 56: The Impact of Semantic Git Lifecycle Knowledge Hooks on Developer Productivity,\\
+    Line 77: This thesis applies Blue Ocean Strategy principles to analyze GitVan v3.3.0, a semantic git lifecycl
+    Line 124: \item \textbf{Create}: Semantic git analytics, reactive knowledge hooks, composable workflows
+    Line 157: \item Knowledge hooks react intelligently to patterns, triggering automation
+    Line 328: Knowledge Hook Manager & 20\% & 20\% \\
+    Line 680: Manual Workflow Triggering & Reactive knowledge hooks on git events \\
+    Line 720: Real-time Observability & OpenTelemetry + knowledge hooks \\
+    Line 743: Reactive Knowledge Hooks & Automatic response to git patterns \\
+    Line 1339: \item \textbf{Semantic knowledge hooks emerge as a new development paradigm}
+    Line 1352: \item Composable knowledge hooks (create new automation possibilities)
+  ~/gitvan/docs/CLI-AUDIT-REPORT.md
+    Line 49: - `hooks` - Knowledge Hook Engine (list/evaluate/validate/stats/create)
+    Line 151: - **Initial Load:** ~2-3 seconds (Knowledge Hook Registry initialization)
+    Line 156: - Lazy load Knowledge Hook Registry for commands that don't need it
+  ~/gitvan/docs/GITVAN-V3-README.md
+    Line 150: - Autonomous execution via unrdf Knowledge Hooks
+  ~/gitvan/docs/GITVAN_IMPLEMENTATION_REALITY_CHECK.md
+    Line 62: ### 1. Knowledge Hook Engine
+    Line 66: > "21 Git lifecycle operations with knowledge hooks"
+    Line 77: - Tests exist: `knowledge-hooks-suite.test.mjs`, `knowledge-hooks-stress.test.mjs`
+    Line 193: - ❌ Knowledge hooks stress tests (20+ variants, excessive)
+    Line 326: 3. Knowledge hooks architecture
+    Line 370: | Knowledge Hooks | ✅ Complete (21 ops) | ⚠️ 57% complete (12/21) | GAP-CLOSURE-PLAN.md |
+  ~/gitvan/docs/V3-TEST-VALIDATION-PLAN.md
+    Line 36: │   ├── knowledge-hooks-end-to-end.test.mjs           ⚠️  End-to-end (needs update)
+    Line 37: │   ├── knowledge-hooks-complete-suite.test.mjs       ⚠️  Complete suite (needs update)
+    Line 38: │   ├── knowledge-hooks-stress.test.mjs               ✅ Stress test
+    Line 283: it('should extract knowledge hooks', async () => {
+    Line 908: tests/knowledge-hooks-*.test.mjs                    # CONSOLIDATE to tests/hooks/
+  ~/gitvan/docs/EXPLANATION.md
+    Line 125: ### 2. Knowledge Hook Manager (20% Value)
+    Line 363: ### 3. Knowledge Hooks: Reactive Workflows
+    Line 480: Knowledge hooks
+    Line 522: | Knowledge hook manager | 3MB (rule indexes) |
+  ~/gitvan/docs/GITVAN-V3-ARCHITECTURE.md
+    Line 341: - Integrate with Knowledge Hooks
+    Line 693: - Proven Knowledge Hooks pattern
+    Line 699: - ✅ Leverage Knowledge Hooks
+  ~/gitvan/docs/TECHNOLOGY_EVALUATION_MATRIX.md
+    Line 297: - ✅ Basic knowledge hook example
+  ~/gitvan/docs/DOCKER-CLEANROOM-GAPS-REPORT.md
+    Line 97: ## 3. Knowledge Hook Engine Implementation Gap
+    Line 99: **Issue:** While the README extensively documents the Knowledge Hook Engine with examples of:
+    Line 105: **Reality:** There are no CLI commands to interact with these hooks, making the entire Knowledge Hoo
+    Line 202: 1. **Complete Knowledge Hook Engine Implementation**
+    Line 219: The Docker cleanroom test reveals that while GitVan's initialization process is robust and creates a
+  ~/gitvan/docs/PHASE1_IMPLEMENTATION_SUMMARY.md
+    Line 5: Successfully implemented Phase 1 of GitVan's git lifecycle knowledge hooks system. This foundation e
+    Line 42: - **Purpose:** Evaluates knowledge hooks on git events
+    Line 251: 1. **HookOrchestrator** - Evaluates knowledge hooks on git events
+  ~/gitvan/docs/WORKFLOW-TESTS-STATUS-REPORT.md
+    Line 24: - 3 knowledge hooks set up and operational
+    Line 27: 4. **Developer Workflow Knowledge Hooks** ✅
+    Line 68: - ✅ **Knowledge Hooks**: 3 intelligent automation hooks
+  ~/gitvan/docs/TEST-CLEANUP-PLAN-V3.md
+    Line 13: - **Knowledge Hooks** - Extensive stress testing (15+ variants)
+    Line 26: ### **Phase 3: Knowledge Hooks Optimization (Week 3)**
+    Line 27: Dramatically reduce knowledge hooks stress testing while maintaining essential functionality.
+    Line 40: - `developer-workflow-knowledge-hooks.test.mjs`
+    Line 42: - `tests/developer-workflow-knowledge-hooks.test.mjs`
+    Line 62: - `tests/developer-workflow-knowledge-hooks.test.mjs` - Developer workflow
+    Line 186: ## Phase 3: Knowledge Hooks Optimization
+    Line 189: Dramatically reduce knowledge hooks stress testing while maintaining essential functionality.
+    Line 191: ### Current Knowledge Hooks Tests (20+ files)
+    Line 193: - `knowledge-hooks-breaking-point-benchmark.test.mjs`
+    Line 194: - `knowledge-hooks-extreme-breaking-point.test.mjs`
+    Line 195: - `knowledge-hooks-one-million-breaking-point.test.mjs`
+    Line 196: - `knowledge-hooks-timer-stress.test.mjs`
+    Line 197: - `knowledge-hooks-real-breaking-point.test.mjs`
+    Line 198: - `knowledge-hooks-millisecond-timers.test.mjs`
+    Line 199: - `knowledge-hooks-dark-matter-workloads.test.mjs`
+    Line 200: - `knowledge-hooks-complete-suite.test.mjs`
+    Line 201: - `knowledge-hooks-suite.test.mjs`
+    Line 202: - `knowledge-hooks-stress.test.mjs`
+    Line 207: 1. `knowledge-hooks-end-to-end.test.mjs` - E2E validation
+    Line 208: 2. `knowledge-hooks-simple-verification.test.mjs` - Basic functionality
+    Line 209: 3. `knowledge-hooks-git-lifecycle.test.mjs` - Git integration
+    Line 214: rm knowledge-hooks-breaking-point-benchmark.test.mjs
+    Line 215: rm knowledge-hooks-extreme-breaking-point.test.mjs
+    Line 216: rm knowledge-hooks-one-million-breaking-point.test.mjs
+    Line 217: rm knowledge-hooks-timer-stress.test.mjs
+    Line 218: rm knowledge-hooks-real-breaking-point.test.mjs
+    Line 219: rm knowledge-hooks-millisecond-timers.test.mjs
+    Line 220: rm knowledge-hooks-dark-matter-workloads.test.mjs
+    Line 221: rm knowledge-hooks-complete-suite.test.mjs
+    Line 222: rm knowledge-hooks-suite.test.mjs
+    Line 223: rm knowledge-hooks-stress.test.mjs
+    Line 226: rm tests/knowledge-hooks-*.test.mjs
+    Line 230: - **Knowledge Hooks Tests:** 20+ files → 3 essential files
+    Line 276: mkdir -p tests/{workflow,git,template,composables,knowledge-hooks,cli}
+    Line 281: mv tests/knowledge-hooks-*.test.mjs tests/knowledge-hooks/
+    Line 328: - **Knowledge Hooks:** 20+ stress test variants
+    Line 335: - **Knowledge Hooks:** 3 essential files
+    Line 357: 3. **Week 3:** Knowledge hooks optimization
+  ~/gitvan/docs/GITVAN-V3-IMPLEMENTATION-PLAN.md
+    Line 808: - **unrdf**: RDF knowledge engine (300+ functions, Knowledge Hooks)
+  ~/gitvan/docs/80-20-ARCHITECTURE.md
+    Line 82: ### 3. Knowledge Hooks: Reactive Workflows
+    Line 197: // Knowledge hook fires automatically when:
+    Line 347: | Reactive behavior | Message queue + consumers | Knowledge hooks |
+    Line 359: 3. **Leverage Knowledge Hooks**: Build reactive workflows without message queues
+  ~/gitvan/docs/PRODUCTION-READINESS-ASSESSMENT.md
+    Line 404: **Status:** Reactive knowledge hooks fully implemented
+  ~/gitvan/docs/DEVELOPER-CENTRIC-KNOWLEDGE-HOOKS-IMPLEMENTATION-REPORT.md
+    Line 1: # Developer-Centric Knowledge Hooks Implementation Report
+    Line 10: Successfully implemented a comprehensive **developer-centric Knowledge Hook system** that transforms
+    Line 18: - ✅ **Built comprehensive Knowledge Hook system** with SPARQL intelligence
+    Line 36: ### **Knowledge Hook Files Created**
+    Line 49: jobs/developer-workflow-knowledge-hooks.mjs
+    Line 51: ├── Knowledge Hook Orchestrator integration
+    Line 58: tests/developer-workflow-knowledge-hooks.test.mjs
+    Line 59: ├── Knowledge Hook file validation
+    Line 65: ## 🧠 **Knowledge Hook Architecture**
+    Line 80: Each Knowledge Hook uses sophisticated SPARQL predicates to evaluate developer context:
+    Line 106: Each Knowledge Hook includes comprehensive workflow pipelines:
+    Line 182: - ✅ **15 tests passed** - All developer workflow Knowledge Hooks validated
+    Line 183: - ✅ **Knowledge Hook file validation** - Proper Turtle syntax and structure
+    Line 227: ### **After: Developer-Centric Knowledge Hooks**
+    Line 255: Successfully transformed GitVan from a **Git-centric automation tool** to a **developer-centric Know
+    Line 260: - ✅ **Knowledge Hook architecture** - SPARQL-driven intelligence
+    Line 264: The developer-centric Knowledge Hook system is now ready for production use and provides a solid fou
+  ~/gitvan/docs/MAC-M3-MAX-INTEGRATION-SUMMARY.md
+    Line 2: ## Native System Integration with Developer-Centric Knowledge Hooks
+    Line 12: The Knowledge Hook system uses **multiple intelligent sensors** to detect when you start your work d
+    Line 260: // Knowledge Hook evaluates:
+    Line 278: // Knowledge Hook evaluates:
+    Line 296: // Knowledge Hook evaluates:
+    Line 337: - ✅ **Knowledge Hook architecture** - SPARQL-driven intelligence
+  ~/gitvan/docs/knowledge-hooks-optimal-architecture.md
+    Line 1: # Knowledge Hooks Optimal Architecture - C4 Diagram
+    Line 14: subgraph "GitVan Knowledge Hooks System"
+    Line 15: KH[Knowledge Hook Engine]
+    Line 38: subgraph "GitVan Knowledge Hooks System"
+  ~/gitvan/docs/TEST-CLEANUP-PLAN-V3-SUMMARY.md
+    Line 17: - Targets knowledge hooks stress tests: 20+ variants
+    Line 20: - Organizes tests by GitVan system (workflow, git, template, composables, knowledge-hooks, cli)
+    Line 36: ### **Phase 3: Knowledge Hooks Optimization**
+    Line 51: - **Knowledge Hooks:** 20+ stress test variants
+    Line 58: - **Knowledge Hooks:** 3 essential files
+    Line 101: ### **Week 3: Knowledge Hooks Optimization**
+    Line 103: - Keep only essential knowledge hooks tests
+  ~/gitvan/docs/FORMAL-MODEL-DEMONSTRATION-REPORT.md
+    Line 1: # Formal Knowledge Hooks Model Demonstration Report
+    Line 33: ### 5. Knowledge Hook Primitive ✅
+    Line 82: The formal knowledge hooks model has been successfully implemented and demonstrated. All mathematica
+  ~/gitvan/docs/quickstart.md
+    Line 10: - **Semantic Graphs** - Query workflows with SPARQL, federated knowledge hooks
+    Line 500: **Knowledge Hooks (RDF/SPARQL):**
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-STRESS-TEST-REPORT.md
+    Line 1: # Knowledge Hooks Stress Test Report
+    Line 5: The Knowledge Hook system has been successfully stress tested with comprehensive scenarios covering 
+    Line 137: The Knowledge Hook system has demonstrated exceptional robustness and reliability under extreme stre
+    Line 145: The stress tests confirm that the Knowledge Hook system is production-ready and can handle real-worl
+    Line 149: - `tests/knowledge-hooks-stress.test.mjs` - Comprehensive stress tests
+    Line 150: - `tests/knowledge-hooks-timer-stress.test.mjs` - Timer-specific stress tests
+    Line 151: - `tests/knowledge-hooks-git-lifecycle.test.mjs` - Git lifecycle integration tests
+    Line 157: pnpm test tests/knowledge-hooks-stress.test.mjs
+    Line 160: pnpm test tests/knowledge-hooks-timer-stress.test.mjs
+    Line 163: pnpm test tests/knowledge-hooks-git-lifecycle.test.mjs
+  ~/gitvan/docs/RELEASE_BLOCKERS_v4.0.0.md
+    Line 94: 2. **Knowledge Hooks** (validation/knowledge-hooks.london.test.mjs)
+  ~/gitvan/docs/WORKFLOW-KNOWLEDGE-HOOKS-DOCKER-TEST-REPORT.md
+    Line 1: # GitVan Workflow & Knowledge Hooks Docker Testing Report
+    Line 20: - Creates sample knowledge hooks (`version-change.ttl`, `critical-issues.ttl`)
+    Line 65: #### 2. **Knowledge Hooks Management**
+    Line 147: 2. **Knowledge Hooks Management**: Commands exist in help but not implemented
+    Line 175: 2. **Complete Hooks System**: Implement knowledge hooks evaluation
+  ~/gitvan/docs/OXIGRAPH_INTEGRATION_PLAN.md
+    Line 344: Knowledge Hooks (RDF-based)
+    Line 364: Knowledge Hooks (RDF-based)
+    Line 1743: **Problem**: Knowledge hooks need to evaluate state across process restarts
+    Line 1753: // src/composables/persistent-knowledge-hooks.mjs
+  ~/gitvan/docs/SCRUM-AT-SCALE-KNOWLEDGE-HOOKS-E2E-TEST-REPORT.md
+    Line 1: # Scrum at Scale Knowledge Hooks E2E Test Report
+    Line 5: ✅ **Successfully created comprehensive Scrum at Scale Knowledge Hooks E2E test** demonstrating the c
+    Line 16: - ✅ **Sprint Data**: Q1 2025 Sprint with Knowledge Hooks + Ollama AI focus
+    Line 21: ### **3. Knowledge Hooks** (3 hooks)
+    Line 29: - ✅ **Hook Evaluation**: All 3 Knowledge Hooks evaluated successfully
+    Line 79: ### **Knowledge Hook Engine**
+    Line 159: The Scrum at Scale Knowledge Hooks E2E test successfully demonstrates:
+    Line 161: - **Complete Integration**: Knowledge Hooks seamlessly integrated with Scrum at Scale workflows
+    Line 167: The test provides a solid foundation for implementing Scrum at Scale Knowledge Hooks in production e
+    Line 176: The Scrum at Scale Knowledge Hooks system is ready for production deployment! 🎉
+  ~/gitvan/docs/SCRUM-AT-SCALE-COMPLETE-SUMMARY.md
+    Line 5: I have successfully built and tested a **fully working Scrum at Scale workflow system** that integra
+    Line 13: - ✅ **5 Knowledge Hooks**: Intelligent automation for all Scrum events
+    Line 44: 3. **Predictive Capabilities**: Knowledge hooks enable:
+    Line 81: 4. **Knowledge Hooks**: Intelligent automation triggers
+  ~/gitvan/docs/CLEANROOM-TEST-PLAN-V3.md
+    Line 34: - Knowledge Hook Engine functionality
+  ~/gitvan/docs/RDF_SPARQL_GUIDE.md
+    Line 627: ### Example 1: Knowledge Hook with RDF
+    Line 791: - Integration with workflows and knowledge hooks
+  ~/gitvan/docs/UNRDF_REALITY_CHECK.md
+    Line 39: - **Knowledge Hooks** - Policy-driven automation
+  ~/gitvan/docs/TURTLE-WORKFLOW-SYSTEM-FIXED-FINAL-REPORT.md
+    Line 17: ### ✅ **Knowledge Hooks System** - WORKING
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-GIT-LIFECYCLE-GAPS-REPORT.md
+    Line 1: # Knowledge Hooks Git Lifecycle Detection Gaps - Comprehensive Report
+    Line 5: **Scope:** Git lifecycle operations not detected by Knowledge Hooks
+    Line 9: This report identifies all Git lifecycle operations that are **NOT** currently detected by the Knowl
+    Line 11: ## Current Knowledge Hooks Detection Status
+    Line 15: Based on analysis of `jobs/knowledge-hooks-git-integration.mjs` and `src/core/hookable.mjs`:
+    Line 35: - **Knowledge Hook Value**: Detect incoming changes from external contributors
+    Line 38: - Trigger knowledge hook evaluation for incoming contributions
+    Line 43: - **Knowledge Hook Value**: Process all changes after successful push
+    Line 51: - **Knowledge Hook Value**: Branch-specific knowledge processing
+    Line 54: - Targeted knowledge hook evaluation per branch
+    Line 61: - **Knowledge Hook Value**: Enhance commit messages with knowledge context
+    Line 69: - **Knowledge Hook Value**: Ensure commit messages contain knowledge metadata
+    Line 77: - **Knowledge Hook Value**: Validate knowledge consistency before history rewriting
+    Line 85: - **Knowledge Hook Value**: Update knowledge graph after history changes
+    Line 95: - **Knowledge Hook Value**: Validate knowledge state before branch switches
+    Line 103: - **Knowledge Hook Value**: Preserve knowledge-related Git objects
+    Line 113: - **Knowledge Hook Value**: Process knowledge from patch operations
+    Line 121: - **Knowledge Hook Value**: Validate knowledge before patch application
+    Line 129: - **Knowledge Hook Value**: Update knowledge graph after patches
+    Line 139: - **Knowledge Hook Value**: Validate knowledge before merges
+    Line 163: // Add to knowledge-hooks-git-integration.mjs
+    Line 189: ## 🎯 **Knowledge Hook Use Cases for Undetected Operations**
+    Line 231: The Knowledge Hooks system currently detects only **23.8%** of available Git lifecycle operations. T
+    Line 237: Implementing support for these undetected operations would significantly enhance the Knowledge Hooks
+  ~/gitvan/docs/GIT-LIFECYCLE-PHASE2-IMPLEMENTATION.md
+    Line 5: Phase 2 of the Git Lifecycle Knowledge Hooks system has been successfully implemented, delivering ad
+    Line 585: Phase 2 implementation delivers production-ready async processing, correlation, and visualization ca
+  ~/gitvan/docs/GIT_LIFECYCLE_PHASE1.md
+    Line 1: # GitVan v3.2.0 — Git Lifecycle Knowledge Hooks (Phase 1)
+    Line 5: Phase 1 implements the foundation for git lifecycle knowledge hooks in GitVan. This system captures 
+    Line 186: Evaluates knowledge hooks when git lifecycle events occur.
+  ~/gitvan/docs/UNRDF_INTEGRATION_README.md
+    Line 8: - Knowledge Hooks (policy-driven automation)
+  ~/gitvan/docs/WORKFLOW-NAMING-CONVENTION-FIX-REPORT.md
+    Line 36: - 3 knowledge hooks set up and operational
+  ~/gitvan/docs/UNRDF_INTEGRATION_RECOMMENDATION.md
+    Line 44: │ • Knowledge Hooks                       │
+    Line 74: | Knowledge Hooks | ✅ Complete | defineHook, registerHook, TransactionManager |
+    Line 97: | Knowledge Hooks | Partial | Complete | 40% | **BRIDGE** JTBD → unrdf |
+    Line 335: **Goal**: Bridge GitVan JTBD hooks to unrdf Knowledge Hooks
+  ~/gitvan/docs/JTBD-HOOKS-TURTLE-FORMAT-CORRECTION-REPORT.md
+    Line 5: **Issue:** JTBD hooks were incorrectly implemented using GitVan job system instead of Knowledge Hook
+    Line 27: The JTBD hooks should be implemented using the **Knowledge Hook system** format:
+    Line 30: # CORRECT - Knowledge Hook System
+    Line 50: ### GitVan Job System vs Knowledge Hook System
+    Line 52: | Aspect | GitVan Job System | Knowledge Hook System |
+    Line 153: 5. **GitVan Native** - Proper integration with GitVan's Knowledge Hook Engine
+    Line 157: The JTBD hooks must be implemented using the **Knowledge Hook system** (Turtle format with SPARQL pr
+  ~/gitvan/docs/CODE_QUALITY_ANALYSIS_REPORT.md
+    Line 20: - Extensive workflow and knowledge hook systems
+    Line 91: 2. **Knowledge Hook Engine** (`src/hooks/`)
+    Line 250: | **Knowledge Hook Engine** | 60% | ⚠️ Partial | CLI exists, hooks/*.ttl exist, unclear execution |
+    Line 582: | Knowledge Hooks | ⚠️ Beta | With warnings |
+  ~/gitvan/docs/v3-GAPS-AND-OVERSTATED-FEATURES.md
+    Line 87: ### 2. Knowledge Hook Engine
+    Line 296: - ✅ Load and register Knowledge Hooks
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-GAPS-IMPLEMENTATION-COMPLETE-REPORT.md
+    Line 1: # Knowledge Hooks Capabilities Gaps - Implementation Complete Report
+    Line 5: **Scope:** All critical gaps in GitVan Knowledge Hook capabilities have been filled
+    Line 9: Successfully implemented all critical gaps identified in the Knowledge Hooks capabilities analysis. 
+    Line 32: - `hooks/knowledge-hooks-suite/update-git-state-validator.mjs`
+    Line 33: - `hooks/knowledge-hooks-suite/prepare-commit-msg-git-state-validator.mjs`
+    Line 34: - `hooks/knowledge-hooks-suite/commit-msg-git-state-validator.mjs`
+    Line 223: The GitVan Knowledge Hook system has been successfully transformed from a sophisticated prototype in
+    Line 251: **Implementation Scope**: Complete Knowledge Hook capabilities gap closure
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-DARK-MATTER-BREAKING-POINT-REPORT.md
+    Line 1: # Knowledge Hooks Dark Matter Breaking Point Report
+    Line 5: After extensive testing with **dark matter production workloads** and extreme stress testing, we hav
+    Line 165: The Knowledge Hook system has demonstrated **exceptional performance and resilience** under extreme 
+    Line 189: **The Knowledge Hook system is production-ready for extreme workloads. No breaking point was found w
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-COMPREHENSIVE-SUITE-IMPLEMENTATION-REPORT.md
+    Line 1: # Knowledge Hooks Comprehensive Suite - Implementation Complete
+    Line 9: I have successfully created a **comprehensive suite of knowledge hooks** that validate Git state by 
+    Line 15: hooks/knowledge-hooks-suite/
+    Line 30: jobs/knowledge-hooks-comprehensive-suite.mjs # Master integration job
+    Line 35: hooks/knowledge-hooks-suite/README.md # Comprehensive documentation
+    Line 40: tests/knowledge-hooks-suite.test.mjs # Complete test suite
+    Line 84: - **JSON reports** written to `reports/git-state/` and `reports/knowledge-hooks/`
+    Line 117: ### **✅ Existing Knowledge Hooks Tests**
+    Line 119: ✓ should evaluate knowledge hooks on commit
+    Line 179: - **Knowledge Hooks Reports**: `reports/knowledge-hooks/`
+    Line 216: The **Knowledge Hooks Comprehensive Suite** is now **fully implemented and tested**, providing:
+  ~/gitvan/docs/TESTS-NEEDING-REFACTORING.md
+    Line 24: 1. `tests/knowledge-hooks-end-to-end.test.mjs` - Uses `execSync("git init")`
+    Line 46: 19. `tests/scrum-at-scale-knowledge-hooks-e2e.test.mjs`
+    Line 55: 28. `tests/knowledge-hooks-timer-stress.test.mjs`
+    Line 56: 29. `tests/knowledge-hooks-timer-stress-test.mjs`
+    Line 57: 30. `tests/knowledge-hooks-suite.test.mjs`
+    Line 58: 31. `tests/knowledge-hooks-stress.test.mjs`
+    Line 59: 32. `tests/knowledge-hooks-stress-test.mjs`
+    Line 60: 33. `tests/knowledge-hooks-simple-verification.test.mjs`
+    Line 61: 34. `tests/knowledge-hooks-real-breaking-point.test.mjs`
+    Line 62: 35. `tests/knowledge-hooks-one-million-breaking-point.test.mjs`
+    Line 63: 36. `tests/knowledge-hooks-millisecond-timers.test.mjs`
+    Line 64: 37. `tests/knowledge-hooks-git-lifecycle.test.mjs`
+    Line 65: 38. `tests/knowledge-hooks-extreme-breaking-point.test.mjs`
+    Line 66: 39. `tests/knowledge-hooks-dark-matter-workloads.test.mjs`
+    Line 67: 40. `tests/knowledge-hooks-complete-suite.test.mjs`
+    Line 68: 41. `tests/knowledge-hooks-breaking-point-benchmark.test.mjs`
+    Line 103: Update indirect Git usage and knowledge hooks tests to use hybrid methods where appropriate.
+  ~/gitvan/docs/UNRDF-ARCHITECTURE.md
+    Line 17: - **First RDF-native hooks system** - Knowledge hooks bridge @unrdf/hooks to Bree scheduler
+    Line 55: - Knowledge hooks for reactive triggers
+    Line 299: **2. Knowledge Hooks Ontology (`gh:`)**
+    Line 634: | **Knowledge Hooks** | 8+ | 100+ | 85% |
+  ~/gitvan/docs/GitVan-v3.3.0-BlueOcean-PhD-Thesis-SUMMARY.md
+    Line 113: - Reactive knowledge hooks
+    Line 281: - GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md
+  ~/gitvan/docs/GITVAN-VALIDATION-ARCHITECTURE-V3.md
+    Line 339: tests/performance/knowledge-hooks-stress.test.mjs     # ✅ EXISTS
+    Line 353: 2. ⚠️  "Knowledge Hook Engine" → PARTIALLY ACCURATE (engine works, CLI integration incomplete)
+    Line 397: #### Gap 3: Knowledge Hooks Claims vs Reality
+    Line 401: ## 🧠 Knowledge Hook Engine
+    Line 675: meta: { name: 'hooks', description: 'Knowledge Hook commands' },
+  ~/gitvan/docs/GITVAN_CAPABILITY_BENCHMARK_REPORT.md
+    Line 31: │   ├── hooks/           4 files (Knowledge Hook system)
+    Line 61: ### 2.1 Knowledge Hook Engine 🧠
+    Line 78: | **Git Signal Integration** | ✅ IMPLEMENTED | `src/core/hookable.mjs` (277 LOC) | Git hooks → Knowl
+    Line 234: | **Knowledge Hooks Suite** | 18 .mjs files | ✅ IMPLEMENTED | Git lifecycle validators and analyzers
+    Line 304: - All Knowledge Hook, Workflow SPARQL steps, and RDF operations depend on this
+    Line 321: Knowledge Hooks:        31 test files
+    Line 394: | **Knowledge Hook Engine** | ✅ 95% | ⚠️ 40% | Missing @zazuko/env |
+    Line 425: - **Impact**: Breaks RDF/SPARQL, Knowledge Hooks, Workflows
+    Line 494: - Test Knowledge Hook evaluation speed
+    Line 527: - Sophisticated Knowledge Hook system
+  ~/gitvan/docs/TEST-CLEANUP-PLAN-V3-IMPLEMENTATION.md
+    Line 37: mkdir -p tests/{git,template,composables,knowledge-hooks,cli}
+    Line 51: rm tests/developer-workflow-knowledge-hooks.test.mjs
+    Line 147: mv developer-workflow-knowledge-hooks.test.mjs tests/workflow/
+    Line 280: ## Phase 3: Knowledge Hooks Optimization (Week 3)
+    Line 285: rm knowledge-hooks-breaking-point-benchmark.test.mjs
+    Line 286: rm knowledge-hooks-extreme-breaking-point.test.mjs
+    Line 287: rm knowledge-hooks-one-million-breaking-point.test.mjs
+    Line 288: rm knowledge-hooks-timer-stress.test.mjs
+    Line 289: rm knowledge-hooks-real-breaking-point.test.mjs
+    Line 290: rm knowledge-hooks-millisecond-timers.test.mjs
+    Line 291: rm knowledge-hooks-dark-matter-workloads.test.mjs
+    Line 292: rm knowledge-hooks-complete-suite.test.mjs
+    Line 293: rm knowledge-hooks-suite.test.mjs
+    Line 294: rm knowledge-hooks-stress.test.mjs
+    Line 297: rm tests/knowledge-hooks-breaking-point-benchmark.test.mjs
+    Line 298: rm tests/knowledge-hooks-extreme-breaking-point.test.mjs
+    Line 299: rm tests/knowledge-hooks-one-million-breaking-point.test.mjs
+    Line 300: rm tests/knowledge-hooks-timer-stress.test.mjs
+    Line 301: rm tests/knowledge-hooks-real-breaking-point.test.mjs
+    Line 302: rm tests/knowledge-hooks-millisecond-timers.test.mjs
+    Line 303: rm tests/knowledge-hooks-dark-matter-workloads.test.mjs
+    Line 304: rm tests/knowledge-hooks-complete-suite.test.mjs
+    Line 305: rm tests/knowledge-hooks-suite.test.mjs
+    Line 306: rm tests/knowledge-hooks-stress.test.mjs
+    Line 307: rm tests/knowledge-hooks-simple-verification.test.mjs
+    Line 308: rm tests/knowledge-hooks-git-lifecycle.test.mjs
+    Line 309: rm tests/knowledge-hooks-end-to-end.test.mjs
+    Line 319: ### Day 4-5: Keep Only Essential Knowledge Hooks Tests
+    Line 321: # Move essential knowledge hooks tests to knowledge-hooks directory
+    Line 322: mv knowledge-hooks-end-to-end.test.mjs tests/knowledge-hooks/
+    Line 323: mv knowledge-hooks-simple-verification.test.mjs tests/knowledge-hooks/
+    Line 324: mv knowledge-hooks-git-lifecycle.test.mjs tests/knowledge-hooks/
+    Line 326: # Create consolidated knowledge hooks test
+    Line 327: cat > tests/knowledge-hooks/knowledge-hooks-suite.test.mjs << 'EOF'
+    Line 329: * Knowledge Hooks Essential Test Suite
+    Line 338: describe('Knowledge Hooks Essential Suite', () => {
+    Line 342: testDir = join(process.cwd(), `test-knowledge-hooks-${Date.now()}`);
+    Line 354: it('should handle basic knowledge hooks operations', () => {
+    Line 368: it('should handle knowledge hooks errors gracefully', () => {
+    Line 391: # Verify knowledge hooks tests work
+    Line 392: pnpm test tests/knowledge-hooks/
+    Line 394: # Check knowledge hooks organization
+    Line 395: ls tests/knowledge-hooks/
+    Line 397: # Count remaining knowledge hooks tests
+    Line 398: find tests/knowledge-hooks/ -name "*.test.mjs" | wc -l
+    Line 420: mv scrum-at-scale-knowledge-hooks-e2e.test.mjs tests/
+    Line 499: "test:knowledge-hooks": "vitest run tests/knowledge-hooks/",
+    Line 516: - `tests/knowledge-hooks/` - Knowledge hooks tests
+    Line 529: pnpm test:knowledge-hooks
+    Line 561: ls tests/knowledge-hooks/
+  ~/gitvan/docs/V3-PREPARATION-PHASE-1-COMPLETE.md
+    Line 93: - ✅ **Knowledge Hooks**: Operational
+  ~/gitvan/docs/COMPREHENSIVE-KNOWLEDGE-HOOKS-TEST-PLAN.md
+    Line 1: # Comprehensive Knowledge Hooks Test Plan - All Permutations
+    Line 9: This test plan covers **ALL 45 Git operations** and **ALL 100+ permutations** to achieve complete co
+    Line 917: This comprehensive test plan covers **ALL 45 Git operations** and **ALL 100+ permutations** to achie
+    Line 927: This ensures that the Knowledge Hooks system can detect and report on **every possible Git operation
+  ~/gitvan/docs/POKA-YOKE.md
+    Line 99: ### 3. Knowledge Hook Depth Limiting: Prevent Infinite Loops
+  ~/gitvan/docs/GITVAN-UNRDF-OVERLAP-ANALYSIS.md
+    Line 284: // ✅ GitVan-specific: Knowledge hook extraction
+    Line 295: // Knowledge Hook specific
+    Line 323: - Knowledge Hook evaluation (SPARQL-based predicates)
+    Line 336: export { KnowledgeHookManager } from './knowledge-hook-manager.mjs';
+    Line 386: │ • Knowledge Hook Engine (custom)                │
+  ~/gitvan/docs/RELEASE_QUICK_REFERENCE_v4.0.0.md
+    Line 37: 4. Knowledge Hooks tests
+  ~/gitvan/docs/HOOKS-AND-SPARQL-GUIDE.md
+    Line 4: **Purpose:** Comprehensive guide to GitVan's knowledge hooks and SPARQL-driven automation
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-ONE-MILLION-BREAKING-POINT-REPORT.md
+    Line 1: # Knowledge Hooks ONE MILLION Breaking Point Report
+    Line 5: After pushing the Knowledge Hook system to its **absolute limits** with **1 million concurrent evalu
+    Line 100: The Knowledge Hook system has demonstrated **EXTRAORDINARY performance and resilience** under the mo
+    Line 108: **The only breaking point found was the JavaScript string length limit**, which is a **system-level 
+    Line 122: - **Cause**: System-level constraint, not Knowledge Hook limitation
+    Line 127: **The Knowledge Hook system is production-ready for ANY workload. The only breaking point found was 
+  ~/gitvan/docs/RELEASE_NOTES_v1.0.0.md
+    Line 95: - Reactive knowledge hooks
+  ~/gitvan/docs/GIT-LIFECYCLE-IMPLEMENTATION.md
+    Line 1: # Git Lifecycle Knowledge Hooks: Implementation Architecture
+    Line 13: │  User Layer: Knowledge Hooks (TTL definitions)              │
+    Line 98: // Trigger knowledge hook evaluation
+    Line 151: **Responsibility**: Evaluate knowledge hooks against git events.
+    Line 155: * Matches git events against knowledge hook patterns
+  ~/gitvan/docs/GITVAN-V2.1.0-GAPS-ANALYSIS-REPORT.md
+    Line 10: GitVan v2.1.0 represents a significant evolution with advanced features including Knowledge Hooks, N
+    Line 83: - **Knowledge Hooks**: SPARQL query testing incomplete
+    Line 158: ### 9. **Knowledge Hook Engine Gaps**
+    Line 198: 4. **Knowledge Hook Engine**: Complete SPARQL support
+  ~/gitvan/docs/GIT_LIFECYCLE_IMPLEMENTATION.md
+    Line 353: ### Knowledge Hooks
+    Line 355: All operations are designed to integrate with the GitVan knowledge hooks system:
+    Line 502: 3. **Knowledge Hooks** - Complete integration with hook system
+  ~/gitvan/docs/PIPELINE-VALIDATION-COMPLETE-REPORT.md
+    Line 11: 1. ✅ **Fixed Knowledge Hooks System** - All predicate types working correctly
+    Line 18: ### ✅ **Knowledge Hooks System** - FULLY FUNCTIONAL
+    Line 32: - **Integration:** Seamless integration with Knowledge Hooks
+    Line 79: 2. **Parses Knowledge Hooks** - Extracts hook definitions with intelligent predicates
+    Line 89: - **Knowledge Hooks:** 50 hooks evaluated in ~250ms
+    Line 123: This represents a major milestone in the GitVan project. The core promise of "Turtle as Workflow" wi
+  ~/gitvan/docs/GITVAN-V3-RELEASE-PLAN.md
+    Line 21: - **Knowledge Hook Engine**: SPARQL-driven autonomous intelligence
+  ~/gitvan/docs/GAP-CLOSURE-PLAN.md
+    Line 29: ### **5. 🔴 CRITICAL: Knowledge Hooks Gaps**
+    Line 69: 5. **Complete Knowledge Hooks** - Implement missing Git lifecycle operations
+    Line 88: - ✅ **Complete Knowledge Hooks** (currently 12/21 operations)
+  ~/gitvan/docs/UNRDF-PACKAGES-SURVEY.md
+    Line 55: ├── Knowledge Hooks (8 predicate types)
+    Line 214: - **@unrdf/hooks:** Knowledge hooks system (integrated via bridge)
+    Line 267: ✓ Knowledge hooks for reactive updates
+  ~/gitvan/docs/graph-persistence-documentation.md
+    Line 246: # Knowledge Hooks Configuration
+    Line 248: dct:title "Default Knowledge Hooks" ;
+    Line 249: dct:description "Default set of knowledge hooks for GitVan operations" ;
+  ~/gitvan/docs/RDF-TO-ZOD-IMPLEMENTATION-REPORT.md
+    Line 5: ✅ **Successfully implemented comprehensive RDF to Zod conversion functionality** for the GitVan Know
+    Line 18: - ✅ **Knowledge Hook Validation**: Validate Knowledge Hook predicate results
+    Line 26: - ✅ **Knowledge Hook Integration**: Validation of hook results, workflow results, Git context
+    Line 31: - ✅ **Real-world Usage**: Shows practical integration with Knowledge Hooks
+    Line 42: - ✅ Knowledge Hook result validation
+    Line 67: 3. **Knowledge Hook Validation**
+    Line 112: ### **Knowledge Hook Integration**
+    Line 160: ## 📝 **Integration with Knowledge Hooks**
+    Line 162: The RDF to Zod functionality seamlessly integrates with the GitVan Knowledge Hook system:
+    Line 164: 1. **Predicate Results**: Validate SPARQL query results from Knowledge Hook predicates
+    Line 171: The RDF to Zod implementation provides a robust foundation for strongly-typed data validation in the
+    Line 176: - 🚀 **Integration**: Seamless integration with Knowledge Hooks and GitVan context
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-CAPABILITIES-GAPS-REPORT.md
+    Line 1: # Knowledge Hooks Capabilities Gaps Analysis Report
+    Line 5: **Scope:** Comprehensive analysis of gaps in GitVan Knowledge Hook capabilities
+    Line 9: This report provides a comprehensive analysis of the gaps in GitVan's Knowledge Hook capabilities. W
+    Line 11: ## Current Knowledge Hook Capabilities
+    Line 272: GitVan's Knowledge Hook system demonstrates sophisticated architecture and powerful SPARQL-driven in
+    Line 295: **Analysis Scope**: Complete Knowledge Hook system capabilities
+  ~/gitvan/docs/GIT_LIFECYCLE_HOOKS_IMPLEMENTATION_CHECKLIST.md
+    Line 1: # Git Lifecycle Knowledge Hooks - Implementation Checklist
+    Line 11: This checklist provides a step-by-step guide for implementing the Git Lifecycle Knowledge Hooks syst
+    Line 106: - `KnowledgeHook` from `../knowledge/knowledge-hook-primitive.mjs`
+  ~/gitvan/docs/GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md
+    Line 1: # Git Lifecycle Knowledge Hooks - System Architecture
+    Line 26: This document defines the complete architecture for integrating Git lifecycle events with the GitVan
+    Line 28: - **Phase 1**: Real-time git event capture, knowledge hook evaluation, and workflow execution
+    Line 373: import { KnowledgeHook } from "../knowledge/knowledge-hook-primitive.mjs";
+    Line 793: | GitLifecycleHooks | KnowledgeHook | `src/knowledge/knowledge-hook-primitive.mjs` | `execute()`, `e
+    Line 1147: ### Flow 2: Knowledge Hook Pattern Matching
+    Line 1320: **Depends On**: `src/knowledge/knowledge-hook-primitive.mjs`
+    Line 1323: import { KnowledgeHook } from "../knowledge/knowledge-hook-primitive.mjs";
+  ~/gitvan/docs/VALIDATION_SUMMARY.md
+    Line 101: ### 4. Knowledge Hook Engine (70% Complete)
+    Line 199: Hooks:            16 knowledge hooks
+  ~/gitvan/docs/GIT_LIFECYCLE_HOOKS_DIAGRAMS.md
+    Line 1: # Git Lifecycle Knowledge Hooks - Visual Architecture Diagrams
+    Line 12: │                         GitVan Knowledge Hooks System                        │
+    Line 64: │  │  │   - knowledge-hook-primitive.mjs (KnowledgeHook)               │ │   │
+    Line 618: │  │  │ knowledge-hook-primitive.mjs                                     │ │ │
+    Line 621: │  │  │ Location: src/knowledge/knowledge-hook-primitive.mjs             │ │ │
+    Line 675: │   ├── knowledge-hook-primitive.mjs # Hook: h=(e,φ,a)
+  ~/gitvan/docs/GIT-HOOKS-SIGNALS-KNOWLEDGE-HOOKS-SUMMARY.md
+    Line 1: # Git Hooks as Signals for Knowledge Hook System - Complete Architecture
+    Line 5: **Key Insight:** Git hooks provide signals that trigger Knowledge Hook SPARQL evaluation
+    Line 17: ### Layer 2: Knowledge Hooks (Intelligence)
+    Line 40: // Trigger knowledge hook evaluation
+    Line 49: ### 3. Knowledge Hook Intelligence (Layer 2)
+    Line 122: - [x] Sample Turtle knowledge hooks (3 examples)
+    Line 136: - Knowledge hooks handle **what** (intelligence)
+    Line 139: - Multiple knowledge hooks can evaluate on same Git event
+    Line 150: - Add new knowledge hooks for new intelligence
+    Line 166: ### Knowledge Hook Evaluation
+    Line 194: - ✅ **Knowledge hooks** as **intelligence** with SPARQL predicates
+    Line 198: This two-layer approach enables sophisticated, semantic-driven automation that leverages both Git's 
+  ~/gitvan/docs/COMPLETE-GIT-LIFECYCLE-PERMUTATIONS-ANALYSIS.md
+    Line 232: ### **Current Knowledge Hooks Coverage: 12/18 (67%)**
+  ~/gitvan/docs/TURTLE-FORMAT-MANAGEMENT.md
+    Line 68: - HookShape - Git knowledge hook definitions
+    Line 219: ### With Knowledge Hooks
+  ~/gitvan/docs/PRODUCTION_READINESS_VALIDATION_REPORT.md
+    Line 116: examples/knowledge-hooks-suite.test.mjs
+    Line 126: knowledge-hooks.test.mjs
+    Line 215: | **Knowledge Hook Engine** | ✅ IMPLEMENTED | 16 hook files, 16 .ttl definitions |
+    Line 223: **Knowledge Hook Engine** (src/engines/HookEngine.mjs):
+    Line 286: knowledge-hooks-suite.test.mjs
+    Line 297: knowledge-hooks.test.mjs
+    Line 564: 1. **Knowledge Hook Engine** ✅
+  ~/gitvan/docs/HOOKS-360-OPERATIONAL-VALIDATION-REPORT.md
+    Line 7: **Validation Scope**: Complete 360-degree Knowledge Hooks functionality
+    Line 32: 📁 Found 3 Knowledge Hook files
+    Line 33: ✅ Registered Knowledge Hook: hooks:critical-issues
+    Line 34: ✅ Registered Knowledge Hook: hooks:test-validation
+    Line 35: ✅ Registered Knowledge Hook: hooks:version-change
+    Line 36: ✅ Knowledge Hook Registry initialized with 3 hooks
+    Line 122: 📊 Knowledge Hook Registry Statistics:
+    Line 206: **Evidence**: Multiple "Initializing Knowledge Hook Registry..." messages
+    Line 241: The GitVan Knowledge Hooks 360° implementation is **genuinely operational** with:
+  ~/gitvan/docs/KNOWLEDGE-HOOKS-BREAKING-POINT-BENCHMARK-REPORT.md
+    Line 1: # Knowledge Hooks Breaking Point Benchmark Report
+    Line 5: The Knowledge Hook system has been subjected to extreme stress testing to identify its breaking poin
+    Line 190: The Knowledge Hook system has demonstrated exceptional performance and resilience under extreme stre
+    Line 211: - `tests/knowledge-hooks-breaking-point-benchmark.test.mjs` - Comprehensive breaking point benchmark
+    Line 212: - `KNOWLEDGE-HOOKS-BREAKING-POINT-BENCHMARK-REPORT.md` - This detailed report
+  ~/gitvan/docs/DOCKER-CLEANROOM-FIXES-FINAL-REPORT.md
+    Line 58: # Knowledge Hook Engine
+  ~/gitvan/docs/knowledge-hooks-sequence-diagram.md
+    Line 1: # Knowledge Hooks Sequence Diagram
+  ~/gitvan/docs/GITVAN-METRICS-EXTRACTION-THESIS-RESEARCH.md
+    Line 132: | Knowledge hook manager | 3MB | Rule indexes |
+  ~/gitvan/docs/V3-PREPARATION-SUMMARY.md
+    Line 139: - Knowledge hooks system operational
+  ~/gitvan/docs/GIT-LIFECYCLE-HOOKS.md
+    Line 1: # Git Lifecycle Knowledge Hooks (v3.2.0)
+    Line 3: **Goal**: Semantic integration of git lifecycle events with reactive knowledge hooks.
+    Line 5: GitVan v3.2.0 extends knowledge hooks to react to the full git lifecycle, enabling intelligent autom
+    Line 31: Knowledge hooks query this graph:
+    Line 108: ### Layer 2: Knowledge Hooks React to Patterns
+    Line 528: ## Query Patterns: Knowledge Hook Examples
+    Line 625: ### Phase 2: Knowledge Hooks Integration (v3.3.0)
+  ~/gitvan/docs/V3.2.0-GIT-LIFECYCLE-EXPLORATION.md
+    Line 1: # GitVan v3.2.0: Git Lifecycle Knowledge Hooks - Exploration Summary
+    Line 10: This document captures the complete exploration of integrating Git lifecycle events with GitVan's kn
+    Line 12: **Vision**: Transform git from "commands" into a semantic graph where every operation is an RDF trip
+    Line 14: **Scope**: Design, architecture, and implementation roadmap for git lifecycle knowledge hooks.
+    Line 77: ### 4. Knowledge Hook Patterns ✅
+    Line 128: **Layer 2: Knowledge Hooks React**
+    Line 181: ### 3. Knowledge Hooks Enable Reactive Automation
+    Line 286: - 5+ knowledge hook patterns
+  ~/gitvan/docs/KNOWLEDGE-HOOK-IMPLEMENTATION-REPORT.md
+    Line 1: # Knowledge Hook Implementation Report
+    Line 5: GitVan's Knowledge Hook Engine represents a sophisticated implementation of intelligent automation d
+    Line 11: The Knowledge Hook Engine consists of five primary components working in concert:
+    Line 301: describe("Knowledge Hook Engine Integration", () => {
+    Line 345: The Knowledge Hook Engine integrates seamlessly with GitVan's broader ecosystem:
+    Line 427: GitVan's Knowledge Hook Engine represents a sophisticated approach to intelligent automation, levera
+    Line 446: *GitVan Knowledge Hook Engine v2.0*
+  ~/gitvan/docs/unrdf-migration-strategy.md
+    Line 146: - Knowledge hook predicates (uses `query` with ASK/SELECT)
+    Line 292: 1. **Knowledge Hooks Integration**:
+    Line 423: 1. **Knowledge Hook Workflow**: Parse Turtle → Execute SPARQL hook → Validate with SHACL
+    Line 658: - Knowledge Hook Implementation: `/Users/sac/gitvan/docs/KNOWLEDGE-HOOK-IMPLEMENTATION-REPORT.md`
+  ~/gitvan/docs/GIT_LIFECYCLE_HOOKS_INDEX.md
+    Line 1: # Git Lifecycle Knowledge Hooks - Documentation Index
+    Line 11: This package contains the complete system architecture for Git Lifecycle Knowledge Hooks in GitVan v
+    Line 39: **File**: [GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTU
+    Line 110: 2. Deep dive: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md)
+    Line 116: 2. Study: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md) (focus on integra
+    Line 123: 4. Reference: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md) (as needed)
+    Line 128: 3. Features: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md) (Appendix A: E
+    Line 133: 3. Test Cases: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md) (data flows)
+    Line 142: - [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md) - Section: "Phase 1: Core
+    Line 163: - [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md) - Section: "Phase 2: Asyn
+    Line 186: **Architecture**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#component-
+    Line 191: **Architecture**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#component-
+    Line 196: **Architecture**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#component-
+    Line 201: **Architecture**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#phase-2-as
+    Line 206: **Architecture**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#phase-2-mu
+    Line 211: **Architecture**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#phase-2-da
+    Line 220: - [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#integration-points) - Deta
+    Line 249: **Full Performance Analysis**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.
+    Line 256: - [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#appendix-a-example-hook-de
+    Line 270: - [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#appendix-b-architecture-de
+    Line 299: **Reference**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#integration-p
+    Line 309: **Reference**: [Complete Architecture](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md#appendix-a-ex
+  ~/gitvan/docs/SUBSYSTEM-TESTING-RESULTS-SUMMARY.md
+    Line 9: ### ✅ **Knowledge Hooks System** - WORKING
+    Line 10: - **Test File:** `tests/knowledge-hooks-system.test.mjs`
+    Line 44: 1. **Knowledge Hooks**: Core parsing and evaluation logic is solid
+    Line 65: - Correct prefix definitions in Knowledge Hooks tests
+    Line 71: 2. Test the complete flow: Git Signal → Knowledge Hook → JTBD Hook → Workflow Execution
+    Line 76: The subsystem testing approach is working well and has successfully identified specific issues in ea
+  ~/gitvan/docs/TURTLE-WORKFLOW-IMPLEMENTATION-PLAN.md
+    Line 277: - `test-knowledge-hooks-*/` directories (temporary knowledge hooks directories)
+  ~/gitvan/docs/GIT_LIFECYCLE_HOOKS_SUMMARY.md
+    Line 1: # Git Lifecycle Knowledge Hooks - Architecture Summary
+    Line 11: This document provides a high-level summary of the Git Lifecycle Knowledge Hooks architecture for Gi
+    Line 15: 1. **[GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md](./GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md
+    Line 94: | **KnowledgeHook** | Hook primitive h=(e,φ,a) | `src/knowledge/knowledge-hook-primitive.mjs` |
+    Line 324: **Architecture Questions**: Refer to [GIT_LIFECYCLE_KNOWLEDGE_HOOKS_ARCHITECTURE.md](./GIT_LIFECYCLE
+  ~/gitvan/docs/advanced/architecture.md
+    Line 46: │  └─ Context Manager   └─ Knowledge Hooks                      │
+    Line 288: ### Knowledge Hooks
+    Line 290: Knowledge hooks react to graph changes:
+  ~/gitvan/docs/cli/complete-reference.md
+    Line 21: - [Knowledge Hooks](#knowledge-hooks)
+    Line 40: - **Knowledge hooks** - Semantic RDF-based automation
+    Line 944: ### Knowledge Hooks
+    Line 948: List all knowledge hooks.
+    Line 977: Register a new knowledge hook.
+  ~/gitvan/docs/architecture/TECHNOLOGY-EVALUATION-MATRIX.md
+    Line 92: - **Knowledge Hooks**: Proven pattern for GitVan's use case
+  ~/gitvan/docs/architecture/V4-HOOK-PATTERNS-REFERENCE.md
+    Line 493: ## 3. Knowledge Hook Patterns
+    Line 503: * Define a GitVan knowledge hook
+    Line 707: * Use knowledge hooks with reactive execution
+    Line 852: * Central registry for all knowledge hooks
+  ~/gitvan/docs/architecture/ADR-001-complete-rewrite.md
+    Line 37: - Knowledge Hooks system (defineHook)
+  ~/gitvan/docs/architecture/V4-REFACTORING-ARCHITECTURE-BLUEPRINT.md
+    Line 94: |  |              Knowledge Hook Engine (v4)                     |  |
+    Line 110: | **Semantic Automation** | SPARQL-driven intelligence, not file patterns | Knowledge hooks evaluate
+    Line 137: knowledge/               # Knowledge hook system
+    Line 313: // Usage in knowledge hooks:
+    Line 416: #### 3.3.2 `defineHook()` - Knowledge Hook Definition
+    Line 424: * Define a GitVan knowledge hook with full lifecycle
+    Line 581: // Knowledge hooks
+    Line 839: **Objective**: Migrate knowledge hooks to use `@unrdf/hooks` primitives.
+    Line 907: description: 'Knowledge Hook management (v4)'
+    Line 1187: |  PHASE 3: COMPOSABLES             PHASE 4: KNOWLEDGE HOOKS         |
+    Line 1243: #### Phase 4: Knowledge Hooks (Weeks 7-8)
+    Line 1251: | 39-40 | Knowledge hook tests | QA | Test coverage |
+    Line 1723: | Knowledge Hook | A hook that evaluates SPARQL predicates against RDF graphs |
+    Line 1731: - [GIT-HOOKS-TO-KNOWLEDGE-HOOKS-MIGRATION-GUIDE.md](/home/user/gitvan/GIT-HOOKS-TO-KNOWLEDGE-HOOKS-M
+    Line 1732: - [KNOWLEDGE-HOOKS-JTBD-SYSTEM-COMPREHENSIVE-ANALYSIS.md](/home/user/gitvan/KNOWLEDGE-HOOKS-JTBD-SYS
+  ~/gitvan/docs/v4/FAQ.md
+    Line 11: GitVan v4 is a Git-native workflow automation platform that uses Knowledge Hooks - reactive hooks tr
+    Line 13: ### What are Knowledge Hooks?
+    Line 15: Knowledge Hooks are predicate-based automation triggers that evaluate logical conditions against RDF
+    Line 28: Yes! GitVan integrates with standard Git hooks (pre-commit, post-commit, etc.) while adding Knowledg
+  ~/gitvan/docs/v4/README.md
+    Line 3: Comprehensive documentation for GitVan v4 Knowledge Hook system.
+    Line 9: GitVan v4 introduces the **Knowledge Hook Engine** - a paradigm shift from event-based to predicate-
+  ~/gitvan/docs/v4/security/SECURITY-GUIDE.md
+    Line 3: Comprehensive security guidelines for Knowledge Hook development.
+  ~/gitvan/docs/v4/testing/TESTING-GUIDE.md
+    Line 3: Comprehensive testing approaches for Knowledge Hooks.
+    Line 391: expect(result).toContain('Available Knowledge Hooks');
+  ~/gitvan/docs/v4/architecture/OVERVIEW.md
+    Line 34: |  |                    Knowledge Hook Engine                       |   |
+    Line 124: meta: { name: 'hooks', description: 'Knowledge Hook operations' },
+    Line 170: ### 3. Knowledge Hook Engine (`src/hooks/`)
+    Line 342: hooks/                  # Knowledge Hook Engine
+  ~/gitvan/docs/v4/examples/EXAMPLE-PROJECTS.md
+    Line 19: A complete bug tracking and alert system using Knowledge Hooks.
+    Line 270: Automated CI/CD using Knowledge Hooks.
+  ~/gitvan/docs/v4/api/HOOK-REFERENCE.md
+    Line 3: Complete API reference for the GitVan v4 Knowledge Hook system.
+    Line 21: GitVan v4 introduces the Knowledge Hook Engine, a powerful system for reactive automation based on s
+    Line 36: Traditional Git event hooks integrated with the Knowledge Hook Engine:
+    Line 46: ### 2. Knowledge Hooks
+    Line 255: Main orchestrator for the Knowledge Hook Engine.
+    Line 331: Central registry for Knowledge Hooks.
+  ~/gitvan/docs/v4/api/BEST-PRACTICES.md
+    Line 3: Guidelines for building robust, maintainable, and performant Knowledge Hooks.
+  ~/gitvan/docs/v4/api/TYPESCRIPT-REFERENCE.md
+    Line 209: ### Knowledge Hook Types
+  ~/gitvan/docs/v4/tutorials/ADVANCED-PATTERNS.md
+    Line 3: Master sophisticated patterns for building powerful Knowledge Hook systems.
+  ~/gitvan/docs/v4/tutorials/GETTING-STARTED.md
+    Line 3: Learn to create and use Knowledge Hooks in 15 minutes.
+  ~/gitvan/docs/v4/migration/V3-TO-V4-MIGRATION.md
+    Line 20: GitVan v4 introduces the Knowledge Hook Engine, a paradigm shift from event-based hooks to predicate
+  ~/gitvan/docs/api/composables.md
+    Line 5: > **📚 Updated for v2.1.0**: This documentation reflects the actual implementation in the codebase, i
+  ~/gitvan/docs/bdd/jtbd-london-bdd-implementation.md
+    Line 35: └── jtbd-knowledge-integration.feature # Knowledge Hook Engine integration
+    Line 78: Tests integration with the Knowledge Hook Engine:
+    Line 81: Feature: GitVan JTBD Knowledge Hook Integration
+    Line 83: I want JTBD hooks to integrate with the Knowledge Hook Engine
+    Line 189: ## Knowledge Hook Engine Integration
+    Line 400: The implementation covers all major JTBD categories, integrates with the Knowledge Hook Engine, and 
+  ~/gitvan/docs/validation/research-summary.md
+    Line 27: Knowledge Hook Engine (3)
+    Line 110: ### Scenario 2: Knowledge Hook Intelligence
+  ~/gitvan/docs/validation/HIVE-MIND-VALIDATION-COMPLETE.md
+    Line 63: - Prioritized: CLI commands → Knowledge Hooks → Workflows → Git I/O → JTBD
+    Line 79: - ✅ `/tests/validation/knowledge-hooks.london.test.mjs` (574 lines)
+    Line 94: - Knowledge Hooks: SPARQL queries (ASK, SELECT, ResultDelta, SHACL)
+    Line 147: - ✅ Knowledge Hook Engine (pre-task, post-task, post-edit, session hooks)
+    Line 173: ### ✅ Phase 2: Knowledge Hook Engine (3 capabilities)
+    Line 262: - ✅ Knowledge Hook Engine operational
+  ~/gitvan/docs/validation/otel-validation-report.md
+    Line 180: ### Knowledge Hook Engine
+  ~/gitvan/docs/validation/research-findings.json
+    Line 31: "purpose": "List available knowledge hooks",
+    Line 410: "Knowledge Hook Engine - Autonomous intelligence core",
+    Line 429: "name": "Knowledge Hook Flow",
+  ~/gitvan/docs/validation/critical-20-percent.md
+    Line 55: ### 2. Knowledge Hook Engine (3 critical capabilities)
+    Line 159: ### Scenario 2: Knowledge Hook Intelligence
+  ~/gitvan/docs/validation/OTEL-IMPLEMENTATION-SUMMARY.md
+    Line 225: ### ✅ Knowledge Hook Engine
+  ~/gitvan/templates/default.ttl
+    Line 32: # Knowledge Hooks Configuration
+    Line 34: dct:title "Default Knowledge Hooks" ;
+    Line 35: dct:description "Default set of knowledge hooks for GitVan operations" ;
+  ~/gitvan/hooks/README.md
+    Line 1: # GitVan v4 Knowledge Hooks
+    Line 3: This directory contains Knowledge Hook definitions that power intelligent, reactive automation based
+    Line 24: - **knowledge-hooks-suite/** - Knowledge management hooks
+  ~/gitvan/hooks/bug-threshold.ttl
+    Line 87: "footer": "GitVan Knowledge Hook Engine",
+  ~/gitvan/hooks/jtbd-hooks/core-development-lifecycle/code-quality-gatekeeper.ttl
+    Line 111: "footer": "GitVan Knowledge Hook Engine",
+  ~/gitvan/hooks/jtbd-hooks/core-development-lifecycle/test-coverage-enforcer.ttl
+    Line 111: "footer": "GitVan Knowledge Hook Engine",
+  ~/gitvan/hooks/jtbd-hooks/core-development-lifecycle/dependency-vulnerability-scanner.ttl
+    Line 114: "footer": "GitVan Knowledge Hook Engine",
+  ~/gitvan/hooks/knowledge-hooks-suite/README.md
+    Line 1: # Knowledge Hooks Comprehensive Suite
+    Line 5: This suite provides comprehensive knowledge hooks that validate Git state by writing detailed report
+    Line 9: The Knowledge Hooks Comprehensive Suite covers **12 out of 21** Git lifecycle operations (57% covera
+    Line 16: - **Knowledge hooks evaluation** and workflow execution tracking
+    Line 21: hooks/knowledge-hooks-suite/
+    Line 34: └── knowledge-hooks-comprehensive-suite.mjs # Master integration job
+    Line 73: The `knowledge-hooks-comprehensive-suite.mjs` job provides master integration:
+    Line 78: name: "knowledge-hooks-comprehensive-suite",
+    Line 79: desc: "Comprehensive Knowledge Hooks Suite - Complete Git lifecycle coverage",
+    Line 80: tags: ["knowledge-hooks", "git-lifecycle", "comprehensive", "reporting"],
+    Line 92: // Knowledge hooks evaluation
+    Line 112: - **Knowledge Hooks Reports**: `reports/knowledge-hooks/`
+    Line 242: "filesAffected": ["graph/entities.ttl", "hooks/knowledge-hook.ttl"],
+    Line 247: "Hooks system files modified: hooks/knowledge-hook.ttl",
+    Line 280: The Knowledge Hooks Comprehensive Suite provides **complete Git lifecycle coverage** with **disk-bas
+  ~/gitvan/src/types.js
+    Line 194: * Knowledge Hooks: Model / Predicates / Plans
+  ~/gitvan/src/rdf/git-ontology.ttl
+    Line 287: rdfs:comment "Knowledge hook(s) that were triggered by this event." .
+  ~/gitvan/src/rdf/shapes/hook-configuration-shape.ttl
+    Line 13: # Shape for Knowledge Hook configuration
+  ~/gitvan/tests/integration/INTEGRATION-TEST-REPORT.md
+    Line 312: - Knowledge hooks integration
+  ~/gitvan/examples/README.md
+    Line 7: GitVan enables semantic automation of git workflows through knowledge hooks—reactive patterns that t
+    Line 132: ├── knowledge-hooks-architecture.md
+    Line 251: 2. Deep Dive: [Architecture Explanation](./docs/explanation/knowledge-hooks-architecture.md)
+    Line 257: ### Knowledge Hooks
+  ~/gitvan/examples/INDEX.md
+    Line 162: ### Explanation: Knowledge Hooks Architecture
+  ~/gitvan/examples/docs/QUICK_START.md
+    Line 108: - [Architecture Explanation](./explanation/knowledge-hooks-architecture.md)
+  ~/gitvan/examples/docs/explanation/why-semantic-git.md
+    Line 427: - **Implementation**: [Knowledge Hooks Architecture](./knowledge-hooks-architecture.md)
+  ~/gitvan/examples/docs/tutorials/01-hello-gitvan.md
+    Line 10: - How knowledge hooks work
+  ~/gitvan/examples/docs/tutorials/06-monitoring.md
+    Line 89: "hook.type": "knowledge_hook",
+  ~/gitvan/examples/docs/tutorials/02-nextjs-setup.md
+    Line 486: - [Architecture Explanation](../explanation/knowledge-hooks-architecture.md)
+  ~/gitvan/examples/docs/reference/git-events.md
+    Line 291: - **Git Operations**: [Git Lifecycle Explanation](../explanation/knowledge-hooks-architecture.md)
+  ~/gitvan/examples/hooks/ANALYSIS.md
+    Line 161: - Advanced topics (RDF, Knowledge Hooks)
+    Line 380: Knowledge hooks can be defined in Turtle:
+  ~/gitvan/examples/hooks/README.md
+    Line 591: ### Knowledge Hooks
+    Line 593: Create knowledge hooks that trigger on semantic graph changes:
+  ~/gitvan/examples/nextjs-app/playwright/report/data/5d586a973f4c18e26c00a26f2c872665ccb2e153.md
+    Line 6: - heading "Knowledge Hooks Management" [level=1] [ref=e3]
+    Line 15: - generic [ref=e12]: Scenario-based knowledge hook
+    Line 20: - generic [ref=e17]: Scenario-based knowledge hook
+    Line 25: - generic [ref=e22]: Scenario-based knowledge hook
+    Line 30: - generic [ref=e27]: Scenario-based knowledge hook
+    Line 50: - heading "📚 What are Knowledge Hooks?" [level=3] [ref=e50]
+    Line 51: - paragraph [ref=e51]: "Knowledge Hooks are GitVan's autonomic system for capturing, storing, and ex
+  ~/gitvan/examples/nextjs-app/test-results/jtbd-developer-workflow-JT-9cbab-message-patterns-with-hooks-chromium/error-context.md
+    Line 6: - heading "Knowledge Hooks Management" [level=1] [ref=e3]
+    Line 15: - generic [ref=e12]: Scenario-based knowledge hook
+    Line 20: - generic [ref=e17]: Scenario-based knowledge hook
+    Line 25: - generic [ref=e22]: Scenario-based knowledge hook
+    Line 30: - generic [ref=e27]: Scenario-based knowledge hook
+    Line 50: - heading "📚 What are Knowledge Hooks?" [level=3] [ref=e50]
+    Line 51: - paragraph [ref=e51]: "Knowledge Hooks are GitVan's autonomic system for capturing, storing, and ex
+  ~/gitvan/examples/nextjs-app/src/app/studio/page.tsx
+    Line 36: id: 'knowledge-hooks',
+    Line 37: title: 'Knowledge Hooks',
+    Line 38: description: 'Manage GitVan knowledge hooks and JTBD scenario definitions',
+  ~/gitvan/examples/nextjs-app/src/app/studio/hooks/page.tsx
+    Line 8: * Manage knowledge hooks, git hooks, and automation triggers for Studio.
+    Line 95: Knowledge Hooks Management
+    Line 123: Scenario-based knowledge hook
+    Line 407: 📚 What are Knowledge Hooks?
+    Line 410: Knowledge Hooks are GitVan's autonomic system for capturing, storing, and executing
+  ~/gitvan/examples/nextjs-app/src/app/api/gitvan/hooks/route.ts
+    Line 4: * Provides programmatic access to GitVan knowledge hooks from the Studio.
+    Line 13: * List all available knowledge hooks
+    Line 63: * Execute a knowledge hook or register a new one
+    Line 157: * Remove a knowledge hook
+  ~/gitvan/examples/nextjs-app/src/app/api/gitvan/automation/route.ts
+    Line 121: // Store trigger configuration in knowledge hooks
+  ~/gitvan/examples/nextjs-app/src/lib/gitvan-integration.ts
+    Line 5: * Enables knowledge hooks, git hooks, and workflow automation from Studio.
+    Line 49: * Register a knowledge hook for JTBD scenario
+    Line 61: console.log(`Registered knowledge hook for scenario: ${scenarioId}`);
+    Line 69: * List all available knowledge hooks
+    Line 115: * Get knowledge hook registry
+    Line 129: * Store JTBD scenario result in knowledge hooks
+    Line 209: * These are Turtle/TTL format knowledge hooks for JTBD scenarios
+    Line 321: * Workflow Generation using Knowledge Hooks

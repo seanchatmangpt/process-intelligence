@@ -1,0 +1,221 @@
+slug: ma
+claims:
+  - id: CLM-MA-001
+    claim: >
+      The ma/ module defines a complete M&A claim taxonomy in which every assertion
+      traces through a BLAKE3-hashed, Ed25519-signed, RFC 8785 JCS-canonical JSON
+      receipt to an underlying XES or OCEL 2.0 event log and a wasm4pm conformance
+      query.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ma/checkpoint__m&a-ready_research_complete.md
+      - /Users/sac/process-intelligence/ma/MASTER_m&a-ready_process_intelligence_framework.md
+      - /Users/sac/process-intelligence/ma/BOARD_CLAIM_TAXONOMY.md
+    evidence_summary: >
+      The checkpoint file (APPROVED, 2026-05-31) itemizes 20 core definition files as Verified
+      and the MASTER consolidation document specifies the full taxonomy with receipt schema
+      requirements.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-002
+    claim: >
+      Five concrete receipt JSON files exist in receipts/ with real BLAKE3 hashes, wasm4pm
+      query definitions, and numeric results; rec_ebitda_rework_001.json reports fitness
+      0.982, precision 0.945, and EBITDA impact $1,250,000 with a valid Ed25519 validator
+      signature.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_sla_003.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_compliance_004.json
+      - /Users/sac/process-intelligence/receipts/rec_residual_standard_005.json
+    evidence_summary: >
+      All five receipt JSON files were confirmed on disk; rec_ebitda_rework_001.json was
+      directly inspected and contains slide_id UUID, BLAKE3 log hash ee9ab723..., fitness
+      0.982, precision 0.945, EBITDA impact $1,250,000, and an Ed25519 signature.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-003
+    claim: >
+      The five receipt JSON files are specification-illustrative artifacts, not receipts
+      produced by executing wasm4pm queries against real enterprise event logs; the .wasm
+      query binaries referenced in the receipts are not confirmed to exist on disk.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/05_evidence_receipts_and_gates.tex
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      The TeX file explicitly qualifies the receipts as specification-illustrative, and the
+      wasm query path (sources/wasm4pm/queries/) was confirmed absent on disk via filesystem
+      inspection during this review.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-004
+    claim: >
+      The Board Claim Taxonomy defines a six-tier maturity ladder (T1 Existence through T6
+      Recovery) where T3 and above require an event log, a process model, and a conformance
+      certificate with fitness >= 0.95 and precision >= 0.90.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ma/BOARD_CLAIM_TAXONOMY.md
+      - /Users/sac/process-intelligence/ma/define_board_claim_taxonomy.md
+      - /Users/sac/process-intelligence/ma/checkpoint__m&a-ready_research_complete.md
+    evidence_summary: >
+      The checkpoint audit table lists Board Taxonomy as Verified; both the
+      BOARD_CLAIM_TAXONOMY.md and define_board_claim_taxonomy.md files exist in the ma/
+      directory as confirmed source files.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-005
+    claim: >
+      The Reverse Porter Five Forces inversion — that a multi-year OCEL event log history
+      constitutes a structurally irreproducible competitive moat and permanently restructures
+      competitive dynamics — is an original thesis contribution not derived from a single
+      prior source.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/ma/REVERSE_PORTER_FIVE.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/06_contribution_to_thesis.tex
+    evidence_summary: >
+      The TeX file explicitly labels this as AUTHOR THESIS, grounding it in the structural
+      logic of retrospective data irreproducibility while acknowledging no single prior source
+      formalizes the Porter inversion through process evidence moats.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-006
+    claim: >
+      The Reverse Porter Five Forces network-effect claim (Force 4: substitute prevention via
+      receipt dependency) is theoretical as of 2026-06-01; no external buyer or auditor has
+      adopted wasm4pm receipts.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/07_open_questions_and_next_work.tex
+      - /Users/sac/process-intelligence/ma/REVERSE_PORTER_FIVE.md
+    evidence_summary: >
+      The TeX gap analysis explicitly states no external adoption has occurred and labels this
+      an honest self-assessment; the gap is identified as structural, not a defect in the
+      framework logic.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-007
+    claim: >
+      The Chatman Equation A = mu(O*) has a direct M&A financial interpretation: a seller who
+      produces a complete OCEL 2.0 event log with conformance certificate and receipt chain
+      commands a merger premium equal to the market's valuation of mu(O*) — the premium for
+      certainty over estimation.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/ma/MASTER_m&a-ready_process_intelligence_framework.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/02_lineage_and_context.tex
+    evidence_summary: >
+      The TeX file develops this interpretation as an analytical extension of the Chatman
+      Equation to capital-market valuation; the MASTER framework document exists as a source
+      but the financial interpretation of the equation is the author's original contribution.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-008
+    claim: >
+      The operational debt taxonomy defines four debt classes (Process Spaghetti, Compliance
+      Deficits, Legacy Lock-In, Shadow IT Workarounds) with specific valuation haircut ranges:
+      10-15% for spaghetti, 5-20% for compliance deficits, and 10-30% integration cost impact
+      for legacy lock-in.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ma/define_operational_debt_taxonomy.md
+      - /Users/sac/process-intelligence/ma/checkpoint__m&a-ready_research_complete.md
+    evidence_summary: >
+      The checkpoint audit table lists Operational Debt as Verified with trace entropy and
+      spaghetti process metrics; define_operational_debt_taxonomy.md exists on disk as a
+      confirmed source file.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-MA-009
+    claim: >
+      Synergy claims require Behavioral Profile Similarity Sim(M1, M2, C) >= 0.75 (citing
+      Weidlich 2011) and Execution Path Intersection evidence; claims below this threshold are
+      inadmissible at T3 Conformance tier and above.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ma/define_synergy_claim_taxonomy.md
+      - /Users/sac/process-intelligence/ma/MASTER_m&a-ready_process_intelligence_framework.md
+    evidence_summary: >
+      The synergy taxonomy file exists and is listed as Verified in the checkpoint; the 0.75
+      threshold citing Weidlich 2011 appears in the admissibility protocol sections of the TeX
+      architecture files.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-MA-010
+    claim: >
+      The ma/ module is PARTIAL status: doctrinal and specification gates all pass (claim
+      taxonomy complete, admissibility protocol defined, receipt schema specified) but three
+      execution gates fail — no real enterprise event logs, wasm4pm query artifacts unconfirmed
+      on disk, end-to-end renderer not executed.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/05_evidence_receipts_and_gates.tex
+      - /Users/sac/process-intelligence/ma/checkpoint__m&a-ready_research_complete.md
+    evidence_summary: >
+      The gate table in the TeX file documents 6 PASS and 3 FAIL/UNKNOWN gate positions; the
+      wasm query path was independently confirmed absent on disk during this review; the
+      checkpoint certifies only doctrinal completeness.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-011
+    claim: >
+      The Board Projection Renderer pipeline compresses traditional seven-week
+      Quality-of-Earnings diligence timelines to a three-day buyer replication window via
+      automated wasm4pm query execution.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/ma/define_banker_diligence_acceleration.md
+      - /Users/sac/process-intelligence/ma/MASTER_m&a-ready_process_intelligence_framework.md
+    evidence_summary: >
+      The claim is stated as a design goal in the framework specification and the
+      define_banker_diligence_acceleration.md source file is Verified in the checkpoint, but
+      the compression has not been demonstrated against a real transaction — it is a reasoned
+      projection.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-MA-012
+    claim: >
+      The admissibility thresholds fitness >= 0.95 and precision >= 0.90 are grounded in
+      Adriansyah 2014 but have not been empirically validated for M&A due-diligence contexts
+      where enterprise event logs may be incomplete, noisy, or extracted under adversarial
+      conditions.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      The TeX risk analysis explicitly acknowledges the Adriansyah 2014 grounding and the
+      empirical validation gap, identifying threshold calibration as Risk 1 requiring
+      adjustment once real enterprise logs are available.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-MA-013
+    claim: >
+      The connection between the Hostile Takeover Receipt taxonomy (v30.1.1), the Chatman
+      Equation A = mu(O*), and the 2016 language-model experiment lineage is not made explicit
+      within the ma/ module documentation — it is an unresolved structural gap.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ma/hostile-takeover-receipts.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/ma/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      The TeX gap analysis explicitly states this lineage connection is unspecified within the
+      module, citing a structural audit of hostile-takeover-receipts.md as the source of the
+      finding; it is listed as Gap 4.
+    confidence: HIGH
+    allowed_in_pdf: true

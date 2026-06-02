@@ -1,0 +1,95 @@
+% FILE: 01_research_question.tex
+% PROJECT: ma — M&A Claim Taxonomy and Board Projection Surface
+
+\section{Research Question}
+\label{sec:ma-research-question}
+
+\subsection{Problem Statement}
+\label{sec:ma-rq-problem}
+
+Mergers and acquisitions are among the highest-stakes capital-allocation decisions in the
+enterprise. Yet the evidentiary basis for most M\&A valuations is structurally weak. Synergy
+projections are manufactured from spreadsheet extrapolations. Operational health claims derive
+from management-prepared KPI decks. Quality-of-Earnings analyses depend on self-reported
+financial metrics whose operational underpinnings are unverified. A buyer who pays a merger
+premium based on a seller's claim of ``98\% straight-through invoice processing'' has no
+independent mechanism to verify that claim before the transaction closes---or to quantify
+the discount due if the claim is false.
+
+The problem is not that buyers lack sophistication. It is that the evidentiary
+infrastructure for operational claims does not exist in standard M\&A practice. There is no
+accepted method by which a seller can make an operational claim that a buyer can
+independently replay within a due-diligence timeline. The \texttt{ma/} module asks: can
+process mining supply that infrastructure, and if so, what form must the claim taxonomy and
+proof protocol take to make M\&A operational claims board-admissible?
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:ma-rq-old-regime}
+
+The old regime assumes that operational claims in M\&A are inherently soft---that ``process
+quality'' is a qualitative judgment captured through management interviews, factory tours, and
+sample testing, and that any quantification is an approximation whose margin of error is
+accepted as a cost of doing business.
+
+This assumption yields three structural pathologies. First, information asymmetry: the seller
+knows the true operational state and the buyer does not, giving the seller an incentive to
+present an optimistic picture. Second, latent operational debt: rework intensity, compliance
+leakage, SLA penalty exposure, and legacy lock-in are systematically hidden in narrative
+presentations and surface only after acquisition, destroying synergy projections. Third,
+unverifiable synergy claims: post-merger integration costs are routinely underestimated because
+no party has replayed both organizations' processes against a shared model to measure
+structural divergence, bottleneck capacity, or behavioral profile similarity.
+
+The v30.1.1 Hostile Takeover Receipt taxonomy (source: \texttt{hostile-takeover-receipts.md})
+names this explicitly: ``Without unforgeable HTRs, any PowerPoint synergy claim or denial of
+operational debt is legally and financially inadmissible.''
+
+\subsection{Hypothesis}
+\label{sec:ma-rq-hypothesis}
+
+\textbf{Hypothesis:} A formal M\&A claim taxonomy grounded in XES/OCEL 2.0 event logs,
+alignment-based conformance metrics, and cryptographic receipt chains can make operational
+claims board-admissible---enabling independent buyer replication within three days and
+compressing traditional seven-week Quality-of-Earnings timelines to automated wasm4pm query
+execution.
+
+The hypothesis decomposes into four sub-claims:
+
+\begin{enumerate}
+  \item Every material operational claim (EBITDA impact, working capital release, SLA penalty
+    exposure, compliance leakage, process standardization) can be expressed as a mathematical
+    formula whose inputs are derivable from an OCEL 2.0 or XES event log.
+  \item Every such formula can be wrapped in a wasm4pm conformance query, whose execution
+    produces a JSON receipt with BLAKE3 log hash, Ed25519 validator signature, and numeric
+    fitness/precision results.
+  \item A Virtual Data Room (VDR) containing event logs, process models, receipts, and
+    provenance lineage files enables an independent buyer's auditor to replay every slide
+    assertion in the board presentation.
+  \item The Reverse Porter Five Forces inversion is structural: a firm with a multi-year OCEL
+    event log stack possesses an evidence moat that is not replicable by a competitor who has
+    not preserved equivalent log history, making process evidence a permanent competitive
+    barrier.
+\end{enumerate}
+
+\subsection{Success Criteria}
+\label{sec:ma-rq-success}
+
+The research program defines success as follows:
+
+\begin{itemize}
+  \item \textbf{Admissibility thresholds met:} All conformance results satisfy fitness $f \ge
+    0.95$, precision $p \ge 0.90$, generalization $g \ge 0.85$, simplicity $s \ge 0.80$, with
+    replication tolerance $\Delta f, \Delta p < 10^{-6}$ across independent replay runs.
+  \item \textbf{Receipt chain complete:} Every slide in the board projection deck maps to a
+    distinct JSON receipt via the Slide-to-Receipt Map, with no orphaned assertions.
+  \item \textbf{Auditor path executable:} The five-step auditor verification protocol
+    (Reference Extraction $\to$ PROV-O Lineage $\to$ BLAKE3+Ed25519 Integrity $\to$ Soundness
+    Proof $\to$ Optimal Alignment Replay) completes without manual intervention.
+  \item \textbf{Diligence compression demonstrated:} The seven-step Board Projection Renderer
+    pipeline executes end-to-end from claims JSON through sealed PowerPoint artifact within the
+    three-day buyer replication window.
+\end{itemize}
+
+The checkpoint file \texttt{checkpoint\_\_m\&a-ready\_research\_complete.md} records the
+APPROVED verdict for the doctrinal layer. The execution layer---receipt generation from actual
+wasm4pm query runs against real enterprise event logs---is deferred (see Chapter~7).

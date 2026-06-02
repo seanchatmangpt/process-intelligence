@@ -1,0 +1,78 @@
+% FILE: 02_lineage_and_context.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Lineage and Context}
+\label{sec:experiments-core-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:experiments-core-lineage-2016}
+
+The experiments in this directory originate from a 2016 observation that local text
+imitation does not conserve consequence. A language model trained to reproduce surface
+patterns of a corpus cannot be held to the causal structure of the process that
+produced that corpus. The model may emit text that resembles a conforming trace without
+having replayed any token through any net. This lesson established a foundational
+requirement: any system that claims to reason about process must produce \emph{falsifiable
+evidence of replay}, not plausible text. The Python validation scripts in this project
+are the direct descendants of that lesson---they verify equations over concrete token
+counts, not over surface-plausible narrative descriptions of conformance. The
+\texttt{validate\_log\_fitness.py} script, for instance, computes fitness from raw
+\texttt{(missing, consumed, remaining, produced)} tuples and asserts exact floating-point
+results. No language model interpolation is involved at any step.
+
+\subsection{Enterprise Process Gap}
+\label{sec:experiments-core-lineage-enterprise}
+
+The enterprise process gap---the observation that declared process models diverge
+systematically from the processes that enterprises actually execute---motivates the
+benchmark comparison between PM4Py and wasm4pm. PM4Py, as a Python library for
+offline process mining, represents the incumbent tool for discovering and measuring
+this gap. The pm4py-comparison experiments documented in
+\texttt{pm4py-comparison/matrix.md} and \texttt{pm4py-comparison/zero-knowledge-benchmarks.md}
+quantify the cost of remaining within that incumbent framework: DFG Discovery at
+37.5$\times$ overhead, Alpha Miner at 34.2$\times$, Token Replay at 39.3$\times$,
+and ZKP conformance timing out at $2^{30}+$ cycles versus wasm4pm's $2^{18}$ cycles.
+These numbers are presented as empirical findings from the benchmark report; however,
+as noted in the open questions (Section~\ref{sec:experiments-core-open}), no
+reproducible benchmark harness with verifiable BPI Challenge 2017 log subsets is
+currently present in the repository. The gap between declared and actual process is
+therefore also present in the benchmark layer itself---a finding that the experiment
+layer must eventually close.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:experiments-core-lineage-chatman}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that alignment is a function of the
+object-centric process state. The experiments in this directory operationalize that
+equation at the measurement layer. The fitness equation
+$f(L,N) = 1 - \frac{\sum \mathit{freq} \cdot m}{\sum \mathit{freq} \cdot c} - \frac{\sum \mathit{freq} \cdot r}{\sum \mathit{freq} \cdot p}$
+is the Van der Aalst formalization of alignment under token replay semantics---it
+measures precisely the degree to which an observed log $L$ conforms to a net $N$.
+When this fitness is typed as \texttt{Metric<FITNESS, NUM, DEN>} with
+\texttt{Between01<NUM, DEN>} as a compile-time type law, the Chatman Equation
+becomes machine-checkable: a system whose compile-time state includes a valid
+\texttt{Receipt} is a system that has, by construction, computed alignment within
+the $[0,1]$ interval. The experiments verify both the mathematical and executable
+sides of this correspondence. [AUTHOR THESIS: the full Chatman Equation unification
+across all six process-intelligence products is not within the scope of the experiments
+directory alone and is addressed in the dissertation synthesis chapter.]
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:experiments-core-lineage-receipts}
+
+The receipt-and-replay architecture appears in this project through three artifacts.
+First, \texttt{replay\_receipt\_sample.md} provides a \texttt{CryptographicReplayReceipt}
+JSON schema with a concrete instance recording fitness~=~0.982 with BLAKE3 model
+and log hashes and an Ed25519 signature. Second, \texttt{EVIDENCE\_CHAIN\_TRACE.md}
+documents the 7-step chain: Raw OCEL $\to$ Parse $\to$ Admit $\to$ Token Replay /
+Alignment $\to$ Metric $\to$ Receipt $\to$ Board Claim. Third,
+\texttt{visualizer/blockchain.js} implements a SHA-256 cryptographic audit chain
+with a genesis block and back-linked hash per event, demonstrating that the receipt
+design is not confined to Rust---it is an architectural pattern that can be instantiated
+in any runtime environment that supports a secure hash function. The OTel-BLAKE3
+integration sample further shows that OpenTelemetry span data can feed directly into
+the receipt chain using the formula
+$R_i = \mathrm{BLAKE3}(R_{i-1} \;\|\; \mathrm{TraceID} \;\|\; \mathrm{SpanID} \;\|\; \mathrm{ParentSpanID} \;\|\; \mathrm{SpanName} \;\|\; \mathrm{StartTime} \;\|\; \mathrm{EndTime} \;\|\; \mathrm{InstructionCount})$,
+making the audit chain extend from process-mining conformance all the way to hardware
+instruction counts.

@@ -1,0 +1,85 @@
+% FILE: 00_project_identity.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Project Identity}
+\label{sec:lifecycle-identity}
+
+\subsection{Purpose}
+\label{sec:lifecycle-identity-purpose}
+
+The \texttt{lifecycle} project defines the complete, formally-grounded process intelligence
+lifecycle as a directed state machine over typed stage tokens. Its purpose is to specify
+every admissible state a process model may occupy---from initial M\&A acquisition ingestion
+through cryptographic final archival---and to govern every transition between those states
+using six quality gates derived from the Blue River Dam doctrine. The framework is the
+authority layer that determines when a process model may advance, must halt, or must be
+refused, and it establishes the mathematical criteria that distinguish a board-defensible
+claim from an unverifiable narrative.
+
+The framework is not aspirational architecture. Every state, transition rule, gate criterion,
+and taxonomy documented in the \texttt{lifecycle/} directory was authored between 31 May and
+1 June 2026, with 43 Markdown source files covering every stage and supporting taxonomy. The
+purpose of this explicit scope is to make the lifecycle surface auditable: an independent
+reviewer can enumerate the files and verify that no stage, no transition, and no taxonomy
+is absent.
+
+\subsection{Repository Surface}
+\label{sec:lifecycle-identity-surface}
+
+The lifecycle directory resides at \texttt{\textasciitilde/process-intelligence/lifecycle/}
+and contains 43 files, all in Markdown format. The surface is organized into three layers.
+The first layer covers the six core operational stages: Design, Simulation, Monitoring,
+Repair, Optimization, and Decommissioning. Each stage has a canonical definition file
+(e.g., \texttt{define\_design-state\_process\_intelligence.md}) and a companion narrative
+file (e.g., \texttt{design.md}). The second layer covers the seven supporting states:
+Acquisition, Construction, Activation, Integration, Operation, Archive, and Board-Projection,
+each defined in its own file. The third layer covers the five taxonomies---Process Asset,
+Process Debt, Process Residual, Process Risk, and False-Claim---plus the autonomic control
+documents: \texttt{MAPE\_K\_MAP.md}, \texttt{define\_blue\_river\_dam\_lifecycle\_gate\_map.md},
+\texttt{define\_autonomic\_knowledge\_actuation\_map.md}, and the maturity model
+\texttt{MATURITY\_MODEL.md}.
+
+No TTL/RDF ontology files, no executable test files, and no cryptographic receipt JSON
+files exist within the \texttt{lifecycle/} subdirectory itself. Receipt JSON artifacts
+reside in the parent \texttt{receipts/} directory, and the parent-level
+\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md} issues the program-level verdict.
+
+\subsection{Primary Research Role}
+\label{sec:lifecycle-identity-role}
+
+The lifecycle project occupies the role of \emph{process-lifecycle-state-definitions-and-transitions}
+within the dissertation. It answers the question: what are the lawful states of a process
+model under process intelligence governance, and under what formal criteria may a model
+transition from one state to the next? This question is not decorative. Without a formally
+specified lifecycle, the wasm4pm execution engine has no authority surface against which
+to enforce state transitions, and the MAPE-K autonomic loop has no admissible stage
+boundaries to respect. The lifecycle specification is, in this sense, the type system of
+the entire process intelligence architecture.
+
+The lifecycle project is also the primary surface on which the dissertation's M\&A due
+diligence argument is grounded. The ACQUISITION.md document defines the diligence gap
+(the inability of most sellers to replay their own process claims), and the lifecycle
+framework provides the staged artifact requirements---model evidence, log evidence,
+conformance evidence, repair evidence, and replay verification---that close that gap.
+
+\subsection{Key Artifacts}
+\label{sec:lifecycle-identity-artifacts}
+
+The key artifacts produced by the lifecycle project are as follows. First, the evidence
+lifecycle typed state machine (v30.1.1 Spec), expressed as a directed graph over the set
+$\mathcal{S} = \{\texttt{Raw}, \texttt{Parsed}, \texttt{Admitted}, \texttt{Refused},
+\texttt{Projected}, \texttt{Exportable}, \texttt{Receipted}\}$ with lawful transitions
+enforced at the type level. Second, the six Blue River Dam quality gates, which govern
+stage transitions from Design through Decommissioning. Third, the MAPE-K mapping matrix,
+which assigns each of the six operational stages to its corresponding autonomic loop
+component. Fourth, the five-level Process Intelligence Maturity Model (L1 Ad-hoc through
+L5 Autonomic) and the six-level Process Readiness Levels (PRL 0--5). Fifth, the Process
+Debt quantification formula $D_p = \sum_{c \in L}(C_{\mathrm{deviate}}(c) +
+C_{\mathrm{delay}}(c) + C_{\mathrm{overhead}}(c))$ and its M\&A valuation implications.
+Sixth, the Cryptographic Decommissioning Receipt specification $R_d =
+\mathrm{Ed25519}_{K_{\mathrm{priv}}}(\mathrm{BLAKE3}(N) \parallel \mathrm{BLAKE3}(L_{\mathrm{final}})
+\parallel C_{\mathrm{total}} \parallel F_{\mathrm{final}} \parallel T_{\mathrm{retire}})$.
+Seventh, the LIFECYCLE\_RECEIPT in the parent \texttt{receipts/RECEIPT\_REGISTRY.md},
+certifying that all 41 or more lifecycle phase files were produced with correct input/output
+type coverage.

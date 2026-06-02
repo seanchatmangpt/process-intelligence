@@ -1,0 +1,109 @@
+% FILE: 04_implementation_surface.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Implementation Surface}
+\label{sec:comparisons-impl}
+
+\subsection{Source Files}
+\label{sec:comparisons-impl-sources}
+
+The comparisons corpus consists of eleven source markdown files under
+\texttt{/Users/sac/process-intelligence/comparisons/}:
+
+\begin{enumerate}
+  \item \texttt{pm4py\_vs\_wasm4pm\_architecture.md} --- Three-system architectural
+    comparison. Defines WF-net soundness conditions (option to complete, proper
+    completion, liveness, boundedness), P-invariant conservation theorem, optimal
+    alignment $\gamma_{\text{opt}}$ via A* over the synchronous product net, and
+    LTL semantics for declarative conformance with DFA compilation.
+  \item \texttt{CONFORMANCE\_METRIC\_SURFACES.md} --- Source-traced Rust code
+    showing \texttt{Metric<KIND, NUM, DEN>} with compile-time bounds, the five
+    type aliases for van der Aalst quality dimensions, and the PM4Py dict-based
+    runtime-only alternative.
+  \item \texttt{ALGORITHM\_COVERAGE\_MATRIX.md} --- Eleven-row matrix classifying
+    Alpha Miner, Inductive Miner, Heuristics Miner, POWL Discovery, Token Replay,
+    Alignment Conformance, Declare Checking, Log Skeleton, OC-DFG, OCPQ, and
+    Variant Analysis across PM4Py, wasm4pm, and wasm4pm-compat.
+  \item \texttt{TYPE\_SAFETY\_COMPARISON.md} --- The laundering test. PM4Py:
+    yes, always. wasm4pm: yes, silently. wasm4pm-compat: no, compiler rejects.
+    Source-traces all three stacks to their respective type definitions.
+  \item \texttt{ADMISSION\_REFUSAL\_VS\_PM4PY\_ERRORS.md} --- Structural comparison
+    of \texttt{Result<Admission<T,W>, Refusal<R,W>>} vs.\ \texttt{except Exception}.
+    Documents \texttt{OcelRefusal} variants: \texttt{DanglingEventObjectLink},
+    \texttt{DuplicateObjectId}, \texttt{EmptyLog}, \texttt{FlatteningLoss}, etc.
+  \item \texttt{wasm\_vs\_native\_pm\_performance.md} --- Benchmark matrix:
+    8.2M events/sec vs.\ 8.5M native (raw replay); 134.7K vs.\ 140.0K native
+    (alignment); 50K vs.\ 52K native (signed ingestion); $< 1$ms vs.\ 10--50ms
+    (instantiation). Cycle complexity proofs for raw replay $O(|\sigma|)$ and
+    alignment $O(|\sigma| \cdot |\mathcal{S}| \log(|\sigma| \cdot |\mathcal{S}|))$.
+  \item \texttt{declarative\_vs\_imperative\_conformance.md} --- LTLf semantics
+    table, Declare template catalog, A* admissibility proof for alignment
+    heuristic, trace equivalence and bisimulation theorems.
+  \item \texttt{lattice\_vs\_trace\_compliance\_checking.md} --- Witness
+    join-semilattice definition, Monotonicity Axiom 2 proof, trace-to-lattice
+    equivalence theorem with inductive proof, BLAKE3 hash chaining
+    $H_k = \text{BLAKE3}(H_{k-1} \| e_k \| W_k)$.
+  \item \texttt{PM4PY\_VS\_WASM4PM\_CONFORMANCE.md} --- PM4Py vs.\ wasm4pm
+    conformance details including token-based replay fitness formula
+    $f(L, N) = 1 - \frac{\sum m}{\sum c}$.
+  \item \texttt{algorithm\_comparison.md} --- Algorithm-level comparison
+    supplementing the coverage matrix with implementation notes.
+  \item \texttt{core\_lifecycle\_algorithms.md} --- Core lifecycle algorithm
+    coverage across the three stacks, including streaming variant tracking.
+\end{enumerate}
+
+External source references consumed by the corpus include:
+\texttt{wasm4pm-compat/src/conformance.rs}, \texttt{src/state.rs},
+\texttt{src/witness.rs}, \texttt{src/evidence.rs}, and PM4Py API signatures for
+\texttt{conformance\_diagnostics\_token\_based\_replay}.
+
+\subsection{Commands}
+\label{sec:comparisons-impl-commands}
+
+The comparisons corpus does not specify executable commands or a build pipeline.
+Its documents are authored directly as markdown under the v30.1.1 research
+protocol. The wasm4pm conformance authority module that implements the type-law
+architecture described in this corpus was compiled and tested with:
+
+\begin{verbatim}
+cargo check  (wasm4pm v26.5.29)
+\end{verbatim}
+
+yielding \texttt{Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.10s}
+with 0 errors. The eight unit tests in \texttt{conformance\_authority} all passed,
+as recorded in \texttt{receipts/wasm4pm\_conformance\_authority\_generation.md}.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:comparisons-impl-ontology}
+
+The RDF ontology surface for the comparisons corpus is
+\texttt{ggen/wasm4pm-compat.ttl}, which provides RDF-grounded witness markers
+aligned to named papers. The ontology encodes the \texttt{WitnessMarker}
+vocabulary (\texttt{Ocel20}, \texttt{Xes1849}, \texttt{WfNetSoundnessPaper},
+\texttt{VanDerAalst1998}, etc.) as RDF resources, making the paper-to-type-law
+mapping machine-readable and SPARQL-queryable.
+
+The OCPQ query language, defined in \texttt{wasm4pm-compat/src/ocpq.rs}, is the
+most novel data surface in the corpus: \texttt{ObjectScope}, \texttt{Predicate}
+tree, and \texttt{OcpqQuery} constitute a wasm4pm-compat-original query language
+with no evaluation engine in any current stack (FUTURE WORK).
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:comparisons-impl-rendered}
+
+The wasm4pm conformance authority module was materialized under a Rust procedural
+rendering pipeline. The receipt at \texttt{receipts/wasm4pm\_conformance\_authority\_generation.md}
+certifies the rendering pipeline: 47 authority specifications were codified from
+the conformance authority map into 12 core types, 8 helper enums, and 6
+implementation blocks, totaling 664 lines of Rust including 8 unit tests.
+The module hash was computed as:
+
+\begin{verbatim}
+Blake3Hash: 75508e6e9e7acccb679e5c8be35ddd2adc9c4732...
+\end{verbatim}
+
+The admission gate thresholds materialized in this module are:
+fitness $\geq 0.95$ (automatic pass), $0.85 \leq$ fitness $< 0.95$ (conditional,
+board override required), fitness $< 0.85$ (hard reject, never admitted).

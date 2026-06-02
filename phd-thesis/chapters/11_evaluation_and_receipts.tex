@@ -1,0 +1,118 @@
+\chapter{Evaluation and Receipts}
+\label{chap:evaluation}
+
+\section{The Evaluation Framework}
+
+The evaluation of this research program is organized around the receipted Chatman Equation: $R \vdash A = \mu(O^{*})$. Each project in the thirty-four-project corpus is evaluated against the following gate criteria:
+
+\begin{enumerate}
+  \item \textbf{Receipt existence}: Does a receipt chain exist for the project's claimed consequential actions?
+  \item \textbf{Checkpoint verification}: Is there a checkpoint entry in \texttt{checkpoints/} that references verifiable evidence for the claimed verdict?
+  \item \textbf{Replay conformance}: Have the project's process events been replayed against the declared process model, producing conformance scores?
+  \item \textbf{Gap documentation}: If gate criteria are not all satisfied, is the gap documented in \texttt{gaps/}?
+  \item \textbf{Van der Aalst Constitution compliance}: Does the project's evaluation follow the process-mining-first doctrine? Specifically: are the verdicts grounded in event-log evidence, not in code-path inspection or API response analysis?
+\end{enumerate}
+
+All five criteria must be satisfied for an \textsc{alive} verdict. Partial satisfaction produces \textsc{partial}. Criterion 1 or 2 failure with no path to resolution produces \textsc{blocked}.
+
+\section{Discovered Projects: 34-Project Corpus}
+
+The research program spans thirty-four discovered projects. The evaluation below is organized by verdict status.
+
+\subsection{ALIVE Projects (8)}
+
+\textbf{blue-river-dam} (lifecycle-authority-and-governance-engine): The lifecycle authority and governance engine. ALIVE. Receipt chain verified. Process model declared. Governance enforcement tested against adversarial inputs (\texttt{adversarial/} project confirms rejection of impermissible command invocations). The conformance score for the governance enforcement process meets the declared threshold.
+
+\textbf{sources-wasm4pm} (core-wasm-execution-authority): The WebAssembly process-mining execution authority. ALIVE. Algorithm implementations verified against pm4py oracle (\texttt{sources-pm4py}). Receipt chain documents the verification events. Replay capability demonstrated on OCEL 2.0 compatible event logs.
+
+\textbf{sources-pm4py} (pm4py-comparative-oracle-atlas): The pm4py capability atlas. ALIVE. Capability inventory receipted. Comparison corpus (\texttt{comparisons/}) documents the specific capability comparisons performed. The atlas serves as the oracle for \texttt{sources-wasm4pm} verification.
+
+\textbf{standards} (public-standards-compliance-and-gravity-field-mapping): The standards compliance mapping. ALIVE. OCEL 2.0, XES, BPMN, ISO, SOC 2, and GDPR mappings receipted. The gravity-field mapping documents which standards exert which compliance requirements on which project components.
+
+\textbf{comparisons} (cross-system-capability-comparison-corpus): The capability comparison corpus. ALIVE. Cross-system comparisons receipted. The comparison methodology is declared in advance and followed without post-hoc adjustment.
+
+\textbf{checkpoints} (phase-milestone-verdict-ledger): The milestone verdict ledger. ALIVE. All checkpoint entries reference verifiable evidence. No checkpoint entry asserts \textsc{alive} on the basis of partial evidence.
+
+\textbf{adversarial} (adversarial-testing-and-hostile-assumption-verification): The hostile-assumption verification test suite. ALIVE. Adversarial test cases implemented per the Van der Aalst Constitution: impossible logs injected and rejected, negative test results documented. The adversarial suite confirms that the infrastructure refuses false closure.
+
+\textbf{receipts} (cryptographic-receipt-chain-and-claim-provenance): The receipt chain. ALIVE. Chain integrity verified. Each receipt references the prior receipt, the evidence it evaluates, and the action it certifies. Post-quantum receipt infrastructure groundwork present; full PQC migration documented as gap.
+
+\subsection{PARTIAL Projects (26)}
+
+The following twenty-six projects are \textsc{partial}. For each, the primary gap is identified. Full gap documentation is in \texttt{gaps/}.
+
+\textbf{ggen} (manufacturing-machinery-and-code-generation-engine): Core manufacturing machinery operational. Gap: recursive manufacturing receipt chain incomplete --- \texttt{ggen}'s own configurations are not yet all manufactured by \texttt{ggen}.
+
+\textbf{otel-weaver} (telemetry-to-process-evidence-ingestion-layer): Translation architecture defined. Gap: end-to-end pipeline from live OTel collector to OCEL-compatible intake not yet receipted as a complete unit.
+
+\textbf{otel-weaver-exp-001} (otel-semconv-evidence-surface-experiment): Custom registry defined. Gap: registry-to-process-event binding not fully receipted.
+
+\textbf{otel-weaver-exp-002} (weaver-diff-to-pi-residual-bridge-experiment): Diff calculation implemented. Gap: residual emission to intake pipeline not connected end-to-end.
+
+\textbf{otel-weaver-exp-003} (live-check-refusal-enforcement-experiment): Refusal logic implemented. Gap: refusal events not logged as OCEL-compatible process events.
+
+\textbf{otel-weaver-exp-004} (semconv-to-witness-lattice-codegen-experiment): Codegen from registry demonstrated. Gap: manufactured witness-lattice code not yet integrated with \texttt{sources-wasm4pm-compat}.
+
+\textbf{otel-weaver-exp-005} (live-telemetry-to-pi-intake-experiment): Collector-to-intake pipeline skeleton present. Gap: live test with OCEL-verified output not receipted.
+
+\textbf{sources-wasm4pm-compat} (type-foundry-and-witness-lattice-authority): Witness lattice defined. Gap: full witness-lattice verification against declared type laws not receipted.
+
+\textbf{sources-papers} (academic-paper-classification-and-evidence-grounding): Paper corpus assembled. Gap: each paper-to-type-law mapping requires paper-specific citation confirming the mapping. Partial coverage; remaining mappings documented.
+
+\textbf{research-open-ontologies} (open-ontology-research-and-rdf-authority): Ontology surface investigation underway. Gap: stable, production-grade ontology alignments not yet receipted.
+
+\textbf{research-pi-program} (pi-program-governance-and-ontology-authority): Governance structure defined. Gap: autonomic activation log (\texttt{AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml}) and manufacturing audit (\texttt{HAND\_CODING\_AUDIT\_20260601.yaml}) present but not yet closed into receipted verdicts.
+
+\textbf{research-prompt-manufactory} (prompt-manufacturing-and-subagent-command-surface): Prompt manufacturing infrastructure present. Gap: receipt chain for manufactured prompts not complete.
+
+\textbf{doctrine} (immutable-process-law-foundation): Core doctrine documented. Gap: not all doctrine claims have been verified against the full evidence corpus. Remaining unverified claims are flagged as \textsc{partial} findings.
+
+\textbf{lifecycle} (process-lifecycle-state-definitions-and-transitions): State definitions present. Gap: transition rules not fully receipted against conformance-checked process events.
+
+\textbf{ma} (ma-claim-taxonomy-and-board-projection-surface): Claim taxonomy documented. Gap: M\&A claims that depend on capital-flow receipts not yet closed; dependent on AI XYNZ infrastructure completion.
+
+\textbf{crosswalks} (type-law-crosswalk-between-standards-and-execution): Crosswalk definitions present. Gap: crosswalk verification through end-to-end manufactured artifacts not receipted.
+
+\textbf{gaps} (structural-gap-registry-and-closure-tracking): Gap registry maintained. Gap: the gaps registry itself is a living document; its completeness is a structural property that cannot be receipted as \textsc{alive} while any project remains \textsc{partial}.
+
+\textbf{experiments-core} (benchmark-experiments-and-equation-verification): Benchmark fixtures present. Gap: Chatman Equation verification across the full benchmark suite not receipted.
+
+\textbf{experiments-visualizer} (process-intelligence-simulation-dashboard): Visualization infrastructure present. Gap: live conformance-score display not connected to receipted event log.
+
+\textbf{experiments-visualizer-nextjs} (web-based-pi-visualization-surface): Web surface present. Gap: same as \texttt{experiments-visualizer}.
+
+\textbf{audits} (completeness-audit-and-compliance-verification-corpus): Audit corpus present. Gap: automated audit receipting not implemented; audits are currently manually initiated.
+
+\textbf{livestream} (real-time-process-broadcast-and-livestream-standards): Standards for real-time broadcast defined. Gap: live receipting of broadcast events not implemented.
+
+\textbf{atlas} (doctrine-atlas-and-thesis-chapter-surface-map): Atlas structure present. Gap: manifest relationship between atlas entries and project slugs not fully receipted.
+
+\textbf{prompts} (downstream-manufacturing-prompt-corpus): Prompt corpus present. Gap: prompt receipt chain not integrated with \texttt{ggen} manufacturing.
+
+\textbf{schemas} (data-schema-definitions-for-ma-and-receipt-surfaces): Schema definitions present. Gap: schema-to-receipt-chain binding not implemented.
+
+\textbf{phd-thesis} (dissertation-corpus-manufacturing-workspace): Dissertation corpus present. Gap: this document is itself \textsc{partial} until the full chapter corpus is receipted.
+
+\section{Conformance to the Van der Aalst Constitution}
+
+The Van der Aalst Constitution (documented in \texttt{rules/process-mining-chicago-tdd.md}) establishes the evaluation doctrine: trust event evidence, not code paths or API responses.
+
+The evaluation in this chapter applies the Constitution at every point. Verdicts are not derived from reading source code and concluding that the code, if executed correctly, would produce a conforming process. Verdicts are derived from event logs that have been replayed against declared process models.
+
+This commitment has a direct consequence for the verdict distribution: the preponderance of \textsc{partial} verdicts. A research program that evaluated verdicts by code inspection would find far more \textsc{alive} projects. The code exists. The implementations are substantial. But code is not process evidence. A system that has not produced a replayable event log, checked for conformance, and receipted the result is a system that has not satisfied the Van der Aalst Constitution --- regardless of how mature its implementation appears to be.
+
+The eight \textsc{alive} projects have satisfied the Constitution. The twenty-six \textsc{partial} projects are on a documented path toward satisfying it. The gap registry in \texttt{gaps/} documents each step that remains.
+
+\section{Evidence Receipts Across the Corpus}
+
+The \texttt{receipts/} project (\textsc{alive}) maintains the cross-corpus receipt chain. Each receipt in the chain references:
+
+\begin{itemize}
+  \item The project whose action is being certified.
+  \item The evidence ($O^{*}$) --- the event log entry or checkpoint reference --- that grounds the certification.
+  \item The projection function ($\mu$) applied --- the SPARQL query, conformance algorithm, or governance rule.
+  \item The timestamp of evaluation.
+  \item The cryptographic commitment linking all components.
+\end{itemize}
+
+The receipt chain for the eight \textsc{alive} projects is complete and verified. The partial receipt chains for the twenty-six \textsc{partial} projects document the evidence that exists and identify the gaps precisely. The chain is not a forward-dated promise. It is a backward-dated record. Every entry in the chain corresponds to an event that has occurred, not a plan for future occurrence.

@@ -1,0 +1,60 @@
+% FILE: 00_project_identity.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Project Identity}
+\label{sec:experiments-core-identity}
+
+\subsection{Purpose}
+\label{sec:experiments-core-identity-purpose}
+
+The \texttt{experiments/} directory serves as the empirical verification layer of the
+process-intelligence research program. Its purpose is threefold: to mathematically verify
+the foundational equations that govern conformance checking; to provide executable benchmark
+fixtures that compare wasm4pm against PM4Py across performance, type-safety, and
+zero-knowledge dimensions; and to demonstrate the full evidence chain from raw OCEL logs
+through typed Admission gates to board-admissible conformance claims. The experiments do
+not simulate conformance---they manufacture it from lawful primitives and record cryptographic
+receipts that a board-level claim may cite without further interpretation. Every claim made
+in downstream manufacturing stages must trace to one of the experiment artifacts housed
+here or be declared AUTHOR THESIS.
+
+\subsection{Repository Surface}
+\label{sec:experiments-core-identity-surface}
+
+The repository surface comprises three distinct layers. The first layer consists of
+executable Python validation scripts: \texttt{validate\_log\_fitness.py},
+\texttt{validate\_ocpq\_refinement.py}, and \texttt{verify\_equations.py}. These scripts
+run without mocks and exit with assertion failures on any incorrect result. The second
+layer is a structured set of Markdown experiment samples with concrete JSON schemas covering
+18 domains: Petri net token replay, OCEL 2.0 lifecycle, cryptographic replay receipts,
+OTel-BLAKE3 integration, raw laundering refusal, and M\&A claim mappings, among others.
+The third layer is a fully interactive browser-based process-mining dashboard
+(\texttt{visualizer/}) that implements A* alignment, EWMA drift detection, a SHA-256
+audit ledger, LTL Declare constraint checking, and Petri net token game animation. Two
+subdirectories---\texttt{ma-deck-projection/} and \texttt{wasm4pm-gap-analysis/}---are
+currently empty and represent deferred manufacturing work (see Section~\ref{sec:experiments-core-open}).
+
+\subsection{Primary Research Role}
+\label{sec:experiments-core-identity-role}
+
+Within the dissertation, this project occupies the role of \emph{benchmark experiments
+and equation verification}. It provides the only executable proofs that the Van der Aalst
+weighted log fitness equation and the OCPQ query variable refinement relation hold on
+concrete data. It further provides the only reproducible performance comparison between
+PM4Py and wasm4pm. Without this layer, claims about conformance speed, type safety, and
+zero-knowledge compatibility remain conjectural. The experiments directory is therefore
+a prerequisite for any board-admissible claim that cites fitness metrics, alignment costs,
+or ZKP cycle counts.
+
+\subsection{Key Artifacts}
+\label{sec:experiments-core-identity-artifacts}
+
+The key artifacts are: (1)~\texttt{verify\_equations.py}---a single gate that runs
+five fitness cases and four OCPQ cases and reports 100\% correctness; (2)~\texttt{audit\_\_experiment\_completeness.md}---records 18/18 experiments as PASSED with concrete JSON schemas and zero stubs;
+(3)~\texttt{checkpoint\_\_experiments\_complete.md}---declares VERIFIED \& COMPLETE;
+(4)~\texttt{EVIDENCE\_CHAIN\_TRACE.md}---documents the 7-step evidence chain from raw OCEL
+through receipt to board claim; (5)~\texttt{visualizer/bindings.d.ts}---TypeScript type
+projections of the Rust typestate system crossing the WASM boundary; and (6)~the
+\texttt{pm4py-comparison/} benchmark reports recording DFG Discovery 37.5$\times$,
+Alpha Miner 34.2$\times$, and Token Replay 39.3$\times$ speedups for wasm4pm over PM4Py.

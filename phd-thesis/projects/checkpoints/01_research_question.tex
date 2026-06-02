@@ -1,0 +1,65 @@
+\section{Research Question}
+\label{sec:checkpoints-question}
+
+\subsection{Problem Statement}
+\label{sec:checkpoints-question-problem}
+
+Research programs in process intelligence face a fundamental epistemic problem: the claim that a body
+of research is \emph{complete enough to authorize downstream implementation} is itself a claim that
+requires evidence. Without a formal verdict mechanism, completeness is asserted rather than
+demonstrated. Implementation proceeds on assumption, and the assumption is never falsifiable because
+no threshold was declared before the fact.
+
+The checkpoint ledger addresses this problem directly. The RESEARCH\_CRITERIA.md document encodes
+the gate criteria \emph{before} the ALIVE verdict is sought. Each criterion names a directory, a
+minimum file count, and a verification command. The threshold for ALIVE certification is stated
+explicitly: all criteria must be met simultaneously. A single unmet threshold produces PARTIAL. This
+means the verdict is falsifiable: it can be re-run, the counts can be checked independently, and any
+discrepancy between the stated verdict and the actual artifact inventory is a defect, not a discrepancy.
+
+The problem being solved is not administrative bookkeeping. It is the problem of process-mining
+conformance applied reflexively: how can a research program certify that its own knowledge-production
+process is sound?
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:checkpoints-question-old-regime}
+
+The old-regime assumption is that research readiness is a qualitative judgment: a principal investigator
+reviews the body of work, concludes that it is \textquotedblleft comprehensive enough,\textquotedblright{}
+and authorizes downstream work. No threshold is stated before the fact. No audit trail records which
+criteria were evaluated. No distinction is drawn between a complete body of evidence and a
+nearly-complete body of evidence with open gaps. Downstream work proceeds in both cases.
+
+This assumption is challenged on two grounds. First, it violates the process-mining principle that
+model-versus-log mismatch is a defect, not a discrepancy. If the declared research model requires
+fifteen doctrine files and the actual inventory contains twelve, that is a conformance failure, not a
+judgment call. Second, it produces false ALIVE verdicts---authorizations that are issued before the
+authorizing evidence exists. The RESEARCH\_CRITERIA.md encodes the explicit rule: \textquotedblleft
+False ALIVE is breach. PARTIAL is honorable.\textquotedblright{}
+
+\subsection{Hypothesis}
+\label{sec:checkpoints-question-hypothesis}
+
+The hypothesis is that a formal, threshold-based, pre-declared gate system---with immutable verdict
+documents, cryptographic sealing, and explicit authorization lists---can replace qualitative
+research readiness judgment with a falsifiable, auditable, process-conformant certification mechanism.
+Specifically: (1) every ALIVE verdict will be traceable to a gate assessment document recording exact
+artifact counts against minimum thresholds; (2) every authorization list will name only workflows
+whose prerequisites are verified; (3) PARTIAL verdicts will carry explicit bills of materials for the
+next transition rather than being treated as failure states; and (4) the Petri net model of the
+research lifecycle will reach a sound final marking with no residual tokens in intermediate places.
+
+\subsection{Success Criteria}
+\label{sec:checkpoints-question-success}
+
+Success is operationally defined by the gate criteria in RESEARCH\_CRITERIA.md and confirmed by the
+ALIVE\_GATE\_ASSESSMENT document. The primary success criterion is 12 of 12 gate criteria met, as
+recorded in ALIVE\_GATE\_ASSESSMENT.md (2026-05-31): doctrine 30 of 15 minimum, standards 52 of 10
+minimum, papers 15 of 7 minimum, PM4Py 14 of 4 minimum, wasm4pm 20 of 4 minimum, wasm4pm-compat 16
+of 4 minimum, lifecycle 42 of 8 minimum, comparisons 11 of 4 minimum, crosswalks 8 of 3 minimum,
+M\&A 40 of 6 minimum, adversarial 5 of 3 minimum, gaps 4 of 2 minimum. The secondary success criterion
+is that all downstream authorizations issued by ALIVE verdicts name only workflows whose
+prerequisites are verified---that no manufacturing work is authorized without a corresponding receipt.
+The tertiary success criterion is that the Petri net snapshot records a sound final marking:
+[Decommissioning]:1, all intermediate places at zero, confirming deadlock-free process completion.
+All three criteria are met by the evidence in the ledger as of 2026-06-01.

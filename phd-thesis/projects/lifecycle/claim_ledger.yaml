@@ -1,0 +1,257 @@
+slug: lifecycle
+claims:
+  - id: CLM-LIFECYCLE-001
+    claim: >
+      The lifecycle directory contains 43 Markdown source files covering every stage and
+      supporting taxonomy, authored between 31 May and 1 June 2026, with no TTL/RDF
+      ontology files and no executable test files within the lifecycle/ subdirectory.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/docs-law__lifecycle_readme.md
+      - /Users/sac/process-intelligence/lifecycle/audit__lifecycle_completeness.md
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      Directory listing confirms 42 files; LIFECYCLE_RECEIPT in RECEIPT_REGISTRY.md
+      records 'actual: 41+'; zero .py, .rs, or .test files found in lifecycle/; 00_project_identity.tex
+      states 43 files explicitly. One-off count discrepancy (42 vs 43) does not invalidate
+      the substance.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-002
+    claim: >
+      The lifecycle project defines a typed evidence state machine over S = {Raw,
+      Parsed, Admitted, Refused, Projected, Exportable, Receipted} with lawful one-way
+      transitions enforced at the type level via Evidence<T, S, W> in wasm4pm-compat.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/checkpoint__lifecycle_model_complete.md
+      - /Users/sac/process-intelligence/lifecycle/MAPE_K_MAP.md
+      - /Users/sac/process-intelligence/lifecycle/docs-law__lifecycle_readme.md
+    evidence_summary: >
+      checkpoint__lifecycle_model_complete.md defines the v30.1.1 Spec with Object Lifecycle
+      phase transitions and typed state machine; MAPE_K_MAP.md references Evidence<T, Raw, W>
+      and wasm4pm-compat type columns; the evidence lifecycle state set is consistently
+      referenced across multiple source files.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-003
+    claim: >
+      Six Blue River Dam quality gates govern stage transitions from Design through
+      Decommissioning, with Gate 1 requiring WF-net soundness, Gate 3 enforcing a 0.95
+      alignment fitness threshold, and Gate 6 requiring a cryptographic decommissioning
+      receipt before archival.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md
+    evidence_summary: >
+      define_blue_river_dam_lifecycle_gate_map.md specifies all six gates with formal
+      verification equations: Gate 1 sound(N) true, Gate 3 fitness >= 0.95 admissibility
+      criterion with Board override provision, Gate 6 active(N) false and verify_receipt(Rd) true.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-004
+    claim: >
+      The Process Intelligence Maturity Model defines five levels (L1 Ad-hoc through
+      L5 Autonomic), where L1 has no formal models and no event logs, L3 has formal models
+      and admitted OCEL/XES logs enabling periodic token replay, and L5 has a full MAPE-K
+      loop with receipted artifacts at every stage.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/MATURITY_MODEL.md
+    evidence_summary: >
+      MATURITY_MODEL.md defines all five levels with explicit characteristics, wasm4pm-compat
+      type law applicability, wasm4pm execution requirements, and audit response capability
+      per level; the five-level summary table is present and complete.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-005
+    claim: >
+      The LIFECYCLE_RECEIPT in receipts/RECEIPT_REGISTRY.md is satisfied with no gaps
+      remaining, certifying that 41+ lifecycle phase files were produced with correct
+      input/output type coverage across all required phases.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      RECEIPT_REGISTRY.md LIFECYCLE_RECEIPT entry records criteria_met: lifecycle >= 8
+      (actual: 41+), all phases have name/input type/output type/wasm4pm-compat state tag/
+      admission requirement, and gaps_remaining: [] (empty list).
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-006
+    claim: >
+      The lifecycle project's current checkpoint status is PARTIAL: the doctrine surface
+      is complete but no executable test suite has run assert_soundness, assert_fitness,
+      assert_no_ghost_transitions, or assert_decommission_receipt against real Petri nets
+      and real event logs in a running wasm4pm instance.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/checkpoint__lifecycle_model_complete.md
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      checkpoint__lifecycle_model_complete.md contains Python assertion code blueprints
+      explicitly labeled as blueprints; direct file search confirms zero .py, .rs, or .test files
+      exist within lifecycle/; the PARTIAL status rationale is precisely stated in both the
+      source files and the TeX narrative.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-007
+    claim: >
+      The MAPE-K mapping in MAPE_K_MAP.md lists eight capabilities required in wasm4pm
+      (online token replay, alignment computation, variant enumeration, repair plan evaluation,
+      actuation layer, receipt emitter, model store, metric time-series store) that are
+      not present in wasm4pm-compat, making the implementation gap visible as a structured
+      artifact.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/MAPE_K_MAP.md
+    evidence_summary: >
+      MAPE_K_MAP.md contains an explicit table of eight capabilities marked as 'wasm4pm'
+      status and states that a crate conflating the structure and execution layers is a
+      structural defect; all eight capabilities are individually named in the table.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-008
+    claim: >
+      The Process Debt quantification formula D_p = sum_{c in L}(C_deviate(c) + C_delay(c)
+      + C_overhead(c)) converts conformance metrics into M&A valuation adjustments, with
+      process debt exceeding 15% of monthly operating cost defined as both the Debt
+      Actuation trigger and a material post-close integration liability threshold.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/define_process_debt_taxonomy.md
+      - /Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md
+    evidence_summary: >
+      define_process_debt_taxonomy.md provides the formula with component definitions and
+      explicitly states high process debt (Dp > 15% of operating cost) as an M&A valuation
+      lever; gate map confirms the 15% threshold as the Gate 3 Debt Actuation trigger.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-009
+    claim: >
+      The Cryptographic Decommissioning Receipt Rd = Ed25519_{K_priv}(BLAKE3(N) || BLAKE3(L_final)
+      || C_total || F_final || T_retire) seals the lifecycle at decommission, combined with a
+      three-pass ChaCha20 CSPRNG Oblivion Protocol wipe of WASM linear memory preventing
+      re-activation without re-traversing the full lifecycle.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/define_final_receipt_state.md
+      - /Users/sac/process-intelligence/lifecycle/checkpoint__lifecycle_model_complete.md
+      - /Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md
+    evidence_summary: >
+      The decommissioning receipt formula and Oblivion Protocol are documented across lifecycle
+      source files; checkpoint__lifecycle_model_complete.md references the assert_decommission_receipt
+      blueprint (with minor internal hash algorithm inconsistency: blueprint uses sha256 while
+      other sources specify BLAKE3). The structure of the claim is source-supported; BLAKE3
+      vs sha256 is an implementation detail requiring harmonization.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-010
+    claim: >
+      The M&A diligence gap -- that most sellers cannot replay their own process claims
+      from admitted event logs -- is a structural property of how enterprise process management
+      has been practiced, not a matter of bad faith, and it creates an epistemic risk
+      premium that replayable process evidence eliminates.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/ACQUISITION.md
+    evidence_summary: >
+      ACQUISITION.md defines the diligence gap with a concrete scenario and the risk premium
+      mechanism; the characterization of the gap as structural rather than bad-faith is the
+      author's analytical framing supported by the scenario evidence in the source file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-011
+    claim: >
+      Enterprise process intelligence is fundamentally a coordination problem, not a
+      prediction problem: the MAPE-K loop detects when fitness has fallen below threshold
+      and triggers typed actuation, rather than forecasting when it will fall, making the
+      lifecycle framework a coordination architecture rather than a prediction engine.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/MAPE_K_MAP.md
+      - /Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md
+    evidence_summary: >
+      MAPE_K_MAP.md specifies the Monitor component as collecting and structuring observations
+      without interpreting them, and gate criteria are reactive thresholds; the
+      prediction-vs-coordination framing is the author's analytical contribution building
+      on these documented mechanisms.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-012
+    claim: >
+      The 0.95 alignment fitness threshold at Gate 3 is a declared board-level standard,
+      not a derived empirical value, and in real enterprise processes with high variance
+      or seasonal patterns it may trigger excessive T_elastic actuation without improving
+      governance.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md
+      - /Users/sac/process-intelligence/lifecycle/checkpoint__lifecycle_model_complete.md
+    evidence_summary: >
+      The gate map states the 0.95 threshold as a criterion without empirical derivation;
+      the open questions section of the TeX identifies this as Research Risk 2, noting the
+      threshold should be treated as a configurable parameter.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-013
+    claim: >
+      An executable test suite implementing all four assertion blueprints against at least
+      one WF-net artifact and one real event log, and formal API contract specifications
+      for wasm4pm online token replay and receipt emission, will be authored as next receipted
+      work to upgrade the lifecycle project from PARTIAL to ALIVE status.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/checkpoint__lifecycle_model_complete.md
+    evidence_summary: >
+      checkpoint__lifecycle_model_complete.md contains the assertion blueprints as specification
+      targets; the open questions TeX section lists this as first-priority next receipted work,
+      noting it requires only pm4py or equivalent and does not require a running wasm4pm instance.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-014
+    claim: >
+      The Board Projection Holography framework (v30.1.1) allows prospective board claims
+      to be derived from the historical artifact set O* through deterministic state transition
+      rules, with every projected state carrying a cryptographic proof of its provenance.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/lifecycle/board-projection-holography.md
+      - /Users/sac/process-intelligence/lifecycle/BOARD_PROJECTION.md
+    evidence_summary: >
+      BOARD_PROJECTION.md describes the claim chain from raw log through receipt to board
+      statement; TeX files explicitly state no formal connection between BPH and the receipt
+      chain or wasm4pm types has been established through a compiled, running bridge -- BPH
+      is a research model designation, not an implemented capability.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-LIFECYCLE-015
+    claim: >
+      The five JSON receipts in the parent receipts/ directory (rec_ebitda_rework_001.json,
+      rec_wc_ar_002.json, rec_risk_sla_003.json, rec_risk_compliance_004.json,
+      rec_residual_standard_005.json) are operational conformance receipts produced by live
+      process execution.
+    claim_type: UNSUPPORTED_REMOVED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      RECEIPT_REGISTRY.md MA_RECEIPT entry explicitly states 'Monetization receipts
+      (rec_ebitda_rework_001.json etc.) are samples; production receipts require live data.'
+      Presenting these as operational receipts would fabricate evidence of live conformance
+      that does not exist.
+    confidence: HIGH
+    allowed_in_pdf: false

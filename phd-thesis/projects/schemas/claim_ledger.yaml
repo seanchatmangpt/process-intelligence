@@ -1,0 +1,138 @@
+slug: schemas
+claims:
+  - id: CLM-SCHEMAS-001
+    claim: "The schemas project provides exactly two JSON Schema draft-07 documents as its normative surface: schemas/slide_verification_ledger.schema.json (65 lines) and standards/otel_trace_integration_schema.json (75 lines)."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+      - /Users/sac/process-intelligence/standards/otel_trace_integration_schema.json
+    evidence_summary: "Both files exist and their line counts match the claimed values (65 and 75 lines verified by wc -l); both declare JSON Schema draft-07 as their meta-schema."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-002
+    claim: "The SlideVerificationLedger schema uses patternProperties keyed on a UUIDv4 regular expression so that each key in the ledger object is itself a UUID identifying an M&A deck slide, and enforces additionalProperties: false to refuse any receipt carrying fields not listed in the required set."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+    evidence_summary: "The schema file confirms patternProperties with the UUIDv4 regex and additionalProperties: false at lines 6-7 and 64."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-003
+    claim: "The SlideVerificationLedger schema requires eight fields per receipt entry: slide_id, slide_title, assertion_text, target_log_hash (64-hex BLAKE3), process_model_hash (64-hex BLAKE3), query_definition, verification_results (with status enum verified | failed | unverified), and validator_signature (128-hex Ed25519)."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+    evidence_summary: "The schema's required array at lines 52-61 lists exactly these eight fields with the correct pattern constraints for BLAKE3 hashes and Ed25519 signature."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-004
+    claim: "The query_definition field in the SlideVerificationLedger schema is defined as an object with engine, query_uri, and parameters subfields, with engine constrained to the enum {wasm4pm, pm4py}."
+    claim_type: UNSUPPORTED_REMOVED
+    source_files:
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+    evidence_summary: "The actual schema defines query_definition as type: 'string' (line 29), not as an object with engine enum. The production receipts use it as an object, creating a direct type mismatch between the schema and its claimed structure."
+    confidence: HIGH
+    allowed_in_pdf: false
+
+  - id: CLM-SCHEMAS-005
+    claim: "Five production receipts in receipts/ conform to the SlideVerificationLedger schema, carrying real UUIDv4 slide_id values, 64-hex BLAKE3 hashes, wasm4pm query URIs, fitness/precision metrics, and validator_signature values prefixed ed25519_sig_."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_sla_003.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_compliance_004.json
+      - /Users/sac/process-intelligence/receipts/rec_residual_standard_005.json
+    evidence_summary: "All five receipt files exist; rec_ebitda_rework_001.json carries a UUIDv4 slide_id, 64-hex BLAKE3 hashes, and a validator_signature prefixed ed25519_sig_; however, the query_definition type mismatch means strict automated validation against the committed schema would fail."
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-006
+    claim: "The five sample receipts carry hardcoded BLAKE3 hashes not computed from live event log execution, and the RECEIPT_REGISTRY.md explicitly acknowledges that monetization receipts are samples requiring live data for production use."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: "RECEIPT_REGISTRY.md MA_RECEIPT entry states: 'Monetization receipts (rec_ebitda_rework_001.json etc.) are samples; production receipts require live data.'"
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-007
+    claim: "No automated CI validation enforces schema conformance against rec_*.json files at commit time; the schema is a specification but not a mechanically enforced proof gate."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/ma_deck_rendering_authority_assessment.md
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: "The M&A deck rendering authority assessment marks Step 6 validation as 'PROTOCOL DEFINED' not 'EXECUTED'; no CI configuration file or automated validation script appears in the known source files."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-008
+    claim: "The M&A deck rendering authority assessment (dated 2026-06-01) declares that all sample receipts conform to schema and establishes the schema as the governing contract at Steps 3 and 6 of the seven-step rendering pipeline."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/ma_deck_rendering_authority_assessment.md
+      - /Users/sac/process-intelligence/ma/define_slide-to-receipt_map.md
+    evidence_summary: "The assessment file confirms 'All sample receipts conform to schema' and the seven-step pipeline diagram places receipt schema validation at Steps 3 and 6 with VERIFIED status."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-009
+    claim: "The OTelTraceBlake3IntegrationSchema requires a per-span blake3_receipt computed as BLAKE3(PriorReceipt || SpanData), forming an unforgeable execution chain across all trace spans."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/otel_trace_integration_schema.json
+    evidence_summary: "The OTel schema file defines blake3_receipt as a 64-hex field described as 'computed recursively as BLAKE3(PriorReceipt || SpanData)' in its description field, confirming the chained hash construction."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-010
+    claim: "The sample receipts reference JSON Schema draft-2020-12 in their $schema field while the schema file itself targets draft-07, creating a latent compatibility risk that must be resolved before automated CI validation is implemented."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+    evidence_summary: "rec_ebitda_rework_001.json declares $schema as draft/2020-12 while slide_verification_ledger.schema.json declares $schema as draft-07, confirmed by direct file inspection."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-011
+    claim: "The schemas project satisfies structural completeness requirements (schema artifact valid, eight required fields defined, additionalProperties enforced, five receipts conforming by inspection, schema integrated into rendering pipeline documentation) but cannot advance from PARTIAL to ALIVE without automated CI enforcement, live-executed receipts, a public key registry, and governance documentation."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+      - /Users/sac/process-intelligence/receipts/ma_deck_rendering_authority_assessment.md
+    evidence_summary: "The PARTIAL status is consistent with the M&A authority assessment (validation protocol defined but not executed) and RECEIPT_REGISTRY.md (samples acknowledged as non-production); the four named ALIVE blockers are derived from these sources."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-012
+    claim: "The validator_signature pattern (128-hex Ed25519) admits any 128-hex string without requiring a valid Ed25519 signature over a JCS-canonical payload; the binding between the hex pattern and the signing protocol is extra-schematic, and no public key registry exists to enable independent signature verification."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+    evidence_summary: "The schema constrains validator_signature only to a 128-hex regex with no key reference; sample receipts carry signatures prefixed ed25519_sig_ with non-standard formatting, and no key_registry.json or equivalent file appears in the known source files."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-013
+    claim: "The governance boundary between schemas/ and standards/ is undocumented; the design rationale for placing OTelTraceBlake3IntegrationSchema in standards/ rather than schemas/ is not recorded in any committed artifact."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/otel_trace_integration_schema.json
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+    evidence_summary: "Both schema files exist in separate directories with no README, GOVERNANCE.md, or equivalent file explaining the placement decision; this gap is acknowledged in the TeX and consistent with evidence."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SCHEMAS-014
+    claim: "Automated CI schema validation, live receipt generation, public key materialization, and governance documentation are required before the schemas project can advance from PARTIAL to ALIVE status, and each will be delivered as a receipted artifact enabling independent verification."
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: "These four items are described as deferred gates in 07_open_questions_and_next_work.tex; none of the corresponding artifacts (validation script, CI config, key registry, README) appear in the known source files, confirming they do not yet exist."
+    confidence: HIGH
+    allowed_in_pdf: true

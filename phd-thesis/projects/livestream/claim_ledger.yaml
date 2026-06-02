@@ -1,0 +1,222 @@
+slug: livestream
+claims:
+  - id: CLM-LIVESTREAM-001
+    claim: >-
+      The livestream project transforms the process-intelligence repository's Git commit history
+      into an OCEL 2.0-conformant event stream via aalst_broadcaster.js, using git log output
+      parsed into ocel:activity, ocel:timestamp (UTC ISO 8601), ocel:vmap, and ocel:omap fields.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/livestream/aalst_broadcaster.js
+      - /Users/sac/process-intelligence/AALST_LIVESTREAM_MANIFEST.md
+    evidence_summary: >-
+      The source file aalst_broadcaster.js exists in the known source_files list and the
+      implementation surface description in 04_implementation_surface.tex matches the module's
+      declared behavior; AALST_LIVESTREAM_MANIFEST.md attests the broadcaster as operational.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-002
+    claim: >-
+      The conformance audit of the AGI conversation trace against the Blue River Dam thesis Petri
+      net model produced Fitness = 0.9880 and Precision = 1.0000.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/livestream/conformance_audit.md
+    evidence_summary: >-
+      The file conformance_audit.md exists and directly reports Fitness: 0.9880 and Precision:
+      1.0000 against the Blue River Dam thesis model, confirming the exact values cited in the
+      TeX files.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-003
+    claim: >-
+      The Telemetry Auditor Agent audit (v30.1.2, 2026-06-01) issued a FAIL verdict: the browser
+      visualizer telemetry achieves 0% OCEL 2.0 compliance (zero object entities, zero E2O links,
+      zero O2O links) and 2/5 on XES (IEEE 1849-2016) compliance due to missing
+      lifecycle:transition attributes and non-UTC timestamps.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/audits/telemetry_auditor_audit.md
+    evidence_summary: >-
+      The telemetry_auditor_audit.md file exists, carries the FAIL verdict, and explicitly states
+      0% OCEL 2.0 compliance and 2/5 XES score with the exact deficiencies listed in the TeX file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-004
+    claim: >-
+      The Stream Director Agent audit (v30.1.2, 2026-06-01) issued a PASS verdict after
+      remediation of DOM binding errors, reporting 60.0 FPS (59.7-60.0), latency 6-15 ms per
+      frame, and 0.0% frame drop rate.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/audits/stream_director_audit.md
+    evidence_summary: >-
+      The stream_director_audit.md file exists, carries the PASS verdict, and reports the
+      identical FPS, latency, and frame drop figures cited in the TeX files; SHA-256 attestation
+      hash matches.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-005
+    claim: >-
+      The overall project status is PARTIAL: an ALIVE verdict cannot be issued because the
+      Telemetry Auditor FAIL constitutes a failing test under the foundry's gate doctrine, which
+      requires receipt, tests, and checkpoint to be satisfied simultaneously.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/audits/telemetry_auditor_audit.md
+      - /Users/sac/process-intelligence/AALST_CERTIFIED_ALIVE.md
+      - /Users/sac/process-intelligence/livestream/conformance_audit.md
+    evidence_summary: >-
+      The Telemetry Auditor FAIL is confirmed in the audit file; AALST_CERTIFIED_ALIVE.md
+      predates the v30.1.2 audit and covers only v30.1.1 compliance; the combination of PASS and
+      FAIL verdicts with the conformance audit is the evidentiary basis for the PARTIAL status
+      confirmed by known evidence.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-006
+    claim: >-
+      The AALST_CERTIFIED_ALIVE.md document certifies that the Zoe Framework AGI conversation
+      satisfies real-time transparency standards for process mining under version 30.1.1, bearing
+      SHA-256 signature ea15dda11d3430960ac225d43c4023ab4030663f08317c77330c32ff8ef843c6.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/AALST_CERTIFIED_ALIVE.md
+    evidence_summary: >-
+      The file AALST_CERTIFIED_ALIVE.md exists and contains exactly the cited SHA-256 signature
+      and v30.1.1 attestation text; the hash ea15dda... matches the known evidence record.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-007
+    claim: >-
+      The agent_conversation_log.js module contains a syntax error at line 18 (missing opening
+      brace: } catch(e) } instead of } catch(e) { }), making the module non-executable in its
+      committed form.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/livestream/agent_conversation_log.js
+    evidence_summary: >-
+      The source file agent_conversation_log.js is listed in the known source_files; the syntax
+      error is reported in 04_implementation_surface.tex and cross-referenced in
+      07_open_questions_and_next_work.tex as Gap 3 (Severity: High) with the PARTIAL verdict
+      tied partly to this defect.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-008
+    claim: >-
+      The autonomic MAPE-K controller in autonomic.js implements an EWMA drift detector with
+      alpha = 0.15 and LCL = 0.920; when conformance fitness crosses the LCL, the controller
+      withholds downstream actuation authorization, directly instantiating the Chatman Equation
+      admissibility constraint A = mu(O*, T, L) at the factory level.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/autonomic.js
+    evidence_summary: >-
+      The autonomic.js file exists in the known source_files; the EWMA parameters and LCL = 0.920
+      are corroborated in the Stream Director audit (Section 3.2 EWMA chart); the Chatman Equation
+      instantiation framing is the author's analytical claim connecting controller behavior to the
+      broader dissertation argument.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-009
+    claim: >-
+      The Petri net snapshot (PETRI_NET_SNAPSHOT.md, base64-encoded) records a final sound marking
+      with a single token at [Decommissioning] and no deadlocks, satisfying proper completion
+      criteria for a workflow net.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/AALST_LIVESTREAM_MANIFEST.md
+    evidence_summary: >-
+      AALST_LIVESTREAM_MANIFEST.md is listed in the known source_files and attests operational
+      status of the Petri net infrastructure; the PETRI_NET_SNAPSHOT.md is referenced as a key
+      artifact and is corroborated by the manifest's AALST_LIVESTREAM_ACTIVE verdict under
+      v30.1.1.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-010
+    claim: >-
+      The conformance audit metrics (Fitness = 0.9880, Precision = 1.0000) cannot be independently
+      reproduced because the audit document does not identify which tool computed the metrics,
+      which specific event log was used as input, or which Petri net model definition was applied.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/livestream/conformance_audit.md
+    evidence_summary: >-
+      The conformance_audit.md file is terse (8 lines) and records only the metric values and a
+      brief note on event ID collision handling; it names no tool, no input log path, and no model
+      definition - the provenance gap is directly observable in the file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-011
+    claim: >-
+      The Stream Director PASS verdict was issued by the same agent swarm that performed the DOM
+      remediation; an independent re-audit by a different agent has not been filed as of
+      2026-06-01, creating a self-certification risk.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/audits/stream_director_audit.md
+      - /Users/sac/process-intelligence/audits/telemetry_auditor_audit.md
+    evidence_summary: >-
+      The stream_director_audit.md identifies its auditor as Stream Director Agent (Agent 1) and
+      notes it executed remediation before issuing PASS; the Telemetry Auditor audit predates the
+      remediation, so no post-remediation independent check is on record.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-012
+    claim: >-
+      The M&A Claims Verification Board in the browser visualizer evaluates EBITDA synergy claims
+      ($5M target), compliance enforcement claims ($3.5M target), and data room lineage claims
+      ($1.2M target) in real time against live process evidence, automatically rejecting any claim
+      whose supporting ledger block has been tampered.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/audits/stream_director_audit.md
+      - /Users/sac/process-intelligence/experiments/visualizer/autonomic.js
+    evidence_summary: >-
+      The stream_director_audit.md Section 3.1 explicitly lists the M&A Claims Verification Board
+      with the three exact dollar targets; the tamper-rejection behavior is documented in Section 5
+      of the same audit; autonomic.js is listed in known source_files as implementing this
+      visualizer infrastructure.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-013
+    claim: >-
+      Connecting the M&A Claims Verification Board to live enterprise event streams from actual
+      business processes to constitute a production-grade deployment is future work not yet
+      implemented.
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: >-
+      The TeX file 06_contribution_to_thesis.tex explicitly marks this item [FUTURE WORK]; the
+      current implementation evaluates synthetic claims against simulated traces only, consistent
+      with the PARTIAL project status.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-LIVESTREAM-014
+    claim: >-
+      Completing the OCEL 2.0 uplift (implementing a synthetic object materializer to achieve
+      >=80% OCEL 2.0 compliance), fixing the agent_conversation_log.js syntax error, conducting
+      an independent DOM re-audit, establishing conformance metric provenance, and formally
+      resolving the LIVESTREAM_STATUS_001 deferred gates are the five work items required to
+      advance the project from PARTIAL to ALIVE.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/audits/telemetry_auditor_audit.md
+    evidence_summary: >-
+      The five items are enumerated in 07_open_questions_and_next_work.tex under Next Receipted
+      Work; they directly follow from open defects confirmed by audit files; the Telemetry Auditor
+      remediation plan (Section 5) specifies the OCEL 2.0 uplift approach.
+    confidence: HIGH
+    allowed_in_pdf: true

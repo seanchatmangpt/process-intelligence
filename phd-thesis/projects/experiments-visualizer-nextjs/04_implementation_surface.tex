@@ -1,0 +1,117 @@
+% FILE: 04_implementation_surface.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Implementation Surface}
+\label{sec:experiments-visualizer-nextjs-impl}
+
+\subsection{Source Files}
+\label{sec:experiments-visualizer-nextjs-impl-sources}
+
+The project's source files divide into two categories: the substantive design-system artefacts
+and the placeholder application scaffolding. The substantive artefacts are:
+
+\begin{description}
+  \item[\texttt{src/app/globals.css} (973 lines)]
+    The primary manufactured artefact of the project. Contains the complete CSS design system
+    for all five process-intelligence visualization subsystems. The file is organized into
+    sections corresponding to the five object families described in
+    Section~\ref{sec:experiments-visualizer-nextjs-arch-objects}: Petri net elements, A{*}
+    alignment blocks, EWMA drift detection, the cryptographic ledger explorer, and the
+    dashboard grid layout. CSS custom properties declared at the \texttt{:root} level define
+    the color system: \texttt{--color-primary}, \texttt{--color-success},
+    \texttt{--color-warning}, \texttt{--color-danger}, \texttt{--color-glow-green},
+    \texttt{--color-glow-red}. These properties are consumed by every component class in
+    the file, establishing a single point of control over the visual severity vocabulary.
+
+  \item[\texttt{package.json}]
+    Declares the dependency surface: Next.js 16.2.6, React 19.2.4, TypeScript 5,
+    Tailwind CSS v4 with \texttt{@tailwindcss/postcss}, and the Geist/Geist Mono Vercel
+    font packages.
+
+  \item[\texttt{next.config.ts}]
+    Configures the Next.js build. The \texttt{.ts} extension (rather than \texttt{.js})
+    confirms TypeScript is used at the configuration layer, consistent with the strict-mode
+    \texttt{tsconfig}.
+
+  \item[\texttt{src/app/layout.tsx}]
+    The root layout component. Loads the Geist and Geist Mono fonts and applies them as
+    CSS custom properties to the \texttt{<html>} element. Imports \texttt{globals.css}
+    to make the design system available application-wide.
+
+  \item[\texttt{AGENTS.md} and \texttt{CLAUDE.md}]
+    Authoring-agent instruction files. \texttt{AGENTS.md} warns that Next.js 16 contains
+    breaking changes relative to prior training data and instructs any authoring agent to
+    read \texttt{node\_modules/next/dist/docs/} before writing any application code.
+    This warning implies the project was designed for agentic authorship that was
+    anticipated but not executed.
+\end{description}
+
+The placeholder scaffolding files are:
+
+\begin{description}
+  \item[\texttt{src/app/page.tsx}]
+    The stock \texttt{create-next-app} welcome page. Contains no process-intelligence
+    content. This is the primary implementation gap of the project.
+\end{description}
+
+\subsection{Commands}
+\label{sec:experiments-visualizer-nextjs-impl-commands}
+
+The following commands are derivable from the \texttt{package.json} dependency declarations
+and the \texttt{.next/} build directory. No custom \texttt{Makefile} or task runner is
+present; all commands are standard Next.js npm scripts:
+
+\begin{itemize}
+  \item \texttt{npm run dev} --- start the development server with Turbopack hot-reload.
+  \item \texttt{npm run build} --- manufacture the \texttt{.next/} production build;
+        confirmed to succeed with \texttt{BUILD\_ID: 9NFA-LnYiAijWLGnz8L79}.
+  \item \texttt{npm run start} --- serve the production build.
+  \item \texttt{npm run lint} --- run the Next.js ESLint configuration over the source tree.
+\end{itemize}
+
+No test command is configured in \texttt{package.json}. The absence of a test command is
+consistent with the PARTIAL status: no component tests exist, and no testing framework
+(Jest, Vitest, Playwright) is declared as a dependency.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:experiments-visualizer-nextjs-impl-data}
+
+No data-fetching layer, API routes, WASM module bindings, or ontology surface are present
+in the current implementation. The CSS design system implies a data model that the visualizer
+would need to consume:
+
+\begin{itemize}
+  \item \textbf{Petri net panel:} requires a JSON or WASM-supplied representation of the
+        current Petri net marking --- a map from place identifiers to token counts, plus a
+        set of enabled transition identifiers.
+  \item \textbf{Alignment panel:} requires an ordered sequence of alignment moves, each
+        tagged with one of the three lawful move types.
+  \item \textbf{EWMA chart:} requires a time series of EWMA statistic values and a scalar
+        control limit, plus a boolean alarm-fired flag.
+  \item \textbf{Ledger explorer:} requires an ordered list of receipt blocks, each with a
+        hash value, a predecessor hash, and a verification status flag.
+\end{itemize}
+
+AUTHOR THESIS: The most architecturally coherent data source for the Petri net and alignment
+panels would be a WASM-compiled \texttt{wasm4pm} module served from a Next.js API route,
+allowing the Rust process-intelligence core to execute in the browser without a separate
+backend. The EWMA and ledger panels could be served from static JSON fixtures for the
+purposes of a research demonstration. No binding to any of these data sources has been
+implemented.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:experiments-visualizer-nextjs-impl-rendered}
+
+The sole rendered artefact currently produced by the application is
+\texttt{.next/server/app/index.html} --- the statically rendered output of the
+\texttt{page.tsx} welcome page. This file contains no process-intelligence content.
+
+The \texttt{.next/routes-manifest.json} records the complete route surface of the application:
+at present a single route (\texttt{/}) mapped to the welcome page. No API routes are
+registered.
+
+The \texttt{BUILD\_ID: 9NFA-LnYiAijWLGnz8L79} is the stable identifier for the current
+build; it would be included in any receipt that documents the first successful
+process-intelligence rendering session, linking the dashboard build to the upstream
+experiment receipts from the parent \texttt{experiments/} corpus.

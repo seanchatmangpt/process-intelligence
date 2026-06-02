@@ -1,0 +1,60 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Open Questions and Next Work}
+\label{sec:research-pi-program-openq}
+
+\subsection{Known Gaps}
+\label{sec:research-pi-program-openq-gaps}
+
+\textbf{GAP-RECEIPT-CHAIN: Receipt chain integrity is broken.} The \texttt{RECEIPT\_CHAIN\_VERIFICATION\_20260601.yaml} report---the independent chain verifier---finds 8 chain breaks (missing parent hashes across 5 distinct receipt chains) and 10 hash mismatches. The root cause documented in the report is that receipts store template hashes rather than actual BLAKE3 hashes of the emitted artifact content. This means the current receipt ledger does not provide the cryptographic provenance guarantee it claims. The manufacturing summary's assertion of ``100\% BLAKE3 receipt coverage'' is internally inconsistent with the chain verifier's findings. Neither document is authoritative over the other; the inconsistency is an open defect. Resolution requires re-executing all manufacturing rules and writing receipts against actual artifact content.
+
+\textbf{GAP-MANIFEST-INCOMPATIBILITY: ggen-002 manifest never executed.} The \texttt{research/pi-program/ggen/ggen.toml} manifest uses a non-standard \texttt{[ontology]} section that omits the required \texttt{source} field. The \texttt{ggen/audit.json} records \texttt{total\_duration\_ms: 0} and an empty output list, confirming that \texttt{ggen v26.5.21} was never able to execute this manifest. Two options are documented in PI\_GGEN\_UNIFIED\_RUN\_PARTIAL\_001: Option A (convert to standard schema, estimated 2 hours) and Option B (implement custom executor, estimated 4+ hours). Neither option has been implemented as of 2026-06-01.
+
+\textbf{GAP-DTO-FLATTENING: DTO boundary violation in wasm4pm-compat (audit\_005 FAIL, CRITICAL).} Two public API methods in the wasm4pm-compat crate (\texttt{receipt\_json() $\to$ String} in \texttt{manufacturing/traits.rs} and \texttt{to\_json\_string() $\to$ String} in \texttt{manufacturing/mod.rs}) return opaque JSON strings rather than structured \texttt{Evidence<T, State, Witness>} bindings. This violates the execution boundary law and constitutes a \texttt{JSONSerializationCollapse} and \texttt{SilentFlatteningCollapse} as defined in \texttt{forbidden-collapse-law.ttl}. The violation is CRITICAL and BLOCKING for any downstream workflow that depends on the evidence type chain being unbroken. Estimated remediation: 4 hours.
+
+\textbf{GAP-FAILED-CHECKPOINT-UNRESOLVED: PI\_GGEN\_VALIDATOR\_RECOVERY\_FINAL\_FAILED\_001 has no reversal path.} The FAILED checkpoint (5/15 gates) was the terminal outcome of the validator recovery effort. Subsequent work in the manufacturing branch pivoted without addressing the validator recovery blockers. Under the Immutability Doctrine, the FAILED checkpoint stands as issued. A new remediation effort would need to issue a fresh PARTIAL checkpoint documenting progress, then an ALIVE checkpoint when all gates pass.
+
+\textbf{GAP-CAPITAL-FLOW-LINKAGE: Lineage from governance authority to AI XYNZ is undocumented.} The audit record confirms that the admissibility boundary gate ($R \vdash P_i = \mu(O^{*}, T, L)$) passes at the ALIVE\_001 level. However, the symbolic connection from this governance authority to the capital-flow nodes (AI XYNZ, DAO settlement) downstream in the thesis lineage is not documented within any pi-program artifact. This gap is acknowledged as AUTHOR THESIS / FUTURE WORK.
+
+\subsection{Deferred Gates}
+\label{sec:research-pi-program-openq-deferred}
+
+The following gates from the PI\_GGEN\_UNIFIED\_RUN\_PARTIAL\_001 checkpoint are deferred pending the Phase 1--5 remediation plan:
+
+\begin{itemize}
+  \item Gate 3 (Every TTL/RQ/Tera source classified): Blocked by ggen-002 manifest incompatibility.
+  \item Gate 4 (Every generation rule has query/template/output path): Blocked by ggen-003 missing templates (8 files) and queries (5 files).
+  \item Gate 5 (At least one full ggen pipeline executes end-to-end): Zero of three pipelines currently execute successfully.
+  \item Gate 6 (Prompt Manufactory warrant path proved): Blocked by ggen-002 and ggen-003 failures.
+  \item Gate 7 (Every rendered artifact has traceability): No artifacts rendered; no traceability established.
+  \item Gate 14 (Receipt ledger emitted): No receipts from ggen-002 or ggen-003; chain breaks in existing receipts.
+  \item Gate 15 (Next workflow plan emitted): Partial remediation plan exists but does not meet the workflow-plan specification.
+  \item Audit\_012 (Remediation Routed): Meta-audit routing for audit\_012 itself lacks owner and remediation class.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:research-pi-program-openq-risks}
+
+\textbf{Risk 1: Scope creep in manifest remediation.} Option B (custom executor for ggen-002) could expand indefinitely if the pi-program's custom reconciliation semantics are more complex than anticipated. The 12-hour remediation estimate in PI\_GGEN\_UNIFIED\_RUN\_PARTIAL\_001 assumes Option A (standard format conversion). If the custom semantics cannot be expressed in the standard \texttt{[[generation.rules]]} triplet format, the scope increases substantially.
+
+\textbf{Risk 2: Receipt chain regeneration disrupts immutability.} Regenerating the receipt chain to fix hash mismatches requires re-executing manufacturing rules, which would produce new artifact content that may differ from the original emitted artifacts (due to timestamp differences or variable ordering). The Immutability Doctrine prohibits retroactively modifying receipts; the correct approach is to issue a fresh manufacturing run with a new chain, leaving the original broken chain as a documented historical artifact.
+
+\textbf{Risk 3: MAPE-K tests are simulated, not live.} The \texttt{AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml} records the deployment as \texttt{SIMULATED\_DEPLOYMENT} and the scheduling system as \texttt{simulated-cron}. The five feedback loop tests were executed against a simulated event stream, not a live Kafka/OCEL2 event source. The transition to live operation may expose timing and ordering behaviors not present in the simulation. This risk is undocumented in the governance artifacts and constitutes an AUTHOR INTERPRETATION of the activation log's metadata.
+
+\textbf{Risk 4: Ontology census count drift.} The \texttt{intel/ggen-unified/ttl-ontology-census.md} reports 389 semantic entities across 16 files, while the description surface claims 17 TTL files. The discrepancy (16 vs.~17) is unresolved and may indicate that one file was added after the census was taken. Any future entity count claims should re-run the census rather than citing the existing document.
+
+\subsection{Next Receipted Work}
+\label{sec:research-pi-program-openq-next}
+
+The following work items are specified from the PI\_GGEN\_UNIFIED\_RUN\_PARTIAL\_001 remediation plan. Each item targets a closed gate and must produce a BLAKE3 receipt upon completion:
+
+\begin{enumerate}
+  \item \textbf{Phase 1A --- Fix ggen-002 manifest} (Option A: standard format conversion, 2 hours): Convert \texttt{research/pi-program/ggen/ggen.toml} to use standard \texttt{[project]}, \texttt{[generation.rules]}, and \texttt{source} fields. Validate with \texttt{ggen sync --validate\_only}. Receipt: ggen audit.json with \texttt{total\_duration\_ms > 0}.
+  \item \textbf{Phase 1B --- Create ggen/MANIFEST.md} (1 hour): Inventory the 12 legacy \texttt{.ggen} files (7 audit scripts, 5 template scripts) with status (ACTIVE/DEPRECATED/LEGACY), creation date, and purpose. Receipt: BLAKE3 hash of MANIFEST.md.
+  \item \textbf{Phase 2 --- Create ggen-003 templates and queries} (5 hours): Manufacture the 8 missing Tera templates and 5 missing SPARQL query files for the prompt-manufactory pipeline. Receipt: template validation pass from \texttt{ggen sync --validate\_only}.
+  \item \textbf{Phase 3 --- Execute unified ggen run} (1 hour): Run \texttt{ggen sync --all --execute} across all three pipelines. Expected: 11+ artifacts manufactured with BLAKE3 receipts. Issue fresh chain with actual artifact hashes. Receipt: receipt ledger with zero chain breaks and zero hash mismatches.
+  \item \textbf{Phase 4 --- Resolve audit\_005 DTO flattening} (4 hours in wasm4pm-compat): Move JSON serialization out of the compatibility layer, replace String returns with \texttt{Evidence<T, State, Witness>} bindings, add audit script \texttt{audit-no-json-in-compat.sh.ggen}. Receipt: re-run audit\_005, result must be PASS.
+  \item \textbf{Phase 5 --- Issue PI\_GGEN\_UNIFIED\_RUN\_ALIVE\_001}: After all 15 gates pass, issue the ALIVE checkpoint with a BLAKE3 seal. This checkpoint will authorize the three downstream workflows: GGEN\_ECOSYSTEM\_MANUFACTURING\_001, M\&A\_DECK\_MANUFACTURING\_PIPELINE\_001, and BLUE\_RIVER\_AUTONOMIC\_LOOP\_MANUFACTURING\_001.
+\end{enumerate}

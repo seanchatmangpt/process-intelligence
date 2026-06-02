@@ -1,0 +1,107 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:experiments-visualizer-nextjs-evidence}
+
+\subsection{Tests}
+\label{sec:experiments-visualizer-nextjs-evidence-tests}
+
+No tests exist for the visualizer-nextjs project. No testing framework is declared in
+\texttt{package.json} --- neither Jest, Vitest, nor Playwright appears as a dependency or
+devDependency. No test files are present in the \texttt{src/} directory or at the project
+root. The \texttt{npm run lint} command is the only quality-gate command configured.
+
+This absence is a first-class defect under the Van der Aalst Constitution (cf.\
+\texttt{{\textasciitilde}/.claude/rules/process-mining-chicago-tdd.md}): \emph{``Model-vs-log
+mismatch is not a discrepancy. It is a defect.''} In the context of the visualizer the
+analogous principle holds: a CSS class that claims to represent a process-intelligence
+state (e.g., \texttt{.alignment-block.sync}) without a component test that verifies it is
+applied only in the presence of a genuine sync move is a visual claim without process
+evidence. The gap between the design system's class vocabulary and the absence of tests
+is precisely such a defect.
+
+The minimum test surface required for ALIVE graduation is:
+\begin{enumerate}
+  \item Unit tests for each alignment block move type, asserting the correct CSS modifier
+        is applied for each of the three lawful move types and no other.
+  \item Unit tests for ledger block card states, asserting \texttt{.healthy} and
+        \texttt{.tampered} are mutually exclusive and driven by the verification flag.
+  \item Integration tests that mount the Petri net panel with a known marking and assert
+        the correct set of places bears the \texttt{.active} modifier.
+  \item An end-to-end test that loads the dashboard with fixture data and verifies all
+        five subsystem panels render without error.
+\end{enumerate}
+
+\subsection{Receipts}
+\label{sec:experiments-visualizer-nextjs-evidence-receipts}
+
+No receipts exist for the visualizer-nextjs project. The \texttt{.next/BUILD\_ID} file
+(\texttt{9NFA-LnYiAijWLGnz8L79}) is a build-system identifier, not a cryptographic receipt
+in the sense used by the research program. It does not carry a hash of the build inputs,
+a timestamp signed by a process-intelligence operator, or a link to upstream experiment
+receipts.
+
+The parent experiments corpus does hold a verified receipt chain (documented in
+\texttt{EVIDENCE\_CHAIN\_TRACE.md} and the \texttt{checkpoint\_\_experiments\_complete.md}
+file dated 2026-05-31 with an EXPERIMENTS\_COMPLETE verdict). However, this receipt covers
+the experiment fixture corpus --- the Rust-typed Raw~$\to$~Parsed~$\to$~Admitted~$\to$~Receipt
+evidence chain --- not the web visualization surface. The visualizer-nextjs project is not
+covered by any existing receipt.
+
+The minimum receipt required for ALIVE graduation is a project-specific receipt that:
+\begin{itemize}
+  \item Records the \texttt{BUILD\_ID} of the dashboard build that first rendered
+        live process-intelligence data.
+  \item Links to the upstream experiment receipt that supplied the data.
+  \item Records the hash of the rendered \texttt{index.html} output, confirming the
+        page content at the time of receipt issuance.
+  \item Is signed by the same receipt-chain operator used by the parent experiments corpus.
+\end{itemize}
+
+\subsection{Checkpoints}
+\label{sec:experiments-visualizer-nextjs-evidence-checkpoints}
+
+No project-specific checkpoint file exists for the visualizer-nextjs project. The parent
+experiments checkpoint (\texttt{checkpoint\_\_experiments\_complete.md}) covers the experiment
+fixture corpus and records an EXPERIMENTS\_COMPLETE verdict; it does not cover the web
+visualizer. The audit completeness document (\texttt{audit\_\_experiment\_completeness.md})
+enumerates what is and is not covered by the parent checkpoint but does not extend coverage
+to the visualizer.
+
+For the visualizer to receive its own checkpoint, a designated checkpoint file must be created
+in the project directory recording:
+\begin{itemize}
+  \item The project slug (\texttt{experiments-visualizer-nextjs}).
+  \item The verdict (\texttt{ALIVE}, \texttt{PARTIAL}, or \texttt{FAILED}).
+  \item References to all receipts and test results that justify the verdict.
+  \item The date of the verdict and the signing agent identity.
+\end{itemize}
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:experiments-visualizer-nextjs-evidence-status}
+
+\textbf{Current status: PARTIAL.}
+
+The following evidence supports the PARTIAL designation:
+
+\begin{itemize}
+  \item[\checkmark] The Next.js 16 scaffold compiles successfully (confirmed by
+        \texttt{.next/BUILD\_ID} and \texttt{build-diagnostics.json}).
+  \item[\checkmark] The CSS design system (\texttt{globals.css}, 973 lines) encodes a
+        complete and structurally sound visual vocabulary for all five process-intelligence
+        subsystems.
+  \item[\checkmark] The project dependency surface (Next.js 16.2.6, React 19.2.4,
+        TypeScript 5, Tailwind CSS v4) is correctly declared and resolvable.
+  \item[$\times$] \texttt{page.tsx} is the stock welcome page; no process-intelligence
+        React components have been implemented.
+  \item[$\times$] No data-fetching layer or API routes are present.
+  \item[$\times$] No tests exist.
+  \item[$\times$] No project-specific receipt exists.
+  \item[$\times$] No project-specific checkpoint exists.
+\end{itemize}
+
+Under the research program's ALIVE definition, all five of the missing items must be
+remediated before an ALIVE verdict can be issued. The project may not be declared ALIVE
+on the basis of the CSS design system alone, regardless of its completeness and quality.

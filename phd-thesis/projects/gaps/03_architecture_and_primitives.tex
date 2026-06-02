@@ -1,0 +1,117 @@
+% FILE: 03_architecture_and_primitives.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+
+\section{Architecture and Primitives}
+\label{sec:gaps-architecture}
+
+\subsection{Core Objects}
+\label{sec:gaps-architecture-objects}
+
+The gap registry is organized around the following core objects, all of which are
+defined in the source files of wasm4pm-compat or wasm4pm and cited in the gap records:
+
+\begin{description}
+  \item[\texttt{Evidence<T, Raw|Admitted, W>}] A lifecycle-typed evidence wrapper defined
+        in wasm4pm-compat. The second type parameter encodes the admission state: a value
+        in the \texttt{Raw} state has not been validated; a value in the \texttt{Admitted}
+        state has passed the named-law admission gate. The third type parameter \texttt{W}
+        is a witness marker that tags which witness authorized the transition. wasm4pm does
+        not consume this type because it does not import wasm4pm-compat.
+
+  \item[\texttt{GraduateToWasm4pm}] A trait declared in
+        \texttt{wasm4pm-compat/src/graduation.rs}. It is intended to be the bridge type
+        that enables admitted evidence to cross into the wasm4pm execution engine.
+        GAP\_001 documents that wasm4pm implements nothing for this trait — the trait is
+        orphaned on the compat side.
+
+  \item[\texttt{Refusal<R, W>}] A named law refusal type that replaces
+        \texttt{ValidationError(String)}. \texttt{R} must name a specific structural law
+        (e.g., \texttt{DanglingEventObjectLink}, \texttt{MissingFinalMarking}); \texttt{W}
+        is a witness marker. GAP\_002 documents the plan to replace string-typed errors
+        with this type. The current wasm4pm error enum uses \texttt{String} for every
+        variant.
+
+  \item[\texttt{TypedProcessTree}] The compat type required for sound Inductive Miner
+        output. GAP\_003 documents that wasm4pm has no \texttt{InductiveMiner}
+        implementation and therefore cannot produce a \texttt{TypedProcessTree} artifact.
+
+  \item[\texttt{Metric<FITNESS, N, D>} with \texttt{Between01} bounds] The alignment
+        conformance metric type from compat's \texttt{conformance.rs}. GAP\_004 documents
+        that wasm4pm uses token-replay approximation and cannot produce an exact optimal
+        alignment fitness bounded by this type.
+
+  \item[\texttt{OcpqEvaluator}] The missing object-centric pattern query engine. OCPQ
+        structural shapes are defined in wasm4pm-compat's \texttt{ocpq.rs} but have no
+        runtime counterpart in wasm4pm. GAP\_005 documents this absence.
+
+  \item[\texttt{WfNetConst<SOUNDNESS>}] The sealed, non-forgeable WF-net type defined in
+        wasm4pm-compat. GAP\_007 documents that \texttt{WfNet::attest\_witnessed()} is
+        public, creating a forgeable path that contradicts the non-forgeability guarantee
+        of \texttt{WfNetConst<SOUNDNESS>}.
+
+  \item[Smart-Completion Policy] The dynamic Reachability Matrix policy for OR-Join
+        disambiguation defined under v30.1.1. Formally: $\forall t \in Tokens_{Active},
+        \forall a \in Arcs_{Incoming},\ t \not\to a$. An OR-Join is authorized to fire
+        only when no active token has a structural path to any waiting incoming arc.
+        This policy is the resolution mechanism for GAP\_002.
+\end{description}
+
+\subsection{Admissible Transitions}
+\label{sec:gaps-architecture-transitions}
+
+The V30.1.1 Epoch governance codified in \texttt{GAP\_CLOSURE\_WORKFLOW.md} specifies
+three constitutional directives governing which lifecycle transitions are admissible.
+First, mathematical soundness after van der Aalst (1998): every Petri net must be sound,
+bounded, and live, and the option-to-complete property must be compile-time verifiable.
+Second, the Blue River Dam Doctrine of non-forgeability: no lifecycle state transition
+(\texttt{Raw $\rightarrow$ Admitted $\rightarrow$ Receipted}) may be forged; every
+transition requires a cryptographic proof witness. Third, exhaustive telemetry: no event
+or object may be silently flattened or dropped without a signed \texttt{LossReport}
+specifying a named \texttt{LossPolicy}.
+
+The gap registry enforces these admissibility rules by recording every location where
+the current implementation fails to honor them. GAP\_007 is a direct violation of the
+second directive: \texttt{WfNet::attest\_witnessed()} is public, so a caller can
+transition a WF-net to a \texttt{SoundnessWitnessed} state without a lawful soundness
+proof. GAP\_001 is a structural failure to implement the first directive: without the
+compat bridge, the compile-time verifiability requirement has no reach inside wasm4pm.
+
+\subsection{Boundaries}
+\label{sec:gaps-architecture-boundaries}
+
+The gap registry identifies the following architectural boundaries where defects
+concentrate:
+
+\begin{itemize}
+  \item \textbf{The crate boundary} between wasm4pm-compat and wasm4pm — the primary
+        locus of GAP\_001. No dependency exists; no types cross; no receipts are linked.
+  \item \textbf{The error surface} of wasm4pm-types — the locus of GAP\_002. All error
+        variants carry \texttt{String} reasons with no law identity.
+  \item \textbf{The discovery surface} of wasm4pm — the locus of GAP\_003 and GAP\_006.
+        Alpha Miner is present but Inductive Miner and POWL discovery are absent.
+  \item \textbf{The conformance surface} of wasm4pm — the locus of GAP\_004. Token
+        replay is present but alignment-based conformance is absent.
+  \item \textbf{The test fixture surface} of wasm4pm-compat — the locus of GAP\_008.
+        E0425-failing fixtures are import errors, not structural law receipts.
+\end{itemize}
+
+\subsection{Failure Modes Refused}
+\label{sec:gaps-architecture-failures}
+
+The gap registry explicitly refuses to treat the following as acceptable:
+
+\begin{enumerate}
+  \item String-typed refusals (\texttt{ValidationError(String)}) as substitutes for
+        named-law refusals — documented in GAP\_002 and referenced in GAP\_001.
+  \item E0425 compile failures as type-law receipts — documented in GAP\_008. A fixture
+        that fails because a type is not found in scope would pass if someone added the
+        correct \texttt{use} statement; it proves nothing about the law.
+  \item \texttt{WfNet::attest\_witnessed()} as a lawful soundness certification path —
+        documented in GAP\_007. Public attestation without proof is forgeability.
+  \item Alpha Miner WF-net output as sound process tree evidence — documented in GAP\_003.
+        Alpha Miner produces unsound WF-nets; only Inductive Miner provides the soundness
+        guarantee.
+  \item Token-replay fitness approximation as exact conformance measurement — documented
+        in GAP\_004. Token replay is an approximation; alignment-based conformance with
+        \texttt{Metric<FITNESS, N, D>} bounds is the required standard.
+\end{enumerate}

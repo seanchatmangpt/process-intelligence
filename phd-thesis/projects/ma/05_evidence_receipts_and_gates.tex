@@ -1,0 +1,130 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% PROJECT: ma — M&A Claim Taxonomy and Board Projection Surface
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:ma-evidence}
+
+\subsection{Tests}
+\label{sec:ma-evidence-tests}
+
+The \texttt{ma/} module contains no programmatic test harness. There are no unit tests, no
+integration tests, and no executable proof-gate scripts within the module itself. This is not
+an oversight---the module is a doctrinal and specification layer whose ``tests'' are the
+proof gates embedded in the claim taxonomy definitions and the admissibility protocol.
+
+The practical proof gates are:
+
+\begin{itemize}
+  \item \textbf{Receipt completeness check:} Every slide in the board deck must have a
+    corresponding receipt UUID in the Slide-to-Receipt Map. An orphaned assertion (slide
+    without receipt) is a gate failure.
+  \item \textbf{Admissibility threshold check:} All receipts must report fitness $f \ge 0.95$,
+    precision $p \ge 0.90$, generalization $g \ge 0.85$, simplicity $s \ge 0.80$.
+  \item \textbf{Soundness certificate check:} All submitted process models must carry a
+    WF-net soundness certificate. An unsound model is a gate failure regardless of reported
+    fitness.
+  \item \textbf{Replication tolerance check:} An independent auditor replay of any receipt's
+    wasm4pm query must produce fitness and precision values within $\Delta f, \Delta p <
+    10^{-6}$ of the original. Deviation beyond this tolerance is a gate failure.
+  \item \textbf{Behavioral similarity check:} All synergy claims must report
+    $\text{Sim}(M_1, M_2, C) \ge 0.75$ (Weidlich 2011). Claims below this threshold are
+    admissible only at T2 (Coverage), not at T3 (Conformance) or above.
+\end{itemize}
+
+Negative testing---injection of non-conforming traces to verify that \texttt{wasm4pm} queries
+correctly refuse them---is specified in the admissibility framework but has not been executed
+against real enterprise event logs as of the thesis writing date (2026-06-01). This is an open
+gap (see Chapter~7).
+
+\subsection{Receipts}
+\label{sec:ma-evidence-receipts}
+
+Five concrete receipts exist in \texttt{/Users/sac/process-intelligence/receipts/}. Each is
+a complete JSON document with real BLAKE3 hashes, wasm4pm query definitions, numeric results,
+and Ed25519 validator signatures.
+
+\paragraph{rec\_ebitda\_rework\_001.json}
+\textbf{Claim:} Annual EBITDA will increase by \$1,250,000 by reducing manual Purchase Order
+rework from 1.45 to 0.20 occurrences per case (500,000 projected annual cases, \$2.00
+fully-burdened labor cost per rework event). \textbf{Query:}
+\texttt{file:///\ldots/queries/ebitda\_rework\_reduction.wasm}; rework activities:
+\textit{Change Price, Modify Order, Re-enter Order}. \textbf{Results:} fitness 0.982,
+precision 0.945, throughput 4.12 days, EBITDA impact \$1,250,000. Invoice Approval precedence
+compliance rate 1.0. \textbf{BLAKE3 log hash:} \texttt{ee9ab723...}. \textbf{Ed25519
+signature:} \texttt{ed25519\_sig\_8a3e811c\_02e0df2f...}.
+
+\paragraph{rec\_wc\_ar\_002.json}
+Working capital release via accounts-receivable cycle compression. Formula:
+$WC = (\text{Revenue}_{\text{credit\_annual}} / 365) \times (T_{\text{AR, baseline}} -
+T_{\text{AR, target}})$.
+
+\paragraph{rec\_risk\_sla\_003.json}
+SLA penalty exposure via latency trace analysis and prefix prediction of cases at risk of
+exceeding SLA thresholds.
+
+\paragraph{rec\_risk\_compliance\_004.json}
+Compliance leakage quantified via LTL rule checking, statutory fine mapping, and external
+audit probability weighting.
+
+\paragraph{rec\_residual\_standard\_005.json}
+Process standardization measured as residual weight $W_R = |R| / |L|$ and residual entropy
+$H_R = -\sum_{v \in V_R} P(v) \log_2 P(v)$.
+
+\textbf{Important qualification (AUTHOR THESIS):} These five receipts contain realistic and
+internally consistent values. The BLAKE3 hashes, Ed25519 signatures, and wasm4pm query URIs
+are structurally correct per the RFC 8785 JCS schema. However, as of 2026-06-01, the
+\texttt{.wasm} query files referenced (e.g., \texttt{ebitda\_rework\_reduction.wasm}) are
+cited as absolute paths but not confirmed to exist on disk. The receipts are specification-
+illustrative artifacts, not receipts produced from executed wasm4pm queries against real
+enterprise event logs.
+
+\subsection{Checkpoints}
+\label{sec:ma-evidence-checkpoints}
+
+\paragraph{checkpoint\_\_m\&a-ready\_research\_complete.md (APPROVED)}
+This checkpoint file, dated 2026-05-31, is the primary module checkpoint. It itemizes all 20
+core definition files in a verification table with columns for File Name, Audit Status, Key
+Methodologies Implemented, and Reference Link. All 20 files are listed as \textbf{Verified}.
+The Integrity Verification section asserts: no stubs or placeholders, all formal foundations
+validated against Van der Aalst process mining doctrine (alignment fitness, precision,
+liveness, boundedness). Final verdict: \textbf{APPROVED}.
+
+The checkpoint certifies the doctrinal layer. It does not certify execution: the checkpoint
+explicitly covers specification completeness, not wasm4pm query execution against real logs.
+
+\paragraph{ma-deck-rendering-readiness.md (AUTHORITY STACK COMPLETE)}
+Readiness report dated 2026-06-01 confirming the upstream authority stack is complete and the
+renderer pipeline is ready to execute once claims data and live receipts are available. Status:
+AUTHORITY STACK COMPLETE. Not yet: EXECUTION COMPLETE.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:ma-evidence-status}
+
+\textbf{Current Status: PARTIAL}
+
+The \texttt{ma/} module satisfies the doctrinal and specification requirements for ALIVE status
+but does not satisfy the execution requirements. The ALIVE verdict requires receipt + tests +
+checkpoint. The following table summarizes the gate positions:
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+\textbf{Gate} & \textbf{Status} & \textbf{Evidence} \\
+\hline
+Claim taxonomy complete & PASS & 20 files Verified, checkpoint APPROVED \\
+Admissibility protocol defined & PASS & Four-Pillar protocol specified \\
+Auditor path specified & PASS & Five-Step protocol specified \\
+Receipt schema specified & PASS & RFC 8785 JCS schema defined \\
+Receipt files materialized (spec) & PASS & 5 JSON files with correct structure \\
+wasm4pm queries exist on disk & UNKNOWN & Query .wasm paths cited, not confirmed \\
+Receipts from real event logs & FAIL & No real enterprise logs in system \\
+Executable test harness & FAIL & No programmatic tests in module \\
+End-to-end renderer executed & FAIL & Claims data not yet populated \\
+\hline
+\end{tabular}
+\end{center}
+
+The PARTIAL status is accurate. The doctrinal surface is complete. The execution surface awaits
+a real transaction data room, confirmed wasm4pm query artifacts, and end-to-end renderer
+execution. This is documented as intended: the \texttt{ma/} module is a specification and
+framework layer; execution is the responsibility of the downstream pipeline it defines.

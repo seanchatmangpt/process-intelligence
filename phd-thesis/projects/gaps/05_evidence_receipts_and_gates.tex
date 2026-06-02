@@ -1,0 +1,94 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+% Note: Status is PARTIAL — reflected accurately below.
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:gaps-evidence}
+
+\subsection{Tests}
+\label{sec:gaps-evidence-tests}
+
+No test files reside in the \texttt{gaps/} directory. The gap registry is a documentary
+surface, not an executable surface. The tests that would validate gap closure are
+located in the remediating projects: compile-fail fixtures in wasm4pm-compat that verify
+type-law enforcement (currently compromised by E0425 failures as documented in GAP\_008),
+and integration tests in wasm4pm that would confirm \texttt{Evidence<EventLog, Admitted, W>}
+is accepted at algorithm boundaries once GAP\_001 is closed.
+
+GAP\_008 is itself a gap about the quality of test receipts. It documents that some
+\texttt{compile\_fail} fixtures in \texttt{tests/ui/compile\_fail/} fail on E0425 (cannot
+find type in scope) rather than on structural law violations. The correct error codes for
+true type-law receipts are: E0308 (type mismatch — wrong state or witness type); E0599
+(method not found for type — law not satisfied); E0277 (trait bound not satisfied —
+compile-time predicate rejected); E0080 (const eval failure — \texttt{generic\_const\_exprs}
+bound violated). Until GAP\_008 is closed, the test surface of wasm4pm-compat cannot
+be cited as evidence of type-law enforcement without reservation.
+
+\subsection{Receipts}
+\label{sec:gaps-evidence-receipts}
+
+No receipt files exist in the \texttt{gaps/} directory. Under the immutability doctrine,
+gap closure is expected to produce resolution addendum documents in the individual gap
+files and corresponding checkpoint receipts in the foundry's \texttt{receipts/} and
+\texttt{checkpoints/} directories. At the time of this writing, no such receipts have
+been produced for any of the eight gap records.
+
+The absence of receipts is directly connected to the PARTIAL status of this component.
+GAP\_001 documents that the receipt chain between wasm4pm-compat admission and wasm4pm
+execution is broken: ``receipts from wasm4pm-compat admission cannot be linked to wasm4pm
+execution'' (\texttt{GAP\_001\_COMPAT\_WASM\_BRIDGE.md}, Impact Assessment). This means
+that even if compat produces admission receipts for individual events, those receipts
+cannot be chained forward into wasm4pm execution artifacts. The receipt chain is severed
+at the boundary that GAP\_001 identifies.
+
+\subsection{Checkpoints}
+\label{sec:gaps-evidence-checkpoints}
+
+No checkpoint files exist in the \texttt{gaps/} directory. Checkpoints in the
+\texttt{process-intelligence} foundry represent phase milestone verdicts (ALIVE, PARTIAL,
+FAILED) and are permanent records under the immutability doctrine. For the gap registry
+component, a checkpoint would require that a defined set of gap closure conditions are
+all demonstrably met, with receipts and resolution addendums present to support the
+verdict.
+
+No such checkpoint can currently be issued. The dependency graph in
+\texttt{GAP\_PRIORITY\_MATRIX.md} establishes that the critical path
+(\texttt{GAP\_007 $\rightarrow$ GAP\_001 $\rightarrow$ GAP\_002}) must be traversed before
+the board-level claims that depend on these gaps can be made. None of the three critical-path
+gaps have resolution addendums. GAP\_002 has a resolution described in its own document
+(v30.1.1 Smart-Completion Policy) but the discrepancy between that document's Resolved
+status and the \texttt{GAP\_REGISTER.md} Open status has not been reconciled by a
+formal addendum, so the register remains authoritative in the OPEN state.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:gaps-evidence-status}
+
+\textbf{Status: PARTIAL.}
+
+The gap registry achieves PARTIAL status for the following reasons:
+
+\begin{itemize}
+  \item \textbf{Present and substantive:} Five gap documents exist with detailed,
+        code-cited content. The registry accurately identifies eight structural defects.
+        The dependency graph correctly sequences the closure order. The blocking-claims
+        table truthfully maps claims to their prerequisite gaps. The priority matrix
+        provides an actionable P1/P2/P3 sequence. This documentary surface is complete
+        and well-grounded.
+
+  \item \textbf{Absent:} No gap has a formal resolution addendum with an accompanying
+        receipt. No checkpoint receipt has been issued for any gap closure. The discrepancy
+        between GAP\_002's individual document (Resolved) and the master register (Open)
+        has not been formally reconciled. GAP\_007's closure workflow entry (described as
+        Resolved in \texttt{GAP\_CLOSURE\_WORKFLOW.md}) contradicts the master register's
+        Open status with no reconciling addendum.
+
+  \item \textbf{Cannot claim ALIVE:} ALIVE status requires receipts, tests, and a
+        checkpoint, none of which exist for this component. The gap registry is accurate
+        and trustworthy as a documentary surface, but it has not yet produced any
+        verifiable closure artifacts.
+\end{itemize}
+
+The PARTIAL verdict is consistent with the research program's general finding that the
+wasm4pm-compat / wasm4pm integration is architecturally described but not yet
+implemented. The gap registry is the correct and authoritative documentation of that
+incompleteness.

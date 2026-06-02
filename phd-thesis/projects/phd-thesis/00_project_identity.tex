@@ -1,0 +1,105 @@
+% FILE: 00_project_identity.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml (phase: SETUP_COMPLETE)
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+
+\section{Project Identity}
+\label{sec:phd-thesis-identity}
+
+\subsection{Purpose}
+\label{sec:phd-thesis-identity-purpose}
+
+The \texttt{phd-thesis} workspace is the dissertation corpus manufacturing workspace for the
+\texttt{process-intelligence} research foundry. Its declared purpose, as stated in
+\texttt{phd-thesis/README.md}, is to manufacture the full artifact corpus for a PhD
+dissertation grounded in the Van der Aalst Constitution and the full-lifecycle process
+intelligence doctrine. Crucially, the README draws an explicit distinction: this workspace does
+not produce documents in the ordinary sense --- it manufactures receipted, ledger-backed,
+proof-gated artifacts through a declared manufacturing pipeline.
+
+The workspace is the command-and-control index for the dissertation. It is not itself a chapter
+source or a PDF; it is the meta-ledger layer from which chapter manufacture is authorized.
+Every downstream artifact produced from this workspace is governed by the claim prohibitions
+recorded in \texttt{ledgers/DO\_NOT\_CLAIM\_LEDGER.md} and the toolchain provenance recorded
+in \texttt{ledgers/WORKFLOW\_RECEIPT.yaml}. No artifact may be released from this workspace
+until the ALIVE criteria defined in the README are satisfied: TeX source files exist, the source
+ledger is populated, the claim ledger has been respected, the PDF compiles without error, and the
+compiled PDF hash is recorded in the receipt chain.
+
+\subsection{Repository Surface}
+\label{sec:phd-thesis-identity-surface}
+
+The \texttt{phd-thesis} workspace sits at
+\texttt{/Users/sac/process-intelligence/phd-thesis} and operates on branch
+\texttt{phd-thesis-corpus-manufacture-001}
+(confirmed in \texttt{ledgers/WORKFLOW\_RECEIPT.yaml}). Its directory layout declares six
+regions of responsibility:
+
+\begin{itemize}
+  \item \texttt{frontmatter/} --- Title page, abstract, acknowledgments, table of contents.
+  \item \texttt{chapters/} --- Dissertation chapter \TeX{} sources.
+  \item \texttt{projects/} --- Chapter-scoped project artifacts and source evidence.
+  \item \texttt{ledgers/} --- Receipt chain, claim ledger, workflow receipt.
+  \item \texttt{scripts/} --- Manufacturing pipeline scripts.
+  \item \texttt{build/} --- Compiled PDF output and build artifacts.
+\end{itemize}
+
+At the time of this writing the \texttt{chapters/}, \texttt{frontmatter/}, \texttt{build/},
+and \texttt{scripts/} directories are empty stubs. The populated surface is
+\texttt{ledgers/} and \texttt{projects/}. The \texttt{ledgers/PROJECT\_INDEX.yaml}
+catalogues 34 research projects across the foundry with their absolute paths, detected
+languages, research surfaces, thesis roles, and key files. This makes the workspace the sole
+canonical map of the dissertation's evidentiary corpus.
+
+The detected languages recorded in the project manifest are YAML; the detected framework is
+\texttt{ggen} (the Governance Generation Engine). The research surfaces are
+\texttt{receipt-chain}, \texttt{manufacturing-pipeline}, and \texttt{proof-gate} ---
+reflecting the workspace's role as a manufacturing authority rather than a content surface.
+
+\subsection{Primary Research Role}
+\label{sec:phd-thesis-identity-role}
+
+The thesis role assigned to this project in \texttt{ledgers/PROJECT\_INDEX.yaml} is
+\texttt{dissertation-corpus-manufacturing-workspace}. This distinguishes it from every other
+project in the index: while other projects carry roles such as
+\texttt{immutable-process-law-foundation} (doctrine/) or
+\texttt{core-wasm-execution-authority} (sources/wasm4pm), the \texttt{phd-thesis} project is
+the manufacturing authority that orchestrates all of them. It does not contribute research
+findings directly; it is the receipted envelope that ensures the research findings are
+assembled, cited, and released under the ALIVE criteria.
+
+This role has a formal consequence: the \texttt{phd-thesis} workspace is a gated artifact.
+No downstream use of artifacts from this workspace is authorized until the research program
+issues authorization --- a constraint stated verbatim in the README and enforced by the
+DO\_NOT\_CLAIM\_LEDGER. As of 2026-06-01, the upstream research program has achieved ALIVE
+status (PI\_RESEARCH\_PROGRAM\_ALIVE\_001, 12/12 audit gates PASS), which constitutes the
+prerequisite authorization for chapter manufacturing to begin.
+
+\subsection{Key Artifacts}
+\label{sec:phd-thesis-identity-artifacts}
+
+The key artifacts confirmed present at the \texttt{phd-thesis} workspace are:
+
+\begin{itemize}
+  \item \texttt{ledgers/WORKFLOW\_RECEIPT.yaml} --- Manufacturing workflow provenance record.
+    Records toolchain availability: pdfTeX 3.141592653-2.6-1.40.26 (TeX Live 2024),
+    Python 3.14.3, git 2.51.2, ripgrep 15.1.0. Records phase \texttt{SETUP\_COMPLETE}
+    and the pre-manufacture git commit hash
+    \texttt{b4279892881e5a8ff83f31b273219a0740fead0b}.
+  \item \texttt{ledgers/DO\_NOT\_CLAIM\_LEDGER.md} --- Absolute claim prohibitions:
+    no production deployment claims without receipt; no fabricated claims; manufactured
+    not ``generated''; no celebrity thought-leader name-dropping; no ``unhackable'';
+    ALIVE verdicts require TeX files, source ledger, claim ledger, compiled PDF, and
+    recorded PDF hash.
+  \item \texttt{ledgers/PROJECT\_INDEX.yaml} --- Canonical ledger of 34 research projects
+    with absolute paths, thesis roles, and key files. Manufactured 2026-06-01.
+  \item \texttt{projects/phd-thesis/project\_manifest.yaml} --- Manifest declaring the
+    workspace's own thesis role, detected languages, frameworks, and key files.
+  \item \texttt{README.md} --- Declares the workspace purpose, directory structure,
+    ALIVE criteria, and doctrine constraints.
+\end{itemize}
+
+The artifacts that are \emph{not yet present} include TeX chapter sources, a compiled PDF,
+and a PDF hash receipt. These absences are the reason the workspace holds status PARTIAL
+rather than ALIVE. Their manufacture is the declared next phase of this corpus.

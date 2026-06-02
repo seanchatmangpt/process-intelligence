@@ -1,0 +1,228 @@
+slug: sources-papers
+claims:
+  - id: CLM-SOURCES_PAPERS-001
+    claim: >
+      The sources/papers directory classifies 81 canonical process mining and workflow
+      papers across five mutually exclusive coverage statuses: COVERED_BY_TYPE,
+      COVERED_BY_GRADUATION_BOUNDARY, PARTIAL_WITH_REASON, DUPLICATE_OR_BACKGROUND,
+      and OUT_OF_SCOPE_WITH_REASON.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/paper-canon.md
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      PAPER_TO_TYPE_LAW.md (dated 2026-05-31, sourced from 81-paper coverage ledger) enumerates
+      18 fully covered papers, 39 at graduation boundary, and 10 partial papers; the PAPER_CANON_RECEIPT
+      in RECEIPT_REGISTRY.md certifies the classification workflow with gaps_remaining: [].
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-002
+    claim: >
+      All 29 algorithms enumerated in PAPER_TO_EXECUTION_LAW.md carry NO in the wasm4pm
+      coverage column as of 2026-05-31, documenting the complete execution graduation obligation.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+    evidence_summary: >
+      PAPER_TO_EXECUTION_LAW.md explicitly lists 29 algorithms with their input/output type
+      shapes and marks every entry in the wasm4pm Coverage column as NO, with explicit note
+      that computation is absent from wasm4pm-compat by design.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-003
+    claim: >
+      Canonical process mining algorithms (Alpha Miner, Heuristics Miner, Inductive Miner)
+      structurally fail under Sybil attack because they correlate events via case IDs without
+      cryptographic provenance verification, and no existing published algorithm provides
+      Byzantine-fault-tolerant discovery.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/adversarial-canon.md
+    evidence_summary: >
+      adversarial-canon.md formally documents that Sybil attackers can forge interleaved case IDs
+      causing state-space explosion and incorrect model discovery, and concludes that a new class
+      of Byzantine-fault-tolerant discovery algorithms is required.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-004
+    claim: >
+      The Paper-to-Law mapping algorithm M: I_P -> (T_Rust, W) translates every structural
+      invariant from a canonical process mining paper into a zero-cost Rust type such that
+      violations fail to compile with a diagnostic citing the originating paper.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/paper-canon.md
+    evidence_summary: >
+      PAPER_TO_TYPE_LAW.md documents the obligation surface the algorithm produces (18 fully
+      covered papers with named Rust types and compile-fail fixtures); the algorithm itself as
+      a named formal object is the author's framing of the classification workflow.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-005
+    claim: >
+      The OCEL 2.0 type surface is fully covered in wasm4pm-compat src/ocel.rs with all seven
+      formal objects reified: OcelLog, OcelEvent, OcelObject, EventObjectLink, ObjectObjectLink,
+      OcelDims, and OcelAttribute.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+    evidence_summary: >
+      PAPER_TO_TYPE_LAW.md explicitly lists all 7 OCEL 2.0 formal objects, maps each to src/ocel.rs,
+      and states Missing: None, with full coverage confirmed by compile-pass and compile-fail fixtures.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-006
+    claim: >
+      The Inductive Miner algorithm (Leemans, Fahland, van der Aalst 2013) is confirmed MISSING
+      from wasm4pm, making all board claims about sound algorithm discovery currently unattested.
+      The Heuristics Miner substitute does not produce a ProcessTree and does not guarantee soundness.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+    evidence_summary: >
+      PAPER_TO_EXECUTION_LAW.md lists Inductive Miner (IM, IMf, Scalable IM) all with wasm4pm
+      Coverage: NO, and separately confirms Heuristics Miner outputs CausalNet (MISSING type) and
+      DependencyMeasure (MISSING type) rather than a ProcessTree.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-007
+    claim: >
+      The 5-valued dynamic valuation lattice V = {bot, PossiblySatisfied, Satisfied, Violated, top}
+      with verified join-semilattice structure supports streaming DECLARE constraint evaluation with
+      the property that once Satisfied or Violated is reached, the state is permanent and immutable.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/paper-canon.md
+    evidence_summary: >
+      The lattice is defined in the working paper declare-satisfaction-lattice.md referenced from
+      the paper corpus; paper-canon.md documents it as a formalized contribution, and the immutability
+      claim for receipt chain integrity is the author's interpretive conclusion about the lattice's
+      consequence.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-008
+    claim: >
+      The Between01<NUM, DEN> const-generic fraction type bounds all conformance metrics
+      (fitness, precision, F1) at the compile level, making the type-level distinction between
+      a typed measurement and an untyped assertion concrete and verifiable.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+    evidence_summary: >
+      PAPER_TO_EXECUTION_LAW.md documents FitnessConst, PrecisionConst, and F1Const as all
+      Between01-bounded in the output type shapes for alignment-based conformance, confirming the
+      type is applied to conformance outputs across multiple algorithm entries.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-009
+    claim: >
+      The obligation backlog contains 22 named missing types across 10 PARTIAL papers and
+      14 named missing output shapes blocking algorithm graduation, making the gap surface
+      enumerable and precise rather than implicit.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+    evidence_summary: >
+      PAPER_TO_EXECUTION_LAW.md explicitly annotates missing types per algorithm including
+      AlignmentResult, MoveCost, OptimalAlignment, CausalNet, DependencyMeasure, DriftKind,
+      PrefixLength, PredictionHorizon, ZScore, TimeDelta, BranchingProcess, UnfoldingPrefix,
+      and others with MISSING notation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-010
+    claim: >
+      PM4Py coverage is an oracle reference only and does not imply wasm4pm coverage;
+      a system that wraps PM4Py's API surface is not thereby certified to inherit PM4Py's
+      algorithmic capabilities.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+    evidence_summary: >
+      PAPER_TO_EXECUTION_LAW.md falsifies the PM4Py-implies-wasm4pm assumption by listing all
+      29 algorithms as NO in wasm4pm coverage despite PM4Py implementing them; the author's
+      framing of PM4Py as oracle reference rather than implementation substitute is the analytical
+      conclusion drawn from this evidence.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-011
+    claim: >
+      The adversarial admission gate requiring BLAKE3 cryptographic receipt verification
+      (Admitted<T, Blake3Receipt>) has no implementation evidence in wasm4pm or wasm4pm-compat
+      as of 2026-05-31 — the gap between documented requirement and runtime enforcement is
+      confirmed unresolved.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/adversarial-canon.md
+    evidence_summary: >
+      adversarial-canon.md documents the BLAKE3 cryptographic receipt requirement; the TeX
+      05_evidence file explicitly states no test fixtures exist for adversarial admission gate
+      enforcement and classifies this as an open gap in the PARTIAL status.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-012
+    claim: >
+      The POWL 2.0 ChoiceGraph shape and mineDG algorithm (Kourani, Park, van der Aalst 2026)
+      are absent from wasm4pm-compat and wasm4pm respectively, representing a strategic
+      first-mover opportunity since PM4Py mainline also lacks POWL 2.0 support.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+    evidence_summary: >
+      PAPER_TO_TYPE_LAW.md notes missing compile-fail fixture for forged non-separable POWL 2.0
+      conversion and PAPER_TO_EXECUTION_LAW.md shows no wasm4pm coverage; the first-mover framing
+      is the author's interpretive claim about PM4Py's current state requiring independent
+      verification.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-013
+    claim: >
+      The Alpha Miner in wasm4pm-algos/src/alpha.rs may incorrectly type its output as
+      WfNetConst<Sound> without having verified the three soundness conditions — a P0 defect
+      that would constitute a forged soundness claim and retroactively invalidate all board
+      claims derived from Alpha Miner discovery.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/ALPHA_MINER_ANALYSIS.md
+    evidence_summary: >
+      ALPHA_MINER_ANALYSIS.md raises this as an unconfirmed P0 open question; the TeX files
+      document it as an audit not yet confirmed resolved, making this an interpretation of
+      potential defect severity rather than a confirmed finding — the defect itself may or may
+      not exist.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_PAPERS-014
+    claim: >
+      Implementing Inductive Miner in wasm4pm with a ProcessTree output type, manufacturing
+      the 22 named missing types in wasm4pm-compat, and implementing the adversarial BLAKE3
+      admission gate are the three primary receipted work items required to close PARTIAL status
+      and enable ALIVE certification.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/adversarial-canon.md
+    evidence_summary: >
+      All three work items are directly traceable to named gaps confirmed in source documents:
+      Inductive Miner absent (PAPER_TO_EXECUTION_LAW.md), 22 named missing types
+      (PAPER_TO_TYPE_LAW.md), and adversarial gate unimplemented (adversarial-canon.md);
+      completion criteria are defined but implementation does not yet exist.
+    confidence: HIGH
+    allowed_in_pdf: true

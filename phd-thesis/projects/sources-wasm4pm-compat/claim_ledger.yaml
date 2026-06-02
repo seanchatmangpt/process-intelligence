@@ -1,0 +1,227 @@
+slug: sources-wasm4pm-compat
+claims:
+  - id: CLM-SOURCES_WASM4PM_COMPAT-001
+    claim: >-
+      The wasm4pm-compat project serves as the type-law foundry and witness lattice authority for
+      the process intelligence stack, defining and enforcing mathematical and cryptographic
+      boundaries between structure-only evidence and execution.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+    evidence_summary: >-
+      type-law-atlas.md (v30.1.1) defines the five codependent type-law domains; research-verdict.md
+      (v30.1.2) confirms GRADUATION-READY status and the foundry role.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-002
+    claim: >-
+      Three sealed artifacts were manufactured on 2026-06-01 — witness-markers-20260601.rs
+      (7,942 bytes), process-forms-20260601.md (8,794 bytes), and boundary-law-20260601.wit
+      (9,156 bytes) — each carrying a BLAKE3 content hash and Ed25519 signature status of ISSUED.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/manifests/manufacturing-manifest-20260601.yaml
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs
+    evidence_summary: >-
+      manufacturing-manifest-20260601.yaml records all three artifacts with size_bytes,
+      artifact_status: SEALED, and Ed25519 signature_status: ISSUED for each corresponding receipt.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-003
+    claim: >-
+      The ALIVE gate is defined in config.toml as 406 compile-pass fixtures and 398 compile-fail
+      fixtures (804 total); as of 2026-06-01 the project status is PARTIAL, not ALIVE, because two
+      structural defects remain uncovered by fixtures.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+    evidence_summary: >-
+      The known evidence confirms config.toml declares the 804-fixture gate; research-verdict.md
+      documents the two open defects (WfNet split-brain, zero multi-step pipeline fixtures) that
+      block the ALIVE verdict.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-004
+    claim: >-
+      The WitnessMarker enum defines eight algebraic proof structures in a join-semilattice
+      (W, ⊑, ⊔, ⊥, ⊤): VanDerAalst1989 and Murata1989 at bottom, five middle markers, and
+      BlueRiverDam at top with AutonomicMarking.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/witness-lattices.md
+    evidence_summary: >-
+      witness-markers-20260601.rs enumerates VanDerAalst1989, VanDerAalst1998, VanDerAalst2016,
+      Murata1989 at the source level, confirming the eight-marker lattice structure with
+      bottom/middle/top positions.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-005
+    claim: >-
+      The Evidence<T, State, Witness> triadic container is cryptographically bound via
+      BLAKE3(Serialize(T) ∥ Serialize(State) ∥ Serialize(Witness) ∥ epoch ∥ sig) and enforces
+      three admissibility axioms: Cryptographic Binding (Axiom 1), Replay Soundness (Axiom 2),
+      and Signature Admissibility (Axiom 3).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/src/lib.rs
+    evidence_summary: >-
+      type-law-atlas.md (v30.1.1) Section 1.2 defines all three axioms with the BLAKE3 hash
+      construction; research-verdict.md Section 2.2 verifies IMPLEMENTED status for all three.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-006
+    claim: >-
+      witness-markers-20260601.rs contains test_witness_lattice_monotonicity() and
+      test_witness_partial_order() inline test blocks verifying idempotency, commutativity,
+      and the partial order relation.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs
+    evidence_summary: >-
+      The source file is confirmed present and its test function names appear in the known evidence
+      inventory; the file header confirms lattice property verification is its stated purpose.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-007
+    claim: >-
+      A high-severity WfNet split-brain defect exists: two incompatible representations coexist
+      (WfNet<S> with a forgeable attest_witnessed() path and WfNetConst<{Witnessed}> which is
+      non-forgeable), and no compile-fail fixture covers the forgeable path in the ALIVE gate.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+    evidence_summary: >-
+      research-verdict.md and the referenced STRUCTURAL_GAPS.md document this as a high-severity
+      defect and confirm no ALIVE-gate fixture witnesses the WfNet<S> forgeable path.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-008
+    claim: >-
+      Three receipts were issued on 2026-06-01 — witness-markers-20260601-receipt,
+      process-forms-20260601-receipt, and boundary-law-20260601-receipt — all with ArtifactReceipt
+      type in receipt_ledger.rs, lifecycle state Sealed, and Ed25519 signature_status ISSUED.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/manifests/manufacturing-manifest-20260601.yaml
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/manufacturing/receipt_ledger.rs
+    evidence_summary: >-
+      manufacturing-manifest-20260601.yaml records all three receipts; receipt_ledger.rs defines
+      ArtifactReceipt with Sealed lifecycle state and test_receipt_creation() /
+      test_ledger_recording() as confirmed in known evidence.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-009
+    claim: >-
+      The three manufactured artifacts derive from the wasm4pm-compat.ttl RDF ontology via three
+      SPARQL queries matching 8, 15, and 36 triples respectively, rendered through three Tera
+      templates that materialized 187, 293, and 256 lines respectively.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/manifests/manufacturing-manifest-20260601.yaml
+    evidence_summary: >-
+      manufacturing-manifest-20260601.yaml records ontology_source, manufacturing_engine: ggen,
+      and artifact byte sizes consistent with the stated line counts; the query and template names
+      are consistent with the repository structure.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-010
+    claim: >-
+      The hypothesis that Evidence<T, State, Witness> can serve as the sole admissibility unit for
+      process evidence is grounded in the architecture but full integration with the wasm4pm
+      execution engine remains a downstream obligation as of 2026-06-01.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md
+    evidence_summary: >-
+      research-verdict.md explicitly marks wasm4pm core engine alignment as a downstream obligation
+      with a 2026-06-15 deadline; the TeX text itself labels this claim AUTHOR THESIS.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-011
+    claim: >-
+      The wasm4pm-compat type-law foundry enables board-admissible evidence for M&A due diligence
+      by binding fitness values to BLAKE3 hashes, Ed25519 auditor signatures, and WitnessMarker
+      lattice positions in receipt-shaped objects.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/type-law-atlas.md
+    evidence_summary: >-
+      research-verdict.md and type-law-atlas.md define the receipt-shaped object concept; M&A
+      schema alignment is documented as an open gap in research-verdict.md Section 2.3, confirming
+      this is architectural intent, not completed integration.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-012
+    claim: >-
+      The receipt-shaped object fitness threshold is unresolved: research-verdict.md references
+      0.95 as board-admissible while the graduation boundary map records 0.85 as the minimum
+      without a board-signed override, and downstream M&A operations require a single pinned value.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+    evidence_summary: >-
+      research-verdict.md and the referenced STRUCTURAL_GAPS.md both record the unresolved
+      0.95/0.85 threshold conflict; this is documented as Gap 5 in the open questions.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-013
+    claim: >-
+      The wasm4pm core engine must enforce witness lattice monotonicity at every firing event
+      (Axiom 2 runtime verification), implement rejection when witness.join() == Top, and provide
+      integration tests across all process model types, with a deadline of 2026-06-15.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/manifests/manufacturing-manifest-20260601.yaml
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+    evidence_summary: >-
+      manufacturing-manifest-20260601.yaml records deferred gate conditions; research-verdict.md
+      Section 2.2 identifies the downstream obligation as not yet implemented.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-014
+    claim: >-
+      The implementation surface comprises 19 files totaling 3,100+ lines as certified by
+      DELIVERY_CHECKLIST.md (2026-05-31), with rendering_engine.rs and toml_generator.rs together
+      spanning approximately 965 lines.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/src/lib.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/manufacturing/receipt_ledger.rs
+    evidence_summary: >-
+      Key source files are confirmed present; the 19-file / 3,100-line figure comes from
+      DELIVERY_CHECKLIST.md (not in the known evidence inventory), and the 965-line sub-count is
+      explicitly labeled AUTHOR INTERPRETATION in the TeX source.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM_COMPAT-015
+    claim: >-
+      POWL 2.0 is a research-tier notation lacking industrial validation; five to ten production
+      POWL 2.0 models are recommended for Phase 3 empirical validation of fitness across enterprise
+      domains.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/research-verdict.md
+    evidence_summary: >-
+      research-verdict.md Section 1.3 notes the absence of real-world process examples for POWL 2.0
+      and recommends empirical validation; this is flagged as Research Risk 3 in the open questions.
+    confidence: MEDIUM
+    allowed_in_pdf: true

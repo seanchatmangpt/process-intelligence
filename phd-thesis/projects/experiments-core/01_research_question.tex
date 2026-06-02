@@ -1,0 +1,61 @@
+% FILE: 01_research_question.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Research Question}
+\label{sec:experiments-core-rq}
+
+\subsection{Problem Statement}
+\label{sec:experiments-core-rq-problem}
+
+The central empirical problem addressed by this project is: \emph{Can the equations
+and type laws that govern process conformance be simultaneously verified at three
+levels---mathematical (symbolic), executable (Python assertions), and architectural
+(Rust compile-time type constraints)---using only artifact evidence that exists in
+a local repository, with no mocks, stubs, or simulated results?} A secondary problem
+is whether wasm4pm, as an alternative to PM4Py, achieves sufficient performance
+and type-safety gains to warrant adoption as the execution engine for board-admissible
+process evidence. These problems are not independent: without equation verification,
+performance comparisons prove only speed, not correctness; without type-law verification,
+performance comparisons prove only that an incorrect computation runs faster.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:experiments-core-rq-old-regime}
+
+The old-regime assumption challenged here is that conformance checking is a
+\emph{post-hoc analytical activity}: one first runs a process, then one analyses
+logs to discover whether it conformed. Under this assumption, conformance is always
+retroactive, always approximate, and always disconnected from the runtime type system
+of the executing software. PM4Py embodies this assumption: it accepts flat
+\texttt{EventLog} objects without requiring that they have passed through any typed
+Admission gate, and it returns scalar fitness values without issuing cryptographic
+receipts. The old regime treats a fitness score of 0.982 as a number; the new regime
+treats it as \texttt{Metric<FITNESS, 982, 1000>} with \texttt{Between01<982, 1000>}
+enforced at compile time, signed by Ed25519, and chained to a BLAKE3 model hash.
+
+\subsection{Hypothesis}
+\label{sec:experiments-core-rq-hypothesis}
+
+The hypothesis is that the Van der Aalst weighted log fitness equation
+$f(L,N) = 1 - \frac{\sum \mathit{freq} \cdot m}{\sum \mathit{freq} \cdot c} - \frac{\sum \mathit{freq} \cdot r}{\sum \mathit{freq} \cdot p}$
+and the OCPQ query variable refinement relation
+$p \leq_L c \;\triangleq\; \mathrm{dom}(p) \subseteq \mathrm{dom}(c) \;\wedge\; \forall x \in \mathrm{dom}(p),\; p(x) = c(x)$
+are jointly necessary and sufficient to characterize lawful conformance in the
+object-centric process model, and that wasm4pm's type system, when fully closed
+(i.e., when GAP\_001 is resolved), enforces both equations as compile-time invariants
+that cannot be bypassed without a type error. The hypothesis further predicts that
+wasm4pm achieves at least one order of magnitude performance improvement over PM4Py
+in token replay, DFG discovery, and ZKP-compatible conformance tasks.
+
+\subsection{Success Criteria}
+\label{sec:experiments-core-rq-success}
+
+Success is defined by three gates, all of which must pass: (1)~all Python validation
+scripts execute with zero assertion failures across all test cases---this gate is
+currently satisfied as documented in \texttt{checkpoint\_\_experiments\_complete.md};
+(2)~the \texttt{audit\_\_experiment\_completeness.md} records 18/18 experiments PASSED
+with concrete, non-mock JSON instances---this gate is currently satisfied; and
+(3)~GAP\_001 is closed, meaning wasm4pm's conformance API accepts
+\texttt{Admission<OcelLog, Ocel20>} rather than flat \texttt{EventLog}, and a
+board-admissible \texttt{Receipt} can be manufactured without manual type laundering.
+Gate~(3) is not yet satisfied, making the overall status PARTIAL.

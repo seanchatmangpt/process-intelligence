@@ -1,0 +1,1785 @@
+---
+# ROOT CLASSIFICATION LEDGER
+# Generated: 2026-06-01
+# Agent: Home Directory Census Agent
+# Coverage: All top-level directories in /Users/sac
+# Total roots found: 287 (including hidden)
+# MUST_CRAWL: 43  SHOULD_CRAWL: 47  MAYBE_CRAWL: 32  SKIP_SYSTEM: 117  SKIP_BUILD_ARTIFACTS: 35  SKIP_SECRETS: 10
+
+roots:
+
+  # ============================================================
+  # TIER 1: MUST_CRAWL
+  # ============================================================
+
+  - root: /Users/sac/knhk
+    classification: MUST_CRAWL
+    reason: "PRIMARY Knowledge Hooks thesis source — 432 files, Cargo.toml, README.md, src/, docs/, thesis/, crates/, *.ttl, *.rs, *.tex"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "thesis/", "crates/", "*.ttl", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "PRIMARY source for Knowledge Hooks doctrine; has dedicated thesis/ subdir"
+
+  - root: /Users/sac/process-intelligence
+    classification: MUST_CRAWL
+    reason: "PRIMARY research foundry — README.md, research/, receipts/, checkpoints/, *.ttl, *.tex"
+    project_markers_found: [README.md, "research/", "receipts/", "checkpoints/", "*.ttl", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "This repository — authority layer for all process intelligence doctrine"
+
+  - root: /Users/sac/wasm4pm
+    classification: MUST_CRAWL
+    reason: "PRIMARY wasm process mining execution product — Cargo.toml, README.md, src/, docs/, receipts/, crates/, *.ttl, *.rs, *.tex"
+    project_markers_found: [Cargo.toml, README.md, "package.json", "src/", "docs/", "receipts/", "crates/", "*.ttl", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Execution product of process-intelligence research program"
+
+  - root: /Users/sac/gitvan
+    classification: MUST_CRAWL
+    reason: "418 files — README.md, package.json, src/, docs/, hooks/, *.ttl, *.tex — MAJOR project"
+    project_markers_found: [README.md, "package.json", "src/", "docs/", "hooks/", "*.ttl", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "GitVan — version control ontology system with hooks/"
+
+  - root: /Users/sac/cns
+    classification: MUST_CRAWL
+    reason: "677 files — README.md, package.json, pyproject.toml, src/, docs/, research/, *.ttl — LARGEST project"
+    project_markers_found: [README.md, "package.json", "pyproject.toml", "src/", "docs/", "research/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Cognitive Navigation System — 677 items"
+
+  - root: /Users/sac/ggen
+    classification: MUST_CRAWL
+    reason: "CORE manufacturing pipeline — Cargo.toml, README.md, src/, docs/, crates/, *.ttl, *.rs, *.tex"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "crates/", "*.ttl", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "CodeManufactory core artifact generator"
+
+  - root: /Users/sac/unrdf
+    classification: MUST_CRAWL
+    reason: "MAJOR ontology+thesis — README.md, pyproject.toml, src/, docs/, research/, thesis/, receipts/, hooks/, *.ttl"
+    project_markers_found: [README.md, "package.json", "pyproject.toml", "src/", "docs/", "research/", "thesis/", "receipts/", "hooks/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Has thesis/ and hooks/ — cross-cutting research surface"
+
+  - root: /Users/sac/unrdf-clean
+    classification: MUST_CRAWL
+    reason: "UnRDF clean branch — README.md, pyproject.toml, src/, docs/, research/, receipts/, hooks/, *.ttl, *.tex"
+    project_markers_found: [README.md, "package.json", "pyproject.toml", "src/", "docs/", "research/", "receipts/", "hooks/", "*.ttl", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Clean working branch of unrdf"
+
+  - root: /Users/sac/open-ontologies
+    classification: MUST_CRAWL
+    reason: "CORE ontology authority — Cargo.toml, README.md, src/, docs/, research/, receipts/, *.ttl, *.rs"
+    project_markers_found: [Cargo.toml, README.md, "package.json", "src/", "docs/", "research/", "receipts/", "*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Authority ontology collection with research/ and receipts/"
+
+  - root: /Users/sac/chicago-tdd-tools
+    classification: MUST_CRAWL
+    reason: "Process mining TDD tooling CORE — Cargo.toml, README.md, src/, docs/, *.ttl, *.rs"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Implements Van der Aalst Constitution tooling"
+
+  - root: /Users/sac/clnrm
+    classification: MUST_CRAWL
+    reason: "67 items — Cargo.toml, README.md, src/, docs/, *.ttl, *.rs"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "CLNRM — Rust ontology project"
+
+  - root: /Users/sac/wasm4pm-compat
+    classification: MUST_CRAWL
+    reason: "compat type law authority — Cargo.toml, README.md, src/, docs/, checkpoints/, *.rs, *.tex"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "checkpoints/", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Has checkpoints/ — type law conformance layer"
+
+  - root: /Users/sac/clap-noun-verb
+    classification: MUST_CRAWL
+    reason: "research+ontology — Cargo.toml, README.md, src/, docs/, research/, *.ttl, *.rs, *.tex"
+    project_markers_found: [Cargo.toml, README.md, "package.json", "src/", "docs/", "research/", "*.ttl", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Has research/ — CLI noun-verb with ontology"
+
+  - root: /Users/sac/bytestar
+    classification: MUST_CRAWL
+    reason: "393 files — README.md, package.json, pyproject.toml, src/, docs/, hooks/, *.ttl"
+    project_markers_found: [README.md, "package.json", "pyproject.toml", "src/", "docs/", "hooks/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Has hooks/ — major project with ontology"
+
+  - root: /Users/sac/chatmangpt
+    classification: MUST_CRAWL
+    reason: "118 files — README.md, docs/, receipts/, *.ttl, *.rs, *.tex"
+    project_markers_found: [README.md, "docs/", "receipts/", "*.ttl", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "receipts/ and *.tex — ChatmanGPT with thesis documentation"
+
+  - root: /Users/sac/ostar
+    classification: MUST_CRAWL
+    reason: "O* — artifacts/, ocel/ — process mining bridge, OCEL artifacts"
+    project_markers_found: ["artifacts/", "ocel/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Contains OCEL event logs and process mining bridge"
+
+  - root: /Users/sac/erlmcp
+    classification: MUST_CRAWL
+    reason: "Erlang MCP — README.md, docs/, receipts/, *.ttl — receipts and ontology"
+    project_markers_found: [README.md, "docs/", "receipts/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Erlang MCP protocol with receipt chain"
+
+  - root: /Users/sac/ggen-mcp
+    classification: MUST_CRAWL
+    reason: "GGen MCP server — Cargo.toml, README.md, src/, docs/, *.ttl, *.rs, *.tex"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "*.ttl", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "GGen MCP integration layer"
+
+  - root: /Users/sac/ggen-spec-kit
+    classification: MUST_CRAWL
+    reason: "GGen Spec Kit — README.md, pyproject.toml, src/, docs/, *.ttl, *.tex"
+    project_markers_found: [README.md, "pyproject.toml", "src/", "docs/", "*.ttl", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "GGen specification tooling"
+
+  - root: /Users/sac/autotel
+    classification: MUST_CRAWL
+    reason: "AutoTel — README.md, pyproject.toml, receipts/ — process telemetry research"
+    project_markers_found: [README.md, "pyproject.toml", "receipts/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "AutoTel process telemetry with receipts/"
+
+  - root: /Users/sac/jotp
+    classification: MUST_CRAWL
+    reason: "JOTP — README.md, src/, *.ttl — 115 items, ontology project"
+    project_markers_found: [README.md, "src/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/cre
+    classification: MUST_CRAWL
+    reason: "CRE — README.md, src/, receipts/, *.ttl — 89 items"
+    project_markers_found: [README.md, "src/", "receipts/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Has receipts/"
+
+  - root: /Users/sac/knowd
+    classification: MUST_CRAWL
+    reason: "Knowd — README.md, docs/, *.ttl, *.rs — knowledge documentation system"
+    project_markers_found: [README.md, "docs/", "*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/kgn
+    classification: MUST_CRAWL
+    reason: "KGN — README.md, package.json, src/, docs/, *.ttl — Knowledge Graph Network"
+    project_markers_found: [README.md, "package.json", "src/", "docs/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/stpnt
+    classification: MUST_CRAWL
+    reason: "STPNT — Cargo.toml, README.md, src/, *.ttl, *.rs — 42 items"
+    project_markers_found: [Cargo.toml, README.md, "src/", "*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/sos
+    classification: MUST_CRAWL
+    reason: "SOS — Cargo.toml, README.md, *.ttl, *.rs — 37 items"
+    project_markers_found: [Cargo.toml, README.md, "*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/remo
+    classification: MUST_CRAWL
+    reason: "Remo — README.md, package.json, src/, *.ttl — 89 items"
+    project_markers_found: [README.md, "package.json", "src/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/speckit-ralph
+    classification: MUST_CRAWL
+    reason: "Speckit Ralph — Cargo.toml, docs/, receipts/, *.rs — 64 items"
+    project_markers_found: [Cargo.toml, "docs/", "receipts/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Has receipts/"
+
+  - root: /Users/sac/truex
+    classification: MUST_CRAWL
+    reason: "TrueX — Cargo.toml, README.md, package.json, src/, docs/, crates/ — 62 items"
+    project_markers_found: [Cargo.toml, README.md, "package.json", "src/", "docs/", "crates/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/insa
+    classification: MUST_CRAWL
+    reason: "INSA — Cargo.toml, README.md, docs/, *.rs — 49 items"
+    project_markers_found: [Cargo.toml, README.md, "docs/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/mcpp
+    classification: MUST_CRAWL
+    reason: "MCPP — Cargo.toml, README.md, docs/, crates/ — 51 items"
+    project_markers_found: [Cargo.toml, README.md, "docs/", "crates/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "MCP++ with crates/"
+
+  - root: /Users/sac/zoeapp
+    classification: MUST_CRAWL
+    reason: "ZoeApp — README.md, package.json, src/, docs/, *.ttl, *.rs"
+    project_markers_found: [README.md, "package.json", "src/", "docs/", "*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Process intelligence application"
+
+  - root: /Users/sac/zoela
+    classification: MUST_CRAWL
+    reason: "Zoela — README.md, package.json, src/, docs/, receipts/"
+    project_markers_found: [README.md, "package.json", "src/", "docs/", "receipts/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Has receipts/"
+
+  - root: /Users/sac/capability-map
+    classification: MUST_CRAWL
+    reason: "Capability Map — Cargo.toml, README.md, src/, docs/, *.rs"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/bitactor
+    classification: MUST_CRAWL
+    reason: "Bitactor — src/, *.ttl — RDF/ontology actor system"
+    project_markers_found: ["src/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/bitstar
+    classification: MUST_CRAWL
+    reason: "Bitstar — src/, docs/, *.ttl — RDF/ontology star system"
+    project_markers_found: ["src/", "docs/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/compiled-cognition-hub
+    classification: MUST_CRAWL
+    reason: "Compiled Cognition Hub — Cargo.toml, src/, *.rs — Rust cognition system"
+    project_markers_found: [Cargo.toml, "src/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/universe-chain
+    classification: MUST_CRAWL
+    reason: "Universe Chain — Cargo.toml, src/, *.rs — Rust chain project"
+    project_markers_found: [Cargo.toml, "src/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/pcp
+    classification: MUST_CRAWL
+    reason: "PCP — package.json, src/ — Process Conformance Pipeline"
+    project_markers_found: ["package.json", "src/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/a2a-rs
+    classification: MUST_CRAWL
+    reason: "Rust A2A implementation — Cargo.toml, README.md, docs/, *.rs"
+    project_markers_found: [Cargo.toml, README.md, "docs/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/phd-thesis
+    classification: MUST_CRAWL
+    reason: "Active PhD thesis workspace — ledgers live here"
+    project_markers_found: ["ledgers/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Active thesis workspace at /Users/sac/phd-thesis"
+
+  - root: /Users/sac/dev
+    classification: MUST_CRAWL
+    reason: "dev — go.mod, *.rs, *.tex, 189 items — major polyglot workspace"
+    project_markers_found: ["go.mod", "*.rs", "*.tex"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "189-item polyglot workspace with Go+Rust+TeX"
+
+  - root: /Users/sac/.knhk
+    classification: MUST_CRAWL
+    reason: "KNHK hidden config — sigma.ttl, q.sparql, connectors.json — core KH doctrine artifacts"
+    project_markers_found: ["sigma.ttl", "q.sparql", "connectors.json"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Hidden KNHK artifacts — sigma.ttl is a key ontology artifact"
+
+  - root: /Users/sac/.claude
+    classification: MUST_CRAWL
+    reason: "Claude Code global config — rules/, CLAUDE.md, Van der Aalst Constitution"
+    project_markers_found: ["rules/", "CLAUDE.md"]
+    searched: false
+    high_relevance_hits: 0
+    notes: "Contains process-mining-chicago-tdd.md — Van der Aalst Constitution"
+
+  # ============================================================
+  # TIER 2: SHOULD_CRAWL
+  # ============================================================
+
+  - root: /Users/sac/A2A
+    classification: SHOULD_CRAWL
+    reason: "A2A protocol — README.md, docs/ — AI agent communication research"
+    project_markers_found: [README.md, "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/blue_river_dam
+    classification: SHOULD_CRAWL
+    reason: "Blue River Dam — Cargo.toml, README.md, src/, *.rs"
+    project_markers_found: [Cargo.toml, README.md, "src/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/clnrm-dogfood-innovations
+    classification: SHOULD_CRAWL
+    reason: "CLNRM Dogfood — Cargo.toml, README.md, src/, docs/, *.rs"
+    project_markers_found: [Cargo.toml, README.md, "src/", "docs/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/dis
+    classification: SHOULD_CRAWL
+    reason: "DIS — *.ttl — ontology distribution system"
+    project_markers_found: ["*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/docs
+    classification: SHOULD_CRAWL
+    reason: "docs — 10 items — project documentation root"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/dogturk
+    classification: SHOULD_CRAWL
+    reason: "Dogturk — README.md, package.json, src/, *.ttl"
+    project_markers_found: [README.md, "package.json", "src/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/dtr
+    classification: SHOULD_CRAWL
+    reason: "DTR — README.md, 67 items — documentation/research"
+    project_markers_found: [README.md]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/erlmcp_validation
+    classification: SHOULD_CRAWL
+    reason: "ErlMCP validation — linked to erlmcp project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/hive-queen
+    classification: SHOULD_CRAWL
+    reason: "Hive Queen — README.md, package.json, src/, docs/, *.ttl"
+    project_markers_found: [README.md, "package.json", "src/", "docs/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/kgc-sidecar
+    classification: SHOULD_CRAWL
+    reason: "KGC Sidecar — README.md, package.json — Knowledge Graph Change sidecar"
+    project_markers_found: [README.md, "package.json"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/knowtro
+    classification: SHOULD_CRAWL
+    reason: "Knowtro — README.md, package.json, src/, docs/"
+    project_markers_found: [README.md, "package.json", "src/", "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/mcp_erl
+    classification: SHOULD_CRAWL
+    reason: "MCP Erlang — linked to erlmcp ecosystem"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/mcp-mqtt-erl
+    classification: SHOULD_CRAWL
+    reason: "MCP MQTT Erlang — Erlang MCP transport"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/memory
+    classification: SHOULD_CRAWL
+    reason: "Memory — agents/, people/, sessions/ — agent memory store"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/my-dev-process
+    classification: SHOULD_CRAWL
+    reason: "My Dev Process — book.toml, src/, docs/ — mdBook"
+    project_markers_found: ["src/", "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/neako
+    classification: SHOULD_CRAWL
+    reason: "Neako — README.md, package.json, src/, *.ttl"
+    project_markers_found: [README.md, "package.json", "src/", "*.ttl"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/obsr
+    classification: SHOULD_CRAWL
+    reason: "OBSR — Cargo.toml, README.md — observer/observability Rust project"
+    project_markers_found: [Cargo.toml, README.md]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/optimus
+    classification: SHOULD_CRAWL
+    reason: "Optimus — README.md, package.json, src/"
+    project_markers_found: [README.md, "package.json", "src/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/otel
+    classification: SHOULD_CRAWL
+    reason: "OTel — registry/ — OpenTelemetry registry/config"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/research
+    classification: SHOULD_CRAWL
+    reason: "Research — open-ontologies-program-integration — research integration"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: "Contains open-ontologies-program-integration subdir"
+
+  - root: /Users/sac/semantic_bit
+    classification: SHOULD_CRAWL
+    reason: "Semantic Bit — Cargo.toml, src/, *.rs — semantic layer Rust project"
+    project_markers_found: [Cargo.toml, "src/", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/seven_tick
+    classification: SHOULD_CRAWL
+    reason: "Seven Tick — README.md, docs/"
+    project_markers_found: [README.md, "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/SparsePrimingRepresentations
+    classification: SHOULD_CRAWL
+    reason: "SPR — README.md — Sparse Priming Representations research"
+    project_markers_found: [README.md]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/storehouse-infrastructure
+    classification: SHOULD_CRAWL
+    reason: "Storehouse Infrastructure — *.ttl, *.rs — ontology+Rust infra"
+    project_markers_found: ["*.ttl", "*.rs"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/ultrathink-bpm-engine
+    classification: SHOULD_CRAWL
+    reason: "Ultrathink BPM Engine — src/ — BPM engine implementation"
+    project_markers_found: ["src/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/unibit
+    classification: SHOULD_CRAWL
+    reason: "Unibit — Cargo.toml, README.md, docs/ — 35 items"
+    project_markers_found: [Cargo.toml, README.md, "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/weaver-driven-development-book
+    classification: SHOULD_CRAWL
+    reason: "Weaver DD Book — mdBook for weaver-driven development doctrine"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/wf
+    classification: SHOULD_CRAWL
+    reason: "WF — README.md, src/, docs/ — workflow project"
+    project_markers_found: [README.md, "src/", "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/yaml-cloud
+    classification: SHOULD_CRAWL
+    reason: "YAML Cloud — README.md"
+    project_markers_found: [README.md]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/yaml-cloud-clean
+    classification: SHOULD_CRAWL
+    reason: "YAML Cloud Clean — clean branch of yaml-cloud"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/yawl
+    classification: SHOULD_CRAWL
+    reason: "YAWL — YAWL workflow language research"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: "YAWL workflow language — relevant to process mining doctrine"
+
+  - root: /Users/sac/yawlv52
+    classification: SHOULD_CRAWL
+    reason: "YAWL v5.2 — YAWL version snapshot"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/yawlv6
+    classification: SHOULD_CRAWL
+    reason: "YAWL v6 — YAWL version 6 snapshot"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/claude
+    classification: SHOULD_CRAWL
+    reason: "Claude — 8 items, likely Claude Code config or docs"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/claude-code-context
+    classification: SHOULD_CRAWL
+    reason: "Claude Code context docs — README.md, docs/"
+    project_markers_found: [README.md, "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/clawdbot
+    classification: SHOULD_CRAWL
+    reason: "Clawdbot — README.md, package.json, src/, docs/"
+    project_markers_found: [README.md, "package.json", "src/", "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.ggen
+    classification: SHOULD_CRAWL
+    reason: "ggen hidden runtime — receipts/config linked to ggen project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.gitvan
+    classification: SHOULD_CRAWL
+    reason: "GitVan hidden runtime data"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.kgcl
+    classification: SHOULD_CRAWL
+    reason: "Knowledge Graph Change Language hidden data"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.kgen
+    classification: SHOULD_CRAWL
+    reason: "kgen hidden runtime — knowledge generation tooling"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.knowledge
+    classification: SHOULD_CRAWL
+    reason: "Knowledge base hidden store"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.open-ontologies
+    classification: SHOULD_CRAWL
+    reason: "Open Ontologies hidden data — linked to open-ontologies project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.ostar
+    classification: SHOULD_CRAWL
+    reason: "O* hidden runtime config — linked to ostar project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.speckit-ralph
+    classification: SHOULD_CRAWL
+    reason: "speckit-ralph hidden runtime — linked to speckit-ralph project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.unrdf
+    classification: SHOULD_CRAWL
+    reason: "unrdf hidden runtime — linked to unrdf project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.wasm4pm
+    classification: SHOULD_CRAWL
+    reason: "wasm4pm hidden runtime — linked to wasm4pm project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.yaml-cloud
+    classification: SHOULD_CRAWL
+    reason: "yaml-cloud hidden runtime — linked to yaml-cloud project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.bitactor
+    classification: SHOULD_CRAWL
+    reason: "Bitactor hidden config — linked to bitactor project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.mcpp
+    classification: SHOULD_CRAWL
+    reason: "mcpp hidden runtime — linked to mcpp project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  # ============================================================
+  # TIER 3: MAYBE_CRAWL
+  # ============================================================
+
+  - root: /Users/sac/A2CI
+    classification: MAYBE_CRAWL
+    reason: "A2CI — 1 item (docs/), sparse content"
+    project_markers_found: ["docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/ai
+    classification: MAYBE_CRAWL
+    reason: "AI directory — only package.json"
+    project_markers_found: ["package.json"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/ai-chatbot
+    classification: MAYBE_CRAWL
+    reason: "AI chatbot app — README.md, package.json"
+    project_markers_found: [README.md, "package.json"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/ai-first-2026
+    classification: MAYBE_CRAWL
+    reason: "AI-first 2026 strategy — README.md, package.json"
+    project_markers_found: [README.md, "package.json"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/app
+    classification: MAYBE_CRAWL
+    reason: "App directory — package.json, docs/"
+    project_markers_found: ["package.json", "docs/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/cell8
+    classification: MAYBE_CRAWL
+    reason: "Cell8 — only src/ — sparse"
+    project_markers_found: ["src/"]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/citty-test-utils
+    classification: MAYBE_CRAWL
+    reason: "citty test utilities — likely JS tooling"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/clawd
+    classification: MAYBE_CRAWL
+    reason: "Clawd — IDENTITY/SOUL/HEARTBEAT docs — AI identity research (sparse)"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: "Contains AGENTS.md, IDENTITY.md, SOUL.md, HEARTBEAT.md"
+
+  - root: /Users/sac/claude-desktop-context
+    classification: MAYBE_CRAWL
+    reason: "Claude Desktop context — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/cns_forge
+    classification: MAYBE_CRAWL
+    reason: "CNS Forge — empty, 0 items"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/dcmcp_cli_test
+    classification: MAYBE_CRAWL
+    reason: "dcmcp CLI test — sparse test dir"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/doctester
+    classification: MAYBE_CRAWL
+    reason: "Doctester — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/dteam
+    classification: MAYBE_CRAWL
+    reason: "dteam — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/exampleSpecs
+    classification: MAYBE_CRAWL
+    reason: "Example specifications — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/full-stack-rubric
+    classification: MAYBE_CRAWL
+    reason: "Full-stack rubric — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/hive-mind-monorepo
+    classification: MAYBE_CRAWL
+    reason: "Hive-mind monorepo — 10 items, no clear project markers"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/home
+    classification: MAYBE_CRAWL
+    reason: "home — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/java
+    classification: MAYBE_CRAWL
+    reason: "Java workspace — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/mcp_search_test
+    classification: MAYBE_CRAWL
+    reason: "MCP search test — sparse test dir"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/portfolio-reports
+    classification: MAYBE_CRAWL
+    reason: "Portfolio reports — may contain relevant work samples"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/powlv2lsp
+    classification: MAYBE_CRAWL
+    reason: "powlv2lsp — purpose unclear"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/reports
+    classification: MAYBE_CRAWL
+    reason: "Reports — may contain research output"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/s2s
+    classification: MAYBE_CRAWL
+    reason: "S2S — 1 item, sparse"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/seth
+    classification: MAYBE_CRAWL
+    reason: "Seth — 2 items, sparse"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/src
+    classification: MAYBE_CRAWL
+    reason: "src — 10 items, generic source dir"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/unjucks
+    classification: MAYBE_CRAWL
+    reason: "Unjucks — template engine project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/upscale
+    classification: MAYBE_CRAWL
+    reason: "Upscale — README.md, 4 items — sparse"
+    project_markers_found: [README.md]
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/yac
+    classification: MAYBE_CRAWL
+    reason: "YAC — 0 items, empty"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/yaml-server
+    classification: MAYBE_CRAWL
+    reason: "YAML Server — linked to yaml-cloud ecosystem"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/yawlw52
+    classification: MAYBE_CRAWL
+    reason: "YAWL w5.2 — YAWL workflow variant"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/ycloud
+    classification: MAYBE_CRAWL
+    reason: "YCloud — yaml-cloud variant"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/zod-to-from
+    classification: MAYBE_CRAWL
+    reason: "Zod-to-from — TypeScript schema conversion project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  # ============================================================
+  # TIER 4: SKIP_BUILD_ARTIFACTS
+  # ============================================================
+
+  - root: /Users/sac/__snapshots__
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Jest snapshot output"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/_build
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Build output directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/cachedir_joblib
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Joblib computation cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/clnrm-backup-20251015-224552
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "CLNRM backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/clnrm-backup-20251015-233810
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "CLNRM backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/clnrm.bak
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "CLNRM .bak archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/cre-pre-reset-backup-20260206-175352
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "CRE backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/dashboard.bak
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Dashboard backup"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/dist
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Build distribution output"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/emitted
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Emitted artifacts output directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/gitvan-backup-20250918-164242
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "GitVan backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/gitvan-backup-20250918-164245
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "GitVan backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/gitvan-backup-20250919-084758
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "GitVan backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/gitvan-recent-changes-backup-20250919-091930
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "GitVan recent-changes backup"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/local_cache
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Local computation cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/receipts
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Receipts — empty directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/results
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Results output directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/wasm4pm-backups
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "WASM4PM backup archives"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.bazel-cache
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Bazel build cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.cache
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "OS-level cache directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.cargo
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Cargo registry/build cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.dspy_cache
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "DSPy LLM cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.m2
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Maven local repository"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.pkg-cache
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "pkg build cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.pnpm-cache
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "pnpm package cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.pnpm-state
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "pnpm state"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.pnpm-store
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "pnpm content-addressed store"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.tmp
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "Temporary files"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.uvmgr_cache
+    classification: SKIP_BUILD_ARTIFACTS
+    reason: "uvmgr cache"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  # ============================================================
+  # TIER 5: SKIP_SYSTEM
+  # ============================================================
+
+  - root: /Users/sac/Applications
+    classification: SKIP_SYSTEM
+    reason: "macOS Applications folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/backup-critical
+    classification: SKIP_SYSTEM
+    reason: "Critical backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/bin
+    classification: SKIP_SYSTEM
+    reason: "User binary scripts"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/CascadeProjects
+    classification: SKIP_SYSTEM
+    reason: "Cascade IDE projects folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/claude-backup
+    classification: SKIP_SYSTEM
+    reason: "Claude backup archive"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/coordination
+    classification: SKIP_SYSTEM
+    reason: "Coordination runtime (memory_bank, orchestration, subtasks)"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Desktop
+    classification: SKIP_SYSTEM
+    reason: "macOS Desktop folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Documents
+    classification: SKIP_SYSTEM
+    reason: "macOS Documents folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Downloads
+    classification: SKIP_SYSTEM
+    reason: "macOS Downloads folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/etc
+    classification: SKIP_SYSTEM
+    reason: "Local etc configuration"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/go
+    classification: SKIP_SYSTEM
+    reason: "Go workspace/GOPATH"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/google-cloud-sdk
+    classification: SKIP_SYSTEM
+    reason: "Google Cloud SDK installation"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/helloworld
+    classification: SKIP_SYSTEM
+    reason: "Hello World test project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/homebrew-clnrm
+    classification: SKIP_SYSTEM
+    reason: "Homebrew tap for CLNRM"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/interview
+    classification: SKIP_SYSTEM
+    reason: "Interview preparation materials"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/intvw
+    classification: SKIP_SYSTEM
+    reason: "Interview materials"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/java-maven-template
+    classification: SKIP_SYSTEM
+    reason: "Java Maven project template"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/ktemp
+    classification: SKIP_SYSTEM
+    reason: "Temporary knowledge work dir"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Legal
+    classification: SKIP_SYSTEM
+    reason: "Legal documents"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Library
+    classification: SKIP_SYSTEM
+    reason: "macOS Library folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/mac-artifact-cleaner
+    classification: SKIP_SYSTEM
+    reason: "Mac artifact cleaning tool"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/miniconda3
+    classification: SKIP_SYSTEM
+    reason: "Miniconda Python distribution"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Movies
+    classification: SKIP_SYSTEM
+    reason: "macOS Movies folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/multipass
+    classification: SKIP_SYSTEM
+    reason: "Multipass VM manager"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Music
+    classification: SKIP_SYSTEM
+    reason: "macOS Music folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/nuxt-catalog-mdbook
+    classification: SKIP_SYSTEM
+    reason: "Nuxt catalog mdBook"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/nuxt-layer
+    classification: SKIP_SYSTEM
+    reason: "Nuxt layer"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/nuxt-supabase-book
+    classification: SKIP_SYSTEM
+    reason: "Nuxt Supabase book"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/nuxt-ui-pro-landing
+    classification: SKIP_SYSTEM
+    reason: "Nuxt UI Pro landing"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/opt
+    classification: SKIP_SYSTEM
+    reason: "Optional software installations"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/otp_src_28.3.1
+    classification: SKIP_SYSTEM
+    reason: "Erlang/OTP source installation"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/pgdata
+    classification: SKIP_SYSTEM
+    reason: "PostgreSQL data directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Pictures
+    classification: SKIP_SYSTEM
+    reason: "macOS Pictures folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/pigsty
+    classification: SKIP_SYSTEM
+    reason: "Pigsty PostgreSQL distribution"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/pigsty-supabase
+    classification: SKIP_SYSTEM
+    reason: "Pigsty Supabase variant"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/pigsty-supabase-osx
+    classification: SKIP_SYSTEM
+    reason: "Pigsty Supabase macOS variant"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/pigsty-terraform
+    classification: SKIP_SYSTEM
+    reason: "Pigsty Terraform config"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/practice
+    classification: SKIP_SYSTEM
+    reason: "Practice/scratch code"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/proc
+    classification: SKIP_SYSTEM
+    reason: "Process runtime dir (1 item)"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/Public
+    classification: SKIP_SYSTEM
+    reason: "macOS Public folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/RepoPrompt
+    classification: SKIP_SYSTEM
+    reason: "RepoPrompt tool directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/scripts
+    classification: SKIP_SYSTEM
+    reason: "Shell scripts utility dir"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/storehouse
+    classification: SKIP_SYSTEM
+    reason: "Storehouse — 5 items, storage utility"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/teamwork_projects
+    classification: SKIP_SYSTEM
+    reason: "Teamwork project management data"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/teleport
+    classification: SKIP_SYSTEM
+    reason: "Teleport auth tool"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/test
+    classification: SKIP_SYSTEM
+    reason: "Test scratch directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/test-unjucks-nuxt4
+    classification: SKIP_SYSTEM
+    reason: "Unjucks Nuxt4 test project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/testbed
+    classification: SKIP_SYSTEM
+    reason: "Testbed scratch directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/tests
+    classification: SKIP_SYSTEM
+    reason: "Tests scratch directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/tools
+    classification: SKIP_SYSTEM
+    reason: "Tools utility dir (3 items)"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/untitled1
+    classification: SKIP_SYSTEM
+    reason: "Untitled scratch project"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/user-data
+    classification: SKIP_SYSTEM
+    reason: "User data runtime store"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/var
+    classification: SKIP_SYSTEM
+    reason: "Variable/runtime data (1 item)"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/verdicts
+    classification: SKIP_SYSTEM
+    reason: "Verdicts — empty directory"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: "/Users/sac/Virtual Machines.localized"
+    classification: SKIP_SYSTEM
+    reason: "macOS Virtual Machines folder"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  # ============================================================
+  # TIER 6: SKIP_SECRETS
+  # ============================================================
+
+  - root: /Users/sac/.aws
+    classification: SKIP_SECRETS
+    reason: "AWS credentials store"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.fly
+    classification: SKIP_SECRETS
+    reason: "Fly.io auth credentials"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.gmail-mcp
+    classification: SKIP_SECRETS
+    reason: "Gmail MCP auth tokens"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.gnupg
+    classification: SKIP_SECRETS
+    reason: "GPG private keys"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.kaggle
+    classification: SKIP_SECRETS
+    reason: "Kaggle API credentials"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.kube
+    classification: SKIP_SECRETS
+    reason: "Kubernetes credentials/contexts"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.oci
+    classification: SKIP_SECRETS
+    reason: "Oracle Cloud credentials"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.ssh
+    classification: SKIP_SECRETS
+    reason: "SSH private keys"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.supabase
+    classification: SKIP_SECRETS
+    reason: "Supabase auth tokens"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""
+
+  - root: /Users/sac/.terraform.d
+    classification: SKIP_SECRETS
+    reason: "Terraform credentials/plugins"
+    project_markers_found: []
+    searched: false
+    high_relevance_hits: 0
+    notes: ""

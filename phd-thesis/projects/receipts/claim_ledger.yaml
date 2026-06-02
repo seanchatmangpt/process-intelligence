@@ -1,0 +1,235 @@
+slug: receipts
+claims:
+  - id: CLM-RECEIPTS-001
+    claim: >-
+      Five M&A claim receipts exist as signed JSON documents carrying Ed25519
+      validator_signature fields, BLAKE3 target_log_hash and process_model_hash
+      fields, wasm4pm_query_result payloads, and board_admissibility assessments.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_sla_003.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_compliance_004.json
+      - /Users/sac/process-intelligence/receipts/rec_residual_standard_005.json
+    evidence_summary: >-
+      All five JSON receipt files exist in /receipts/ and carry validator_signature,
+      fitness, and precision fields confirmed by grep inspection.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-002
+    claim: >-
+      The EBITDA rework reduction receipt (rec_ebitda_rework_001.json) documents a
+      $1.25M financial value with conformance fitness 0.982 and precision 0.945,
+      both meeting the board admissibility thresholds of >=0.95 and >=0.90.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+    evidence_summary: >-
+      Direct grep of rec_ebitda_rework_001.json confirms fitness=0.982 and
+      precision=0.945; assertion_text confirms the $1,250,000 figure.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-003
+    claim: >-
+      The conformance authority module (v30.1.2, 664-line Rust) is sealed with
+      Blake3 hash 75508e6e9e7acccb679e5c8be35ddd2adc9c4732f1fc331047d755703c9107c3
+      and passes 8/8 unit tests with zero compilation errors under cargo check.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+    evidence_summary: >-
+      The generation receipt document confirms Blake3 hash, v30.1.2 version, 8/8
+      test passes, and the sealed authority block by direct inspection.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-004
+    claim: >-
+      The RECEIPT_REGISTRY.md enumerates seven canonical receipt types: PAPER_CANON,
+      PM4PY_ORACLE, WASM4PM_GAP, LIFECYCLE, MA, STANDARDS, and ADVERSARIAL.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >-
+      RECEIPT_REGISTRY.md lists all seven named receipt types (1 through 7)
+      confirmed by grep inspection.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-005
+    claim: >-
+      The ALIVE_GATE_ASSESSMENT.md confirms 12/12 gate criteria are met, sealing
+      the PROCESS_INTELLIGENCE_ALIVE_001 checkpoint.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/checkpoints/ALIVE_GATE_ASSESSMENT.md
+      - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+    evidence_summary: >-
+      The ALIVE_GATE_ASSESSMENT.md explicitly states 'All 12 criteria are met'
+      and 'PROCESS_INTELLIGENCE_ALIVE_001 is sealed.'
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-006
+    claim: >-
+      The five M&A claim receipts document approximately $3.07M in total
+      process-improvement value across EBITDA rework ($1.25M), working capital
+      velocity ($1.37M), SLA penalty exposure ($450K cap), compliance leakage
+      ($0.00), and residual standardization.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_sla_003.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_compliance_004.json
+      - /Users/sac/process-intelligence/receipts/rec_residual_standard_005.json
+    evidence_summary: >-
+      Individual receipt values are confirmed in source files; the $3.07M total
+      is the author's arithmetic sum across receipts with no single document
+      summing it explicitly.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-007
+    claim: >-
+      The Blue River Dam orchestrator passes 5/5 unit tests covering governance
+      hierarchy, lifecycle state machine, quality gate soundness, conformance
+      metric, and MAPE-K knowledge persistence.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/blue_river_generation.md
+    evidence_summary: >-
+      The blue_river_generation.md receipt documents ORCHESTRATOR_ALIVE status
+      and the five named unit tests, corroborated by known_evidence test listing.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-008
+    claim: >-
+      The Ed25519 signature on the conformance authority module generation receipt
+      itself is marked PENDING — the infrastructure that manufactures M&A claim
+      signatures is not itself signed to the same standard as the output claim
+      receipts.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+    evidence_summary: >-
+      The conformance authority generation receipt seal block explicitly shows
+      '[Ed25519: PENDING]' confirmed by grep, establishing this as a documented
+      open gap.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-009
+    claim: >-
+      The actual XES or OCEL event log files from which the BLAKE3 target_log_hash
+      values in the five M&A receipts were computed are not present in the receipts
+      directory, preventing independent replication of conformance measurements from
+      within the corpus.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >-
+      Filesystem inspection confirms no XES or OCEL event log files exist in
+      /receipts/; RECEIPT_REGISTRY.md notes 'production receipts require live data.'
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-010
+    claim: >-
+      The final board deck artifacts — the .pptx PowerPoint file and .xlsx due
+      diligence workbook — have not been materialized in the repository; the
+      ma_deck_rendering.md ledger file does not exist.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/ma_deck_rendering_authority_assessment.md
+    evidence_summary: >-
+      Filesystem check confirms ma_deck_rendering.md does not exist; the assessment
+      document identifies the rendering step as EXECUTABLE but not yet executed.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-011
+    claim: >-
+      A cryptographic receipt chain employing Ed25519 validator signatures, BLAKE3
+      content-addressed event log references, and JCS-canonical JSON serialization
+      (RFC 8785) is sufficient to make process-intelligence claims board-admissible
+      in M&A due diligence contexts, provided conformance fitness >=0.95 and
+      precision >=0.90.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >-
+      This is the primary hypothesis of the receipts corpus; the five passing signed
+      receipts constitute empirical support, but the sufficiency claim for real M&A
+      board-admissibility requires practitioner validation beyond the research
+      program.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-012
+    claim: >-
+      The Chatman Equation A = mu(O*) is operationalized by the BLAKE3
+      target_log_hash (making O* concrete and content-addressed) and the fitness
+      score in each receipt (realizing mu as the expectation of conformance computed
+      over the observed log).
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+    evidence_summary: >-
+      The equation and its operationalization in the receipt schema is the author's
+      interpretive framework linking doctoral theory to implementation; receipts
+      exist as artifacts but the equation interpretation is author-supplied.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-013
+    claim: >-
+      FFI bindings for the JavaScript/WebAssembly boundary, CBOR receipt
+      serialization, and the audit ledger binding are unimplemented; these three
+      integration components remain PENDING in the conformance authority generation
+      receipt.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+    evidence_summary: >-
+      The generation receipt explicitly lists FFI bindings, CBOR serialization,
+      and audit ledger binding as pending integration items confirmed by grep.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-014
+    claim: >-
+      No adversarial receipts have been manufactured; the ADVERSARIAL receipt type
+      exists in the registry but the hostile test cases in adversarial/ have not
+      been run against the conformance authority to produce passing adversarial
+      receipts.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >-
+      RECEIPT_REGISTRY.md defines the ADVERSARIAL_RECEIPT type but no adversarial
+      receipt files are present in /receipts/ confirmed by filesystem inspection.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RECEIPTS-015
+    claim: >-
+      The two Tera2 board presentation templates (ma-deck.tera and ma-diligence.tera)
+      use pptx-rs and calamine Rust libraries to render the final board deck
+      artifacts, with the pipeline marked VERIFIED or EXECUTABLE but not yet
+      triggered.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/receipts/ma_deck_rendering_authority_assessment.md
+    evidence_summary: >-
+      The MA deck assessment confirms pptx-rs and calamine library availability and
+      references Tera2 templates; specific line counts (202/283) in the TeX are not
+      independently verified by filesystem inspection.
+    confidence: MEDIUM
+    allowed_in_pdf: true

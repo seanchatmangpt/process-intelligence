@@ -1,0 +1,87 @@
+% FILE: 00_project_identity.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Project Identity: Adversarial Testing and Hostile Assumption Verification}
+\label{sec:adversarial-identity}
+
+\subsection{Purpose}
+\label{sec:adversarial-identity-purpose}
+
+The \texttt{adversarial/} directory is the red-team and hostile-assumption-verification layer
+of the process-intelligence research foundry. Its governing mandate is stated in
+\texttt{RED\_TEAM\_SCOPE.md}: ``Every claim in this research corpus must survive adversarial
+scrutiny before it becomes a board artifact or a manufacturing receipt.'' This mandate
+operationalizes the Van der Aalst Constitution requirement for negative testing---the
+principle that model-versus-log mismatch is not a discrepancy but a first-class defect.
+
+The adversarial corpus does not simply catalog attack scenarios in the abstract. It provides
+executable tests, cryptographic challenge mechanisms, and a structured finding taxonomy that
+feeds directly into gap remediation sequencing and downstream workflow authorization. A claim
+that cannot be challenged is not a research claim; it is an assertion. The adversarial layer
+exists to enforce the difference.
+
+The corpus operates under the Chicago TDD hostile assumptions doctrine, which requires that
+declared manufacturing pipelines be distinguished from actual runtime processes, that receipts
+be verified against cryptographic evidence rather than accepted on declaration, and that proof
+gates be shown to reject non-conforming execution---not merely to pass conforming execution.
+
+\subsection{Repository Surface}
+\label{sec:adversarial-identity-surface}
+
+The adversarial corpus spans three interlocking mechanisms. The first is a scoped review
+charter (\texttt{RED\_TEAM\_SCOPE.md}) defining seven challenge categories: unsupported claims
+in \texttt{doctrine/}; inflated paper classifications (\texttt{COVERED\_BY\_TYPE} without
+actual types); board claims without evidence paths; lifecycle phases that stop at observation
+without repair actuation; comparison claims without matrix evidence; crosswalk claims without
+loss policy specification; and M\&A claims without a diligence path from target OCEL log to
+conformance report to board projection.
+
+The second mechanism is an executable simulation engine
+(\texttt{simulate\_laundering\_spoofing.py}) implementing ten attack scenarios against the
+\texttt{IngestionBoundary} class. The third is a standards audit script
+(\texttt{validate\_standards.py}) that validates placement files for XES, OCEL 2.0, BPMN,
+POWL, Declare, and OCPQ.
+
+Supporting the three core files are adversarial documents distributed across the wider
+foundry: \texttt{standards/ocel-adversarial-gravity.md} (ontological vulnerability analysis),
+\texttt{sources/papers/adversarial-canon.md} (Sybil-attack failures in classical discovery
+algorithms), and \texttt{sources/wasm4pm-compat/adversarial-type-law.md} (witness lattice
+forgeability and the Chatman Constraint).
+
+\subsection{Primary Research Role}
+\label{sec:adversarial-identity-role}
+
+Within the dissertation, the adversarial corpus serves as the falsification layer for all
+positive claims. Every ALIVE gate criterion in the research program is defined against a
+background of adversarial pressure: the conformance claim must survive signature forgery, the
+process model claim must survive event deletion and replay, the board claim must survive the
+challenge ``show me the diligence path.''
+
+The adversarial corpus also makes a positive research contribution: it demonstrates that
+standard public process mining formats (XES, OCEL 2.0) are structurally vulnerable to silent
+tampering, timeline manipulation, and phantom-object injection, and that the
+\texttt{wasm4pm} Reality Receipt mechanism addresses these vulnerabilities at the ingestion
+boundary through cryptographic hash chaining, HMAC-SHA256 signature verification, temporal
+monotonicity gates, and impossible-velocity detection.
+
+\subsection{Key Artifacts}
+\label{sec:adversarial-identity-artifacts}
+
+The key manufactured artifacts are:
+\begin{itemize}
+  \item \texttt{adversarial/RED\_TEAM\_SCOPE.md} --- the charter for all adversarial activity,
+        defining seven challenge categories and the output format for findings;
+  \item \texttt{adversarial/RED\_TEAM\_FINDINGS\_001.md} and
+        \texttt{adversarial/RED\_TEAM\_FINDINGS\_002.md} --- ten structured findings (3
+        CRITICAL, 3 MAJOR open, 2 self-correcting, 3 MINOR) with severity, category, and
+        remediation paths;
+  \item \texttt{adversarial/simulate\_laundering\_spoofing.py} --- ten executable scenarios
+        with Python \texttt{assert} statements verifying ACCEPTED and REJECTED verdicts;
+  \item \texttt{adversarial/validate\_standards.py} --- standards audit script covering six
+        formats with placeholder, broken-link, JSON validity, and LossReport checks;
+  \item \texttt{checkpoints/PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA.md} --- the
+        ALIVE OMEGA checkpoint issued after a twenty-agent adversarial swarm;
+  \item \texttt{audits/adversarial\_audit\_v30.1.1.md} --- VERIFIED/PASS verdict with Blake3
+        checksum and Ed25519 signature over 567 commits across 15 directories.
+\end{itemize}

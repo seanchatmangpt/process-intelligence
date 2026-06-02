@@ -1,0 +1,159 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: receipts/rec_ebitda_rework_001.json, receipts/RECEIPT_REGISTRY.md,
+%            checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md,
+%            checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md,
+%            ggen/.ggen/receipts/latest.json, phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+% STATUS: PARTIAL — TeX sources exist, source ledger populated, claim ledger in force.
+%         PDF NOT YET COMPILED. Hash NOT YET RECORDED. ALIVE criteria NOT YET MET.
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:phd-thesis-evidence}
+
+\subsection{Tests}
+\label{sec:phd-thesis-evidence-tests}
+
+The test surface of the broader research program --- which constitutes the evidentiary
+foundation for all dissertation claims --- consists of the following verified artifacts:
+
+\begin{itemize}
+  \item \textbf{\texttt{experiments/validate\_log\_fitness.py}} --- Validates the token-game
+    fitness formula $f(L, N) = 1 - \frac{\sum m}{\sum c} - \frac{\sum r}{\sum p}$.
+    Confirmed in the mathematical invariants checklist of
+    \texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md}.
+
+  \item \textbf{\texttt{experiments/verify\_equations.py}} --- Verifies the core equations
+    of the process intelligence model, including the admissibility boundary
+    $R \vdash P_i = \mu(O^*, T, L)$ and the OCPQ refinement $p \sqsubseteq_L c$.
+
+  \item \textbf{\texttt{experiments/validate\_ocpq\_refinement.py}} --- Programmatically
+    verifies subset inclusion and matching bindings for the OCPQ refinement relation.
+    Listed as verified in \texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md}.
+
+  \item \textbf{\texttt{adversarial/simulate\_laundering\_spoofing.py}} --- Red team test
+    implementing the adversarial assumptions of the Van der Aalst Constitution: raw laundering
+    refusal, conformance theater simulation, metric fabrication injection.
+
+  \item \textbf{\texttt{adversarial/validate\_standards.py}} --- Validates that adversarial
+    inputs are rejected by the standards compliance layer.
+
+  \item \textbf{\texttt{otel-weaver/experiments/exp-005-collector-to-pi-intake/harness.py}}
+    --- Python harness routing live OTel collector output into the process intelligence intake
+    pipeline. Tests the telemetry-to-process-evidence boundary.
+
+  \item \textbf{Blue River Dam Rust test suite}: 5 tests passing in
+    \texttt{blue\_river\_dam/src/lib.rs} (\texttt{\#![forbid(unsafe\_code)]}, compiled to
+    cdylib/rlib). Confirmed in the Blue River generation receipt and the ggen ecosystem
+    intelligence checkpoint.
+
+  \item \textbf{Validate all templates scripts} in
+    \texttt{research/pi-program/emitted/ggen-validator-recovery/}: Two template validation
+    scripts (\texttt{validate\_all\_templates.py} and \texttt{validate\_all\_templates\_v2.py})
+    exercising the full ggen template rendering pipeline.
+\end{itemize}
+
+The \texttt{phd-thesis} workspace itself has no tests of its own at phase
+\texttt{SETUP\_COMPLETE}. The PDF compilation step (pdflatex without error) is the
+workspace-level test, and it has not yet been executed.
+
+\subsection{Receipts}
+\label{sec:phd-thesis-evidence-receipts}
+
+The canonical receipt chain for the research program consists of the following confirmed
+artifacts:
+
+\textbf{Cryptographic JSON Receipts} (\texttt{receipts/} directory):
+\begin{itemize}
+  \item \texttt{rec\_ebitda\_rework\_001.json} --- EBITDA rework reduction claim.
+    Engine: wasm4pm. Fitness: 0.982, Precision: 0.945. EBITDA impact: \$1,250,000.
+    ed25519 signature confirmed present. Target log hash and process model hash confirmed.
+  \item \texttt{rec\_wc\_ar\_002.json} --- Working capital / accounts receivable claim.
+  \item \texttt{rec\_risk\_sla\_003.json} --- SLA risk claim.
+  \item \texttt{rec\_risk\_compliance\_004.json} --- Compliance risk claim.
+  \item \texttt{rec\_residual\_standard\_005.json} --- Residual standard claim.
+\end{itemize}
+
+\textbf{Generation Receipts} (\texttt{receipts/} directory):
+\begin{itemize}
+  \item \texttt{wasm4pm\_mining\_generation.md} --- Manufacturing receipt for the wasm4pm
+    mining module.
+  \item \texttt{wasm4pm\_conformance\_authority\_generation.md} --- Manufacturing receipt for
+    the conformance authority module.
+  \item \texttt{wasm4pm\_replay\_generation.md} --- Manufacturing receipt for the replay
+    module.
+  \item \texttt{wasm4pm\_lifecycle\_generation.md} --- Manufacturing receipt for the
+    lifecycle module.
+  \item \texttt{blue\_river\_generation.md} --- Manufacturing receipt for the Blue River Dam
+    orchestrator (965-line Rust library).
+\end{itemize}
+
+\textbf{ggen Cryptographic Sync Receipts} (\texttt{ggen/.ggen/receipts/}):
+Three sync receipts with chained signatures:
+\texttt{sync-20260601-175316.json},
+\texttt{sync-20260601-203853.json},
+\texttt{sync-20260601-230600.json},
+plus \texttt{latest.json} (pointer to the most recent sync).
+
+\textbf{Manufacturing Workflow Receipt} (\texttt{phd-thesis/ledgers/WORKFLOW\_RECEIPT.yaml}):
+Phase \texttt{SETUP\_COMPLETE}. Pre-manufacture commit recorded. Toolchain verified.
+
+\textbf{Not yet present}: A PDF compilation receipt recording the compiled dissertation hash.
+This is the missing receipt that blocks ALIVE status.
+
+\subsection{Checkpoints}
+\label{sec:phd-thesis-evidence-checkpoints}
+
+The following checkpoints are sealed and immutable as of 2026-06-01:
+
+\begin{itemize}
+  \item \textbf{PI\_RESEARCH\_PROGRAM\_ALIVE\_001} --- All 12 audit gates PASS.
+    342 research artifacts. Sealed 2026-06-01 06:00 UTC.
+    BLAKE3 seal: \texttt{e7c8f2d94a71b5c3e9f1d6a4b2c8e5f7a1d3c5b7e9f2d4a6c8e0f1a3b5c7d9}.
+    This is the prerequisite authorization for chapter manufacturing.
+
+  \item \textbf{PROCESS\_INTELLIGENCE\_ALIVE\_001} --- Phase 11 final verdict.
+    Mathematical invariants verified: admissibility boundary, autonomic actuation,
+    token-game fitness, OCPQ refinement, decommissioning retirement.
+    Verification Status Code: 0x00 (SUCCESS\_ALIVE).
+
+  \item \textbf{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001} --- ggen ecosystem intelligence
+    complete. 3/4 audits PASS; 1 remediation open (DTO flattening in wasm4pm-compat).
+    Sealed 2026-06-01.
+
+  \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001} --- OpenTelemetry integration ALIVE.
+    Sealed 2026-06-01.
+
+  \item \textbf{SUBSTRATE\_COMPLETE\_001} --- Foundation layer complete.
+    Sealed 2026-06-01.
+\end{itemize}
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:phd-thesis-evidence-status}
+
+\textbf{Status: PARTIAL.}
+
+The \texttt{phd-thesis} workspace is PARTIAL. This is an accurate statement of the current
+manufacturing state and must not be upgraded to ALIVE by assertion. The ALIVE criteria defined
+in \texttt{phd-thesis/README.md} and enforced by \texttt{ledgers/DO\_NOT\_CLAIM\_LEDGER.md}
+require:
+
+\begin{enumerate}
+  \item \textbf{TeX source files exist} --- \textbf{MET} (this corpus).
+  \item \textbf{Source ledger present and populated} --- \textbf{MET}
+    (\texttt{ledgers/PROJECT\_INDEX.yaml}, 34 entries).
+  \item \textbf{Claim ledger prohibitions respected} --- \textbf{MET} (DO\_NOT\_CLAIM\_LEDGER
+    prohibitions enforced throughout manufacture of this corpus).
+  \item \textbf{PDF compiles without error} --- \textbf{NOT MET}. No master TeX file exists
+    yet; pdflatex has not been invoked.
+  \item \textbf{Compiled PDF hash recorded in receipt chain} --- \textbf{NOT MET}. No PDF
+    exists; no hash can be recorded.
+\end{enumerate}
+
+The upstream prerequisites are met: PI\_RESEARCH\_PROGRAM\_ALIVE\_001 (12/12 gates) authorizes
+chapter manufacturing. The toolchain is verified (WORKFLOW\_RECEIPT.yaml). The workspace is
+not BLOCKED --- it is PARTIAL pending the next manufacturing phase. The two open DTO flattening
+and OTel deserialization remediations documented in PI\_RESEARCH\_PROGRAM\_ALIVE\_001 do not
+block the dissertation workspace; they are non-blocking to Program ALIVE and are remediations
+for downstream engineering workflows, not for the dissertation corpus.

@@ -1,0 +1,126 @@
+% FILE: 04_implementation_surface.tex
+% Project: audits
+% Role: completeness-audit-and-compliance-verification-corpus
+
+\section{Implementation Surface}
+\label{sec:audits-impl}
+
+\subsection{Source Files}
+\label{sec:audits-impl-sources}
+
+The implementation surface of the audits corpus spans the following primary source
+files, all located in \texttt{/Users/sac/process-intelligence/audits/}.
+
+\textbf{Shell audit scripts.} \texttt{run\_audit\_1.sh} detects \texttt{.*Dto},
+\texttt{payload\_json}, \texttt{\_json}, and \texttt{state\_tag as String}
+patterns by pattern-matching against the \texttt{compat/src} directory.
+\texttt{run\_audit\_2.sh} maps the seven forbidden tool function names
+(\texttt{simulate\_replay} through \texttt{benchmark\_gate\_run}) against
+\texttt{GraduationReason} entries and verifies all are absent from the projection
+layer. \texttt{run\_audit\_3.sh} verifies feature isolation by confirming that no
+\texttt{specta}, \texttt{wasm-bindgen}, or \texttt{tsify} dependencies appear in
+the default feature. \texttt{run\_audit\_4.sh} confirms projected artifacts~---
+TypeScript projections, WIT projections, and manifests~--- are recorded.
+\texttt{run\_audit\_5.sh} applies the Van der Aalst conformance principle to the
+graduation boundary, verifying that the declared boundary (\texttt{compilation
+\&\& audit\_pass}) is consistent with the actual projection surface of 87 public
+items.
+
+\textbf{Agent audit reports.} \texttt{alignment\_referee\_audit.md} documents the
+A* alignment heuristic admissibility proof, empirical latency measurements (74
+microseconds average across three test scenarios), and state-space safety limit
+enforcement. \texttt{drift\_sentry\_audit.md} documents the EWMA concept drift
+detection mathematical derivation (\(\lambda = 0.20\), \(\mu_0 = 1.00\), \(\sigma_0
+= 0.08\), \(L = 3\), \(LCL = 0.92\)) and empirical simulation of Cases~1 through
+19. \texttt{ledger\_custodian\_audit.md} documents the SHA-256 ledger integrity
+verification including the \texttt{test\_sha256\_ledger\_compliance} Rust
+integration test and the genesis block hash
+\texttt{787985dd49ff98f9803851093406bdfc2eb7ab5f71b374d01d5b9a0ea952fc26}.
+\texttt{petri\_net\_soundness\_audit.md} documents the mathematical verification
+of WF-net soundness~--- option to complete, proper completion, and no dead
+transitions~--- against van der Aalst (1997, 1998, 2011) and Murata (1989).
+\texttt{forensic\_audit\_verdict.md} documents the clean-room forensic verdict:
+84 total tests passing (54 \texttt{wasm4pm} + 7 \texttt{blue\_river\_dam} + 23
+\texttt{wasm4pm-compat}), zero stubs, mocks, or hardcoded outputs, and zero
+external dependencies in the \texttt{wasm4pm} core.
+
+\textbf{Research audit documents.} \texttt{AUDIT\_PAPER\_COVERAGE.md} catalogues
+81 papers across six verdict categories (\texttt{COVERED\_BY\_TYPE}: 22,
+\texttt{COVERED\_BY\_GRADUATION\_BOUNDARY}: 42, \texttt{PARTIAL\_WITH\_REASON}:
+14, \texttt{OUT\_OF\_SCOPE\_WITH\_REASON}: 12, \texttt{DUPLICATE\_OR\_BACKGROUND}:
+6, \texttt{MISSING\_TYPE\_LAW}: 2). \texttt{AUDIT\_TYPE\_LAW\_QUALITY.md}
+documents the compile-fail fixture error code distribution. \texttt{AUDIT\_FIXTURE\_QUALITY.md}
+confirms zero \texttt{E0425} fixtures and 97.7\% valid law-proving error code
+coverage.
+
+\subsection{Commands}
+\label{sec:audits-impl-commands}
+
+The primary commands for this corpus are deterministic and re-executable:
+
+\begin{verbatim}
+cd /Users/sac/process-intelligence/audits
+bash run_audit_1.sh   # NO DTO FLATTENING
+bash run_audit_2.sh   # NO TOOLS IN COMPAT
+bash run_audit_3.sh   # FEATURE ISOLATION
+bash run_audit_4.sh   # PROJECTION RECEIPT
+bash run_audit_5.sh   # GRADUATION BOUNDARY
+\end{verbatim}
+
+Each script is idempotent: re-running produces byte-identical output. The
+reproducibility invariant can be verified with:
+
+\begin{verbatim}
+bash run_audit_1.sh > /tmp/audit1_first.txt
+bash run_audit_1.sh > /tmp/audit1_second.txt
+diff /tmp/audit1_first.txt /tmp/audit1_second.txt  # empty
+\end{verbatim}
+
+For the Rust test suite that underpins the agent audits, the primary commands
+are:
+
+\begin{verbatim}
+cd sources/wasm4pm && cargo test   # 54 tests
+cd blue_river_dam  && cargo test   # 7 tests
+cd sources/wasm4pm-compat/compat && cargo test  # 23 tests
+\end{verbatim}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:audits-impl-data}
+
+The data surface of the audits corpus is the \texttt{AUDIT\_LOG.yaml} file, which
+stores machine-readable consolidated results in a structured YAML format. It
+captures: violation records with \texttt{pattern}, \texttt{location}, and
+\texttt{remediation} fields; \texttt{GraduationReason} mappings for each
+forbidden tool function; feature isolation rules by feature name; and the Van der
+Aalst conformance checklist with per-item boolean verdicts.
+
+The ontology surface intersects with the rebranding audit documents
+(\texttt{rebranding\_ontology\_audit.md}, \texttt{rebranding\_root\_config\_audit.md},
+\texttt{rebranding\_rules\_manifests\_audit.md}, \texttt{rebranding\_template\_audit.md})
+which document the required renaming of ZOEapp-branded TTL ontology files to PCP
+namespace. These audits find violations but do not confirm the renames were
+applied~--- leaving the ontology rebranding as an open finding [AUTHOR THESIS:
+the rebranding status is unresolved as of 2026-06-01].
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:audits-impl-templates}
+
+The primary rendered artifact of the audits corpus is the consolidated
+\texttt{CONFORMANCE\_REPORT.md}, which is manufactured from the five individual
+audit receipt files and presents a human-readable executive summary including: the
+audit results dashboard, violation details with rationale, the remediation plan
+(Priority~1: rename \texttt{to\_json\_string()} to \texttt{serialize\_receipt()}
+and \texttt{receipt\_json()} to \texttt{encode\_receipt\_proof()}), the verdict,
+and the graduation path.
+
+The \texttt{VAN\_DER\_AALST\_AUDIT\_SUMMARY.txt} is a companion rendered artifact
+providing a structured quick-reference guide with all violations at a glance, the
+three-phase remediation roadmap, reproducibility instructions, and the status
+dashboard. Both documents are manufactured from the same underlying
+\texttt{AUDIT\_LOG.yaml} data and are kept in sync by the audit scripts.
+
+The five agent audit receipt files carry SHA-256 signatures that can be
+independently verified against the signed hash values recorded in
+\texttt{AUDIT\_LOG.yaml} and the \texttt{adversarial\_audit\_v30.1.1.md}
+certification document.

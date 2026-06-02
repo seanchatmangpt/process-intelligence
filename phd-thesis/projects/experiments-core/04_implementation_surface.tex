@@ -1,0 +1,97 @@
+% FILE: 04_implementation_surface.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Implementation Surface}
+\label{sec:experiments-core-impl}
+
+\subsection{Source Files}
+\label{sec:experiments-core-impl-sources}
+
+The implementation surface spans four categories of source files.
+
+\textbf{Python validation scripts.} Three scripts constitute the executable equation
+verification layer. \texttt{validate\_log\_fitness.py} encodes five Petri net token
+replay scenarios---perfect conformance (fitness = 1.0), partial replay (fitness
+= 0.3333), one-missing-token (fitness = 0.5), a combined multi-trace log (fitness
+= 5/7), and a zero-consumed edge case---and asserts exact results using Python's
+\texttt{assert} statement with no test framework dependency.
+\texttt{validate\_ocpq\_refinement.py} encodes four OCPQ refinement relation cases:
+reflexivity ($p \leq_L p$), extension ($p \leq_L c$ when $c$ extends $p$),
+conflict ($p \not\leq_L c$ when values differ), and missing domain
+($p \not\leq_L c$ when $\mathrm{dom}(p) \not\subseteq \mathrm{dom}(c)$).
+\texttt{verify\_equations.py} is a single gate script that runs all nine cases
+(five fitness, four OCPQ) and reports 100\% correctness or exits with a non-zero
+status code.
+
+\textbf{TypeScript visualizer layer.} \texttt{visualizer/alignment.js} implements
+the A* alignment solver. \texttt{visualizer/blockchain.js} implements the SHA-256
+cryptographic audit chain. \texttt{visualizer/drift-detector.js} implements the
+EWMA drift detector. \texttt{visualizer/visualizer-validation.ts} validates ten WASM
+boundary types at the TypeScript type level: \texttt{EvidenceTs}, \texttt{AdmissionTs},
+\texttt{RefusalTs}, \texttt{ReceiptShapeTs}, \texttt{GraduationCandidateTs}, and
+five supporting types. \texttt{visualizer/bindings.d.ts} declares the TypeScript
+projections of the Rust typestate system.
+
+\textbf{Benchmark reports.} \texttt{pm4py-comparison/matrix.md} records the
+capability comparison matrix across DFG Discovery, Alpha Miner, Inductive Miner,
+Heuristics Miner, Token Replay, Alignment Fitness, OCEL 2.0 handling, and ZKP
+compatibility. \texttt{pm4py-comparison/zero-knowledge-benchmarks.md} records the
+ZKP-specific comparison: wasm4pm completes 10,000-event ZKP conformance in $2^{18}$
+cycles (approximately 142 seconds proof time, 220\,KB STARK) versus PM4Py timing
+out at $2^{30}+$ cycles.
+
+\textbf{Experiment sample documents.} Eighteen Markdown files with concrete JSON
+schemas cover Petri net token replay, OCEL 2.0 lifecycle, cryptographic replay
+receipts, OTel-BLAKE3 integration, raw laundering refusal, M\&A claim mappings,
+paper-to-type-law fixture design, and decommission receipts.
+
+\subsection{Commands}
+\label{sec:experiments-core-impl-commands}
+
+The primary commands are:
+
+\begin{itemize}
+  \item \texttt{python verify\_equations.py}---runs the unified equation gate; exit
+    code 0 on all-pass, non-zero on any failure.
+  \item \texttt{python validate\_log\_fitness.py}---runs the five Petri net token
+    replay assertions.
+  \item \texttt{python validate\_ocpq\_refinement.py}---runs the four OCPQ refinement
+    assertions.
+\end{itemize}
+
+No build step is required for the Python scripts. The visualizer is a browser-based
+application with no compilation step documented in the repository. The TypeScript
+validation file (\texttt{visualizer-validation.ts}) requires a TypeScript compiler
+to execute; no \texttt{tsconfig.json} or \texttt{package.json} is referenced in the
+source evidence, so the precise compilation command is not reproducible from the
+artifacts alone. [INTERPRETATION: The TypeScript validation is likely intended as a
+type-check-only pass with \texttt{tsc --noEmit}.]
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:experiments-core-impl-data}
+
+The primary data surface is the OCEL 2.0 log schema, instantiated in concrete JSON
+in the experiment sample documents. The ontology surface is the OCPQ query variable
+domain---the refinement relation $p \leq_L c$ is defined over finite partial maps
+from variable names to values. The OTel-BLAKE3 integration surface maps OpenTelemetry
+span fields (TraceID, SpanID, ParentSpanID, SpanName, StartTime, EndTime,
+InstructionCount) to BLAKE3 receipt chain inputs. No RDF or TTL ontology files
+are present in the experiments directory; the ontology grounding for OCEL 2.0
+is inherited from the broader process-intelligence research program. [FUTURE WORK:
+A formal OWL ontology for the receipt-chain data model has not yet been manufactured.]
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:experiments-core-impl-templates}
+
+The experiment sample Markdown files serve as templates for concrete JSON fixtures.
+The \texttt{paper-fixture-design/spec.md} describes a specification for adversarial
+fixture manufacturing using GAN-based trace generation with hyper-concurrent loops,
+invisible prime branches, and 15\% missing events. However, no actual GAN
+implementation or fixture files were materialized from this specification. The
+\texttt{audit\_\_experiment\_completeness.md} is the rendered audit artifact that
+confirms 18/18 experiments passed. The \texttt{checkpoint\_\_experiments\_complete.md}
+is the rendered checkpoint that declares VERIFIED \& COMPLETE for the equation-verification
+and experiment-coverage gates. The \texttt{EVIDENCE\_CHAIN\_TRACE.md} is the
+rendered evidence-chain document that also identifies GAP\_001 as a blocking defect
+in the full chain.

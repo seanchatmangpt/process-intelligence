@@ -1,0 +1,111 @@
+% FILE: 04_implementation_surface.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Implementation Surface}
+\label{sec:experiments-visualizer-impl}
+
+\subsection{Source Files}
+\label{sec:experiments-visualizer-impl-sources}
+
+The implementation surface comprises 13 JavaScript modules, two TypeScript files, one HTML
+entry point, and supporting configuration, all residing in
+\texttt{/Users/sac/process-intelligence/experiments/visualizer/}.
+
+\begin{description}
+  \item[\texttt{app.js}] Top-level application entry point. Coordinates subsystem initialization
+        and wires the tick cycle that drives the MAPE-K loop, drift detector, and audit ledger
+        together.
+  \item[\texttt{dashboard.js}] Rendering coordinator. Reads computed metrics from subsystem
+        outputs and the audit ledger to populate the dashboard panels. Contains its own SHA-256
+        implementation (one of four independent implementations in the codebase — see
+        Section~\ref{sec:experiments-visualizer-openq}).
+  \item[\texttt{petrinet.js}] Petri net model layer: places, transitions, arcs, markings,
+        \texttt{fire()}, and \texttt{getEnabledTransitions()}.
+  \item[\texttt{token-game.js}] Canvas 2D token flight animation with multi-case support and
+        bypass route \texttt{t4 Approve-Bypass}.
+  \item[\texttt{alignment.js}] Alignment computation layer integrating with the A* solver.
+        Implements the fitness formula $1 - \mathit{cost} / (\mathit{log\_length} + \mathit{minModelCost})$
+        with $\mathit{minModelCost}=4$ for the supply-chain WF-net.
+  \item[\texttt{astar.js}] Priority-queue A* alignment solver with synchronous (cost=0),
+        model-only (cost=1), and log-only (cost=1) move types and an admissible heuristic.
+  \item[\texttt{declare.js}] DECLARE LTL template engine implementing 10 constraint templates
+        and the three domain rules for the supply-chain process.
+  \item[\texttt{drift.js}] Drift visualization and coordination layer.
+  \item[\texttt{drift-detector.js}] EWMA drift detector: Jaccard DFG-profile distance,
+        $\lambda=0.20$, $L=3.0$, UCL/LCL control limits, \texttt{calibrate()} API.
+  \item[\texttt{autonomic.js}] MAPE-K \texttt{AutonomicController}: \texttt{tick(metrics, net)},
+        threshold enforcement, rate limiting, S-component hot-swapping. Emits
+        \texttt{RATE\_LIMIT\_TRIGGER} and \texttt{RATE\_LIMIT\_RECOVERY} ledger events with its
+        own SHA-256 block chaining.
+  \item[\texttt{blockchain.js}] \texttt{CryptographicAuditChain}: genesis block, sequential
+        block chaining, \texttt{tamperBlock()}, \texttt{verifyChain()}.
+  \item[\texttt{ledger.js}] \texttt{AuditLedger}: higher-level ledger API over the
+        \texttt{CryptographicAuditChain}.
+  \item[\texttt{index.html}] Single-page application entry point. Loads all 13 modules and
+        renders the dashboard panels.
+  \item[\texttt{bindings.d.ts}] TypeScript boundary-law declarations labeled ``WASM Boundary Law.''
+        Declares \texttt{EvidenceTs}, \texttt{EvidenceState}, \texttt{AdmissionTs},
+        \texttt{RefusalTs}, \texttt{LossPolicyTs}, \texttt{LossReportTs},
+        \texttt{ReceiptShapeTs}, \texttt{GraduationCandidateTs}, \texttt{WitnessKey}, and
+        brand tags.
+  \item[\texttt{visualizer-validation.ts}] Compile-time structural validation. Exercises all
+        10 type projections with concrete values: BLAKE3 process hash and fitness score 0.982
+        matching \texttt{replay\_receipt\_sample.md}.
+\end{description}
+
+\subsection{Commands}
+\label{sec:experiments-visualizer-impl-commands}
+
+The application requires no build step for runtime execution: \texttt{index.html} loads the
+JavaScript modules directly via \texttt{<script>} tags and executes in any modern browser.
+
+The TypeScript validation is compiled via:
+\begin{verbatim}
+npx tsc --strict visualizer-validation.ts
+\end{verbatim}
+The \texttt{package.json} confirms TypeScript as the sole \texttt{devDependency}. No test
+runner script, browser automation command, or server start command is defined in
+\texttt{package.json}, consistent with the zero-external-dependency architecture.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:experiments-visualizer-impl-data}
+
+The primary data surface is the supply-chain WF-net encoded in \texttt{petrinet.js} and
+exercised by the token game, A* solver, and DECLARE validator. This WF-net encodes the
+supply-chain process with transitions including \texttt{Create\_Order}, \texttt{Audit\_Invoice},
+\texttt{Approve\_Payment}, \texttt{Close\_Case}, and \texttt{Raw\_Laundering} (the latter
+subject to the \texttt{NotCoExistence} constraint with \texttt{Create\_Order}).
+
+The ontology surface is provided by the \texttt{WitnessKey} type in \texttt{bindings.d.ts},
+which enumerates the authoritative sources for each evidence format:
+\begin{itemize}
+  \item \texttt{Ocel20} — OCEL 2.0 standard (object-centric event logs)
+  \item \texttt{Xes1849} — IEEE XES 1849 standard (extensible event streams)
+  \item \texttt{WfNetSoundnessPaper} — WF-net soundness theorem
+  \item \texttt{Dec20} — DECLARE 2.0 constraint specification
+  \item \texttt{Pmax24} — Process mining algorithm reference (INTERPRETATION)
+\end{itemize}
+
+The receipt data surface is provided by \texttt{ReceiptShapeTs}:
+\texttt{\{case\_id, process\_hash, parent\_block\_hash, block\_hash, timestamp\_ns, fitness\}}.
+The canonical fixture is \texttt{replay\_receipt\_sample.md} with fitness 0.982.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:experiments-visualizer-impl-templates}
+
+The \texttt{LIVESTREAM\_STANDARDS.md} specifies a 5-agent AGI swarm architecture with formal
+compliance metrics as a \emph{specification template}: Stream Director, Telemetry Auditor,
+A* Alignment Referee, Drift Sentry, and Ledger Custodian. These roles map onto the seven
+subsystems of the dashboard as intended human or automated observer roles during a live
+demonstration session, not as autonomous code agents (see Section~\ref{sec:experiments-visualizer-openq}).
+
+The audit ledger emits two categories of rendered artifacts: ledger event records
+(SHA-256-chained blocks for \texttt{RATE\_LIMIT\_TRIGGER} and \texttt{RATE\_LIMIT\_RECOVERY})
+and receipt records (\texttt{ReceiptShapeTs}-conforming JSON objects). Both are rendered in
+the dashboard panel and recorded in the tamper-evident chain, making every rendered output
+simultaneously a display artifact and an audit artifact.
+
+The \texttt{checkpoint\_\_experiments\_complete.md} confirms that all 16 experiment fixtures
+were verified against the supply-chain WF-net and that no deferred TODOs remain in the
+experiment layer.

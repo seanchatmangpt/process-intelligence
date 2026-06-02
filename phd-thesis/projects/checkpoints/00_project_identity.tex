@@ -1,0 +1,86 @@
+\section{Project Identity}
+\label{sec:checkpoints-identity}
+
+\subsection{Purpose}
+\label{sec:checkpoints-identity-purpose}
+
+The \texttt{checkpoints/} directory is the phase milestone verdict ledger for the Process Intelligence Research
+Foundry. Its purpose is not to record activity but to certify consequence: every checkpoint file is an
+immutable declaration that a named set of audit gates has been evaluated, that evidence was counted against
+minimum thresholds, and that the resulting verdict---ALIVE, PARTIAL, or FAILED---stands permanently as issued.
+
+Verdict permanence is a design requirement, not a convention. The ledger operates under the
+\emph{no forced ALIVE} rule: a verdict of ALIVE may only be sealed when all enumerated gate criteria
+are simultaneously met. A single unmet threshold produces a PARTIAL verdict. PARTIAL is not failure;
+the RESEARCH\_CRITERIA.md file encodes the explicit doctrine: \textquotedblleft PARTIAL is not failure
+--- PARTIAL is the bill of materials for the next transition.\textquotedblright{} The FAILED category
+exists for verdicts where evidence is not merely incomplete but contradicts the claim.
+
+The ledger is also an authorization instrument. Each ALIVE checkpoint carries an explicit list of
+downstream workflows that are authorized by its sealing, and an equally explicit list of workflows
+that are not yet authorized. No downstream manufacturing may proceed against unadmitted evidence,
+unwitnessed conformance scores, or receipts outside the registry.
+
+\subsection{Repository Surface}
+\label{sec:checkpoints-identity-surface}
+
+The \texttt{checkpoints/} directory resides at the root of the \texttt{process-intelligence} repository.
+Its principal source files are Markdown checkpoint documents, each named with a checkpoint identifier
+that encodes verdict type and sequence number. As of 2026-06-01 the directory contains the following
+sealed and open documents: \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md}, \texttt{ALIVE\_GATE\_ASSESSMENT.md},
+\texttt{PI\_RESEARCH\_PROGRAM\_ALIVE\_001.md}, \texttt{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001.md},
+\texttt{SUBSTRATE\_COMPLETE\_001.md}, \texttt{RESEARCH\_CRITERIA.md},
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}, \texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md},
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}, \texttt{PROCESS\_INTELLIGENCE\_PARTIAL\_001.md},
+\texttt{PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA.md}, \texttt{PETRI\_NET\_SNAPSHOT.md}, and
+\texttt{LIVESTREAM\_STATUS\_001.md}.
+
+The companion \texttt{receipts/} directory holds the cryptographic receipt chain that each ALIVE
+checkpoint references. Receipts are BLAKE3- or SHA-256-sealed documents certifying that a named
+manufacturing operator ran, produced its artifact, and logged the result under a specific witness marker.
+Seven canonical research program receipts are indexed in \texttt{receipts/RECEIPT\_REGISTRY.md}.
+
+\subsection{Primary Research Role}
+\label{sec:checkpoints-identity-role}
+
+Within the dissertation, the checkpoint ledger occupies the position of \emph{process truth authority}.
+It does not describe process mining; it enacts the process mining discipline on the research program
+itself. Every ALIVE verdict is a conformance check result: the declared process model is the gate
+criteria table; the event log is the artifact inventory; the conformance score is the gate pass ratio.
+When the ALIVE\_GATE\_ASSESSMENT document records 12 of 12 criteria met, that is a fitness value of 1.0
+against the declared research process model.
+
+This self-application of process intelligence doctrine to the research program's own lifecycle is the
+primary contribution of the checkpoint subsystem to the thesis argument. It demonstrates that the
+doctrine is operational---that it can be applied to a real knowledge-production process, not merely
+described as a theoretical framework.
+
+\subsection{Key Artifacts}
+\label{sec:checkpoints-identity-artifacts}
+
+The key artifacts in the checkpoint ledger, in chronological order of sealing, are:
+
+\begin{enumerate}
+  \item \texttt{PROCESS\_INTELLIGENCE\_PARTIAL\_001.md} --- bootstrap verdict; research foundry entered,
+        criteria population in progress; PARTIAL as authorized state.
+  \item \texttt{ALIVE\_GATE\_ASSESSMENT.md} (2026-05-31) --- 12-gate evaluation with exact artifact
+        counts per directory; 12 of 12 criteria met.
+  \item \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md} --- primary ALIVE verdict; five mathematical
+        invariants verified; four downstream workflow classes authorized.
+  \item \texttt{PI\_RESEARCH\_PROGRAM\_ALIVE\_001.md} (2026-06-01) --- program-level ALIVE verdict;
+        342 total research artifacts across 12 categories; 894 commits recorded at assessment;
+        verification code 0x0F\_ALL\_GATES\_PASS.
+  \item \texttt{SUBSTRATE\_COMPLETE\_001.md} (2026-06-01) --- manufacturing substrate ALIVE verdict;
+        Blue River Dam orchestrator operational at 629 lines; 5 of 5 integration tests passing;
+        zero unsafe code.
+  \item \texttt{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001.md} (2026-06-01) --- generative ecosystem
+        intelligence ALIVE verdict; 3 of 4 boundary audits PASS; DTO remediation pending.
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md} (2026-06-01) --- OTel-to-OCEL feedstock
+        boundary ALIVE; all five OTel integration experiments verified.
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} (2026-06-01) --- runtime integration
+        ALIVE; 62 total tests passing across wasm4pm, wasm4pm-compat, and blue\_river\_dam packages.
+  \item \texttt{PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA.md} --- adversarial swarm
+        OMEGA verdict; 20-agent evaluation; all attack vectors neutralized.
+  \item \texttt{PETRI\_NET\_SNAPSHOT.md} --- base64-encoded Petri net final marking:
+        [Decommissioning]:1, all intermediate places at 0; deadlock-free completion confirmed.
+\end{enumerate}

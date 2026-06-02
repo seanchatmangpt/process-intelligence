@@ -1,0 +1,225 @@
+slug: doctrine
+claims:
+  - id: CLM-DOCTRINE-001
+    claim: >
+      The doctrine corpus comprises 34 canonical markdown files covering every dimension of the law stack,
+      including the Blue River Dam upstream closure law, the MAPE-K autonomic knowledge actuation loop,
+      the twelve-stage process lifecycle calculus, the Evidence chain, five process maturity levels,
+      the fifteen-family algorithm taxonomy, and the formal object taxonomy.
+    claim_type: UNSUPPORTED_REMOVED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/
+    evidence_summary: >
+      The TeX states 34 canonical files, but an actual directory listing of ~/process-intelligence/doctrine/
+      yields 33 entries; the claim of 34 files is off by one and cannot be verified from the source directory.
+    confidence: MEDIUM
+    allowed_in_pdf: false
+
+  - id: CLM-DOCTRINE-002
+    claim: >
+      The PROCESS_INTELLIGENCE_ALIVE_001 checkpoint is sealed at 588 commits with 12 of 12 gate criteria
+      verified, and authorizes six downstream workflows.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+      - /Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md
+    evidence_summary: >
+      DOWNSTREAM_AUTHORIZATION_LAW.md records '588 commits, 12/12 criteria' and the checkpoint is confirmed
+      sealed with status 0x00 SUCCESS_ALIVE, but the checkpoint file itself only lists 5 checked gate items;
+      the 12/12 count originates from DOWNSTREAM_AUTHORIZATION_LAW.md rather than the checkpoint file directly.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-003
+    claim: >
+      The Blue River Dam doctrine frames downstream data as sediment: logs, dashboards, and analytics are
+      residue left by work that has already occurred, and governance built on such records is retrospective
+      narration rather than upstream law.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md
+    evidence_summary: >
+      BLUE_RIVER_DAM.md states verbatim: 'Downstream data is sediment — residue left by work. By the time
+      logs, dashboards, and analytics appear, the governing act already happened. The dam must be upstream.'
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-004
+    claim: >
+      The Evidence<T, State, W> carrier enforces a typed one-way lifecycle
+      (Raw → Parsed → Admitted → {Projected | Exportable | Receipted} | Refused) where state transitions
+      are enforced at compile time rather than at runtime, and Evidence::raw(v) is the only free constructor.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/EVIDENCE_CHAIN.md
+    evidence_summary: >
+      EVIDENCE_CHAIN.md defines the carrier, the state tokens as empty enums, and the constructor rules
+      explicitly, confirming the Admitted constructor is pub(crate) and the only lawful path to Admitted
+      passes through Admit::admit().
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-005
+    claim: >
+      A Receipt<T, W> is not a hash; it is proof that a named law was applied by a named witness within
+      a lawful object lifecycle, and receipts with different witnesses are different types at compile time
+      and cannot be confused or substituted.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/RECEIPT_DOCTRINE.md
+    evidence_summary: >
+      RECEIPT_DOCTRINE.md states verbatim: 'A receipt is not a hash. A hash proves integrity of bytes.
+      A receipt proves something richer: that a named law was applied, by a named witness, to a typed
+      result, within a lawful object lifecycle.' The type-distinctness claim is also stated explicitly.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-006
+    claim: >
+      All fifteen algorithm families in the doctrine taxonomy show wasm4pm execution as missing; the
+      entire discovery and conformance execution layer is structurally specified but not operational.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/ALGORITHM_TAXONOMY.md
+    evidence_summary: >
+      ALGORITHM_TAXONOMY.md records 'wasm4pm coverage: Gap — not yet implemented' for Alpha Miner,
+      Inductive Miner family, Heuristics Miner, and POWL (verified by direct reading); the pattern
+      is consistent across the file for all families.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-007
+    claim: >
+      GAP_001 is the critical structural defect: the GraduateToWasm4pm trait exists in wasm4pm-compat
+      but wasm4pm has no corresponding import, no implementation, and algorithm functions accept raw
+      EventLog without passing through Admit::admit().
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md
+      - /Users/sac/process-intelligence/doctrine/ALGORITHM_TAXONOMY.md
+    evidence_summary: >
+      The gap is documented by name in DOWNSTREAM_AUTHORIZATION_LAW.md; the forbidden
+      ValidationError(String) anti-pattern and the lack of wasm4pm-compat in Cargo.toml are stated
+      as structural evidence of the two-universe problem.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-008
+    claim: >
+      The Chatman Equation κ(ρ(α(μ(O*)))) → ALIVE | PARTIAL | REFUSED is the formal generalization
+      of the doctrine, composing four operators — manufacture, actuate, emit evidence, gate the outcome
+      — with no silent success permitted.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md
+      - /Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md
+    evidence_summary: >
+      The operating equation appears across multiple doctrine files and is the author's formal synthesis
+      of the law stack into a single four-operator chain; it is grounded in BLUE_RIVER_DAM.md and
+      operationalized in DOWNSTREAM_AUTHORIZATION_LAW.md.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-009
+    claim: >
+      The doctrine corpus contains no runnable source code, compiled binaries, or integration tests;
+      its authority derives from the quality and sourcing of its claims, not from execution artifacts.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/RESEARCH_AUTHORITY.md
+    evidence_summary: >
+      The ~/process-intelligence/doctrine/ directory listing confirms the directory contains only
+      markdown files with no source code or executables, consistent with the TeX description of a
+      doctrine-only surface.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-010
+    claim: >
+      The doctrine corpus specifies that any downstream refactor mandate requires the ALIVE_001 seal
+      as a precondition; refactors issued before the seal produce unconstrained downstream drift that
+      cannot be receipted or audited against stable doctrine.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md
+    evidence_summary: >
+      DOWNSTREAM_AUTHORIZATION_LAW.md states verbatim: 'No downstream refactor mandate may be issued
+      until ~/process-intelligence ALIVE gate is sealed. This is not a preference. It is a manufacturing
+      precondition.'
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-011
+    claim: >
+      Refusal capital is defined as the accumulated set of typed, witnessed, receipted refusals and
+      constitutes a non-copyable competitive moat that a buyer, regulator, or counterparty can verify
+      independently.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/PROCESS_TRUTH_AUTHORITY.md
+      - /Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md
+    evidence_summary: >
+      The refusal capital concept is defined in doctrine files; it is an original analytical conclusion
+      by the author that translates the typed refusal mechanism into a capital-market-relevant audit
+      asset concept.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-012
+    claim: >
+      A 2016 language-model experiment demonstrated that local text imitation does not conserve
+      consequence, providing the epistemic seed for the Blue River Dam doctrine that differentiates
+      prediction from coordination.
+    claim_type: AUTHOR_THESIS
+    source_files: []
+    evidence_summary: >
+      The 2016 experiment is cited as thesis lineage but no specific artifact, paper citation, or
+      receipt chain linking to the experiment appears in the doctrine corpus; the TeX itself identifies
+      this as GAP_005 — the upstream lineage end is not documented in doctrine.
+    confidence: LOW
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-013
+    claim: >
+      The BLAKE3 receipt chaining formula Receipt_n = BLAKE3(Receipt_{n-1} || new_action || new_state
+      || signature) produces a chain of receipts independently re-derivable by any auditor possessing
+      the original inputs.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/RECEIPT_DOCTRINE.md
+    evidence_summary: >
+      The BLAKE3 chaining formula is specified in RECEIPT_DOCTRINE.md and referenced in the ALIVE_001
+      checkpoint authorization list as 'BLAKE3 Receipt Emission Protocols,' confirming it is
+      doctrine-level specification.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-014
+    claim: >
+      The Heuristics Miner requires a CausalNet structural type that is not yet typed in wasm4pm-compat,
+      making it the one algorithm family with a structural gap before the execution gap, creating risk
+      of overstated claims in M&A diligence.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/ALGORITHM_TAXONOMY.md
+    evidence_summary: >
+      ALGORITHM_TAXONOMY.md states for Heuristics Miner: 'CausalNet (heuristics net) — structural type
+      missing from compat' and 'CausalNet structural type needed in compat,' confirming this is a
+      pre-execution structural gap distinct from other algorithm families.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-DOCTRINE-015
+    claim: >
+      The six board-admissibility criteria (Evidence_i, TypeLaw_i, Receipt_i, Replay_i, Standard_i,
+      Lifecycle_i) make the doctrine corpus the foundational specification layer for
+      process-evidence-grounded capital allocation and M&A diligence.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md
+    evidence_summary: >
+      MA_READY_PROCESS_INTELLIGENCE.md is confirmed as a source file and likely defines the six criteria;
+      the capital-allocation conclusion is the author's interpretive claim about what those criteria
+      enable rather than a direct statement from the source.
+    confidence: MEDIUM
+    allowed_in_pdf: true

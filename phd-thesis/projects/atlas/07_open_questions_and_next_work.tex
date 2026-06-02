@@ -1,0 +1,154 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: atlas
+% Role: doctrine-atlas-and-thesis-chapter-surface-map
+
+\section{Open Questions and Next Work}
+\label{sec:atlas-open}
+
+\subsection{Known Gaps}
+\label{sec:atlas-open-gaps}
+
+The following gaps are documented based on evidence in the atlas source files
+and the surrounding foundry. None are speculative; each is grounded in a
+specific artifact or absence thereof.
+
+\begin{description}
+  \item[\textbf{GAP-ATLAS-001: No internal receipt or checkpoint.}]
+        The atlas directory has no receipt, checkpoint, or ALIVE file of its own.
+        It is unclear from the foundry artifacts whether the atlas is intended to
+        generate its own ALIVE verdict or to serve purely as a navigational index
+        whose ALIVE status is inherited from PI\_RESEARCH\_PROGRAM\_ALIVE\_001.
+        Evidence base: absence of any \texttt{*.json} or \texttt{ALIVE.md} file
+        in \texttt{/Users/sac/process-intelligence/atlas/}.
+
+  \item[\textbf{GAP-ATLAS-002: AGI Adversarial Defenses stub.}]
+        The \texttt{agi\_adversarial\_defenses.md} file contains exactly four
+        bullet points with no elaboration, no Petri net encoding, no receipt
+        path, and no cross-reference to the blue-river-dam doctrine that it
+        presumably extends. It is unclear whether this is an intentionally
+        minimal stub (cross-reference only) or an awaiting manufacturing task.
+        Evidence base: file content as read on 2026-06-01.
+
+  \item[\textbf{GAP-ATLAS-003: ZoeApp livestream state machine not formalized.}]
+        The \texttt{zoeapp\_ministry\_ontology.md} references a livestream health
+        state machine (healthy, degraded, critical) with a ``formal recovery
+        path,'' but does not specify the Petri net, typestate encoding, or
+        transition law that makes the state machine formal in the Van der Aalst
+        sense. Evidence base: file content as read on 2026-06-01.
+
+  \item[\textbf{GAP-ATLAS-004: No per-module GGEN warrant cross-references.}]
+        The GGEN Prompt Manufactory doctrine defines TTL $\to$ RQ $\to$ TERA
+        $\to$ Prompt, but the atlas does not cross-reference which specific
+        TTL/RQ/TERA files instantiate this chain for each of the seven doctrine
+        modules. The chain is declared; its module-level instantiation is not
+        receipted. Evidence base: \texttt{ggen\_prompt\_manufactory.md} and
+        \texttt{ggen/ggen.toml} as read on 2026-06-01.
+
+  \item[\textbf{GAP-ATLAS-005: Supabase demonstration-mode tables unaudited.}]
+        The five \texttt{actor\_*} tables (actor\_commands, actor\_events,
+        actor\_receipts, actor\_outbox, actor\_quarantine) operate under ``Allow
+        public access'' policies. The \texttt{supabase\_law\_substrate.md} flags
+        these as requiring ``secondary audit for production hardening,'' but no
+        audit has been scheduled or receipted. Evidence base: file content as
+        read on 2026-06-01; no corresponding audit file found in the foundry.
+\end{description}
+
+\subsection{Deferred Gates}
+\label{sec:atlas-open-deferred}
+
+The following gates are deferred from the current PARTIAL status of the atlas.
+Each gate is a prerequisite for an ALIVE verdict on the atlas itself:
+
+\begin{enumerate}
+  \item \textbf{Naming completeness gate} (currently PASS): All seven files
+        exist and contain at minimum a module name and a core claim. This gate
+        passes at PARTIAL; it is not deferred.
+
+  \item \textbf{Module depth gate} (currently FAIL for 2 of 7): AGI Adversarial
+        Defenses and ZoeApp Ministry Ontology are too thin for dissertation-
+        chapter citation depth. Each requires at minimum: one formal object, one
+        key transition law, and one cross-reference to a foundry receipt. Deferred
+        to next manufacturing cycle.
+
+  \item \textbf{GGEN warrant gate} (currently FAIL): Each atlas module requires
+        a traceable TTL $\to$ RQ $\to$ TERA $\to$ Prompt warrant in the ggen
+        directory. None of the seven modules currently has an explicit warrant
+        cross-reference. Deferred to GGEN\_ECOSYSTEM\_MANUFACTURING\_001 workflow.
+
+  \item \textbf{Supabase production hardening gate} (currently FAIL): The five
+        demonstration-mode tables must be audited and their RLS policies upgraded
+        before the Supabase Law Substrate module can be cited in
+        production-facing dissertation claims. Deferred; timeline not yet
+        scheduled.
+
+  \item \textbf{Atlas receipt gate} (currently FAIL): An internal atlas receipt
+        --- certifying the naming completeness, depth, and warrant cross-references
+        of all seven modules --- must be emitted before an ALIVE verdict can be
+        issued for the atlas itself.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:atlas-open-risks}
+
+\textbf{[AUTHOR THESIS / INTERPRETATION]} The following risks are assessed based
+on the evidence available as of 2026-06-01:
+
+\begin{description}
+  \item[\textbf{Risk 1: Atlas inheritance vs.\ self-certification.}] If the
+        atlas inherits its ALIVE status from PI\_RESEARCH\_PROGRAM\_ALIVE\_001
+        rather than self-certifying, then a future revision of the foundry that
+        invalidates the program checkpoint would also invalidate the atlas. This
+        creates a single-point-of-failure dependency. The mitigating alternative
+        is to issue an atlas-specific receipt that chains to the program
+        checkpoint rather than inheriting from it.
+
+  \item[\textbf{Risk 2: Thin modules become citation dead-ends.}] If the AGI
+        Adversarial Defenses and ZoeApp Ministry Ontology modules remain at their
+        current depth, dissertation chapters that need to cite them will have
+        insufficient anchor material. The risk is not that the modules are wrong,
+        but that they are underdeveloped as citation targets. Remediation requires
+        manufacturing expansion, not correction.
+
+  \item[\textbf{Risk 3: Demonstration-mode Supabase tables become a liability.}]
+        If the Supabase Law Substrate is cited as a production authorization
+        doctrine while the five \texttt{actor\_*} tables remain public, an
+        adversarial reader can invalidate the citation by pointing to the gap
+        between declared law and actual policy. This is a concrete instance of
+        the hostile assumption from the Chicago TDD doctrine: ``Proof gates may
+        pass despite non-conforming execution.''
+\end{description}
+
+\subsection{Next Receipted Work}
+\label{sec:atlas-open-next}
+
+The following work items are the bill of materials for the PARTIAL-to-ALIVE
+transition of the atlas. Each item is receipted upon completion:
+
+\begin{enumerate}
+  \item \textbf{Expand AGI Adversarial Defenses.} Manufacture a full doctrine
+        surface for each of the four Iron Law safeguards: define the formal
+        object each protects, the transition it refuses, and the cross-reference
+        to the Blue River Dam gate $\kappa$. Emit a receipt for this expansion.
+
+  \item \textbf{Formalize ZoeApp Ministry Ontology state machine.} Specify the
+        Petri net or typestate encoding for the three-state livestream machine
+        (healthy, degraded, critical). Define the lawful transitions and the
+        refusal conditions. Emit a receipt.
+
+  \item \textbf{Manufacture per-module GGEN warrants.} For each of the seven
+        atlas doctrine modules, identify or manufacture the corresponding TTL,
+        RQ, and TERA files in the ggen directory. Cross-reference each warrant
+        in the atlas file. Emit a GGEN warrant receipt per module.
+
+  \item \textbf{Schedule and complete Supabase production hardening audit.}
+        Audit the five demonstration-mode tables, upgrade their RLS policies to
+        production-grade, and emit a secondary audit receipt in the ZoeApp
+        research program sources.
+
+  \item \textbf{Emit atlas-specific receipt.} Upon completion of items 1--4,
+        manufacture an atlas receipt (named \texttt{ATLAS\_RECEIPT}) that
+        certifies naming completeness, module depth, warrant cross-references,
+        and Supabase hardening. Chain this receipt to
+        PI\_RESEARCH\_PROGRAM\_ALIVE\_001. Issue \texttt{ATLAS\_ALIVE\_001}
+        checkpoint.
+\end{enumerate}

@@ -1,0 +1,80 @@
+% FILE: 01_research_question.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Research Question}
+\label{sec:adversarial-question}
+
+\subsection{Problem Statement}
+\label{sec:adversarial-question-problem}
+
+Standard public process mining formats and classical discovery algorithms assume that event
+logs are trustworthy by construction. XES (IEEE 14845) and OCEL 2.0 treat timestamps and
+attributes as self-evident truths, operating under the assumption of a secure perimeter.
+Neither standard mandates the manufacture of cryptographically unforgeable traces, requires
+BLAKE3 hashing of event payloads, or links events causally in a hash chain
+(\texttt{standards/ocel-adversarial-gravity.md}, Section 3).
+
+This assumption is structurally untenable in high-stakes environments---M\&A due diligence,
+regulatory audits, algorithmic governance---where adversaries with write access to an OCEL
+SQLite database or JSON payload can arbitrarily forge records, alter attribute values at
+specific timestamps, and inject phantom relationships into the event-object mapping table. The
+modifications are indistinguishable from legitimate operations because there is no causal hash
+chain linking the events. Classical discovery algorithms (Alpha Miner, Heuristics Miner,
+Inductive Miner) have no mechanism to detect Sybil-injected case identifiers or
+non-deterministic reality receipts, leading to invalid spaghetti models and incorrect fitness
+and precision metrics (\texttt{sources/papers/adversarial-canon.md}).
+
+The problem statement is therefore: existing process mining ingestion boundaries do not
+enforce cryptographic provenance, and existing discovery algorithms do not assume adversarial
+log conditions. Any system that relies on these mechanisms for board-admissible evidence is
+architecturally negligent.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:adversarial-question-old-regime}
+
+The old-regime assumption challenged by this corpus is that an event log is a faithful record
+of a process by virtue of being emitted by a known system. Under this assumption, conformance
+checking is a matter of aligning a discovered model against a log that is presumed truthful.
+The adversarial corpus challenges this assumption at every level.
+
+At the format level, the PROV-O gap in OCEL 2.0 means that \texttt{wasGeneratedBy},
+\texttt{used}, and \texttt{wasAttributedTo} are not cryptographically enforced: a ``User ID:
+123'' is merely a string, not a cryptographic signature proving authorization
+(\texttt{standards/ocel-adversarial-gravity.md}, Section 2.2). At the ingestion level, a raw
+pandas DataFrame is mutable, carries no cryptographic envelope, and must be rejected at the
+boundary---a requirement that no standard process mining framework enforces. At the algorithm
+level, canonical discovery algorithms structurally fail under Sybil attack because they rely
+on temporal proximity and case identifiers for correlation without provenance verification.
+
+\subsection{Hypothesis}
+\label{sec:adversarial-question-hypothesis}
+
+The hypothesis of the adversarial corpus is: a zero-trust ingestion boundary implementing
+HMAC-SHA256 signature verification, SHA-256 hash chain integrity checks, timestamp
+monotonicity gates, and impossible-velocity detection can reject all ten canonical attack
+scenarios while admitting conforming traces---and this rejection can be verified through
+executable Python \texttt{assert} statements that constitute falsifiable tests under the Van
+der Aalst Constitution.
+
+The secondary hypothesis is that the Chatman Constraint---strict injectivity $C(S_a) \neq
+C(S_b)$ for all $S_a \neq S_b$ in the witness lattice---is a necessary structural law for
+preventing witness lattice forgery in \texttt{wasm4pm-compat}, and that Witness Lattice
+Monotonicity ($W_{\text{new}} = W_{\text{old}} \sqcup w_{\text{step}}$) is a sufficient
+condition for detecting non-monotonic execution flow and triggering self-halt
+(\texttt{sources/wasm4pm-compat/adversarial-type-law.md}, Laws I--III).
+
+\subsection{Success Criteria}
+\label{sec:adversarial-question-success}
+
+Success is defined by the ADVERSARIAL\_RECEIPT in
+\texttt{receipts/RECEIPT\_REGISTRY.md}: the adversarial corpus must contain a minimum of
+three artifacts covering raw laundering, metric fabrication, and conformance theater
+challenges. The corpus exceeds this minimum (actual: three core files plus extensive
+supporting assets). Success also requires that the simulation engine's ten executable
+scenarios produce the expected ACCEPTED/REJECTED verdicts verifiable by \texttt{assert}
+statements, and that the standards audit script exits 0 on pass and 1 on fail. The ALIVE
+OMEGA checkpoint
+(\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA.md}) certifies that
+all attack vectors, recursive logic bombs, and ontological paradoxes have been absorbed and
+neutralized.

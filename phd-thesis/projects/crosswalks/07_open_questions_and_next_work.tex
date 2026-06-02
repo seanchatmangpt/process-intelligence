@@ -1,0 +1,114 @@
+% FILE: 07_open_questions_and_next_work.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Open Questions and Next Work}
+\label{sec:crosswalks-openq}
+
+\subsection{Known Gaps}
+\label{sec:crosswalks-openq-gaps}
+
+Four structural gaps are documented in the crosswalks project evidence record:
+
+\begin{description}
+  \item[Gap 1 --- No README:] No \texttt{README.md} exists in \texttt{crosswalks/} (source:
+        \texttt{project\_manifest.yaml}, \texttt{readme\_present: false}). The directory is
+        navigable only by reading each crosswalk document individually. A README would provide
+        a structured index of the eight crosswalks and their projection direction taxonomy.
+
+  \item[Gap 2 --- No explicit receipt:] No \textsc{BLAKE3}-signed receipt chain exists for
+        the \texttt{crosswalks/} directory as a unit (\texttt{receipt\_present: false}).
+        The \textsc{CROSSWALK\_RECEIPT} cited in the artifact census is ``implicit; per-crosswalk
+        dating'' based on file modification timestamps. Under the receipt doctrine defined in
+        \texttt{doctrine/RECEIPT\_DOCTRINE.md}, an implicit receipt is not a witnessed receipt.
+        The directory cannot claim \textsc{ALIVE} status under the receipt law.
+
+  \item[Gap 3 --- No ontology:] No \textsc{OWL} or Turtle ontology file exists in
+        \texttt{crosswalks/} (\texttt{ontology\_present: false}). The crosswalk mappings define
+        structural projection laws in prose and table form but do not expose them as a
+        machine-queryable ontology. This limits the ability of downstream tools to reason over
+        the crosswalk taxonomy programmatically.
+
+  \item[Gap 4 --- No compilation evidence:] The Rust struct definitions in
+        \texttt{pm4py\_to\_wasm4pm\_data\_types.md} and \texttt{declare\_to\_wasm\_mapping.md}
+        are research specifications. No evidence exists that these structs are present in the
+        actual \texttt{wasm4pm-compat} crate source tree. The gap between research specification
+        and crate implementation is unverified (source: open questions in evidence extraction).
+\end{description}
+
+\subsection{Deferred Gates}
+\label{sec:crosswalks-openq-deferred}
+
+Two gates are deferred from the current PARTIAL assessment:
+
+\begin{enumerate}
+  \item \textbf{Receipt gate:} Manufacture an explicit \textsc{BLAKE3}-signed receipt for the
+        \texttt{crosswalks/} directory. The receipt must bind the eight document content hashes,
+        the sealed date (2026-06-01), and the \textsc{ALIVE\_001} verification code
+        \texttt{0x0F\_ALL\_GATES\_PASS} as the authority reference. Until this receipt exists,
+        the directory cannot be cited as a receipted artifact in the M\&A diligence package.
+
+  \item \textbf{Implementation gate:} Confirm that the Rust structs specified in the crosswalk
+        documents (\texttt{WitnessPrecedence}, \texttt{WitnessResponse},
+        \texttt{WitnessCoexistence}, \texttt{WitnessSuccession}, \texttt{OcelEventLog},
+        \texttt{XesTrace}, \texttt{ActivityName}, \texttt{Timestamp}, \texttt{ResourceId},
+        \texttt{TypedLoopNode<ARITY>}) are present and compilable in the
+        \texttt{wasm4pm-compat} crate. This gate requires a \texttt{cargo check} or
+        \texttt{cargo test} invocation with output demonstrating the types resolve.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:crosswalks-openq-risks}
+
+Three research risks are identified:
+
+\begin{description}
+  \item[Risk 1 --- \textsc{OR}-gateway completeness:] The \texttt{BPMN\_TO\_WFNET.md} crosswalk
+        identifies the \textsc{OR}-gateway as ``the most significant loss'' in the \textsc{BPMN}
+        to WF-net direction. The crosswalk specifies that any approximation is semantically
+        incorrect for some \textsc{BPMN} processes. If the \texttt{wasm4pm-compat} crate
+        implements an \textsc{OR}-gateway approximation rather than a clean refusal, the
+        \texttt{BpmnToWfNetRefusal::InclusiveGatewayNotRepresentable} type would be unreachable
+        code --- and the crosswalk law would be vacuously satisfied without being enforced.
+
+  \item[Risk 2 --- Lattice join completeness:] The \texttt{bpmn\_to\_declare\_conformance.md}
+        and \texttt{declare\_to\_wasm\_mapping.md} crosswalks define lattice join operators for
+        four constraint types. The distributed process mining scenario that motivates the join
+        (merging independent witness states) is not demonstrated by any test fixture. If the join
+        semantics are incorrect for the \textsc{XOR} not-coexistence lattice (where
+        $\text{Seen}(A) \sqcup \text{Seen}(B) = \top$), a conformance check over a distributed
+        log could produce a false non-violation.
+
+  \item[Risk 3 --- \textsc{ISO} mapping authority:] The \texttt{alive\_001\_to\_iso\_compliance.md}
+        crosswalk maps \textsc{ALIVE\_001} gates to four \textsc{ISO/IEC} standards. No formal
+        compliance audit or third-party verification of these mappings exists. The mappings are
+        author-level research claims, not certified compliance assertions. Citing them as
+        regulatory compliance in an M\&A diligence package without qualification is a research
+        integrity risk.
+\end{description}
+
+\subsection{Next Receipted Work}
+\label{sec:crosswalks-openq-next}
+
+The next receipted work for the crosswalks project, in order of priority:
+
+\begin{enumerate}
+  \item Manufacture an explicit \textsc{BLAKE3}-signed receipt for the \texttt{crosswalks/}
+        directory, binding all eight document content hashes, the sealed date, and the
+        \textsc{ALIVE\_001} authority reference. File as
+        \texttt{crosswalks/CROSSWALK\_RECEIPT.json}.
+
+  \item Verify implementation of the specified Rust structs in \texttt{wasm4pm-compat} by
+        running \texttt{cargo check} against the crate and confirming the eight named types
+        resolve without error. Document the output as a compilation witness.
+
+  \item Author a \texttt{crosswalks/README.md} that indexes the eight crosswalks by projection
+        direction, loss classification (lossless / conditionally lossless / inherently lossy),
+        and \textsc{LossPolicy} variant, providing a navigable taxonomy for downstream
+        implementers.
+
+  \item \textbf{[FUTURE WORK]:} Author a Turtle or \textsc{OWL} ontology for the crosswalk
+        taxonomy, enabling \textsc{SPARQL} queries over the projection direction graph and
+        loss-type lattice. This would make the crosswalk laws machine-queryable and support
+        automated conformance of the crosswalk taxonomy itself against the standards it maps.
+\end{enumerate}

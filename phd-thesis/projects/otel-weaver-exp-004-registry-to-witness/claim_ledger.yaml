@@ -1,0 +1,260 @@
+slug: otel-weaver-exp-004-registry-to-witness
+claims:
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-001
+    claim: >-
+      The EXP-004 generator (codegen/generator.rs) is a Rust-based code generation pipeline that
+      reads a resolved OTel Weaver convention registry, filters on the process.pi.activity group,
+      and materializes type-safe ActivityWitness structs implementing the Lattice trait with
+      BLAKE3-sealed witness fields.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/codegen/generator.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generated_witnesses.rs
+    evidence_summary: >-
+      generator.rs is confirmed present and contains exactly the described serde-derived parsing
+      structs, group filtering on process.pi.activity, and Lattice trait materialization;
+      generated_witnesses.rs exists on disk matching the README specification.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-002
+    claim: >-
+      The materialized generated_witnesses.rs file exists on disk with generation timestamp
+      2026-06-01T10:10:51-07:00 and matches the README specification exactly, containing the
+      Lattice trait, ActivityWitness struct with three public String fields (instance_id,
+      witness_id, witness_hash) carrying serde rename annotations, PartialOrd implementation,
+      and Lattice implementation.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generated_witnesses.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md
+    evidence_summary: >-
+      The file was directly read and confirmed to contain the declared header comment with the
+      exact timestamp, all described struct fields with serde rename annotations, and all
+      described trait implementations.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-003
+    claim: >-
+      The integration test test_weaver_integration_synthesis passes, and 62 total tests pass
+      across the wasm4pm, wasm4pm-compat, and blue_river_dam packages, as recorded in checkpoint
+      GGEN_OTEL_WEAVER_PI_RUNTIME_001.md.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+    evidence_summary: >-
+      GGEN_OTEL_WEAVER_PI_RUNTIME_001.md contains the exact test execution output confirming
+      1 test passing (test_weaver_integration_synthesis ... ok) and 62 total ecosystem tests
+      passing with zero side effects.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-004
+    claim: >-
+      The Feedstock Theorem, stated in otel-weaver/doctrine/otel-weaver-is-feedstock.md and
+      anchored at OTEL_WEAVER_FEEDSTOCK_001, establishes that
+      SchemaValidation(Telemetry) != ProcessCompliance(ProcessState), refuting the assumption
+      that structural telemetry validity equals process compliance.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/otel-weaver-is-feedstock.md
+    evidence_summary: >-
+      The doctrine file is confirmed present and contains verbatim the cited inequality under
+      the heading 'The Feedstock Theorem,' with status ALIVE anchored at OTEL_WEAVER_FEEDSTOCK_001.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-005
+    claim: >-
+      The generator's stated compilation command (rustc --crate-type bin -O codegen/generator.rs
+      --edition 2021) is architecturally incomplete because generator.rs uses serde and serde_json
+      via use declarations that cannot be resolved by bare rustc without a Cargo workspace context.
+      No Cargo.toml exists in the EXP-004 directory.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/codegen/generator.rs
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/project_manifest.yaml
+    evidence_summary: >-
+      generator.rs is confirmed to contain 'use serde::{Deserialize, Serialize}' and
+      'use serde_json' at the top level; README.md contains the rustc compilation command;
+      no Cargo.toml file was found in the experiment directory.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-006
+    claim: >-
+      The generator inlines the resolved schema as a Rust raw string literal rather than reading
+      it from a file produced by the Weaver CLI, and the inlined JSON covers only three of the
+      eight attributes declared in process_pi.yaml (process.pi.instance_id,
+      process.pi.witness.id, process.pi.witness.hash), leaving five attributes unmaterialized.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/codegen/generator.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md
+    evidence_summary: >-
+      The generator.rs source was directly read and confirmed to use an inline raw string
+      containing only the three named attributes; the README describes the full eight-attribute
+      process_pi.yaml but the generator's JSON subset is demonstrably incomplete.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-007
+    claim: >-
+      No cryptographic receipt file specific to EXP-004 exists; project_manifest.yaml records
+      receipt_present: false; the only provenance record for generated_witnesses.rs is the
+      embedded timestamp comment, which does not attest generator version, input schema, or
+      operator identity.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/project_manifest.yaml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generated_witnesses.rs
+    evidence_summary: >-
+      project_manifest.yaml explicitly records receipt_present: false; the generated file header
+      contains only the timestamp comment with no hash, version, or operator field.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-008
+    claim: >-
+      The Lattice trait implementation for ActivityWitness defines a partial order where an empty
+      witness_hash is the lattice bottom (no evidence), a non-empty 64-character BLAKE3 hex string
+      is the lattice top (sealed evidence), and two distinct non-empty witness_hash values return
+      None from partial_cmp (incomparable), with join() returning Lattice::top() to signal
+      contradiction.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generated_witnesses.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/codegen/generator.rs
+    evidence_summary: >-
+      Both files were directly read and confirmed to contain the exact partial_cmp logic described
+      and join() returning Self::top() on conflict via the inline comment
+      'Conflict resolution: return top to represent contradiction'.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-009
+    claim: >-
+      The top() element for ActivityWitness is implemented as "f".repeat(64), a convention chosen
+      by the generator author to represent the maximal BLAKE3 hex value, not derived from any
+      formal specification, and its soundness as a lattice top for the process-mining domain
+      requires formal justification.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generated_witnesses.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/codegen/generator.rs
+    evidence_summary: >-
+      Both files were read and confirm top() returns witness_hash: "f".repeat(64); the TeX files
+      acknowledge this is an author-chosen convention with no external specification anchor.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-010
+    claim: >-
+      EXP-004 contributes to the manufacturing architecture thesis by demonstrating that
+      ggen-style manufacturing can reach the lowest level of the wasm4pm architecture — the Rust
+      type definitions at the court boundary — shifting the epistemological weight so the type
+      system enforces fidelity between the convention registry and the court boundary rather than
+      relying on human developer vigilance.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/project_manifest.yaml
+    evidence_summary: >-
+      The generator and generated artifact confirm codegen-to-type-court operation, but the
+      broader architectural significance (shift in epistemological weight, ggen manufacturing
+      hierarchy) is the author's analytical framing of the experiment's contribution, not a
+      directly verifiable artifact claim.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-011
+    claim: >-
+      The connection between EXP-004 and capital-flow settlement authorization — that a sealed
+      ActivityWitness transition trace is the minimal unit of process evidence that can be
+      aggregated into a conformance receipt, which in turn authorizes a capital-flow settlement
+      event — is an author thesis assertion not directly evidenced within the EXP-004 artifact set.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/06_contribution_to_thesis.tex
+    evidence_summary: >-
+      The TeX file itself explicitly marks this claim as 'Author Thesis' and states that the
+      connection to the DAO settlement layer is 'asserted at the research program level and is
+      not directly evidenced within the EXP-004 artifact set.'
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-012
+    claim: >-
+      The Lattice join() semantics — returning top() for any two distinct non-empty witnesses —
+      may incorrectly classify valid concurrent execution paths as contradictions if the domain
+      assumption that any two distinct non-empty witnesses are by definition incompatible does not
+      hold for parallel process fragments.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generated_witnesses.rs
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/07_open_questions_and_next_work.tex
+    evidence_summary: >-
+      The join() implementation is confirmed in generated_witnesses.rs; the open questions chapter
+      explicitly identifies this as Risk 1 and acknowledges the unresolved theoretical question
+      about concurrent-path vs. contradictory witnesses — this is the author's analytical risk
+      assessment, not a verified finding.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-013
+    claim: >-
+      EXP-004 status is PARTIAL: two of five success criteria are fully satisfied
+      (generated_witnesses.rs exists and matches README; 62 integration tests pass), while three
+      remain unmet (no Cargo.toml, schema is inlined not read from Weaver CLI output, no
+      cryptographic receipt for the generation step).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/project_manifest.yaml
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    evidence_summary: >-
+      project_manifest.yaml records receipt_present: false confirming the receipt gap;
+      GGEN_OTEL_WEAVER_PI_RUNTIME_001.md confirms tests pass; generator.rs confirms inlined
+      schema; no Cargo.toml was found; consistent with PARTIAL status.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-014
+    claim: >-
+      The weaver_integration_tests.rs test suite verifies five distinct refusal cases
+      (MissingInstanceId, MissingActivityName, MissingWitnessId, InvalidWitnessSignature, and
+      schema translation failure), and each Refusal record carries its own BLAKE3 digest of
+      length 64 sealing the failure context.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+    evidence_summary: >-
+      The test file was directly read and confirmed to contain all five cases with the
+      corresponding RefusalCode assertions and blake3_digest.len() == 64 assertions in each
+      failure branch.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_004_REGISTRY_TO_WITNESS-015
+    claim: >-
+      The schema-drift propagation property — that if the convention registry changes,
+      re-executing the generator causes downstream code that compiled against old witness types
+      to fail at compile time rather than at runtime — is architecturally sound in principle but
+      has not been verified by executing a registry change and confirming the compile error, as
+      the current generator reads an inlined schema rather than the live Weaver registry output.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/codegen/generator.rs
+    evidence_summary: >-
+      The README asserts this property verbatim; the generator code shows the mechanism is
+      structurally present; however, GAP-004-B (inlined schema instead of Weaver CLI output)
+      means the end-to-end registry-to-compile-error path has not been demonstrated from a
+      live Weaver CLI invocation.
+    confidence: MEDIUM
+    allowed_in_pdf: true

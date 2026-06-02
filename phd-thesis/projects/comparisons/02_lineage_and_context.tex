@@ -1,0 +1,95 @@
+% FILE: 02_lineage_and_context.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Lineage and Context}
+\label{sec:comparisons-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:comparisons-lineage-lm}
+
+The thesis lineage begins with a 2016 language-model experiment whose finding was:
+\emph{local text imitation does not conserve consequence}. A system that predicts
+the next token of a process description does not thereby enforce that the described
+process is lawful. The prediction surface and the process-execution surface are
+categorically different. This lesson, while originating in language modeling,
+generalizes directly to the process-mining comparison problem: a library that
+correctly computes a fitness score does not thereby guarantee that the fitness
+score is within a lawful range, or that the event log feeding the computation was
+structurally valid, or that the error path is machine-readable.
+
+The comparisons corpus is not a language-model artifact. It is the direct
+consequence of asking, twelve years after that experiment: \emph{what would it
+mean to enforce process-execution lawfulness at the compiler level rather than at
+the runtime level?} The three-stack comparison is the answer applied to the
+process-mining domain.
+
+\subsection{Enterprise Process Gap}
+\label{sec:comparisons-lineage-enterprise}
+
+Between the 2016 experiment and the current research program, the enterprise
+process gap widened. Process mining tools grew in capability but not in
+enforcement rigor. PM4Py added OCEL 2.0 support, POWL discovery, and multi-system
+streaming capabilities, while retaining the same fundamental architectural
+decision: validation is the caller's responsibility, not the library's. A process
+analyst who feeds an empty event log to PM4Py's inductive miner receives an empty
+process tree without an error, not a rejection. A conformance analyst who receives
+a fitness score of $0.97$ cannot determine from the score alone whether the
+underlying log was OCEL-admitted or XES-admitted, or whether the score is bounded.
+
+The gap the comparisons corpus documents is therefore not a gap in algorithmic
+coverage alone --- wasm4pm is indeed missing Inductive Miner, alignment
+conformance, and POWL discovery (\texttt{ALGORITHM\_COVERAGE\_MATRIX.md}). The
+deeper gap is in \emph{enforcement architecture}: the absence of a layer that
+makes invalid inputs and out-of-range outputs structurally impossible.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:comparisons-lineage-chatman-eq}
+
+The Chatman Equation, $A = \mu(O^*)$, frames the dissertation: an \emph{act}
+$A$ is the image under the manufacturing map $\mu$ of an \emph{object} $O^*$.
+In the process-mining context, a conformance verdict is an act. The comparisons
+corpus establishes that the manufacturing map $\mu$ is not lawful unless:
+
+\begin{enumerate}
+  \item The input object $O^*$ (an event log) has been admitted through a named-law
+    admission gate (\texttt{Evidence<T, Admitted, W>}).
+  \item The output act $A$ (a conformance metric) is bounded by the type system
+    (\texttt{Metric<KIND, NUM, DEN>} with \texttt{Require<\{NUM <= DEN\}>:
+    IsTrue}).
+  \item The refusal path, when admission fails, encodes which structural law was
+    violated (\texttt{Refusal<R, W>} with a specific named-law type \texttt{R}).
+\end{enumerate}
+
+The thesis lineage from the Chatman Equation to the comparisons corpus is thus:
+the equation demands that every act be traceable to a lawfully manufactured
+object. The comparisons corpus operationalizes that demand across the three-stack
+comparison. The connection from the Chatman Equation to these comparison tables is
+a matter of architectural interpretation (AUTHOR INTERPRETATION) --- no document
+in the comparisons directory itself names the Chatman Equation by that label.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:comparisons-lineage-receipts}
+
+The receipts and replay layer of the research program is the cryptographic
+evidence chain that seals each manufacturing act. The comparisons corpus is
+directly upstream of two canonical receipts in the receipt registry:
+
+\begin{itemize}
+  \item \textbf{PM4PY\_ORACLE\_RECEIPT} --- maps every PM4Py API function to its
+    wasm4pm equivalent or GAP status, classifying gap severity as CRITICAL, HIGH,
+    MEDIUM, or LOW. The comparison corpus provides the evidentiary basis for
+    those severity classifications.
+  \item \textbf{WASM4PM\_GAP\_RECEIPT} --- certifies that eight identified gaps
+    have severity, priority, and wasm4pm-compat bridging paths documented. The
+    algorithm coverage matrix in the comparisons corpus is the source of those
+    gap entries.
+\end{itemize}
+
+The lattice compliance model in \texttt{lattice\_vs\_trace\_compliance\_checking.md}
+also directly prefigures the receipt structure: the BLAKE3 hash chain over witness
+states $H_k = \text{BLAKE3}(H_{k-1} \| e_k \| W_k)$ is the mathematical basis
+for the cryptographic attestation that conformance receipts carry. The
+comparisons corpus thus supplies both the gap inventory and the formal model for
+the receipt layer.

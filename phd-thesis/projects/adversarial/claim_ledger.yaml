@@ -1,0 +1,218 @@
+slug: adversarial
+claims:
+  - id: CLM-ADVERSARIAL-001
+    claim: >
+      The adversarial corpus implements ten executable attack scenarios with Python assert
+      statements in simulate_laundering_spoofing.py (531 lines), covering timestamp laundering,
+      event deletion, signature forgery, raw DataFrame injection, impossible velocity, FFI
+      boundary forgery, unstructured data rejection, out-of-bounds pointer safety, and heap
+      zeroization.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+    evidence_summary: >
+      File confirmed at 531 lines with 25 assert statements; ten-scenario structure verified by
+      direct inspection of the simulation engine.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-002
+    claim: >
+      XES (IEEE 14845) and OCEL 2.0 are structurally vulnerable to silent tampering, timeline
+      manipulation, and phantom-object injection because neither standard enforces cryptographic
+      provenance via PROV-O primitives (wasGeneratedBy, used, wasAttributedTo).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/ocel-adversarial-gravity.md
+    evidence_summary: >
+      ocel-adversarial-gravity.md explicitly documents the PROV-O gap, identifies five attack
+      vectors, and confirms that OCEL schemas lack native cryptographic provenance binding.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-003
+    claim: >
+      Classical discovery algorithms (Alpha Miner, Heuristics Miner, Inductive Miner)
+      structurally fail under Sybil attack because they rely on temporal proximity and case
+      identifiers for correlation without provenance verification, causing state-space explosion
+      and invalid spaghetti model discovery.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/papers/adversarial-canon.md
+    evidence_summary: >
+      adversarial-canon.md explicitly demonstrates Sybil-attack failure in canonical algorithms,
+      citing forged case ID interleaving as the mechanism and BLAKE3 absence as the enabling gap.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-004
+    claim: >
+      The Chatman Constraint — strict injectivity C(S_a) != C(S_b) for all S_a != S_b in the
+      witness lattice — is a necessary structural law for preventing witness lattice forgery in
+      wasm4pm-compat, documented as Law I in adversarial-type-law.md.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/adversarial-type-law.md
+    evidence_summary: >
+      adversarial-type-law.md confirms Law I as the Chatman Constraint with the injectivity
+      formula, verified by direct grep of the source file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-005
+    claim: >
+      The adversarial corpus holds ALIVE status, certified by: (1) ADVERSARIAL_RECEIPT in
+      receipts/RECEIPT_REGISTRY.md; (2) ten executable scenarios in simulate_laundering_spoofing.py;
+      and (3) the ALIVE OMEGA checkpoint in
+      checkpoints/PROCESS_INTELLIGENCE_ADVERSARIAL_V30.1.1_OMEGA.md.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+      - /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+      - /Users/sac/process-intelligence/audits/adversarial_audit_v30.1.1.md
+    evidence_summary: >
+      RECEIPT_REGISTRY.md contains the ADVERSARIAL_RECEIPT entry; the OMEGA checkpoint file
+      exists in the checkpoints directory; the audit report carries VERIFIED/PASS with BLAKE3
+      checksum and Ed25519 signature.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-006
+    claim: >
+      The adversarial audit report (adversarial_audit_v30.1.1.md) carries a VERIFIED/PASS
+      verdict with a BLAKE3 checksum over 567 commits across 15 directories and an Ed25519
+      signature from teamwork_preview_worker_m5_1.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/audits/adversarial_audit_v30.1.1.md
+    evidence_summary: >
+      Audit file confirms 'BLAKE3(567_commits_15_dirs)' and 'Ed25519(teamwork_preview_worker_m5_1)'
+      as the cryptographic attestation fields, with 567 commits exceeding the 80-commit minimum
+      threshold.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-007
+    claim: >
+      The ALIVE OMEGA checkpoint was issued after a twenty-agent adversarial swarm tested all
+      attack vectors, recursive logic bombs, and ontological paradoxes, with all neutralized;
+      the framework demonstrated self-healing, adaptive resilience, and emergent capacity for
+      systemic evolution.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ADVERSARIAL_V30.1.1_OMEGA.md
+    evidence_summary: >
+      OMEGA checkpoint document confirms '20-agent adversarial swarm' language; 'self-healing'
+      and 'emergent capacity' are declarative assertions in the checkpoint document, not
+      independently measured metrics.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-008
+    claim: >
+      Scenarios 6 through 9 of the simulation engine require a compiled libwasm4pm.dylib that
+      does not currently exist at the expected path; these four scenarios are design documents
+      rather than verified tests until the library is compiled.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+      - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_001.md
+    evidence_summary: >
+      Filesystem check confirms libwasm4pm.dylib is absent at sources/wasm4pm/target/debug/;
+      the simulation engine source confirms locate_library() raises FileNotFoundError when the
+      binary is missing.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-009
+    claim: >
+      The graduation bridge from wasm4pm-compat to wasm4pm is one-sided: GraduationCandidate
+      is defined in wasm4pm-compat but wasm4pm has no intake function that accepts it, blocking
+      the end-to-end evidence chain (GAP_001).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_001.md
+    evidence_summary: >
+      RED_TEAM_FINDINGS_001.md Finding 001 explicitly states this as CRITICAL and UNRESOLVABLE
+      PRE-GAP_001-CLOSE, confirmed by direct file inspection.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-010
+    claim: >
+      The Reality Receipt mechanism — wasm4pm acting as an interception proxy encapsulating raw
+      OCEL/XES event data in a signed cryptographic envelope — addresses PROV-O vulnerabilities
+      through hash chaining, HMAC-SHA256 verification, temporal monotonicity gates, and
+      impossible-velocity detection.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/standards/ocel-adversarial-gravity.md
+      - /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+    evidence_summary: >
+      The five detection rules are implemented in the simulation engine and the PROV-O gap is
+      documented in ocel-adversarial-gravity.md; however, no executable test verifies Reality
+      Receipt produces PROV-O compliant output — documented as Gap 4 in open questions.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-011
+    claim: >
+      Coordination is not an enhancement to process intelligence but its prerequisite: a
+      prediction model operating on raw unverified event sequences can be corrupted by an
+      adversary manufacturing traces under a forged key, making the system non-exploitable only
+      when a prior coordination layer enforces signature authenticity.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+    evidence_summary: >
+      Scenario 3 demonstrates forged-key trace manufacture; the analytical conclusion that
+      prediction without coordination is exploitable is the author's thesis argument, supported
+      by but not independently derived from the simulation alone.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-012
+    claim: >
+      PM4Py algorithm count claims throughout the corpus have not been verified against the
+      actual pm4py source tree and should carry the marker [DOCUMENTATION-DERIVED] until a
+      file-level source audit is completed.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_001.md
+    evidence_summary: >
+      Finding 005 in RED_TEAM_FINDINGS_001.md identifies this as a CRITICAL open finding,
+      explicitly flagging PM4Py algorithm count claims as documentation-derived and unverified
+      against source.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-013
+    claim: >
+      The Chatman Constraint is not yet enforced at the compiler or scaffolding level in
+      wasm4pm-compat; until implemented as a type guard or constraint check, the injectivity
+      requirement is a research claim rather than a manufactured architectural guarantee.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_001.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/adversarial-type-law.md
+    evidence_summary: >
+      Documented as Risk 3 in the open questions section; RED_TEAM_FINDINGS_001.md identifies
+      the enforcement gap; adversarial-type-law.md confirms the law is documented but does not
+      assert compiler-level enforcement.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ADVERSARIAL-014
+    claim: >
+      Next receipted work items include: compiling libwasm4pm.dylib to verify Scenarios 6-9,
+      closing GAP_001 with a graduation bridge receipt, running a pm4py source-level audit,
+      manufacturing an executable PROV-O compliance test for the Reality Receipt, and filing
+      RED_TEAM_FINDINGS_003.md for M&A-specific adversarial challenges.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/adversarial/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      These are explicitly enumerated as next receipted work items in Section 7 of the TeX
+      corpus; none have been completed as of the current audit date (2026-06-01).
+    confidence: HIGH
+    allowed_in_pdf: true

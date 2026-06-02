@@ -1,0 +1,104 @@
+% FILE: 02_lineage_and_context.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Lineage and Context}
+\label{sec:lifecycle-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:lifecycle-lineage-2016}
+
+The foundational observation driving this research program is that local text imitation
+does not conserve consequence. In 2016, a language model experiment demonstrated that a
+system capable of producing locally plausible text---text that is fluent, contextually
+appropriate, and indistinguishable from human-authored prose in a narrow window---could
+nonetheless produce globally incoherent sequences: sequences whose later parts contradict
+their earlier parts, whose claims do not follow from their premises, and whose action
+recommendations conflict with the constraints established in the same document.
+
+The lesson for process intelligence is direct. A process model that is locally
+well-formed---each transition syntactically valid, each place correctly connected---may
+be globally unsound: deadlocked at reachable markings, containing dead transitions that
+consume tokens without enabling completion, or producing token accumulations that
+violate boundedness. A governance report that is locally accurate---each metric correctly
+computed from the data provided---may be globally unverifiable: the data provided may not
+be the data that produced the operational outcome, and the metric may not have been
+computed by the method stated.
+
+The lifecycle framework operationalizes the 2016 lesson. It is not sufficient for a
+process claim to be locally plausible. Every claim must resolve to a verifiable artifact
+through a formally specified chain: model artifact, event log, conformance computation,
+receipt. The typed evidence lifecycle $\mathcal{S}$ enforces this chain at the type level;
+a value that has not passed through \texttt{Admit::admit()} cannot participate in
+conformance computation, regardless of how plausible its content appears.
+
+\subsection{Enterprise Process Gap}
+\label{sec:lifecycle-lineage-gap}
+
+The enterprise process gap identified in this research program is the structural
+disconnection between what organizations claim about their processes and what their
+event logs can prove. This gap is not a matter of bad faith; it is a structural property
+of how enterprise process management has been practiced. Process models are maintained
+as documentation artifacts, updated by human editors in response to audits and incidents.
+Event logs, if collected at all, are maintained as compliance records in formats
+(database exports, PDF audit reports, raw CSVs) that cannot be directly replayed against
+the process model. The conformance check that would reveal the gap is not run, because
+the infrastructure to run it does not exist in the standard enterprise stack.
+
+The lifecycle framework names this gap precisely and provides the structural requirements
+for closing it. A seller at process intelligence maturity L1 has no formal models and
+no event log; their governance claims are narrative. A seller at L3 has formal models
+and admitted OCEL or XES logs and can run periodic token replay; their governance
+claims are partially verifiable. A seller at L5 has a full MAPE-K loop with receipted
+artifacts at every stage and can replay any past loop cycle from the archived artifact
+store; their governance claims are fully verifiable. The lifecycle project defines what
+each maturity level requires, what each level can produce, and what audit responses
+each level can honestly provide---drawn directly from \texttt{lifecycle/MATURITY\_MODEL.md}.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:lifecycle-lineage-chatman}
+
+The Chatman Equation, stated as $A = \mu(O^*)$, asserts that admissible process truth
+is a function applied to the operational artifacts of the system under governance. The
+lifecycle framework is the formal specification of what it means for an artifact to be
+admissible ($A$), what constitutes the operational artifact set ($O^*$), and what the
+function $\mu$ must compute to produce board-defensible governance claims.
+
+In the lifecycle framework, an artifact is admissible if and only if it has traversed the
+typed evidence lifecycle from \texttt{Raw} through \texttt{Admitted}. The operational
+artifact set $O^*$ is the union of process models, event logs, conformance reports, repair
+receipts, and decommissioning receipts accumulated across the full lifecycle. The function
+$\mu$ is the composition of gate criteria: soundness verification at Gate 1, reachability
+at Gate 2, fitness threshold at Gate 3, soundness preservation at Gate 4, discovery
+conformance at Gate 5, and receipt archival at Gate 6. The equation $A = \mu(O^*)$ is
+therefore not a metaphor; it is a computable function whose output is a set of
+board-admissible statements backed by verifiable artifacts.
+
+The Board Projection Holography framework, introduced in
+\texttt{lifecycle/board-projection-holography.md}, extends the Chatman Equation to
+prospective claims: a board projection is admissible if and only if it is derived from
+the historical artifact set $O^*$ through the projection engine, with every projected
+state carrying a cryptographic proof linking it to the underlying assumptions and the
+historical baseline.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:lifecycle-lineage-receipts}
+
+The receipt and replay infrastructure is the execution layer of the lifecycle framework.
+Every stage transition must produce a receipt. A repair action without a receipt is, by
+definition of the lifecycle framework, not an execution for process intelligence
+purposes---it is an unwitnessed intervention. A decommissioning without a cryptographic
+decommissioning receipt $R_d$ is not an archival; it is a deletion. The receipt chain
+is the mechanism by which the typed evidence lifecycle accumulates provenance across the
+full operational history of a process model.
+
+The BLAKE3 hash-chaining receipt ledger $H_n = \mathrm{BLAKE3}(\mathrm{Payload}_n
+\parallel H_{n-1})$ ensures that the receipt chain is tamper-evident: any modification
+to a past receipt invalidates all subsequent receipts in the chain. The Cryptographic
+Decommissioning Receipt $R_d = \mathrm{Ed25519}_{K_{\mathrm{priv}}}(\mathrm{BLAKE3}(N)
+\parallel \mathrm{BLAKE3}(L_{\mathrm{final}}) \parallel C_{\mathrm{total}} \parallel
+F_{\mathrm{final}} \parallel T_{\mathrm{retire}})$ seals the lifecycle at decommission,
+committing to the final model structure, the final event log, the total cost accumulated,
+the final fitness score, and the retirement timestamp. The Oblivion Protocol---a
+three-pass ChaCha20 CSPRNG wipe of WASM linear memory---ensures that the decommissioned
+process model cannot be re-activated without re-traversing the full lifecycle from design.

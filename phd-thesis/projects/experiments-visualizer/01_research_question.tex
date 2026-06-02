@@ -1,0 +1,87 @@
+% FILE: 01_research_question.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Research Question}
+\label{sec:experiments-visualizer-rq}
+
+\subsection{Problem Statement}
+\label{sec:experiments-visualizer-rq-problem}
+
+Enterprise process intelligence systems are routinely validated by testing their individual
+algorithmic components in isolation: conformance checkers are benchmarked on synthetic logs,
+drift detectors are evaluated against pre-segmented time windows, and audit ledgers are tested
+with scripted tamper probes. This component-isolation practice conceals the integration failure
+mode that is most dangerous in production: subsystem outputs that are individually correct but
+mutually inconsistent when combined in a live feedback loop.
+
+The specific problem addressed by the \texttt{experiments-visualizer} is: \emph{can the seven
+subsystems of the process intelligence doctrine stack — Petri net token game, A* alignment
+solver, DECLARE validator, EWMA drift detector, cryptographic audit chain, MAPE-K autonomic
+controller, and WASM boundary-law projection — execute simultaneously in a single stateless
+browser runtime, producing outputs that are mutually consistent and auditable without any
+external process, database, or network dependency?}
+
+This is not primarily a performance question. It is a \emph{composability} question: whether
+the type contracts, event lifecycles, and causal dependencies across the seven subsystems can
+be satisfied together without contradiction, in a medium (the browser) that enforces strict
+sandboxing and single-threaded execution.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:experiments-visualizer-rq-old-regime}
+
+The old-regime assumption under challenge is the implicit belief that process intelligence
+requires server-side infrastructure: a database for event log persistence, a message broker for
+inter-component communication, an orchestration layer for MAPE-K execution, and a separate
+security boundary for audit integrity. This assumption is so deeply embedded in industrial
+process mining practice that most commercial tools (AUTHOR THESIS) treat the browser as a
+display terminal, not a computation peer.
+
+The \texttt{experiments-visualizer} challenges this assumption by demonstrating that the full
+computation stack — from raw trace ingestion through DECLARE validation, alignment scoring,
+drift detection, autonomic response, and receipt chaining — can execute within the browser
+itself using only the primitives available to any web page: JavaScript, the Web Crypto API
+(for SHA-256), Canvas 2D rendering, and the HTML event loop. The \texttt{LIVESTREAM\_STANDARDS.md}
+artifact formalizes this challenge as a v30.1.1 compliance requirement: zero mocks,
+placeholders, or stubs are permitted anywhere in the stack.
+
+\subsection{Hypothesis}
+\label{sec:experiments-visualizer-rq-hypothesis}
+
+\textbf{Hypothesis:} A zero-dependency browser JavaScript runtime is a sufficient substrate for
+full-lifecycle process intelligence simulation when: (a) all seven subsystems share a single
+type contract enforced at compile time by the \texttt{bindings.d.ts} boundary-law declarations;
+(b) the MAPE-K loop drives subsystem coupling through the \texttt{AutonomicController.tick()}
+interface rather than through shared mutable state; and (c) every state transition that crosses
+a subsystem boundary is recorded in the SHA-256 audit ledger, making the execution history
+tamper-evident and replayable from the genesis block.
+
+This hypothesis is testable: if the \texttt{visualizer-validation.ts} file compiles without
+error against the \texttt{bindings.d.ts} declarations, and if the runtime produces a
+\texttt{ReceiptShapeTs}-conforming record with fitness $\geq 0.90$ on the supply-chain WF-net,
+the hypothesis is supported at the type and formula level. Runtime end-to-end confirmation
+requires a browser automation test harness not yet present in the codebase (see Section~\ref{sec:experiments-visualizer-openq}).
+
+\subsection{Success Criteria}
+\label{sec:experiments-visualizer-rq-criteria}
+
+Success is defined by three gates derived from the \texttt{LIVESTREAM\_STANDARDS.md} and
+\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md} artifacts:
+
+\begin{enumerate}
+  \item \textbf{Type Gate:} \texttt{visualizer-validation.ts} compiles against
+        \texttt{bindings.d.ts} exercising all 10 type projections with concrete values.
+        Confirmed: fitness score 0.982 and BLAKE3 process hash present in validation fixture.
+  \item \textbf{Formula Gate:} The token game fitness formula
+        $f(L,N) = 1 - \nicefrac{\sum m}{\sum c} - \nicefrac{\sum r}{\sum p}$ is implemented
+        in \texttt{alignment.js} and the supply-chain WF-net minimum model cost of 4 is encoded
+        in \texttt{astar.js}.
+  \item \textbf{Audit Gate:} The SHA-256 audit chain is initialized with the genesis message
+        ``Blue River Dam Autonomic Ledger Initialized'' and each block records
+        $H_i = \mathrm{SHA\text{-}256}(i \,\|\, t \,\|\, \mathit{case\_id} \,\|\, \mathit{payload} \,\|\, H_{i-1})$.
+        The \texttt{verifyChain()} and \texttt{tamperBlock()} methods are confirmed present in
+        \texttt{blockchain.js}.
+\end{enumerate}
+
+Runtime end-to-end execution confirmation — the fourth gate — is deferred pending a browser
+automation harness.

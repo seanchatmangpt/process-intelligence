@@ -1,0 +1,122 @@
+\section{Open Questions and Next Work}
+\label{sec:receipts-questions}
+
+\subsection{Known Gaps}
+\label{sec:receipts-questions-gaps}
+
+Four structural gaps in the receipts corpus have been identified and are documented
+here as open findings rather than closed facts.
+
+\textbf{Gap 1: Ed25519 signing key custody.} All five M\&A receipts carry
+\texttt{validator\_signature} fields. However, the conformance authority generation
+receipt marks the Ed25519 signature as \texttt{PENDING}. The private key that would
+seal the conformance authority module itself---as distinct from the keys used to sign
+the M\&A claim outputs---is not defined in the corpus. The custody protocol for the
+signing authority private key, including key generation, storage, rotation, and
+revocation, is absent. This gap means that while the M\&A claim receipts are signed,
+the infrastructure that manufactures those signatures is not itself signed to the same
+standard. \textbf{Classification: FUTURE WORK.}
+
+\textbf{Gap 2: Live event log binding.} The \texttt{RECEIPT\_REGISTRY.md} notes that
+``production receipts require live data.'' The five M\&A receipts carry
+\texttt{target\_log\_hash} BLAKE3 values, but the actual XES or OCEL event log files
+from which those hashes were computed are not present in the receipts directory. Without
+the original event logs, independent replication of the conformance measurements is not
+possible from within this corpus. The \texttt{rec\_wc\_ar\_002.json} receipt carries a
+replication \texttt{PASSED} verdict, but the replication event log itself is not archived
+in the repository. \textbf{Classification: FUTURE WORK.}
+
+\textbf{Gap 3: FFI and WASM boundary.} The conformance authority generation receipt
+lists three implementation components as \texttt{PENDING}: FFI bindings, receipt
+serialization in CBOR format (as opposed to the current JSON/JCS form), and the audit
+ledger binding. The JavaScript and WebAssembly boundary between the Rust conformance
+authority module and browser-based or Node.js-based consumers is unimplemented.
+Without this boundary, the conformance authority cannot be invoked from the web-facing
+components of the process-intelligence stack. \textbf{Classification: FUTURE WORK.}
+
+\textbf{Gap 4: Board deck materialization.} The \texttt{ma\_deck\_rendering\_authority\_assessment.md}
+defines a seven-step board presentation pipeline and marks all steps as \texttt{VERIFIED}
+or \texttt{EXECUTABLE}. However, the final \texttt{ma\_deck\_rendering.md} receipt ledger
+file does not exist, and the actual board deck artifacts---the \texttt{.pptx} PowerPoint
+file and the \texttt{.xlsx} due diligence workbook---have not been materialized in the
+repository. The Tera2 templates and the \texttt{pptx-rs}/\texttt{calamine} rendering
+libraries are in place, but the rendering execution trigger has not been pulled.
+\textbf{Classification: FUTURE WORK.}
+
+\subsection{Deferred Gates}
+\label{sec:receipts-questions-deferred}
+
+Three gates that are logically required by the receipts architecture have been deferred
+to future work phases. The first is the \textbf{ADVERSARIAL gate}: the
+\texttt{RECEIPT\_REGISTRY.md} defines an \texttt{ADVERSARIAL} receipt type for claims
+that have been stress-tested against hostile process variants. No adversarial receipts
+have been manufactured. The hostile test cases defined in the
+\texttt{adversarial/} directory of the research program have not been run against the
+conformance authority to produce adversarial receipts. The gate exists in the registry
+but has no passing receipts.
+
+The second deferred gate is the \textbf{STANDARDS gate}: the \texttt{RECEIPT\_REGISTRY.md}
+defines a \texttt{STANDARDS} receipt type for anchoring XES, OCEL 2.0, BPMN, ISO, SOC2,
+and GDPR compliance maps. These standards compliance assessments exist as research documents
+in the \texttt{standards/} directory of the research program, but they have not been
+promoted to signed, hashed STANDARDS receipts.
+
+The third deferred gate is the \textbf{CBOR serialization gate}: the current receipt
+format uses JSON with JCS canonical serialization. The generation receipt notes CBOR
+as a pending serialization format, which would allow receipts to be embedded in
+constrained environments (IoT edge nodes, embedded audit hardware) that cannot process
+full JSON payloads. The CBOR serialization layer has not been implemented.
+
+\subsection{Research Risks}
+\label{sec:receipts-questions-risks}
+
+Three research risks are identified as requiring active monitoring. The first is
+\textbf{signature authority drift}: if the Ed25519 private key used to sign the M\&A
+claim receipts is lost, rotated without a receipt, or compromised, the entire signed
+receipt chain loses its chain-of-custody property. The current corpus does not document
+a key rotation or recovery protocol. This risk is rated high because the signing
+authority is the trust root of the entire board-admissible claim set.
+
+The second risk is \textbf{event log unavailability}: if the event logs identified by
+the BLAKE3 \texttt{target\_log\_hash} values in the five M\&A receipts become unavailable
+(deleted, encrypted, or access-restricted), independent replication of the conformance
+measurements becomes impossible. The receipts prove that a measurement was made, but
+cannot reproduce it without the original log. This risk is rated medium for the current
+research context but would be rated high in a live M\&A transaction context.
+
+The third risk is \textbf{algorithm obsolescence}: the conformance authority implements
+A* alignment (Adriansyah 2014) and token-based replay (van der Aalst formula). Both
+algorithms are well-established but represent a specific point in the conformance
+checking literature. If the field moves to alignment algorithms with materially
+different fitness semantics, receipts issued under the current algorithm may be
+compared against receipts issued under a different algorithm, producing apparent
+discrepancies that are artifacts of algorithm change rather than process change.
+\textbf{AUTHOR THESIS}: This risk motivates the \texttt{process\_model\_hash}
+and algorithm identifier fields in the receipt schema, which allow algorithm
+versioning to be tracked alongside hash versioning.
+
+\subsection{Next Receipted Work}
+\label{sec:receipts-questions-next}
+
+Three concrete next-work items are identified, each of which must itself produce
+a receipt upon completion to enter the research program's evidence chain.
+
+The first next-work item is \textbf{live event log archival}: acquire or manufacture
+representative XES/OCEL event logs for each of the five M\&A claim domains, archive
+them in the receipts corpus, verify that their BLAKE3 hashes match the
+\texttt{target\_log\_hash} values in the existing signed receipts, and emit a
+\texttt{LOG\_ARCHIVE} receipt confirming the binding. This item is prerequisite for
+the full independent replicability property claimed by the corpus.
+
+The second next-work item is \textbf{FFI and WASM boundary implementation}: implement
+the JavaScript/WebAssembly boundary for the conformance authority module, implement
+CBOR serialization for receipts, implement the audit ledger binding, and emit a
+\texttt{WASM\_BOUNDARY} generation receipt confirming the boundary is tested and sealed.
+
+The third next-work item is \textbf{board deck execution}: trigger the Tera2 template
+rendering pipeline to materialize the \texttt{.pptx} board deck and \texttt{.xlsx}
+due diligence workbook, then emit the \texttt{ma\_deck\_rendering.md} receipt ledger
+file confirming the render succeeded and the output artifacts are hash-bound to the
+signed M\&A claim receipts that supplied their data. This item closes the final open
+gap in the seven-step board presentation pipeline documented in
+\texttt{ma\_deck\_rendering\_authority\_assessment.md}.

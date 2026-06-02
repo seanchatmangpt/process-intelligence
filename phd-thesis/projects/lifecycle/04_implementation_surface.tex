@@ -1,0 +1,124 @@
+% FILE: 04_implementation_surface.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Implementation Surface}
+\label{sec:lifecycle-implementation}
+
+\subsection{Source Files}
+\label{sec:lifecycle-implementation-sources}
+
+The lifecycle implementation surface consists of 43 Markdown files authored between
+31 May and 1 June 2026. The files are organized into four functional groups.
+
+The six operational stage definition files are the core of the implementation:
+\texttt{define\_design-state\_process\_intelligence.md},
+\texttt{define\_simulation-state\_process\_intelligence.md},
+\texttt{define\_monitoring-state\_process\_intelligence.md},
+\texttt{define\_repair-state\_process\_intelligence.md},
+\texttt{define\_optimization-state\_process\_intelligence.md}, and
+\texttt{define\_decommission-state\_process\_intelligence.md}. Each file specifies the
+stage's MAPE-K element, input event or log type, analysis engine or algorithm, planning
+or optimization method, execution controller, transition class, and knowledge base asset.
+Companion narrative files (\texttt{design.md}, \texttt{simulation.md},
+\texttt{monitoring.md}, \texttt{repair.md}, \texttt{decommissioning.md}) provide
+extended prose exposition of each stage's formal content.
+
+The seven supporting state files cover the non-operational lifecycle phases:
+\texttt{ACQUISITION.md} (M\&A due diligence ingestion and the diligence gap),
+\texttt{ARCHIVE.md} (cryptographic archival and cold data strategies),
+\texttt{BOARD\_PROJECTION.md} (executive dashboard translation rules), and
+definition files for Construction, Activation, Integration, and Operation states.
+
+The autonomic control files are \texttt{MAPE\_K\_MAP.md},
+\texttt{define\_blue\_river\_dam\_lifecycle\_gate\_map.md},
+\texttt{define\_autonomic\_knowledge\_actuation\_map.md},
+\texttt{define\_final\_receipt\_state.md}, and
+\texttt{board-projection-holography.md}. These govern the feedback orchestration
+protocols and the quality gate criteria.
+
+The five taxonomy files---\texttt{define\_process\_asset\_taxonomy.md},
+\texttt{define\_process\_debt\_taxonomy.md},
+\texttt{define\_process\_readiness\_taxonomy.md},
+\texttt{define\_process\_residual\_taxonomy.md}, and
+\texttt{define\_process\_risk\_taxonomy.md}---plus the
+\texttt{define\_false-claim\_taxonomy.md} and
+\texttt{define\_false-claim\_taxonomy.md} files complete the classification surfaces.
+The maturity model (\texttt{MATURITY\_MODEL.md}) and the completeness audit
+(\texttt{audit\_\_lifecycle\_completeness.md}) close the file inventory.
+
+\subsection{Commands}
+\label{sec:lifecycle-implementation-commands}
+
+The lifecycle project does not define a build tool or CLI command surface of its own.
+It is a doctrine and specification layer, not an execution layer. The execution commands
+that operationalize the lifecycle---token replay, alignment computation, Inductive Miner
+discovery, receipt emission---are obligations assigned to the \texttt{wasm4pm} execution
+engine, which is documented as a separate downstream product.
+
+The Python assertion blueprints in \texttt{checkpoint\_\_lifecycle\_model\_complete.md}
+constitute the specification of what commands must be executable by any conforming
+implementation:
+\begin{itemize}
+  \item \texttt{assert\_soundness(net)}: verify WF-net structure, 1-boundedness, liveness,
+    and absence of dead transitions.
+  \item \texttt{assert\_fitness(net, log, threshold=0.95)}: compute alignment fitness and
+    assert it meets the threshold.
+  \item \texttt{assert\_no\_ghost\_transitions(net, log)}: verify every labeled transition
+    is fired at least once in the log or is a silent transition.
+  \item \texttt{assert\_decommission\_receipt(receipt, pub\_key)}: verify the
+    cryptographic decommissioning receipt structure and signature.
+\end{itemize}
+
+These blueprints are specification artifacts, not executable test files. No \texttt{.py},
+\texttt{.rs}, or test runner files exist within the \texttt{lifecycle/} directory. The
+gap between specification and execution is documented explicitly in the checkpoint status.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:lifecycle-implementation-data}
+
+The lifecycle project does not include TTL, RDF, or OWL ontology files. The type-level
+ontology of the lifecycle is expressed through the \texttt{wasm4pm-compat} Rust type
+system, with const generics encoding soundness classes and typestate methods enforcing
+object lifecycle phase transitions. The Object Lifecycle typestates are formally defined
+as $\mathrm{PHASE} \in \{\texttt{Created}, \texttt{Active}, \texttt{Modified},
+\texttt{Archived}, \texttt{Deleted}\}$ with intermediate type aliases introduced to
+prevent nightly Rust compiler E0391 variance cycle errors.
+
+The event log data formats recognized by the lifecycle are XES (IEEE~1849) and OCEL~2.0.
+OCEL~2.0 is preferred for multi-object processes because it preserves exact
+event-to-object relationships that would be distorted by flattening to a single-case
+XES structure. The ACQUISITION.md document specifies that admitted OCEL logs covering
+a 24-month due diligence period constitute the Layer 2 evidence requirement for
+M\&A process intelligence packages.
+
+Receipt data is stored in JSON format in the parent \texttt{receipts/} directory. The
+canonical receipt fields are: model hash (\texttt{BLAKE3(N)}), log hash
+(\texttt{BLAKE3(L\_final)}), total cost ($C_{\mathrm{total}}$), final fitness
+($F_{\mathrm{final}}$), and retirement timestamp ($T_{\mathrm{retire}}$), signed with
+Ed25519 using the governance private key.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:lifecycle-implementation-templates}
+
+The Autonomic Knowledge Actuation Map (\texttt{define\_autonomic\_knowledge\_actuation\_map.md})
+provides a canonical tabular template for specifying each stage's complete actuation
+profile. The template columns are: Stage, MAPE-K Element, Input Event or Log, Analysis
+Engine or Algorithm, Planning or Optimization method, Execution Controller, Transition
+Class, and Knowledge Base Asset. This template is the reference form that any conforming
+lifecycle stage specification must populate.
+
+The MAPE-K mapping matrix in \texttt{MAPE\_K\_MAP.md} provides a canonical tabular
+template for the \texttt{wasm4pm} capability requirements per MAPE-K function, with
+columns for MAPE-K function, \texttt{wasm4pm} capability, and \texttt{wasm4pm-compat}
+type. The matrix explicitly marks each capability as either present in
+\texttt{wasm4pm-compat} (the structure layer) or required in \texttt{wasm4pm} (the
+execution layer), making the implementation gap visible as a structured artifact rather
+than a prose disclaimer.
+
+The Process Intelligence Diligence Package template, defined in \texttt{ACQUISITION.md},
+specifies five layers of evidence that a seller operating at L3 or above can produce
+for M\&A due diligence: model evidence (Layer 1), log evidence (Layer 2), conformance
+evidence (Layer 3), repair evidence (Layer 4), and replay verification (Layer 5). This
+template is the primary manufactured artifact of the lifecycle framework for M\&A
+transaction contexts.

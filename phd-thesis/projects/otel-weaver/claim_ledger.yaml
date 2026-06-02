@@ -1,0 +1,239 @@
+slug: otel-weaver
+claims:
+  - id: CLM-OTEL_WEAVER-001
+    claim: >-
+      The Feedstock Theorem (Telemetry ∈ Feedstock; SchemaValidation(Telemetry)
+      ≠ ProcessCompliance(ProcessState)) is anchored at doctrine constant
+      TELEMETRY_NOT_EVIDENCE_001 and appears verbatim in
+      doctrine/telemetry-is-not-process-evidence.md.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/telemetry-is-not-process-evidence.md
+    evidence_summary: >-
+      The doctrine file exists on disk, is marked ALIVE at
+      TELEMETRY_NOT_EVIDENCE_001, and articulates the identical nominal
+      distinction between telemetry-as-feedstock and
+      process-evidence-as-court that the TeX theorem encodes.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-002
+    claim: >-
+      The project contains six immutable doctrine files, five YAML mapping
+      tables, and five experiment subdirectories (exp-001 through exp-005).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/
+      - /Users/sac/process-intelligence/otel-weaver/mappings/
+      - /Users/sac/process-intelligence/otel-weaver/experiments/
+    evidence_summary: >-
+      Directory listings confirm exactly six doctrine files, five mapping YAML
+      files, and five experiment subdirectories on disk.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-003
+    claim: >-
+      The Admission<T,W> gate type and Refusal struct are specified in
+      exp-003-live-check-to-refusal/src/validator.rs, with a Cargo.toml
+      declaring a path dependency on wasm4pm-compat at
+      ../../../../wasm4pm-compat and dependencies on serde, serde_json, and
+      blake3.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/Cargo.toml
+    evidence_summary: >-
+      validator.rs exists on disk; Cargo.toml was directly read and confirms
+      serde, serde_json, blake3, and the wasm4pm-compat path dependency
+      exactly as claimed in the TeX.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-004
+    claim: >-
+      Three ggen-signed checkpoint files exist: GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+      (SHA-256: d4b844c4...), GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      (SHA-256: e6bc59b8...), and GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+      (SHA-256: 86ef45b3...).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >-
+      All three checkpoint files were directly read; their embedded SHA-256
+      hashes match the values cited in the TeX files exactly.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-005
+    claim: >-
+      The RUNTIME_001 checkpoint cites 1 passed / 0 failed in
+      weaver_integration_tests.rs and claims 62 total tests passing across
+      wasm4pm, wasm4pm-compat, and blue_river_dam packages; the integration
+      test file exists on disk at
+      sources/wasm4pm/tests/weaver_integration_tests.rs.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+    evidence_summary: >-
+      The checkpoint narrates a test execution transcript and
+      weaver_integration_tests.rs is confirmed to exist on disk, but no
+      compiled binary, target/ directory, or independent test runner output
+      artifact was found — the 62-test count and pass result are narrated,
+      not independently materialized.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-006
+    claim: >-
+      The project's current status is PARTIAL because RUNTIME_001 checkpoint
+      runtime execution claims are narrated within the checkpoint file rather
+      than materialized as compiled artifacts or test runner output on disk.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+      - /Users/sac/process-intelligence/receipts/
+    evidence_summary: >-
+      No target/ directory exists in any experiment subdirectory; receipt
+      files otel-weaver-source-receipt.json and
+      pi-telemetry-bridge-receipt.json are absent from receipts/; and no
+      generated/ directory exists — all corroborating the PARTIAL designation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-007
+    claim: >-
+      The BridgeRx schema translation bridge maps a schema version diff ΔW to
+      a zero PI conformance residual R_Δ = 0, specified in
+      exp-002-weaver-diff-to-pi-residual/src/bridge.rs.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/src/bridge.rs
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    evidence_summary: >-
+      bridge.rs exists on disk; the ALIVE_001 checkpoint confirms its role in
+      translating schema version divergence without introducing conformance
+      measurement residual, consistent with the R_Δ = 0 formal property in
+      the TeX.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-008
+    claim: >-
+      No generated/ directory exists in the otel-weaver repository; the three
+      ggen templates (pi-live-check-intake.rs.ggen,
+      pi-witness-map.rs.ggen, pi-otel-constants.rs.ggen) have been authored
+      but ggen actuation has not materialized output files to disk.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/
+    evidence_summary: >-
+      Direct filesystem inspection confirms no generated/ directory exists,
+      constituting the deferred ggen actuation gate identified as a blocker
+      for ALIVE certification.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-009
+    claim: >-
+      The receipt files receipts/otel-weaver-source-receipt.json and
+      receipts/pi-telemetry-bridge-receipt.json, referenced in the ggen
+      manifests, do not exist on disk and were not verified at evidence
+      extraction time.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/
+    evidence_summary: >-
+      A listing of the process-intelligence/receipts/ directory shows no
+      otel-weaver JSON receipt files, confirming the TeX claim that these
+      receipts are referenced but absent on disk.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-010
+    claim: >-
+      The NO_DASHBOARD_TRUTH_001 doctrine refuses treatment of observability
+      dashboard output as process conformance verdicts and articulates the
+      Replay Test criterion requiring independent third-party replayability
+      without visualization access.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/no-dashboard-truth.md
+    evidence_summary: >-
+      The doctrine file was directly read; it explicitly encodes the
+      NO_DASHBOARD_TRUTH_001 constant and defines the Replay Test in
+      identical terms to those cited in the TeX.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-011
+    claim: >-
+      The ActivityWitness lattice join operation's soundness for pairs of
+      non-empty witnesses is unspecified and has not been formally proven,
+      constituting an open formal correctness question.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/
+    evidence_summary: >-
+      The TeX openly acknowledges this gap and the ALIVE_001 checkpoint does
+      not claim lattice soundness was verified; this is the author's honest
+      analytical assessment of a known formal deficiency requiring future
+      proof.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-012
+    claim: >-
+      The otel-weaver ingestion layer is architecturally load-bearing within
+      the Chatman foundry equation A = μ(O*): raw span data is either
+      promoted to a typed activity witness or refused before reaching the
+      equation's input domain, and no downstream component may consume
+      telemetry without traversing the Admission<T,W> gate.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/telemetry-is-not-process-evidence.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    evidence_summary: >-
+      The architectural role is consistently stated across doctrine and
+      checkpoint files; this is the author's analytical framing of the
+      ingestion layer's position within the foundry equation, supported by
+      doctrine but not yet verified by end-to-end compiled execution.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-013
+    claim: >-
+      The RUNTIME_001 checkpoint audit authority label 'Dr. Wil van der Aalst
+      AGI Swarm Court' is a ggen-generated narrative construct, not an
+      endorsement by the real Van der Aalst or any external academic body.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >-
+      The checkpoint was manufactured by ggen; 'AGI Swarm Court' is an
+      internal foundry convention label and should not be represented in the
+      PDF as an external academic endorsement.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER-014
+    claim: >-
+      Advancing the project from PARTIAL to ALIVE requires: ggen template
+      actuation producing a generated/ directory, wasm4pm-compat path
+      dependency verification and compilation of exp-003, materialized cargo
+      test output, direct reading and execution of weaver_integration_tests.rs
+      producing a materialized artifact, and confirmation of both receipt JSON
+      files on disk.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >-
+      These five conditions are stated as deferred gates in the TeX and are
+      corroborated by the current filesystem state — no generated/ directory,
+      no target/ directories, and no receipt JSON files exist, confirming all
+      five remain incomplete.
+    confidence: HIGH
+    allowed_in_pdf: true

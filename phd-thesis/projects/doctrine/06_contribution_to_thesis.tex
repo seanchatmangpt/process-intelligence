@@ -1,0 +1,109 @@
+\section{Contribution to the Dissertation}
+\label{sec:doctrine-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:doctrine-contribution-prediction}
+
+The central argument of the dissertation distinguishes prediction from coordination as the
+two competing governance paradigms for consequential software. Prediction-based systems
+observe, model, and forecast; coordination-based systems admit, refuse, receipt-bear, and
+replay. The doctrine corpus is the formal statement of the coordination paradigm.
+
+The 2016 language-model lesson that initiates the thesis lineage is precisely a demonstration
+of the limits of prediction: local text imitation produces statistically plausible outputs
+without conserving consequence. Prediction without admission gate produces narration, not
+process truth. The Blue River Dam doctrine formalizes this gap and resolves it: ``a claim
+that skips any step is narration. A claim that completes every step is process intelligence.''
+
+The doctrine corpus contributes to the prediction vs.\ coordination argument by providing the
+formal vocabulary for coordination: typed admission (\texttt{Admit::admit()}), named refusal
+(\texttt{Refusal\textless{}R,W\textgreater{}}), typed witness (the \texttt{W} phantom marker),
+and receipt-bearing execution (\texttt{Receipt\textless{}T,W\textgreater{}} with BLAKE3
+chaining). These are not software patterns; they are formal coordination primitives. The
+dissertation uses these primitives to argue that governance of consequential software requires
+coordination-capable infrastructure, and that prediction-capable infrastructure --- however
+sophisticated --- cannot substitute for it.
+
+The MAPE-K autonomic actuation doctrine extends this contribution: it shows how coordination
+can be made self-managing. The loop's Execute phase emits a receipt; the Knowledge base
+accumulates only receipted actuations; the Plan phase is bounded to the elastic subnet
+authorized by the compliance boundary. This is autonomous coordination under formal law, not
+autonomous prediction under statistical inference.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:doctrine-contribution-evidence}
+
+The doctrine corpus makes the most direct contribution to the dissertation's process evidence
+framework. It establishes the full evidential chain from raw event records to board-admissible
+claims, and it specifies precisely what breaks the chain and how each breakage is detected.
+
+The \texttt{Evidence\textless{}T,State,W\textgreater{}} carrier, the seven evidence lifecycle
+states, the \texttt{Admit::admit()} gate, and the three failure modes (raw laundering, hidden
+loss, unsigned projection) constitute a complete formal theory of process evidence. This
+theory is grounded in published process mining literature: van der Aalst's OCEL 2.0 standard
+(2023) provides the object-centric evidence model; Carmona et al.\ (2018) provide the
+conformance checking framework; Berti and van der Aalst (2019) provide the token replay
+algorithm; Adriansyah et al.\ (2011) provide the alignment-based conformance algorithm.
+
+The doctrine corpus's contribution is to embed this literature in a type-theoretic framework
+that enforces the evidential requirements at compile time. The fitness bound
+\texttt{Between01\textless{}NUM,DEN\textgreater{}} enforced via \texttt{Require\textless{}\{NUM
+<= DEN\}\textgreater{}: IsTrue} is not just a software invariant; it is the type-theoretic
+translation of the formal requirement that fitness lie in $[0,1]$ as specified by Rozinat
+and van der Aalst (2008). The \texttt{ConformanceViolation} with \texttt{StrictViolation::law()}
+returning a \texttt{\&'static str} is the type-theoretic translation of the Van der Aalst
+Constitution's dictum: ``model-vs-log mismatch is not a discrepancy; it is a defect.''
+
+The process evidence contribution is also honest about its limits. The PARTIAL status
+acknowledges that the evidence chain is specified in doctrine but not yet fully executed in
+wasm4pm. The doctoral claim is not that the execution authority is operational; it is that
+the formal specification of what operational execution requires is complete and paper-grounded.
+This is a contribution to the theory of process evidence, with the execution as future
+receipted work.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:doctrine-contribution-manufacturing}
+
+The doctrine corpus provides the foundational law for the CodeManufactory architecture that
+spans this dissertation's project ecosystem. The manufacturing surface combinatorial formula
+$\text{Surface} = |S| \times |L| \times |A| \times |F| \times |R| \times |Q| \times |B|
+\times |D|$ defines the scope of the manufacturing problem: every combination of algorithm
+family, log type, admissibility state, fitness metric, refusal reason, quality metric, board
+claim type, and lifecycle stage is a distinct manufacturing surface that must be covered by
+the type system.
+
+The six algorithms defined in doctrine --- Paper-to-Law, PM4Py Oracle Mapping, Admission
+Gate, Receipt-Bearing Execution, M\&A Deck Manufacturing, and Decommissioning --- constitute
+the formal manufacturing pipeline. Each algorithm has a specified input type, output type,
+gate condition, and receipt requirement. This specification is the authority layer from which
+the \texttt{ggen} manufacturing machinery derives its projection targets and the wasm4pm
+execution authority derives its algorithm intake requirements.
+
+The \texttt{DOWNSTREAM\_AUTHORIZATION\_LAW.md} is the architectural mechanism by which the
+doctrine corpus governs manufacturing: no downstream manufacturing run is authorized without
+tracing to a sealed checkpoint. This prevents unauthorized manufacturing drift --- the
+production of artifacts that cannot be receipted against doctrine, replayed against a known
+log, or falsified by an adversarial auditor.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:doctrine-contribution-capital}
+
+The thesis lineage concludes at capital-flow, settlement, and DAO infrastructure. The
+doctrine corpus's contribution to this destination is the establishment of the refusal capital
+concept and the board-admissibility criteria that make process evidence M\&A-ready.
+
+Refusal capital is defined as $\Sigma \; \text{verified\_refusals\_with\_receipts}$ --- the
+accumulated set of typed, witnessed, receipted refusals that the process intelligence system
+has issued. This is described as the non-copyable competitive moat: an organization whose
+process intelligence system has issued thousands of typed refusals with receipts has built an
+audit history that a buyer, regulator, or counterparty can verify independently. This is
+categorically different from an organization that has issued thousands of log entries.
+
+The six board-admissibility criteria established in \texttt{MA\_READY\_PROCESS\_INTELLIGENCE.md}
+translate directly into capital-flow infrastructure requirements: every board projection
+$B_i$ must satisfy Evidence$_i$, TypeLaw$_i$, Receipt$_i$, Replay$_i$, Standard$_i$, and
+Lifecycle$_i$. A settlement or DAO transaction that requires process evidence as a
+precondition can use these criteria as the formal gate. This makes the doctrine corpus the
+foundational specification layer for process-evidence-grounded capital allocation ---
+the terminus of the thesis lineage from the 2016 language-model lesson to industry-complete
+architecture.

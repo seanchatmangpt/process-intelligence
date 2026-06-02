@@ -1,0 +1,95 @@
+% FILE: 01_research_question.tex
+% Project: audits
+% Role: completeness-audit-and-compliance-verification-corpus
+
+\section{Research Question}
+\label{sec:audits-rq}
+
+\subsection{Problem Statement}
+\label{sec:audits-rq-problem}
+
+The central problem addressed by the audits corpus is the \emph{verification gap}
+between declared manufacturing pipelines and the processes that actually execute.
+In any sufficiently complex software system, it is possible~--- and in practice
+common~--- for the declared architecture to diverge from the runtime behavior.
+Stage outputs may be emitted outside lawful object lifecycles. Proof gates may
+pass despite non-conforming execution. Receipts may carry type names that suggest
+structured evidence while actually collapsing that evidence to a casual carrier.
+
+For a research foundry that claims to manufacture process-intelligence artifacts
+under Van der Aalst process law, this verification gap is not a quality concern
+but an existential one. If the foundry's own execution cannot be audited against
+its own declared process model, then every downstream claim the foundry makes
+about enterprise process conformance is unsupported.
+
+The problem is made concrete by the \textsc{dto\_001} violation discovered in
+Audit~1: two method names in \texttt{wasm4pm-compat}~--- \texttt{to\_json\_string()}
+at \texttt{compat/src/manufacturing/mod.rs:735} and \texttt{receipt\_json()} at
+\texttt{compat/src/manufacturing/traits.rs:34}~--- use the \texttt{\_json} suffix
+pattern, indicating that structured \texttt{Evidence<T>} types are being collapsed
+to a casual JSON carrier. This is a type-law violation that blocks graduation. It
+is exactly the kind of defect that would be invisible to a conventional test suite,
+which checks output correctness but not law conformance.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:audits-rq-old-regime}
+
+The old-regime assumption challenged by this corpus is: \emph{a passing test suite
+is sufficient evidence that a system behaves as declared.}
+
+This assumption underlies most software quality programs. If all unit tests pass,
+if the build completes, if the CI pipeline is green, the system is considered
+conformant. No further verification of the process that produced those results is
+required.
+
+The Van der Aalst Constitution, as encoded in
+\texttt{\textasciitilde/.claude/rules/process-mining-chicago-tdd.md}, refuses this
+assumption directly: \emph{``Don't trust code paths, state machines, or API
+responses. Trust only event evidence that can be mined into a conforming object-
+centric process.''} The audits corpus operationalizes this refusal. A system that
+compiles and passes tests but contains \texttt{\_json} method names has failed the
+process law, regardless of what the test outputs report.
+
+\subsection{Hypothesis}
+\label{sec:audits-rq-hypothesis}
+
+The hypothesis of the audits corpus is that deterministic, pattern-level audits of
+source artifacts~--- applied at the type-law surface rather than the behavioral
+surface~--- can detect process-law violations that passing test suites cannot, and
+that these audits can be expressed as reproducible shell programs whose output
+constitutes a cryptographically anchored receipt chain.
+
+Concretely: five shell audits targeting DTO flattening, tool smuggling, feature
+isolation, projection receipt, and graduation boundary constitute a necessary and
+sufficient verification program for the \texttt{wasm4pm-compat} projection layer.
+A system that passes all five audits has been confirmed, at the type-law surface,
+to be free of the violation classes that would prevent graduation to the
+\texttt{wasm4pm} execution engine.
+
+The hypothesis further holds that the same methodology~--- event-log derivation
+from source artifacts, model-vs-log conformance checking, temporal ordering of
+audit receipts~--- applies recursively to the research foundry itself, making the
+foundry self-auditing.
+
+\subsection{Success Criteria}
+\label{sec:audits-rq-success}
+
+Success requires all of the following to hold simultaneously:
+
+\begin{enumerate}
+  \item All five deterministic shell audits return \textsc{pass} (currently 4/5;
+    the \textsc{dto\_001} violation at \texttt{mod.rs:735} and
+    \texttt{traits.rs:34} must be remediated).
+  \item The \texttt{PROCESS\_INTELLIGENCE\_COMPAT\_CONFORMANCE\_001} checkpoint
+    file is committed and signed.
+  \item The compile-fail fixture corpus maintains 97.7\% or higher valid
+    law-proving error code coverage with zero \texttt{E0425} defects.
+  \item The \texttt{ALIVE\_001} gate remains certified: 567 or more commits,
+    all 12 corpus directories at or above minimum document count thresholds.
+  \item All five residual lifecycle gaps (RESIDUAL-DESIGN-001, RESIDUAL-SIM-001,
+    RESIDUAL-SIM-002, RESIDUAL-MON-001, RESIDUAL-MON-002) are closed with
+    documented wasm4pm execution boundary mappings.
+  \item Board claim traceability is verified across all nine claim types in the
+    four strategic domains (EBITDA Optimization, Working Capital, GRC
+    Defensibility, Integration Velocity).
+\end{enumerate}

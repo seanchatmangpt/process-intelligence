@@ -1,0 +1,376 @@
+%% ============================================================
+%% bibliography.bib — PhD Dissertation Reference Database
+%% Sean Chatman, Process Intelligence Research Foundry
+%% ============================================================
+%%
+%% Entry categories:
+%%   PUBLIC        — peer-reviewed, publicly verifiable
+%%   STANDARD      — formal standards body document
+%%   LOCAL_SOURCE  — internal artifact (ggen output, receipt, etc.)
+%%   TODO_BIB      — requires public verification before submission
+%% ============================================================
+
+
+%% ============================================================
+%% PROCESS MINING — Core Literature
+%% ============================================================
+
+@book{vanderaalst2016process,
+  author    = {van der Aalst, Wil M. P.},
+  title     = {Process Mining: Data Science in Action},
+  edition   = {2nd},
+  publisher = {Springer},
+  address   = {Berlin, Heidelberg},
+  year      = {2016},
+  doi       = {10.1007/978-3-662-49851-4},
+  isbn      = {978-3-662-49850-7},
+  note      = {PUBLIC. Canonical reference for process mining theory, Petri nets,
+               conformance checking, and event log analysis.}
+}
+
+@techreport{ocel20spec,
+  author      = {van der Aalst, Wil M. P. and Berti, Alessandro and
+                 Park, Gyunam and Plakida, Jan and Rennhak, Felix},
+  title       = {Object-Centric Event Log 2.0 --- Specification},
+  institution = {RWTH Aachen University},
+  year        = {2023},
+  type        = {Technical Specification},
+  note        = {PUBLIC. Defines the OCEL 2.0 format including typed objects,
+                 object relationships, and event-to-object mappings. Available
+                 at https://www.ocel-standard.org/. Canonical substrate for
+                 full-lifecycle process evidence in this dissertation.}
+}
+
+@inproceedings{berti2020pm4py,
+  author    = {Berti, Alessandro and van Zelst, Sebastiaan J. and van der Aalst, Wil M. P.},
+  title     = {{PM4Py}: A Process Mining Library for {Python}},
+  booktitle = {Proceedings of the Demonstration Track at the International
+               Conference on Process Mining (ICPM)},
+  year      = {2020},
+  note      = {PUBLIC. Reference for the pm4py library used as the process-truth
+               engine for discovery, conformance checking, and replay in this
+               dissertation.}
+}
+
+@article{vanderaalst2019objectcentric,
+  author  = {van der Aalst, Wil M. P.},
+  title   = {Object-Centric Process Mining: Dealing with Divergence and
+             Convergence in Event Data},
+  journal = {Software Engineering and Formal Methods},
+  year    = {2019},
+  note    = {PUBLIC. Foundational paper establishing the theoretical basis
+             for object-centric event logs and the deficiencies of flat
+             XES logs for multi-object process analysis.}
+}
+
+
+%% ============================================================
+%% PROCESS MINING — Conformance and Verification
+%% ============================================================
+
+@article{adriansyah2015conformance,
+  author  = {Adriansyah, Arya and Munoz-Gama, Jorge and Carmona, Josep and
+             van Dongen, Boudewijn F. and van der Aalst, Wil M. P.},
+  title   = {Measuring Precision of Modeled Behavior},
+  journal = {Information Systems and e-Business Management},
+  volume  = {13},
+  number  = {1},
+  pages   = {37--67},
+  year    = {2015},
+  note    = {PUBLIC. Defines precision metrics for conformance checking used
+             in Chapter 11 evaluation.}
+}
+
+@inproceedings{munozgama2010replay,
+  author    = {Munoz-Gama, Jorge and Carmona, Josep},
+  title     = {A Fresh Look at Precision in Process Conformance},
+  booktitle = {Proceedings of the 8th International Conference on Business
+               Process Management (BPM)},
+  year      = {2010},
+  note      = {PUBLIC. Defines the alignment-based replay approach used as
+               the primary verification primitive in this dissertation.}
+}
+
+
+%% ============================================================
+%% EVENT LOG STANDARDS
+%% ============================================================
+
+@misc{xesstandard,
+  author       = {{IEEE Task Force on Process Mining}},
+  title        = {{XES} --- eXtensible Event Stream Standard},
+  howpublished = {IEEE Standard 1849-2016},
+  year         = {2016},
+  note         = {STANDARD. Defines the XES flat event log format. Superseded
+                  for multi-object analysis by OCEL 2.0, but retained as the
+                  canonical legacy format for single-case process logs.}
+}
+
+
+%% ============================================================
+%% RDF / SPARQL / ONTOLOGY STANDARDS
+%% ============================================================
+
+@misc{w3c2013sparql,
+  author       = {Harris, Steve and Seaborne, Andy},
+  title        = {{SPARQL} 1.1 Query Language},
+  howpublished = {W3C Recommendation},
+  year         = {2013},
+  url          = {https://www.w3.org/TR/sparql11-query/},
+  note         = {STANDARD. Canonical reference for SPARQL queries used in
+                  ggen template manufacturing and ontology interrogation.}
+}
+
+@misc{w3crdf2014,
+  author       = {{W3C RDF Working Group}},
+  title        = {{RDF} 1.1 Concepts and Abstract Syntax},
+  howpublished = {W3C Recommendation},
+  year         = {2014},
+  url          = {https://www.w3.org/TR/rdf11-concepts/},
+  note         = {STANDARD. Defines the Resource Description Framework used
+                  as the knowledge representation substrate for open ontologies
+                  in Chapter 6.}
+}
+
+@misc{w3cowl2012,
+  author       = {{W3C OWL Working Group}},
+  title        = {{OWL} 2 Web Ontology Language --- Document Overview},
+  howpublished = {W3C Recommendation},
+  year         = {2012},
+  url          = {https://www.w3.org/TR/owl2-overview/},
+  note         = {STANDARD. Defines the Web Ontology Language used for
+                  process ontology construction in Chapter 6.}
+}
+
+
+%% ============================================================
+%% CRYPTOGRAPHY AND SECURITY STANDARDS
+%% ============================================================
+
+@misc{nistpqc2022,
+  author       = {{National Institute of Standards and Technology}},
+  title        = {Post-Quantum Cryptography Standardization},
+  howpublished = {NIST IR 8413},
+  year         = {2022},
+  url          = {https://doi.org/10.6028/NIST.IR.8413},
+  note         = {STANDARD. Reference for post-quantum cryptographic primitives
+                  considered in receipt chain integrity design. Relevant to
+                  long-term verifiability of the manufactured artifact chain.}
+}
+
+@misc{nistsha3,
+  author       = {{National Institute of Standards and Technology}},
+  title        = {{SHA}-3 Standard: Permutation-Based Hash and
+                 Extendable-Output Functions},
+  howpublished = {FIPS PUB 202},
+  year         = {2015},
+  url          = {https://doi.org/10.6028/NIST.FIPS.202},
+  note         = {STANDARD. SHA-3 hash functions used in receipt chain
+                  construction for artifact integrity verification.}
+}
+
+
+%% ============================================================
+%% RUST IMPLEMENTATION ARTIFACTS
+%% ============================================================
+
+@misc{claprust,
+  author       = {{clap Contributors}},
+  title        = {clap --- A Full Featured, Fast Command Line Argument Parser for {Rust}},
+  howpublished = {Rust crate, crates.io},
+  year         = {2024},
+  url          = {https://crates.io/crates/clap},
+  note         = {PUBLIC. Implementation artifact. Used in ggen CLI surface
+                  for command grammar parsing. The ggen command grammar is
+                  documented in Chapter 7.}
+}
+
+@misc{oxigraphrust,
+  author       = {{Oxigraph Contributors}},
+  title        = {Oxigraph --- {RDF} Graph Database and {SPARQL} Engine in {Rust}},
+  howpublished = {Rust crate, crates.io},
+  year         = {2024},
+  url          = {https://crates.io/crates/oxigraph},
+  note         = {PUBLIC. Implementation artifact. Used as the SPARQL execution
+                  engine within ggen for ontology-driven template manufacturing.}
+}
+
+@misc{terarust,
+  author       = {{Tera Contributors}},
+  title        = {Tera --- Template Engine for {Rust} Inspired by {Jinja2}},
+  howpublished = {Rust crate, crates.io},
+  year         = {2024},
+  url          = {https://crates.io/crates/tera},
+  note         = {PUBLIC. Implementation artifact. Used in ggen for structured
+                  template rendering during artifact manufacturing.}
+}
+
+@misc{oteltrace2023,
+  author       = {{OpenTelemetry Authors}},
+  title        = {OpenTelemetry Specification},
+  howpublished = {CNCF Project},
+  year         = {2023},
+  url          = {https://opentelemetry.io/docs/specs/otel/},
+  note         = {STANDARD. Defines the trace, metric, and log data model used
+                  as the raw event evidence substrate before OCEL transformation.
+                  Used in otel-weaver experiments (Chapters 6 and Appendices).}
+}
+
+
+%% ============================================================
+%% WASM / WEBASSEMBLY
+%% ============================================================
+
+@misc{wasmspec2019,
+  author       = {{W3C WebAssembly Working Group}},
+  title        = {{WebAssembly} Core Specification},
+  howpublished = {W3C Recommendation},
+  year         = {2019},
+  url          = {https://www.w3.org/TR/wasm-core-1/},
+  note         = {STANDARD. WebAssembly specification relevant to wasm4pm
+                  execution architecture analyzed in sources-wasm4pm project.}
+}
+
+
+%% ============================================================
+%% ENTERPRISE AND CAPITAL FLOW
+%% ============================================================
+
+@book{davenport1993reengineering,
+  author    = {Davenport, Thomas H.},
+  title     = {Process Innovation: Reengineering Work through Information Technology},
+  publisher = {Harvard Business School Press},
+  address   = {Boston, MA},
+  year      = {1993},
+  note      = {PUBLIC. Historical reference for enterprise process reengineering.
+               Cited in Chapter 3 for the enterprise process gap analysis.}
+}
+
+@book{hammer1993reengineering,
+  author    = {Hammer, Michael and Champy, James},
+  title     = {Reengineering the Corporation: A Manifesto for Business Revolution},
+  publisher = {HarperBusiness},
+  address   = {New York, NY},
+  year      = {1993},
+  note      = {PUBLIC. Historical reference for enterprise process reengineering.
+               Cited in Chapter 3.}
+}
+
+
+%% ============================================================
+%% LANGUAGE MODELS AND AI
+%% ============================================================
+
+@article{vaswani2017attention,
+  author  = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and
+             Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and
+             Kaiser, Lukasz and Polosukhin, Illia},
+  title   = {Attention Is All You Need},
+  journal = {Advances in Neural Information Processing Systems},
+  volume  = {30},
+  year    = {2017},
+  note    = {PUBLIC. Foundational transformer architecture paper. Cited in
+             Chapter 1 as the 2016--2017 inflection point for language models.}
+}
+
+@article{brown2020gpt3,
+  author  = {Brown, Tom B. and others},
+  title   = {Language Models Are Few-Shot Learners},
+  journal = {Advances in Neural Information Processing Systems},
+  volume  = {33},
+  year    = {2020},
+  note    = {PUBLIC. GPT-3 paper establishing that prediction-scale language
+             models do not inherently coordinate processes. Cited in Chapter 2.}
+}
+
+
+%% ============================================================
+%% LOCAL_SOURCE — Internal Manufactured Artifacts
+%% ============================================================
+
+@misc{ggen_receipt_chain,
+  author = {Chatman, Sean},
+  title  = {ggen Receipt Chain --- Manufactured Artifact Provenance},
+  year   = {2026},
+  note   = {LOCAL_SOURCE. Internal receipt chain generated by ggen manufacturing
+            pipeline. Located at ~/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml.
+            Not publicly verifiable; serves as internal provenance record.}
+}
+
+@misc{workflow_receipt_2026,
+  author = {Chatman, Sean},
+  title  = {Process Intelligence Research Foundry --- Workflow Receipt 2026},
+  year   = {2026},
+  note   = {LOCAL_SOURCE. Master workflow receipt for PhD thesis manufacturing
+            pipeline. Located at ~/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml.
+            Chains all project-level receipts into a single verifiable artifact.}
+}
+
+@misc{claim_ledger_ggen,
+  author = {Chatman, Sean},
+  title  = {ggen Claim Ledger --- Evidence-Backed Manufacturing Claims},
+  year   = {2026},
+  note   = {LOCAL_SOURCE. Claim ledger for the ggen project documenting all
+            manufacturing claims and their evidence citations. Located at
+            ~/process-intelligence/phd-thesis/projects/ggen/claim_ledger.yaml.}
+}
+
+@misc{chatman_equation_derivation,
+  author = {Chatman, Sean},
+  title  = {Derivation of the Chatman Equation: $\mathcal{A} = \mu(\mathcal{O}^*)$},
+  year   = {2026},
+  note   = {LOCAL_SOURCE. Internal working document for the Chatman Equation
+            derivation. Located at ~/process-intelligence/phd-thesis/chapters/04_chatman_equation.tex.}
+}
+
+
+%% ============================================================
+%% TODO_BIB — Sources Requiring Public Verification
+%% ============================================================
+
+@misc{TODO_otel_weaver_spec,
+  author = {{OpenTelemetry Authors}},
+  title  = {OTel Weaver --- Semantic Convention Registry Tool},
+  year   = {2024},
+  note   = {TODO_BIB. Verify public citation for otel-weaver tool.
+            Check https://github.com/open-telemetry/weaver for correct
+            citation format before thesis submission.}
+}
+
+@misc{TODO_blue_river_dam,
+  author = {Chatman, Sean},
+  title  = {Blue River Dam --- Process Intelligence Infrastructure Project},
+  year   = {2026},
+  note   = {TODO_BIB. Blue River Dam project citation. Verify public
+            availability and correct citation format before submission.
+            Internal reference: ~/process-intelligence/blue_river_dam/}
+}
+
+@misc{TODO_wasm4pm_execution,
+  author = {Chatman, Sean},
+  title  = {wasm4pm --- WebAssembly Process Mining Execution Surface},
+  year   = {2026},
+  note   = {TODO_BIB. Verify public citation or confirm internal-only status.
+            Sources analyzed in sources-wasm4pm project at
+            ~/process-intelligence/sources/. Confirm publication status before
+            thesis submission.}
+}
+
+@misc{TODO_pcp_doctrine,
+  author = {Chatman, Sean},
+  title  = {Post-Cyberpunk PCP Doctrine --- Process-Complete Programs},
+  year   = {2026},
+  note   = {TODO_BIB. Post-Cyberpunk PCP doctrine. Determine whether this
+            concept has prior art in the literature or is an original
+            contribution. If original, remove this entry and document as
+            a novel contribution in Chapter 8.}
+}
+
+@misc{TODO_ai_xynz_capital,
+  author = {Chatman, Sean},
+  title  = {AI-xynz Capital Flow Model},
+  year   = {2026},
+  note   = {TODO_BIB. Verify source and citation format for AI-xynz capital
+            flow model discussed in Chapter 9. Confirm whether this refers
+            to a published model or an internal research artifact.}
+}

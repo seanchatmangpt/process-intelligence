@@ -1,0 +1,141 @@
+% FILE: 04_implementation_surface.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: ledgers/PROJECT_INDEX.yaml, ledgers/WORKFLOW_RECEIPT.yaml,
+%            phd-thesis/projects/phd-thesis/project_manifest.yaml
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+
+\section{Implementation Surface}
+\label{sec:phd-thesis-impl}
+
+\subsection{Source Files}
+\label{sec:phd-thesis-impl-sources}
+
+The populated source files of the \texttt{phd-thesis} workspace at the time of this writing
+are confined to the \texttt{ledgers/} and \texttt{projects/} directories. The following
+files are confirmed present and were read as primary evidence for this corpus:
+
+\begin{itemize}
+  \item \textbf{\texttt{phd-thesis/README.md}} --- Workspace purpose, directory structure,
+    ALIVE criteria, and doctrine constraints. The authoritative declaration of what this
+    workspace is and what conditions govern its release.
+
+  \item \textbf{\texttt{ledgers/WORKFLOW\_RECEIPT.yaml}} --- Manufacturing provenance record.
+    Binds the workspace to branch \texttt{phd-thesis-corpus-manufacture-001}, pre-manufacture
+    commit \texttt{b4279892881e5a8ff83f31b273219a0740fead0b}, and a verified toolchain
+    (pdfTeX 3.141592653, Python 3.14.3, git 2.51.2, ripgrep 15.1.0). Phase:
+    \texttt{SETUP\_COMPLETE}.
+
+  \item \textbf{\texttt{ledgers/DO\_NOT\_CLAIM\_LEDGER.md}} --- Claim prohibition registry.
+    Seven absolute prohibitions governing all artifacts manufactured in this workspace.
+
+  \item \textbf{\texttt{ledgers/PROJECT\_INDEX.yaml}} --- Canonical ledger of 34 research
+    projects. Each entry records: \texttt{slug}, \texttt{absolute\_path},
+    \texttt{manifest} path, \texttt{description}, \texttt{detected\_languages},
+    \texttt{detected\_frameworks}, \texttt{detected\_research\_surfaces},
+    \texttt{likely\_thesis\_role}, \texttt{key\_files}, and boolean flags
+    \texttt{readme\_present}, \texttt{receipt\_present}, \texttt{ontology\_present}.
+
+  \item \textbf{\texttt{projects/phd-thesis/project\_manifest.yaml}} --- The workspace's
+    own manifest, declaring its role as \texttt{dissertation-corpus-manufacturing-workspace}.
+
+  \item \textbf{\texttt{projects/ggen/project\_manifest.yaml}} --- Manifest for the
+    Governance Generation Engine, which is the intended chapter manufacturing engine.
+
+  \item \textbf{\texttt{projects/checkpoints/project\_manifest.yaml}} --- Manifest for the
+    checkpoints corpus (sealed verdicts: PROCESS\_INTELLIGENCE\_ALIVE\_001,
+    PI\_RESEARCH\_PROGRAM\_ALIVE\_001, GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001,
+    SUBSTRATE\_COMPLETE\_001).
+
+  \item \textbf{\texttt{projects/receipts/project\_manifest.yaml}} --- Manifest for the
+    receipt chain corpus (5 JSON receipts with ed25519 signatures and BLAKE3-intended chains).
+
+  \item \textbf{\texttt{projects/research-pi-program/project\_manifest.yaml}} --- Manifest
+    for the PI Program governance layer (19 TTL files, 60+ SPARQL queries, manufacturing
+    receipts, autonomic activation logs).
+\end{itemize}
+
+The source files that are \emph{not yet present} but declared in the directory structure are:
+all files under \texttt{chapters/}, \texttt{frontmatter/}, \texttt{build/}, and
+\texttt{scripts/}. These are empty stubs awaiting chapter manufacture.
+
+\subsection{Commands}
+\label{sec:phd-thesis-impl-commands}
+
+No manufacturing scripts are present in the \texttt{scripts/} directory at the time of this
+writing (phase: \texttt{SETUP\_COMPLETE}). The toolchain for the next phase has been verified
+and recorded in \texttt{ledgers/WORKFLOW\_RECEIPT.yaml}:
+
+\begin{itemize}
+  \item \textbf{PDF compilation}: \texttt{pdflatex} (pdfTeX 3.141592653-2.6-1.40.26,
+    TeX Live 2024). The declared command surface is \texttt{pdflatex master.tex} from the
+    \texttt{build/} directory, though the master file has not yet been manufactured.
+  \item \textbf{Receipt hashing}: The receipt doctrine requires BLAKE3 hashing of the
+    compiled PDF. The BLAKE3 toolchain availability is not yet recorded in the workflow
+    receipt; this is a gap for the next phase.
+  \item \textbf{Ontology queries}: \texttt{ggen} (the Governance Generation Engine) is the
+    declared manufacturing framework. Its invocation pattern --- SPARQL queries over Turtle
+    ontologies, rendered through Tera templates --- is documented in the ggen project manifest
+    and in \texttt{ggen/ggen.toml}.
+  \item \textbf{Version control}: \texttt{git 2.51.2}. All manufactured artifacts are
+    committed on branch \texttt{phd-thesis-corpus-manufacture-001} under conventional commit
+    format with research-specific scopes as defined in the process-intelligence CLAUDE.md.
+\end{itemize}
+
+The clap-noun-verb command grammar referenced in the thesis lineage
+(\texttt{ledgers/PROJECT\_INDEX.yaml} lineage header) is the CLI design pattern used in the
+wasm4pm and ggen command surfaces. It is not directly instantiated in the \texttt{phd-thesis}
+workspace but governs the command interface of the manufacturing tools consumed by this
+workspace.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:phd-thesis-impl-data}
+
+The data surface of this workspace is the \texttt{ledgers/PROJECT\_INDEX.yaml}. Its schema
+is YAML with a \texttt{projects:} array; each entry is a structured record as described in
+Section~\ref{sec:phd-thesis-impl-sources}. The index is the primary data artifact of the
+workspace: 34 entries, manufactured 2026-06-01.
+
+The ontology surfaces consumed by this workspace --- but not hosted within it --- are
+distributed across the foundry:
+
+\begin{itemize}
+  \item \textbf{PI Program ontology}: 19 TTL files in
+    \texttt{research/pi-program/ggen/ontology/}, covering pi-program.ttl,
+    governance-policy.ttl, and autonomic-law.ttl. These are the SPARQL-queryable authority
+    sources for the manufacturing pipeline.
+  \item \textbf{Prompt manufactory ontology}: TTL files in
+    \texttt{research/prompt-manufactory/ggen/ontology/}, covering prompt-manufactory.ttl,
+    workflow-law.ttl, and skill-law.ttl.
+  \item \textbf{ggen ontology extensions}: \texttt{ggen/ontology-extensions.ttl} and
+    \texttt{ggen/wasm4pm-compat.ttl}.
+  \item \textbf{Open ontologies}: PROV-O, SKOS, ODRL, DCTERMS, SHACL mappings in
+    \texttt{research/open-ontologies/federated/CROSS\_PROJECT\_DEPENDENCY\_GRAPH\_20260601.yaml}.
+\end{itemize}
+
+The workspace does not host an ontology directly (\texttt{ontology\_present: false} in the
+project manifest). It consumes ontology surfaces through the manufacturing tools.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:phd-thesis-impl-templates}
+
+No Tera templates are hosted within the \texttt{phd-thesis} workspace. The template surface
+is distributed across the foundry and will be consumed during chapter manufacture:
+
+\begin{itemize}
+  \item \textbf{\texttt{ggen/templates/blue-river.tera}} --- Template for the Blue River Dam
+    orchestrator artifact.
+  \item \textbf{\texttt{templates/pcp-types.ts.tera}} --- Template for Post-Cyberpunk PCP
+    TypeScript type surface.
+  \item \textbf{Prompt manufactory templates} in
+    \texttt{research/prompt-manufactory/ggen/templates/} --- Templates for checkpoint,
+    hook, skill, subagent, and workflow prompt artifacts.
+\end{itemize}
+
+The TeX files manufactured in this corpus (including this file) are the first rendered
+artifacts of the \texttt{phd-thesis} workspace's chapter manufacturing phase. They are
+manufactured directly rather than through a ggen template pipeline, because no ggen.toml
+for the thesis chapter pipeline has been confirmed present in the workspace as of
+2026-06-01 (this is an open question documented in the gaps). The ggen.toml that governs
+the manufacturing infrastructure itself exists at \texttt{ggen/ggen.toml}, but no
+thesis-chapter-specific configuration has been recorded.

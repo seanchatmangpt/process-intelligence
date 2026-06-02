@@ -1,0 +1,237 @@
+slug: experiments-visualizer-nextjs
+claims:
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-001
+    claim: >-
+      The project was bootstrapped via create-next-app targeting Next.js 16.2.6 and React
+      19.2.4, and has been compiled to a .next production build with BUILD_ID
+      9NFA-LnYiAijWLGnz8L79.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/package.json
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/.next/BUILD_ID
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/.next/diagnostics/build-diagnostics.json
+    evidence_summary: >-
+      package.json declares next@16.2.6 and react@19.2.4; BUILD_ID file contains
+      9NFA-LnYiAijWLGnz8L79; build-diagnostics.json confirms buildStage static-generation
+      and useBuildWorker true.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-002
+    claim: >-
+      The application's primary page (src/app/page.tsx) remains the stock create-next-app
+      welcome page; no process-intelligence-specific React components have been implemented.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/page.tsx
+    evidence_summary: >-
+      page.tsx contains only the default Next.js scaffold with a Next.js logo, Vercel deploy
+      link, and 'To get started, edit the page.tsx file.' heading — no process-intelligence
+      content.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-003
+    claim: >-
+      The globals.css file (972 lines) encodes a complete dark-mode dashboard design system
+      covering five distinct visual subsystems: Petri net SVG panel, A* alignment block
+      sequence, EWMA drift-detection chart with alarm banners, cryptographic ledger explorer
+      with tamper-detection UI states, and a primary dashboard grid layout with a 320-pixel
+      sidebar.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/globals.css
+    evidence_summary: >-
+      Direct inspection confirms globals.css at 972 lines with CSS classes for all five
+      subsystems including .petri-place, .alignment-block.sync/log/model, .ewma-canvas,
+      .alarm-banner.fired, .ledger-block-card.healthy/tampered, and .dashboard-grid with
+      grid-template-columns 320px 1fr.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-004
+    claim: >-
+      No testing framework (Jest, Vitest, Playwright) is declared as a dependency, and no
+      test files are present in the src/ directory or at the project root.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/package.json
+    evidence_summary: >-
+      package.json lists no test framework in dependencies or devDependencies; the src/app/
+      directory contains only favicon.ico, globals.css, layout.tsx, and page.tsx; no test
+      command is configured in the scripts block.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-005
+    claim: >-
+      The project's current status is PARTIAL: the scaffold compiles and the CSS design
+      system is complete, but page.tsx is unimplemented, no data-fetching layer exists, no
+      tests exist, no project-specific receipt exists, and no ALIVE checkpoint exists.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/package.json
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/page.tsx
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/.next/BUILD_ID
+    evidence_summary: >-
+      All PARTIAL-status evidence is directly confirmed by source files: build succeeds
+      (BUILD_ID present), page.tsx is a stock scaffold, no test or receipt files exist, and
+      the known evidence metadata records alive_status as PARTIAL with receipts_found none
+      and tests_found none.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-006
+    claim: >-
+      The CSS class algebra for the three A* alignment move types (sync, log, model) is
+      isomorphic to the three lawful move types in A* process alignment, making it
+      structurally impossible to render an alignment block with an unlawful or missing
+      move type.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/globals.css
+    evidence_summary: >-
+      globals.css defines exactly three alignment-block modifier classes (.sync, .log,
+      .model) with no fourth class; the thesis that this exhaustive enumeration enforces
+      structural conformance at the UI layer is an authorial interpretation of the
+      CSS class design.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-007
+    claim: >-
+      The AGENTS.md file warns that Next.js 16 contains breaking changes relative to prior
+      training data and instructs any authoring agent to read node_modules/next/dist/docs/
+      before writing any code, implying the project was designed for agentic authorship that
+      was anticipated but not executed.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/AGENTS.md
+    evidence_summary: >-
+      AGENTS.md text reads 'This version has breaking changes — APIs, conventions, and file
+      structure may all differ from your training data. Read the relevant guide in
+      node_modules/next/dist/docs/ before writing any code.' The inference that authorship
+      was anticipated but not executed is grounded in the file's existence alongside the
+      absence of any React component implementation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-008
+    claim: >-
+      The visualizer-nextjs project is the human-facing observation layer that sits above
+      the Rust (wasm4pm) and Python (pm4py) computation cores, serving as the terminal stage
+      of the evidence chain at which evidence becomes auditable by a human principal.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/globals.css
+    evidence_summary: >-
+      The CSS design system encodes visual representations of Rust/Python-produced process
+      artefacts, supporting this architectural framing, but the positional claim (terminal
+      evidence chain stage, human-auditable endpoint) is the author's analytical thesis
+      rather than anything directly stated in a source file.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-009
+    claim: >-
+      The layout.tsx loads Geist and Geist Mono fonts from the Vercel font system and
+      applies the globals.css design system application-wide.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/layout.tsx
+    evidence_summary: >-
+      layout.tsx imports Geist and Geist_Mono from next/font/google and imports
+      ./globals.css, applying both fonts as CSS custom properties on the html element.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-010
+    claim: >-
+      A CSS design system alone cannot constitute a visualization surface; without React
+      components wired to real process-intelligence data sources, the project is a
+      specification without implementation — a re-instantiation of the 2016 language-model
+      lesson that appearance and evidence are not the same thing.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/globals.css
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/page.tsx
+    evidence_summary: >-
+      The factual basis (CSS present, no components) is source-supported; the 2016
+      language-model analogy and the philosophical claim about appearance vs. evidence are
+      the author's interpretive thesis connecting the project's PARTIAL status to broader
+      research lineage.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-011
+    claim: >-
+      The most architecturally coherent data source for the Petri net and alignment panels
+      would be a WASM-compiled wasm4pm module served from a Next.js API route, allowing the
+      Rust process-intelligence core to execute in the browser without a separate backend.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/package.json
+    evidence_summary: >-
+      No WASM binding or API route is implemented; this is the author's design preference
+      for future data integration architecture, stated explicitly as 'AUTHOR THESIS' in the
+      TeX source, with no binding to any data source having been implemented.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-012
+    claim: >-
+      The full capital-flow use case would require the ledger explorer to display receipts
+      from multiple counterparty process chains and to support cross-chain receipt
+      verification; this is beyond the current scope of the project.
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: >-
+      Explicitly labelled FUTURE WORK in 06_contribution_to_thesis.tex; no multi-chain
+      ledger capability exists in the current implementation, and the claim is aspirational
+      rather than evidenced.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-013
+    claim: >-
+      A complete CodeManufactory proof should include at least one web-surface artefact that
+      passes all proof gates, and the visualizer-nextjs project is the designated candidate
+      for that role.
+    claim_type: AUTHOR_THESIS
+    source_files: []
+    evidence_summary: >-
+      Explicitly marked 'AUTHOR THESIS' in 06_contribution_to_thesis.tex; there is no
+      research-program document designating this project as the sole or required web-surface
+      candidate, so the claim is the author's analytical position rather than a sourced fact.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-014
+    claim: >-
+      The globals.css design system does not define CSS classes for panels whose data source
+      is unavailable or returns an error, meaning a panel that fails to fetch data would
+      render as empty rather than as an explicit error state.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/globals.css
+    evidence_summary: >-
+      Inspection of globals.css confirms no error-state classes (e.g., .panel-error,
+      .data-unavailable) are defined; the absence is directly verifiable from the source
+      file, consistent with the gap documented as GAP-VIZ-006.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-015
+    claim: >-
+      The recommended path from PARTIAL to ALIVE follows five receipted work items in
+      dependency order: data fixture manufacture, component implementation, test manufacture,
+      receipt chain linkage, and ALIVE checkpoint creation.
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: >-
+      The five-step sequence is declared in 07_open_questions_and_next_work.tex as
+      recommended next work; none of these steps have been executed, and the sequencing
+      reflects the author's planning rather than completed or verified work.
+    confidence: HIGH
+    allowed_in_pdf: true

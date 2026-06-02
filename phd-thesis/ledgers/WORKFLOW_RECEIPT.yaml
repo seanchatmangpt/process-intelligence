@@ -9,4 +9,20 @@ tools_available:
   python3: "Python 3.14.3"
   git: "git version 2.51.2"
   rg: "ripgrep 15.1.0"
-phase: SETUP_COMPLETE
+phase: COMPLETE
+final_status: ALIVE
+final_gate_run: 2026-06-01T00:00:00Z
+validation_gates_passed: 6
+validation_gates_total: 6
+project_count: 34
+tex_file_count: 272
+expected_tex_files_per_project: 8
+total_project_tex_files: 272
+chapter_count: 13
+pdf_sha256: 31052edbbcc6a077501a75802c2083f40ba83b0cd09f3ab1e89d46c19052369f
+pdf_path: /Users/sac/process-intelligence/phd-thesis/build/sean-chatman-phd-thesis-draft.pdf
+pdf_pages: 125
+pdf_size_bytes: 496846
+claim_ledgers: 34
+do_not_claim_ledger: present
+workflow_verdict: ALIVE — all proof gates passed, PDF artifact confirmed with hash

@@ -1,0 +1,137 @@
+%% ============================================================
+%% glossary.tex — Key Terms and Definitions
+%% Process Intelligence Research Foundry
+%% ============================================================
+%%
+%% This file defines canonical terms used throughout the dissertation.
+%% Terms are defined using \newcommand for inline use and also
+%% listed in the Glossary chapter for reader reference.
+%% ============================================================
+
+%% --- Inline term shortcuts ---
+\newcommand{\ggen}{\texttt{ggen}}
+\newcommand{\OCEL}{\textsc{ocel}}
+\newcommand{\CodeManufactory}{\textsc{CodeManufactory}}
+\newcommand{\ChatmanEq}{$\mathcal{A} = \mu(\mathcal{O}^*)$}
+\newcommand{\ALIVE}{\textbf{ALIVE}}
+\newcommand{\PARTIAL}{\textbf{PARTIAL}}
+\newcommand{\BLOCKED}{\textbf{BLOCKED}}
+\newcommand{\receipt}{\textit{receipt}}
+\newcommand{\Receipt}{\textit{Receipt}}
+\newcommand{\manufactured}{\textit{manufactured}}
+\newcommand{\Manufactured}{\textit{Manufactured}}
+
+%% ============================================================
+%% Glossary Entry Definitions
+%% (Rendered in the Glossary chapter or appendix)
+%% ============================================================
+
+%% To render the glossary in the document, include:
+%%   \chapter*{Glossary}
+%%   \addcontentsline{toc}{chapter}{Glossary}
+%%   \input{glossary_entries}
+%% or inline below if not using a dedicated glossary package.
+
+\newcommand{\printglossary}{%
+\chapter*{Glossary}
+\addcontentsline{toc}{chapter}{Glossary}
+\begin{description}
+
+  \item[\textbf{ALIVE}]
+    Status verdict indicating that all proof gates have passed for a given
+    manufacturing artifact. Requires: receipt chain intact, all tests passing,
+    checkpoint registered, and PDF hash recorded. An ALIVE verdict is permanent
+    and immutable once issued.
+
+  \item[\textbf{Atlas}]
+    The canonical index of capabilities, algorithms, and execution surfaces
+    across all research projects in the Process Intelligence Research Foundry.
+    Not a summary --- a structured registry with evidence citations.
+
+  \item[\textbf{BLOCKED}]
+    Status verdict indicating that one or more core proof gates have failed.
+    A BLOCKED verdict requires a remediation plan before any downstream
+    manufacturing may proceed.
+
+  \item[\textbf{Chatman Equation}]
+    $\mathcal{A} = \mu(\mathcal{O}^*)$\quad where $\mathcal{A}$ is an autonomous
+    agent, $\mu$ is the manufacturing operator, and $\mathcal{O}^*$ is the
+    full object-centric process state. The equation asserts that a capable
+    autonomous agent is produced by applying a deterministic, receipted
+    manufacturing pipeline to a complete object-centric event log. Autonomy
+    without process evidence is not autonomy --- it is hallucination.
+
+  \item[\textbf{CodeManufactory}]
+    The product. A deterministic, receipt-backed pipeline for manufacturing
+    code and process artifacts from declared specifications. Not a framework,
+    not a simulation, not a runner. RevOps is merely proof that CodeManufactory
+    works.
+
+  \item[\textbf{Conformance Checking}]
+    The process-mining discipline of comparing a discovered process model
+    derived from an event log against a declared normative model. Deviations
+    are defects, not discrepancies.
+
+  \item[\textbf{ggen}]
+    Graph-query-template manufacturing engine. A Rust-based tool that manufactures
+    structured artifacts (SPARQL queries, TOML configurations, YAML receipts,
+    TeX chapters) from declared templates and ontology graphs. \ggen{} is
+    itself a manufactured artifact and must carry a receipt chain.
+
+  \item[\textbf{Manufactured}]
+    Produced by a deterministic, receipted manufacturing pipeline. An artifact
+    is manufactured if and only if: (1) its production was declared before
+    execution, (2) every operator in the pipeline emitted a receipt, and
+    (3) the receipt chain is verifiable. Artifacts produced outside this
+    definition are not manufactured --- they are generated or hallucinated.
+
+  \item[\textbf{OCEL}]
+    Object-Centric Event Log. A process log format defined by Van der Aalst
+    et al. (OCEL 2.0) that associates each event with multiple typed objects
+    rather than a single case identifier. OCEL is the canonical evidence
+    substrate for full-lifecycle process intelligence in this dissertation.
+
+  \item[\textbf{PARTIAL}]
+    Status verdict indicating that some but not all proof gates have passed.
+    A PARTIAL verdict documents which gates passed and which remain open.
+    Downstream manufacturing that depends on a PARTIAL artifact must declare
+    the dependency explicitly and carry the PARTIAL risk in its own receipt.
+
+  \item[\textbf{Post-Cyberpunk PCP}]
+    Post-Cyberpunk Process-Complete Program. A software system that delivers
+    working infrastructure with receipt-backed proof, not hallucination-as-output.
+    The term distinguishes systems whose outputs can be replayed and verified
+    from systems that produce plausible-seeming outputs with no evidentiary
+    grounding.
+
+  \item[\textbf{Process Evidence}]
+    Event logs that prove a lawful process occurred. Not telemetry, not metrics,
+    not dashboards. Process evidence is an OCEL-structured log from which a
+    conformant process model can be discovered and verified against the declared
+    normative model. If the log cannot support discovery, it is not evidence.
+
+  \item[\textbf{Receipt}]
+    A cryptographic or structured proof that a specific consequence occurred
+    at a specific time in a specific manufacturing context. A receipt is
+    not a log entry, a status flag, or a test result. A receipt is immutable,
+    carries its own hash, and is chained to the receipt that preceded it.
+    The receipt chain is the ground truth of the manufacturing pipeline.
+
+  \item[\textbf{Replay}]
+    Re-enacting a process from its event log. In process mining, replay
+    is the mechanism by which a token or marking is moved through a declared
+    Petri net model driven by the sequence of events in an observed log.
+    Replay failures are conformance defects. In the CodeManufactory context,
+    replay is the primary verification primitive: if the manufacturing pipeline
+    cannot be replayed from its receipts, the pipeline is not verified.
+
+  \item[\textbf{Witness Lattice}]
+    A partially ordered set of type-law compatibility witnesses used in
+    wasm4pm-compat analysis. Each witness asserts that a source type (e.g.,
+    a pm4py EventLog) can be lawfully transformed into a target type (e.g.,
+    a wasm4pm-compatible EventLog) under a specified set of structural
+    constraints. The lattice orders witnesses by specificity of the
+    transformation claim.
+
+\end{description}
+}

@@ -1,0 +1,92 @@
+\chapter{The Chatman Equation}
+\label{chap:chatman_equation}
+
+\section{The Need for a Formal Statement}
+
+The enterprise process gap (Chapter~\ref{chap:enterprise_gap}) identifies the problem. The 2016 experiment (Chapter~\ref{chap:origin}) identifies the failure mode. What was missing, for the first several years of this research program, was a formal statement of what a consequential action requires --- a statement precise enough to serve as an admissibility criterion, rigorous enough to support algebraic manipulation, and operational enough to be implemented in software.
+
+The Chatman Equation is that formal statement. It is not a metaphor. It is not a slogan. It is an equation. It has a left side, a right side, and a receipted form. It can be evaluated. It can be falsified. It has been implemented across the thirty-four projects documented in this corpus, and it has been used to distinguish \textsc{alive} verdicts from \textsc{partial} ones with the precision that customer accountability requires.
+
+\section{The Equation}
+
+The Chatman Equation is:
+
+\[
+A = \mu(O^{*})
+\]
+
+Where:
+
+\begin{itemize}
+  \item $A$ is a consequential action --- an act that produces a durable, verifiable state change in a process.
+  \item $O^{*}$ is the observed operational state: the complete set of process-event evidence available at the moment of action, including event logs, object states, agent assignments, and system boundary crossings.
+  \item $\mu$ is the projection function: the transformation that converts observed operational state into an admissible basis for action.
+\end{itemize}
+
+The equation states that a consequential action is only valid when it is grounded in --- projected from --- observed operational state. An action that is not grounded in observed operational state is not $A$. It may be an assertion. It may be a prediction. It may be a hallucination. It is not a consequential action in the sense the equation defines.
+
+\section{Unpacking the Components}
+
+\subsection{Observation ($O^{*}$)}
+
+$O^{*}$ is not a snapshot. It is a process-event history. In the formal language of process mining, it is an object-centric event log: a structured record of events, each with a timestamp, an activity label, a set of objects, and a set of attribute values. The OCEL 2.0 standard \cite{vanderaalst2022ocel} provides the canonical schema for $O^{*}$.
+
+The asterisk in $O^{*}$ is significant. It denotes the complete observed history up to the moment of action --- not a sample, not a summary, not a model-generated approximation. If the history is incomplete, $O^{*}$ is incomplete, and the equation's right side is undefined. This is the formal basis for the \textsc{partial} verdict: when $O^{*}$ cannot be fully constructed from available evidence, the equation cannot be evaluated, and the action cannot be certified as consequential.
+
+\subsection{Projection ($\mu$)}
+
+The projection function $\mu$ is the transformation from observed state to admissible action basis. It is not a prediction. Prediction manufactures a plausible next token. Projection derives, from verified evidence, a valid basis for a specific action.
+
+$\mu$ must be:
+\begin{itemize}
+  \item \textbf{Deterministic}: given the same $O^{*}$, $\mu(O^{*})$ must produce the same admissibility decision.
+  \item \textbf{Auditable}: the transformation must be inspectable, not opaque.
+  \item \textbf{Bounded}: $\mu$ must operate on a well-defined evidence scope, not unbounded context.
+\end{itemize}
+
+In the implementation, $\mu$ is realized through SPARQL queries against RDF-encoded process graphs (Chapter~\ref{chap:ggen}), through conformance-checking algorithms in \texttt{sources-wasm4pm}, and through the governance rules encoded in \texttt{blue-river-dam}. Each realization is a specific, inspectable instantiation of $\mu$ for a particular process domain.
+
+\subsection{Action ($A$)}
+
+$A$ is a consequential action. It has three required properties.
+
+First, $A$ must produce a durable state change. A state change is durable if it is recorded in the event log and survives the termination of the process instance that produced it.
+
+Second, $A$ must be attributable to a specific agent. Coordination requires agency. An action without an attributable agent is a process event without a responsible party --- a compliance gap.
+
+Third, $A$ must be replayable. The event produced by $A$ must be capable of being replayed against the declared process model, producing a conformance score. If the event is not replayable, $A$ cannot be verified as lawful.
+
+\section{The Receipted Form}
+
+The base equation $A = \mu(O^{*})$ establishes the admissibility condition. The receipted form extends it to include proof of satisfaction:
+
+\[
+R \vdash A = \mu(O^{*})
+\]
+
+Where $R$ is the receipt: a cryptographically bound record that certifies the equation was evaluated, the evaluation succeeded, and the action $A$ was admitted on the basis of projection from observed operational state $O^{*}$.
+
+The receipt $R$ is not a hash of the output. It is a proof of the evaluation. It records:
+\begin{itemize}
+  \item The identity of the observation $O^{*}$ (by content-addressable reference).
+  \item The identity of the projection function $\mu$ applied.
+  \item The identity of the action $A$ admitted.
+  \item The timestamp of evaluation.
+  \item A cryptographic commitment linking all of the above.
+\end{itemize}
+
+The receipted form is the basis for the \textsc{alive} verdict. A project is \textsc{alive} when, for each claimed consequential action in its scope, $R \vdash A = \mu(O^{*})$ can be evaluated and the receipt can be verified. A project is \textsc{partial} when some actions are receipted and others are not. A project is \textsc{blocked} when the receipt chain cannot be constructed --- when $O^{*}$ is unavailable, $\mu$ is undefined, or $A$ cannot be verified.
+
+\section{Admissibility and Consequence}
+
+The equation introduces the concept of admissibility: an action is admissible when its basis in observed operational state can be demonstrated. Admissibility is the process-intelligence analog of legal admissibility in evidence law. A claim that cannot be traced to observable evidence is not inadmissible because it is false. It is inadmissible because it cannot be verified. The distinction matters: inadmissibility is a structural property of the claim, not a judgment about its content.
+
+This framing has significant consequences for how the equation is applied in practice. When an AI system asserts that a process has completed --- that a handoff has occurred, that an artifact is in a particular state, that a compliance control has been applied --- the assertion is not evaluated by asking whether the assertion is plausible. It is evaluated by asking whether $R \vdash A = \mu(O^{*})$ can be verified for the claimed action. If the receipt does not exist, the claim is \textsc{partial}, regardless of how plausible the assertion sounds.
+
+This is the formal basis for the research program's refusal of hallucination as an acceptable failure mode. Hallucination is not a technical artifact of model behavior. It is a structural consequence of applying prediction systems in coordination roles, where admissibility requirements exist and cannot be satisfied by prediction alone.
+
+\section{Relation to the Research Corpus}
+
+The Chatman Equation is not a theoretical construct that was developed independently of the research projects. It was derived from, and verified against, the projects. Each ALIVE verdict in the checkpoint ledger (\texttt{checkpoints/}) is a verified instance of $R \vdash A = \mu(O^{*})$. Each PARTIAL verdict is a documented case where the equation's components are partially satisfied. The thirty-four projects are, collectively, the empirical basis from which the equation was derived and against which it has been evaluated.
+
+The equation also provides the formal spine of Chapters~\ref{chap:process_evidence} through~\ref{chap:conclusion}. Every subsequent chapter can be read as a detailed account of one or more components of the equation: how $O^{*}$ is constructed (Chapter~\ref{chap:process_evidence}), how $\mu$ is implemented (Chapter~\ref{chap:ggen}), how $A$ is constrained by grammar (Chapter~\ref{chap:command_grammar}), and how $R$ grounds capital-market claims (Chapter~\ref{chap:ai_xynz}).

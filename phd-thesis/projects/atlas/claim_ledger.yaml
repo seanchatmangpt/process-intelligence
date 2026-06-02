@@ -1,0 +1,256 @@
+slug: atlas
+claims:
+  - id: CLM-ATLAS-001
+    claim: >
+      The atlas project is a flat collection of seven doctrine-surface markdown files
+      located at /Users/sac/process-intelligence/atlas/, authored on 2026-06-01, with
+      no subdirectories, no build artifacts, and no internal receipt chain.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/atlas/aalst_livestream_standards.md
+      - /Users/sac/process-intelligence/atlas/agi_adversarial_defenses.md
+      - /Users/sac/process-intelligence/atlas/doctrine_blue_river_dam.md
+      - /Users/sac/process-intelligence/atlas/ggen_prompt_manufactory.md
+      - /Users/sac/process-intelligence/atlas/supabase_law_substrate.md
+      - /Users/sac/process-intelligence/atlas/wasm_boundary_law.md
+      - /Users/sac/process-intelligence/atlas/zoeapp_ministry_ontology.md
+    evidence_summary: >
+      All seven files were read and confirmed to exist as flat markdown files with
+      no build artifacts or receipt files present in the atlas directory.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-002
+    claim: >
+      The atlas is PARTIAL status because it has no internal receipt, checkpoint,
+      or ALIVE file of its own; the foundry it maps is ALIVE per
+      PI_RESEARCH_PROGRAM_ALIVE_001 with 12/12 audit gates PASS and 342 artifacts.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/00_project_identity.tex
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/05_evidence_receipts_and_gates.tex
+      - /Users/sac/process-intelligence/AALST_CERTIFIED_ALIVE.md
+    evidence_summary: >
+      The TeX files explicitly state PARTIAL status with absence of internal receipt;
+      AALST_CERTIFIED_ALIVE.md confirms the foundry seal exists (SHA-256
+      ea15dda11d3430960ac225d43c4023ab4030663f08317c77330c32ff8ef843c6),
+      though the PI_RESEARCH_PROGRAM_ALIVE_001 checkpoint file was not directly read
+      to confirm the exact 12/12 gate count and 342 artifact count.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-003
+    claim: >
+      The Aalst Broadcaster transforms raw Git history into an OCEL (Object-Centric
+      Event Log) stream using scripts such as aalst_broadcaster.js, and the Conformance
+      Stream provides ZKP validation diagnostics and structural alignment checking
+      against WF-net or Petri Net specifications.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/atlas/aalst_livestream_standards.md
+    evidence_summary: >
+      aalst_livestream_standards.md directly defines the Aalst Broadcaster and
+      Conformance Stream with these specific capabilities, citing aalst_broadcaster.js,
+      OCEL stream transformation, ZKP validation diagnostics, and Petri Net alignment.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-004
+    claim: >
+      The Supabase Law Substrate establishes that 'React state is not authorization'
+      and governs six tables via Row Level Security: profiles (with auth.uid() = id
+      policies) and five demonstration-mode actor_* tables (actor_commands,
+      actor_events, actor_receipts, actor_outbox, actor_quarantine) flagged as
+      requiring secondary audit before production hardening.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/atlas/supabase_law_substrate.md
+    evidence_summary: >
+      supabase_law_substrate.md contains the exact RLS policy table with the profiles
+      table (auth.uid() = id), the five actor_* tables under 'Allow public access'
+      policies, and an explicit note that these require secondary audit for production
+      hardening.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-005
+    claim: >
+      The GGEN Prompt Manufactory defines a typed transformation chain
+      TTL (Ontology) -> RQ (SPARQL) -> TERA (Templating) -> Prompt (Manufactured
+      Research Warrant) that converts human prose intent into machine-executable
+      warrants grounded in the ontology.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/atlas/ggen_prompt_manufactory.md
+    evidence_summary: >
+      ggen_prompt_manufactory.md explicitly defines this four-step transformation
+      chain; the source file spells SPARQL as 'SQARQL' (a typo), but the chain
+      itself is documented and confirmed.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-006
+    claim: >
+      The WASM Boundary Law enforces strict separation between Specta (Type Surface,
+      TypeScript control) and tsify/wasm-bindgen (Binary Surface, WASM ABI) to
+      maintain stability and receipt integrity across the WASM membrane.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/atlas/wasm_boundary_law.md
+    evidence_summary: >
+      wasm_boundary_law.md directly states this separation law in its two-sentence
+      definition, naming Specta as TypeScript control and tsify/wasm-bindgen as WASM
+      ABI with the stated purpose of stability and receipt integrity.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-007
+    claim: >
+      The AGI Adversarial Defenses module names four Iron Law safeguards:
+      Schrodinger's Interface Fallback, Turing Trap Circuit Breakers, Causal Window
+      P2P Constraints, and Hardware Attestation via ZKP. The file is intentionally
+      minimal (four bullet points) and represents an open manufacturing task.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/atlas/agi_adversarial_defenses.md
+    evidence_summary: >
+      agi_adversarial_defenses.md was read and confirmed to contain exactly four
+      bullet points naming these four safeguards with no further elaboration;
+      the minimal depth is a verifiable fact.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-008
+    claim: >
+      The receipt chain for the foundry comprises seven canonical receipts defined
+      in RECEIPT_REGISTRY.md: PAPER_CANON_RECEIPT (14+ papers), PM4PY_ORACLE_RECEIPT
+      (14+ functions), WASM4PM_GAP_RECEIPT (8 gaps), LIFECYCLE_RECEIPT (41+
+      lifecycle phases), MA_RECEIPT (8 M&A claim categories), STANDARDS_RECEIPT
+      (52+ standards), and ADVERSARIAL_RECEIPT (3 adversarial challenges).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      RECEIPT_REGISTRY.md was read directly and confirms all seven receipts with
+      the specific counts cited; the LIFECYCLE_RECEIPT shows '41+' phases rather
+      than '42' as stated in some TeX files, a minor discrepancy.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-009
+    claim: >
+      The Chatman Equation A = mu(O*, T, L) maps the seven atlas doctrine modules
+      onto its formal operators: Aalst Broadcaster and GGEN Prompt Manufactory
+      instantiate mu, Blue River Dam instantiates alpha and kappa, WASM Boundary Law
+      instantiates rho, Supabase Law Substrate enforces kappa at the data layer, and
+      ZoeApp Ministry Ontology applies L to a ministry domain.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/02_lineage_and_context.tex
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/06_contribution_to_thesis.tex
+    evidence_summary: >
+      The SPR thesis defines the formal operators mu, alpha, rho, kappa; the mapping
+      of each atlas module to specific operators is the author's analytical conclusion
+      in the TeX files and not directly stated in the individual atlas source files.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-010
+    claim: >
+      The atlas's PARTIAL status is not a deficiency but a structural property:
+      it maps modules whose receipts live in other repositories, and its own receipt
+      would be redundant with rather than additive to the PI_RESEARCH_PROGRAM_ALIVE_001
+      checkpoint that seals the foundry as a whole.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/01_research_question.tex
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/05_evidence_receipts_and_gates.tex
+    evidence_summary: >
+      This is the author's explicit normative position, marked [AUTHOR THESIS] in the
+      TeX source (01_research_question.tex), arguing that a navigational surface
+      inherits rather than independently certifies ALIVE status.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-011
+    claim: >
+      Each of the seven atlas doctrine modules encodes a coordination law rather
+      than a predictive claim, instantiating the thesis argument that 'prediction
+      does not conserve consequence; coordination does.'
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/06_contribution_to_thesis.tex
+    evidence_summary: >
+      This is the author's explicit analytical contribution, marked [AUTHOR THESIS]
+      in the TeX source, arguing all seven modules are coordination mechanisms rather
+      than predictive filters; this is a thesis-level interpretive claim not directly
+      verifiable from the atlas source files.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-012
+    claim: >
+      The manufacturing surface is multiplicative rather than additive: adding one
+      standard adds |L| x |A| x |F| x |R| x |Q| x |B| x |D| new manufacturing
+      cells rather than one, constituting 'Combinatorial Maximalism.'
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/06_contribution_to_thesis.tex
+      - /Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md
+    evidence_summary: >
+      The SPR thesis defines the formal object set; the 'Combinatorial Maximalism'
+      label and multiplicative framing are the author's interpretive synthesis not
+      directly named in the base doctrine file.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-013
+    claim: >
+      The five demonstration-mode actor_* tables in the Supabase Law Substrate
+      present a concrete adversarial risk: citing the Supabase Law Substrate as
+      production authorization doctrine while those tables remain under 'Allow public
+      access' policies exposes the citation to invalidation by a hostile auditor.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/atlas/supabase_law_substrate.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      supabase_law_substrate.md confirms the tables are under 'Allow public access'
+      policies; the risk assessment is the author's analytical conclusion grounding
+      a real, confirmed gap in doctrine versus implementation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-014
+    claim: >
+      The ZoeApp Ministry Ontology encodes Connect, Give, Watch, Serve, and Pray as
+      process-laws and models livestream health as a three-state machine (healthy,
+      degraded, critical), but does not specify a Petri net or typestate encoding,
+      making it too thin for full dissertation citation depth.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/atlas/zoeapp_ministry_ontology.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      zoeapp_ministry_ontology.md was read and confirmed to contain exactly two brief
+      sections with no formal Petri net or typestate encoding; GAP-ATLAS-003 in the
+      TeX file documents this deficiency explicitly.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-ATLAS-015
+    claim: >
+      The PI_RESEARCH_PROGRAM_ALIVE_001 checkpoint carries a BLAKE3 hash of
+      e7c8f2d94a71b5c3e9f1d6a4b2c8e5f7a1d3c5b7e9f2d4a6c8e0f1a3b5c7d9 and
+      verification code 0x0F_ALL_GATES_PASS.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/atlas/05_evidence_receipts_and_gates.tex
+    evidence_summary: >
+      The BLAKE3 hash and verification code appear only in the TeX files; the
+      PI_RESEARCH_PROGRAM_ALIVE_001 checkpoint file itself was not read to confirm
+      these values, and AALST_CERTIFIED_ALIVE.md carries a SHA-256 hash rather than
+      a BLAKE3 hash, creating uncertainty about which seal belongs to which document.
+    confidence: LOW
+    allowed_in_pdf: true

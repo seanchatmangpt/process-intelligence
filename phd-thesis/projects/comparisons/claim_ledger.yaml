@@ -1,0 +1,238 @@
+slug: comparisons
+claims:
+  - id: CLM-COMPARISONS-001
+    claim: >
+      wasm4pm-compat makes out-of-range quality metrics (e.g., fitness > 1.0 or fitness
+      with zero denominator) a rustc compile-time type error via Metric<KIND, NUM, DEN>
+      with Require<{NUM <= DEN}>: IsTrue and Require<{DEN > 0}>: IsTrue bounds.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/CONFORMANCE_METRIC_SURFACES.md
+      - /Users/sac/process-intelligence/comparisons/TYPE_SAFETY_COMPARISON.md
+    evidence_summary: >
+      CONFORMANCE_METRIC_SURFACES.md contains the Rust source for Metric<KIND, NUM, DEN>
+      with the two compile-time where bounds, and demonstrates that FitnessConst<2, 1>
+      and FitnessConst<1, 0> are rustc type errors.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-002
+    claim: >
+      wasm4pm silently computes a fitness of 1.0 for an event log whose traces all have
+      zero events, because the early-continue branch returns fitting_traces += 1 on empty
+      activity lists, making raw log laundering a silent wrong result rather than a
+      detectable error.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/TYPE_SAFETY_COMPARISON.md
+    evidence_summary: >
+      TYPE_SAFETY_COMPARISON.md explicitly documents this wasm4pm behaviour, quoting the
+      early-continue branch logic and classifying it as a silent wrong result under the
+      laundering test.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-003
+    claim: >
+      Only wasm4pm-compat prevents raw event log laundering at the compiler level; PM4Py
+      fails with a runtime error and wasm4pm produces a silent wrong result, while
+      wasm4pm-compat rejects the call at the rustc type-check stage.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/TYPE_SAFETY_COMPARISON.md
+    evidence_summary: >
+      The laundering test table in TYPE_SAFETY_COMPARISON.md classifies all three stacks
+      and documents that the pub(crate) Admitted constructor on Evidence<T, State, W>
+      makes laundering a compile-time impossibility in wasm4pm-compat.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-004
+    claim: >
+      wasm4pm achieves 8.2M events/sec for raw trace replay and 134.7K events/sec for
+      alignment conformance, representing 96.6% and 96.2% of native Rust speed respectively,
+      while providing sandboxed memory isolation and < 1ms instantiation overhead versus
+      10-50ms for native processes.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/wasm_vs_native_pm_performance.md
+    evidence_summary: >
+      wasm_vs_native_pm_performance.md contains the benchmark table with these exact
+      figures, but the document references an experiments capability matrix file not
+      present in the comparisons directory, making these asserted rather than reproducible
+      figures.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-005
+    claim: >
+      The algorithm coverage matrix classifies eleven algorithms across PM4Py, wasm4pm,
+      and wasm4pm-compat; wasm4pm is missing Inductive Miner, Alignment Conformance,
+      POWL Discovery, Declare Checking, Log Skeleton, and OC-DFG, while wasm4pm-compat
+      carries structural shape types for all of them.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/ALGORITHM_COVERAGE_MATRIX.md
+    evidence_summary: >
+      ALGORITHM_COVERAGE_MATRIX.md is an eleven-row table with explicit Full/Shape/Partial/No
+      classifications for each algorithm across all three stacks, directly confirming the
+      gap structure described in the TeX files.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-006
+    claim: >
+      The conformance authority module was compiled successfully (0 errors) with cargo
+      check, contains 664 lines of Rust across 12 core types and all 8 unit tests passed,
+      sealed by BLAKE3 hash 75508e6e9e7acccb... on 2026-06-01.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+    evidence_summary: >
+      The conformance authority generation receipt records the exact cargo check output,
+      line counts, type inventory, all 8 test names with ok status, and the full BLAKE3
+      hash, dated 2026-06-01.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-007
+    claim: >
+      The PROCESS_INTELLIGENCE_ALIVE_001 checkpoint was sealed on 2026-05-31 with 12 of
+      12 criteria met; the comparisons directory satisfied criterion 8 with a file count
+      of 11 against a target of >= 4.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      RECEIPT_REGISTRY.md lists PM4PY_ORACLE_RECEIPT and WASM4PM_GAP_RECEIPT as covering
+      the comparison surface; the TeX files cite the ALIVE gate assessment document at
+      checkpoints/ALIVE_GATE_ASSESSMENT.md recording 12/12 criteria met.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-008
+    claim: >
+      The witness join-semilattice (W, sqsubseteq, sqcup, bot, top) with Monotonicity
+      Axiom 2 is sound and complete with respect to trace-based language acceptance, and
+      the BLAKE3 hash chain H_k = BLAKE3(H_{k-1} || e_k || W_k) provides cryptographic
+      tamper-resistance for conformance receipts.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/lattice_vs_trace_compliance_checking.md
+    evidence_summary: >
+      lattice_vs_trace_compliance_checking.md is cited directly by the TeX files for the
+      semilattice definition, Monotonicity Axiom 2 proof, and BLAKE3 hash chaining formula;
+      the document exists in the comparisons source directory.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-009
+    claim: >
+      The Chatman Equation A = mu(O*) grounds the comparisons corpus: a conformance verdict
+      is lawful only if the input event log was admitted through a named-law gate, the
+      output metric is type-bounded, and the refusal path encodes the violated structural
+      law.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/CONFORMANCE_METRIC_SURFACES.md
+      - /Users/sac/process-intelligence/comparisons/TYPE_SAFETY_COMPARISON.md
+    evidence_summary: >
+      The TeX file 02_lineage_and_context.tex explicitly marks this connection as AUTHOR
+      INTERPRETATION, noting that no document in the comparisons directory itself names
+      the Chatman Equation by that label.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-010
+    claim: >
+      PM4Py error handling surfaces as generic except Exception as e (a string), making
+      it impossible to determine which structural law was violated without string parsing;
+      wasm4pm-compat Refusal<R, W> encodes a specific named-law type R for every rejection.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/ADMISSION_REFUSAL_VS_PM4PY_ERRORS.md
+      - /Users/sac/process-intelligence/comparisons/TYPE_SAFETY_COMPARISON.md
+    evidence_summary: >
+      TYPE_SAFETY_COMPARISON.md reproduces both the PM4Py except Exception pattern and
+      the wasm4pm-compat Refusal<DanglingEventObjectLink, Ocel20> pattern side-by-side
+      with code examples.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-011
+    claim: >
+      The OCPQ query language (ObjectScope, Predicate tree, OcpqQuery in ocpq.rs) is a
+      wasm4pm-compat-original invention with no evaluation engine anywhere in the stack
+      and no prior art in published process mining literature.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/ALGORITHM_COVERAGE_MATRIX.md
+    evidence_summary: >
+      ALGORITHM_COVERAGE_MATRIX.md marks OCPQ as No for PM4Py and wasm4pm, Shape for
+      wasm4pm-compat only, with the explicit note that OCPQ is a wasm4pm-compat invention
+      with no engine anywhere yet.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-012
+    claim: >
+      All performance figures in the comparisons corpus (8.2M events/sec raw replay,
+      134.7K events/sec alignment, < 1ms instantiation) are asserted by source documents
+      rather than measured by reproducible benchmark scripts, constituting a documented
+      PARTIAL finding.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/wasm_vs_native_pm_performance.md
+    evidence_summary: >
+      The TeX file 05_evidence_receipts_and_gates.tex explicitly acknowledges this as a
+      known open gap; wasm_vs_native_pm_performance.md references experiments files not
+      present in the comparisons directory, corroborating the assertion-only status.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-013
+    claim: >
+      Admission gate thresholds (fitness >= 0.95 automatic pass, 0.85 <= fitness < 0.95
+      conditional with board override required, fitness < 0.85 hard reject) are compiled
+      as type-level constants into the ConformanceAdmissionGate struct, not runtime
+      configuration.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+    evidence_summary: >
+      The conformance authority generation receipt explicitly lists these Blue River Dam
+      Gate 3 thresholds as authority claims codified into the Rust module, confirmed under
+      the authority seal section as compiled safety guarantees.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-014
+    claim: >
+      wasm4pm-compat shape types for missing algorithms will serve as reception surfaces
+      for future wasm4pm execution engine output, implying API boundary compatibility
+      between the type-law layer and future engine implementations.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/ALGORITHM_COVERAGE_MATRIX.md
+    evidence_summary: >
+      The TeX file 07_open_questions_and_next_work.tex marks this as AUTHOR INTERPRETATION,
+      explicitly noting that if wasm4pm output types differ from compat shape types at the
+      API boundary the ready-to-receive claim is overstated.
+    confidence: LOW
+    allowed_in_pdf: true
+
+  - id: CLM-COMPARISONS-015
+    claim: >
+      The connection between the comparisons corpus and a capital-flow settlement layer
+      (DAO infrastructure, ConformanceCertificate with Blake3/Ed25519 enabling settlement
+      decisions) is authorial interpretation; no comparisons document names capital-flow
+      infrastructure.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/comparisons/pm4py_vs_wasm4pm_architecture.md
+    evidence_summary: >
+      The TeX file 06_contribution_to_thesis.tex explicitly labels this connection AUTHOR
+      INTERPRETATION with a parenthetical disclaimer that no comparisons document names
+      capital-flow infrastructure directly.
+    confidence: MEDIUM
+    allowed_in_pdf: true

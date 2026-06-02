@@ -1,0 +1,129 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: livestream
+% Thesis Role: real-time-process-broadcast-and-livestream-standards
+
+\section{Open Questions and Next Work}
+\label{sec:livestream-open}
+
+\subsection{Known Gaps}
+\label{sec:livestream-open-gaps}
+
+The following gaps are open as of 2026-06-01, each documented in the evidence
+record:
+
+\textbf{Gap 1: Visualizer OCEL 2.0 Non-Compliance (Severity: Critical).}
+The Telemetry Auditor audit (v30.1.2) confirmed that the browser visualizer
+telemetry emits zero object entities, zero E2O links, and zero O2O links, achieving
+0\% compliance with the OCEL 2.0 property graph specification
+$\mathcal{L} = (\mathcal{E}, \mathcal{O}, \text{E2O}, \text{O2O}, \Delta)$.
+The remediation plan specified in the audit (Section 5) requires constructing a
+synthetic object materializer at the stream boundary: for each transaction, map
+\texttt{traceId} to a synthetic \texttt{CaseObject} of type \texttt{"Case"} and
+write the E2O association into the ledger block payload. This has not been
+implemented.
+
+\textbf{Gap 2: DOM Binding Mismatch (Severity: Critical).}
+The \texttt{agent\_conversation\_log.js} module contains a syntax error at line 18
+(missing opening brace: \texttt{\} catch(e) \}}), which makes the module
+non-executable as committed. This is distinct from the DOM binding error in the
+browser visualizer (Stream Director audit, v30.1.2, PASS after remediation), which
+the Telemetry Auditor had previously flagged but whose remediation has not been
+independently verified.
+
+\textbf{Gap 3: Syntax Error in agent\_conversation\_log.js (Severity: High).}
+Line 18 of \texttt{agent\_conversation\_log.js} reads \texttt{\} catch(e) \}}
+instead of \texttt{\} catch(e) \{\ \}}. The module cannot be executed without
+correcting this syntax error. Whether a corrected version exists in a later commit
+is not established by the evidence record.
+
+\textbf{Gap 4: Unverified External Source Directories (Severity: Medium).}
+Both \texttt{aalst\_broadcaster.js} and \texttt{master\_ocel\_stream.js} reference
+external paths (\texttt{/Users/sac/zoeapp/replays} and the broadcaster's own
+repository path \texttt{/Users/sac/process-intelligence}) that are assumed to exist.
+The \texttt{agent\_conversation\_log.js} module references
+\texttt{/Users/sac/.gemini/tmp/zoeapp/chats}. The existence and population of
+these directories at any given runtime is not verified in the evidence record.
+If the zoeapp replays directory is empty, the master OCEL stream emits no events
+and the replay aggregator produces an empty log.
+
+\textbf{Gap 5: Conformance Metric Provenance (Severity: Medium).}
+The \texttt{conformance\_audit.md} reports Fitness\,=\,0.9880 and
+Precision\,=\,1.0000 against the Blue River Dam thesis Petri net model, but does
+not identify which tool computed these metrics (pm4py, wasm4pm, the browser A*
+solver, or manual calculation), which event log was used as input (the
+\texttt{master\_conversation.ocel} file, a subset, or a synthetic trace), or which
+specific Petri net model definition was used. Without this provenance, the metrics
+cannot be independently reproduced.
+
+\subsection{Deferred Gates}
+\label{sec:livestream-open-deferred}
+
+The \texttt{LIVESTREAM\_STATUS\_001.md} checkpoint records two Petri net states as
+formally pending:
+\begin{itemize}
+  \item \texttt{[Adversarial Audit]}: no token (pending completion of v30.1.1);
+  \item \texttt{[Gating]}: no token (pending ALIVE verdict).
+\end{itemize}
+The \texttt{PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA} checkpoint was
+subsequently issued, declaring the 20-agent adversarial swarm test complete and the
+foundry ``definitively ALIVE.'' However, the OMEGA checkpoint does not explicitly
+reference the \texttt{LIVESTREAM\_STATUS\_001} token distribution or declare those
+specific gates closed. The formal relationship between these two documents is
+unresolved: it is not established whether the OMEGA checkpoint supersedes the
+LIVESTREAM\_STATUS\_001 gates or whether they remain independently open.
+
+\subsection{Research Risks}
+\label{sec:livestream-open-risks}
+
+\textbf{Risk 1: Agent-issued PASS verdicts without independent re-audit.}
+The Stream Director agent both performed the DOM binding remediation and issued the
+PASS verdict for that remediation. In a rigorous adversarial audit, the auditing
+agent and the remediating agent should be different. The Telemetry Auditor FAIL
+verdict was issued by a different agent and provides a counterweight, but the
+specific finding of DOM binding mismatch has not been independently re-tested after
+the Stream Director's claimed remediation.
+
+\textbf{Risk 2: Conformance theater.}
+The Chicago TDD hostile assumption doctrine (\texttt{\textasciitilde/.claude/rules/process-mining-chicago-tdd.md})
+explicitly lists conformance theater as an adversarial challenge: a system may
+appear conformant while logs reveal variant explosion, hidden loops, retries, or
+rework. The conformance audit result (Fitness\,=\,0.9880) is reported without a
+model-vs-log comparison or a negative test (injecting non-conforming traces and
+verifying rejection). Without these, the fitness score cannot be distinguished from
+a score produced by overfitting the model to the observed trace.
+
+\textbf{Risk 3: Idle stream.}
+If the zoeapp replays directory and Gemini chatlog directory are empty, three of
+the four broadcast modules emit no events. A live stream with no events is
+indistinguishable from a broken stream from the outside. The project has no
+liveness heartbeat mechanism to distinguish ``no events this second'' from
+``stream is down.''
+
+\subsection{Next Receipted Work}
+\label{sec:livestream-open-next}
+
+\textbf{[FUTURE WORK]} The following work items, if completed, would advance the
+project from PARTIAL to ALIVE:
+
+\begin{enumerate}
+  \item \textbf{OCEL 2.0 uplift receipt.} Implement the synthetic object
+    materializer specified in the Telemetry Auditor remediation plan (Section 5
+    of the v30.1.2 audit). Run the Telemetry Auditor audit again and obtain a PASS
+    verdict with OCEL 2.0 compliance $\geq$\,80\%. Issue a named receipt certifying
+    the uplift.
+  \item \textbf{Syntax fix and execution receipt for agent\_conversation\_log.js.}
+    Correct the syntax error at line 18. Execute the module against live chatlog
+    data and verify the output is OCEL 2.0 conformant. Issue a named receipt.
+  \item \textbf{Independent DOM re-audit.} Have an agent other than the Stream
+    Director re-audit the visualizer DOM bindings after the claimed remediation.
+    If PASS is confirmed, issue a named receipt.
+  \item \textbf{Conformance metric provenance receipt.} Re-run the conformance audit
+    using a documented tool (pm4py preferred, per the Chicago TDD doctrine), with
+    an identified input event log and an identified Petri net model definition.
+    Issue a named receipt recording tool, input log path, model path, and computed
+    metrics.
+  \item \textbf{LIVESTREAM\_STATUS\_001 gate resolution.} Issue a formal document
+    declaring the \texttt{[Adversarial Audit]} and \texttt{[Gating]} states closed,
+    with explicit reference to the evidence that satisfies each gate. This document
+    should either supersede LIVESTREAM\_STATUS\_001 or be issued as an addendum to it.
+\end{enumerate}

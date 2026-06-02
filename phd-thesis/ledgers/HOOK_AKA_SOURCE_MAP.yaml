@@ -1,0 +1,25 @@
+sources:
+  - path: /Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md
+    term: Autonomic Knowledge Actuation
+    project: process-intelligence
+    relevance: HIGH
+  - path: /Users/sac/process-intellmigence/doctrine/blue-river-dam.md
+    term: Blue River Dam
+    project: process-intellmigence
+    relevance: HIGH
+  - path: /Users/sac/zoeapp/src/lib/vkg/hooks/types.ts
+    term: Knowledge Hook
+    project: zoeapp
+    relevance: HIGH
+  - path: /Users/sac/zoeapp/tmp_compat/law.rs
+    term: Need9
+    project: zoeapp
+    relevance: HIGH
+  - path: /Users/sac/zoeapp/docs/vision2030/truex-collaborative-intelligence.md
+    term: Truex Hook
+    project: zoeapp
+    relevance: HIGH
+  - path: /Users/sac/process-intellmigence/ORIGINAL_REQUEST.md
+    term: Autonomic Knowledge Actuation
+    project: process-intelligence
+    relevance: HIGH

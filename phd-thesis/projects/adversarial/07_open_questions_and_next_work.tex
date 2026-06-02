@@ -1,0 +1,120 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Open Questions and Next Work}
+\label{sec:adversarial-questions}
+
+\subsection{Known Gaps}
+\label{sec:adversarial-questions-gaps}
+
+Four known gaps affect the adversarial corpus.
+
+\textbf{Gap 1: Scenarios 6--9 require \texttt{libwasm4pm.dylib}.} The simulation engine's
+FFI boundary scenarios (6: forged signature at FFI boundary, 7: unstructured data rejection,
+8: out-of-bounds pointer safety, 9: heap zeroization) require a compiled
+\texttt{libwasm4pm.dylib} at
+\texttt{sources/wasm4pm/target/debug/libwasm4pm.dylib}. It is an open question whether this
+binary artifact exists and whether Scenarios 6 through 9 have ever been executed successfully
+against the live library. The simulation engine handles the absent library case by raising
+\texttt{FileNotFoundError} in \texttt{locate\_library()}, but this means the four scenarios
+are design documents rather than verified tests until the library is compiled.
+
+\textbf{Gap 2: Finding 001 is UNRESOLVABLE PRE-GAP\_001-CLOSE.} The graduation bridge from
+wasm4pm-compat to wasm4pm is one-sided. \texttt{GraduationCandidate} is defined in
+\texttt{wasm4pm-compat} but wasm4pm has no intake function that accepts it, blocking the
+end-to-end evidence chain. All graduation claims must carry the qualifier
+\texttt{[BLOCKED: GAP\_001]} until this is resolved.
+
+\textbf{Gap 3: Finding 005 is CRITICAL and open.} PM4Py algorithm count claims throughout
+the corpus have not been verified against the actual \texttt{pm4py/} source tree. The claims
+may be correct but they are asserted from documentation rather than derived from source-level
+inventory. Every PM4Py algorithm count claim should carry the marker
+\texttt{[DOCUMENTATION-DERIVED --- not source-verified]} until a file-level source audit is
+completed.
+
+\textbf{Gap 4: The PROV-O gap has no executable verification.} The OCEL adversarial gravity
+document identifies the PROV-O gap as unresolved in the OCEL 2.0 public standard, and the
+wasm4pm Reality Receipt mechanism is described as the remediation. However, no executable
+test verifies that the Reality Receipt wrapping actually produces PROV-O compliant output
+with \texttt{wasGeneratedBy}, \texttt{used}, and \texttt{wasAttributedTo} semantically
+enforced. This gap means the Reality Receipt mechanism is a design claim, not a verified
+manufacturing artifact.
+
+\subsection{Deferred Gates}
+\label{sec:adversarial-questions-deferred}
+
+Three gates are deferred pending upstream work.
+
+\textbf{Deferred Gate 1 (GAP\_001 closure):} Full end-to-end adversarial simulation
+including the compat-to-wasm bridge is deferred until GAP\_001 is closed. The adversarial
+corpus cannot manufacture a receipt for the graduation path until wasm4pm implements the
+\texttt{GraduationCandidate} intake function.
+
+\textbf{Deferred Gate 2 (alignment conformance, GAP\_004):} Finding 009 establishes that the
+MAPE-K Analyze phase is limited to token replay fitness because alignment-based conformance
+is blocked by GAP\_004. The adversarial simulation does not test alignment conformance
+rejection because there is no alignment implementation to test against. This gate is deferred
+pending GAP\_004 closure.
+
+\textbf{Deferred Gate 3 (M\&A-specific adversarial challenges):} The ADVERSARIAL\_RECEIPT
+acknowledges that additional adversarial challenges may be warranted for M\&A-specific
+claims. Finding 008 identifies that the Reverse Porter Five Forces inversion claims lack
+manufactured artifact backing. A \texttt{RED\_TEAM\_FINDINGS\_003.md} covering M\&A-specific
+adversarial challenges is a deferred gate contingent on M\&A receipt manufacturing.
+
+\subsection{Research Risks}
+\label{sec:adversarial-questions-risks}
+
+Three research risks are identified.
+
+\textbf{Risk 1 (library drift):} The \texttt{Wasm4pmBridge} class is coupled to specific
+function signatures in \texttt{libwasm4pm.dylib}: \texttt{wasm\_init}, \texttt{wasm\_alloc},
+\texttt{wasm\_parse\_and\_query}, \texttt{wasm\_shred\_heap}, \texttt{wasm\_get\_last\_error},
+\texttt{wasm\_get\_absolute\_ptr}, and \texttt{wasm\_verify\_jcs\_signature}. If the Rust
+library changes its FFI surface, the Python bridge will fail silently or produce incorrect
+results. There is no API versioning or ABI stability guarantee documented for this interface.
+
+\textbf{Risk 2 (bibliography drift):} Finding 006 identifies that \texttt{bibliography.json}
+and the papers directory may have drifted. The \texttt{validate\_standards.py} audit scope
+does not cover paper-to-bibliography reconciliation. If the bibliography drifts further, the
+adversarial canon citations may reference papers whose fixtures have been removed or whose
+classifications have been updated without corresponding bibliography amendments.
+
+\textbf{Risk 3 (Chatman Constraint enforcement gap):} The Chatman Constraint (strict
+injectivity $C(S_a) \neq C(S_b)$) is documented as a structural law but is not yet enforced
+at the compiler or scaffolding level in wasm4pm-compat. Until it is implemented as a type
+guard or constraint check, the injectivity requirement is a research claim rather than a
+manufactured architectural guarantee.
+
+\subsection{Next Receipted Work}
+\label{sec:adversarial-questions-next}
+
+The next receipted work items, in priority order following the gap remediation sequence
+established in Finding 010, are:
+
+\begin{enumerate}
+  \item \textbf{Compile \texttt{libwasm4pm.dylib} and verify Scenarios 6--9.} Run all ten
+        simulation scenarios against the live library and issue a
+        \texttt{SIMULATION\_V30.1.1\_VERIFIED\_RECEIPT} certifying that all ten scenarios
+        produce the expected verdicts with the compiled binary.
+
+  \item \textbf{Close GAP\_001 and issue a graduation bridge receipt.} Implement the
+        \texttt{GraduationCandidate} intake function in wasm4pm. Issue a
+        \texttt{GRADUATION\_BRIDGE\_RECEIPT} certifying the end-to-end evidence chain from
+        compat admission to wasm4pm execution.
+
+  \item \textbf{Run the pm4py source audit (Finding 005).} Execute a file-level inventory of
+        pm4py algorithms against the comparison matrix entries. Update or mark
+        \texttt{[DOCUMENTATION-DERIVED]} every count that does not match the source tree.
+        Issue a \texttt{PM4PY\_SOURCE\_AUDIT\_RECEIPT}.
+
+  \item \textbf{Manufacture an executable PROV-O compliance test for the Reality Receipt.}
+        Write a test that verifies the Reality Receipt wrapper produces output satisfying the
+        PROV-O \texttt{wasGeneratedBy}, \texttt{used}, and \texttt{wasAttributedTo}
+        assertions. Issue a \texttt{REALITY\_RECEIPT\_PROV\_O\_RECEIPT} upon passing.
+
+  \item \textbf{File \texttt{RED\_TEAM\_FINDINGS\_003.md}} covering M\&A-specific adversarial
+        challenges, contingent on the availability of M\&A manufacturing receipts with actual
+        conformance reports.
+\end{enumerate}

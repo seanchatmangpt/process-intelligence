@@ -1,0 +1,134 @@
+\section{Evidence, Receipts, and Gates}
+\label{sec:doctrine-evidence}
+
+\subsection{Tests}
+\label{sec:doctrine-evidence-tests}
+
+The doctrine corpus does not contain test fixtures of its own. It is a specification layer,
+not an execution layer. However, it specifies the test requirements that downstream
+implementations must satisfy. The \texttt{CONFORMANCE\_AS\_LAW.md} doctrine file references
+the following test artifact that must exist in the wasm4pm-compat codebase:
+
+\begin{quote}
+The \texttt{metric\_out\_of\_bounds} compile-fail fixture in \texttt{tests/ui/compile\_fail/}
+seals the \texttt{Between01\textless{}NUM,DEN\textgreater{}} law. A fitness value that escapes
+$[0,1]$ is a type error, not a runtime exception.
+\end{quote}
+
+More broadly, the doctrine specifies the categories of test that must exist before any
+algorithm family may be declared ALIVE:
+
+\begin{itemize}
+  \item \textbf{Compile-pass fixtures}: valid evidence chains that reach Admitted and produce
+    Receipted outputs without compiler error.
+  \item \textbf{Compile-fail fixtures} (trybuild): illegal transitions --- such as skipping
+    \texttt{Admit::admit()}, using a string-typed refusal, or producing an out-of-bounds
+    metric --- must fail to compile.
+  \item \textbf{Negative fixtures}: injected impossible logs (e.g., traces with
+    \texttt{MissingFinalMarking}, \texttt{EmptyTrace}, \texttt{DanglingEventObjectLink})
+    must be refused with the specific named law, not a generic error.
+  \item \textbf{Replay tests}: a receipted execution output must be independently replayable
+    from the original admitted evidence.
+\end{itemize}
+
+The anti-regression audit mesh specification in \texttt{PROCESS\_INTELLIGENCE\_DEFINED.md}
+describes a crown audit protocol coordinating 22 subordinate scripts, distinguishing hard
+audits (immediate blockers) from soft audits (quality metric thresholds). The existence of
+this mesh is specified in doctrine; its execution evidence resides in the downstream
+wasm4pm-compat test suite. For this project, the test surface is \textbf{doctrine-specified
+but not yet receipt-bearing} --- this is a contributing factor to the PARTIAL status.
+
+\subsection{Receipts}
+\label{sec:doctrine-evidence-receipts}
+
+Two receipt surfaces exist for the doctrine corpus.
+
+\paragraph{Commit Receipts.} The primary receipt chain for the doctrine corpus is the git
+commit log. \texttt{AUTONOMIC\_KNOWLEDGE\_ACTUATION.md} explicitly identifies this
+equivalence: ``The research program's autonomic loop is the commit sequence itself. The commit
+log is the knowledge base; receipts are commit hashes.'' The corpus was manufactured in a
+concentrated sprint between May 31 and June 1, 2026, as evidenced by the file timestamps
+across all 34 doctrine files. The 588 commits at the ALIVE\_001 seal constitute the
+cryptographic receipt chain for the research program's manufacturing process.
+
+\paragraph{Typed Receipt Specification.} \texttt{RECEIPT\_DOCTRINE.md} specifies the
+canonical receipt format applicable to all downstream receipts:
+
+\begin{verbatim}
+name: <RECEIPT_NAME>
+produced_by: <operator or module>
+witness: <W — the named law>
+result_type: <T>
+criteria_met: [list of criteria satisfied]
+gaps_remaining: [list of open items]
+timestamp_ns: <nanosecond-precision timestamp>
+\end{verbatim}
+
+This format is replicated in the workflow ledgers at
+\texttt{phd-thesis/ledgers/WORKFLOW\_RECEIPT.yaml} and
+\texttt{phd-thesis/ledgers/PROJECT\_INDEX.yaml}, which serve as the thesis-layer receipt
+surface for this project.
+
+\paragraph{BLAKE3 Chain.} The MAPE-K Execute phase and all ALIVE-gate executions use BLAKE3
+chaining: $\text{Receipt}_n = \text{BLAKE3}(\text{Receipt}_{n-1} \mid\mid
+\text{new\_action} \mid\mid \text{new\_state} \mid\mid \text{signature})$. This chain was
+specified in doctrine and activated in the ALIVE\_001 checkpoint verification.
+
+\subsection{Checkpoints}
+\label{sec:doctrine-evidence-checkpoints}
+
+The primary checkpoint for the doctrine corpus is
+\texttt{checkpoints/PROCESS\_INTELLIGENCE\_ALIVE\_001.md}, sealed at 588 commits with
+12/12 gate criteria verified. The checkpoint file records the following mathematically
+verified invariants:
+
+\begin{enumerate}
+  \item Admissibility Boundary: $R \vdash P_i = \mu(O^*, T, L)$ --- compile-time
+    state-space bounds validated.
+  \item Autonomic Actuation: $\alpha(K, P, L, T) \to \tau$ --- typestate compile-fail loops
+    verified.
+  \item Token-game Fitness: $f(L, N) = 1 - \frac{\sum m}{\sum c} - \frac{\sum r}{\sum p}$
+    --- automated execution gate verified.
+  \item OCPQ Refinement: $p \sqsubseteq_L c$ --- subset inclusion and matching bindings
+    programmatically verified.
+  \item Decommissioning Retirement: $\delta(P)$ --- formal closure maps verified, no orphan
+    dependencies.
+\end{enumerate}
+
+The checkpoint also authorizes four downstream workflow categories: the ggen manufacturing
+pipeline initialization, Level-5 adversarial red-team deployment, BLAKE3 receipt emission
+protocols, and autonomous self-healing loop activation. The verification status code is
+\texttt{0x00 (SUCCESS\_ALIVE)}.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:doctrine-evidence-status}
+
+The overall status of the doctrine project is \textbf{PARTIAL}. This status is declared
+honestly and explicitly, consistent with the doctrine's own requirement that ``PARTIAL is
+honorable when scoped.''
+
+\paragraph{ALIVE components.} The doctrine corpus itself is sealed and authoritative. The
+PROCESS\_INTELLIGENCE\_ALIVE\_001 checkpoint is sealed at 588 commits with 12/12 criteria
+met. The six authorized downstream workflows are specified and receipted against the sealed
+checkpoint. The formal object taxonomy, algorithm taxonomy, evidence chain specification,
+receipt doctrine, and named law inventory are all complete and paper-grounded. The
+\texttt{DOWNSTREAM\_AUTHORIZATION\_LAW.md} is active and operative.
+
+\paragraph{PARTIAL components.} Fifteen algorithm families are documented in the taxonomy
+with compat structural coverage ranging from partial to complete, but wasm4pm execution is
+listed as \emph{missing} for all fifteen. The compat-to-wasm bridge (GAP\_001) is open:
+wasm4pm has no import of wasm4pm-compat, accepts raw \texttt{EventLog} without admission,
+and uses string-typed \texttt{ValidationError(String)} catch-alls forbidden by doctrine.
+Three witness types --- \texttt{DivergenceWitness}, \texttt{ConvergenceWitness}, and
+\texttt{OcDfgEdge\textless{}ObjectType\textgreater{}} --- are declared but not yet
+implemented. The WASM boundary law and the BPMN OR-Join Smart-Completion doctrine have no
+corresponding test fixtures or compile-fail receipts.
+
+\paragraph{BLOCKED components.} No downstream wasm4pm refactor is authorized until the
+GAP\_001 bridge is designed and a gap close plan is produced. The Decommission and Archive
+lifecycle stages have no receipt-bearing execution evidence. The board-admissible M\&A deck
+manufacturing surface is specified but not yet operationalized with a receipted output.
+
+The PARTIAL status is itself an evidentiary contribution: it demonstrates that the doctrine
+corpus applies its own gate criteria honestly to its own outputs, refusing to declare ALIVE
+on partial evidence.
