@@ -53,7 +53,7 @@ No private machinery may claim public authority it has not earned.
 
 ### prompt-manufactory
 - **Classification:** Private (UNKNOWN state)
-- **Public Surface:** None — no ALIVE receipts, no Water Gate artifacts, no proof-gate evidence. The existence of the `prompts/` subdirectory within process-intelligence is an implementation detail, not a publishable surface.
+- **Public Surface:** None — no ALIVE receipts, no Water Gate artifacts, no proof-gate evidence. The canonical substrate is at `research/prompt-manufactory/` within process-intelligence (confirmed: audit.json, checkpoints/, emitted/, prompt-manufactory.ttl present). The `prompts/` subdirectory is a legacy output directory for directive files, not the manufacturing substrate.
 - **Private Machinery:** All downstream prompt directives, checkpoint verification files, and the manufacturing pipeline prompt templates that drive downstream implementation.
 - **Boundary Rule:** Prompt directives are operational machinery; they must never appear in public documentation, blog posts, or LinkedIn content, as they expose the private manufacturing process.
 - **Leak Risk:** High — prompt directives are the most sensitive operational asset. Publishing them reveals the manufacturing methodology and eliminates competitive differentiation in the CodeManufactory system.
@@ -81,10 +81,10 @@ No private machinery may claim public authority it has not earned.
 
 ### living-lsp-gall-codemanufactory
 - **Classification:** Unknown (UNKNOWN state)
-- **Public Surface:** None — no LSP, Gall, or CodeManufactory artifacts found at /Users/sac/ostar, no ALIVE verdict files, no Inspection Gate defined. The path exists but contains no verified artifacts for this project identity.
-- **Private Machinery:** Whatever OCEL/process-mining artifacts and criterion benchmarks exist at /Users/sac/ostar are of unknown ownership and must not be attributed to this project or published under its name.
-- **Boundary Rule:** No public claims may be made for living-lsp-gall-codemanufactory until the project is located, its boundaries are confirmed, and an ALIVE verdict is issued under a defined Inspection Gate.
-- **Leak Risk:** High — misattributing artifacts from an unrelated project (/Users/sac/ostar) to this project would create false public authority and corrupt the category boundary.
+- **Public Surface:** None — no sealed Inspection Gate receipt found for the Living LSP surface at /Users/sac/ggen, no ALIVE verdict files for this specific project identity. The ggen-lsp-a2a crate and GALL foundation tests are present but the project is in PARTIAL state with RED gates.
+- **Private Machinery:** LSP bridge implementation (ggen-lsp-a2a), GALL protocol violation definitions, GALL-CONFORM-001 round-trip specifics, and all implementation details of the CodeManufactory manufacturing pipeline within ~/ggen. Note: /Users/sac/ostar is NOT this project — it contains only OCEL/process-mining stubs and must not be attributed to living-lsp-gall-codemanufactory.
+- **Boundary Rule:** No public claims may be made for living-lsp-gall-codemanufactory until the Inspection Gate is formally defined in ~/ggen, GALL-CONFORM-001 is resolved, and an ALIVE verdict is issued.
+- **Leak Risk:** High — /Users/sac/ostar was previously incorrectly cited as the canonical path for this project; any documentation still referencing /ostar for this project identity creates a false authority claim that must be corrected before publication.
 
 ### linkedin-public-canon
 - **Classification:** Public (Absent locally)
@@ -153,7 +153,7 @@ A table of surfaces that must NEVER leak:
 | GALL-CONFORM-001 gap details | ggen | Exposes specific architectural weakness under remediation |
 | Failing lib test internals | ggen | Active defect; publication would contradict ALIVE claims |
 | All downstream prompt directives | prompt-manufactory | Manufacturing methodology; publication eliminates CodeManufactory competitive differentiation |
-| Checkpoint verification files (prompts/) | prompt-manufactory | Operational control surface; exposure reveals manufacturing pipeline logic |
+| Checkpoint verification files (research/prompt-manufactory/checkpoints/) | prompt-manufactory | Operational control surface; exposure reveals manufacturing pipeline logic |
 | Prompt templates driving implementation | prompt-manufactory | Core operational IP of the CodeManufactory system |
 | DTO flattening boundary implementation | wasm4pm-compat | Active architectural violation under remediation; exposure reveals design debt |
 | Specific type-law crosswalk mappings | wasm4pm-compat | Competitive IP of the compat bridge |
@@ -165,7 +165,7 @@ A table of surfaces that must NEVER leak:
 | Gate 1–6 implementation source | blue-river-dam | WF-net soundness and MAPE-K control logic constitutes orchestration IP |
 | Internal MAPE-K loop control logic | blue-river-dam | Orchestration internals; exposure enables copying without the proof burden |
 | Integration points to downstream pipelines | blue-river-dam | Architectural control points that must not be reverse-engineered |
-| OCEL/process-mining artifacts at /Users/sac/ostar | living-lsp-gall-codemanufactory | Unknown ownership; publishing misattributed artifacts creates false authority |
+| OCEL/process-mining artifacts at /Users/sac/ostar | living-lsp-gall-codemanufactory | /Users/sac/ostar is NOT this project; misattributing these artifacts creates false authority. Canonical path is /Users/sac/ggen. |
 | Any content from UNKNOWN-state projects | knowledge-hooks-truex, living-lsp-gall-codemanufactory, prompt-manufactory | UNKNOWN state means no verified ALIVE gate — publication would be ungrounded |
 
 ---
@@ -203,8 +203,8 @@ The following must be resolved before this map can be sealed:
 
 2. **knowledge-hooks-truex UNKNOWN** — The Sheep Gate proof gate is undefined. The manifesto connection rule (Rule 3) cannot be fully honored until the Sheep Gate is defined and reached. Resolution: Define the Sheep Gate in truex, verify BLAKE3 receipts, and achieve ALIVE verdict before truex contributes to the public wall.
 
-3. **living-lsp-gall-codemanufactory UNKNOWN** — The Inspection Gate secondary gate for this map is associated with a project that cannot be located. Resolution: Locate or manufacture living-lsp-gall-codemanufactory and issue an ALIVE verdict under a defined Inspection Gate before this secondary gate is claimed as reached.
+3. **living-lsp-gall-codemanufactory UNKNOWN** — The canonical path is confirmed as /Users/sac/ggen (ggen-lsp-a2a crate and GALL artifacts present). The Inspection Gate is not yet formally defined and GALL-CONFORM-001 is RED. Resolution: Resolve GALL-CONFORM-001 in ~/ggen, formally define the Inspection Gate, and issue an ALIVE verdict before this secondary gate is claimed as reached. Note: /Users/sac/ostar is NOT this project.
 
-4. **prompt-manufactory UNKNOWN** — The Water Gate connection rule (Rule 2) is based on a project in UNKNOWN state. Water Gate teaching content cannot be certified until the project behind it achieves an ALIVE verdict. Resolution: Define and reach the Water Gate in prompt-manufactory.
+4. **prompt-manufactory ABSENT** — The canonical substrate is at research/prompt-manufactory/ (confirmed present). The Water Gate connection rule (Rule 2) is based on a project in ABSENT state (no ALIVE receipt). Water Gate teaching content cannot be certified until the project achieves an ALIVE verdict. Resolution: Issue PROMPT_MANUFACTORY_ALIVE_001.yaml from research/prompt-manufactory/ after Water Gate artifacts are confirmed.
 
 5. **ggen PARTIAL** — The Dung Gate is associated with ggen, which is PARTIAL with two RED gates. This map claims Dung Gate as primary gate. Resolution: Resolve GALL-CONFORM-001 and clippy/fmt gates in ggen to achieve ALIVE before the Dung Gate claim is fully honored.

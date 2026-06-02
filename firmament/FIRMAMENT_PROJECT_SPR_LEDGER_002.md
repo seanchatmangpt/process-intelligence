@@ -41,7 +41,9 @@ This ledger is the authoritative record for DAY_002 wall-state.
 - This ledger file exists at the canonical path and passes line-count verification
 - Every entry has all 12 required fields present
 
-**Receipt Dependency:** `FIRMAMENT_PROJECT_SPR_LEDGER_002.md` is itself the receipt; its existence and completeness constitute the ALIVE proof for Nehemiah 52.
+**ALIVE Status: ABSENT.** Project container does not exist — ABSENT. Ledger-as-receipt is invalid. Independent repo required. The existence of this ledger file documents the discipline but does not constitute an ALIVE receipt for a project that has no independent repository, no codebase, and no executable gate. A receipt must come from outside the artifact it is receipting.
+
+**Receipt Dependency:** No qualifying receipt currently exists. ALIVE requires an independent `nehemiah-52/` project at a canonical path with its own BLAKE3-verified receipt — not this ledger file.
 
 **Public/Private Classification:** Public
 
@@ -210,7 +212,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 
 **Wall Section:** The Water Gate governs public reading of the law (prompts are the law read aloud to implementors); the Old Gate enforces boundary doctrine (no implementation crosses without a warrant); the Inspection Gate verifies each warrant before it fires downstream.
 
-**Compressed SPR:** Prompt Manufactory lives at `~/process-intelligence/prompts` as a subdirectory of the process-intelligence repo, not a standalone project. It contains downstream prompt directives and a checkpoint verification file but holds no ALIVE receipts, no Water Gate artifacts, and no formal proof-gate evidence — ALIVE state is indeterminate. Its role is structural: no downstream wasm4pm refactor, M&A claim, or gap closure may proceed without a governing prompt warrant from this directory.
+**Compressed SPR:** Prompt Manufactory's canonical substrate resides at `~/process-intelligence/research/prompt-manufactory` (confirmed by the presence of `audit.json`, `checkpoints/`, `emitted/`, and `ggen/ontology/prompt-manufactory.ttl`). The path `~/process-intelligence/prompts` is a legacy subdirectory of downstream directive outputs, not the manufacturing substrate itself. The research/prompt-manufactory directory holds PARTIAL and ALIVE manufactured checkpoint templates and an audit corpus, but no Water Gate artifacts and no formal proof-gate receipt establishing this substrate as ALIVE — state is ABSENT/UNKNOWN. Its role is structural: no downstream wasm4pm refactor, M&A claim, or gap closure may proceed without a governing prompt warrant from this substrate.
 
 **Inputs:**
 - Doctrine findings (from Process Intelligence Core)
@@ -228,7 +230,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 - Water Gate artifact (formal public-reading document) present in directory
 - No prompt authorizes an action that the research program has not yet grounded
 
-**Receipt Dependency:** No qualifying receipt currently exists. ALIVE requires a new `prompts/PROMPT_MANUFACTORY_ALIVE_001.yaml` linking to at least one upstream doctrine receipt.
+**Receipt Dependency:** No qualifying receipt currently exists. ALIVE requires a new `research/prompt-manufactory/receipts/PROMPT_MANUFACTORY_ALIVE_001.yaml` linking to at least one upstream doctrine receipt.
 
 **Public/Private Classification:** Mixed (prompt text public once warranted; pre-warrant drafts private)
 
@@ -358,7 +360,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 
 **Wall Section:** The Inspection Gate is the primary surface where author-time artifacts are verified before they enter the wall; the Dung Gate removes invalid or hand-coded stubs at the point of authorship; the Water Gate delivers diagnostic law-reading back to the developer in real time.
 
-**Compressed SPR:** Living LSP / GALL / CodeManufactory resides at `~/ostar` but as of the current scan contains no LSP, GALL, or CodeManufactory-specific artifacts — the path exists but its contents appear to belong to OCEL/process-mining artifacts and criterion benchmarks, not the Living LSP project. ALIVE state is UNKNOWN; no ALIVE verdict files, no Inspection Gate receipts, and no CodeManufactory-specific manufacturing pipeline evidence were found. The project's doctrine role is well-defined: it is the author-time enforcement layer that ensures the CodeManufactory product is the only manufacturing mechanism, with RevOps as its canonical test case.
+**Compressed SPR:** Living LSP / GALL / CodeManufactory resides at `~/ggen` — confirmed by the presence of `crates/ggen-lsp-a2a/`, `crates/ggen-lsp-a2a/tests/gall_foundation_lsp_mcp_a2a.rs`, `gall_adjudicate_witnessed_truthfulness.rs`, and LSP bridge sources. The path `/Users/sac/ostar` is NOT this project — it contains only OCEL/process-mining stubs and is a separate project. As of the current scan, ggen holds a PARTIAL verdict: LSP and GALL crates are present but GALL-CONFORM-001 (wpm/ocel round-trip) and clippy/fmt gates are RED. ALIVE state is PARTIAL/UNKNOWN; no sealed Inspection Gate receipt was found for the Living LSP surface specifically. The project's doctrine role is well-defined: it is the author-time enforcement layer that ensures the CodeManufactory product is the only manufacturing mechanism, with RevOps as its canonical test case.
 
 **Inputs:**
 - Source code under authorship (Java, Rust, Python)
@@ -377,9 +379,9 @@ This ledger is the authoritative record for DAY_002 wall-state.
 - GALL protocol violations detectable and receipted
 - CodeManufactory manufacturing pipeline defined in executable form (not just doctrine)
 - RevOps test case manufactured and receipted (not hand-coded)
-- ALIVE receipt present at canonical path under `~/ostar/`
+- ALIVE receipt present at canonical path under `~/ggen/`
 
-**Receipt Dependency:** No qualifying receipt currently found. ALIVE requires a new `ostar/receipts/LIVING_LSP_ALIVE_001.yaml` or equivalent after LSP and GALL artifacts are confirmed present.
+**Receipt Dependency:** No qualifying receipt currently found. ALIVE requires a new `ggen/receipts/LIVING_LSP_ALIVE_001.yaml` or equivalent after LSP and GALL gate criteria are fully met.
 
 **Public/Private Classification:** Mixed (LSP diagnostics and GALL protocol definitions public; implementation artifacts private pre-ALIVE)
 
@@ -430,12 +432,12 @@ This ledger is the authoritative record for DAY_002 wall-state.
 
 | # | Project | Primary Gate | Secondary Gate | Status |
 |---|---------|-------------|----------------|--------|
-| 1 | Nehemiah 52 | Fish Gate | Inspection Gate | ALIVE (this ledger) |
+| 1 | Nehemiah 52 | Fish Gate | Inspection Gate | ABSENT (no independent repo; ledger-as-receipt invalid) |
 | 2 | Process Intelligence Core | Fountain Gate | Water Gate | ALIVE |
 | 3 | Knowledge Hooks / AKA / Truex | Sheep Gate | Inspection Gate | UNKNOWN |
 | 4 | CONSTRUCT8 | Horse Gate | Inspection Gate | ALIVE |
 | 5 | ggen | Dung Gate | Inspection Gate | PARTIAL |
-| 6 | Prompt Manufactory | Water Gate | Old Gate | UNKNOWN |
+| 6 | Prompt Manufactory | Water Gate | Old Gate | ABSENT (substrate at research/prompt-manufactory; no ALIVE receipt) |
 | 7 | wasm4pm-compat | Horse Gate | Old Gate | PARTIAL |
 | 8 | wasm4pm | Inspection Gate | Horse Gate | ALIVE |
 | 9 | Blue River Dam | Old Gate | Inspection Gate | ALIVE |

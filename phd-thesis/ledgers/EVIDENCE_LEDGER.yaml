@@ -386,8 +386,9 @@ checkpoint_files:
     description: Manufactured partial checkpoint artifact from prompt-manufactory
 
   - path: /Users/sac/process-intelligence/research/prompt-manufactory/emitted/prompts/checkpoints/CHECKPOINT_ALIVE.md
-    verdict: ALIVE
-    description: Manufactured alive checkpoint artifact from prompt-manufactory
+    verdict: NONE
+    type: manufactured-template
+    description: Manufactured alive checkpoint template from prompt-manufactory. This file is a template that authorizes agents to emit ALIVE verdicts — it is NOT a project's own ALIVE receipt. verdict changed from ALIVE to NONE: a template cannot be its own proof.
 
 # ──────────────────────────────────────────────────────────────────────────────
 # ONTOLOGY FILES
