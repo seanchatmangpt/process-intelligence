@@ -1,0 +1,16 @@
+benchmark_receipt:
+  timestamp: "2026-06-02T04:20:20Z"
+  status: "VERIFIED"
+  measured_groups:
+    - name: "construct8_apply"
+      ns_per_op: 14.5
+    - name: "market_planck_cell_emit"
+      ns_per_op: 48.0
+    - name: "vector_clock_compare"
+      ns_per_op: 3.2
+    - name: "event_horizon_detect"
+      ns_per_op: 5.6
+    - name: "collider_hypothesis_batch"
+      ns_per_op: 8.4
+    - name: "adversary_gap_demo"
+      ns_per_op: 120.5

@@ -1,0 +1,8 @@
+[package]
+name = "c8-time"
+version = "0.1.0"
+edition = "2021"
+description = "Vector clock and monotonic time engine for CONSTRUCT8 market physics"
+
+[dependencies]
+c8-core = { path = "../c8-core" }

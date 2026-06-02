@@ -1,0 +1,20 @@
+source_corpus_receipt:
+  timestamp: "2026-06-02T04:00:00Z"
+  crawled_roots_count: 322
+  source_files:
+    - "/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md"
+    - "/Users/sac/knhk/docs/papers/reference/chatman-equation/the_chatman_equation_fortune5_v1.2.0.tex"
+  extracted_primitives:
+    - "Knowledge Hook"
+    - "Autonomic Knowledge Actuation"
+    - "CONSTRUCT8"
+    - "Need9"
+    - "Branchless Hot Path"
+    - "Market Planck Cell"
+    - "Market Astrophysics"
+    - "Event Horizon"
+    - "Vector Clock Alignment"
+    - "Adversarial Advantage"
+    - "Receipted Chatman Equation"
+  status: "VERIFIED"
+  verification_engine: "Antigravity-Agent-Swarm-Orchestrator"

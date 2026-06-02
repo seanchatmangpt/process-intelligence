@@ -1,0 +1,21 @@
+[package]
+name = "c8-graph"
+version = "0.1.0"
+edition = "2021"
+authors = ["Process Intelligence Research Program"]
+description = "CONSTRUCT8 Delta Engine — packed relation store with branchless mask-based apply"
+license = "MIT"
+
+[dependencies]
+thiserror = { workspace = true }
+c8-core = { path = "../c8-core" }
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "construct8_apply"
+harness = false
+
+[lib]
+doctest = false

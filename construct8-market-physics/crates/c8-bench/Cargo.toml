@@ -1,0 +1,37 @@
+[package]
+name = "c8-bench"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+c8-core = { path = "../c8-core" }
+c8-graph = { path = "../c8-graph" }
+c8-market = { path = "../c8-market" }
+c8-time = { path = "../c8-time" }
+
+c8-instruments = { path = "../c8-instruments" }
+c8-adversary = { path = "../c8-adversary" }
+c8-receipts = { path = "../c8-receipts" }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "construct8"
+harness = false
+
+[[example]]
+name = "market_planck_demo"
+path = "../../examples/market_planck_demo.rs"
+
+[[example]]
+name = "event_horizon_demo"
+path = "../../examples/event_horizon_demo.rs"
+
+[[example]]
+name = "collider_demo"
+path = "../../examples/collider_demo.rs"
+
+[[example]]
+name = "adversary_gap_demo"
+path = "../../examples/adversary_gap_demo.rs"
