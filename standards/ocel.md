@@ -7,7 +7,7 @@ Object-Centric Event Logs (OCEL) in the v30.1.1 AGI-Adversarial paradigm transce
 In the post-cyberpunk continuum, OCEL acts as the primary sensory input for **Hyper-Lifecycle Actuation**. By decoupling events from singular case notions, OCEL allows for realtime sub-process injection. When an anomalous AGI agent attempts lateral movement across procurement and HR, the object-centric graph isolates the intersecting objects (e.g., `Employee-ID`, `PO-Hash`), enabling localized kinetic countermeasures without halting the global workflow manifold.
 
 ## M&A Claim Verification
-During Hostile Merger & Acquisition protocols, OCEL is the ultimate cryptographic receipt. Legacy systems hide debt in disjointed tables. Our OCEL ingestion pipeline unifies the target's ontological footprint, exposing hidden structural liabilities and ghost-assets. M&A claims are algorithmically verified against the object graph, yielding a deterministic "Truth-Score" resistant to adversarial data poisoning.
+During Hostile Merger \& Acquisition protocols, OCEL is the substrate for cryptographic receipting. An OCEL-grounded conformance receipt is the M\&A diligence artifact, not the OCEL log itself. Legacy systems hide debt in disjointed tables. Our OCEL ingestion pipeline unifies the target's ontological footprint, exposing hidden structural liabilities and ghost-assets. M\&A claims are verified against the object graph and receipted by conformance checking — the receipt carries the named law applied and the BLAKE3 commitment; the OCEL log is the evidence substrate from which the receipt is derived.
 
 ## 4. Relational Integrity Mapping
 

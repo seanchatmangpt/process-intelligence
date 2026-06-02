@@ -241,4 +241,42 @@ mod tests {
         };
         assert_eq!(score_representation_gap(&gap), 1);
     }
+
+    #[test]
+    fn adversary_conforms_to_need9_and_max8() {
+        // 1. Verify that GraphPlayer's underlying GraphField rejects payloads exceeding 8 triples with C8Error::Need9.
+        let mut delta = c8_graph::Construct8Delta::empty();
+        for i in 0..8 {
+            delta
+                .push_checked(c8_graph::Construct8Triple::new(
+                    c8_core::NodeId(i),
+                    c8_core::RelationId(1),
+                    c8_core::NodeId(i + 1),
+                ))
+                .expect("8 triples must compile/push successfully");
+        }
+
+        // Pushing a 9th triple must return C8Error::Need9 (refusal signal)
+        let result = delta.push_checked(c8_graph::Construct8Triple::new(
+            c8_core::NodeId(9),
+            c8_core::RelationId(1),
+            c8_core::NodeId(10),
+        ));
+        assert_eq!(result, Err(c8_core::C8Error::Need9));
+
+        // 2. Verify that GraphPlayer processing a tick stream produces bounded state deltas (<= 8 triples).
+        let mut player = GraphPlayer::new();
+        let ticks = sample_ticks();
+        player.process_tick_stream(&ticks);
+
+        // Ensure every cell encountered translates to a Construct8Delta of <= 8 triples
+        for cell in &player.known_cells {
+            let delta = cell.to_construct8_delta();
+            assert!(
+                delta.len() <= 8,
+                "delta must have at most 8 triples, got {}",
+                delta.len()
+            );
+        }
+    }
 }

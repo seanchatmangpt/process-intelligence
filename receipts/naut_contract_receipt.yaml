@@ -1,0 +1,28 @@
+---
+receipt_id: NAUT_CONTRACT_DEFERRED_001
+timestamp: "2026-06-01T00:00:00Z"
+agent: AGENT_7_NAUT_GENERALIZATION
+
+check:
+  command: "test -d ~/naut && echo EXISTS || echo ABSENT"
+  result: ABSENT
+  repo_path: ~/naut
+
+action: DEFER
+reason: Repository not found locally
+
+artifact:
+  type: adapter_contract
+  path: cross-project-coordinate-alpha/adapters/naut_hotpath_contract.md
+  status: CREATED
+
+deferred_work:
+  - inspect_branchless_patterns
+  - generalize_to_construct8
+  - benchmark_honestly
+  - document_adapter_contract
+
+trigger_condition: "test -d ~/naut returns EXISTS"
+next_action: REACTIVATE_ON_REPO_AVAILABLE
+
+---

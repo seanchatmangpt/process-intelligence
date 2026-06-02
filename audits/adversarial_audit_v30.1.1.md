@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-This audit report certifies that the `process-intelligence` research foundry satisfies all **ALIVE_001** gate criteria, achieving v30.1.1 standard alignment. All 12 artifact directories meet or exceed their minimum document count thresholds, and the git commit log maintains a sound, continuous receipt chain of 567 commits (well exceeding the minimum 80-commit threshold).
+This audit report documents gate findings showing that the `process-intelligence` research foundry satisfies all **ALIVE_001** gate criteria, achieving v30.1.1 standard alignment. Authority rests with the receipted gate verdicts referenced herein, not the report itself. All 12 artifact directories meet or exceed their minimum document count thresholds, and the git commit history contains 567 commits, providing the audit substrate from which the receipt chain is derived (well exceeding the minimum 80-commit threshold).
 
 ---
 

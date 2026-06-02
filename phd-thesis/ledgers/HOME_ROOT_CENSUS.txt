@@ -1,340 +1,316 @@
-# HOME ROOT CENSUS — /Users/sac
-# Generated: 2026-06-01
-# Agent: Home Directory Census Agent
-# Total roots enumerated: 287 (including hidden dirs)
-# Non-hidden top-level dirs: ~180 visible project dirs
-#
-# Format: PATH  CLASSIFICATION  REASON
-#
-# === HIDDEN DIRS (dot-prefixed) ===
-
-/Users/sac/.agents              SKIP_SYSTEM         AI agent runtime state
-/Users/sac/.ai_context          SKIP_SYSTEM         AI context runtime cache
-/Users/sac/.aider               SKIP_SYSTEM         Aider AI coding tool config
-/Users/sac/.android             SKIP_SYSTEM         Android SDK toolchain
-/Users/sac/.ansible             SKIP_SYSTEM         Ansible config/playbook cache
-/Users/sac/.ansible_async       SKIP_SYSTEM         Ansible async job store
-/Users/sac/.antigravitycli      SKIP_SYSTEM         CLI tool config
-/Users/sac/.asdf                SKIP_SYSTEM         asdf version manager
-/Users/sac/.automagik-forge     SKIP_SYSTEM         Automagik tool runtime
-/Users/sac/.aws                 SKIP_SECRETS        AWS credentials store
-/Users/sac/.bazel-cache         SKIP_BUILD_ARTIFACTS Bazel build cache
-/Users/sac/.biome               SKIP_SYSTEM         Biome formatter config
-/Users/sac/.bitactor            SHOULD_CRAWL        Bitactor hidden config — linked to bitactor project
-/Users/sac/.bundle              SKIP_SYSTEM         Ruby Bundler cache
-/Users/sac/.cache               SKIP_BUILD_ARTIFACTS OS-level cache directory
-/Users/sac/.cargo               SKIP_BUILD_ARTIFACTS Cargo registry/build cache
-/Users/sac/.chat                SKIP_SYSTEM         Chat tool runtime
-/Users/sac/.chelper             SKIP_SYSTEM         Claude helper tool config
-/Users/sac/.claude              MUST_CRAWL          Claude Code global config — rules/, CLAUDE.md, keybindings — process mining TDD doctrine lives here
-/Users/sac/.claude-flow         SKIP_SYSTEM         Claude-flow orchestration runtime
-/Users/sac/.claude-flow-contexts SKIP_SYSTEM        Claude-flow context cache
-/Users/sac/.claude-server-commander SKIP_SYSTEM     MCP server commander runtime
-/Users/sac/.claude-server-commander-logs SKIP_SYSTEM MCP server commander logs
-/Users/sac/.claude-squad        SKIP_SYSTEM         Claude squad runtime
-/Users/sac/.clawdbot            SKIP_SYSTEM         Clawdbot runtime config
-/Users/sac/.clearml             SKIP_SYSTEM         ClearML MLOps config
-/Users/sac/.clnrm               SKIP_SYSTEM         CLNRM tool runtime config
-/Users/sac/.cocoapods           SKIP_SYSTEM         CocoaPods Ruby gem cache
-/Users/sac/.codeium             SKIP_SYSTEM         Codeium AI assistant cache
-/Users/sac/.codex               SKIP_SYSTEM         Codex AI tool config
-/Users/sac/.colima              SKIP_SYSTEM         Colima container runtime
-/Users/sac/.conan2              SKIP_SYSTEM         Conan C++ package manager
-/Users/sac/.conda               SKIP_SYSTEM         Conda environment manager
-/Users/sac/.config              SKIP_SYSTEM         XDG config dir (various tools)
-/Users/sac/.continue            SKIP_SYSTEM         Continue AI coding extension
-/Users/sac/.cookiecutter_replay SKIP_SYSTEM         Cookiecutter template cache
-/Users/sac/.cookiecutters       SKIP_SYSTEM         Cookiecutter templates
-/Users/sac/.copilot             SKIP_SYSTEM         GitHub Copilot config
-/Users/sac/.cpmp                SKIP_SYSTEM         cpmp tool config
-/Users/sac/.cups                SKIP_SYSTEM         CUPS printer config
-/Users/sac/.cursor              SKIP_SYSTEM         Cursor IDE config
-/Users/sac/.cursor-tools        SKIP_SYSTEM         Cursor IDE tools
-/Users/sac/.dapr                SKIP_SYSTEM         Dapr runtime config
-/Users/sac/.data                SKIP_SYSTEM         General data runtime store
-/Users/sac/.degit               SKIP_SYSTEM         degit template cache
-/Users/sac/.diagrid             SKIP_SYSTEM         Diagrid Dapr cloud config
-/Users/sac/.docker              SKIP_SYSTEM         Docker config/credentials
-/Users/sac/.dspy_cache          SKIP_BUILD_ARTIFACTS DSPy LLM cache
-/Users/sac/.dtr                 SKIP_SYSTEM         DTR tool config
-/Users/sac/.duckdb              SKIP_SYSTEM         DuckDB config/cache
-/Users/sac/.erlmcp              SKIP_SYSTEM         ErlMCP runtime config
-/Users/sac/.expo                SKIP_SYSTEM         Expo React Native config
-/Users/sac/.fgn                 SKIP_SYSTEM         fgn tool config
-/Users/sac/.flow-nexus          SKIP_SYSTEM         Flow-nexus runtime
-/Users/sac/.fly                 SKIP_SECRETS        Fly.io auth credentials
-/Users/sac/.frozen-duckdb       SKIP_SYSTEM         Frozen DuckDB store
-/Users/sac/.gem                 SKIP_SYSTEM         Ruby gem store
-/Users/sac/.gemini              SKIP_SYSTEM         Google Gemini AI config
-/Users/sac/.genkit              SKIP_SYSTEM         Google Genkit config
-/Users/sac/.ggen                SHOULD_CRAWL        ggen hidden runtime — receipts/config linked to ggen project
-/Users/sac/.github              SKIP_SYSTEM         GitHub global config
-/Users/sac/.gitvan              SHOULD_CRAWL        GitVan hidden runtime data
-/Users/sac/.gmail-mcp           SKIP_SECRETS        Gmail MCP auth tokens
-/Users/sac/.gnupg               SKIP_SECRETS        GPG private keys
-/Users/sac/.groovy              SKIP_SYSTEM         Groovy tool config
-/Users/sac/.gsutil              SKIP_SYSTEM         Google Cloud Storage config
-/Users/sac/.hex                 SKIP_SYSTEM         Hex Elixir package manager
-/Users/sac/.hive-mind           SKIP_SYSTEM         Hive-mind runtime config
-/Users/sac/.ionic               SKIP_SYSTEM         Ionic mobile framework config
-/Users/sac/.ipython             SKIP_SYSTEM         IPython kernel config
-/Users/sac/.jdks                SKIP_SYSTEM         JDK installations
-/Users/sac/.jupyter             SKIP_SYSTEM         Jupyter notebook config
-/Users/sac/.kaggle              SKIP_SECRETS        Kaggle API credentials
-/Users/sac/.kani                SKIP_SYSTEM         Kani Rust verifier config
-/Users/sac/.kerl                SKIP_SYSTEM         Erlang version manager
-/Users/sac/.kgcl                SHOULD_CRAWL        Knowledge Graph Change Language hidden data
-/Users/sac/.kgen                SHOULD_CRAWL        kgen hidden runtime — linked to knowledge generation tooling
-/Users/sac/.knhk                MUST_CRAWL          KNHK hidden config — sigma.ttl, q.sparql, connectors.json — core KH doctrine artifacts
-/Users/sac/.knowledge           SHOULD_CRAWL        Knowledge base hidden store
-/Users/sac/.kube                SKIP_SECRETS        Kubernetes credentials/contexts
-/Users/sac/.lh                  SKIP_SYSTEM         lh tool config
-/Users/sac/.lima                SKIP_SYSTEM         Lima VM config
-/Users/sac/.lldb                SKIP_SYSTEM         LLDB debugger config
-/Users/sac/.local               SKIP_SYSTEM         XDG local data dir
-/Users/sac/.logfire             SKIP_SYSTEM         Logfire observability config
-/Users/sac/.m2                  SKIP_BUILD_ARTIFACTS Maven local repository
-/Users/sac/.maestro             SKIP_SYSTEM         Maestro mobile testing config
-/Users/sac/.matplotlib          SKIP_SYSTEM         Matplotlib config/cache
-/Users/sac/.mcpp                SHOULD_CRAWL        mcpp hidden runtime — linked to mcpp project
-/Users/sac/.mix                 SKIP_SYSTEM         Elixir Mix tool config
-/Users/sac/.moon                SKIP_SYSTEM         Moon build tool config
-/Users/sac/.mvnd                SKIP_SYSTEM         Maven Daemon config
-/Users/sac/.n8n                 SKIP_SYSTEM         n8n workflow automation data
-/Users/sac/.nexe                SKIP_SYSTEM         nexe Node.js bundler cache
-/Users/sac/.npm                 SKIP_SYSTEM         NPM cache
-/Users/sac/.nvm                 SKIP_SYSTEM         NVM Node.js version manager
-/Users/sac/.oci                 SKIP_SECRETS        Oracle Cloud credentials
-/Users/sac/.oh-my-zsh           SKIP_SYSTEM         Oh-My-Zsh shell framework
-/Users/sac/.ollama              SKIP_SYSTEM         Ollama local LLM runtime
-/Users/sac/.open-ontologies     SHOULD_CRAWL        Open Ontologies hidden data — linked to open-ontologies project
-/Users/sac/.osa                 SKIP_SYSTEM         OSA tool config
-/Users/sac/.ostar               SHOULD_CRAWL        O* hidden runtime config — linked to ostar project
-/Users/sac/.pgadmin             SKIP_SYSTEM         pgAdmin DB tool config
-/Users/sac/.pkg-cache           SKIP_BUILD_ARTIFACTS pkg build cache
-/Users/sac/.pnpm-cache          SKIP_BUILD_ARTIFACTS pnpm package cache
-/Users/sac/.pnpm-state          SKIP_BUILD_ARTIFACTS pnpm state
-/Users/sac/.pnpm-store          SKIP_BUILD_ARTIFACTS pnpm content-addressed store
-/Users/sac/.portfolio           SKIP_SYSTEM         Portfolio tool config
-/Users/sac/.prefect             SKIP_SYSTEM         Prefect workflow orchestration config
-/Users/sac/.proto               SKIP_SYSTEM         proto toolchain manager
-/Users/sac/.rest-client         SKIP_SYSTEM         REST client config
-/Users/sac/.rustup              SKIP_SYSTEM         Rustup toolchain manager
-/Users/sac/.sdkman              SKIP_SYSTEM         SDKMan JVM toolchain manager
-/Users/sac/.semgrep             SKIP_SYSTEM         Semgrep static analysis config
-/Users/sac/.speckit-ralph       SHOULD_CRAWL        speckit-ralph hidden runtime — linked to speckit-ralph project
-/Users/sac/.ssh                 SKIP_SECRETS        SSH private keys
-/Users/sac/.storybook           SKIP_SYSTEM         Storybook component dev config
-/Users/sac/.streamlit           SKIP_SYSTEM         Streamlit app config
-/Users/sac/.supabase            SKIP_SECRETS        Supabase auth tokens
-/Users/sac/.swarm               SKIP_SYSTEM         Docker Swarm config
-/Users/sac/.swiftpm             SKIP_SYSTEM         Swift Package Manager cache
-/Users/sac/.terraform.d         SKIP_SECRETS        Terraform credentials/plugins
-/Users/sac/.tmp                 SKIP_BUILD_ARTIFACTS Temporary files
-/Users/sac/.Trash               SKIP_SYSTEM         macOS Trash
-/Users/sac/.traycer             SKIP_SYSTEM         Traycer AI tool config
-/Users/sac/.unrdf               SHOULD_CRAWL        unrdf hidden runtime — linked to unrdf project
-/Users/sac/.uvmgr               SKIP_SYSTEM         uvmgr Python version manager
-/Users/sac/.uvmgr_cache         SKIP_BUILD_ARTIFACTS uvmgr cache
-/Users/sac/.uvmgr_maximizer     SKIP_SYSTEM         uvmgr maximizer config
-/Users/sac/.vagrant.d           SKIP_SYSTEM         Vagrant VM config
-/Users/sac/.vim                 SKIP_SYSTEM         Vim editor config
-/Users/sac/.virtualenvs         SKIP_SYSTEM         Python virtualenvs
-/Users/sac/.vscode              SKIP_SYSTEM         VS Code config
-/Users/sac/.wasm4pm             SHOULD_CRAWL        wasm4pm hidden runtime — linked to wasm4pm project
-/Users/sac/.weaver              SKIP_SYSTEM         Weaver tool config
-/Users/sac/.weavergen           SKIP_SYSTEM         WeaverGen tool config
-/Users/sac/.windsurf            SKIP_SYSTEM         Windsurf IDE config
-/Users/sac/.yaml-cloud          SHOULD_CRAWL        yaml-cloud hidden runtime — linked to yaml-cloud project
-/Users/sac/.zai                 SKIP_SYSTEM         zai tool config
-/Users/sac/.zsh_sessions        SKIP_SYSTEM         Zsh session history
-
-# === VISIBLE (NON-HIDDEN) DIRS ===
-
-/Users/sac/__snapshots__        SKIP_BUILD_ARTIFACTS Jest snapshot output
-/Users/sac/_build               SKIP_BUILD_ARTIFACTS Build output directory
-/Users/sac/A2A                  SHOULD_CRAWL        A2A protocol — README.md, docs/ — AI agent communication research
-/Users/sac/A2CI                 MAYBE_CRAWL         A2CI — 1 item (docs/), sparse content
-/Users/sac/a2a-rs               MUST_CRAWL          Rust A2A implementation — Cargo.toml, README.md, docs/, *.rs
-/Users/sac/ai                   MAYBE_CRAWL         AI directory — only package.json, purpose unclear
-/Users/sac/ai-chatbot           MAYBE_CRAWL         AI chatbot app — README.md, package.json
-/Users/sac/ai-first-2026        MAYBE_CRAWL         AI-first 2026 strategy — README.md, package.json
-/Users/sac/app                  MAYBE_CRAWL         App directory — package.json, docs/
-/Users/sac/Applications         SKIP_SYSTEM         macOS Applications folder
-/Users/sac/autotel              MUST_CRAWL          AutoTel — README.md, pyproject.toml, receipts/ — process telemetry research
-/Users/sac/backup-critical      SKIP_SYSTEM         Critical backup archive
-/Users/sac/bin                  SKIP_SYSTEM         User binary scripts
-/Users/sac/bitactor             MUST_CRAWL          Bitactor — src/, *.ttl — RDF/ontology actor system
-/Users/sac/bitstar              MUST_CRAWL          Bitstar — src/, docs/, *.ttl — RDF/ontology star system
-/Users/sac/blue_river_dam       SHOULD_CRAWL        Blue River Dam — Cargo.toml, README.md, src/, *.rs — Rust project
-/Users/sac/bytestar             MUST_CRAWL          Bytestar — README.md, package.json, pyproject.toml, src/, docs/, hooks/, *.ttl — 393 files, major project
-/Users/sac/cachedir_joblib      SKIP_BUILD_ARTIFACTS Joblib computation cache
-/Users/sac/capability-map       MUST_CRAWL          Capability Map — Cargo.toml, README.md, src/, docs/, *.rs — capability taxonomy research
-/Users/sac/CascadeProjects      SKIP_SYSTEM         Cascade IDE projects folder
-/Users/sac/cell8                MAYBE_CRAWL         Cell8 — only src/ — sparse
-/Users/sac/chatmangpt           MUST_CRAWL          ChatmanGPT — README.md, docs/, receipts/, *.ttl, *.rs, *.tex — 118 files, ontology+receipts
-/Users/sac/chicago-tdd-tools    MUST_CRAWL          Chicago TDD Tools — Cargo.toml, README.md, src/, docs/, *.ttl, *.rs — process mining TDD tooling (CORE)
-/Users/sac/citty-test-utils     MAYBE_CRAWL         citty test utilities — likely JS tooling
-/Users/sac/clap-noun-verb       MUST_CRAWL          Clap Noun-Verb — Cargo.toml, README.md, package.json, src/, docs/, research/, *.ttl, *.rs, *.tex — research+ontology
-/Users/sac/claude               SHOULD_CRAWL        Claude — 8 items, purpose unclear
-/Users/sac/claude-backup        SKIP_SYSTEM         Claude backup archive
-/Users/sac/claude-code-context  SHOULD_CRAWL        Claude Code context docs — README.md, docs/
-/Users/sac/claude-desktop-context MAYBE_CRAWL       Claude Desktop context — purpose unclear
-/Users/sac/clawd                MAYBE_CRAWL         Clawd — IDENTITY/SOUL/HEARTBEAT docs — AI identity research (sparse)
-/Users/sac/clawdbot             SHOULD_CRAWL        Clawdbot — README.md, package.json, src/, docs/ — Claude bot project
-/Users/sac/clnrm                MUST_CRAWL          CLNRM — Cargo.toml, README.md, src/, docs/, *.ttl, *.rs — 67 items, major Rust+ontology project
-/Users/sac/clnrm-backup-20251015-224552 SKIP_BUILD_ARTIFACTS CLNRM backup archive
-/Users/sac/clnrm-backup-20251015-233810 SKIP_BUILD_ARTIFACTS CLNRM backup archive
-/Users/sac/clnrm-dogfood-innovations SHOULD_CRAWL  CLNRM Dogfood — Cargo.toml, README.md, src/, docs/, *.rs — CLNRM innovation branch
-/Users/sac/clnrm.bak            SKIP_BUILD_ARTIFACTS CLNRM .bak archive
-/Users/sac/cns                  MUST_CRAWL          CNS — README.md, package.json, pyproject.toml, src/, docs/, research/, *.ttl — 677 files, MAJOR project
-/Users/sac/cns_forge            MAYBE_CRAWL         CNS Forge — empty, 0 items
-/Users/sac/compiled-cognition-hub MUST_CRAWL        Compiled Cognition Hub — Cargo.toml, src/, *.rs — 5 items, Rust cognition system
-/Users/sac/coordination         SKIP_SYSTEM         Coordination runtime (memory_bank, orchestration, subtasks)
-/Users/sac/cre                  MUST_CRAWL          CRE — README.md, src/, receipts/, *.ttl — 89 items, ontology+receipts
-/Users/sac/cre-pre-reset-backup-20260206-175352 SKIP_BUILD_ARTIFACTS CRE backup archive
-/Users/sac/dashboard.bak        SKIP_BUILD_ARTIFACTS Dashboard backup
-/Users/sac/dcmcp_cli_test       MAYBE_CRAWL         dcmcp CLI test — sparse test dir
-/Users/sac/Desktop              SKIP_SYSTEM         macOS Desktop folder
-/Users/sac/dev                  MUST_CRAWL          dev — go.mod, *.rs, *.tex, 189 items — major polyglot development workspace
-/Users/sac/dis                  SHOULD_CRAWL        DIS — *.ttl — ontology distribution system
-/Users/sac/dist                 SKIP_BUILD_ARTIFACTS Build distribution output
-/Users/sac/docs                 SHOULD_CRAWL        docs — 10 items — project documentation root
-/Users/sac/doctester            MAYBE_CRAWL         Doctester — purpose unclear
-/Users/sac/Documents            SKIP_SYSTEM         macOS Documents folder
-/Users/sac/dogturk              SHOULD_CRAWL        Dogturk — README.md, package.json, src/, *.ttl — ontology project
-/Users/sac/Downloads            SKIP_SYSTEM         macOS Downloads folder
-/Users/sac/dteam                MAYBE_CRAWL         dteam — purpose unclear
-/Users/sac/dtr                  SHOULD_CRAWL        DTR — README.md, 67 items — documentation/research
-/Users/sac/emitted              SKIP_BUILD_ARTIFACTS Emitted artifacts output directory
-/Users/sac/erlmcp               MUST_CRAWL          ErlMCP — README.md, docs/, receipts/, *.ttl — Erlang MCP with receipts and ontology
-/Users/sac/erlmcp_validation    SHOULD_CRAWL        ErlMCP validation — linked to erlmcp project
-/Users/sac/etc                  SKIP_SYSTEM         Local etc configuration
-/Users/sac/exampleSpecs         MAYBE_CRAWL         Example specifications — purpose unclear
-/Users/sac/full-stack-rubric    MAYBE_CRAWL         Full-stack rubric — purpose unclear
-/Users/sac/ggen                 MUST_CRAWL          GGen — Cargo.toml, README.md, src/, docs/, crates/, *.ttl, *.rs, *.tex — CORE manufacturing pipeline
-/Users/sac/ggen-mcp             MUST_CRAWL          GGen MCP — Cargo.toml, README.md, src/, docs/, *.ttl, *.rs, *.tex — GGen MCP server
-/Users/sac/ggen-spec-kit        MUST_CRAWL          GGen Spec Kit — README.md, pyproject.toml, src/, docs/, *.ttl, *.tex — GGen specification tooling
-/Users/sac/gitvan               MUST_CRAWL          GitVan — README.md, package.json, src/, docs/, hooks/, *.ttl, *.tex — 418 files, MAJOR project with hooks+ontology
-/Users/sac/gitvan-backup-20250918-164242 SKIP_BUILD_ARTIFACTS GitVan backup archive
-/Users/sac/gitvan-backup-20250918-164245 SKIP_BUILD_ARTIFACTS GitVan backup archive
-/Users/sac/gitvan-backup-20250919-084758 SKIP_BUILD_ARTIFACTS GitVan backup archive
-/Users/sac/gitvan-recent-changes-backup-20250919-091930 SKIP_BUILD_ARTIFACTS GitVan recent-changes backup
-/Users/sac/go                   SKIP_SYSTEM         Go workspace/GOPATH
-/Users/sac/google-cloud-sdk     SKIP_SYSTEM         Google Cloud SDK installation
-/Users/sac/helloworld           SKIP_SYSTEM         Hello World test project
-/Users/sac/hive-mind-monorepo   MAYBE_CRAWL         Hive-mind monorepo — 10 items, no clear project markers
-/Users/sac/hive-queen           SHOULD_CRAWL        Hive Queen — README.md, package.json, src/, docs/, *.ttl — ontology coordination system
-/Users/sac/home                 MAYBE_CRAWL         home — purpose unclear
-/Users/sac/homebrew-clnrm       SKIP_SYSTEM         Homebrew tap for CLNRM
-/Users/sac/insa                 MUST_CRAWL          INSA — Cargo.toml, README.md, docs/, *.rs — 49 items, Rust research project
-/Users/sac/interview            SKIP_SYSTEM         Interview preparation materials
-/Users/sac/intvw                SKIP_SYSTEM         Interview materials
-/Users/sac/java                 MAYBE_CRAWL         Java workspace — purpose unclear
-/Users/sac/java-maven-template  SKIP_SYSTEM         Java Maven project template
-/Users/sac/jotp                 MUST_CRAWL          JOTP — README.md, src/, *.ttl — 115 items, ontology project
-/Users/sac/kgc-sidecar          SHOULD_CRAWL        KGC Sidecar — README.md, package.json — Knowledge Graph Change sidecar
-/Users/sac/kgn                  MUST_CRAWL          KGN — README.md, package.json, src/, docs/, *.ttl — Knowledge Graph Network
-/Users/sac/knhk                 MUST_CRAWL          KNHK — Cargo.toml, README.md, src/, docs/, thesis/, crates/, *.ttl, *.rs, *.tex — 432 files, PRIMARY KH thesis source
-/Users/sac/knowd                MUST_CRAWL          Knowd — README.md, docs/, *.ttl, *.rs — knowledge documentation system
-/Users/sac/knowtro              SHOULD_CRAWL        Knowtro — README.md, package.json, src/, docs/ — knowledge introduction tooling
-/Users/sac/ktemp                SKIP_SYSTEM         Temporary knowledge work dir
-/Users/sac/Legal                SKIP_SYSTEM         Legal documents
-/Users/sac/Library              SKIP_SYSTEM         macOS Library folder
-/Users/sac/local_cache          SKIP_BUILD_ARTIFACTS Local computation cache
-/Users/sac/mac-artifact-cleaner SKIP_SYSTEM         Mac artifact cleaning tool
-/Users/sac/mcp_erl              SHOULD_CRAWL        MCP Erlang — linked to erlmcp ecosystem
-/Users/sac/mcp_search_test      MAYBE_CRAWL         MCP search test — sparse test dir
-/Users/sac/mcp-mqtt-erl         SHOULD_CRAWL        MCP MQTT Erlang — Erlang MCP transport
-/Users/sac/mcpp                 MUST_CRAWL          MCPP — Cargo.toml, README.md, docs/, crates/ — 51 items, MCP++ Rust project
-/Users/sac/memory               SHOULD_CRAWL        Memory — agents/, people/, sessions/ — agent memory store with research artifacts
-/Users/sac/miniconda3           SKIP_SYSTEM         Miniconda Python distribution
-/Users/sac/Movies               SKIP_SYSTEM         macOS Movies folder
-/Users/sac/multipass            SKIP_SYSTEM         Multipass VM manager
-/Users/sac/Music                SKIP_SYSTEM         macOS Music folder
-/Users/sac/my-dev-process       SHOULD_CRAWL        My Dev Process — book.toml, src/, docs/ — mdBook development process documentation
-/Users/sac/neako                SHOULD_CRAWL        Neako — README.md, package.json, src/, *.ttl — ontology-linked project
-/Users/sac/nuxt-catalog-mdbook  SKIP_SYSTEM         Nuxt catalog mdBook (web framework project)
-/Users/sac/nuxt-layer           SKIP_SYSTEM         Nuxt layer (web framework project)
-/Users/sac/nuxt-supabase-book   SKIP_SYSTEM         Nuxt Supabase book (web framework project)
-/Users/sac/nuxt-ui-pro-landing  SKIP_SYSTEM         Nuxt UI Pro landing (web framework project)
-/Users/sac/obsr                 SHOULD_CRAWL        OBSR — Cargo.toml, README.md — observer/observability Rust project
-/Users/sac/open-ontologies      MUST_CRAWL          Open Ontologies — Cargo.toml, README.md, package.json, src/, docs/, research/, receipts/, *.ttl, *.rs — CORE ontology authority
-/Users/sac/opt                  SKIP_SYSTEM         Optional software installations
-/Users/sac/optimus              SHOULD_CRAWL        Optimus — README.md, package.json, src/ — optimization project
-/Users/sac/ostar                MUST_CRAWL          O* (Ostar) — artifacts/, ocel/, target/ — process mining bridge, OCEL artifacts — CORE research execution product
-/Users/sac/otel                 SHOULD_CRAWL        OTel — registry/ — OpenTelemetry registry/config
-/Users/sac/otp_src_28.3.1       SKIP_SYSTEM         Erlang/OTP source installation
-/Users/sac/pcp                  MUST_CRAWL          PCP — package.json, src/ — Process Conformance Pipeline project
-/Users/sac/pgdata               SKIP_SYSTEM         PostgreSQL data directory
-/Users/sac/phd-thesis           MUST_CRAWL          PhD Thesis — active thesis workspace (this ledger lives here)
-/Users/sac/Pictures             SKIP_SYSTEM         macOS Pictures folder
-/Users/sac/pigsty               SKIP_SYSTEM         Pigsty PostgreSQL distribution
-/Users/sac/pigsty-supabase      SKIP_SYSTEM         Pigsty Supabase variant
-/Users/sac/pigsty-supabase-osx  SKIP_SYSTEM         Pigsty Supabase macOS variant
-/Users/sac/pigsty-terraform     SKIP_SYSTEM         Pigsty Terraform config
-/Users/sac/portfolio-reports    MAYBE_CRAWL         Portfolio reports — may contain relevant work samples
-/Users/sac/powlv2lsp            MAYBE_CRAWL         powlv2lsp — purpose unclear
-/Users/sac/practice             SKIP_SYSTEM         Practice/scratch code
-/Users/sac/proc                 SKIP_SYSTEM         Process runtime dir (1 item)
-/Users/sac/process-intelligence MUST_CRAWL          Process Intelligence — README.md, research/, receipts/, checkpoints/, *.ttl, *.tex — PRIMARY research foundry
-/Users/sac/Public               SKIP_SYSTEM         macOS Public folder
-/Users/sac/receipts             SKIP_BUILD_ARTIFACTS Receipts — empty directory
-/Users/sac/remo                 MUST_CRAWL          Remo — README.md, package.json, src/, *.ttl — 89 items, ontology project
-/Users/sac/RepoPrompt           SKIP_SYSTEM         RepoPrompt tool directory
-/Users/sac/reports              MAYBE_CRAWL         Reports — may contain research output
-/Users/sac/research             SHOULD_CRAWL        Research — open-ontologies-program-integration — research integration work
-/Users/sac/results              SKIP_BUILD_ARTIFACTS Results output directory
-/Users/sac/s2s                  MAYBE_CRAWL         S2S — 1 item, sparse
-/Users/sac/scripts              SKIP_SYSTEM         Shell scripts utility dir
-/Users/sac/semantic_bit         SHOULD_CRAWL        Semantic Bit — Cargo.toml, src/, *.rs — semantic layer Rust project
-/Users/sac/seth                 MAYBE_CRAWL         Seth — 2 items, sparse
-/Users/sac/seven_tick           SHOULD_CRAWL        Seven Tick — README.md, docs/ — documentation project
-/Users/sac/sos                  MUST_CRAWL          SOS — Cargo.toml, README.md, *.ttl, *.rs — 37 items, Rust+ontology project
-/Users/sac/SparsePrimingRepresentations SHOULD_CRAWL SPR — README.md — Sparse Priming Representations research
-/Users/sac/speckit-ralph        MUST_CRAWL          Speckit Ralph — Cargo.toml, docs/, receipts/, *.rs — 64 items, spec kit with receipts
-/Users/sac/src                  MAYBE_CRAWL         src — 10 items, generic source dir
-/Users/sac/storehouse           SKIP_SYSTEM         Storehouse — 5 items, storage utility
-/Users/sac/storehouse-infrastructure SHOULD_CRAWL   Storehouse Infrastructure — *.ttl, *.rs — ontology+Rust infra
-/Users/sac/stpnt                MUST_CRAWL          STPNT — Cargo.toml, README.md, src/, *.ttl, *.rs — 42 items, Rust+ontology project
-/Users/sac/teamwork_projects    SKIP_SYSTEM         Teamwork project management data
-/Users/sac/teleport             SKIP_SYSTEM         Teleport auth tool
-/Users/sac/test                 SKIP_SYSTEM         Test scratch directory
-/Users/sac/test-unjucks-nuxt4   SKIP_SYSTEM         Unjucks Nuxt4 test project
-/Users/sac/testbed              SKIP_SYSTEM         Testbed scratch directory
-/Users/sac/tests                SKIP_SYSTEM         Tests scratch directory
-/Users/sac/tools                SKIP_SYSTEM         Tools utility dir (3 items)
-/Users/sac/truex                MUST_CRAWL          TrueX — Cargo.toml, README.md, package.json, src/, docs/, crates/ — 62 items, major Rust project
-/Users/sac/ultrathink-bpm-engine SHOULD_CRAWL       Ultrathink BPM Engine — src/ — BPM engine implementation
-/Users/sac/unibit               SHOULD_CRAWL        Unibit — Cargo.toml, README.md, docs/ — 35 items, Rust project
-/Users/sac/universe-chain       MUST_CRAWL          Universe Chain — Cargo.toml, src/, *.rs — Rust chain project
-/Users/sac/unjucks              MAYBE_CRAWL         Unjucks — template engine project
-/Users/sac/unrdf                MUST_CRAWL          UnRDF — README.md, package.json, pyproject.toml, src/, docs/, research/, thesis/, receipts/, hooks/, *.ttl — MAJOR ontology+thesis project
-/Users/sac/unrdf-clean          MUST_CRAWL          UnRDF Clean — README.md, package.json, pyproject.toml, src/, docs/, research/, receipts/, hooks/, *.ttl, *.tex — clean branch
-/Users/sac/untitled1            SKIP_SYSTEM         Untitled scratch project
-/Users/sac/upscale              MAYBE_CRAWL         Upscale — README.md, 4 items — sparse
-/Users/sac/user-data            SKIP_SYSTEM         User data runtime store
-/Users/sac/var                  SKIP_SYSTEM         Variable/runtime data (1 item)
-/Users/sac/verdicts             SKIP_SYSTEM         Verdicts — empty directory
-/Users/sac/Virtual Machines.localized SKIP_SYSTEM   macOS Virtual Machines folder
-/Users/sac/wasm4pm              MUST_CRAWL          WASM4PM — Cargo.toml, README.md, package.json, src/, docs/, receipts/, crates/, *.ttl, *.rs, *.tex — PRIMARY wasm process mining execution product
-/Users/sac/wasm4pm-backups      SKIP_BUILD_ARTIFACTS WASM4PM backup archives
-/Users/sac/wasm4pm-compat       MUST_CRAWL          WASM4PM Compat — Cargo.toml, README.md, src/, docs/, checkpoints/, *.rs, *.tex — compat type law authority
-/Users/sac/weaver-driven-development-book SHOULD_CRAWL Weaver DD Book — mdBook for weaver-driven development doctrine
-/Users/sac/wf                   SHOULD_CRAWL        WF — README.md, src/, docs/ — workflow project
-/Users/sac/yac                  MAYBE_CRAWL         YAC — 0 items, empty
-/Users/sac/yaml-cloud           SHOULD_CRAWL        YAML Cloud — README.md — YAML cloud project
-/Users/sac/yaml-cloud-clean     SHOULD_CRAWL        YAML Cloud Clean — clean branch of yaml-cloud
-/Users/sac/yaml-server          MAYBE_CRAWL         YAML Server — linked to yaml-cloud ecosystem
-/Users/sac/yawl                 SHOULD_CRAWL        YAWL — YAWL workflow language research
-/Users/sac/yawlv52              SHOULD_CRAWL        YAWL v5.2 — YAWL version snapshot
-/Users/sac/yawlv6               SHOULD_CRAWL        YAWL v6 — YAWL version 6 snapshot
-/Users/sac/yawlw52              MAYBE_CRAWL         YAWL w5.2 — YAWL workflow variant
-/Users/sac/ycloud               MAYBE_CRAWL         YCloud — yaml-cloud variant
-/Users/sac/zod-to-from          MAYBE_CRAWL         Zod-to-from — TypeScript schema conversion project
-/Users/sac/zoeapp               MUST_CRAWL          ZoeApp — README.md, package.json, src/, docs/, *.ttl, *.rs — process intelligence application
-/Users/sac/zoela                MUST_CRAWL          Zoela — README.md, package.json, src/, docs/, receipts/ — Zoe language + receipts
-
-# === SPECIAL ROOT-LEVEL FILES ===
-
-/Users/sac/knowledge-hooks.txt  MUST_CRAWL          ROOT_LEVEL_HOOKS_FILE: EXISTS — top-level knowledge hooks registry
+/Users/sac
+/Users/sac/proc
+/Users/sac/receipts
+/Users/sac/phd-thesis
+/Users/sac/kgn
+/Users/sac/research
+/Users/sac/.erlmcp
+/Users/sac/mac-artifact-cleaner
+/Users/sac/mcpp
+/Users/sac/.hex
+/Users/sac/.config
+/Users/sac/.ansible_async
+/Users/sac/hive-mind-monorepo
+/Users/sac/.wasm4pm
+/Users/sac/ultrathink-bpm-engine
+/Users/sac/home
+/Users/sac/.cursor
+/Users/sac/helloworld
+/Users/sac/cns_forge
+/Users/sac/.genkit
+/Users/sac/.rest-client
+/Users/sac/bitactor
+/Users/sac/clnrm
+/Users/sac/gitvan
+/Users/sac/.expo
+/Users/sac/.kaggle
+/Users/sac/pigsty-supabase-osx
+/Users/sac/cell8
+/Users/sac/.speckit-ralph
+/Users/sac/ai-first-2026
+/Users/sac/jotp
+/Users/sac/truex
+/Users/sac/portfolio-reports
+/Users/sac/.docker
+/Users/sac/.traycer
+/Users/sac/.copilot
+/Users/sac/.gsutil
+/Users/sac/.gemini
+/Users/sac/.windsurf
+/Users/sac/.codeium
+/Users/sac/RepoPrompt
+/Users/sac/.claude-server-commander
+/Users/sac/.kani
+/Users/sac/.claude-flow-contexts
+/Users/sac/.fly
+/Users/sac/dtr
+/Users/sac/verdicts
+/Users/sac/tools
+/Users/sac/gitvan-recent-changes-backup-20250919-091930
+/Users/sac/.virtualenvs
+/Users/sac/yaml-server
+/Users/sac/.vim
+/Users/sac/claude-desktop-context
+/Users/sac/dashboard.bak
+/Users/sac/A2CI
+/Users/sac/dteam
+/Users/sac/.ostar
+/Users/sac/wasm4pm
+/Users/sac/go
+/Users/sac/.gitvan
+/Users/sac/blue_river_dam
+/Users/sac/.gnupg
+/Users/sac/.claude-server-commander-logs
+/Users/sac/.automagik-forge
+/Users/sac/clawdbot
+/Users/sac/a2a-rs
+/Users/sac/.logfire
+/Users/sac/coordination
+/Users/sac/app
+/Users/sac/memory
+/Users/sac/.supabase
+/Users/sac/.lldb
+/Users/sac/.uvmgr_maximizer
+/Users/sac/yac
+/Users/sac/.moon
+/Users/sac/test
+/Users/sac/erlmcp
+/Users/sac/nuxt-layer
+/Users/sac/unrdf
+/Users/sac/.uvmgr_cache
+/Users/sac/bin
+/Users/sac/.dtr
+/Users/sac/unibit
+/Users/sac/dist
+/Users/sac/testbed
+/Users/sac/.vagrant.d
+/Users/sac/.flow-nexus
+/Users/sac/backup-critical
+/Users/sac/ktemp
+/Users/sac/stpnt
+/Users/sac/yawlv52
+/Users/sac/yaml-cloud-clean
+/Users/sac/yawlv6
+/Users/sac/.mix
+/Users/sac/A2A
+/Users/sac/teamwork_projects
+/Users/sac/.pnpm-store
+/Users/sac/.bazel-cache
+/Users/sac/.oci
+/Users/sac/.streamlit
+/Users/sac/cre
+/Users/sac/.continue
+/Users/sac/chatmangpt
+/Users/sac/.local
+/Users/sac/upscale
+/Users/sac/test-unjucks-nuxt4
+/Users/sac/claude
+/Users/sac/clawd
+/Users/sac/multipass
+/Users/sac/.chat
+/Users/sac/knowd
+/Users/sac/knowtro
+/Users/sac/gitvan-backup-20250919-084758
+/Users/sac/zoeapp
+/Users/sac/.claude-squad
+/Users/sac/remo
+/Users/sac/clnrm-dogfood-innovations
+/Users/sac/.pkg-cache
+/Users/sac/.nvm
+/Users/sac/.bundle
+/Users/sac/bytestar
+/Users/sac/.ai_context
+/Users/sac/tests
+/Users/sac/.agents
+/Users/sac/etc
+/Users/sac/.mcpp
+/Users/sac/.cookiecutters
+/Users/sac/.lima
+/Users/sac/clnrm.bak
+/Users/sac/wasm4pm-compat
+/Users/sac/.colima
+/Users/sac/.cursor-tools
+/Users/sac/.weavergen
+/Users/sac/.claude
+/Users/sac/.semgrep
+/Users/sac/chicago-tdd-tools
+/Users/sac/teleport
+/Users/sac/.antigravitycli
+/Users/sac/.biome
+/Users/sac/.asdf
+/Users/sac/.cpmp
+/Users/sac/var
+/Users/sac/CascadeProjects
+/Users/sac/java
+/Users/sac/.jdks
+/Users/sac/.ipython
+/Users/sac/yawl
+/Users/sac/java-maven-template
+/Users/sac/Desktop
+/Users/sac/Library
+/Users/sac/.chelper
+/Users/sac/s2s
+/Users/sac/.matplotlib
+/Users/sac/.sdkman
+/Users/sac/.storybook
+/Users/sac/otel
+/Users/sac/process-intelligence
+/Users/sac/docs
+/Users/sac/.fgn
+/Users/sac/clap-noun-verb
+/Users/sac/otp_src_28.3.1
+/Users/sac/storehouse
+/Users/sac/SparsePrimingRepresentations
+/Users/sac/.kgen
+/Users/sac/ycloud
+/Users/sac/my-dev-process
+/Users/sac/.maestro
+/Users/sac/yaml-cloud
+/Users/sac/.kgcl
+/Users/sac/.dspy_cache
+/Users/sac/yawlw52
+/Users/sac/speckit-ralph
+/Users/sac/capability-map
+/Users/sac/.clawdbot
+/Users/sac/.osa
+/Users/sac/.cargo
+/Users/sac/.android
+/Users/sac/pcp
+/Users/sac/.pgadmin
+/Users/sac/cre-pre-reset-backup-20260206-175352
+/Users/sac/.uvmgr
+/Users/sac/.cocoapods
+/Users/sac/cns
+/Users/sac/untitled1
+/Users/sac/.cups
+/Users/sac/.duckdb
+/Users/sac/results
+/Users/sac/ai-chatbot
+/Users/sac/pigsty-supabase
+/Users/sac/dcmcp_cli_test
+/Users/sac/autotel
+/Users/sac/.codex
+/Users/sac/Public
+/Users/sac/ggen
+/Users/sac/storehouse-infrastructure
+/Users/sac/Virtual Machines.localized
+/Users/sac/open-ontologies
+/Users/sac/.frozen-duckdb
+/Users/sac/clnrm-backup-20251015-224552
+/Users/sac/homebrew-clnrm
+/Users/sac/bitstar
+/Users/sac/interview
+/Users/sac/obsr
+/Users/sac/.pnpm-cache
+/Users/sac/emitted
+/Users/sac/.kube
+/Users/sac/.bitactor
+/Users/sac/mcp-mqtt-erl
+/Users/sac/ai
+/Users/sac/optimus
+/Users/sac/.mvnd
+/Users/sac/knhk
+/Users/sac/zod-to-from
+/Users/sac/pigsty-terraform
+/Users/sac/_build
+/Users/sac/mcp_search_test
+/Users/sac/.ansible
+/Users/sac/.yaml-cloud
+/Users/sac/scripts
+/Users/sac/kgc-sidecar
+/Users/sac/.claude-flow
+/Users/sac/.n8n
+/Users/sac/.conan2
+/Users/sac/seth
+/Users/sac/.github
+/Users/sac/.lh
+/Users/sac/compiled-cognition-hub
+/Users/sac/.rustup
+/Users/sac/cachedir_joblib
+/Users/sac/.ssh
+/Users/sac/.clearml
+/Users/sac/ggen-mcp
+/Users/sac/local_cache
+/Users/sac/.degit
+/Users/sac/.data
+/Users/sac/gitvan-backup-20250918-164245
+/Users/sac/full-stack-rubric
+/Users/sac/dis
+/Users/sac/.cookiecutter_replay
+/Users/sac/gitvan-backup-20250918-164242
+/Users/sac/claude-backup
+/Users/sac/semantic_bit
+/Users/sac/opt
+/Users/sac/weaver-driven-development-book
+/Users/sac/dev
+/Users/sac/.weaver
+/Users/sac/dogturk
+/Users/sac/nuxt-ui-pro-landing
+/Users/sac/pigsty
+/Users/sac/.clnrm
+/Users/sac/user-data
+/Users/sac/.tmp
+/Users/sac/erlmcp_validation
+/Users/sac/.jupyter
+/Users/sac/intvw
+/Users/sac/.pnpm-state
+/Users/sac/.aider
+/Users/sac/hive-queen
+/Users/sac/.npm
+/Users/sac/.terraform.d
+/Users/sac/Documents
+/Users/sac/universe-chain
+/Users/sac/powlv2lsp
+/Users/sac/.knhk
+/Users/sac/.ionic
+/Users/sac/insa
+/Users/sac/neako
+/Users/sac/.hive-mind
+/Users/sac/.zai
+/Users/sac/nuxt-supabase-book
+/Users/sac/.vscode
+/Users/sac/.dapr
+/Users/sac/.m2
+/Users/sac/practice
+/Users/sac/.kerl
+/Users/sac/claude-code-context
+/Users/sac/nuxt-catalog-mdbook
+/Users/sac/.gem
+/Users/sac/.swiftpm
+/Users/sac/citty-test-utils
+/Users/sac/Legal
+/Users/sac/clnrm-backup-20251015-233810
+/Users/sac/.portfolio
+/Users/sac/.oh-my-zsh
+/Users/sac/sos
+/Users/sac/exampleSpecs
+/Users/sac/mcp_erl
+/Users/sac/.swarm
+/Users/sac/Downloads
+/Users/sac/.cache
+/Users/sac/.aws
+/Users/sac/.gmail-mcp
+/Users/sac/unjucks
+/Users/sac/wasm4pm-backups
+/Users/sac/ostar
+/Users/sac/.open-ontologies
+/Users/sac/.ollama
+/Users/sac/.zsh_sessions
+/Users/sac/.ggen
+/Users/sac/seven_tick
+/Users/sac/unrdf-clean
+/Users/sac/.nexe
+/Users/sac/.conda
+/Users/sac/.knowledge
+/Users/sac/.diagrid
+/Users/sac/reports
+/Users/sac/wf
+/Users/sac/zoela
+/Users/sac/.unrdf
+/Users/sac/.groovy
+/Users/sac/doctester
+/Users/sac/.proto
+/Users/sac/__snapshots__
+/Users/sac/ggen-spec-kit
+/Users/sac/src
+/Users/sac/.prefect

@@ -72,11 +72,13 @@ impl Construct8Mask {
 
     /// Set the given lane bit (lane must be 0..=7).
     pub fn set(self, lane: u8) -> Self {
+        assert!(lane < 8, "lane index must be 0..=7");
         Self(self.0 | (1u8 << lane))
     }
 
     /// Test whether the given lane bit is set.
     pub fn has(self, lane: u8) -> bool {
+        assert!(lane < 8, "lane index must be 0..=7");
         (self.0 >> lane) & 1 == 1
     }
 
@@ -224,5 +226,17 @@ mod tests {
         assert!(mask.has(7));
         assert!(!mask.has(1));
         assert_eq!(mask.count(), 3);
+    }
+
+    #[test]
+    #[should_panic(expected = "lane index must be 0..=7")]
+    fn mask_set_out_of_bounds_panics() {
+        let _ = Construct8Mask::EMPTY.set(8);
+    }
+
+    #[test]
+    #[should_panic(expected = "lane index must be 0..=7")]
+    fn mask_has_out_of_bounds_panics() {
+        let _ = Construct8Mask::EMPTY.has(8);
     }
 }

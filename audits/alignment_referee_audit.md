@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-This audit report certifies that the A* alignment search algorithms implemented in `sources/wasm4pm/src/conformance.rs` (Rust engine) and `experiments/visualizer/alignment.js` (JavaScript engine) satisfy the correctness and performance standards of the Process Intelligence swarm. Specifically, this audit validates:
+This audit report documents findings showing that the A* alignment search algorithms implemented in `sources/wasm4pm/src/conformance.rs` (Rust engine) and `experiments/visualizer/alignment.js` (JavaScript engine) satisfy the correctness and performance standards of the Process Intelligence swarm. The conformance receipt for each finding is the replayed result, not this report. Specifically, this audit validates:
 1. **Mathematical Admissibility:** The heuristic function $h(n) = |L(n) - M(n)|$ is mathematically proven to be admissible and consistent, ensuring A* search guarantees finding the optimal (lowest-cost) trace alignment.
 2. **Correctness of Moves:** Both engines correctly classify and calculate costs for:
    - **Synchronous moves** (cost = 0)

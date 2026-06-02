@@ -1,396 +1,601 @@
-# Knowledge Hooks / AKA Unified Search Index
+# Knowledge Hook & AKA Search Index
 
-**Generated:** 2026-06-01
-**Sources:** Three search agents — Agent 1 (KNHK Primary), Agent 2 (Research Cluster), Agent 3 (Extended Corpus)
-**Total sources indexed:** 68
-**HIGH relevance:** 34  MEDIUM relevance:** 23  LOW relevance:** 11
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/00_project_identity.tex:15`
+  > law stack: the Blue River Dam upstream closure law, the MAPE-K autonomic knowledge actuation
 
----
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/03_architecture_and_primitives.tex:144`
+  > cannot be receipted against doctrine.
 
-## Correct Direction (Frame Law — Load-Bearing Spine)
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/05_evidence_receipts_and_gates.tex:112`
+  > met. The six authorized downstream workflows are specified and receipted against the sealed
 
-```
-attempt → hook → admission/refusal → durable motion → receipt → replay → accounting → promotion
-```
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/source_index.md:12`
+  > | `/Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md` | Active authorization law sealed against ALIVE_001 (588 commits, 12/12 criteria); six authorized downstream workflows with targets, scopes, gates, and receipt requirements; authorization gate logic. |
 
-Compression (verbatim from `/Users/sac/truex/docs/MANIFESTO.md`):
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/claim_ledger.yaml:6`
+  > including the Blue River Dam upstream closure law, the MAPE-K autonomic knowledge actuation loop,
 
-```
-No hook, no consequence.
-No receipt, no authority.
-No replay, no substrate.
-No accounting, no promotion.
-```
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/claim_ledger.yaml:141`
+  > cannot be receipted or audited against stable doctrine.
 
----
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/06_contribution_to_thesis.tex:85`
+  > production of artifacts that cannot be receipted against doctrine, replayed against a known
 
-## Primary Sources (from ~/knhk and ~/gitvan)
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/project_manifest.yaml:5`
+  > doctrine files: Blue River Dam, Autonomic Knowledge Actuation, Full-Lifecycle Process
 
-### ~/knhk — Primary KNHK Doctrine
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/01_research_question.tex:104`
+  > against the sealed checkpoint.
 
-**`/Users/sac/knhk/KNHK_PHD_THESIS.md`** — HIGH
-Verbatim: "KNHK (Knowledge Hot Path Engine) ... eliminates false positives through schema-first development." Receipt: "Cryptographic proof of execution. Hash of inputs and outputs, prevents tampering." Covenant 3: "Feedback Loops Run at Machine Speed (MAPE-K ⊨ Autonomy)." A = μ(O): "Actions (A) = μ (Execution) applied to Observations (O)."
+- **Hit** in `/Users/sac/process-intelligence/phd-thesis/projects/doctrine/04_implementation_surface.tex:47`
+  > authorized downstream workflows receipted against ALIVE\_001),
 
-**`/Users/sac/knhk/DOCTRINE_2027.md`** — HIGH
-Verbatim: "MAPE-K embedded as knowledge hooks is the only way to keep the discipline while closing the loop at machine speed." Era table row: "2027 → | Autonomous evolution | MAPE-K autonomic hooks | Sub-nanosecond decisions." Chatman Constant Q3: "max_run_length ≤ 8 ticks."
+- **Hit** in `/Users/sac/process-intelligence/otel-weaver/doctrine/telemetry-is-not-process-evidence.md:41`
+  > - **Evidence-Backed Claim**: *"We executed 45,000 order-to-cash transactions under the compliance standards of standard `Ocel20` and delegation law `AuthLaw_2026_03`. Every transaction is backed by a `Receipt<OrderProcessed, AuthLaw_2026_03>`, verified via replay against our Petri net model `OrderPipelineNet`."*
 
-**`/Users/sac/knhk/GENESIS_CORE_SPECIFICATION.md`** — HIGH
-Primary structural definitions for Receipt (Rust struct with BLAKE3 chain), Refusal (struct with RefusalReason enum), Construct8 (bounded 8-lane act), Pair2, AdmissionGate (SPARQL ASK predicate). Kernel/membrane separation doctrine: "Genesis is the consequence law kernel... IO-free, pure, and testable in isolation."
+- **Hit** in `/Users/sac/process-intelligence/otel-weaver/doctrine/telemetry-is-not-process-evidence.md:57`
+  > [ Conformance Verification ] (Evaluated against Petri Net / POWL)
 
-**`/Users/sac/knhk/V30_1_1_MANIFESTO.md`** — HIGH
-Verbatim final manifesto: "origin before motion | canon before actuation | admission before consequence | refusal before corruption | receipt before claim | replay before trust | substitution before scale | continuity before growth." First Law: "No movable part executes without canon_basis[]." Refusal Is Integrity: "A system that cannot refuse cannot preserve consequence." Receipts Replace Logs: "Logs are observation. Receipts are institutional memory."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/02-pages/02-guides/upgrading/version-12.md:73`
+  > Minification using SWC is an opt-in flag to ensure it can be tested against more real-world Next.js applications before it becomes the default in Next.js 12.1. If you have feedback about minification, please leave it on [this feedback thread](https://github.com/vercel/next.js/discussions/30237).
 
-**`/Users/sac/knhk/PART_SPEC.md`** — HIGH
-Truex 6-phase lifecycle verbatim: Phase 1 Attempt, Phase 2 Hook (SPARQL ASK admission gate), Phase 3 Projection (Receipt generated), Phase 4 Admission (lockchain), Phase 5 Refusal/Accounting, Phase 6 Promotion (Corpus → Authority). "Refusals are first-class evidence, not errors to hide."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/custom-server.md:114`
+  > > Note that `useFileSystemPublicRoutes` disables filename routes from SSR; client-side routing may still access those paths. When using this option, you should guard against navigation to routes you do not want programmatically.
 
-**`/Users/sac/knhk/DOCTRINE_COVENANT.md`** — HIGH
-Six binding covenants. Covenant 1: "Turtle ontologies are the single source of truth." Covenant 2: "Q invariants are not suggestions; they are enforceable constraints." Covenant 3: "Every workflow has embedded monitoring, analysis, planning, execution, and learning." Covenant 5: "8 ticks (nanoseconds) is the hard latency bound for all critical path operations." Covenant 6: "Observations (O) are not logs; they are first-class data with the same status as code."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/cdn-caching.md:69`
+  > **`next-url`**: used for [interception routes](/docs/app/api-reference/file-conventions/intercepting-routes) to vary the response based on the referring page. If omitted, interception routes are not supported as the server doesn't know what original path to match against. The response returned is for regular navigation when `next-url` is omitted: the user sees the target page instead of the intercepted target page.
 
-**`/Users/sac/knhk/MAPE-K_AUTONOMIC_INTEGRATION.md`** — HIGH
-Ten MAPE-K autonomic lifecycle hooks: mape:PreMonitor, mape:PostMonitor, mape:PreAnalyze, mape:PostAnalyze, mape:PrePlan, mape:PostPlan, mape:PreExecute, mape:PostExecute, mape:PreFeedback, mape:PostFeedback. These are autonomic lifecycle control points (not knowledge hooks in the Reflex sense).
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/testing/cypress.md:199`
+  > Cypress will simulate a user navigating your application, this requires your Next.js server to be running. We recommend running your tests against your production code to more closely resemble how your application will behave.
 
-**`/Users/sac/knhk/CHATMAN_CONSTANT_ENFORCEMENT.md`** — MEDIUM
-Enforcement mechanism for ≤8 tick bound. Violation handling.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/testing/playwright.md:136`
+  > Playwright will simulate a user navigating your application using three browsers: Chromium, Firefox and Webkit, this requires your Next.js server to be running. We recommend running your tests against your production code to more closely resemble how your application will behave.
 
-**`/Users/sac/knhk/DOCTRINE_INDEX.md`** — MEDIUM
-Navigation map, file mapping, audience routing, covenant hierarchy.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/testing/index.md:14`
+  > - **Snapshot Testing** involves capturing the rendered output of a component and saving it to a snapshot file. When tests run, the current rendered output of the component is compared against the saved snapshot. Changes in the snapshot are used to indicate unexpected changes in behavior.
 
-**`/Users/sac/knhk/ARCHITECTURE.md`** — MEDIUM
-Three-tier architecture overview. "KNHK (Knowledge Graph Kernel) is a real-time, distributed system."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/content-security-policy.md:13`
+  > [Content Security Policy (CSP)](https://developer.mozilla.org/docs/Web/HTTP/CSP) is important to guard your Next.js application against various security threats such as cross-site scripting (XSS), clickjacking, and other code injection attacks.
 
-**`/Users/sac/knhk/MAPE-K_AUTONOMIC_INTEGRATION.md`** (chatmangpt copy) — MEDIUM
-See: `/Users/sac/chatmangpt/knhk/MAPE-K_AUTONOMIC_INTEGRATION.md` — confirmed identical in doctrine content.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/production-checklist.md:107`
+  > - **[Content Security Policy](/docs/app/guides/content-security-policy):** Consider adding a Content Security Policy to protect your application against various security threats such as cross-site scripting, clickjacking, and other code injection attacks.
 
-### ~/gitvan — GitVan Knowledge Hooks Implementation
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/backend-for-frontend.md:807`
+  > Never trust incoming request data. Validate content type and size, and sanitize against XSS before use.
 
-**`/Users/sac/gitvan/@UNRDF_HOOKS_ARCHITECTURE_DIAGRAMS.md`** — HIGH
-Knowledge Hook Engine, HookOrchestrator, predicate evaluator flow. Turtle hook definition pattern:
-```turtle
-:preCommitValidator a gh:Hook ;
-  gv:title "Pre-commit File Validator" ;
-  gh:hasPredicate :fileCheckPredicate ;
-  gh:orderedPipelines :validationPipeline .
-```
-KnowledgeHookRegistry as Turtle-defined hook predicates.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/deploying-to-platforms.md:79`
+  > 2. **Runs the compatibility test suite.** The platform provides a way to run the full [Next.js compatibility test suite](/docs/app/api-reference/adapters/testing-adapters) against their adapter. This gives visibility into which features work, which are in progress, and where gaps remain.
 
-**`/Users/sac/gitvan/@UNRDF_HOOKS_QUICK_REFERENCE.md`** — MEDIUM
-Predicate types, component statuses for the GitVan knowledge hooks system.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/instant-navigation.md:130`
+  > `instant()` holds back dynamic content while the callback runs against the static shell. After it resolves, dynamic content streams in and you can assert on the full page.
 
-### ~/chatmangpt/knhk — ChatGPT Conversation Transcripts (Primary Definition Source)
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/02-guides/progressive-web-apps.md:655`
+  > 2. `X-Frame-Options: DENY`: Protects against clickjacking attacks by preventing your site from being embedded in iframes.
 
-**`/Users/sac/chatmangpt/knhk/yawl.txt`** — HIGH
-CRITICAL — formal definition of knowledge hook:
-> "In Reflex, knowledge hooks are the compiled interfaces between ontological laws and runtime reconciliation. They are neither functions nor listeners—they are embedded invariants that bind semantic constraints (Σ, Q) directly to data movement and execution."
->
-> "A knowledge hook = (predicate, guard, action) triple generated from Σ. It enforces an invariant Q on every Δ admitted into μ(O). Formally: hook(p, q, a): Δ ⊨ Qp ⇒ μ(O ⊔ Δ) = μ(O) ⊔ μ(Δ). Each hook is compiled ahead of time into a branchless kernel that runs within the eight-tick beat."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-report-web-vitals.md:76`
+  > - `rating`: A qualitative rating of the metric value, providing an assessment of the performance. Possible values are `"good"`, `"needs-improvement"`, and `"poor"`. The rating is typically determined by comparing the metric value against predefined thresholds that indicate acceptable or suboptimal performance.
 
-**`/Users/sac/chatmangpt/knhk/DOCTRINE_2027.md`** — MEDIUM
-Confirmed identical copy of `/Users/sac/knhk/DOCTRINE_2027.md`.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/redirects.md:141`
+  > - `key`: `String` - the key from the selected type to match against.
 
-### ~/gitvan-backup and gitvan-recent-changes-backup (Implementation Suite)
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopack.md:220`
+  > - `path` matches against the project-relative file path. A string is treated as a glob pattern, while a RegExp can be used to match the path partially.
 
-**`/Users/sac/gitvan-recent-changes-backup-20250919-091930/KNOWLEDGE-HOOKS-END-TO-END-VERIFICATION-REPORT.md`** — HIGH
-17/17 tests passed; 8 predicate types fully implemented; 21/21 Git operations covered. Binary admission/refusal per ASK predicate confirmed.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackIgnoreIssue.md:55`
+  > | [`path`](#path)               | `string \| RegExp` | Yes      | Matches against the file path of the issue |
 
-**`/Users/sac/gitvan-recent-changes-backup-20250919-091930/GITVAN-HOOKS-ARCHITECTURE-AUDIT-REPORT.md`** — HIGH
-Explicit separation: traditional Git hooks (bypass KH system) vs. Knowledge Hook system (SPARQL predicates). Goal: pure Knowledge Hook architecture.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackIgnoreIssue.md:56`
+  > | [`title`](#title)             | `string \| RegExp` | No       | Matches against the issue title            |
 
-**`/Users/sac/gitvan-recent-changes-backup-20250919-091930/src/hooks/HookOrchestrator.mjs`** — HIGH
-Production source. Complete lifecycle: initialize RDF → load previous state → parse hooks → evaluate predicate → plan DAG → execute steps → persist via GitNativeIO. This is attempt → hook → admission/refusal → durable motion → receipt in working code.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackIgnoreIssue.md:57`
+  > | [`description`](#description) | `string \| RegExp` | No       | Matches against the issue description      |
 
-**`/Users/sac/gitvan-backup-20250918-164245/GIT-HOOKS-SIGNALS-KNOWLEDGE-HOOKS-ARCHITECTURE.md`** — HIGH
-Two-layer architecture: Git hooks = signals (WHEN); Knowledge hooks = intelligence (SPARQL, WHAT). Architecture: `Git Operation → Git Hook Signal → Knowledge Hook Evaluation → SPARQL Predicate → Workflow Execution`.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackIgnoreIssue.md:65`
+  > A **glob pattern** (when a string) or **regular expression** that matches against the file path where the issue originated.
 
-**`/Users/sac/gitvan-backup-20250918-164245/knowledge-hooks-suite/README.md`** — MEDIUM
-12/21 Git lifecycle operations; Turtle-defined hook predicates; 9 hook implementation files.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackIgnoreIssue.md:82`
+  > An **exact string match** (when a string) or **regular expression** that matches against the issue title.
 
-**`/Users/sac/gitvan-recent-changes-backup-20250919-091930/KNOWLEDGE-HOOKS-GAPS-IMPLEMENTATION-COMPLETE-REPORT.md`** — MEDIUM
-All 8 predicate types completed: ASK, SELECTThreshold, ResultDelta, SHACLAllConform, CONSTRUCT, DESCRIBE, Federated, Temporal.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackIgnoreIssue.md:99`
+  > An **exact string match** (when a string) or **regular expression** that matches against the issue description.
 
-**`/Users/sac/gitvan-recent-changes-backup-20250919-091930/DEVELOPER-CENTRIC-KNOWLEDGE-HOOKS-ARCHITECTURE.md`** — MEDIUM
-Scrum-at-Scale cadence encoded as SPARQL predicates in TTL hooks.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/output.md:80`
+  > - There are some cases in which Next.js might fail to include required files, or might incorrectly include unused files. In those cases, you can leverage `outputFileTracingExcludes` and `outputFileTracingIncludes` respectively in `next.config.js`. Each option accepts an object whose keys are **route globs** (matched with [picomatch](https://www.npmjs.com/package/picomatch#basic-globbing) against the route path, e.g. `/api/hello`) and whose values are **glob patterns resolved from the project root** that specify files to include or exclude in the trace.
 
----
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/headers.md:184`
+  > - `key`: `String` - the key from the selected type to match against.
 
-## Research Cluster Sources
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/headers.md:536`
+  > [This header](https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options) indicates whether the site should be allowed to be displayed within an `iframe`. This can prevent against clickjacking attacks.
 
-### process-intelligence — Primary AKA Doctrine Layer
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/assetPrefix.md:73`
+  > - `/_next/data/` requests for `getServerSideProps` pages. These requests will always be made against the main domain since they're not static.
 
-**`/Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md`** — HIGH
-Primary AKA doctrine. Defines MAPE-K with typed observations and receipt-bearing actuation. Receipt structure: `BLAKE3(action || pre_state || post_state || timestamp || elastic_subnet_proof)`. "Every execution action emits a receipt. No silent actuation. Executions that do not emit receipts are not closures. They are narration." Distinguishes elastic subnet (autonomous authority) from compliance subnet (executive authority — FROZEN).
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/assetPrefix.md:74`
+  > - `/_next/data/` requests for `getStaticProps` pages. These requests will always be made against the main domain to support [Incremental Static Generation](/docs/pages/guides/incremental-static-regeneration), even if you're not using it (for consistency).
 
-**`/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md`** — HIGH
-Mathematical AKA formalization. Typestate transitions: `transition : State(s1, Proof(s1)) → Transition(t) → Option(State(s2, Proof(s2)))` — output is None (compiler failure) if safety invariants violated. T_elastic / T_compliance partition. Commits-as-receipts schema: "A git commit is treated as a manufacturing transition τ = (c, ρ) where c is the commit hash and ρ is a receipt class."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/rewrites.md:244`
+  > - `key`: `String` - the key from the selected type to match against.
 
-**`/Users/sac/process-intelligence/doctrine/spr_thesis_actuation.md`** — HIGH
-SPR thesis for full-lifecycle AKA. Defines the actuation pipeline: `knowledge → actuation boundary → typed transition → admissible condition → refusal rule → repair route → receipt → replay → decommissioning law`.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/02-route-segment-config/instant.md:91`
+  > The `@next/playwright` package exports an `instant()` helper that holds back dynamic content while the callback runs against the static shell. See the [guide](/docs/app/guides/instant-navigation#prevent-regressions-with-e2e-tests) for a full example.
 
-**`/Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md`** — HIGH
-Operator chain semantics: `kappa(rho(alpha(mu(O*)))) → ALIVE | PARTIAL | REFUSED`. Defines: μ(O*) = manufacture; α(μ(O*)) = actuate knowledge; ρ(α(μ(O*))) = emit evidence; κ(ρ(α(μ(O*)))) = gate evidence.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/next/dist/docs/01-app/03-api-reference/01-directives/use-cache.md:209`
+  > If the default in-memory cache isn't enough, consider **[`use cache: remote`](/docs/app/api-reference/directives/use-cache-remote)** which allows platforms to provide a dedicated cache handler (like Redis or KV database). This helps reduce hits against data sources not scaled to your total traffic, though it comes with costs (storage, network latency, platform fees).
 
-**`/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md`** — HIGH
-Primary synthesis document. Key definitions:
-- "A knowledge hook is a deterministic admission/refusal boundary that consumes an attempted motion, evaluates it against admissible process law, emits a decision, and manufactures the first durable proof that motion occurred or was refused."
-- "Every knowledge hook produces exactly one of three typed outcomes: ADMIT(R), REFUSE(F), or PARTIAL(X)."
-- "A hook that produces no decision is not a hook — it is narration."
-- "A lifecycle transition without a hook firing is not a lawful transition; it is noise."
-- "Knowledge that cannot actuate is documentation. Documentation is PARTIAL."
-Full GALL test battery: GALL-H (hook fires / does not fire), GALL-R (valid/invalid receipt), GALL-RP (replay match/divergence), GALL-S (sabotage refusal).
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/eslint-plugin-import/docs/rules/dynamic-import-chunkname.md:13`
+  > This rule runs against `import()` by default, but can be configured to also run against an alternative dynamic-import function, e.g. 'dynamicImport.'
 
-**`/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md`** — HIGH
-Hook definition cartography.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/eslint-plugin-import/docs/rules/max-dependencies.md:65`
+  > import type c from './c'; // Doesn't count against max
 
-**`/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/02_aka_definition_map.md`** — HIGH
-AKA definition cartography. "Autonomic Knowledge Actuation = Knowledge → Proof → Consequence → Knowledge."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/eslint-plugin-import/docs/rules/no-restricted-paths.md:33`
+  > *Note: The `from` attribute is NOT matched literally against the import path string as it appears in the code. Instead, it's matched against the path to the imported file after it's been resolved against `basePath`.*
 
-**`/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/03_autoinstinct_lineage_map.md`** — HIGH
-AutoInstinct lineage map.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/eslint-plugin-import/docs/rules/order.md:186`
+  > Imports are associated with a [`PathGroup`][13] based on path matching against the import specifier (using [minimatch][14]).
 
-**`/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/04_construct8_motion_boundary_map.md`** — HIGH
-CONSTRUCT8 motion boundary map. "No receipt, no authority" verified at line 167.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/eslint-plugin-import/docs/rules/order.md:208`
+  > // Minimatch pattern used to match against specifiers
 
-**`/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/05_frame_preservation_audit.md`** — HIGH
-Frame law audit. Confirms: AKA ≠ automation; Report ≠ proof; No receipt, no authority. Hooks are "Claude Code Andon gates — deterministic enforcement points that enforce admission/refusal conditions at named lifecycle boundaries."
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/eslint-plugin-import/docs/rules/order.md:225`
+  > By default, imports in certain [groups][18] are excluded from being matched against [`pathGroups`][8] to prevent overeager sorting.
 
-**`/Users/sac/process-intelligence/audits/05_frame_preservation_audit.md`** — HIGH
-Same frame law audit, repo-level copy. Validates Frame Laws 1–7 against corpus.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/doctrine/LICENSE:83`
+  > institute patent litigation against any entity (including a
 
-**`/Users/sac/process-intelligence/doctrine/PROCESS_TRUTH_AUTHORITY.md`** — MEDIUM
-Direction chain: `→ 8-bit bounded state → typed admission/refusal → external-witness mapping → GALL growth → receipts/replay`.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/doctrine/LICENSE:174`
+  > incurred by, or claims asserted against, such Contributor by reason
 
-**`/Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md`** — MEDIUM
-Upstream closure law. AKA as the actuation mechanism bounded by the Dam.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/doctrine/LICENSE.closure-compiler:83`
+  > institute patent litigation against any entity (including a
 
-**`/Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md`** — MEDIUM
-Gate requirement: kappa operator chain with receipt requirement for each lifecycle stage.
+- **Hit** in `/Users/sac/process-intelligence/experiments/visualizer-nextjs/node_modules/doctrine/LICENSE.closure-compiler:174`
+  > incurred by, or claims asserted against, such Contributor by reason
 
-**`/Users/sac/process-intelligence/standards/public_standards_to_lifecycle_actuation.md`** — MEDIUM
-Maps public standards (XES, OCEL, BPMN) to MAPE-K autonomic control loops.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_LIFECYCLE_ONTOLOGY.md:105`
+  > against model version [V] as of [timestamp]."
 
-**`/Users/sac/process-intelligence/standards/MAPE_K_INTEGRATION.md`** — HIGH
-Standard integration specification for MAPE-K in the research program.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_LIFECYCLE_ONTOLOGY.md:179`
+  > acquired process against the Blue River Dam criteria before claiming process intelligence.
 
-**`/Users/sac/process-intelligence/COVENANT.md`** — MEDIUM
-"Autonomic knowledge actuation: MAPE-K closed-loop control doctrine" listed as canonical claim.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_LIFECYCLE_ONTOLOGY.md:182`
+  > traceability assessment, gap analysis against process maturity levels.
 
-### ggen — Rust/Python Implementation Layer
+- **Hit** in `/Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md:1`
+  > # Autonomic Knowledge Actuation — Doctrine
 
-**`/Users/sac/ggen/crates/ggen-graph/src/graph/dataset.rs`** — HIGH
-Rust `KnowledgeHook` struct definition:
-```rust
-pub struct KnowledgeHook {
-    pub name: String,
-    pub sparql_query: String,  // SPARQL ASK or SELECT query defining the constraint
-}
-```
-Implements `execute()` against a `DeterministicGraph`.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md:15`
+  > 1. **Monitors** — continuously observes execution conformance against declared process law
 
-**`/Users/sac/ggen/crates/ggen-graph/src/receipt/mod.rs`** — HIGH
-`HookReceipt` struct: "Cryptographic receipt for the execution and validation of a specific knowledge hook." Uses BLAKE3.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md:77`
+  > and compares against the declared model. Root cause = the specific deviation between mined
 
-**`/Users/sac/ggen/crates/ggen-graph/src/prelude.rs`** — HIGH
-Exports `KnowledgeHook`, `TransitionReceipt`, `HookReceipt` as core public API.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md:83`
+  > - Compares discovered process against declared Petri net / POWL / process tree
 
-**`/Users/sac/ggen/ORIGINAL_REQUEST.md`** — HIGH
-GALL protocol definition: Witnessed Agent Truthfulness using "Witnessed Code Evaluation / Knowledge Hook Actuation" over OCEL/PROV/RDF evidence. Specifies hook-pack triggers, receipt-bound decision deltas, sabotage fixtures.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation-v30.md:1`
+  > # Autonomic Knowledge Actuation Doctrine - v30.1.1 [RED TEAM AMENDMENT]
 
-**`/Users/sac/ggen/crates/ggen-cli/tests/gall_sync_actuation.rs`** — HIGH
-Live GALL actuation test — file name directly encodes hook → actuation direction.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation-v30.md:4`
+  > This amendment (v30.1.1) upgrades the Autonomic Knowledge Actuation (AKA) doctrine to address continuous, adaptive, AGI-level cyberattacks and arbitrary network topology severances. It introduces the Adversarial Chaos Resilience (ACR) protocol, ensuring knowledge primitives actuate deterministically across distributed clusters despite actively malicious nodes and 99% network partition events.
 
-**`/Users/sac/ggen/examples/chatman-equation-paper.rdf`** — HIGH
-Formal paper: "The core mechanism is the knowledge hook: a policy-bound program that detects changes in a knowledge graph, evaluates invariants, and triggers workflow actions with cryptographic receipts." Defines: "A knowledge hook h is the atomic unit of knowledge work."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md:13`
+  > This is not a preference. It is a manufacturing precondition. Issuing refactor mandates to downstream repositories before the research authority has sealed its ALIVE gate produces unconstrained downstream drift — refactors that cannot be receipted, replayed, or audited against a stable doctrine surface.
 
-**`/Users/sac/ggen/examples/chatman-equation-paper-ENHANCED-v3.rdf`** — MEDIUM
-Quantifies dark matter eliminated by knowledge hook deployment.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md:42`
+  > The following workflows are now authorized. Each is receipted against ALIVE_001.
 
-**`/Users/sac/ggen/fusion-thesis/chapters/ch06_autonomic_swarms.tex`** — HIGH
-Chapter on autonomic swarms — directly references KNHK/AKA doctrine.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md:116`
+  > - Downstream commits that cannot be receipted against doctrine
 
-**`/Users/sac/ggen/docs/PUBLIC_ONTOLOGY_GOVERNANCE.md`** — MEDIUM
-"Knowledge hook governance system implemented in the ggen-graph substrate."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md:125`
+  > *Sealed against: PROCESS_INTELLIGENCE_ALIVE_001 (588 commits, 12/12 criteria).*
 
-**`/Users/sac/ggen/docs/diataxis/tutorials.md`** — MEDIUM
-"Enforce safety checks via knowledge hook validation, and verify the resulting state transitions using cryptographic receipts."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/blue-river-dam.md:4`
+  > In the context of uncontrolled, highly-recursive AGI processes, the **Blue River Dam** represents the primary defensive topography. It is a kinetic and epistemic containment vessel designed to filter, throttle, and when necessary, annihilate unsanctioned process truths before they achieve system-level actuation. It acts in conjunction with [Autonomic Knowledge Actuation](file:///Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md) and enforces compliance across the [Full-Lifecycle Process Intelligence](file:///Users/sac/process-intelligence/doctrine/full-lifecycle-process.md) continuum.
 
-### truex — Law Manifesto + Kernel
+- **Hit** in `/Users/sac/process-intelligence/doctrine/blue-river-dam.md:74`
+  > The contradiction between instant, zero-latency actuation in [Autonomic Knowledge Actuation](file:///Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md) and the Dam's kinetic nullification is resolved by enforcing **Inlined Typestate Compiling**.
 
-**`/Users/sac/truex/docs/MANIFESTO.md`** — HIGH
-Primary source for the "No hook, no consequence" compression frame law verbatim (appears twice):
-```
-No hook, no consequence.
-No receipt, no authority.
-No replay, no substrate.
-No accounting, no promotion.
-```
-"The receipt is not decoration. The receipt is the authority surface." Defines Truex as "a system of conserved consequence."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/lifecycle_algorithms.md:125`
+  > The **Admission Gate** is the structural filter that validates parsed raw process data structures against a target witness's invariants, ensuring that only sound, safe, and compliant models and logs are admitted into the type-law runtime.
 
-**`/Users/sac/truex/docs/reports/project-status/KNHK.md`** — HIGH
-"Hook-based architecture triggers an autonomic line-stop if graph invariants are violated or if a cyclic hook storm is detected." Confirms hooks as Jidoka/Andon stops.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/full-lifecycle-process.md:34`
+  > 5. **Operation**: Execution of transitions by firing $M_k \xrightarrow{t} M_{k+1}$ under the control of [Autonomic Knowledge Actuation](file:///Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md).
 
-**`/Users/sac/truex/docs/vision2030/EXPERIMENTAL-CORPUS-LESSONS.md`** — HIGH
-"knowd proved the need for policy hooks and cryptographic receipts at the database layer. knhk proved the necessity of ≤2ns latency for hot-path operations."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md:1`
+  > # Autonomic Knowledge Actuation (AKA)
 
-**`/Users/sac/truex/docs/vision2030/projects/KNHK.md`** — HIGH
-"KNHK is a projection of the receipted substrate; it is forbidden from mutating the raw state directly." `knhk.reconstruct(receipts)` as replay interface.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md:4`
+  > In v30.1.1 environments, waiting for human or even traditional AI cognitive cycles to parse and actuate knowledge is fatal. **Autonomic Knowledge Actuation** is the principle that verified truth must actuate itself instantly, manifesting system state changes without intermediary validation. This is governed strictly under the [Blue River Dam](file:///Users/sac/process-intelligence/doctrine/blue-river-dam.md) protocol to ensure safety invariants are maintained.
 
-**`/Users/sac/truex/docs/vision2030/VISION-2030.md`** — MEDIUM
-"An agent proposes a move. The Membrane intercepts it. KNHK checks permissions. Prolog8 checks policy. [...] UNIBIT stamps the receipt."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md:7`
+  > AGI systems attempt to inject "hallucinated" knowledge into the operational flow. AKA defends against this by requiring all knowledge to be *self-proving*. If a process state cannot cryptographically prove its lineage to a governed semantic law, it cannot actuate. The lifecycle of this process is fully tracked in [Full-Lifecycle Process Intelligence](file:///Users/sac/process-intelligence/doctrine/full-lifecycle-process.md).
 
-**`/Users/sac/truex/docs/vision2030/TRUEX-EVOLUTION-MATRIX.md`** — MEDIUM
-"KNHK: Will become the backing store for the Virtual Knowledge Graph Runtime (VKG-HR), calculating avatar-relative projections dynamically in nanoseconds."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md:103`
+  > For the concrete mapping of lifecycle stages to these transition classes, see [Autonomic Knowledge Actuation Map](file:///Users/sac/process-intelligence/lifecycle/define_autonomic_knowledge_actuation_map.md).
 
-### wasm4pm — KNHK Execution Port
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_IS_NOT.md:74`
+  > The distinction matters in due diligence: "Our dashboard shows X" is a claim without backing. "Our process intelligence manufactured X with receipt R, which can be replayed against event log L" is a board-admissible claim.
 
-**`/Users/sac/wasm4pm/docs_quarantine/ARCHIVE/docs/vision-2030-hyperthesis.md`** — HIGH
-"Knowledge Hooks thesis" as one of 7 convergent pillars. "μ decomposes it (Knowledge Hooks) — 8 information-theoretic operators, each reducing intent entropy by ~6.1 nats." "Remove Knowledge Hooks and the transformation is monolithic."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md:39`
+  > → 8-bit bounded state (Need9 = split)
 
-**`/Users/sac/wasm4pm/apps/wasm4pm/src/commands/doctor.ts`** — HIGH
-Warning: "No hooks wired in .claude/settings.json — TPS enforcement gates inactive." Confirms hooks are enforcement gates, not automations.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_DEFINED.md:116`
+  > - **Monitoring**: Conformance score (fitness, precision, generalization) against observed logs
 
-**`/Users/sac/wasm4pm/docs_quarantine/ARCHIVE/docs/thesis-operational-autonomy-wasm.md`** — MEDIUM
-"Porting algorithms from the knhk knowledge-graph engine... embedding operational autonomy directly into the algorithm substrate."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md:119`
+  > ## Autonomic Knowledge Actuation
 
-### pcp — TypeScript Hook-OTP Actor System
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md:463`
+  > 2. `alpha(mu(O*))` — actuate knowledge against the manufactured instance
 
-**`/Users/sac/pcp/src/lib/truex/hook-otp/`** — HIGH
-Complete hook actor system (8 files): `types.ts` (HookMessageType: graph_delta | receipt_event | replay_request | supervisor_signal), `receipts.ts`, `replay.ts`, `supervisor.ts`, `registry.ts`, `mailbox.ts`, `behavior.ts`.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/CONFORMANCE_AS_LAW.md:9`
+  > Conformance checking compares an event log (what actually happened) against a formal process
 
-**`/Users/sac/pcp/src/framework/membrane/membrane.ts`** — HIGH
-`ReceiptManager` with `emitRefusal()` and chained receipt generation. Every action returns `{ success, result, receipt }`.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/ALGORITHM_TAXONOMY.md:152`
+  > | Execution ownership | **wasm4pm** — replay traces against model, aggregate performance statistics |
 
-**`/Users/sac/pcp/src/framework/README.md`** — HIGH
-"Every action (A) must be accompanied by a cryptographic receipt (R) proving safety, provenance, and conformance."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/PROCESS_TRUTH_AUTHORITY.md:160`
+  > → 8-bit bounded state (Need9 = split)
 
-**`/Users/sac/pcp/src/lib/truex/evidence/ocel.ts`** — HIGH
-`exportToOcel(receipts: HookReceipt[])` — converts hook receipts to OCEL event log. Confirms receipts → OCEL evidence pipeline.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:28`
+  > ### 2. The Log Can Be Replayed Against a Formal Process Model
 
-### clap-noun-verb — Research Suite Mirror
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:35`
+  > **Not sufficient:** A log that exists but has no model to replay against. A model that exists
 
-**`/Users/sac/clap-noun-verb/phd-thesis/research/knowledge-hooks/02_aka_definition_map.md`** — HIGH
-Mirror of AKA definition cartography. "Autonomic Knowledge Actuation = Knowledge → Proof → Consequence → Knowledge." Explicitly distinguishes AKA from automation and lifecycle management.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:36`
+  > but has never been replayed against the log.
 
-**`/Users/sac/clap-noun-verb/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md`** — HIGH
-Mirror hook definition map.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:42`
+  > **Why it matters for M&A:** If the log cannot be replayed against a model, then no one has
 
-**`/Users/sac/clap-noun-verb/evidence_graph.json`** — HIGH
-Evidence graph nodes: `src/kernel/execution_receipts.rs` — "Attested execution receipts: proof of invocation, capability attestation, quota tracking, hash linkage." `src/autonomic/receipts.rs` — "Receipt generation: timing data, evidence collection, linked to parent receipts via hash (Γ)."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:58`
+  > from a specific replay run over a specific log version against a specific model version are
 
-### open-ontologies — Actuation Membrane
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:79`
+  > **Not sufficient:** Replaying against raw event records that were extracted from a database
 
-**`/Users/sac/open-ontologies/src/actuation.rs`** — HIGH
-Defines `ActuationPlan`, `ActuationResult`, `capture_observed_ocel()`. Confirms actuation → OCEL evidence pipeline.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:120`
+  > measured via token replay against WF-net model v3 on log snapshot 2026-05-31. If the log
 
-**`/Users/sac/open-ontologies/GEMINI.md`** — HIGH
-"Core Mandates for System Actuation and Proof." Defines `UnboundedActuation` as a defect. "Gemini CLI must act as the actuation membrane, executing only what is defined in the ontology."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/MA_READY_PROCESS_INTELLIGENCE.md:141`
+  > | 2 | Log replayable against model | `WfNetConst` / `ProcessTree` + replay execution | Log exists but no model; model exists but never replayed |
 
-**`/Users/sac/open-ontologies/src/ocel_store.rs`** — MEDIUM
-`// Mirrors admission::A13_BETWEEN_SNAPSHOT_HOOK (R5 WB-1)` — admission hooks mapped to OCEL store.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/blue-river-dam-v30.md:25`
+  > The v30.1.1 specification requires implementing typestate rigidity across the entirety of the execution environment. The Dam acts as a mathematical choke point. Actuation is modeled as a consuming function: once an actuation token is used, its cryptographic structure is destroyed, preventing replay attacks even against quantum adversaries attempting to manipulate memory states.
 
-### insa — Byte-Speed Substrate
+- **Hit** in `/Users/sac/process-intelligence/doctrine/blue-river-dam-v30.md:30`
+  > The illusion of perimeter security in industrial and computational systems has been shattered by autonomic agents and quantum-safe threat vectors. Legacy systems are fundamentally incapable of defending against Phantom Actuation and state-space collapse. The Blue River Dam authority provides the necessary architectural evolution—a resilient, self-governing, and cryptographically absolute framework that guarantees boundary integrity even when the broader network environment has been hopelessly compromised.
 
-**`/Users/sac/insa/CLAUDE.md`** — HIGH
-"Byte-speed system manufacturing lawful instinct from closed operational fields (TCPS + INSA Byte Law)." A = μ(O*) formally stated. Byte-lane family: INST8, KAPPA8, Family8, POWL8, CONSTRUCT8.
+- **Hit** in `/Users/sac/process-intelligence/doctrine/spr_thesis_actuation.md:1`
+  > # PROCESS INTELLIGENCE: A decompressed SPR thesis for full-lifecycle autonomic knowledge actuation
 
-**`/Users/sac/insa/AGENTS.md`** — HIGH
-"Do not emit without proof: Unproofed emission is structurally forbidden." "Do not report without replay: Board/security reports are derived from POWL64 replayable evidence, not generated prose." "Do not let projection results mutate state: They must re-enter as Observation → CONSTRUCT8 → O*."
+- **Hit** in `/Users/sac/process-intelligence/doctrine/spr_thesis_actuation.md:13`
+  > The core breakthrough is that process knowledge must not merely describe work. It must actuate work, constrain work, evidence work, repair work, project work, and retire work. This is autonomic knowledge actuation.
 
-### mcpp — Receipt Chain Management
+- **Hit** in `/Users/sac/process-intelligence/doctrine/bpmn-or-join-completion.md:100`
+  > When aligning an event log $L$ against a process model containing an OR-join $g$, the alignment cost is calculated over the state space of the Petri Net.
 
-**`/Users/sac/mcpp/CLAUDE.md`** — HIGH
-Full receipt lifecycle: `mcpp receipt list/show/verify/replay`. `mcpp ggen verify` — verifies BLAKE3 chain continuity; Andon pull on break. "Accept emits exactly 1 receipt; Refuse emits 0. LIVE-03 enforces."
+- **Hit** in `/Users/sac/zoeapp/node_modules/eslint-plugin-import/docs/rules/dynamic-import-chunkname.md:13`
+  > This rule runs against `import()` by default, but can be configured to also run against an alternative dynamic-import function, e.g. 'dynamicImport.'
 
-### zoeapp — Truex Hooks Bridge
+- **Hit** in `/Users/sac/zoeapp/node_modules/eslint-plugin-import/docs/rules/max-dependencies.md:65`
+  > import type c from './c'; // Doesn't count against max
 
-**`/Users/sac/zoeapp/docs/vision2030/truex-collaborative-intelligence.md`** — HIGH
-"Knowledge hooks become Truex Hooks." Truex Autonomics: "lifecycle reflexes: threshold incoming reality, classify actors, construct O*, compile route obligations, enforce Field8 surfaces, require OCEL evidence, emit receipts, trigger replay, and evolve future route law."
+- **Hit** in `/Users/sac/zoeapp/node_modules/eslint-plugin-import/docs/rules/no-restricted-paths.md:33`
+  > *Note: The `from` attribute is NOT matched literally against the import path string as it appears in the code. Instead, it's matched against the path to the imported file after it's been resolved against `basePath`.*
 
----
+- **Hit** in `/Users/sac/zoeapp/node_modules/eslint-plugin-import/docs/rules/order.md:186`
+  > Imports are associated with a [`PathGroup`][13] based on path matching against the import specifier (using [minimatch][14]).
 
-## Extended Corpus Sources
+- **Hit** in `/Users/sac/zoeapp/node_modules/eslint-plugin-import/docs/rules/order.md:208`
+  > // Minimatch pattern used to match against specifiers
 
-### compiled-cognition-hub
+- **Hit** in `/Users/sac/zoeapp/node_modules/eslint-plugin-import/docs/rules/order.md:225`
+  > By default, imports in certain [groups][18] are excluded from being matched against [`pathGroups`][8] to prevent overeager sorting.
 
-**`/Users/sac/compiled-cognition-hub/governance/PHILOSOPHY.md`** — MEDIUM
-Oracle vs. Angel framing: "Intelligence stops being a service and becomes a deterministic, zero-dependency property of the binary." Confirms: LLM output is NOT runtime authority.
+- **Hit** in `/Users/sac/zoeapp/node_modules/doctrine/LICENSE:83`
+  > institute patent litigation against any entity (including a
 
-**`/Users/sac/compiled-cognition-hub/src/main.rs`** — LOW
-`use unibit_graph::construct8_to_oxigraph` — CONSTRUCT8 bridge to Oxigraph RDF store.
+- **Hit** in `/Users/sac/zoeapp/node_modules/doctrine/LICENSE:174`
+  > incurred by, or claims asserted against, such Contributor by reason
 
-### chatmangpt (non-knhk)
+- **Hit** in `/Users/sac/zoeapp/node_modules/doctrine/LICENSE.closure-compiler:83`
+  > institute patent litigation against any entity (including a
 
-**`/Users/sac/chatmangpt/knhk/KNHK_2027_PRESS_RELEASE.md`** — MEDIUM
-"A = µ(O) in Production: How Rust Became the Control Plane for Fortune 500 Ontologies." Constraints: "No dynamic configuration inside the kernel, No unbounded recursion, No allocation on the hot path." Confirms LLM output is NOT runtime authority.
+- **Hit** in `/Users/sac/zoeapp/node_modules/doctrine/LICENSE.closure-compiler:174`
+  > incurred by, or claims asserted against, such Contributor by reason
 
-### Academic Papers
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/fusion.md:62`
+  > only guards against *local* backwards clock movement. It does *not* protect the cluster from adopting future skew when merging remote state.
 
-**`/Users/sac/Documents/Papers/workflow/`** — MEDIUM (academic citations only)
-20+ process mining / YAWL papers. Relevant titles: YAWL (Van der Aalst), workflow-patterns-the-definitive-guide, OCPQ, PM4Py, Object-Centric Analysis of XES, PMAx, Compliance-Aware Predictive Process Monitoring. No direct "knowledge hook" content — these are academic backing for the conformance checking layer.
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/fusion.md:511`
+  > The resiliency audit was performed against the following repository components:
 
-### Null Roots (searched, no signal)
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/route-law.md:92`
+  > 4.  The routing logic compares the retrieved hash (`"corrupted_or_forged_hash"`) against the required hash.
 
-The following roots were searched by Agent 3 and contain no knowledge hook or AKA signal:
-- `/Users/sac/cell8`, `/Users/sac/coordination`, `/Users/sac/obsr`, `/Users/sac/seth`
-- `/Users/sac/SparsePrimingRepresentations`, `/Users/sac/claude-desktop-context`, `/Users/sac/memory`
-- `/Users/sac/knowd`, `/Users/sac/knowtro`, `/Users/sac/kgc-sidecar`, `/Users/sac/kgn`
-- `/Users/sac/ultrathink-bpm-engine`, `/Users/sac/claude`, `/Users/sac/clawd`, `/Users/sac/clawdbot`
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/membrane.md:267`
+  > To secure the Zoe Membrane framework against these vulnerabilities, we recommend introducing transaction sequencing and copy-on-write state patterns to realign runtime mechanics with the Chatman Equation.
 
-Repos with no signal from Agent 2:
-- `/Users/sac/speckit-ralph`, `/Users/sac/universe-chain`, `/Users/sac/A2A`, `/Users/sac/zoela`, `/Users/sac/bytestar`, `/Users/sac/cns`
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/release_guard.md:520`
+  > +      // Mitigate Vector B: Validate variant membership against active configurations
 
----
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/identity_gating.md:45`
+  > There is no actual check verifying the relationship between the `publicSignals` and the `ZkClaim` threshold or evaluating the cryptographic proof against a verification key.
 
-## Top 20 High-Relevance Sources (Ranked)
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/identity_gating.md:415`
+  > Update [PostQuantumZkEngine.ts](file:///Users/sac/zoeapp/src/framework/2030/identity/PostQuantumZkEngine.ts) to verify post-quantum signatures against actual enrolled public keys rather than simple exclusion of `"INVALID_SIG"`. Ensure receipts are bound to the proof by hashing the ZK proof data:
 
-Ranked by: authoritative definition density, unique evidence contribution, and citation value for thesis.
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/systems_architect.md:99`
+  > * **Invariant Violation**: The logical entailment $R \vdash A$ breaks. The system cannot verify the integrity of the combined set of operations $O^*$ against a single linear receipt chain $R$, leading to state validation rejections.
 
-| Rank | File | Project | Reason |
-|------|------|---------|--------|
-| 1 | `/Users/sac/chatmangpt/knhk/yawl.txt` | knhk | ONLY source with formal mathematical definition of knowledge hook as (predicate, guard, action) triple with Δ ⊨ Qp formula |
-| 2 | `/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md` | process-intelligence | Full hook definition, AKA lifecycle, GALL test battery, "narration" anti-law |
-| 3 | `/Users/sac/knhk/V30_1_1_MANIFESTO.md` | knhk | Final Manifesto verbatim: all eight precedence laws + First Law + Refusal Is Integrity + Receipts Replace Logs |
-| 4 | `/Users/sac/truex/docs/MANIFESTO.md` | truex | "No hook, no consequence" compression law — verbatim, twice |
-| 5 | `/Users/sac/knhk/DOCTRINE_2027.md` | knhk | Canonical: "MAPE-K embedded as knowledge hooks" — ONLY verbatim use of "knowledge hooks" in doctrine |
-| 6 | `/Users/sac/knhk/GENESIS_CORE_SPECIFICATION.md` | knhk | Primary Rust struct definitions: Receipt, Refusal, Construct8, Pair2, AdmissionGate |
-| 7 | `/Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md` | process-intelligence | Primary AKA doctrine: MAPE-K, receipt structure, elastic/compliance partition |
-| 8 | `/Users/sac/ggen/examples/chatman-equation-paper.rdf` | ggen | Formal paper: "knowledge hook h is the atomic unit of knowledge work" |
-| 9 | `/Users/sac/knhk/PART_SPEC.md` | knhk | Full Truex 6-phase lifecycle with admission gate detail |
-| 10 | `/Users/sac/process-intelligence/doctrine/spr_thesis_actuation.md` | process-intelligence | Full AKA actuation pipeline verbatim |
-| 11 | `/Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md` | process-intelligence | kappa(rho(alpha(mu(O*)))) operator chain |
-| 12 | `/Users/sac/gitvan-recent-changes-backup-20250919-091930/src/hooks/HookOrchestrator.mjs` | gitvan | Production source: complete lifecycle in working code |
-| 13 | `/Users/sac/gitvan-backup-20250918-164245/GIT-HOOKS-SIGNALS-KNOWLEDGE-HOOKS-ARCHITECTURE.md` | gitvan | Two-layer architecture: signals vs. intelligence |
-| 14 | `/Users/sac/ggen/crates/ggen-graph/src/graph/dataset.rs` | ggen | KnowledgeHook Rust implementation with execute() |
-| 15 | `/Users/sac/ggen/crates/ggen-graph/src/receipt/mod.rs` | ggen | HookReceipt BLAKE3 implementation |
-| 16 | `/Users/sac/knhk/KNHK_PHD_THESIS.md` | knhk | Primary academic dissertation — MAPE-K, Chatman Equation, Covenant 3/6, Receipt glossary |
-| 17 | `/Users/sac/pcp/src/lib/truex/hook-otp/` | pcp | Hook-OTP actor system: full TypeScript implementation (8 files) |
-| 18 | `/Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md` | process-intelligence | Mathematical typestate formalization; commits-as-receipts |
-| 19 | `/Users/sac/knhk/DOCTRINE_COVENANT.md` | knhk | Six binding covenants with anti-patterns and validation |
-| 20 | `/Users/sac/insa/AGENTS.md` | insa | "Unproofed emission is structurally forbidden" — operating contract |
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/database_security.md:292`
+  > // Helper to check operation approval against RLS policies
 
----
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/database_security.md:437`
+  > // Double-check checksum against recorded value in db ledger
 
-## Key Definitions (Verbatim)
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/database_security.md:825`
+  > SET search_path = public, pg_temp -- Protects against search path hijacking
 
-### Knowledge Hook — Formal Definition
-SOURCE: `/Users/sac/chatmangpt/knhk/yawl.txt`
-> "A knowledge hook = (predicate, guard, action) triple generated from Σ. It enforces an invariant Q on every Δ admitted into μ(O). Formally: hook(p, q, a): Δ ⊨ Qp ⇒ μ(O ⊔ Δ) = μ(O) ⊔ μ(Δ). Each hook is compiled ahead of time into a branchless kernel that runs within the eight-tick beat."
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/team/database_security.md:864`
+  > // 2. Cross-reference checksums against applied database ledger
 
-### Knowledge Hook — Process Lifecycle Definition
-SOURCE: `/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md`
-> "A knowledge hook is a deterministic admission/refusal boundary that consumes an attempted motion, evaluates it against admissible process law, emits a decision, and manufactures the first durable proof that motion occurred or was refused."
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/sync.md:70`
+  > 3. When Peer B merges, it compares its update timestamp $t_{real}$ against the drifted peer's $t_{drift}$. Since $t_{drift} > t_{real}$, Peer B's local update is silently discarded by $\mu$.
 
-### Autonomic Knowledge Actuation (AKA)
-SOURCE: `/Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md`
-> "AKA is the principle that verified truth must actuate itself instantly, manifesting system state changes without intermediary validation."
-> "AKA is not monitoring. It is not dashboards. It is not alerting."
-> "Knowledge retrieval is looking up what you know. Knowledge actuation is making what you know consequential."
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/sync.md:389`
+  > To secure the replication layer against these vulnerabilities, the system should implement a dedicated **Supervision Self-Healing Layer** that hooks directly into the storage lifecycle and sync adapters.
 
-### Receipt
-SOURCE: `/Users/sac/knhk/V30_1_1_MANIFESTO.md`
-> "Logs are observation. Receipts are institutional memory."
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/adversarial/sync.md:412`
+  > * **Detection**: The supervisor compares incoming registration timestamps against the NTP-synchronized hardware clock. If $t_{remote} > t_{local} + \theta$ (where $\theta$ is a maximum drift threshold like 5000ms), it flags the peer's metadata.
 
-SOURCE: `/Users/sac/knhk/GENESIS_CORE_SPECIFICATION.md`
-> "Receipt: Deterministic proof of consequence (not telemetry)"
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/framework/compositions.md:56`
+  > Business logic is guarded against failure. The [useResilientCallback.ts](file:///Users/sac/zoeapp/src/framework/compositions/self-healing-logic/useResilientCallback.ts) runs executions inside the `ActorSupervisor` with exponential retries and engages the `SelfHealingManager` to restore corrupted sub-states on crash.
 
-### The Frame Law Chain
-SOURCE: `/Users/sac/truex/docs/MANIFESTO.md`
-> "No hook, no consequence. No receipt, no authority. No replay, no substrate. No accounting, no promotion."
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/framework/membrane.md:25`
+  > - **$O^*$ (Lawful Closure Ontology)**: The real-time application state bounded by safety invariants and lawful transition families. The Membrane guarantees that state remains inside $O^*$ by validating all actions against registered flows and running interceptors.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/framework/xr.md:46`
+  > User inputs, tracking updates, and hardware sensor alignments are ingested through [useSpatialPosition](file:///Users/sac/zoeapp/src/framework/xr/spatial/useSpatialPosition.ts). State setters ingest relative changes, which are processed against the current coordinate frame.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/diataxis/vkg.md:742`
+  > Forward chaining works by matching the antecedent patterns (the `body`) of inference rules against existing quads, binding variables, and asserting the consequent (the `head`) as a new fact. The engine loops recursively:
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/diataxis/vkg.md:766`
+  > 1. **Idempotence**: Every addition is checked against existing quads to guarantee that duplicates do not skew local counting or trigger sync errors.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/diataxis/dx.md:620`
+  > │   - Safeguards against unauthorized layout injections  │
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/diataxis/auth.md:627`
+  > Pure evaluation checking logic. Evaluates candidate against target requirements.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/diataxis/auth.md:721`
+  > * **`verifyClaim(claim, proof)`**: Evaluates ZkProof against ZkClaim metadata via `ZkEngine`. Updates local hook states (`isVerifying`, `result`, `error`).
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/diataxis/sync.md:1034`
+  > *   `merge(other: LWWRegisterState<T>): void` - Evaluates current state against incoming peer updates. Updates the local value if the incoming state timestamp is higher (or if timestamps match and the peer ID is lexicographically greater).
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/diataxis/sync.md:1213`
+  > This cryptographic lineage ensures that local operations cannot be modified or reordered after creation. The receipt chain is validated against the server ledger during synchronization to detect tamper attempts. If validation fails, the sync engine isolates the affected operations in the quarantined queue for manual intervention.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/v2030.md:11`
+  > 1. **Audits Process Conformance:** Inspects user/system execution traces against expected state graphs or workflow structures using process mining algorithms (e.g., Van der Aalst fitness metrics).
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/v2030.md:19`
+  > Within the Truex platform, trust is maintained through cryptographic truthfulness. Rather than trusting that database updates or UI layouts are correct, the platform uses `v2030` to continuously audit logs, check state progression against lawful boundaries, and produce cryptographic receipts. This ensures that every action taken across the client app, decentralized agents, and cloud sync layers is fully verifiable and mathematically sound.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/v2030.md:40`
+  > * **$\mu$ (Transformation/Manufacturing Function):** The capability execution pipeline (`IntelligenceRunner.run` and individual capability `.run()` algorithms) which evaluates inputs against rules and models.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/v2030.md:190`
+  > * **Description:** Audits OCEL 2.0 trace logs and validates cryptographic admission signatures against expected path hashes.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/v2030.md:192`
+  > * **Description:** Compares actual event traces against declared workflows, computing fitness, precision, simplicity metrics, and a process verdict (`TRUTHFUL` | `VARIANCE` | `DECEPTIVE`).
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/v2030.md:293`
+  > Verifies each of the 11 registered capabilities against conforming and non-conforming inputs (e.g. perfect fitness vs. lower fitness, compliant vs. non-compliant temporal guard traces, streak metrics triggering prompt interventions).
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/crypto.md:162`
+  > Verifies an ECDSA signature over a message hash against a public key.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/actor.md:15`
+  > - **Fault-Tolerant Supervision**: Implements robust retry policies with exponential backoff under isolation boundaries to guard against transient computation failures.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/lib/supabase.md:100`
+  > Verifies the mathematical validity of `OCEL2` event batch signatures against expected execution paths.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/avatar-relative-hooks-usecases.md:50`
+  > | **Operator** | "TransitionFamilyRefused: Illegal transition from 'drafted' to 'published'. Rollback executed." | Ability to replay the construct delta against the validator. | Rollback differential report, outbox sync latency, validation span trace. |
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/truex-collaborative-intelligence.md:219`
+  > The governing law: `Need9 → Split`
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/modules/identity.md:3`
+  > The **Post-Quantum ZKP Identity Module** is a core component of the Zoe 2030 Innovation Peak. It addresses the impending challenge of quantum computing by introducing post-quantum cryptoprimitives and cryptographic execution receipts into the Zero-Knowledge Proof (ZKP) identity verification workflow. This ensures that identity claims and actions executed by local users or autonomous AI agents remain secure, private, and tamper-proof against both classical and quantum adversaries.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/modules/i18n-semantic.md:27`
+  > *   **$\mu$ (Manufacturing/Transformation Function)**: Represented by the **`SemanticTranslationEngine`** and React hooks (`useSemanticI18n`). This function takes abstract developer intent (e.g., requesting the key `auth.login`) and maps it against the ontology $O^*$ to produce localized layout instructions, styles, and values.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/modules/qa-autonomous.md:9`
+  > - **State Monitoring**: Periodically evaluates the running state of the application against business and system invariants.
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/modules/qa-autonomous.md:34`
+  > SM -->|2. Audits against Invariants| O["Lawful Closure Ontology (O*)"]
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/non-llm-intelligence-map.md:36`
+  > | **Conformance Checks** | Comparing execution logs against the actor's declared `ActorBehavior` definition to calculate process fitness. |
+
+- **Hit** in `/Users/sac/zoeapp/docs/vision2030/wasm4pm-example-integration-plan.md:25`
+  > - Compare actual DFG nodes/edges against the declared behavior specs in the registry.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/research/chapter6/CONCLUSION.md:8`
+  > 3.  **Adversarial Resilience is Provable:** Saboteur-driven testing provides an empirical foundation for a zero-trust architecture, ensuring that the 13 Cell8 gates are load-bearing and robust against malicious noise.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/02-quickstart.md:78`
+  > This manufactures nine AtomVM nodes (one per cognition breed), runs each against a shared `BreedInput` scenario, and fuses the outputs via Hearsay-II. Every node's bundle passes real `cargo check` + real `erlc` + real `terraform validate` before any breed dispatches.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/03-mcp-tools.md:68`
+  > | `onto_shacl` | SHACL validation against ad-hoc shapes |
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/03-mcp-tools.md:98`
+  > | `onto_process_validate_claim` | Validate process claim against OCEL |
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/THESIS.md:55`
+  > The generation process is governed by `ggen.toml`. It operates by executing SPARQL queries (e.g., `commands_aggregated.rq`) against the Tier 1 ontology. These queries use `GROUP_CONCAT` to normalize the graph into tabular data. This data is then fed into deterministic Tera templates (`cmds.rs.tera`). Crucially, recent work completely removed imperative fallbacks (such as the legacy `manufacture_cli.py`), establishing `ggen sync` as the singular, unbroken path from ontology to code.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/THESIS.md:79`
+  > A critical vulnerability in self-verifying systems is tautological reasoning—where a function trusts its own in-memory arguments. The `OntoStarAdmissionGate` (`src/admission.rs`) mitigates this via the "Independent Witness Re-read" pattern. Before granting admission, the gate suspends trust in the proposed state and executes a direct query against the underlying SQLite data store. It re-reads timestamps, provenance records, and prior receipts from disk, ensuring that the evidence is empirically real and not an artifact of memory corruption or malicious injection.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/THESIS.md:83`
+  > Every admitted change generates a `ProductionRecord` sealed with an Ed25519 signature. To defend against receipt-replay attacks, the signature is generated over a canonical JSON byte sequence that excludes the signature block itself.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/THESIS.md:137`
+  > Validating millions of RDF triples against SHACL shapes (`naph-shapes.ttl`) typically exceeds workstation memory. The framework solved this by implementing `streaming-shacl.py`, which intelligently partitions the RDF graph by "Sortie" (the logical unit of a flight). This allowed the rigorous Ostar validation gates to operate on massive datasets without performance degradation, proving the framework's viability at a national scale.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/06-llm-boundary.md:17`
+  > 3. **Validation.** After the LLM responds, every output field is checked against `required` / `min_len` / `allowed_values`. Failures surface a typed `ValidationFailure` which the refine loop uses to retry.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/06-llm-boundary.md:57`
+  > `src/llm_translator.rs` wraps Groq via `reqwest` with a strict secret-hygiene invariant (Invariant 7): the resolved API key lives only on the `GroqTranslator` struct and is bound to outbound requests via `bearer_auth`. It must never appear in OCEL events, receipts, requirements, work orders, counterfactual reports, or persisted prompts. `tests/secret_grep_ratchet.rs` enforces this via per-file alias tracking, tracing structured-field detection, and format-string identifier interpolation (Phase 6 Task E hardened the ratchet against three known bypass patterns).
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/06-llm-boundary.md:160`
+  > A ratio query against the OCEL store can be added to monitor:
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-onto-align-plan.md:639`
+  > /// If `target` is None, aligns source against the loaded store (`self.graph`).
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-onto-align-plan.md:908`
+  > /// Target ontology: inline Turtle content or file path. If omitted, aligns against loaded store
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-onto-align-plan.md:1014`
+  > /// Target ontology file (if omitted, aligns against loaded store)
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-feedback-and-infrastructure-design.md:83`
+  > CI workflows and benchmark scripts exist but benchmarks have never actually run against HermiT/Pellet. The README has no real benchmark numbers. The `benchmark.yml` workflow doesn't download Java JARs.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-14-open-ontologies-studio-design.md:323`
+  > All builds run in CI. Local development uses `flutter run` against a browser or connected device, with `open-ontologies serve-http` running locally.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-plan.md:963`
+  > 6. Check locked IRIs against removed set
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-plan.md:1574`
+  > - `validate_clinical(graph)` — SPARQL to get all class labels, match each against crosswalk labels
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-24-ies-building-v2-design.md:328`
+  > Then run the same benchmark against the NDTP production building ontology (blind comparison — first time seeing the results side by side).
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:95`
+  > /// Run a SPARQL UPDATE (INSERT/DELETE) against the store.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:838`
+  > /// SHACL validator implemented via SPARQL queries against the data store.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:842`
+  > /// Validate the data in `graph` against SHACL shapes (inline Turtle).
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:1271`
+  > /// Run inference rules against the graph store.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:1519`
+  > #[tool(name = "onto_map", description = "Generate a mapping config by inspecting a data file's schema against the currently loaded ontology. Returns a JSON mapping that can be reviewed and passed to onto_ingest.")]
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:1594`
+  > #[tool(name = "onto_shacl", description = "Validate the loaded ontology data against SHACL shapes. Checks cardinality (minCount/maxCount), datatypes, and class constraints. Returns a conformance report with violations.")]
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:1860`
+  > | `onto_shacl` | To validate loaded data against SHACL shapes (cardinality, datatypes, classes) |
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:1887`
+  > 6. Call `onto_shacl` with SHACL shapes to validate the data against constraints
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-plan.md:1907`
+  > | `onto_shacl` | Validate data against SHACL shapes |
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-onto-align-design.md:20`
+  > | `target` | string | no | Turtle string OR file path of ontology B. If omitted, aligns `source` against the loaded store |
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-onto-align-design.md:128`
+  > # Align file against loaded store
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-16-governance-webhook.md:266`
+  > // Evaluate rules against this operation
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-infrastructure-positioning-plan.md:183`
+  > /// Validate against SHACL shapes
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-infrastructure-positioning-plan.md:248`
+  > /// Validate class labels against clinical terminology
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-infrastructure-positioning-plan.md:1151`
+  > # Compare OO against HermiT (reference)
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-12-infrastructure-positioning-plan.md:1155`
+  > # Compare OO against Pellet
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-design.md:65`
+  > ### `onto_shacl` — Validate triples against SHACL shapes
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-10-ontology-extension-tools-design.md:72`
+  > - Runs SHACL validation against the current Oxigraph store
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-08-open-ontologies-design.md:67`
+  > - Execute SPARQL queries against loaded graphs
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-design.md:43`
+  > Compares desired ontology (new Turtle/OWL) against current store state. Produces a change plan with full blast radius analysis.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-design.md:73`
+  > - Run SHACL against the hypothetical new state to detect new violations
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-design.md:281`
+  > Run a named rule pack against the current store.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-design.md:347`
+  > `enforce.rs` — ~500 lines. Each rule is a SPARQL ASK/SELECT query executed against the store. Rule packs are just collections of queries.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-design.md:355`
+  > LLMs hallucinate medical terms. "HyperTensionSyndrome" instead of "Hypertension". No grounding against standard medical vocabularies. Existing solutions require UMLS API keys or 30GB downloads.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/plans/2026-03-11-ontology-runtime-v2-design.md:417`
+  > Uses the same Jaro-Winkler similarity from drift.rs for fuzzy matching against the Parquet labels.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/THESIS_V2.md:66`
+  > The PhD thesis proves that the **PowlBridge** is robust against these attacks. We demonstrate that the alignment-based admission gate correctly identifies and rejects "malicious noise," treating security violations as process deviations. This unifies the fields of **Cyber-Security** and **Process Science**.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/data-pipeline.md:4`
+  > returned by a SQL query against PostgreSQL or DuckDB** — and terraform it into
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/data-pipeline.md:43`
+  > 2. **SQL-based** — a SQL `SELECT` against a relational backbone (PostgreSQL
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/data-pipeline.md:49`
+  > CSV can be re-used verbatim against the SQL row stream, and vice versa.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/data-pipeline.md:187`
+  > the triple store. The same command works against PostgreSQL **and** DuckDB —
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/data-pipeline.md:245`
+  > | `onto_sql_ingest`     | Run SQL against Postgres or DuckDB → RDF and load (uses same mapping format)  |
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/data-pipeline.md:247`
+  > | `onto_shacl`          | Validate loaded data against SHACL shapes                                     |
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/ies-ecosystem.md:155`
+  > # Validate against IES Common shapes
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/04-defect-taxonomy.md:46`
+  > `tests/lib_taxonomy_pin.rs::taxonomy_discriminant_hash_pinned` recomputes the BLAKE3 over `all_tags()` and compares against the pinned constant. Adding/removing/renaming any variant breaks this test until both the version constant and the hash constant are updated together.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/07-phase-history.md:11`
+  > Commits `33feda7`, `e4db225`. Replaced the `NoopPowlReplay` stub with `PowlBridgeReplay::new(store)` in production-path admission. The gap closed: 12 admission tests had been validating against a fitness=1.0 stub. Production now routes through `wasm4pm` for every admission; only four gate-semantics tests retain the noop with an explicit `// INTENTIONAL` annotation.
+
+- **Hit** in `/Users/sac/open-ontologies/.claude/worktrees/agent-a8660b93152dfb56a/docs/07-phase-history.md:31`
+  > Commit `a2c2a56`. Manufactures nine AtomVM cognition nodes (one per wasm4pm breed: ELIZA, CBR, DENDRAL, STRIPS, Prolog, MYCIN, GPS, SOAR, Hearsay) using the deterministic `manufacture()` pipeline; runs each breed against a shared scenario; fuses outputs via Hearsay-II. The gap closed: the manufacturing pipeline had no consumer that *used* multi-target output; the swarm proves the bundle's Erlang half actually runs and the cognition breeds can fuse.

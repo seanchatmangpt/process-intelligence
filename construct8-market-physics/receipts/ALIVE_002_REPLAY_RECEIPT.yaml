@@ -1,0 +1,43 @@
+replay_receipt:
+  checkpoint: C8_MARKET_PHYSICS_ALIVE_002
+  replay_agent: Independent Replay Agent
+  replay_date: 2026-06-01
+
+  cargo_fmt_check: PASS
+  cargo_clippy: PASS
+
+  cargo_test_total_passed: 35
+
+  cargo_test_per_crate:
+    c8-adversary: 5 passed
+    c8-bench: 0 passed
+    c8-core: 6 passed
+    c8-graph: 4 passed
+    c8-instruments: 5 passed
+    c8-market: 5 passed
+    c8-receipts: 4 passed
+    c8-time: 6 passed
+
+  examples_ran: 4/4
+  examples_detail:
+    market_planck_demo: PASS
+    event_horizon_demo: PASS
+    collider_demo: PASS
+    adversary_gap_demo: PASS
+
+  need9_enforced: true
+  need9_tests:
+    ninth_triple_refuses_with_need9: PASS
+    need9_is_typed_not_string: PASS
+
+  hot_path_verdict_finite: true
+  hot_path_verdict_test:
+    hot_path_verdict_has_no_string_variant: PASS
+
+  no_live_trading_deps: true
+  no_llm_deps: true
+  dependency_scan:
+    rs_files: CLEAN
+    toml_files: CLEAN
+
+  verdict: ALIVE

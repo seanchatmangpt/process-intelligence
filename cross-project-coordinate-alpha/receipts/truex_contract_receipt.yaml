@@ -1,0 +1,266 @@
+receipt:
+  # Header & Identity
+  id: "receipt_truex_contract_20260601_001"
+  authority: "truex"
+  version: "1.0"
+  profile: "truex.blue-river-dam.contract.v30.1.1"
+
+  # Contract Information
+  contract_name: "Truex <-> Blue River Dam Integration Contract"
+  contract_scope: "Consequence cell ingress and admission pathway"
+  contract_date: "2026-06-01T21:51:00Z"
+  contract_authority: "Truex Post-Gall Substrate + Blue River Dam Orchestrator"
+
+  # What Enters the Dam
+  ingress:
+    source: "Truex Hook Membrane"
+    object_type: "Consequence Cell"
+    admission_requirement: "Passed all 7 gates; projected to O*"
+    decision_status:
+      - "ADMIT"
+      - "REWRITE"
+    exclusions:
+      - decision: "REFUSE"
+        reason: "Terminal at hook; does not enter dam"
+      - decision: "QUEUE"
+        reason: "Deferred; not yet admitted"
+
+  # Receipt Shape Specification
+  minimum_receipt:
+    fields:
+      - field: "decision"
+        type: "enum"
+        values: ["ADMIT", "REFUSE", "REWRITE", "QUEUE", "ROLLBACK", "QUARANTINE"]
+        required: true
+      - field: "decision_code"
+        type: "u8"
+        range: "0x00-0x05"
+        required: true
+      - field: "timestamp"
+        type: "ISO8601"
+        required: true
+      - field: "blake3.delta_hash"
+        type: "hex64"
+        length: 64
+        required: true
+      - field: "blake3.timeline_hash"
+        type: "hex64"
+        length: 64
+        required: true
+      - field: "blake3.combined_hash"
+        type: "hex64"
+        length: 64
+        required: true
+        description: "BLAKE3(delta_hash || ':' || timeline_hash)"
+      - field: "causal_timeline"
+        type: "vector<(epoch, timestamp)>"
+        required: true
+        invariant: "Strictly monotonic in epoch and timestamp"
+      - field: "lineage_proof"
+        type: "hex128"
+        length: 128
+        required: true
+        description: "HSM Ed25519 or ECDSA signature"
+    optional_fields:
+      - field: "replay_count"
+        type: "usize"
+        default: 3
+      - field: "accounting_signature"
+        type: "hex64"
+        description: "BLAKE3 hash of accounting proof"
+
+  # Seven Gates Specification
+  seven_gates:
+    gate_1_type_structure:
+      predicate: "Type signature matches schema"
+      code: "Check_Σ"
+      failure: "RefusalReport::SchemaViolation"
+
+    gate_2_guard_condition:
+      predicate: "Preconditions for transition are satisfied"
+      code: "Check_H"
+      failure: "RefusalReport::GuardViolation"
+
+    gate_3_transition_enabled:
+      predicate: "Proposed transition enabled in marking M"
+      code: "Check_T"
+      failure: "RefusalReport::TransitionNotEnabled"
+
+    gate_4_policy_constraint:
+      predicate: "Does not violate LTL safety policies Φ_Gov"
+      code: "Check_P"
+      failure: "RefusalReport::PolicyViolation"
+
+    gate_5_capability_binding:
+      predicate: "Authority authorized; resources available"
+      code: "Check_C"
+      failure: "RefusalReport::CapabilityBindingFailed"
+
+    gate_6_freshness:
+      predicate: "Timestamp within acceptable window"
+      code: "Check_Fresh"
+      failure: "RefusalReport::TemporalAnomaly"
+
+    gate_7_receipt_lineage:
+      predicate: "All prior transitions have valid receipts"
+      code: "Check_R"
+      failure: "RefusalReport::BrokenReceipts"
+
+  # Refusal is Terminal
+  refusal_protocol:
+    status: "Terminal at Hook"
+    destination: "Exception Handler (NOT Blue River Dam)"
+    receipt_issued: true
+    receipt_durable: true
+    receipt_ledger: "Truex Mailbox"
+    promotion: "Not promoted to downstream"
+    escalation: "Only to governance or exception handlers"
+
+  # Replay Stability Requirement
+  replay_stability:
+    required: true
+    minimum_replays: 3
+    invariant: "All replay hashes must be identical"
+    formula: "∀i,j ∈ [1,N], hash(replay_i) = hash(replay_j)"
+
+  # Accounting Conservation Requirement
+  accounting_conservation:
+    required: true
+    proof_type: "P-invariant"
+    formula: "y^T·M_before = y^T·M_after"
+    invariant: "No token loss or creation"
+
+  # Authority Signatures
+  authority_signatures:
+    - authority: "truex-hook"
+      key_type: "HSM Ed25519"
+      key_id: "ostar-signer-001"
+      scope: "Hook projections, all 7-gate decisions, refusals"
+
+    - authority: "truex-operator"
+      key_type: "HSM Ed25519"
+      key_id: "ostar-signer-002"
+      scope: "ADMIT/REWRITE decisions, mailbox writes, replay validation"
+
+    - authority: "blue-river-auditor"
+      key_type: "HSM Ed25519"
+      key_id: "ostar-signer-003"
+      scope: "Conformance decisions, fitness certification"
+
+    - authority: "ostar-doctor"
+      key_type: "HSM ECDSA"
+      key_id: "ostar-signer-004"
+      scope: "Rollback, quarantine, kinetic nullification"
+
+    - authority: "ostar-governor"
+      key_type: "HSM ECDSA"
+      key_id: "ostar-signer-root"
+      scope: "Policy mutations, override authority"
+
+  # Trust Object Promotion Pathway
+  promotion_stages:
+    stage_1_hook_projected:
+      status: "Reduced to O* (lawful operational closure)"
+      prerequisite: "All 7 gates pass"
+
+    stage_2_receipt_admitted:
+      status: "BLAKE3 signed; mailbox durable (>=3 copies)"
+      prerequisite: "Stage 1 complete"
+
+    stage_3_replay_stable:
+      status: "N replays all hash identically"
+      prerequisite: "Stage 2 complete; all hashes identical"
+
+    stage_4_accounting_verified:
+      status: "P-invariant conserved"
+      prerequisite: "Stage 3 complete; y^T·M conserved"
+
+    stage_5_dam_conformance:
+      status: "Fitness(σ, W) = 1.0 certified"
+      prerequisite: "Stage 4 complete; optimal alignment verified"
+
+    stage_6_typestate_verified:
+      status: "WASM bytecode safe (no illegal transitions)"
+      prerequisite: "Stage 5 complete; compilation proof"
+
+    stage_7_trust_object:
+      status: "Promotion eligible for next lifecycle stage"
+      prerequisite: "All 6 prior stages complete; all receipts sealed"
+
+  # Decision Code Mapping
+  decision_codes:
+    0x00:
+      decision: "ADMIT"
+      destination: "Blue River Dam"
+      meaning: "Accepted; enters conformance check"
+
+    0x01:
+      decision: "REFUSE"
+      destination: "Exception Handler"
+      meaning: "Rejected; terminal at hook"
+
+    0x02:
+      decision: "REWRITE"
+      destination: "Blue River Dam"
+      meaning: "Transformed; enters in rewritten form"
+
+    0x03:
+      decision: "QUEUE"
+      destination: "Truex Mailbox Queue"
+      meaning: "Deferred; awaiting external approval"
+
+    0x04:
+      decision: "ROLLBACK"
+      destination: "Quarantine"
+      meaning: "Kinetic nullification due to conformance fail"
+
+    0x05:
+      decision: "QUARANTINE"
+      destination: "Forensic Audit"
+      meaning: "Isolated pending investigation"
+
+  # Causal Timeline Monotonicity Invariant
+  causal_timeline_invariant:
+    requirement: "Strictly ordered"
+    constraint_1: "∀i < j, epoch(i) < epoch(j)"
+    constraint_2: "∀i < j, timestamp(i) < timestamp(j)"
+    failure_mode: "Non-monotonic timeline → receipt rejected as corrupted"
+
+  # Cryptographic Binding Formula
+  cryptographic_binding:
+    algorithm: "BLAKE3"
+    formula: "combined_hash = BLAKE3(delta_hash || ':' || timeline_hash)"
+    input_format: "delta_hash (64 hex) || ':' || timeline_hash (64 hex)"
+    output_format: "64-character hex string (256 bits)"
+    property: "Immutable after issuance"
+
+  # Rollback and Containment Protocol
+  rollback_containment:
+    trigger: "Fitness(σ, W) < 1.0"
+    authority: "ostar-doctor"
+    actions:
+      - "Restore state to last verified marking M where Fitness = 1.0"
+      - "Emit ROLLBACK receipt with decision_code=0x04"
+      - "Quarantine original cell for forensic audit"
+      - "Append ROLLBACK receipt to causal timeline"
+
+  # Integration Status
+  status: "CONTRACT_CREATED"
+  status_code: 0x01
+  timestamp_issued: "2026-06-01T21:51:00Z"
+
+  # Authority and Sealing
+  issued_by: "AGENT 6 (Truex/Blue River Integration)"
+  sealed_authority: "Blue River Dam v30.1.1"
+  signature: "pending_hsm_signature"
+
+  # Next Phase
+  next_phase: "Implement Telco boundary communication to prevent external authority smuggling"
+
+  # Contract Metadata
+  metadata:
+    contract_id: "TRUEX_BLUE_RIVER_INTEGRATION_001"
+    version: "1.0"
+    last_updated: "2026-06-01"
+    documentation_path: "/Users/sac/process-intelligence/cross-project-coordinate-alpha/"
+    immutable: true
