@@ -1,0 +1,91 @@
+---
+gap: FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX
+project: knowledge-hooks-truex
+date: 2026-06-02
+status: OPEN
+severity: BLOCKING
+gate: Sheep Gate
+---
+
+# Gap: knowledge-hooks-truex
+
+## Summary
+
+The truex project cannot reach its ALIVE condition because six structural defects block the Sheep Gate: the gate itself does not exist as an executable proof gate variant; test compilation is broken by invalid Rust identifiers; all 130 receipts in the receipt store are refused with zero successful verifications; no ALIVE verdict checkpoint file has been issued; 17 tracked files remain uncommitted (with Rust build artifacts polluting the working tree due to a missing .gitignore entry); and the ADMIT/REFUSE/PARTIAL schema required by the Sheep Gate is absent from all truex crate sources. Until these gaps are closed, the firmament ALIVE condition for knowledge-hooks-truex cannot be satisfied and no downstream PhD thesis claim may be grounded in this project.
+
+## Gap Register
+
+### GAP_KNOWLEDGE_HOOKS_TRUEX_001 — Sheep Gate proof gate absent from codebase
+
+- **Severity:** BLOCKING
+- **Category:** MISSING_DOCTRINE
+- **Specific Blocker:** `/Users/sac/truex/crates/truex-kernel/src/proof_gate_registry.rs` — `SheepGate` variant absent from the `ProofGate` enum; the 8 defined gates (`gate_benchmark_complete`, `gate_cargo_clippy_clean`, `gate_compilation_passes`, `gate_docs_complete`, `gate_projection_complete`, `gate_schema_valid`, `gate_test_suite_passes`, `gate_wasm_compiles`) do not include the Sheep Gate; no file matching `*sheep*`, `*Sheep*`, or `*SHEEP*` exists anywhere under `/Users/sac/truex`; the firmament doctrine at `/Users/sac/process-intelligence/firmament/FIRMAMENT_PROJECT_SPR_LEDGER_002.md` explicitly acknowledges the gate exists in doctrine but not in executable form
+- **Remediation:** Add `SheepGate` to the `ProofGate` enum in `proof_gate_registry.rs`. Define its pass criteria: hook definitions present, ADMIT/REFUSE/PARTIAL schema valid, at least one BLAKE3-verified receipt emitted. Create a corresponding gate validator check. Write the gate definition in a doctrine file at `/Users/sac/truex/docs/gates/SHEEP_GATE.md` citing criteria from the firmament SPR ledger.
+- **Effort:** 1–4 hours
+
+### GAP_KNOWLEDGE_HOOKS_TRUEX_002 — truex-kernel test compilation broken by invalid Rust identifiers
+
+- **Severity:** BLOCKING
+- **Category:** FAILING_TESTS
+- **Specific Blocker:** `/Users/sac/truex/crates/truex-kernel/tests/parity_tests.rs` line 195 (`let truex-kernel_activities`) and lines 231, 240, 245; `/Users/sac/truex/crates/truex-kernel/tests/comprehensive_parity_tests.rs` lines 149, 233, 234, 262, 263, 264 — hyphenated variable names (`truex-kernel_*`) are not valid Rust identifiers; additionally `comprehensive_parity_tests.rs` has 13 `E0425` errors (`cannot find value 'truex'` and `'kernel_dfg'` in scope); compiler output: `error: could not compile 'truex-kernel' (test "parity_tests") due to 1 previous error` and `error: could not compile 'truex-kernel' (test "comprehensive_parity_tests") due to 13 previous errors`
+- **Remediation:** Replace all occurrences of `truex-kernel_` with `truex_kernel_` in both `parity_tests.rs` and `comprehensive_parity_tests.rs`. Fix the 13 `E0425` errors in `comprehensive_parity_tests.rs` by correcting `truex-kernel_dfg` references to valid binding names. Run `cargo test -p truex-kernel` to confirm compilation passes.
+- **Effort:** < 1 hour
+
+### GAP_KNOWLEDGE_HOOKS_TRUEX_003 — Zero successful receipts; all 130 refused
+
+- **Severity:** BLOCKING
+- **Category:** MISSING_RECEIPTS
+- **Specific Blocker:** `/Users/sac/truex/.truex/receipts/` — 130/130 receipts have status `refused`; 128 are refused `init` receipts (reason: `Missing project path`) and 2 are refused `prove` receipts (reason: `Project cell not initialized`); no BLAKE3-verified gate receipt exists anywhere in the repo; the observatory receipt at `/Users/sac/truex/docs/v1/latest/receipts/observatory-receipt.json` uses ML-DSA-65 signatures, not BLAKE3 hashes, and is not a gate receipt; BLAKE3 hashing code exists in `/Users/sac/truex/crates/truex-kernel-algos/src/truex/verify.rs` but has never been exercised to produce a committed gate receipt
+- **Remediation:** Fix the project cell initialization failure (refused init receipts cite `Missing project path`). Once initialization succeeds, run the `prove` verb to generate a successful prove receipt. Then create `/Users/sac/truex/receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` containing the BLAKE3 hash of the gate-passing state, following the pattern from construct8-market-physics receipts.
+- **Effort:** 1–4 hours
+
+### GAP_KNOWLEDGE_HOOKS_TRUEX_004 — No ALIVE verdict checkpoint file issued
+
+- **Severity:** BLOCKING
+- **Category:** MISSING_ARTIFACTS
+- **Specific Blocker:** No file at `/Users/sac/truex/receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` or any equivalent path — the ALIVE verdict artifact is entirely absent; the checkpoint registry at `/Users/sac/truex/operation2030/.truex/checkpoints/checkpoint-registry.json` defines 5 wizard checkpoints but none is an ALIVE gate verdict; the construct8-market-physics BLAKE3 receipt chain at `/Users/sac/process-intelligence/construct8-market-physics` is the model; truex has no equivalent
+- **Remediation:** After tests pass and at least one successful BLAKE3-verified receipt exists, create the ALIVE verdict checkpoint file at `/Users/sac/truex/receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml`. The file must record: gate name (Sheep Gate), date, BLAKE3 hash of the verified receipt, passing test count, and the issuing agent. Commit the file as a permanent immutable checkpoint.
+- **Effort:** < 1 hour
+
+### GAP_KNOWLEDGE_HOOKS_TRUEX_005 — 17 uncommitted tracked files; Rust target/ artifacts not gitignored
+
+- **Severity:** MAJOR
+- **Category:** UNCOMMITTED_WORK
+- **Specific Blocker:** `/Users/sac/truex/.gitignore` does not exclude `target/` — 7,705 deleted target/ fingerprint files are tracked by git and polluting the working tree status; 17 tracked files are modified but uncommitted (including `Cargo.lock`, `Cargo.toml`, crate `Cargo.toml` files for `miniml-core`, `truex-kernel-cli`, `truex-kernel-cognition`, `truex-kernel`; `crates/truex-kernel-cli/src/commands/wizard.rs`; `crates/truex-kernel/src/lib.rs`; 4 experimental reports under `docs/vision2030/`; 4 diataxis docs; `pnpm-lock.yaml`); 4 untracked files exist (`docs/vision2030/COMPOSITION-BLUEPRINT.md`, `docs/vision2030/storehouse/` (2 files), `examples/genesis-foundry.ts`)
+- **Remediation:** First, add `target/` to `/Users/sac/truex/.gitignore` and commit. Then review and commit or explicitly discard the 17 modified non-target files and 4 untracked files. The `Cargo.toml` changes and `wizard.rs` changes must be reviewed before committing to confirm they do not introduce additional compilation errors.
+- **Effort:** 1–4 hours
+
+### GAP_KNOWLEDGE_HOOKS_TRUEX_006 — ADMIT/REFUSE/PARTIAL schema absent from all truex sources
+
+- **Severity:** MAJOR
+- **Category:** MISSING_DOCTRINE
+- **Specific Blocker:** No `ADMIT/REFUSE/PARTIAL` schema type definition exists in `/Users/sac/truex/crates/` or `/Users/sac/truex/src/`; the schema is required by the Sheep Gate ALIVE condition (`Hook definitions + ADMIT/REFUSE/PARTIAL schema + receipt schema exist`) but is entirely absent from truex source; receipt files in `.truex/receipts/` use the value `refused` but no formal type encodes the full lifecycle; the knowledge-hooks doctrine at `/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md` and `HOOK_AKA_CLAIM_LEDGER.yaml` define the doctrine but it is not reflected as a typed schema in any truex crate
+- **Remediation:** Create a Rust enum or struct in `truex-kernel-types` that encodes the `ADMIT/REFUSE/PARTIAL` lifecycle states, cross-referencing `/Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md` as the authority source. Create a corresponding JSON schema document. Reference this schema in at least one test that verifies a hook lifecycle transition.
+- **Effort:** 1–4 hours
+
+## ALIVE Conditions Blocked
+
+The following firmament ALIVE conditions for knowledge-hooks-truex cannot be met until the above gaps are closed:
+
+- **Sheep Gate executable** — Cannot be evaluated; the gate variant does not exist in `proof_gate_registry.rs` (blocked by GAP_KNOWLEDGE_HOOKS_TRUEX_001)
+- **Tests pass** — `truex-kernel` test compilation fails; no test suite can be verified passing (blocked by GAP_KNOWLEDGE_HOOKS_TRUEX_002)
+- **At least one BLAKE3-verified receipt in receipts/** — 130/130 receipts are refused; the receipt store has never produced a success (blocked by GAP_KNOWLEDGE_HOOKS_TRUEX_003)
+- **Hook definitions + ADMIT/REFUSE/PARTIAL schema + receipt schema exist** — The ADMIT/REFUSE/PARTIAL schema is absent from all truex crate sources (blocked by GAP_KNOWLEDGE_HOOKS_TRUEX_006)
+- **ALIVE verdict checkpoint file issued** — No checkpoint file has been created; the artifact is entirely absent (blocked by GAP_KNOWLEDGE_HOOKS_TRUEX_004)
+
+## Resolution Path
+
+Steps must be executed in this order:
+
+1. Add `target/` to `/Users/sac/truex/.gitignore` and commit — clears working tree noise, making status readable (closes GAP_KNOWLEDGE_HOOKS_TRUEX_005 partially)
+2. Fix hyphenated variable names in `parity_tests.rs` and `comprehensive_parity_tests.rs`; fix all 13 `E0425` errors; confirm `cargo test -p truex-kernel` compiles (closes GAP_KNOWLEDGE_HOOKS_TRUEX_002)
+3. Create the `ADMIT/REFUSE/PARTIAL` Rust enum in `truex-kernel-types`; create JSON schema document; write at least one test verifying a hook lifecycle transition (closes GAP_KNOWLEDGE_HOOKS_TRUEX_006)
+4. Add `SheepGate` variant to `ProofGate` enum; define pass criteria; create gate validator; write doctrine file at `docs/gates/SHEEP_GATE.md` (closes GAP_KNOWLEDGE_HOOKS_TRUEX_001)
+5. Fix the project cell initialization failure (resolve `Missing project path` in refused init receipts); run the `prove` verb; confirm at least one receipt achieves status `admitted` (closes GAP_KNOWLEDGE_HOOKS_TRUEX_003 partially)
+6. Commit or discard remaining 17 uncommitted tracked files and 4 untracked files after reviewing Cargo.toml and wizard.rs changes for compilation safety (closes GAP_KNOWLEDGE_HOOKS_TRUEX_005)
+7. Create `/Users/sac/truex/receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` with gate name, date, BLAKE3 hash, passing test count, and issuing agent; commit as permanent immutable checkpoint (closes GAP_KNOWLEDGE_HOOKS_TRUEX_004)
+8. Re-run full gate evaluation against Sheep Gate criteria; confirm all ALIVE conditions pass; issue ALIVE verdict in the firmament SPR ledger
+
+## Doctrine Note
+
+A proof gate that exists only in doctrine and never in executable form is not a proof gate — it is an assertion, and assertions without receipts are inadmissible under the Van der Aalst Constitution.
