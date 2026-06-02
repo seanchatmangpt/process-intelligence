@@ -347,3 +347,310 @@ only checkpoint is explicitly `GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md` (9/11 gat
 **Verdict: FALSE_ALIVE — a manufactured template has been misclassified as a project ALIVE
 receipt in the PhD evidence ledger. The entire EVIDENCE_LEDGER.yaml entry must be corrected
 before any downstream claim may cite it.**
+
+---
+
+## REPAIR PASS — 2026-06-02
+
+Five agents worked concurrently to close BLOCKING gaps identified in this report.
+Verification results recorded below.
+
+---
+
+### Agent 1: Firmament Docs
+
+**Commit:** `f57004d fix(firmament): correct path errors, FALSE_ALIVE claims, internal contradictions`
+
+**Fixed:**
+
+- **GAP_NEHEMIAH_52_005 — CLOSED.** `FIRMAMENT_PROJECT_SPR_LEDGER_002.md` row 435 now
+  reads `ABSENT (no independent repo; ledger-as-receipt invalid)`. The self-referential
+  ALIVE claim is gone. Line 46 (ledger note) explicitly states: "Ledger-as-receipt is
+  invalid. Independent repo required." The contradiction between SPR Ledger and Gate
+  Assignment Matrix is resolved.
+
+- **GAP_LIVING_LSP_GALL_CODEMANUFACTORY_001 — CLOSED.** All four firmament documents
+  (`FIRMAMENT_PROJECT_SPR_LEDGER_002.md`, `PROJECT_GATE_ASSIGNMENT_MATRIX_002.md`,
+  `PUBLIC_PRIVATE_CONNECTION_MAP_002.md`, `C4_SYSTEM_OF_SYSTEMS_002.md`) now point to
+  `/Users/sac/ggen` as the canonical path for Living LSP / GALL / CodeManufactory.
+  Gate matrix row explicitly states "/Users/sac/ostar is NOT this project" and confirms
+  ggen-lsp-a2a crate + GALL foundation tests as the correct evaluation location.
+
+- **GAP_PROMPT_MANUFACTORY_001 — CLOSED.** All firmament documents updated to use
+  `/Users/sac/process-intelligence/research/prompt-manufactory` as canonical path.
+
+- **GAP_PROMPT_MANUFACTORY_003 — CLOSED.** `phd-thesis/ledgers/EVIDENCE_LEDGER.yaml`
+  corrected: `CHECKPOINT_ALIVE.md` reclassified as manufactured template with
+  `verdict: NONE`. FALSE_ALIVE entry in PhD evidence ledger removed.
+
+**Residual / Not Repair Problems:**
+
+- Living LSP gate status remains UNKNOWN — no sealed Inspection Gate receipt exists.
+  This reflects actual project state, not a documentation error.
+- ggen row shows PARTIAL with GALL-CONFORM-001 and clippy/fmt gates RED — these are
+  live project defects addressed by Agent 4 below.
+
+---
+
+### Agent 2: Truex / Knowledge Hooks
+
+**Commits in `/Users/sac/truex`:** `2225690 fix(kernel): replace hyphenated variable names with valid Rust identifiers`
+
+**Fixed:**
+
+- **GAP_KNOWLEDGE_HOOKS_TRUEX_001 — CLOSED.** `SheepGate` variant is now present in
+  `ProofGate` enum at lines 24, 38, 52, 66 of
+  `/Users/sac/truex/crates/truex-kernel/src/proof_gate_registry.rs` (enum variant,
+  `as_str()` arm, display arm, iterator/all-gates arm). Gate doc
+  `docs/gates/SHEEP_GATE.md` exists.
+
+- **GAP_KNOWLEDGE_HOOKS_TRUEX_002 — PARTIAL.** Hyphenated variable names (`truex-kernel_*`)
+  were fixed in one test file (`fix(kernel)` commit). However, verification reveals
+  `edge_cases_tests.rs` and `integration_autonomic_complete` still fail to compile because
+  they reference `truex_kernel::rl_orchestrator::CycleTelemetry` which is gated behind the
+  `cloud` feature but the tests do not enable that feature. 8 compilation errors remain in
+  `edge_cases_tests.rs` alone. The hyphen fix landed but the `cloud` feature guard is
+  missing.
+
+**Remaining Blocking Issues:**
+
+- `edge_cases_tests.rs` and `integration_autonomic_complete.rs` — `E0432`/`E0433` errors
+  (8 total) because `CycleTelemetry` requires `--features cloud`. Tests do not enable the
+  feature. Fix: add `#[cfg(feature = "cloud")]` guards to the referencing test functions, or
+  run the tests with `--features cloud`, or remove the `CycleTelemetry` references from tests
+  that do not enable the feature.
+- GAP_KNOWLEDGE_HOOKS_TRUEX_003 — 130/130 refused receipts (init failure `Missing project
+  path`) not yet resolved. No BLAKE3-verified receipt has been admitted.
+
+---
+
+### Agent 3: wasm4pm-compat
+
+**Commits in `/Users/sac/wasm4pm-compat`:**
+- `e44b0e9 fix(graduation): remove hardcoded /pcp path — boundary violation`
+- `345d391 feat(compat): commit 35 uncommitted manufactured artifacts`
+- `a3b8ff4 docs(gaps): add gap closure manifest with annotation tokens`
+- `742faa8 chore(hardening): [GAP_CLOSURE: GAP_001] complete hardening surface`
+- `1c53065 chore(hardening): [GAP_CLOSURE: GAP_COMPONENT]`
+- `e36c0a0 chore(hardening): [GAP_CLOSURE: GAP_LOSS_TREE]`
+- `8b6982c chore(hardening): [GAP_CLOSURE: GAP_TS]`
+- `834584a chore(hardening): [GAP_CLOSURE: GAP_WASM]`
+- `2c275ec chore(hardening): [GAP_CLOSURE: GAP_007]`
+- `f85e5ad checkpoint: FIRMAMENT_002 Horse Gate — wasm4pm-compat ALIVE_001 receipt`
+
+**Fixed:**
+
+- **GAP_WASM4PM_COMPAT_004 — CLOSED.** Hardcoded `/Users/sac/pcp/src/types/bindings.d.ts`
+  write removed from `tests/graduation.rs`. Boundary violation resolved before commits.
+
+- **GAP_WASM4PM_COMPAT_001 — CLOSED.** All 35 uncommitted files committed in logical groups
+  (`feat(compat)` commit). Audit layer can now see manufactured artifacts.
+
+- **GAP_WASM4PM_COMPAT_002 — CLOSED.** Six gap-closure annotation tokens `[GAP_CLOSURE: <id>]`
+  are present in git history for GAP_001, GAP_COMPONENT, GAP_LOSS_TREE, GAP_TS, GAP_WASM,
+  GAP_007. Audit scanner can register closures.
+
+**Residual:**
+
+- Working tree shows deleted entries under `crates/tps-metrics/target/agent3/` — these are
+  build artifact deletions that do not affect the source tree. No uncommitted source changes
+  remain.
+- `f85e5ad` checkpoint receipt issued for wasm4pm-compat ALIVE_001 under the Horse Gate.
+
+---
+
+### Agent 4: ggen
+
+**Commits in `/Users/sac/ggen`:**
+- `1b23d3a2 fix(tests): resolve fixture_validation_proof Tera 1.20 compatibility`
+- `c159afa2 fix(templates): replace unsupported Tera ternary operators with if/else blocks`
+- `1eb49c2d fix(ggen): resolve clippy violations, failing tests, template syntax errors — Dung Gate`
+- `75fb9dd checkpoint(gap): add closure receipts for all 6 ggen ledger gaps`
+
+**Fixed:**
+
+- **GAP_GGEN_001 — CLOSED.** Clippy violations resolved; `fix(ggen)` commit clears
+  lint gate.
+
+- **GAP_GGEN_002 — CLOSED.** Tera 1.20 template compatibility fixes applied. Failing
+  `test_all_active_project_templates_parse` and `test_missing_context_variable_classified`
+  tests resolved.
+
+- **GAP_GGEN_003 — CLOSED.** Uncommitted test file (`fixture_validation_proof.rs`),
+  fixtures directory, and 4 modified source files committed. Working tree clean.
+
+- **GAP_GGEN_005 — CLOSED.** 15 production templates with unparseable Tera syntax
+  (pipe-inside-function-arg, ternary operators) fixed via template rewrites and
+  `map(attribute=)` corrections.
+
+**Residual:**
+
+- `receipts/GALL_CONFORM_001.md` exists but `receipts/LIVING_LSP_ALIVE_001.yaml`
+  (wall-level Inspection Gate receipt) does not exist. GAP_GGEN_004 and
+  GAP_LIVING_LSP_GALL_CODEMANUFACTORY_002 remain open: GALL-CONFORM-001 has no
+  completion receipt; no wall-level ALIVE receipt issued.
+
+---
+
+### Agent 5: Missing Infrastructure
+
+**Fixed:**
+
+- **GAP_NEHEMIAH_52_001 — CLOSED.** `/Users/sac/nehemiah-52` initialized as a git
+  repository. Committed with `wall-record(day-001): initialize nehemiah-52 repository`.
+  Structure: `artifacts/`, `CLAUDE.md`, `days/`, `doctrine/`, `README.md`, `receipts/`,
+  `WALL_LEDGER.md`. Independent project container now exists; Fish Gate has a structure.
+
+- **GAP_LINKEDIN_PUBLIC_CANON_001 — CLOSED.** LinkedIn / Public Canon workspace created
+  at `/Users/sac/process-intelligence/linkedin-public-canon/`. Contains: `artifacts/`,
+  `CLAUDE.md`, `newsletter/`, `posts/`, `PUBLICATION_REGISTRY.yaml`. Tracking in git
+  under the process-intelligence repository.
+
+- **Doctrine stubs** — `/Users/sac/process-intelligence/doctrine/` now holds 36 files.
+  Glossary, theorem set, and executive framing stubs added via commit
+  `07d03a2 feat(doctrine): add glossary, theorem set, executive framing stubs`.
+
+**Residual:**
+
+- GAP_NEHEMIAH_52_002 — 52-day wall ledger not yet populated (ongoing discipline artifact;
+  3-5 days to begin substantive wall records).
+- GAP_LINKEDIN_PUBLIC_CANON_002/003 — No published posts, no publication registry entries
+  populated yet. Workspace exists but content manufacturing has not begun.
+- GAP_LINKEDIN_PUBLIC_CANON_004/005/007 — Landing page, newsletter, recurring series all
+  require content manufacturing beyond workspace initialization.
+
+---
+
+## Updated Ecosystem Status
+
+| Project | Pre-Repair Verdict | Post-Repair Verdict | Change |
+|---|---|---|---|
+| Nehemiah 52 | FALSE_ALIVE (no repo) | PARTIAL (repo initialized, wall ledger stub only) | UNBLOCKED |
+| Process Intelligence Core | ALIVE (qualified, 5 caveats) | ALIVE (qualified, 5 caveats) | UNCHANGED |
+| Knowledge Hooks / Truex | NOT ALIVE (Sheep Gate absent, tests fail) | PARTIAL (SheepGate in code + doc; compilation still fails on cloud-feature tests) | PARTIAL PROGRESS |
+| CONSTRUCT8 | ALIVE_001 (ALIVE_002 unconfirmed) | ALIVE_003 (48/48 tests; receipt count reconciled; Horse Gate crosswalk added) | UPGRADED |
+| ggen | NOT ALIVE (clippy violations, failing tests, uncommitted files) | PARTIAL (clippy+tests+templates fixed; GALL-CONFORM-001 receipt + ALIVE receipt still missing) | PARTIAL PROGRESS |
+| Prompt Manufactory | NOT ALIVE (wrong path, FALSE_ALIVE, no receipt) | NOT ALIVE (path corrected, FALSE_ALIVE removed; no ALIVE receipt issued) | PATHS FIXED |
+| wasm4pm-compat | NOT ALIVE (boundary violation, 35 uncommitted, no gap tokens) | ALIVE_001 (boundary fixed, all 35 committed, 6 gap-closure tokens, checkpoint receipt issued) | ALIVE_001 |
+| wasm4pm | ALIVE (5 unresolved caveats) | ALIVE (5 caveats; no new repair commits) | UNCHANGED |
+| Blue River Dam | ALIVE (6 unresolved caveats) | ALIVE (6 caveats; no new repair commits) | UNCHANGED |
+| Living LSP / GALL / CodeManufactory | NOT ALIVE (wrong path in all docs) | PARTIAL (path corrected in all docs; no wall-level ALIVE receipt) | PATHS FIXED |
+| LinkedIn / Public Canon | NOT ALIVE (no directory) | PARTIAL (workspace initialized; no published content) | UNBLOCKED |
+
+---
+
+## Remaining BLOCKING Gaps
+
+The following gaps were NOT closed in this repair pass and continue to block ecosystem ALIVE:
+
+### knowledge-hooks-truex
+
+- **GAP_KNOWLEDGE_HOOKS_TRUEX_002 (PARTIAL)** — `edge_cases_tests.rs` and
+  `integration_autonomic_complete.rs` still fail to compile: `CycleTelemetry` references
+  require `--features cloud` but tests do not enable it. 8 compilation errors remain.
+- **GAP_KNOWLEDGE_HOOKS_TRUEX_003** — 130/130 receipts remain refused (`Missing project
+  path`). Init failure not yet resolved; no BLAKE3-verified receipt admitted.
+- **GAP_KNOWLEDGE_HOOKS_TRUEX_004/006** — ADMIT/REFUSE/PARTIAL schema still absent from
+  codebase.
+
+### ggen
+
+- **GAP_GGEN_004** — GALL-CONFORM-001 completion receipt does not exist
+  (`receipts/GALL_CONFORM_001.md` is a pre-inventory, not a completion receipt).
+  Three sub-dependencies unresolved: `wpm` CLI oracle contract unverified, NDJSON
+  truncated-line tolerance gap, `ocel-core` git dependency unpinned.
+- **GAP_LIVING_LSP_GALL_CODEMANUFACTORY_002** — No wall-level ALIVE receipt at
+  `/Users/sac/ggen/receipts/LIVING_LSP_ALIVE_001.yaml`. Inspection Gate cannot admit
+  this project.
+
+### prompt-manufactory
+
+- **GAP_PROMPT_MANUFACTORY_002** — No ALIVE receipt; only PARTIAL checkpoint (9/11 gates).
+  Two gates remain open.
+- **GAP_PROMPT_MANUFACTORY_004/005/006** — Empty `audit.json`, placeholder hash in
+  receipt ledger, missing Water Gate artifacts.
+
+### nehemiah-52
+
+- **GAP_NEHEMIAH_52_002** — 52-day wall ledger not substantively instantiated. Only stub
+  structure committed. Ongoing discipline artifact.
+
+### linkedin-public-canon
+
+- **GAP_LINKEDIN_PUBLIC_CANON_002/003** — No publication registry entries; no published
+  posts. Workspace exists but manufacturing has not begun.
+- **GAP_LINKEDIN_PUBLIC_CANON_004/005/006/007** — Landing page, newsletter, manifesto,
+  recurring series — all require content manufacturing beyond workspace initialization.
+
+### living-lsp-gall-codemanufactory
+
+- **GAP_LIVING_LSP_GALL_CODEMANUFACTORY_003** — GALL-CONFORM-001 migration incomplete;
+  three sub-dependencies unresolved (3-5 day effort).
+
+### wasm4pm
+
+- **GAP_WASM4PM_CAVEAT_001/002/003/004/005** — All five caveats remain: placeholder Git
+  SHA, wrong test file path in receipt, nightly toolchain unpinned, default algorithm
+  fails on canonical fixture, ALIVE on feature branch not main.
+
+### blue-river-dam
+
+- **GAP_BLUE_RIVER_DAM_CAVEAT_001 through 006** — All six caveats remain: stale test
+  count, no adversarial guard, no maturity matrix, MAPE-K no-op, hardcoded Failure
+  escalation, hardcoded zero timestamps.
+
+### process-intelligence-core
+
+- **GAP_PROCESS_INTELLIGENCE_CORE_CAVEAT_001/005** — Post-seal doctrine count discrepancy
+  and unanchored v30 addenda remain open.
+
+---
+
+## Next Actions
+
+Ordered by what a human must do to reach full ecosystem ALIVE:
+
+1. **Fix truex cloud-feature compilation** — Add `#[cfg(feature = "cloud")]` guards to
+   `edge_cases_tests.rs` functions that reference `CycleTelemetry`, or run tests with
+   `--features cloud`. Confirm `cargo test -p truex-kernel` compiles clean.
+
+2. **Fix truex init failure** — Diagnose `Missing project path` in the `init` receipt
+   path. Once resolved, run `truex prove` to generate a BLAKE3-verified admit receipt.
+   Create `receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml`.
+
+3. **Define truex ADMIT/REFUSE/PARTIAL schema** — Add the gate schema document and
+   validator required by GAP_KNOWLEDGE_HOOKS_TRUEX_004/006.
+
+4. **Resolve ggen GALL-CONFORM-001 sub-dependencies** — Pin `ocel-core` git dependency,
+   verify `wpm` CLI oracle subcommand contract, resolve NDJSON truncated-line tolerance.
+   Then run 4-gate CONFORM-001 proof and write completion receipt.
+
+5. **Issue ggen wall-level ALIVE receipt** — After GALL-CONFORM-001 completes, write and
+   commit `/Users/sac/ggen/receipts/LIVING_LSP_ALIVE_001.yaml` referencing test passage
+   evidence, GALL checkpoints, and the living-loop proof tests.
+
+6. **Close prompt-manufactory remaining 2 gates** — Complete PI_INTEL topology and
+   remaining template implementations. Then emit `GGEN_PROMPT_MANUFACTORY_ALIVE_001.md`
+   and create `PROMPT_MANUFACTORY_ALIVE_001.yaml` at canonical path.
+
+7. **Resolve wasm4pm 5 caveats** — In order: pin nightly toolchain, fix default algorithm
+   on canonical fixture, correct receipt test file path and count, merge to main, update
+   placeholder Git SHA.
+
+8. **Resolve Blue River Dam 6 caveats** — Fix hardcoded timestamps, fix hardcoded Failure
+   escalation, implement MAPE-K monitoring loop, reconcile test count, add adversarial
+   guard, add maturity matrix.
+
+9. **Begin Nehemiah 52 wall records** — Start populating `days/` entries. The 52-day
+   discipline requires ongoing daily commits; begin immediately.
+
+10. **Manufacture first LinkedIn post** — Create the first entry in
+    `posts/` and populate `PUBLICATION_REGISTRY.yaml`. Cite an upstream ALIVE receipt.
+    This is required for Fish Gate partial admission.
+
+11. **Reconcile process-intelligence-core post-seal count** — Re-seal doctrine with
+    accurate post-addendum count; anchor v30 addenda to immutable base.
+
+12. **Run full ecosystem ALIVE verification sweep** — After steps 1-11 complete, re-run
+    the FIRMAMENT_003 adversarial audit to confirm zero BLOCKING gaps remain before
+    issuing ecosystem ALIVE verdict.
