@@ -2,9 +2,12 @@
 gap: FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE
 project: process-intelligence-core
 date: 2026-06-02
-status: OPEN
+status: PARTIAL
 severity: MAJOR
 gate: Fountain Gate
+partial_closure: 2026-06-02
+partial_closure_commit: e9d1af6f57a41920aa57ff709e5de3f1294082f8
+open_caveat: CAVEAT_004
 ---
 
 # Gap: process-intelligence-core
@@ -77,3 +80,21 @@ The five caveats do not void ALIVE_001 as issued; however, they block the follow
 ## Doctrine Note
 
 A sealed proof gate that cannot account for post-seal mutations violates the immutability doctrine's core requirement that every addendum be explicitly anchored to a prior receipt — unanchored additions are indistinguishable from retroactive tampering.
+
+---
+
+## Resolution Addendum — 2026-06-02
+
+**Status:** PARTIAL (4 of 5 caveats closed)
+**Partial closure commit:** e9d1af6f57a41920aa57ff709e5de3f1294082f8
+**[GAP_CLOSURE: GAP_FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE] CAVEAT_001/002/003/005 resolved**
+
+**CAVEAT_001 (post-seal doctrine count discrepancy) — CLOSED:** ALIVE_GATE_ASSESSMENT_ADDENDUM_001 issued to checkpoints/ALIVE_GATE_ASSESSMENT.md. Acknowledges sealed=30, current=36 (three post-seal files plus three additional). Confirms gate verdict stands; original threshold was ≥15, margin was large. New SHA-256 receipt anchors the addendum to the current file tree.
+
+**CAVEAT_002 (quantity-gated criteria, no content-quality gate) — CLOSED:** ALIVE_002 prospective content-quality gate criteria defined in the addendum: minimum word count (≥200 words per doctrine file), required section headers presence, and a grep probe confirming non-stub content. Informal spot-checks from ALIVE_001 assessment retroactively annotated.
+
+**CAVEAT_003 (self-generated certification artifact) — CLOSED:** AALST_CERTIFIED_ALIVE.md reclassified as "Internal Attestation" in the addendum. Scope limitation documented for PhD defense and M&A due-diligence use. Downstream consumers are explicitly notified that the certification is self-issued.
+
+**CAVEAT_005 (ambiguous v30 doctrine addenda) — CLOSED:** autonomic-knowledge-actuation-v30.md and blue-river-dam-v30.md explicitly anchored to ALIVE_001 sealed verdict as authorized addenda. Addendum record states they extend, not supersede, sealed doctrine; the gate verdict is unchanged.
+
+**CAVEAT_004 (wasm4pm-compat FINAL_PARTIAL) — OPEN:** wasm4pm-compat reached ALIVE_001 on 2026-06-02 (197/197 tests, 0 dirty). CAVEAT_004 is now substantially resolved. A final qualification note remains: wasm4pm-compat GAP_005, GAP_006, and GAP_008 are PARTIAL (not blocking for ALIVE but requiring follow-up). Full-stack ALIVE claims can now be made with the qualification that three compat implementation gaps (loss accounting, process tree type laws, cross-witness confusion) have roadmaps but incomplete implementations. When those three are completed, this caveat can be fully closed and GAP_FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE declared fully CLOSED.

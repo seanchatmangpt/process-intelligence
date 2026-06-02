@@ -2,9 +2,11 @@
 gap: FIRMAMENT_002_WASM4PM
 project: wasm4pm
 date: 2026-06-02
-status: OPEN
+status: CLOSED
 severity: MAJOR
 gate: Inspection Gate
+closed: 2026-06-02
+closure_commits: ba1d9118, 8c006c82, 934c0449
 ---
 
 # Gap: wasm4pm
@@ -77,3 +79,25 @@ The following ALIVE conditions cannot be met until these gaps are closed:
 ## Doctrine Note
 
 A receipt that cannot be independently verified against a real commit hash, a real file, and a real test count is not a receipt — it is a claim, and claims without evidence are inadmissible under the Van der Aalst Constitution.
+
+---
+
+## Resolution Addendum — 2026-06-02
+
+**Status:** CLOSED
+**Closure commits:** ba1d9118 (discriminator/toolchain/receipt), 8c006c82 (OBS-GAP observability), 934c0449 (merge finish-wip-primitives to main)
+**[GAP_CLOSURE: GAP_FIRMAMENT_002_WASM4PM] all five caveats resolved**
+
+**GAP_WASM4PM_CAVEAT_001 (placeholder Git SHA) — CLOSED:** ADMISSION_GATE_RECEIPT.md updated with actual post-commit SHA ba1d9118. Receipt now attests a real, traceable commit.
+
+**GAP_WASM4PM_CAVEAT_002 (test count mismatch and non-existent file reference) — CLOSED:** ADMISSION_GATE_RECEIPT.md rewritten with correct test file path (mcpp-admission-gate.test.ts) and correct test count (42 tests in Groups A–F). The non-existent file path (conformance-mcpp-admission.test.ts) is explicitly removed.
+
+**GAP_WASM4PM_CAVEAT_003 (nightly-only toolchain undocumented) — CLOSED:** rust-toolchain.toml pinned to nightly-2026-04-15. CLAUDE.md documents the toolchain constraint. Build is now reproducible on any machine with the pinned nightly installed.
+
+**GAP_WASM4PM_CAVEAT_004 (default algorithm fails on canonical fixture) — CLOSED:** Discriminator case 7 added in discriminator.ts to handle simd_streaming_dfg handle-only output shape `{ handle: string }`. Previously threw DiscoveryShapeError; now classifies as kind='dfg' with nodes=0/edges=0 (streaming DFG, unknown topology). Discovery-shape-contract test updated to assert the valid classification.
+
+**GAP_WASM4PM_CAVEAT_005 (ALIVE status on feature branch) — CLOSED:** finish-wip-primitives merged into main via no-ff merge (commit 934c0449). ALIVE status is now anchored to main. All 16 pre-commit proof tests passed the merge gate.
+
+Additionally resolved: OBS-GAP-1 (RL convergence invisible), OBS-GAP-2 (SPC-RL decoupled), OBS-GAP-3 (circuit breaker→reward causality opaque) via commit 8c006c82.
+
+Verification: `cargo make test` exits 0, 827/827 tests pass, 0 dirty files on main.

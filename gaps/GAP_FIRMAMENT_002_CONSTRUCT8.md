@@ -2,9 +2,11 @@
 gap: FIRMAMENT_002_CONSTRUCT8
 project: construct8
 date: 2026-06-02
-status: OPEN
+status: CLOSED
 severity: MAJOR
 gate: Horse Gate
+closed: 2026-06-02
+closure_commit: dcc627ec99770a327bdf65b443c5019e53ba95ce
 ---
 
 # Gap: construct8
@@ -59,3 +61,21 @@ The following ALIVE_002 gate conditions cannot be certified until these gaps are
 ## Doctrine Note
 
 A receipt chain that cannot be independently replayed to a single consistent test count is not a receipt — it is a claim, and claims without evidence are inadmissible under the Van der Aalst Constitution.
+
+---
+
+## Resolution Addendum — 2026-06-02
+
+**Status:** CLOSED
+**Closure commit:** dcc627ec99770a327bdf65b443c5019e53ba95ce
+**[GAP_CLOSURE: GAP_FIRMAMENT_002_CONSTRUCT8]**
+
+All three caveats resolved:
+
+**GAP_CONSTRUCT8_CAVEAT_001 (test count discrepancy):** Live `cargo test --workspace` on 2026-06-02 confirms 48/48 passing tests. Receipt C8_MARKET_PHYSICS_ALIVE_003.yaml (commit b615c24) documents the authoritative per-crate breakdown (c8-adversary 9, c8-core 8, c8-graph 4, c8-instruments 5, c8-market 5, c8-receipts 11, c8-time 6). ALIVE_003 explicitly supersedes the 35-count (ALIVE_002_REPLAY_RECEIPT.yaml) and 43-count (construct8_witness_receipt.yaml) receipts.
+
+**GAP_CONSTRUCT8_CAVEAT_002 (Horse Gate label absent):** Created `construct8-market-physics/receipts/HORSE_GATE_CROSSWALK.md` mapping "Horse Gate (firmament)" → "ALIVE_002_INDEPENDENT_REPLAY (project checkpoint)". Cross-layer traceability is now established.
+
+**GAP_CONSTRUCT8_CAVEAT_003 (contradictory receipt totals):** HORSE_GATE_CROSSWALK.md annotates all prior receipt counts with inclusion criteria and declares ALIVE_003 the single authoritative source. ALIVE_002_REPLAY_RECEIPT.yaml (35 tests) used original crate scope; construct8_witness_receipt.yaml (43 tests) included ablation crate; ALIVE_003 (48 tests) is the complete workspace count.
+
+Verification: `cargo test --workspace` exits 0, 48 tests pass, 0 fail, 0 dirty files post-commit.

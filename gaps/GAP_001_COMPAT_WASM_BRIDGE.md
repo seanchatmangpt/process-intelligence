@@ -170,3 +170,13 @@ All five remediation conditions have been successfully implemented and verified:
 3. **GraduateToWasm4pm**: Implemented the `GraduateToWasm4pm` trait on the doorway side, and consumption/intake path inside the `wasm4pm` execution crate.
 4. **Named refusals**: Replaced generic `ValidationError(String)` with named `Refusal<R, W>` types for structural process-mining laws.
 5. **Receipt link**: Verified that execution receipts securely reference the upstream admission receipts using SHA-256/BLAKE3 chaining, satisfying the Blue River Dam type-covenant.
+
+---
+
+## Audit Confirmation Addendum — 2026-06-02
+
+**Confirmed by:** CROSS_PROJECT_GAP_CLOSE_001 workflow
+**Commit entered git history:** 35ec4ad (research-wasm4pm: wire compat bridge and update validation surfaces) with `[GAP_CLOSURE: GAP_001]` token
+**Audit layer visibility:** Confirmed. All 5 remediation conditions are committed; `git log` shows the closure token in history.
+**Closure receipts:** sources/wasm4pm/GAP_001_CLOSURE_RECEIPT.md committed in 7f55eb6.
+**Verification:** cargo build passes in wasm4pm workspace with wasm4pm-compat dependency present.
