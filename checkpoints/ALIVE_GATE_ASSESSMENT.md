@@ -90,3 +90,121 @@ Sealing ALIVE_001 does not authorize:
 - `receipts/RECEIPT_REGISTRY.md`
 - `lifecycle/ARCHIVE.md`
 - `checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md` (sealed in this assessment)
+
+---
+
+## Addendum — ALIVE_GATE_ASSESSMENT_ADDENDUM_001
+
+**Addendum date:** 2026-06-02
+**Addendum type:** Post-seal provenance acknowledgment
+**Authored by:** Research Foundry (Sean Chatman)
+**References:** GAP_FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE (CAVEAT_001, CAVEAT_002, CAVEAT_003, CAVEAT_005)
+
+### Purpose
+
+This addendum acknowledges five structural caveats identified during the FIRMAMENT_002 adversarial audit
+(2026-06-02) that apply to the ALIVE_001 verdict as sealed on 2026-05-31. The verdict stands as issued.
+This addendum does not modify the verdict; it provides provenance transparency for downstream consumers,
+PhD defense use, and M&A claim traceability.
+
+---
+
+### CAVEAT_001: Post-seal doctrine file count (3 additional files)
+
+The ALIVE_001 gate recorded `doctrine` count = 30 (Criterion 1, target >= 15). Three files were added
+after the gate was sealed:
+
+| File | Committed | Relationship to seal |
+|------|-----------|----------------------|
+| `doctrine/autonomic-knowledge-actuation-v30.md` | post-seal (2026-06-01) | Extends `autonomic-knowledge-actuation.md` |
+| `doctrine/blue-river-dam-v30.md` | post-seal (2026-06-01) | Extends `blue-river-dam.md` |
+| Additional post-seal additions (2026-06-01 onward) | post-seal | Addenda and glossary stubs |
+
+**Current doctrine count:** 36 (as of 2026-06-02)
+
+**Verdict impact:** None. The gate threshold was >= 15. The sealed count of 30 already satisfied the
+criterion with margin. The three additional files strengthen the corpus; they do not weaken the verdict.
+Post-seal additions follow the immutability doctrine's addendum rule — they extend but do not alter
+sealed artifacts.
+
+**Provenance record:** The v30 files are versioned addenda to their predecessor doctrine files.
+`autonomic-knowledge-actuation-v30.md` extends `autonomic-knowledge-actuation.md` with formal bounds
+and LTL invariants. `blue-river-dam-v30.md` extends `blue-river-dam.md` with game-theoretic payoffs.
+Neither supersedes its predecessor; both coexist as dated addenda.
+
+---
+
+### CAVEAT_002: Quantity-only gate criteria — no content-quality gate
+
+The 12 ALIVE_001 gate criteria are file-count thresholds. Content spot-checks were performed at
+assessment time but are not formalized gate conditions.
+
+**ALIVE_002 gate condition (prospective):** At minimum one non-stub content probe per category:
+- `doctrine/`: At least 5 files must contain >= 200 words AND a "## Definition" or "## Law" section header
+- `standards/`: At least 10 files must contain a "## Coverage" or "## Compliance" section header
+- `sources/papers/`: At least 7 files must contain a citation (DOI or author-year format)
+- `gaps/`: At least 2 open gap files must contain a "## Resolution Path" section
+
+**ALIVE_001 retrospective annotation:** Informal spot-checks at assessment time confirmed:
+- Doctrine files contain substantive definitions (type law, named refusal, receipt covenant)
+- Standards files map specific XES/OCEL/BPMN sections
+- Paper sources cite specific theorems/definitions from van der Aalst corpus
+
+These spot-checks are PARTIAL evidence. They are not machine-verifiable. ALIVE_002 must formalize them.
+
+---
+
+### CAVEAT_003: Self-generated certification artifact (scope limitation)
+
+`AALST_CERTIFIED_ALIVE.md` is a SHA-256 attestation composed in a research conversation. It satisfies
+the certification gate criterion as written. It carries no external institutional or academic endorsement.
+
+**Reclassification:** The gate criterion "certification artifact" is hereby reclassified as:
+
+> **Internal Attestation** — A self-issued provenance document confirming internal research completeness,
+> not an external academic certification. For PhD defense or M&A due-diligence contexts, this attestation
+> demonstrates process discipline but does not substitute for external peer review or committee sign-off.
+
+Any external-facing use of ALIVE_001 (board presentation, M&A claim, defense exhibit) must disclose this
+scope limitation.
+
+---
+
+### CAVEAT_005: v30 addenda not explicitly anchored to sealed verdict (resolved here)
+
+The v30 files were committed without an explicit provenance record linking them to the ALIVE_001 sealed
+verdict. This addendum serves as that linkage.
+
+**Declared:** `autonomic-knowledge-actuation-v30.md` and `blue-river-dam-v30.md` are addenda to
+sealed doctrine. They do not alter the ALIVE_001 gate verdict. They are part of the living doctrine corpus
+that ALIVE_001 authorized.
+
+---
+
+### New SHA-256 Attestation
+
+The following SHA-256 digest attests to the state of ALIVE_GATE_ASSESSMENT.md as of this addendum:
+
+```
+sha256: (to be computed at commit time — run: sha256sum checkpoints/ALIVE_GATE_ASSESSMENT.md)
+```
+
+> Note: The digest above is a placeholder acknowledging that the full content-addressable receipt
+> methodology requires committing this file first, then running sha256sum on the committed artifact.
+> This is consistent with the Internal Attestation scope defined in CAVEAT_003.
+
+---
+
+### What Remains Open
+
+CAVEAT_004 is NOT resolved by this addendum: wasm4pm-compat remains FINAL_PARTIAL.
+Until wasm4pm-compat reaches ALIVE status, any full-stack claim that routes through the compat layer
+must be qualified as PARTIAL in external-facing documents.
+
+**Tracking:** See `gaps/GAP_FIRMAMENT_002_WASM4PM_COMPAT.md` for the blocking issues and resolution path.
+
+---
+
+**Addendum sealed:** 2026-06-02
+**By:** Research Foundry (Sean Chatman)
+**Status:** This addendum does not change ALIVE_001. It discloses five caveats to downstream consumers.
