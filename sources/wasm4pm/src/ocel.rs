@@ -1,5 +1,8 @@
 // Zero-Copy OCEL 2.0 Binary Parser and Index Traversal Spec
 
+use crate::refusal::OcelRefusalLaw;
+
+/// Backward-compatible wrapper for OcelRefusalLaw
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OcelError {
     InvalidMagic,
@@ -12,6 +15,22 @@ pub enum OcelError {
     CycleDetected,
     TemporalAnomaly,
     UnknownObjectType,
+}
+
+impl From<OcelRefusalLaw> for OcelError {
+    fn from(law: OcelRefusalLaw) -> Self {
+        match law {
+            OcelRefusalLaw::InvalidMagic { .. } => OcelError::InvalidMagic,
+            OcelRefusalLaw::InvalidVersion { .. } => OcelError::InvalidVersion,
+            OcelRefusalLaw::OutOfBounds { .. } => OcelError::OutOfBounds,
+            OcelRefusalLaw::Utf8Error { .. } => OcelError::Utf8Error,
+            OcelRefusalLaw::NullPointer { .. } => OcelError::NullPointer,
+            OcelRefusalLaw::DanglingReference { .. } => OcelError::DanglingReference,
+            OcelRefusalLaw::CycleDetected { .. } => OcelError::CycleDetected,
+            OcelRefusalLaw::TemporalAnomaly { .. } => OcelError::TemporalAnomaly,
+            OcelRefusalLaw::UnknownObjectType { .. } => OcelError::UnknownObjectType,
+        }
+    }
 }
 
 

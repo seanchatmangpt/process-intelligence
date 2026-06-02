@@ -61,6 +61,41 @@ where
     Ok(())
 }
 
+/// Bridge intake function for GraduateToWasm4pm candidates.
+///
+/// Accepts a graduation candidate from the compat layer and validates it against
+/// the expected reason, ensuring all type law constraints are satisfied before
+/// the candidate enters the execution engine.
+///
+/// # Arguments
+/// - `candidate`: The graduation candidate carrying evidence and witness from compat
+/// - `expected_reason`: The expected graduation reason for this intake path
+///
+/// # Returns
+/// - `Ok(())` if the candidate is valid and fully grounded
+/// - `Err(IngestionError)` if validation fails (ungrounded, reason mismatch, invalid witness)
+///
+/// # Example
+///
+/// ```ignore
+/// let cand = GraduationCandidate::new(
+///     GraduationReason::NeedsDiscovery,
+///     "ocel:case-123".to_string(),
+///     "blake3:abc123".to_string(),
+///     WitnessState::Bottom,
+/// );
+/// accept_from_compat(&cand, GraduationReason::NeedsDiscovery)?;
+/// ```
+pub fn accept_from_compat<T, W>(
+    candidate: &GraduationCandidate<T, W>,
+    expected_reason: GraduationReason,
+) -> Result<(), IngestionError>
+where
+    W: Lattice + Clone,
+{
+    validate_engine_intake(candidate, expected_reason)
+}
+
 /// A wrapper for the event log that implements the GraduateToWasm4pm trait.
 pub struct GraduatedEventLog {
     pub events: Vec<Event>,
@@ -168,5 +203,41 @@ mod tests {
         );
         let res = validate_engine_intake(&candidate, GraduationReason::NeedsDiscovery);
         assert!(matches!(res, Err(IngestionError::InvalidWitnessState)));
+    }
+
+    #[test]
+    fn test_accept_from_compat_success() {
+        let candidate: GraduationCandidate<(), WitnessState> = GraduationCandidate::new(
+            GraduationReason::NeedsDiscovery,
+            "Event log candidate".to_string(),
+            "blake3:somehash".to_string(),
+            WitnessState::Bottom,
+        );
+        let res = accept_from_compat(&candidate, GraduationReason::NeedsDiscovery);
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn test_accept_from_compat_ungrounded() {
+        let candidate: GraduationCandidate<(), WitnessState> = GraduationCandidate::new(
+            GraduationReason::NeedsDiscovery,
+            "".to_string(),
+            "blake3:somehash".to_string(),
+            WitnessState::Bottom,
+        );
+        let res = accept_from_compat(&candidate, GraduationReason::NeedsDiscovery);
+        assert!(matches!(res, Err(IngestionError::UngroundedCandidate { .. })));
+    }
+
+    #[test]
+    fn test_accept_from_compat_reason_mismatch() {
+        let candidate: GraduationCandidate<(), WitnessState> = GraduationCandidate::new(
+            GraduationReason::NeedsConformanceExecution,
+            "Event log candidate".to_string(),
+            "blake3:somehash".to_string(),
+            WitnessState::Bottom,
+        );
+        let res = accept_from_compat(&candidate, GraduationReason::NeedsDiscovery);
+        assert!(matches!(res, Err(IngestionError::ReasonMismatch { .. })));
     }
 }

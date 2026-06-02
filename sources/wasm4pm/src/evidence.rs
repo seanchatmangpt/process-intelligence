@@ -77,6 +77,12 @@ impl SerializeBytes for u32 {
     }
 }
 
+impl SerializeBytes for i64 {
+    fn serialize_bytes(&self, buf: &mut Vec<u8>) {
+        buf.extend_from_slice(&self.to_le_bytes());
+    }
+}
+
 impl SerializeBytes for u8 {
     fn serialize_bytes(&self, buf: &mut Vec<u8>) {
         buf.push(*self);

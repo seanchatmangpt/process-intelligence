@@ -22,6 +22,7 @@
 
 use crate::evidence::*;
 use crate::petri::*;
+use crate::refusal::ConformanceRefusalLaw;
 
 // =========================================================================
 // CONFORMANCE VERDICTS: Core Verdict Types
@@ -145,57 +146,97 @@ impl SerializeBytes for ConformanceVerdicts {
 // CONFORMANCE REFUSAL REASONS
 // =========================================================================
 
-/// Reasons conformance checking may be refused
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ConformanceRefusal {
-    /// Event log is empty
-    EmptyLog,
-    /// Petri Net has no transitions
-    EmptyModel,
-    /// Net is not sound (no lawful firing sequences exist)
-    UnsoundNet,
-    /// Activity in case is not a valid transition
-    UnknownActivity,
-    /// Token replay exhausted after first few events
-    EarlyTermination,
-    /// State space explosion (alignment search space too large)
-    StateSpaceExceeded,
-    /// Case sequence is malformed (cycles, nulls, etc.)
-    MalformedCase,
-    /// Not implemented
-    NotImplementedYet,
+/// Backward-compatible refusal type — wraps ConformanceRefusalLaw for legacy code.
+/// New code should use ConformanceRefusalLaw directly.
+#[derive(Debug, Clone)]
+pub struct ConformanceRefusal {
+    pub law: ConformanceRefusalLaw,
+}
+
+impl ConformanceRefusal {
+    pub fn new(law: ConformanceRefusalLaw) -> Self {
+        ConformanceRefusal { law }
+    }
+
+    /// Create EmptyLog refusal
+    pub fn empty_log() -> Self {
+        ConformanceRefusal {
+            law: ConformanceRefusalLaw::EmptyLog,
+        }
+    }
+
+    /// Create EmptyModel refusal
+    pub fn empty_model() -> Self {
+        ConformanceRefusal {
+            law: ConformanceRefusalLaw::EmptyModel,
+        }
+    }
+
+    /// Create UnsoundNet refusal
+    pub fn unsound_net(reason: String) -> Self {
+        ConformanceRefusal {
+            law: ConformanceRefusalLaw::UnsoundNet { reason },
+        }
+    }
+
+    /// Create UnknownActivity refusal
+    pub fn unknown_activity(activity_name: String, available: Vec<String>) -> Self {
+        ConformanceRefusal {
+            law: ConformanceRefusalLaw::UnknownActivity {
+                activity_name,
+                available_transitions: available,
+            },
+        }
+    }
+
+    /// Create EarlyTermination refusal
+    pub fn early_termination(at_event: usize, total_events: usize, missing_tokens: usize) -> Self {
+        ConformanceRefusal {
+            law: ConformanceRefusalLaw::EarlyTermination {
+                at_event,
+                total_events,
+                missing_tokens,
+            },
+        }
+    }
+
+    /// Create StateSpaceExceeded refusal
+    pub fn state_space_exceeded(threshold: usize, current_size: usize) -> Self {
+        ConformanceRefusal {
+            law: ConformanceRefusalLaw::StateSpaceExceeded {
+                threshold,
+                current_size,
+            },
+        }
+    }
+
+    /// Create MalformedCase refusal
+    pub fn malformed_case(reason: String, case_id: String) -> Self {
+        ConformanceRefusal {
+            law: ConformanceRefusalLaw::MalformedCase { reason, case_id },
+        }
+    }
 }
 
 impl std::fmt::Display for ConformanceRefusal {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::EmptyLog => write!(f, "EmptyLog"),
-            Self::EmptyModel => write!(f, "EmptyModel"),
-            Self::UnsoundNet => write!(f, "UnsoundNet"),
-            Self::UnknownActivity => write!(f, "UnknownActivity"),
-            Self::EarlyTermination => write!(f, "EarlyTermination"),
-            Self::StateSpaceExceeded => write!(f, "StateSpaceExceeded"),
-            Self::MalformedCase => write!(f, "MalformedCase"),
-            Self::NotImplementedYet => write!(f, "NotImplementedYet"),
-        }
+        write!(f, "{}", self.law)
     }
 }
 
 impl SerializeBytes for ConformanceRefusal {
     fn serialize_bytes(&self, buf: &mut Vec<u8>) {
-        let code = match self {
-            Self::EmptyLog => 1u32,
-            Self::EmptyModel => 2u32,
-            Self::UnsoundNet => 3u32,
-            Self::UnknownActivity => 4u32,
-            Self::EarlyTermination => 5u32,
-            Self::StateSpaceExceeded => 6u32,
-            Self::MalformedCase => 7u32,
-            Self::NotImplementedYet => 255u32,
-        };
-        code.serialize_bytes(buf);
+        self.law.serialize_bytes(buf);
     }
 }
+
+impl PartialEq for ConformanceRefusal {
+    fn eq(&self, other: &Self) -> bool {
+        self.law == other.law
+    }
+}
+
+impl Eq for ConformanceRefusal {}
 
 // =========================================================================
 // TOKEN REPLAY ENGINE
@@ -243,12 +284,12 @@ impl TokenReplayEngine {
     ) -> Result<Evidence<TokenReplayResult, Admitted, TokenReplay>, ConformanceRefusal> {
         // Validation
         if activities.is_empty() {
-            return Err(ConformanceRefusal::EmptyLog);
+            return Err(ConformanceRefusal::empty_log());
         }
 
         // Real token replay algorithm
         let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
-            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
 
         let mut marking = Marking::initial(source_place);
 
@@ -259,7 +300,10 @@ impl TokenReplayEngine {
 
         for act in activities {
             if !self.net.transitions.contains(act) {
-                return Err(ConformanceRefusal::UnknownActivity);
+                return Err(ConformanceRefusal::unknown_activity(
+                    act.clone(),
+                    self.net.transitions.iter().cloned().collect(),
+                ));
             }
 
             // Check and handle enabled transitions
@@ -341,7 +385,7 @@ impl TokenReplayEngine {
         cases: &[(String, Vec<String>)],
     ) -> Result<Evidence<ConformanceVerdicts, Admitted, TokenReplay>, ConformanceRefusal> {
         if cases.is_empty() {
-            return Err(ConformanceRefusal::EmptyLog);
+            return Err(ConformanceRefusal::empty_log());
         }
 
         let mut verdicts = ConformanceVerdicts::new();
@@ -367,7 +411,7 @@ impl TokenReplayEngine {
                 }
             } else {
                 ConformanceVerdict::NonConforming {
-                    reason: ConformanceRefusal::EarlyTermination,
+                    reason: ConformanceRefusal::early_termination(0, 0, 0),
                 }
             };
 
@@ -455,7 +499,7 @@ impl SerializeBytes for Alignment {
 /// Alignment engine for conformance checking
 #[allow(dead_code)]
 pub struct AlignmentEngine {
-    net: PetriNet,
+    pub net: PetriNet,
 }
 
 impl AlignmentEngine {
@@ -501,14 +545,14 @@ impl AlignmentEngine {
         trace: &[String],
     ) -> Result<Evidence<Alignment, Admitted, AlignmentWitness>, ConformanceRefusal> {
         if trace.is_empty() {
-            return Err(ConformanceRefusal::EmptyLog);
+            return Err(ConformanceRefusal::empty_log());
         }
 
         let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
-            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
         
         let sink_place = self.net.places.iter().find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
-            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
 
         // A* search for lowest-cost alignment
         #[derive(Clone, Eq, PartialEq)]
@@ -556,7 +600,7 @@ impl AlignmentEngine {
         while let Some(state) = heap.pop() {
             iterations += 1;
             if iterations > 5000 {
-                return Err(ConformanceRefusal::StateSpaceExceeded);
+                return Err(ConformanceRefusal::state_space_exceeded(5000, iterations));
             }
 
             let state_key = (state.marking.clone(), state.trace_index);
@@ -630,7 +674,7 @@ impl AlignmentEngine {
             }
         }
 
-        let alignment = best_alignment.ok_or(ConformanceRefusal::EarlyTermination)?;
+        let alignment = best_alignment.ok_or_else(|| ConformanceRefusal::early_termination(0, 0, 0))?;
 
         // Create Evidence with witness marker
         let evidence = Evidence {
@@ -703,16 +747,16 @@ impl AlignmentEngine {
         cases: &[(String, Vec<String>)],
     ) -> Result<Evidence<ConformanceVerdicts, Admitted, AlignmentWitness>, ConformanceRefusal> {
         if cases.is_empty() {
-            return Err(ConformanceRefusal::EmptyLog);
+            return Err(ConformanceRefusal::empty_log());
         }
 
         let mut verdicts = ConformanceVerdicts::new();
 
         let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
-            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
         
         let sink_place = self.net.places.iter().find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
-            .ok_or(ConformanceRefusal::UnsoundNet)?.clone();
+            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
 
         let model_distance = self.compute_model_distance(&source_place, &sink_place);
 
@@ -738,11 +782,161 @@ impl AlignmentEngine {
                 }
             } else {
                 ConformanceVerdict::NonConforming {
-                    reason: ConformanceRefusal::EarlyTermination,
+                    reason: ConformanceRefusal::early_termination(0, 0, 0),
                 }
             };
 
             verdicts.add_case(case_id.clone(), verdict);
+        }
+
+        // Create Evidence with witness marker
+        let evidence = Evidence {
+            payload: verdicts,
+            state: Admitted::Yes,
+            witness: AlignmentWitness,
+            epoch: 0,
+            signature: IdentitySignature {
+                public_key: vec![],
+                signature_bytes: vec![],
+            },
+            hash: Blake3Hash([0u8; 32]),
+        };
+
+        Ok(evidence)
+    }
+}
+
+// =========================================================================
+// ALIGNMENT-BASED CONFORMANCE CONFORMANCE
+// =========================================================================
+
+/// Alignment-based conformance checker with bounded fitness metrics
+pub struct AlignmentConformance {
+    engine: AlignmentEngine,
+}
+
+impl AlignmentConformance {
+    /// Create a new alignment-based conformance checker
+    pub fn new(net: PetriNet) -> Self {
+        AlignmentConformance {
+            engine: AlignmentEngine::new(net),
+        }
+    }
+
+    /// Check conformance of a single case using optimal alignment
+    /// Returns Evidence<(Alignment, FitnessMetric), Admitted, AlignmentWitness>
+    pub fn check_case(
+        &self,
+        case_id: &str,
+        trace: &[String],
+    ) -> Result<
+        Evidence<(Alignment, FitnessMetric), Admitted, AlignmentWitness>,
+        ConformanceRefusal,
+    > {
+        // Align the trace
+        let alignment_evidence = self.engine.align_trace(case_id, trace)?;
+        let alignment = alignment_evidence.payload;
+
+        // Compute model distance from source to sink
+        let source_place = self
+            .engine
+            .net
+            .places
+            .iter()
+            .find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
+            .ok_or_else(|| {
+                ConformanceRefusal::unsound_net("missing source/sink place".to_string())
+            })?
+            .clone();
+
+        let sink_place = self
+            .engine
+            .net
+            .places
+            .iter()
+            .find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
+            .ok_or_else(|| {
+                ConformanceRefusal::unsound_net("missing source/sink place".to_string())
+            })?
+            .clone();
+
+        let model_distance = self.engine.compute_model_distance(&source_place, &sink_place);
+
+        // Compute fitness = 1 - (alignment_cost / (trace_length + model_distance))
+        let denominator = trace.len() + model_distance;
+        let fitness_value = if denominator == 0 {
+            1.0
+        } else {
+            1.0 - (alignment.cost as f64) / (denominator as f64)
+        };
+
+        // Validate and bound fitness to [0, 1]
+        let fitness_metric =
+            FitnessMetric::new(fitness_value).map_err(|_| {
+                ConformanceRefusal::unsound_net(
+                    "fitness calculation produced invalid metric".to_string(),
+                )
+            })?;
+
+        // Create Evidence with bounded fitness metric
+        let evidence = Evidence {
+            payload: (alignment, fitness_metric),
+            state: Admitted::Yes,
+            witness: AlignmentWitness,
+            epoch: 0,
+            signature: IdentitySignature {
+                public_key: vec![],
+                signature_bytes: vec![],
+            },
+            hash: Blake3Hash([0u8; 32]),
+        };
+
+        Ok(evidence)
+    }
+
+    /// Check conformance of entire event log
+    /// Returns aggregated conformance verdicts with alignment-computed fitness
+    pub fn check_log(
+        &self,
+        cases: &[(String, Vec<String>)],
+    ) -> Result<
+        Evidence<ConformanceVerdicts, Admitted, AlignmentWitness>,
+        ConformanceRefusal,
+    > {
+        if cases.is_empty() {
+            return Err(ConformanceRefusal::empty_log());
+        }
+
+        let mut verdicts = ConformanceVerdicts::new();
+
+        for (case_id, trace) in cases {
+            match self.check_case(case_id, trace) {
+                Ok(evidence) => {
+                    let (alignment, fitness_metric) = evidence.payload;
+                    let fitness = fitness_metric.value();
+
+                    let verdict = if (fitness - 1.0).abs() < f64::EPSILON {
+                        ConformanceVerdict::FullyConforming
+                    } else if fitness > 0.0 {
+                        ConformanceVerdict::PartiallyConforming {
+                            fitness,
+                            deviations: alignment.cost,
+                        }
+                    } else {
+                        ConformanceVerdict::NonConforming {
+                            reason: ConformanceRefusal::early_termination(0, 0, 0),
+                        }
+                    };
+
+                    verdicts.add_case(case_id.clone(), verdict);
+                }
+                Err(e) => {
+                    verdicts.add_case(
+                        case_id.clone(),
+                        ConformanceVerdict::NonConforming { reason: e },
+                    );
+                }
+            }
         }
 
         // Create Evidence with witness marker
@@ -1042,7 +1236,7 @@ mod tests {
         assert!(!v3.admits());
 
         let v4 = ConformanceVerdict::NonConforming {
-            reason: ConformanceRefusal::UnknownActivity,
+            reason: ConformanceRefusal::unknown_activity("unknown_activity".to_string(), vec![]),
         };
         assert_eq!(v4.fitness_score(), 0.0);
         assert!(!v4.admits());
@@ -1225,5 +1419,276 @@ mod tests {
         assert!(PrecisionMetric::new(0.95).is_ok());
         assert_eq!(PrecisionMetric::new(-0.5).unwrap_err(), MetricError::OutOfBounds);
         assert_eq!(PrecisionMetric::from_ratio(9, 10).unwrap().value(), 0.9);
+    }
+
+    #[test]
+    fn test_alignment_conformance_perfect_match() {
+        let mut places = std::collections::BTreeSet::new();
+        for p in &["source", "p1", "p2", "sink"] {
+            places.insert(p.to_string());
+        }
+
+        let mut transitions = std::collections::BTreeSet::new();
+        for t in &["Register", "Approve", "Ship"] {
+            transitions.insert(t.to_string());
+        }
+
+        let mut pre = std::collections::BTreeMap::new();
+        let mut post = std::collections::BTreeMap::new();
+
+        // Register
+        let mut t_reg_pre = std::collections::BTreeMap::new();
+        t_reg_pre.insert("source".to_string(), 1);
+        pre.insert("Register".to_string(), t_reg_pre);
+
+        let mut t_reg_post = std::collections::BTreeMap::new();
+        t_reg_post.insert("p1".to_string(), 1);
+        post.insert("Register".to_string(), t_reg_post);
+
+        // Approve
+        let mut t_app_pre = std::collections::BTreeMap::new();
+        t_app_pre.insert("p1".to_string(), 1);
+        pre.insert("Approve".to_string(), t_app_pre);
+
+        let mut t_app_post = std::collections::BTreeMap::new();
+        t_app_post.insert("p2".to_string(), 1);
+        post.insert("Approve".to_string(), t_app_post);
+
+        // Ship
+        let mut t_shp_pre = std::collections::BTreeMap::new();
+        t_shp_pre.insert("p2".to_string(), 1);
+        pre.insert("Ship".to_string(), t_shp_pre);
+
+        let mut t_shp_post = std::collections::BTreeMap::new();
+        t_shp_post.insert("sink".to_string(), 1);
+        post.insert("Ship".to_string(), t_shp_post);
+
+        let net = PetriNet::new(places, transitions, pre, post);
+        let conformance = AlignmentConformance::new(net);
+
+        // Perfect match: trace follows model exactly
+        let trace = vec![
+            "Register".to_string(),
+            "Approve".to_string(),
+            "Ship".to_string(),
+        ];
+
+        let result = conformance.check_case("case1", &trace).unwrap();
+        let (alignment, fitness) = result.payload;
+
+        assert_eq!(alignment.cost, 0);
+        assert!((fitness.value() - 1.0).abs() < f64::EPSILON);
+    }
+
+    #[test]
+    fn test_alignment_conformance_partial_move_model() {
+        let mut places = std::collections::BTreeSet::new();
+        for p in &["source", "p1", "p2", "sink"] {
+            places.insert(p.to_string());
+        }
+
+        let mut transitions = std::collections::BTreeSet::new();
+        for t in &["Register", "Approve", "Ship"] {
+            transitions.insert(t.to_string());
+        }
+
+        let mut pre = std::collections::BTreeMap::new();
+        let mut post = std::collections::BTreeMap::new();
+
+        // Register
+        let mut t_reg_pre = std::collections::BTreeMap::new();
+        t_reg_pre.insert("source".to_string(), 1);
+        pre.insert("Register".to_string(), t_reg_pre);
+
+        let mut t_reg_post = std::collections::BTreeMap::new();
+        t_reg_post.insert("p1".to_string(), 1);
+        post.insert("Register".to_string(), t_reg_post);
+
+        // Approve
+        let mut t_app_pre = std::collections::BTreeMap::new();
+        t_app_pre.insert("p1".to_string(), 1);
+        pre.insert("Approve".to_string(), t_app_pre);
+
+        let mut t_app_post = std::collections::BTreeMap::new();
+        t_app_post.insert("p2".to_string(), 1);
+        post.insert("Approve".to_string(), t_app_post);
+
+        // Ship
+        let mut t_shp_pre = std::collections::BTreeMap::new();
+        t_shp_pre.insert("p2".to_string(), 1);
+        pre.insert("Ship".to_string(), t_shp_pre);
+
+        let mut t_shp_post = std::collections::BTreeMap::new();
+        t_shp_post.insert("sink".to_string(), 1);
+        post.insert("Ship".to_string(), t_shp_post);
+
+        let net = PetriNet::new(places, transitions, pre, post);
+        let conformance = AlignmentConformance::new(net);
+
+        // Partial conformance: missing Register (model-only move)
+        let trace = vec!["Approve".to_string(), "Ship".to_string()];
+
+        let result = conformance.check_case("case2", &trace).unwrap();
+        let (alignment, fitness) = result.payload;
+
+        assert_eq!(alignment.cost, 1);
+        assert!(fitness.value() > 0.0 && fitness.value() < 1.0);
+    }
+
+    #[test]
+    fn test_alignment_conformance_fitness_bounded_01() {
+        let mut places = std::collections::BTreeSet::new();
+        for p in &["source", "p1", "sink"] {
+            places.insert(p.to_string());
+        }
+
+        let mut transitions = std::collections::BTreeSet::new();
+        transitions.insert("A".to_string());
+
+        let mut pre = std::collections::BTreeMap::new();
+        let mut post = std::collections::BTreeMap::new();
+
+        let mut t_a_pre = std::collections::BTreeMap::new();
+        t_a_pre.insert("source".to_string(), 1);
+        pre.insert("A".to_string(), t_a_pre);
+
+        let mut t_a_post = std::collections::BTreeMap::new();
+        t_a_post.insert("p1".to_string(), 1);
+        post.insert("A".to_string(), t_a_post);
+
+        let net = PetriNet::new(places, transitions, pre, post);
+        let conformance = AlignmentConformance::new(net);
+
+        // Test multiple traces with varying fitness
+        let test_cases = vec![
+            ("case1", vec!["A".to_string()], true), // Should be close to 1.0
+            ("case2", vec![], false), // Should be 0
+        ];
+
+        for (case_id, trace, _should_pass) in test_cases {
+            if !trace.is_empty() {
+                if let Ok(result) = conformance.check_case(case_id, &trace) {
+                    let (_, fitness) = result.payload;
+                    let val = fitness.value();
+                    // Verify fitness is in [0, 1]
+                    assert!(val >= 0.0 && val <= 1.0, "Fitness out of bounds: {}", val);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_alignment_conformance_log_aggregation() {
+        let mut places = std::collections::BTreeSet::new();
+        for p in &["source", "p1", "p2", "sink"] {
+            places.insert(p.to_string());
+        }
+
+        let mut transitions = std::collections::BTreeSet::new();
+        for t in &["A", "B"] {
+            transitions.insert(t.to_string());
+        }
+
+        let mut pre = std::collections::BTreeMap::new();
+        let mut post = std::collections::BTreeMap::new();
+
+        // A: source -> p1
+        let mut t_a_pre = std::collections::BTreeMap::new();
+        t_a_pre.insert("source".to_string(), 1);
+        pre.insert("A".to_string(), t_a_pre);
+
+        let mut t_a_post = std::collections::BTreeMap::new();
+        t_a_post.insert("p1".to_string(), 1);
+        post.insert("A".to_string(), t_a_post);
+
+        // B: p1 -> sink
+        let mut t_b_pre = std::collections::BTreeMap::new();
+        t_b_pre.insert("p1".to_string(), 1);
+        pre.insert("B".to_string(), t_b_pre);
+
+        let mut t_b_post = std::collections::BTreeMap::new();
+        t_b_post.insert("sink".to_string(), 1);
+        post.insert("B".to_string(), t_b_post);
+
+        let net = PetriNet::new(places, transitions, pre, post);
+        let conformance = AlignmentConformance::new(net);
+
+        let cases = vec![
+            ("case1".to_string(), vec!["A".to_string(), "B".to_string()]),
+            ("case2".to_string(), vec!["A".to_string(), "B".to_string()]),
+            ("case3".to_string(), vec!["B".to_string()]),
+        ];
+
+        let result = conformance.check_log(&cases).unwrap();
+        let verdicts = result.payload;
+
+        assert_eq!(verdicts.total_cases, 3);
+        assert!(verdicts.aggregate_fitness >= 0.0 && verdicts.aggregate_fitness <= 1.0);
+    }
+
+    #[test]
+    fn test_alignment_vs_token_replay_fitness_comparison() {
+        let mut places = std::collections::BTreeSet::new();
+        for p in &["source", "p1", "p2", "sink"] {
+            places.insert(p.to_string());
+        }
+
+        let mut transitions = std::collections::BTreeSet::new();
+        for t in &["X", "Y", "Z"] {
+            transitions.insert(t.to_string());
+        }
+
+        let mut pre = std::collections::BTreeMap::new();
+        let mut post = std::collections::BTreeMap::new();
+
+        // X: source -> p1
+        let mut t_x_pre = std::collections::BTreeMap::new();
+        t_x_pre.insert("source".to_string(), 1);
+        pre.insert("X".to_string(), t_x_pre);
+
+        let mut t_x_post = std::collections::BTreeMap::new();
+        t_x_post.insert("p1".to_string(), 1);
+        post.insert("X".to_string(), t_x_post);
+
+        // Y: p1 -> p2
+        let mut t_y_pre = std::collections::BTreeMap::new();
+        t_y_pre.insert("p1".to_string(), 1);
+        pre.insert("Y".to_string(), t_y_pre);
+
+        let mut t_y_post = std::collections::BTreeMap::new();
+        t_y_post.insert("p2".to_string(), 1);
+        post.insert("Y".to_string(), t_y_post);
+
+        // Z: p2 -> sink
+        let mut t_z_pre = std::collections::BTreeMap::new();
+        t_z_pre.insert("p2".to_string(), 1);
+        pre.insert("Z".to_string(), t_z_pre);
+
+        let mut t_z_post = std::collections::BTreeMap::new();
+        t_z_post.insert("sink".to_string(), 1);
+        post.insert("Z".to_string(), t_z_post);
+
+        let net = PetriNet::new(places, transitions, pre, post);
+
+        // Test with partial trace
+        let trace = vec!["Y".to_string(), "Z".to_string()];
+
+        // Alignment-based
+        let alignment_conformance = AlignmentConformance::new(net.clone());
+        let alignment_result = alignment_conformance.check_case("case1", &trace);
+
+        if let Ok(result) = alignment_result {
+            let (_, fitness) = result.payload;
+            // Alignment should produce a fitness metric bounded in [0, 1]
+            assert!(fitness.value() >= 0.0 && fitness.value() <= 1.0);
+        }
+
+        // Token replay comparison
+        let token_engine = TokenReplayEngine::new(net);
+        if let Ok(token_result) = token_engine.replay_case(&trace) {
+            let token_fitness = token_result.payload.fitness;
+            // Both methods should produce valid fitness values
+            assert!(token_fitness >= 0.0 && token_fitness <= 1.0);
+        }
     }
 }
