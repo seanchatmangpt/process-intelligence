@@ -3,7 +3,7 @@ gap: FIRMAMENT_002_LINKEDIN_PUBLIC_CANON
 project: linkedin-public-canon
 date: 2026-06-02
 date-updated: 2026-06-03
-status: EXTERNAL_ACTION_REQUIRED
+status: PARTIAL
 severity: BLOCKING
 gate: Fish Gate
 resolution-checkpoint: checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md
@@ -199,3 +199,37 @@ Three sub-gaps require human author action that no local automation can perform:
 - **GAP_LINKEDIN_PUBLIC_CANON_007:** Series publication — 3 post drafts complete; publication PENDING
 
 The Fish Gate ALIVE verdict cannot be issued until at least one LinkedIn post URL and one public landing page URL are recorded in `PUBLICATION_REGISTRY.yaml` with `status: PUBLISHED`.
+
+---
+
+## PARTIAL Addendum — 2026-06-03: Standalone Repo Initialized
+
+**Agent:** Claude Code (FIRMAMENT_002 gap closure sweep)
+**Date:** 2026-06-03
+**Prior status:** EXTERNAL_ACTION_REQUIRED
+**New status:** PARTIAL
+
+### What was done
+
+A standalone git repository was initialized at `/Users/sac/linkedin-public-canon` (separate from the existing subdirectory at `/Users/sac/process-intelligence/linkedin-public-canon`). The following artifacts were manufactured and committed in initial commit `1b9b111`:
+
+| Artifact | Path | Status |
+|---|---|---|
+| Project configuration | `CLAUDE.md` | PRESENT |
+| Publication registry | `PUBLICATION_REGISTRY.yaml` | CREATED — v1 schema, pending_entries populated |
+| First post draft | `drafts/CONSTRUCT8_DEFENSE_POST.md` | DRAFT_COMPLETE — verbatim canonical defense sentence, C8_MARKET_PHYSICS_ALIVE_002 citation |
+| Landing page | `landing-page/index.md` | DRAFT_COMPLETE — GitHub Pages deployable |
+| Receipts directory | `receipts/` | CREATED — ready for ALIVE_001 artifact |
+
+### Sub-gap status update
+
+- **GAP_LINKEDIN_PUBLIC_CANON_001:** CLOSED — standalone directory exists at `/Users/sac/linkedin-public-canon`, initialized as git repo with initial commit
+- **GAP_LINKEDIN_PUBLIC_CANON_002:** CLOSED — `PUBLICATION_REGISTRY.yaml` created with v1 schema, pending_entries for POST_001 and landing page, gap_closures section
+- **GAP_LINKEDIN_PUBLIC_CANON_003:** PARTIAL — `drafts/CONSTRUCT8_DEFENSE_POST.md` authored with verbatim canonical defense sentence; LinkedIn publication requires human action
+- **GAP_LINKEDIN_PUBLIC_CANON_004:** PARTIAL — `landing-page/index.md` created and deployable to GitHub Pages; deployment requires human action
+
+### Remaining human actions
+
+1. Publish `drafts/CONSTRUCT8_DEFENSE_POST.md` to LinkedIn. Record post URL in `PUBLICATION_REGISTRY.yaml`. Change `status: DRAFT` to `status: PUBLISHED`.
+2. Deploy `landing-page/index.md` to GitHub Pages. Record public URL in `PUBLICATION_REGISTRY.yaml`. Change `status: DRAFT_COMPLETE` to `status: PUBLISHED`.
+3. After steps 1 and 2: issue `checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md` and update this gap status to CLOSED.
