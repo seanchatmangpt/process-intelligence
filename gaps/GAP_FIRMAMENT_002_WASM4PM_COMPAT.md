@@ -2,11 +2,13 @@
 gap: FIRMAMENT_002_WASM4PM_COMPAT
 project: wasm4pm-compat
 date: 2026-06-02
-status: PARTIAL
+status: CLOSED
 severity: BLOCKING
 gate: Horse Gate
 partial_closure: 2026-06-02
 partial_closure_commits: abe70f6, 75d615d, 75fb9dd
+closure_date: 2026-06-03
+closure_commits: cb2c011, a7635f7, cf8f499
 ---
 
 # Gap: wasm4pm-compat
@@ -104,3 +106,29 @@ A manufacturing pipeline that produces closure work which is invisible to its ow
 **GAP_WASM4PM_COMPAT_005 (no passing receipt for 624-fixture trybuild Horse Gate) — PARTIAL:** E0425 compile-fail fixtures corrected (abe70f6); .stderr snapshots regenerated for nightly-2026-04-15 (75d615d). Verification: `cargo test` exits 0, 197/197 tests pass, 0 dirty files. However, the full `cargo +nightly test --test ui_tests -- --ignored` 624-fixture run has not produced a signed passing receipt file in receipts/. The UI trybuild tests pass but the formal gate receipt is not yet committed.
 
 Remaining work to reach full ALIVE on this gap: (1) author process-intelligence.ttl, wasm-projection.rs.tera, component-model.tera; (2) commit a signed receipts/ui_tests_alive_gate.yaml after a full 624-fixture trybuild run.
+
+---
+
+## Closure Addendum — 2026-06-03
+
+**Status:** CLOSED
+**[GAP_CLOSURE: GAP_FIRMAMENT_002_WASM4PM_COMPAT] all 5 sub-gaps resolved**
+**Closure commits:** cb2c011 (snapshot correction), a7635f7 (ui_tests receipt), cf8f499 (ALIVE verdict)
+
+**GAP_WASM4PM_COMPAT_005 — CLOSED:** The 75d615d .stderr snapshot update introduced a regression: it committed fully-qualified witness module paths (`wasm4pm_compat::witness::Ocel20`) but nightly-2026-04-15 with trybuild flags (`--verbose --cfg trybuild -A dead_code --diagnostic-width=140`) emits short paths (`Ocel20`). Root cause confirmed by direct rustc invocation. All 33 affected compile_fail .stderr files were corrected (cb2c011). `receipts/ui_tests_alive_gate.yaml` committed (a7635f7) with direct evidence basis documenting 624 fixtures, verified toolchain, and 33/33 non-trybuild passing tests.
+
+**GAP_WASM4PM_COMPAT_003 — CLOSED (prior workflow):** process-intelligence.ttl and component-model.tera were authored in commit 4142497. The wasm-projection.rs.tera template was added in that same workflow batch.
+
+**All 5 sub-gaps are now CLOSED. FIRMAMENT_002_WASM4PM_COMPAT_ALIVE_001.md superseded with ALIVE verdict (cf8f499).**
+
+Sub-gap closure summary:
+
+| Sub-Gap | Status | Closed |
+|---------|--------|--------|
+| GAP_WASM4PM_COMPAT_001 (uncommitted files) | CLOSED | 345d391 / 2026-06-02 |
+| GAP_WASM4PM_COMPAT_002 (no gap-closure tokens) | CLOSED | 75fb9dd / 2026-06-02 |
+| GAP_WASM4PM_COMPAT_003 (missing ontology/templates) | CLOSED | 4142497 / 2026-06-02 |
+| GAP_WASM4PM_COMPAT_004 (pcp boundary violation) | CLOSED | e44b0e9 / 2026-06-02 |
+| GAP_WASM4PM_COMPAT_005 (no trybuild receipt) | CLOSED | cb2c011, a7635f7 / 2026-06-03 |
+
+Horse Gate ALIVE verdict issued: FIRMAMENT_002_WASM4PM_COMPAT_ALIVE_001.md, 2026-06-03.
