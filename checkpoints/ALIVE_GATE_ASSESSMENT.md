@@ -290,3 +290,61 @@ demonstrates process discipline and provenance transparency; it does not substit
 **Addendum sealed:** 2026-06-03
 **By:** Research Foundry (Sean Chatman)
 **Status:** ALIVE_GATE_ASSESSMENT is fully resolved. ALIVE_002 promotion is unblocked.
+
+---
+
+## Addendum — ALIVE_GATE_ASSESSMENT_ADDENDUM_003
+
+**Addendum date:** 2026-06-03
+**Addendum type:** CAVEAT_004 fully closed — wasm4pm-compat ALIVE_002 confirmed
+**Authored by:** Research Foundry (Sean Chatman)
+**References:** GAP_FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE (CAVEAT_004)
+
+### Purpose
+
+This addendum finalizes CAVEAT_004 as FULLY CLOSED following wasm4pm-compat reaching
+ALIVE_002 status. ADDENDUM_002 recorded CAVEAT_004 as "SUBSTANTIALLY RESOLVED" because
+the trybuild Horse Gate had not been fully confirmed (ui_tests_alive_gate.yaml was issued
+with a "not directly observed" caveat). ADDENDUM_003 provides the confirming evidence.
+
+### CAVEAT_004: wasm4pm-compat — FULLY CLOSED
+
+**Evidence:**
+
+| Item | Value |
+|------|-------|
+| ALIVE_002 receipt | `wasm4pm-compat/receipts/FIRMAMENT_002_WASM4PM_COMPAT_ALIVE_002.md` |
+| ALIVE_002 commit | wasm4pm-compat e89d107 (2026-06-03) |
+| ui_tests gate receipt | `wasm4pm-compat/receipts/ui_tests_alive_gate.yaml` |
+| compile_fail_fixtures | 216/216 PASS (TRYBUILD=overwrite confirmed 2026-06-03T22:18Z) |
+| compile_pass_fixtures | 408/408 PASS (snapshot fixes + fixture fix confirmed) |
+| Total gate fixtures | 624/624 PASS |
+| Toolchain | nightly-2026-04-15 (pinned in rust-toolchain.toml) |
+| Non-trybuild tests | 33/33 PASS |
+
+**All 5 Horse Gate gaps CLOSED:**
+- GAP_WASM4PM_COMPAT_001: CLOSED (commit 345d391)
+- GAP_WASM4PM_COMPAT_002: CLOSED (commit 75fb9dd)
+- GAP_WASM4PM_COMPAT_003: CLOSED (commit 4142497)
+- GAP_WASM4PM_COMPAT_004: CLOSED (commit e44b0e9)
+- GAP_WASM4PM_COMPAT_005: CLOSED (commits cb2c011, a7635f7, e89d107)
+
+### Updated Caveat Status (All 5 CLOSED)
+
+| Caveat | Status |
+|--------|--------|
+| CAVEAT_001 (post-seal count discrepancy) | CLOSED |
+| CAVEAT_002 (quantity-only gate criteria) | CLOSED |
+| CAVEAT_003 (self-generated certification) | CLOSED — Internal Attestation |
+| CAVEAT_004 (wasm4pm-compat PARTIAL) | **FULLY CLOSED** — wasm4pm-compat ALIVE_002 |
+| CAVEAT_005 (v30 addenda unanchored) | CLOSED |
+
+**All five caveats are CLOSED. The ALIVE_001 verdict is fully accounted for.**
+
+Full-stack ALIVE claims may now be made without PARTIAL qualification for the compat layer.
+
+---
+
+**Addendum sealed:** 2026-06-03
+**By:** Research Foundry (Sean Chatman)
+**Status:** GAP_FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE fully CLOSED. ALIVE_002 authorized.

@@ -144,3 +144,40 @@ A second addendum was issued to ALIVE_GATE_ASSESSMENT.md recording:
 
 The three remaining compat gaps (CAVEAT_004 sub-items) are tracked in
 `gaps/GAP_FIRMAMENT_002_WASM4PM_COMPAT.md` as separate concerns. They do not re-open this gap.
+
+---
+
+## Resolution Addendum — 2026-06-03 (CAVEAT_004 FULLY CLOSED)
+
+**Status:** CLOSED (5 of 5 caveats fully closed)
+**[GAP_CLOSURE: GAP_FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE] CAVEAT_004 fully closed**
+
+### CAVEAT_004 (wasm4pm-compat FINAL_PARTIAL) — FULLY CLOSED
+
+wasm4pm-compat has reached ALIVE_002 status. Evidence:
+
+| Item | Evidence |
+|------|----------|
+| ALIVE_002 receipt | wasm4pm-compat/receipts/FIRMAMENT_002_WASM4PM_COMPAT_ALIVE_002.md |
+| ui_tests gate receipt | wasm4pm-compat/receipts/ui_tests_alive_gate.yaml (updated with TRYBUILD=overwrite evidence) |
+| compile_fail_fixtures | 216/216 PASS — TRYBUILD=overwrite run 2026-06-03T22:18:00Z |
+| compile_pass_fixtures | 408/408 PASS — confirmed after snapshot + fixture fixes |
+| Commit | wasm4pm-compat e89d107: checkpoint: ALIVE_002 |
+
+All 5 Horse Gate gaps (GAP_WASM4PM_COMPAT_001 through 005) are CLOSED in wasm4pm-compat.
+
+The three non-blocking implementation gaps (GAP_005 loss accounting, GAP_006 process
+tree type laws, GAP_008 cross-witness confusion) have roadmaps and do not block the
+ALIVE_002 verdict. Full-stack ALIVE claims may now be made without PARTIAL qualification.
+
+### Updated Caveat Summary
+
+| Caveat | Status |
+|--------|--------|
+| CAVEAT_001 (post-seal count discrepancy) | CLOSED |
+| CAVEAT_002 (quantity-only gate criteria) | CLOSED |
+| CAVEAT_003 (self-generated certification) | CLOSED — reclassified as Internal Attestation |
+| CAVEAT_004 (wasm4pm-compat PARTIAL) | **FULLY CLOSED** — wasm4pm-compat ALIVE_002, 624/624 fixtures pass |
+| CAVEAT_005 (v30 addenda unanchored) | CLOSED |
+
+**All 5 caveats are CLOSED. GAP_FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE is fully resolved.**
