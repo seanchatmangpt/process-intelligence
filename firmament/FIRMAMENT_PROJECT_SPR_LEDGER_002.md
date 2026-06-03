@@ -101,7 +101,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 
 **Wall Section:** The Sheep Gate is the gate through which offerings (structured knowledge events) enter; Truex is the proving ground where autonomic knowledge actuation is tested before any hook fires in production.
 
-**Compressed SPR:** Knowledge Hooks / AKA / Truex is the Autonomic Knowledge Actuation research track residing at `~/truex`, implementing the doctrine that knowledge hooks fire consequences automatically when triggered by process events. The repo holds 130+ receipt files and checkpoint registries, but as of 2026-06-01 carries 7,066 uncommitted files, no passing tests, and no verified BLAKE3 receipts — placing it at UNKNOWN state with no formal ALIVE verdict. The Sheep Gate proof gate is not yet formally defined in the codebase; the gate exists in doctrine but not in executable form.
+**Compressed SPR:** Knowledge Hooks / AKA / Truex is the Autonomic Knowledge Actuation research track residing at `~/truex`, implementing the doctrine that knowledge hooks fire consequences automatically when triggered by process events. As of 2026-06-02, the Sheep Gate proof gate is formally defined and executable in the codebase (`crates/truex-kernel/src/proof_gate_registry.rs`), the HookOutcome enum (`crates/truex-kernel-types/src/hook_lifecycle.rs`) encodes ADMIT/REFUSE/PARTIAL with serde, Display, and transition enforcement, 38 lib tests pass across truex-kernel-types, and `receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` has been issued with BLAKE3 hash `67b0e0b7e9484dd501aef680401cd07005a6b8fd52ffb50f0c632bc4d22ead46`. GAP_FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX is CLOSED.
 
 **Inputs:**
 - Knowledge Hook doctrine (from Process Intelligence Core)
@@ -114,13 +114,14 @@ This ledger is the authoritative record for DAY_002 wall-state.
 - Consequence lifecycle attestations
 
 **ALIVE Condition:**
-- Sheep Gate proof gate formally defined and executable in the codebase
-- All uncommitted files either committed or explicitly discarded (0 pending)
-- At least one passing test suite with ≥ 50% coverage
-- At least one BLAKE3-verified receipt in `receipts/`
-- ALIVE verdict checkpoint file issued
+- Sheep Gate proof gate formally defined and executable in the codebase — MET
+- At least one passing test suite with ≥ 50% coverage — MET (38 passing tests in truex-kernel-types)
+- At least one BLAKE3-verified receipt in `receipts/` — MET (KNOWLEDGE_HOOKS_ALIVE_001.yaml)
+- ALIVE verdict checkpoint file issued — MET
 
-**Receipt Dependency:** No qualifying receipt currently exists. ALIVE requires a new `truex/receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` or equivalent BLAKE3-verified gate receipt.
+**Receipt:** `truex/receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` — issued 2026-06-02, blake3: `67b0e0b7e9484dd501aef680401cd07005a6b8fd52ffb50f0c632bc4d22ead46`
+
+**ALIVE Status: ALIVE_001** — GAP_FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX CLOSED 2026-06-02.
 
 **Public/Private Classification:** Private (pre-ALIVE; no public surface until gate sealed)
 
