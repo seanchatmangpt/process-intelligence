@@ -126,3 +126,46 @@ Some `compile_fail` fixtures in `tests/ui/compile_fail/` fail because a type is 
 | GAP_006 | MINOR | Closed | P3 |
 | GAP_007 | MINOR | Closed | P1 |
 | GAP_008 | MINOR | Closed | P2 |
+
+---
+
+## FIRMAMENT_002 Gap Closure Sweep — 2026-06-03
+
+**Sweep Date:** 2026-06-03  
+**Agent:** Gap Closure Sweep Agent  
+**Branch:** phd-thesis-corpus-manufacture-001
+
+This sweep closed or classified all outstanding FIRMAMENT_002 project-level gaps across
+the process-intelligence firmament. Each gap has an individual document in `gaps/`.
+
+### FIRMAMENT_002 Gap Summary Table
+
+| Gap ID | Project | Gate | Severity | Final Status | Closure Commit |
+|--------|---------|------|----------|-------------|----------------|
+| FIRMAMENT_002_GGEN | ggen | Dung Gate | BLOCKING | Closed | 01cc8b0 (process-intelligence) |
+| FIRMAMENT_002_LIVING_LSP_GALL_CODEMANUFACTORY | living-lsp-gall | Inspection Gate | MAJOR | Closed | b7151f6 (process-intelligence) |
+| FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX | truex | Sheep Gate | BLOCKING | External Action Required | 65a614c (process-intelligence) |
+| FIRMAMENT_002_NEHEMIAH_52 | nehemiah-52 | Fish Gate | BLOCKING | Closed | bf9146d (process-intelligence) |
+| FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE | process-intelligence | Fountain Gate | MAJOR | Closed | 6bb6d7fb (process-intelligence) |
+| FIRMAMENT_002_WASM4PM_COMPAT | wasm4pm-compat | Horse Gate | BLOCKING | Closed | 4bb57f4 (process-intelligence) |
+| FIRMAMENT_002_PROMPT_MANUFACTORY | prompt-manufactory | Water Gate | BLOCKING | Closed | b0e1ae8 (process-intelligence) |
+| FIRMAMENT_002_LINKEDIN_PUBLIC_CANON | linkedin-public-canon | Fish Gate | BLOCKING | External Action Required | 27b8c02 (process-intelligence) |
+| FIRMAMENT_002_BLUE_RIVER_DAM | blue-river-dam | Old Gate | MAJOR | Closed | b8c213e (process-intelligence) |
+| FIRMAMENT_002_CONSTRUCT8 | construct8 | Horse Gate | MAJOR | Closed | dcc627ec (construct8) |
+| FIRMAMENT_002_WASM4PM | wasm4pm | Inspection Gate | MAJOR | Closed | ba1d9118 (wasm4pm) |
+
+### External Action Required Summary
+
+Two gaps require author action that cannot be automated:
+
+**FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX** — GAP_003: All 130 CLI receipts in
+`/Users/sac/truex/.truex/receipts/` remain refused. The truex CLI project-cell
+initialization fails with "Missing project path" / "Project cell not initialized".
+Requires operator to fix the CLI project-cell registry and run `truex init` then
+`truex prove` to produce at least one `status:admitted` receipt.
+
+**FIRMAMENT_002_LINKEDIN_PUBLIC_CANON** — GAP_003, GAP_004, GAP_005, GAP_007: All
+local artifacts are manufactured (post drafts, landing page HTML, newsletter draft,
+series definition). Publication requires authenticated browser actions: publish POST_001
+to LinkedIn, deploy landing page to GitHub Pages, create and publish newsletter on
+Substack/Beehiiv/Ghost, and record all public URLs in `PUBLICATION_REGISTRY.yaml`.

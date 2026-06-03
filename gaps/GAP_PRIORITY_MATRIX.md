@@ -95,3 +95,26 @@ The following board-level and research-level claims are **blocked** until the ga
 | "POWL discovery is available" | GAP_006 |
 | "WF-net attestation is non-forgeable" | GAP_007 |
 | "All compile_fail fixtures are true structural law receipts" | GAP_008 |
+
+---
+
+## FIRMAMENT_002 Priority Assessment — 2026-06-03
+
+All FIRMAMENT_002 gaps have been resolved or classified. Remaining open items are
+external-action items that cannot be automated.
+
+| Gap ID | Gate | Status | Remaining Action |
+|--------|------|--------|-----------------|
+| FIRMAMENT_002_GGEN | Dung Gate | CLOSED | None |
+| FIRMAMENT_002_LIVING_LSP_GALL_CODEMANUFACTORY | Inspection Gate | CLOSED | GAP_003 Stages 1-4 (non-blocking, separate workstream) |
+| FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX | Sheep Gate | EXTERNAL_ACTION_REQUIRED | Fix truex CLI project-cell initialization; re-run truex init + truex prove |
+| FIRMAMENT_002_NEHEMIAH_52 | Fish Gate | CLOSED | DAY_002–DAY_052 records (ongoing daily discipline, self-resolving) |
+| FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE | Fountain Gate | CLOSED | None |
+| FIRMAMENT_002_WASM4PM_COMPAT | Horse Gate | CLOSED | None |
+| FIRMAMENT_002_PROMPT_MANUFACTORY | Water Gate | CLOSED | audit.json empty pipeline (non-blocking, acknowledged) |
+| FIRMAMENT_002_LINKEDIN_PUBLIC_CANON | Fish Gate | EXTERNAL_ACTION_REQUIRED | Publish POST_001 to LinkedIn; deploy landing page; publish newsletter |
+| FIRMAMENT_002_BLUE_RIVER_DAM | Old Gate | CLOSED | None |
+| FIRMAMENT_002_CONSTRUCT8 | Horse Gate | CLOSED | None |
+| FIRMAMENT_002_WASM4PM | Inspection Gate | CLOSED | None |
+
+**ALIVE_GATE_PROGRESS:** 9 of 11 FIRMAMENT_002 gaps are CLOSED. 2 require external author action.
