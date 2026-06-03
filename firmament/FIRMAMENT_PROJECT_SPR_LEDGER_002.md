@@ -435,7 +435,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 |---|---------|-------------|----------------|--------|
 | 1 | Nehemiah 52 | Fish Gate | Inspection Gate | ABSENT (no independent repo; ledger-as-receipt invalid) |
 | 2 | Process Intelligence Core | Fountain Gate | Water Gate | ALIVE |
-| 3 | Knowledge Hooks / AKA / Truex | Sheep Gate | Inspection Gate | UNKNOWN |
+| 3 | Knowledge Hooks / AKA / Truex | Sheep Gate | Inspection Gate | ALIVE_001 (GAP_FIRMAMENT_002 CLOSED 2026-06-02) |
 | 4 | CONSTRUCT8 | Horse Gate | Inspection Gate | ALIVE |
 | 5 | ggen | Dung Gate | Inspection Gate | PARTIAL |
 | 6 | Prompt Manufactory | Water Gate | Old Gate | ABSENT (substrate at research/prompt-manufactory; no ALIVE receipt) |
