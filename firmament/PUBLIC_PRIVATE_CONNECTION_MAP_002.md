@@ -52,11 +52,11 @@ No private machinery may claim public authority it has not earned.
 - **Leak Risk:** Medium — the PARTIAL state, if published without context, could weaken category authority for the broader process intelligence ecosystem. Silence is safer than premature disclosure.
 
 ### prompt-manufactory
-- **Classification:** Private (UNKNOWN state)
-- **Public Surface:** None — no ALIVE receipts, no Water Gate artifacts, no proof-gate evidence. The canonical substrate is at `research/prompt-manufactory/` within process-intelligence (confirmed: audit.json, checkpoints/, emitted/, prompt-manufactory.ttl present). The `prompts/` subdirectory is a legacy output directory for directive files, not the manufacturing substrate.
-- **Private Machinery:** All downstream prompt directives, checkpoint verification files, and the manufacturing pipeline prompt templates that drive downstream implementation.
-- **Boundary Rule:** Prompt directives are operational machinery; they must never appear in public documentation, blog posts, or LinkedIn content, as they expose the private manufacturing process.
-- **Leak Risk:** High — prompt directives are the most sensitive operational asset. Publishing them reveals the manufacturing methodology and eliminates competitive differentiation in the CodeManufactory system.
+- **Classification:** Mixed (ALIVE state as of 2026-06-02)
+- **Public Surface:** The existence of the Prompt Manufactory as a receipted manufacturing substrate is publishable. The ALIVE verdict (GGEN_PROMPT_MANUFACTORY_ALIVE_001, 11/11 gates) and the claim that "41 research warrants are manufactured from graph law via SPARQL + Tera templates" may be cited in doctrine and LinkedIn content as a research methodology finding. The Water Gate Certification artifact (emitted/WATER_GATE_CERTIFICATION.yaml) is documentable as governance evidence.
+- **Private Machinery:** The specific warrant content, subagent role definitions, hook policy details, and the manufacturing pipeline templates that drive downstream implementation. These must not appear in public documentation.
+- **Boundary Rule:** The manufacturing methodology (ontology → SPARQL → Tera → warrant) is public; the specific warrant content and subagent directives are private operational machinery. Publish the architecture; never publish the directives.
+- **Leak Risk:** Medium — now that ALIVE is sealed, the risk shifts from "no evidence" to "over-disclosing warrant content." The ALIVE verdict and gate count are safe to publish; individual warrant text is not.
 
 ### wasm4pm-compat
 - **Classification:** Private (PARTIAL state)

@@ -213,7 +213,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 
 **Wall Section:** The Water Gate governs public reading of the law (prompts are the law read aloud to implementors); the Old Gate enforces boundary doctrine (no implementation crosses without a warrant); the Inspection Gate verifies each warrant before it fires downstream.
 
-**Compressed SPR:** Prompt Manufactory's canonical substrate resides at `~/process-intelligence/research/prompt-manufactory` (confirmed by the presence of `audit.json`, `checkpoints/`, `emitted/`, and `ggen/ontology/prompt-manufactory.ttl`). The path `~/process-intelligence/prompts` is a legacy subdirectory of downstream directive outputs, not the manufacturing substrate itself. The research/prompt-manufactory directory holds PARTIAL and ALIVE manufactured checkpoint templates and an audit corpus, but no Water Gate artifacts and no formal proof-gate receipt establishing this substrate as ALIVE — state is ABSENT/UNKNOWN. Its role is structural: no downstream wasm4pm refactor, M&A claim, or gap closure may proceed without a governing prompt warrant from this substrate.
+**Compressed SPR:** Prompt Manufactory's canonical substrate resides at `~/process-intelligence/research/prompt-manufactory`. ALIVE as of 2026-06-02: GGEN_PROMPT_MANUFACTORY_ALIVE_001.md sealed (11/11 gates), PROMPT_MANUFACTORY_ALIVE_001.yaml present, Water Gate CERTIFIED (emitted/WATER_GATE_CERTIFICATION.yaml lists all 41 warranted artifacts with SHA256 hashes and upstream doctrine citations). 41 artifacts manufactured across 6 generation rules: 7 workflow warrants (4.6–6.9KB each with phases, forbidden paths, artifact lifecycle), 17 subagent role prompts, 6 skill warrants, 6 hook policy docs, 2 checkpoint templates, 3 indexes. Receipt ledger updated with real SHA256 hashes (no placeholders). The `audit.json` pipeline field remains empty (ggen v26.5.21 behavior — non-blocking); manufacturing evidence is in the manifest and checkpoint. All 7 workflow warrants cite upstream doctrine via pm:derivedFrom triples. No downstream wasm4pm refactor, M&A claim, or gap closure may proceed without a governing prompt warrant from this substrate.
 
 **Inputs:**
 - Doctrine findings (from Process Intelligence Core)
@@ -231,7 +231,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 - Water Gate artifact (formal public-reading document) present in directory
 - No prompt authorizes an action that the research program has not yet grounded
 
-**Receipt Dependency:** No qualifying receipt currently exists. ALIVE requires a new `research/prompt-manufactory/receipts/PROMPT_MANUFACTORY_ALIVE_001.yaml` linking to at least one upstream doctrine receipt.
+**Receipt Dependency:** ALIVE. `research/prompt-manufactory/PROMPT_MANUFACTORY_ALIVE_001.yaml` links to upstream doctrine receipts (DOWNSTREAM_AUTHORIZATION_LAW.md sha256:422ea2a9..., prompt-manufactory.ttl sha256:01b52b81..., research-program-law.ttl sha256:3e382eca...). Water Gate certified at `emitted/WATER_GATE_CERTIFICATION.yaml`.
 
 **Public/Private Classification:** Mixed (prompt text public once warranted; pre-warrant drafts private)
 
@@ -438,7 +438,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 | 3 | Knowledge Hooks / AKA / Truex | Sheep Gate | Inspection Gate | ALIVE_001 (GAP_FIRMAMENT_002 CLOSED 2026-06-02) |
 | 4 | CONSTRUCT8 | Horse Gate | Inspection Gate | ALIVE |
 | 5 | ggen | Dung Gate | Inspection Gate | PARTIAL |
-| 6 | Prompt Manufactory | Water Gate | Old Gate | ABSENT (substrate at research/prompt-manufactory; no ALIVE receipt) |
+| 6 | Prompt Manufactory | Water Gate | Old Gate | ALIVE (GGEN_PROMPT_MANUFACTORY_ALIVE_001 2026-06-02; 11/11 gates; 41 artifacts) |
 | 7 | wasm4pm-compat | Horse Gate | Old Gate | PARTIAL |
 | 8 | wasm4pm | Inspection Gate | Horse Gate | ALIVE |
 | 9 | Blue River Dam | Old Gate | Inspection Gate | ALIVE |

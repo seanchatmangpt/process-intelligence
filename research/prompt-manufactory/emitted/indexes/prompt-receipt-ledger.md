@@ -2,7 +2,7 @@
 
 **Authority:** Prompt Manufactory Manufacturing System  
 **Timestamp:** 2026-06-01T00:00:00Z  
-**Manufacturing Status:** PARTIAL (ggen v5 blocked; fallback manual used)  
+**Manufacturing Status:** ALIVE (GGEN_PROMPT_MANUFACTORY_ALIVE_001 sealed 2026-06-02; 11/11 gates PASS; 41 artifacts manufactured)  
 
 ---
 
@@ -10,7 +10,13 @@
 
 | Artifact | Type | Manufacture Date | Status | Receipt Hash | Chain | Verdict |
 |----------|------|------------------|--------|--------------|-------|---------|
-| PI_RESEARCH_PROGRAM_INTEL_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURABLE_FALLBACK | sha256(...) | research-program-law → warrant-path-proof | WARRANTED |
+| PI_RESEARCH_PROGRAM_INTEL_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURED | sha256:0e98ff1051b4dc706727bc62e19ad2c0ffc85411759376ba68f48bd357351866 | research-program-law → warrant-path-proof | WARRANTED |
+| GGEN_ECOSYSTEM_INTEL_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURED | sha256:0440801d1d5c2f152f408dbc6303de9cb51ba4d10653236b51d0859341c3d2f6 | research-program-law → warrant-path-proof | WARRANTED |
+| GGEN_OTEL_WEAVER_PI_INTEL_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURED | sha256:b8168fa410abb07ab6301f9b3ca550dfcc6e13fbea48ec79a5c8b076f0762e1f | research-program-law → warrant-path-proof | WARRANTED |
+| ZOEAPP_RESEARCH_PROGRAM_INTEL_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURED | sha256:afd803186d7391bbd75a7ef478225cf4ac83e7978bc05edd19140f7788266e39 | research-program-law → warrant-path-proof | WARRANTED |
+| GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURED | sha256:058cbe30a3f606c61dc6fa9fd58d6849acd9f4e9d3e2ef754dadbcd6d3e997c7 | research-program-law → warrant-path-proof | WARRANTED |
+| GGEN_CLAUDE_WORKFLOW_INTEL_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURED | sha256:dce06fb0caf8c1097d09153fb2faf4c69a356fec6e4952c069250f49bbe989eb | research-program-law → warrant-path-proof | WARRANTED |
+| WASM4PM_COMPAT_PROJECTION_REMEDIATE_001 | Workflow Warrant | 2026-06-01T00:00:00Z | MANUFACTURED | sha256:1fa63fa55819780791bdd09c721db0872f4e1df455c93c2cdd89e0094ed4c9d1 | research-program-law → warrant-path-proof | WARRANTED |
 
 ---
 

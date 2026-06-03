@@ -1,0 +1,45 @@
+---
+artifact: PROMPT_MANUFACTORY_ALIVE_001
+version: "001"
+project: Prompt Manufactory
+canonical_path: /Users/sac/process-intelligence/research/prompt-manufactory
+status: ALIVE
+issued: "2026-06-02T00:00:00Z"
+
+# Primary ALIVE receipt for the Prompt Manufactory research substrate.
+# Links to the sealed checkpoint and upstream doctrine receipts.
+
+checkpoint:
+  file: checkpoints/GGEN_PROMPT_MANUFACTORY_ALIVE_001.md
+  seal: GGEN_PROMPT_MANUFACTORY_ALIVE_001
+  gates_passed: 11
+  gates_total: 11
+  issued: "2026-06-02"
+
+upstream_doctrine_receipts:
+  - file: doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md
+    sha256: 422ea2a942142f4e165ef775f4b5ebd7a647b702537d0ef891d1a0daa7dfc3d0
+    role: "Authorizes prompt manufactory to issue downstream directives"
+  - file: research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+    sha256: 01b52b815102f2839b5c852cadf9edb119592635bd8d8436b9574e0aea6bb054
+    role: "Manufacturing ontology — 15 classes, 8 relations, 15 data properties"
+  - file: research/prompt-manufactory/ggen/ontology/research-program-law.ttl
+    sha256: 3e382eca940e53abc17a8dba13d7b8acdd34b09ff52d80c4123a233493d5d167
+    role: "7 seed program instances from which all warrants are derived"
+
+water_gate:
+  file: emitted/WATER_GATE_CERTIFICATION.yaml
+  status: CERTIFIED
+  warranted_artifacts: 41
+  workflow_warrants: 7
+  governance_statement: "All 41 emitted artifacts cite upstream doctrine and carry pm:derivedFrom provenance triples."
+
+manufacturing_evidence:
+  manifest: emitted/manifests/manufacturing-manifest-20260601.yaml
+  artifacts_emitted: 41
+  rules_executed: 6
+  overall_gate: PASS
+
+supersedes: checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+
+certification_authority: Process Intelligence Research Foundry
