@@ -1,0 +1,115 @@
+% FILE: 03_architecture_and_primitives.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md, ledgers/PROJECT_INDEX.yaml,
+%            ledgers/DO_NOT_CLAIM_LEDGER.md, phd-thesis/README.md
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+
+\section{Architecture and Primitives}
+\label{sec:phd-thesis-arch}
+
+\subsection{Core Objects}
+\label{sec:phd-thesis-arch-objects}
+
+The \texttt{phd-thesis} workspace is itself an architectural object within the manufacturing
+pipeline. Its core objects are the three ledgers that constitute its populated surface.
+
+The \textbf{PROJECT\_INDEX.yaml} is the canonical corpus map: 34 project entries, each
+carrying an absolute path, a human-readable description, detected languages, detected
+frameworks, detected research surfaces, a \texttt{likely\_thesis\_role}, and a list of key
+files with \texttt{readme\_present}, \texttt{receipt\_present}, and
+\texttt{ontology\_present} flags. This index was manufactured 2026-06-01 and is the
+authoritative enumeration of the dissertation's evidentiary corpus. It maps the thesis
+lineage --- from the 2016 language-model experiment through the Chatman Equation, ggen, wasm4pm,
+and the full-lifecycle architecture --- onto 34 discrete, locatable project surfaces.
+
+The \textbf{WORKFLOW\_RECEIPT.yaml} is the manufacturing provenance record. It binds the
+workspace to a specific branch (\texttt{phd-thesis-corpus-manufacture-001}), a specific
+pre-manufacture git commit (\texttt{b4279892881e5a8ff83f31b273219a0740fead0b}), and a
+verified toolchain: pdfTeX 3.141592653-2.6-1.40.26, Python 3.14.3, git 2.51.2, ripgrep 15.1.0.
+It records the manufacturing phase as \texttt{SETUP\_COMPLETE}, establishing the baseline
+from which chapter manufacture will be receipted.
+
+The \textbf{DO\_NOT\_CLAIM\_LEDGER.md} is the claim prohibition surface. It enumerates
+seven absolute prohibitions that govern every artifact manufactured in this workspace: no
+production deployment claims without receipt; no use of ``unhackable''; no fabricated claims;
+no use of ``generated'' (use manufactured, emitted, materialized); no celebrity
+thought-leader name-dropping; no use of ``semantic'' except in source titles; and ALIVE
+verdicts require TeX files, source ledger, claim ledger, compiled PDF, and recorded PDF hash.
+These prohibitions are not advisory; they are the type law of the workspace.
+
+The upstream architecture that feeds this workspace is the 34-project corpus catalogued in
+PROJECT\_INDEX.yaml. The core architectural objects of that corpus --- as documented in
+PI\_RESEARCH\_PROGRAM\_ALIVE\_001.md --- are: the Evidence$\langle T, \text{State}, W\rangle$
+carrier pattern (the type-law primitive enforced across all wasm4pm modules), the BLAKE3
+receipt chain (cryptographic provenance for all manufactured artifacts), the ggen
+manufacturing engine (SPARQL queries and Tera templates transforming the process intelligence
+ontology into artifacts), and the Blue River Dam MAPE-K orchestrator (965-line Rust library,
+\texttt{\#![forbid(unsafe\_code)]}, 5 tests passing).
+
+\subsection{Admissible Transitions}
+\label{sec:phd-thesis-arch-transitions}
+
+The workspace defines admissible state transitions through its ALIVE criteria. The current
+state is \texttt{SETUP\_COMPLETE}. The admissible transitions from this state are:
+
+\begin{enumerate}
+  \item \textbf{SETUP\_COMPLETE $\to$ CHAPTER\_MANUFACTURING}: Triggered when TeX source
+    files are written to \texttt{chapters/} and \texttt{frontmatter/}. The trigger must
+    produce a receipt recording the manufacturing event, the source commit, and the ggen
+    configuration used.
+  \item \textbf{CHAPTER\_MANUFACTURING $\to$ PDF\_COMPILED}: Triggered when
+    \texttt{pdflatex} compiles the chapter sources without error. The compiled PDF hash
+    must be recorded in the receipt chain.
+  \item \textbf{PDF\_COMPILED $\to$ ALIVE}: Triggered when all ALIVE criteria are satisfied:
+    TeX files present, source ledger populated, claim ledger respected, PDF compiled, PDF
+    hash recorded.
+\end{enumerate}
+
+These transitions mirror the broader lifecycle model defined in
+\texttt{lifecycle/MATURITY\_MODEL.md} and the MAPE-K loop closure documented in
+\texttt{blue\_river\_dam/src/lib.rs}. The workspace is a process object; its lifecycle is
+governed by the same doctrine as every other artifact in the foundry.
+
+\subsection{Boundaries}
+\label{sec:phd-thesis-arch-boundaries}
+
+The workspace enforces two categories of boundary. The first is the \textbf{claim boundary}:
+no claim may appear in any manufactured artifact without a backing source file, commit, or
+explicit marking as AUTHOR THESIS, INTERPRETATION, or FUTURE WORK. This boundary is enforced
+by the DO\_NOT\_CLAIM\_LEDGER and is the workspace-level instantiation of the broader
+doctrine in \texttt{doctrine/CONFORMANCE\_AS\_LAW.md} and
+\texttt{doctrine/RECEIPT\_DOCTRINE.md}.
+
+The second is the \textbf{release boundary}: no downstream use of artifacts from this workspace
+is authorized until the research program issues authorization. As stated in
+\texttt{phd-thesis/README.md}: ``No downstream use of artifacts from this workspace is
+authorized until the research program issues authorization.'' The authorization prerequisite
+has been met by PI\_RESEARCH\_PROGRAM\_ALIVE\_001 (sealed 2026-06-01, 12/12 gates PASS),
+but the workspace itself is not yet ALIVE --- it has not yet produced its primary artifact
+(the compiled dissertation PDF with recorded hash). Release is therefore blocked until the
+PDF compilation phase completes and the ALIVE criteria are satisfied.
+
+\subsection{Failure Modes Refused}
+\label{sec:phd-thesis-arch-refusals}
+
+The workspace explicitly refuses three categories of failure mode. First, \textbf{forced ALIVE
+verdicts}: an artifact cannot be declared ALIVE by assertion. ALIVE requires all five criteria
+to be met. This refusal is architecturally enforced by the DO\_NOT\_CLAIM\_LEDGER's ALIVE
+definition, which specifies exactly what evidence must exist. The broader research program
+observed this discipline in Gate 12 of PI\_RESEARCH\_PROGRAM\_ALIVE\_001: ``No Forced ALIVE
+Verdicts --- All ALIVE verdicts justified by passed gates.''
+
+Second, \textbf{claim without receipt}: no M\&A claim, no conformance score, and no
+fitness/precision figure may appear in any dissertation artifact unless it is backed by a
+receipt in the \texttt{receipts/} directory. The receipt must carry a process model hash,
+an event log hash, and a validator signature. The five canonical receipts
+(\texttt{rec\_ebitda\_rework\_001.json} through \texttt{rec\_residual\_standard\_005.json})
+establish the pattern that all dissertation claims must follow.
+
+Third, \textbf{scope collapse}: the workspace refuses to treat the dissertation as a
+description of the research program rather than a manufactured artifact of it. The distinction
+matters: a description can be written without receipts; a manufactured artifact cannot be
+released without them. The workspace is a manufacturing authority, not a documentation surface,
+and its failure modes are therefore the failure modes of manufacturing --- wrong toolchain,
+incomplete receipt chain, ALIVE criteria not met --- not the failure modes of writing.

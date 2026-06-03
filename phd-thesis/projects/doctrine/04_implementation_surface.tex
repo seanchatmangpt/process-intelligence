@@ -1,0 +1,125 @@
+\section{Implementation Surface}
+\label{sec:doctrine-implementation}
+
+\subsection{Source Files}
+\label{sec:doctrine-implementation-sources}
+
+The doctrine corpus is implemented entirely as markdown source files within the
+\texttt{doctrine/} directory of \texttt{\textasciitilde/process-intelligence}. This is a
+deliberate architectural choice: the doctrine layer has no compiled source code, no build
+artifacts, and no executable surface of its own. Its implementation is the specification
+itself --- the 34 canonical files that constitute the authority from which downstream
+implementations derive their type laws, algorithm boundaries, and authorization conditions.
+
+The 25 files examined for this chapter cluster into five functional groups:
+
+\paragraph{Upstream Law Files.} \texttt{BLUE\_RIVER\_DAM.md} (law stack, five maturity
+levels, format covenant, the upstream dam principle),
+\texttt{AUTONOMIC\_KNOWLEDGE\_ACTUATION.md} (MAPE-K loop specification with receipt
+requirements for every actuation phase), \texttt{CONFORMANCE\_AS\_LAW.md} (token replay and
+alignment-based conformance as process-level law enforcement, with type law assignments per
+algorithm), \texttt{PROCESS\_INTELLIGENCE\_DEFINED.md} (canonical definition, five maturity
+levels, upstream dam principle, anti-regression audit mesh specification).
+
+\paragraph{Evidence and Receipt Law Files.} \texttt{EVIDENCE\_CHAIN.md} (typed one-way
+lifecycle, \texttt{Evidence\textless{}T,State,W\textgreater{}} carrier, failure mode
+taxonomy), \texttt{RECEIPT\_DOCTRINE.md} (Receipt\textless{}T,W\textgreater{} specification,
+chain-of-custody law, board claim traceability, M\&A diligence surface),
+\texttt{NAMED\_LAW\_REFUSAL.md} (named law inventory, anti-pattern prohibition).
+
+\paragraph{Algorithm and Object Taxonomy Files.} \texttt{ALGORITHM\_TAXONOMY.md} (complete
+fifteen-family taxonomy with compat/wasm4pm ownership assignments and gap status),
+\texttt{FORMAL\_OBJECTS\_TAXONOMY.md} (type-theoretic specifications for all formal
+objects), \texttt{OBJECT\_CENTRIC\_SUPREMACY.md} (OCEL 2.0 divergence/convergence
+resolution), \texttt{VAN\_DER\_AALST\_CANON.md} (paper citation registry grounding all
+algorithm families).
+
+\paragraph{Lifecycle and Governance Files.} \texttt{PROCESS\_LIFECYCLE\_ONTOLOGY.md}
+(twelve-stage lifecycle: Design $\to$ Simulation $\to$ Construction $\to$ Activation $\to$
+Operation $\to$ Monitoring $\to$ Repair $\to$ Optimization $\to$ BoardProjection $\to$
+Integration $\to$ Decommission $\to$ Archive), \texttt{GRADUATION\_LAW.md}
+(\texttt{GraduationCandidate\textless{}T\textgreater{}} specification),
+\texttt{MA\_READY\_PROCESS\_INTELLIGENCE.md} (six board-admissibility criteria, M\&A deck
+manufacturing algorithm), \texttt{PROCESS\_TRUTH\_AUTHORITY.md} (authority stack and
+refusal capital definition).
+
+\paragraph{Authorization and Gap Files.} \texttt{DOWNSTREAM\_AUTHORIZATION\_LAW.md} (six
+authorized downstream workflows receipted against ALIVE\_001),
+\texttt{RESEARCH\_AUTHORITY.md} (authority table and GAP\_001 finding),
+\texttt{full-lifecycle-process.md}, \texttt{spr\_thesis\_actuation.md},
+\texttt{lattice-monotonicity-verification.md}, \texttt{lifecycle\_algorithms.md},
+\texttt{bpmn-or-join-completion.md}, \texttt{wasm-boundary-law.md}.
+
+\subsection{Commands}
+\label{sec:doctrine-implementation-commands}
+
+The doctrine corpus defines no runnable commands of its own. It is the authority layer, not
+the execution layer. However, \texttt{DOWNSTREAM\_AUTHORIZATION\_LAW.md} specifies the
+verification command that must be run before initiating any authorized downstream workflow:
+
+\begin{verbatim}
+cat ~/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+\end{verbatim}
+
+This command verifies the seal status of the ALIVE\_001 checkpoint and is the precondition
+for all six authorized downstream workflows. It is the operational translation of the
+authorization gate logic:
+
+\[
+  \text{DownstreamRefactorAuthorized}(r, w) \iff
+  \text{ALIVE\_001.sealed} = \top \;\land\; w \in \text{AuthorizedWorkflows} \;\land\;
+  r \in w.\text{targets}
+\]
+
+The anti-regression audit mesh described in \texttt{PROCESS\_INTELLIGENCE\_DEFINED.md}
+references an \texttt{audit\_crown\_gate\_all.sh} script that coordinates 22 subordinate
+audit scripts. This script is specified in doctrine but its implementation resides in the
+downstream wasm4pm-compat codebase.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:doctrine-implementation-data}
+
+The doctrine corpus defines several data-level ontology surfaces that downstream
+implementations must conform to.
+
+\paragraph{Process Lifecycle Ontology.} The twelve-stage lifecycle is an ordered ontology
+with lawful transitions. Each stage produces a specific evidence artifact: Design produces
+the formal process model; Monitoring produces fitness and precision scores; Repair produces
+non-conformance remediation plans; Archive produces the final closure receipt. Stages may not
+be skipped; the lifecycle is a total order over stage identifiers.
+
+\paragraph{Algorithm Taxonomy Data.} The fifteen-family algorithm taxonomy in
+\texttt{ALGORITHM\_TAXONOMY.md} serves as the data surface for the manufacturing surface
+combinatorial formula:
+\[
+  \text{Surface} = |S| \times |L| \times |A| \times |F| \times |R| \times |Q| \times |B| \times |D|
+\]
+where $S$ is the algorithm family set, $L$ is the log type set, $A$ is the admissibility
+state set, $F$ is the fitness metric family set, $R$ is the refusal reason set, $Q$ is the
+quality metric set, $B$ is the board claim type set, and $D$ is the lifecycle stage set.
+
+\paragraph{Paper Citation Registry.} Every algorithm family entry in the taxonomy includes
+explicit paper citations with author, year, and algorithm name. This registry is the data
+layer that the \texttt{ggen} manufacturing machinery uses to manufacture type-law surfaces
+from published papers. Citations are not decorative; they are the grounding authority for
+every type shape in the compat layer.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:doctrine-implementation-templates}
+
+The \texttt{PROCESS\_INTELLIGENCE\_SPR\_THESIS.md} file is the primary rendered artifact of
+the doctrine corpus. It is a Sparse Priming Representation (SPR) of the full thesis argument,
+manufactured at the ALIVE\_001 seal point and explicitly stating that it ``was generated at
+ALIVE\_001 seal.'' It compresses the full argument into a machine-readable priming surface
+that downstream language model invocations may use to reconstruct the thesis context without
+re-reading all 34 doctrine files.
+
+The \texttt{DOWNSTREAM\_AUTHORIZATION\_LAW.md} file functions as a rendered authorization
+template: it specifies six workflow templates, each with a named target repository, a named
+prompt file path, a scope description, a gate condition, and a receipt requirement. These
+templates are the manufacturing surface for authorized downstream work.
+
+The \texttt{spr\_thesis\_actuation.md} file documents the actuation of the SPR thesis ---
+the process by which the SPR was manufactured and its receipt chain established. This file
+is the receipt for the template itself, demonstrating that the doctrine corpus applies its own
+evidence requirements recursively to its own manufacturing outputs.

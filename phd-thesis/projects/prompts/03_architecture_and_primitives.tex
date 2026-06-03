@@ -1,0 +1,122 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: prompts — Downstream Manufacturing Prompt Corpus
+
+\section{Architecture and Primitives}
+\label{sec:prompts-architecture}
+
+\subsection{Core Objects}
+\label{sec:prompts-architecture-objects}
+
+The primitive type hierarchy of the process intelligence execution layer, as specified
+across the prompt corpus, is organized around a triadic container and its derived
+types:
+
+\begin{itemize}
+  \item \texttt{Evidence<T, State, Witness>} --- The foundational triadic container.
+    Carries a BLAKE3 hash, an Ed25519 signature, an epoch, and the payload \texttt{T}
+    in state \texttt{State} witnessed by standard marker \texttt{Witness}. This type
+    is the entry point for all process data entering the system.
+
+  \item \texttt{WfNetConst<SOUNDNESS>} --- A non-forgeable WF-net attestation type
+    parameterized by a const-generic soundness predicate. Per
+    \texttt{DOWNSTREAM\_COMPAT\_GAP\_CLOSE.md}, this is the only lawful surface for
+    WF-net attestation; the forgeable public method \texttt{WfNet::attest\_witnessed()}
+    must be gated \texttt{pub(crate)} or removed (GAP\_007).
+
+  \item \texttt{Admitted<T, W>} / \texttt{Refusal<R, W>} --- The admission gateway
+    types. \texttt{Admitted} carries evidence that has passed the lawful admission
+    path. \texttt{Refusal<R, W>} replaces \texttt{ValidationError(String)}, where
+    \texttt{R} is a specific named law (e.g., \texttt{DanglingEventObjectLink},
+    \texttt{MissingFinalMarking}, \texttt{NonSoundWfNet}) and \texttt{W} is a witness
+    marker.
+
+  \item \texttt{WitnessState} --- A bounded join-semilattice
+    $L = (S, \vee, \bot, \top)$ per
+    \texttt{execution-plans/witness-lattice-blueprint.md}. Three values:
+    \texttt{Bottom} (zero information), \texttt{Partial(BTreeSet<Fact>)} (partial
+    knowledge), and \texttt{Top} (contradiction or overflow). The join operation is
+    commutative, associative, and idempotent.
+
+  \item \texttt{UnifiedWitnessState} --- The global distributed witness, constructed
+    by joining regional \texttt{WitnessState} instances with a \texttt{VectorClock}
+    for distributed merge consistency.
+
+  \item \texttt{ProcessIntelligenceVerificationReceipt} --- The JSON receipt schema
+    carrying \texttt{fitness}, \texttt{precision}, \texttt{throughput\_days},
+    \texttt{target\_log\_hash} (SHA-256), \texttt{process\_model\_hash} (SHA-256),
+    and \texttt{validator\_signature} (Ed25519). This is the atomic unit of
+    board-admissible evidence.
+\end{itemize}
+
+\subsection{Admissible Transitions}
+\label{sec:prompts-architecture-transitions}
+
+The Blue River Dam lifecycle defines six admissible states with explicit proof
+requirements at each gate transition:
+
+\begin{enumerate}
+  \item \textbf{Design} $\to$ \textbf{Simulation}: Requires Gate 1 soundness receipt
+    confirming all four WF-net axioms (unique source/sink, strong connectivity,
+    proper completion, liveness).
+  \item \textbf{Simulation} $\to$ \textbf{MonitoringOperations}: Requires Gate 2
+    behavioral-bounds receipt confirming 1-boundedness ($\forall p \in P: M(p) \leq 1$),
+    deadlock-freedom, and Little's Law queue bound ($L \leq L_{\max}$).
+  \item \textbf{MonitoringOperations} $\to$ \textbf{MonitoringOperations} (stay):
+    Requires Gate 3 conformance receipt. Automatic for fitness $\geq 0.95$; board
+    override signature required for $0.85 \leq f < 0.95$; \texttt{RefusalReport}
+    emitted for $f < 0.85$.
+  \item \textbf{RepairOptimization} $\to$ \textbf{MonitoringOperations}: Requires
+    Gate 4 repair-soundness receipt confirming $\operatorname{sound}(N') = \text{true}$
+    and behavioral equivalence $\operatorname{traces}(N') \supseteq \operatorname{traces}(N)$.
+  \item \textbf{RepairOptimization} $\to$ \textbf{MonitoringOperations} (via Gate 5):
+    Requires discovery receipt confirming Inductive Miner output lowers process debt
+    $D_p(N_\text{opt}) < D_p(N_\text{active})$.
+  \item \textbf{MonitoringOperations} $\to$ \textbf{Decommissioning}: Requires Gate 6
+    decommissioning receipt with BLAKE3 chain of all prior receipts and \texttt{zeroize}
+    confirmation of linear memory scrubbing.
+\end{enumerate}
+
+\subsection{Boundaries}
+\label{sec:prompts-architecture-boundaries}
+
+The corpus defines two authority boundaries within the Blue River Dam autonomic
+control model. The \emph{Elastic Subnet} ($T_\text{elastic} \subset T$) authorizes
+the autonomic engine to throttle inputs, select alternative paths in exclusive choice
+operators, reallocate resources, and trigger optimization discovery. The
+\emph{Compliance Subnet} ($T_\text{compliance} = T \setminus T_\text{elastic}$)
+freezes financial limits, multi-party approvals, all six proof gates, and
+decommissioning decisions; any attempt to modify compliance transitions without an
+explicit Board override signature must trigger an immediate halt, a high-severity
+alarm, and an audit-trail entry labeled \texttt{UNAUTHORIZED\_MODIFICATION\_ATTEMPT}.
+
+The gap sequence defines a dependency boundary between \texttt{wasm4pm-compat} tasks
+(GAP\_007, GAP\_008, cross-witness fixtures, \texttt{COVERED\_BY\_TYPE} audit) and
+\texttt{wasm4pm} tasks. The compat tasks are fully self-contained and can execute
+before or in parallel with the GAP\_001 bridge work.
+
+\subsection{Failure Modes Refused}
+\label{sec:prompts-architecture-failure}
+
+The corpus enumerates failure modes that the type system must structurally prevent:
+
+\begin{itemize}
+  \item \textbf{Forgeable WF-net attestation}: Any caller invoking
+    \texttt{WfNet::attest\_witnessed()} from outside the crate must produce a compile
+    error (E0616 or E0624). The only non-forgeable path is through
+    \texttt{WfNetConst<SOUNDNESS>}.
+  \item \textbf{Cross-witness standard confusion}: Using
+    \texttt{Admission<T, Ocel20>} where \texttt{Admission<T, Xes1849>} is expected
+    must fail on E0308 (type mismatch). A compile-fail fixture demonstrating this
+    isolation is required.
+  \item \textbf{Unvalidated module instantiation}: Per
+    \texttt{execution-plans/absence-proof-fixtures.md}, linking a
+    \texttt{WasmModule<Unverified>} module must fail with TypeScript error TS2345
+    or Rust compile error, preventing execution of unvalidated payloads.
+  \item \textbf{String-typed refusals}: \texttt{ValidationError(String)} must not
+    appear in the public API. Every refusal must carry a named law type and a witness
+    marker. A compile-fail fixture must demonstrate that \texttt{Refusal<InvalidInput, \_>}
+    does not compile.
+  \item \textbf{Receipt bypass}: Any attempt to instantiate the \texttt{wasm4pm}
+    execution sandbox without a valid \texttt{Receipt} object must produce an
+    unreachable state at compile time via Rust's typestate pattern.
+\end{itemize}

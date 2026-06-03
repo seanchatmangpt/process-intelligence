@@ -1,0 +1,100 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Contribution to the Dissertation}
+\label{sec:experiments-visualizer-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:experiments-visualizer-contribution-prediction}
+
+The central thesis distinction between prediction and coordination is operationalized in the
+\texttt{experiments-visualizer} through the separation of the A* alignment solver and the
+MAPE-K autonomic controller. The A* solver (\texttt{astar.js}) is a prediction instrument: it
+computes the optimal alignment between an observed trace and the WF-net model, quantifying how
+far the observed process deviated from the declared model. This is a retrospective measurement
+— it predicts nothing about future behavior, only accounts for past behavior relative to a norm.
+
+The \texttt{AutonomicController} (\texttt{autonomic.js}) is a coordination instrument: it
+acts on the A* alignment score and the EWMA drift signal to change the runtime behavior of the
+system — switching S-components, applying rate limits, logging decisions to the audit chain.
+This is prospective: it coordinates future execution based on current evidence.
+
+The dashboard makes this distinction visible in a single browser session. An analyst can
+observe the A* alignment score drop as a conformance violation appears in the DECLARE panel,
+watch the EWMA drift statistic breach its UCL control limit, and then observe the
+\texttt{RATE\_LIMIT\_TRIGGER} event appear in the audit ledger as the autonomic controller
+responds — all within the same tick cycle. The temporal sequence from prediction (alignment
+score) through evidence accumulation (EWMA drift) to coordination (MAPE-K response) is not
+inferred; it is directly observed.
+
+This contribution establishes that prediction and coordination are not competing architectural
+choices but complementary layers that can be composed in a single stateless runtime, directly
+challenging the old-regime assumption that they require separate infrastructure tiers.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:experiments-visualizer-contribution-evidence}
+
+The \texttt{experiments-visualizer} contributes three concrete advances to the process evidence
+layer of the dissertation:
+
+First, it demonstrates that the \texttt{EvidenceTs<T, State, Witness>} typestate pattern is
+implementable at the JavaScript/TypeScript boundary without a Rust compiler. The
+\texttt{bindings.d.ts} declarations project the WASM boundary law into the browser runtime,
+and \texttt{visualizer-validation.ts} confirms at compile time that all 10 type projections
+are structurally sound. This establishes that the type law is not merely a Rust-specific
+artifact but a portable contract expressible in any statically typed language.
+
+Second, the \texttt{WitnessKey} enumeration (\texttt{Ocel20}, \texttt{Xes1849},
+\texttt{WfNetSoundnessPaper}, \texttt{Dec20}, \texttt{Pmax24}) demonstrates a concrete
+vocabulary for attaching source authority to evidence objects at the type level. Every
+\texttt{EvidenceTs} object in the browser runtime carries its epistemic provenance as a
+compile-time annotation, not a runtime string.
+
+Third, the \texttt{LossPolicyTs} type — \texttt{RefuseLoss | AllowNamedProjection |
+AllowLossWithReport} — demonstrates that evidence loss (type information discarded during
+projection) can be governed by a typed policy rather than silently accepted. This is a direct
+contribution to the thesis argument that process evidence must be \emph{governed}, not merely
+\emph{collected}.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:experiments-visualizer-contribution-manufacturing}
+
+The \texttt{experiments-visualizer} contributes to the manufacturing architecture layer through
+its SHA-256 audit chain. The chain formula
+$H_i = \mathrm{SHA\text{-}256}(i \,\|\, t \,\|\, \mathit{case\_id} \,\|\, \mathit{payload} \,\|\, H_{i-1})$
+implements the receipt chain architecture at browser runtime, demonstrating that the same
+cryptographic accountability primitive used in the upstream manufacturing pipeline can be
+embedded in a simulation dashboard without external dependencies.
+
+The genesis block message ``Blue River Dam Autonomic Ledger Initialized'' establishes the audit
+chain as a traceable artifact whose provenance is permanently linked to the Blue River Dam
+Epistemic Containment Protocol. This makes the dashboard not merely a visualization tool but
+a manufacturing artifact: it manufactures audit evidence with the same chain structure as the
+upstream receipt infrastructure.
+
+The \texttt{SComponent} primitive (\texttt{standardVerificationComponent} and
+\texttt{hardenedVerificationComponent}) demonstrates structural WF-net decomposition in support
+of hot-swapping, establishing that manufacturing pipeline components can be replaced at runtime
+without losing audit continuity — the swap event itself is recorded as a ledger block.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:experiments-visualizer-contribution-capital}
+
+The five domain receipts in \texttt{/Users/sac/process-intelligence/receipts/} —
+EBITDA rework, working capital/accounts receivable, risk SLA, risk compliance, and residual
+standard — confirm that the \texttt{ReceiptShapeTs} structure demonstrated in the browser
+dashboard has been applied to capital-flow process domains. The dashboard is therefore not an
+isolated academic prototype but the simulation counterpart to a receipt infrastructure that
+governs financial process accountability.
+
+The DECLARE constraint \texttt{NotCoExistence(Create\_Order, Raw\_Laundering)} encoded in
+\texttt{declare.js} is specifically relevant to capital-flow governance: it formally prohibits
+the co-occurrence of order creation and raw laundering activity in the same trace, providing
+a compliance enforcement primitive that is directly applicable to anti-money-laundering and
+financial controls contexts.
+
+The fitness score of 0.982 confirmed in \texttt{replay\_receipt\_sample.md} against the
+supply-chain WF-net establishes a concrete benchmark for capital-flow process conformance,
+demonstrating that the dissertation's theoretical claims about process evidence and receipt
+chaining can be quantitatively grounded in real process domains.

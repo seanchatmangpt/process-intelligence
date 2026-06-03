@@ -1,0 +1,116 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: ggen — Governance Generation Engine
+
+\section{Architecture and Primitives}
+\label{sec:ggen-architecture}
+
+\subsection{Core Objects}
+\label{sec:ggen-architecture-objects}
+
+ggen's architecture is defined by three layers of core objects, each wiring to the next.
+
+\textbf{Layer 1: Generation Rule.} The \texttt{GenerationRule} is the atomic unit of the
+manufacturing pipeline. As declared in \texttt{ggen.toml}, each rule carries:
+\texttt{name} (unique identifier), \texttt{query.file} (path to a SPARQL query),
+\texttt{template.file} (path to a Tera template), \texttt{output\_file} (destination path),
+\texttt{mode} (\texttt{Overwrite}), and \texttt{metadata} (format, audience, compliance
+standard, evidence backing). The active generation rules in the manifest are:
+\texttt{wasm4pm-compat-witness-markers}, \texttt{wasm4pm-compat-process-forms},
+\texttt{wasm4pm-compat-boundary-law}, and \texttt{blue-river-orchestrator}.
+
+\textbf{Layer 2: SPARQL Query Triple.} Three primary queries extract typed facts from the RDF
+knowledge base. \texttt{extract-board-claims.rq} selects board-admissible claims filtered to five
+claim types (\texttt{ma:SynergyProjection}, \texttt{ma:OperationalDebtClaim},
+\texttt{ma:IntegrationRiskClaim}, \texttt{ma:ProcessAssetClaim}, \texttt{ma:ControlClaim}) with
+hard FILTER conditions \texttt{?verdictFitness >= 0.95} and \texttt{?verdictPrecision >= 0.90}.
+\texttt{extract-diligence-claims.rq} extends the board query with replay trace deviations,
+remediation effort hours, and gas-to-return costs. \texttt{extract-lifecycle-governance.rq}
+extracts MAPE-K rules and state transitions across all seven lifecycle phases.
+
+\textbf{Layer 3: Tera Template Engine.} The template engine is configured with
+\texttt{autoescape = true} and \texttt{strict\_variables = true}, meaning any template variable
+that is not supplied by the SPARQL result set causes manufacturing to fail rather than silently
+render an empty value. This strict-mode contract is the template layer's primary safety property.
+
+The board claim hierarchy in \texttt{ontology-extensions.ttl} defines \texttt{ma:BoardClaim} as
+the abstract base with five concrete subclasses. The \texttt{ma:backedBy} property links claims to
+\texttt{wasm4pm:ConformanceVerdict} instances carrying fitness and precision measurements. The
+\texttt{compat:Evidence} type provides a typed container \texttt{Evidence<T, State, W>} where
+\texttt{T} is the claim content, \texttt{State} is the process state marker, and \texttt{W} is
+the cryptographic witness.
+
+\subsection{Admissible Transitions}
+\label{sec:ggen-architecture-transitions}
+
+The lifecycle state machine manufactured into the Blue River orchestrator by \texttt{blue-river.tera}
+defines a \texttt{LifecycleState} enum with seven variants: \texttt{Design}, \texttt{Simulation},
+\texttt{Validation}, \texttt{Monitoring}, \texttt{Optimization}, \texttt{Repair}, and
+\texttt{Decommission}. Each state carries a set of \texttt{StateTransition} records specifying
+admissible successor states guarded by \texttt{TransitionGuard} conditions.
+
+Each transition guard carries a \texttt{name}, a \texttt{condition} (a natural-language
+description), and an \texttt{expression} (a SPARQL or CEP expression evaluated against the
+\texttt{GovernanceContext} at runtime). A transition is admissible only when its guard evaluates
+to \texttt{true}. The manufactured orchestrator exposes this logic through the
+\texttt{BlueRiverOrchestrator} struct with methods \texttt{monitor()}, \texttt{analyze()},
+\texttt{plan()}, \texttt{execute()}, and \texttt{transition()}, implementing the MAPE-K feedback
+loop in Kephart and Chess (2003).
+
+The witness marker lattice defines a parallel set of admissible transitions at the algebraic
+level. The \texttt{WitnessMarker} enum forms a join-semilattice with eight named positions:
+\texttt{VanDerAalst1989} at the bottom, through \texttt{VanDerAalst1998},
+\texttt{VanDerAalst2016}, \texttt{Murata1989}, \texttt{Weijters2011}, \texttt{Leemans2013}, and
+\texttt{Adriansyah2011}, to \texttt{BlueRiverDam} at the top. The \texttt{witness\_join()} and
+\texttt{witness\_leq()} operations are manufactured into the Rust artifact and verified by the
+embedded test suite.
+
+\subsection{Boundaries}
+\label{sec:ggen-architecture-boundaries}
+
+ggen enforces three categories of boundary at manufacture time.
+
+\textbf{Feature Boundary.} The \texttt{feature-law.yaml} defines six Cargo features
+(\texttt{default}, \texttt{ts}, \texttt{wasm}, \texttt{component}, \texttt{strict},
+\texttt{wasm4pm}) and a doctrine: features enable derives and dependencies only; no feature
+enables an execution engine. The refusal code \texttt{ERR\_TOOL\_SMUGGLING\_INTO\_COMPAT} is
+issued when a feature closure contains discovery, replay, conformance, OCPQ, or benchmark
+execution modules.
+
+\textbf{WASM ABI Boundary.} The \texttt{wasm} feature manufactures ABI-safe DTO structs with
+\texttt{\#[tsify(into\_wasm\_abi, from\_wasm\_abi)]} derives. Types deemed ABI-unsafe
+(\texttt{EventLog}, \texttt{ProcessModel}, \texttt{AlignmentCost}) are prohibited from crossing
+the boundary; their exclusion is enforced by \texttt{audit-no-engine-in-wasm-feature.sh.ggen}.
+
+\textbf{Component Model Boundary.} The \texttt{component} feature manufactures WIT world
+definitions separating \texttt{compat-world} (structural exports) from \texttt{engine-world}
+(execution imports). All WIT identifiers must be in kebab-case. WASI imports are prohibited from
+\texttt{compat-world}. The refusal code \texttt{ERR\_WIT\_BOUNDARY\_VIOLATION} is issued on
+boundary crossing.
+
+\subsection{Failure Modes Refused}
+\label{sec:ggen-architecture-failure-modes}
+
+ggen refuses the following failure modes by design:
+
+\begin{itemize}
+  \item \textbf{Silent template failure.} With \texttt{strict\_variables = true}, any
+    unreferenced variable in a template causes manufacturing to halt rather than produce a
+    partially-rendered artifact.
+  \item \textbf{Ungrounded claims.} The SPARQL \texttt{FILTER} conditions in
+    \texttt{extract-board-claims.rq} ensure that no claim with fitness $< 0.95$ or precision
+    $< 0.90$ can appear in the manufactured deck. Claims are filtered at query time, not at
+    render time.
+  \item \textbf{Tool smuggling.} The \texttt{ERR\_TOOL\_SMUGGLING\_INTO\_COMPAT} refusal code
+    and six-gate audit script prevent execution engines from entering the compat surface through
+    transitive Cargo feature dependencies.
+  \item \textbf{Non-repeatable verification.} Every output artifact carries a BLAKE3 receipt hash
+    that can be used to re-execute the originating query and verify the claim. Manufacturing
+    without a receipt is architecturally prohibited by \texttt{proof\_format = "cryptographic-chain"}.
+  \item \textbf{Inference without evidence.} The \texttt{[[inference.rules]]} normalize rule in
+    \texttt{ggen.toml} uses \texttt{FILTER(false)}, making it a deliberate no-op pass-through.
+    This documents that no speculative inference is applied to the ontology; all RDF facts must
+    be explicitly authored or manufactured by the upstream research program. \textit{(AUTHOR
+    THESIS: the FILTER(false) no-op is treated here as an architectural statement about inference
+    discipline rather than an implementation gap, though its status as intended behavior versus
+    placeholder is not conclusively documented in the available artifacts.)}
+\end{itemize}

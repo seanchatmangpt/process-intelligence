@@ -1,0 +1,24 @@
+slug: experiments-visualizer
+absolute_path: /Users/sac/process-intelligence/experiments/visualizer
+description: >
+  Process intelligence simulation dashboard — pure browser-based JavaScript application
+  with Petri net, DECLARE, autonomic feedback loop, drift detector, blockchain, alignment,
+  and token game modules.
+detected_languages:
+  - TypeScript
+  - JavaScript
+detected_frameworks: []
+detected_research_surfaces:
+  - process-evidence
+  - conformance-checking
+  - autonomic-actuation
+likely_thesis_role: process-intelligence-simulation-dashboard
+key_files:
+  - /Users/sac/process-intelligence/experiments/visualizer/package.json
+  - /Users/sac/process-intelligence/experiments/visualizer/app.js
+  - /Users/sac/process-intelligence/experiments/visualizer/petri.js
+  - /Users/sac/process-intelligence/experiments/visualizer/autonomic.js
+  - /Users/sac/process-intelligence/experiments/visualizer/README.md
+readme_present: true
+receipt_present: false
+ontology_present: false

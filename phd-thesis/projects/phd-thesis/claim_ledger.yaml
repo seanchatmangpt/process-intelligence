@@ -1,0 +1,258 @@
+# CLAIM LEDGER
+# PROJECT: phd-thesis
+# MANUFACTURED: 2026-06-01
+# REFEREE: Claim Referee (automated)
+# AUTHORITY: phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+
+slug: phd-thesis
+claims:
+
+  - id: CLM-PHD_THESIS-001
+    claim: >
+      The phd-thesis workspace is a dissertation corpus manufacturing workspace, not a
+      documentation surface, governed by a receipted, proof-gated manufacturing pipeline
+      with explicit ALIVE criteria.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/README.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/project_manifest.yaml
+    evidence_summary: >
+      README.md and the project manifest declare the workspace role as
+      dissertation-corpus-manufacturing-workspace; WORKFLOW_RECEIPT.yaml confirms phase
+      SETUP_COMPLETE with a verified toolchain and pre-manufacture git commit hash
+      b4279892881e5a8ff83f31b273219a0740fead0b.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-002
+    claim: >
+      The PROJECT_INDEX.yaml catalogues exactly 34 research projects across the
+      process-intelligence foundry, each with absolute paths, thesis roles, detected
+      languages and frameworks, and boolean flags for readme, receipt, and ontology presence.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/PROJECT_INDEX.yaml
+    evidence_summary: >
+      Verified by direct count of slug entries in PROJECT_INDEX.yaml: 34 entries present,
+      manufactured 2026-06-01, with the declared schema fields confirmed in the file header.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-003
+    claim: >
+      The phd-thesis workspace status is PARTIAL, not ALIVE: TeX source files exist and
+      the source ledger is populated, but the compiled PDF and PDF hash receipt are absent,
+      blocking ALIVE declaration.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/05_evidence_receipts_and_gates.tex
+    evidence_summary: >
+      DO_NOT_CLAIM_LEDGER defines ALIVE criteria requiring PDF compilation and hash recording;
+      WORKFLOW_RECEIPT.yaml phase is SETUP_COMPLETE with no compiled PDF artifact present;
+      05_evidence_receipts_and_gates.tex explicitly enumerates criteria 4 and 5 as NOT MET.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-004
+    claim: >
+      The Chatman Equation A = mu(O*) formalizes that process authority is the application
+      of the process mining function to the full object-centric process state, and its
+      operationalized form R |= P_i = mu(O*, T, L) defines the admissibility boundary.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/PROJECT_INDEX.yaml
+      - /Users/sac/process-intelligence/experiments/verify_equations.py
+      - /Users/sac/process-intelligence/experiments/validate_log_fitness.py
+    evidence_summary: >
+      PROCESS_INTELLIGENCE_ALIVE_001.md lists the admissibility boundary as a verified
+      mathematical invariant with a checkmark; verify_equations.py and validate_log_fitness.py
+      provide executable verification; PROJECT_INDEX.yaml lineage header cites the equation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-005
+    claim: >
+      Five canonical JSON receipts exist in receipts/ (rec_ebitda_rework_001.json through
+      rec_residual_standard_005.json), each carrying an ed25519 validator signature, a target
+      log hash, a process model hash, and wasm4pm-computed verification results.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_sla_003.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_compliance_004.json
+      - /Users/sac/process-intelligence/receipts/rec_residual_standard_005.json
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: >
+      rec_ebitda_rework_001.json confirmed present and read directly: contains target_log_hash,
+      process_model_hash, engine wasm4pm, verification_results (fitness 0.982, precision 0.945,
+      EBITDA impact $1,250,000), and ed25519 validator_signature field; all five files confirmed
+      present in directory listing.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-006
+    claim: >
+      The EBITDA rework receipt records fitness 0.982, precision 0.945, throughput 4.12 days,
+      and EBITDA impact $1,250,000, all derived by the wasm4pm engine from replay against a
+      declared process model.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+    evidence_summary: >
+      These specific values are present verbatim in rec_ebitda_rework_001.json under
+      verification_results: fitness 0.982, precision 0.945, throughput_days 4.12,
+      ebitda_impact_usd 1250000.0, with engine field set to wasm4pm.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-007
+    claim: >
+      The upstream research program has achieved ALIVE status (PI_RESEARCH_PROGRAM_ALIVE_001,
+      12/12 audit gates PASS, sealed 2026-06-01), constituting the prerequisite authorization
+      for dissertation chapter manufacturing to begin.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+    evidence_summary: >
+      PROCESS_INTELLIGENCE_ALIVE_001.md is present and confirms verification status code
+      0x00 (SUCCESS_ALIVE) with all listed mathematical invariants checked; the TeX files
+      reference PI_RESEARCH_PROGRAM_ALIVE_001 as 12/12 gates, cross-referenced to the
+      checkpoint file.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-008
+    claim: >
+      A 2016 language-model experiment established the foundational negative result that
+      local text imitation does not conserve consequence, motivating the entire downstream
+      research program.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/PROJECT_INDEX.yaml
+    evidence_summary: >
+      The experiment is cited in the PROJECT_INDEX.yaml lineage header but has no backing
+      artifact in the 34 project manifests; the TeX file explicitly marks this as AUTHOR
+      THESIS and acknowledges the source materials predate the process-intelligence repository.
+    confidence: LOW
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-009
+    claim: >
+      The manufacturing pipeline enforced by this workspace — DO_NOT_CLAIM_LEDGER prohibitions,
+      WORKFLOW_RECEIPT.yaml toolchain binding, and ALIVE criteria gating release on PDF
+      compilation — constitutes an instance of the coordination regime that the dissertation
+      argues against prediction-only approaches.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/06_contribution_to_thesis.tex
+    evidence_summary: >
+      The TeX file frames this as an AUTHOR THESIS claim; the DO_NOT_CLAIM_LEDGER and
+      WORKFLOW_RECEIPT.yaml are physical evidence of the coordination mechanisms described,
+      but the argument that the workspace itself proves the dissertation's thesis is the
+      author's analytical conclusion.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-010
+    claim: >
+      The GGEN_ECOSYSTEM_INTEL_ALIVE_001 checkpoint has 3/4 audits PASS with 1 remediation
+      open (DTO flattening: to_json_string() and receipt_json() methods in
+      compat/src/manufacturing/ violating the FFI boundary law).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/05_evidence_receipts_and_gates.tex
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      Both TeX files consistently report 3/4 audits PASS and name the specific DTO flattening
+      violation as the open remediation, cited as documented in PI_RESEARCH_PROGRAM_ALIVE_001
+      which is a confirmed checkpoint file in the foundry.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-011
+    claim: >
+      The BLAKE3 toolchain availability is not recorded in WORKFLOW_RECEIPT.yaml, creating a
+      gap: the receipt doctrine requires BLAKE3 hashing of the compiled PDF but the required
+      tool has not been verified for the manufacturing pipeline.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      WORKFLOW_RECEIPT.yaml was read directly: tools_available lists pdflatex, python3, git,
+      and rg — no BLAKE3 entry is present, confirming the gap stated in the TeX file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-012
+    claim: >
+      No ggen.toml for a thesis-chapter-specific manufacturing pipeline has been confirmed
+      present in the phd-thesis workspace, leaving the chapter manufacturing mechanism undefined.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/04_implementation_surface.tex
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      Both TeX files state this gap explicitly and consistently; the scripts/ directory is an
+      empty stub confirmed in 04_implementation_surface.tex, and the TeX files note the absence
+      of a thesis-chapter ggen.toml as a documented open question.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-013
+    claim: >
+      A dissertation can be manufactured under the same receipted, proof-gated discipline as
+      a software artifact, with the PDF compilation step serving as the workspace-level proof gate.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/06_contribution_to_thesis.tex
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+    evidence_summary: >
+      The TeX file explicitly marks this as an AUTHOR THESIS claim; while the DO_NOT_CLAIM_LEDGER
+      and ALIVE criteria provide structural evidence of the discipline being applied, the broader
+      claim is the author's analytical conclusion not yet validated by a completed PDF artifact.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-014
+    claim: >
+      The next receipted work sequence requires: emitting a CHAPTER_MANUFACTURING_START receipt,
+      manufacturing frontmatter and chapter TeX sources, compiling via pdflatex, computing the
+      BLAKE3 PDF hash, and sealing PI_THESIS_ALIVE_001.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/07_open_questions_and_next_work.tex
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+    evidence_summary: >
+      The seven-step work sequence is declared in 07_open_questions_and_next_work.tex as
+      authorized next steps; none have been executed as confirmed by SETUP_COMPLETE phase
+      in WORKFLOW_RECEIPT.yaml and the absence of chapters/ content.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PHD_THESIS-015
+    claim: >
+      Full-lifecycle process intelligence — defined as the capacity to ingest, validate, replay,
+      discover, conform, simulate, repair, optimize, monitor, and decommission process evidence
+      under a single receipted type-law — is both necessary and sufficient for board-admissible
+      process claims.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/01_research_question.tex
+      - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+    evidence_summary: >
+      The hypothesis is stated in the TeX file and the Chatman Equation is verified in the
+      checkpoint, but the sufficiency claim — that receipt-backed process mining exhausts all
+      conditions for board admissibility — is an interpretive extension beyond what the
+      experimental evidence directly demonstrates; no board review of the five receipts is
+      documented to confirm acceptance.
+    confidence: LOW
+    allowed_in_pdf: true

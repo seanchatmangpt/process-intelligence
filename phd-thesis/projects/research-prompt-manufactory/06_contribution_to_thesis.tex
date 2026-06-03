@@ -1,0 +1,111 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Contribution to the Dissertation}
+\label{sec:research-prompt-manufactory-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:research-prompt-manufactory-contribution-prediction}
+
+The central thesis argument distinguishes prediction (language model inference) from
+coordination (multi-agent process execution). The Prompt Manufactory contributes to this
+argument by demonstrating that the command surface of a coordination system cannot be
+derived from prediction alone.
+
+A hand-written prompt is, in effect, a prediction about what instruction would cause a
+subagent to behave correctly. It encodes the author's model of what the subagent should
+do, expressed in natural language, and relies on the language model's prediction
+machinery to interpret and act on that model. The instruction has no formal relationship
+to the process law it purports to enforce. Whether the subagent's actual behavior
+conforms to the declared workflow is not derivable from the prompt text.
+
+The Prompt Manufactory manufactures the instruction from the law itself. The subagent
+warrant for a Census role (\texttt{role\_engine\_census}) is manufactured from the
+\texttt{pm:SubagentRole} instance that carries the formal owned surfaces
+(\texttt{src/mining}, \texttt{src/replay}, \texttt{src/conformance}, \texttt{src/ocpq},
+\texttt{src/receipt}, \texttt{tests/}), the formal forbidden surfaces
+(\texttt{../wasm4pm-compat/}, \texttt{../process-intelligence/}), the output contract
+(\texttt{research/pi-program/intel/wasm4pm-engine-census.md}), and the refusal gate
+(\texttt{pm:REFUSAL\_MISSING\_SOURCE}). The manufactured warrant is not a prediction
+about correct behavior; it is a rendering of the formal definition of correct behavior.
+
+% AUTHOR THESIS / INTERPRETATION
+This distinction is the coordination contribution: a manufactured prompt creates a
+verifiable alignment between the declared law and the operational instruction, a
+property that prediction-derived prompts cannot provide.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:research-prompt-manufactory-contribution-evidence}
+
+The Van der Aalst Constitution governing this research foundry requires that process
+claims be provable from event evidence. The Prompt Manufactory contributes a
+manufacturing receipt chain that constitutes event evidence for the claim that subagent
+instructions were lawfully derived.
+
+Each emitted warrant's receipt entry in \texttt{prompt-receipt-ledger.md} records a
+manufacturing event with timestamp, source ontology URI, manufacturing method, and
+proof gate results. This receipt is queryable evidence that the instruction was
+manufactured, not authored. When the ggen v26.5.21 execution manifest records 41
+artifacts emitted across 6 rules with receipts-equal-artifacts gate PASS
+(\texttt{2026-06-01T23:09:45Z}), this constitutes a manufacturing event log from which
+the claim ``all warrants were manufactured from graph law'' can be partially verified.
+
+The contribution is partial because: the fallback manufacture of the proof-specimen
+warrant used a manual method (ggen v5 template rendering failed on empty SPARQL result
+set), and the receipt correctly records this as \texttt{COMPLETE\_VIA\_FALLBACK} rather
+than full automated manufacture. Process evidence that records its own deviations
+from the declared process is stronger evidence than evidence that claims conformance
+without deviation records.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:research-prompt-manufactory-contribution-architecture}
+
+The Prompt Manufactory establishes that the post-cyberpunk manufacturing layer can
+extend to the command surface of the system it manufactures. In the full manufacturing
+architecture, the sequence is: law encoded as RDF $\to$ SPARQL extraction $\to$ Tera
+rendering $\to$ Markdown artifact $\to$ receipt. This sequence is the same pipeline
+used by ggen v26.5.21 to manufacture wasm4pm compatibility laws, OTel registry
+artifacts, and ZOEapp projection surfaces. The Prompt Manufactory applies this same
+pipeline recursively: the manufacturing system manufactures the instructions for its
+own subagents.
+
+The architectural contribution is the \texttt{pm:RenderedPrompt} class with its
+required \texttt{pm:derivedFrom} triple and its SHACL enforcement. This creates a
+formal warrant type that is distinct from a document, a configuration file, or a
+natural-language instruction. A \texttt{pm:RenderedPrompt} is a typed manufacturing
+artifact in the same ontological sense as a \texttt{pm:Receipt} or a
+\texttt{pm:Checkpoint} --- it carries provenance, type, and proof requirements.
+
+The manufacturing manifest structure (6 rules, 41 artifacts, 5 artifact types, 41,867
+bytes, receipts-equal-artifacts gate) demonstrates that warrant manufacturing at
+research-program scale is operationally feasible with a single \texttt{ggen sync}
+command.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:research-prompt-manufactory-contribution-capital}
+
+% AUTHOR THESIS / INTERPRETATION
+The thesis lineage extends to capital-flow, settlement, and DAO infrastructure. The
+Prompt Manufactory's contribution to this layer is indirect but structurally important:
+it establishes that the subagent command surface of a complex, multi-party system
+can be manufactured from formal law rather than authored by individual participants.
+
+In a capital-flow or DAO context, the commands issued to execution agents must be
+auditable and derivable from the governing rules of the system. A hand-authored
+instruction to an execution agent handling settlement has no formal provenance chain
+to the governing rules; a manufactured warrant does. The \texttt{pm:Receipt} class and
+its \texttt{pm:proves} link to the \texttt{pm:RenderedPrompt} it certifies establishes
+the proof-of-manufacture pattern that capital-flow infrastructure would require to
+demonstrate that execution instructions were lawfully derived from governance law.
+
+The Prompt Manufactory does not implement capital-flow infrastructure directly. Its
+contribution is to prove the warrant-manufacturing pattern at the research-program
+layer, establishing the architecture that would need to be instantiated at the
+capital-flow layer for that infrastructure to be auditable.
+
+% FUTURE WORK
+The extension of the \texttt{pm:PromptClass} enumeration to include settlement and
+governance warrant types (beyond the current INTEL $\mid$ RECONCILE $\mid$ REMEDIATE
+$\mid$ SYNC $\mid$ AUDIT $\mid$ CHECKPOINT $\mid$ SPR $\mid$ LIVESTREAM) is deferred
+as future work.

@@ -3,6 +3,10 @@
 
 
 pub mod manufacturing;
+pub mod graduation;
+pub mod powl;
+
+pub use graduation::{GraduateToWasm4pm, GraduationCandidate, GraduationReason};
 
 pub use manufacturing::{
     RenderEngine, RenderError, TemplateContext, ModuleSpec, RenderContext,
@@ -10,3 +14,5 @@ pub use manufacturing::{
     ReceiptLedger, ArtifactReceipt, ComplianceAuditor, AuditResult, AuditLevel, AuditFinding,
     render_rust_module, render_toml, render_slide_deck, render_governance,
 };
+
+pub use powl::{TypedPowl, TreeProjectable, TreeProjection, OperatorKind, PowlNode};

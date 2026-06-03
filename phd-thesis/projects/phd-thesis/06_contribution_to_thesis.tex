@@ -1,0 +1,114 @@
+% FILE: 06_contribution_to_thesis.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: ledgers/PROJECT_INDEX.yaml, checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md,
+%            receipts/rec_ebitda_rework_001.json, phd-thesis/README.md
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+
+\section{Contribution to the Dissertation}
+\label{sec:phd-thesis-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:phd-thesis-contribution-prediction}
+
+The \texttt{phd-thesis} workspace contributes to the prediction-versus-coordination argument
+by being, itself, an instance of the coordination regime. A prediction-only system would
+produce dissertation content from a language model applied to the research corpus without
+receipts, without a named manufacturing pipeline, and without an ALIVE verification criterion.
+The \texttt{phd-thesis} workspace rejects this approach by design.
+
+The workspace enforces the coordination regime through three mechanisms. First, the
+DO\_NOT\_CLAIM\_LEDGER prohibits claims without source artifact backing --- this is the
+workspace-level instantiation of the named-witness requirement that distinguishes conformance
+claims from prediction-derived assertions. Second, the WORKFLOW\_RECEIPT.yaml binds every
+manufacturing event to a specific toolchain, branch, and pre-manufacture commit --- this is
+the workspace-level instantiation of the receipt doctrine. Third, the ALIVE criteria require
+PDF compilation and hash recording before the workspace can be released --- this is the
+workspace-level instantiation of the proof gate.
+
+The dissertation therefore contributes to the prediction-versus-coordination argument not only
+as a document describing the argument but as an artifact that instantiates the coordination
+architecture. The workspace's PARTIAL status at time of writing is an honest record of the
+manufacturing state; it does not claim to be more complete than it is. This honesty is itself
+a property of the coordination regime: the event log (the manufacturing provenance) tells the
+truth about what has happened, regardless of what the system might prefer to declare.
+
+The research lineage --- 2016 LM experiment $\to$ local text imitation does not conserve
+consequence $\to$ enterprise process gap $\to$ Chatman Equation $A = \mu(O^*)$ --- is the
+conceptual arc that this workspace embodies. The workspace is proof that the arc is not merely
+theoretical: a real manufacturing system, with real receipts and real proof gates, can be built
+to enforce the coordination discipline at the artifact level.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:phd-thesis-contribution-evidence}
+
+The workspace contributes to the process evidence strand of the dissertation by being the
+authoritative index of the foundry's process evidence surfaces. The
+\texttt{ledgers/PROJECT\_INDEX.yaml} maps all 34 projects to their research surfaces, which
+include: \texttt{process-evidence}, \texttt{conformance-checking}, \texttt{mining-authority},
+\texttt{replay-authority}, \texttt{lifecycle-governance}, \texttt{receipt-chain},
+\texttt{OCEL-v2}, \texttt{type-law}, \texttt{witness-lattice}, \texttt{proof-gate},
+\texttt{audit-suite}, and \texttt{gap-analysis}.
+
+This mapping is the dissertation's contribution to process evidence as an architectural
+concept: it demonstrates that process evidence is not a single artifact but a layered system
+of interlocking surfaces. The type law (Evidence$\langle T, \text{State}, W\rangle$) provides
+the carrier; the receipt chain provides the provenance; the conformance checking surface
+(wasm4pm) provides the computational authority; the adversarial surface provides the
+negative-test coverage required by the Van der Aalst Constitution; and the gap registry
+provides the honest record of what is not yet known.
+
+The five canonical receipts in \texttt{receipts/} (EBITDA rework through residual standard)
+are the dissertation's primary process evidence artifacts in the M\&A domain. Each receipt
+carries a process model hash, an event log hash, wasm4pm-computed fitness and precision
+scores, and an ed25519 validator signature. The EBITDA receipt
+(\texttt{rec\_ebitda\_rework\_001.json}) alone documents fitness 0.982, precision 0.945,
+throughput 4.12 days, and a projected EBITDA impact of \$1,250,000 --- all derived from
+replay against a declared process model, not from a prediction.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:phd-thesis-contribution-manufacturing}
+
+The workspace contributes to the manufacturing architecture strand by demonstrating that a
+dissertation --- traditionally the least structured artifact in an academic research program
+--- can be manufactured under the same receipted, proof-gated discipline as a software
+artifact. This is an AUTHOR THESIS claim, grounded in the structure of the workspace itself
+rather than in a prior publication.
+
+The manufacturing architecture instantiated by this workspace consists of: a branch-scoped
+manufacturing run (\texttt{phd-thesis-corpus-manufacture-001}), a verified toolchain
+recorded in WORKFLOW\_RECEIPT.yaml, a project index manufactured by the corpus cartographer
+phase, a claim prohibition ledger enforced across all artifacts, and ALIVE criteria that gate
+release on PDF compilation and hash recording. This is the same architecture --- adapted to
+TeX compilation rather than Rust compilation --- as the manufacturing pipelines used by
+wasm4pm, Blue River Dam, and the ggen ecosystem.
+
+The PROJECT\_INDEX.yaml, which enumerates 34 projects with thesis roles, is itself a
+manufactured artifact: it was produced 2026-06-01 as the output of a corpus cartographer
+phase that scanned the \texttt{process-intelligence} foundry and classified each project's
+evidentiary contribution to the dissertation. This manufacturing phase is receipted in the
+WORKFLOW\_RECEIPT.yaml (\texttt{phase: SETUP\_COMPLETE}) and will be followed by chapter
+manufacture and PDF compilation phases, each of which will produce its own provenance record.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:phd-thesis-contribution-capital}
+
+The workspace contributes to the capital-flow infrastructure strand through the M\&A claim
+surfaces documented in the PROJECT\_INDEX.yaml. The \texttt{ma} project (42 M\&A claim files,
+board claim taxonomy, slide-to-receipt map, reverse Porter Five, hostile takeover receipts)
+and the \texttt{receipts} project (5 canonical JSON receipts with validator signatures) are
+the primary capital-flow artifacts in the dissertation corpus.
+
+The thesis lineage records the capital-flow arc as: receipts and replay $\to$ ggen/Open
+Ontologies $\to$ clap-noun-verb command grammar $\to$ wasm4pm/process-evidence $\to$
+Post-Cyberpunk PCP $\to$ AI XYNZ $\to$ capital-flow/settlement/DAO $\to$ industry-complete
+architecture. The \texttt{phd-thesis} workspace is the point at which all of these strands
+converge into a single, receipted, proof-gated corpus.
+
+The capital-flow contribution is not a claim about deployment or commercialization --- the
+DO\_NOT\_CLAIM\_LEDGER explicitly prohibits production deployment claims without receipt. It
+is a claim about the admissibility architecture: that process evidence, when manufactured
+under the receipt and replay doctrine, produces claims that are board-admissible and
+independently verifiable. The five canonical receipts in the \texttt{receipts/} directory
+are the physical instantiation of this admissibility --- each one a manufacturable, hashable,
+signable unit of capital-flow process evidence.

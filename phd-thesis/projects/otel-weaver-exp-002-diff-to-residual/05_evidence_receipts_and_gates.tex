@@ -1,0 +1,153 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:otel-weaver-exp-002-diff-to-residual-evidence}
+
+\subsection{Tests}
+\label{sec:otel-weaver-exp-002-diff-to-residual-evidence-tests}
+
+Two test surfaces are relevant to EXP-002:
+
+\paragraph{test\_bridge\_translation\_equivalence (inline unit test)}
+Location: \texttt{src/bridge.rs}, \texttt{\#[cfg(test)] mod tests} block.
+
+This test constructs a \texttt{TelemetryFeedstockS2} record with:
+\begin{itemize}
+    \item \texttt{instance\_id = "inst-001"}
+    \item \texttt{transition\_name = "approve\_loan"}
+    \item \texttt{token\_color = Some("red")}
+    \item \texttt{witness\_hash = "blake3\_signature\_data\_here"}
+\end{itemize}
+It passes the record through \texttt{BridgeRx::new().translate()}, then asserts:
+\begin{itemize}
+    \item \texttt{s1\_telemetry.instance\_id == "inst-001"} (identity preserved)
+    \item \texttt{s1\_telemetry.activity\_name == "approve\_loan"} (rename applied)
+    \item \texttt{s1\_telemetry.witness\_hash == "blake3\_signature\_data\_here"}
+          (hash preserved)
+\end{itemize}
+
+The test does not assert any behavior regarding \texttt{token\_color}, confirming
+that the field is silently dropped. No cargo test transcript for this test in
+isolation is present in the repository. The test is declared and the code compiles
+(based on materialized \texttt{target/debug/deps} artifacts), but whether this
+specific test was executed and passed in isolation is not documented by an
+experiment-level receipt.
+
+\paragraph{weaver\_integration\_tests.rs (parent-suite integration test)}
+Location: \texttt{/Users/sac/process-intelligence/sources/wasm4pm/tests/weaver\_integration\_tests.rs}
+
+Referenced in \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}. The checkpoint
+contains the following test execution transcript:
+\begin{verbatim}
+   Compiling wasm4pm v30.1.2 (...)
+    Finished test profile [unoptimized + debuginfo] in 0.17s
+     Running tests/weaver_integration_tests.rs
+         (target/debug/deps/weaver_integration_tests-7ace795fe7635098)
+
+running 1 test
+test test_weaver_integration_synthesis ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; finished in 0.00s
+\end{verbatim}
+
+The checkpoint additionally certifies that all 62 tests across \texttt{wasm4pm},
+\texttt{wasm4pm-compat}, and \texttt{blue\_river\_dam} compile and pass with zero
+side effects. This integration test covers the \texttt{BridgeRx} translation path
+as part of the full runtime integration synthesis, though the transcript does not
+show exp-002 tested in isolation.
+
+\subsection{Receipts}
+\label{sec:otel-weaver-exp-002-diff-to-residual-evidence-receipts}
+
+No receipt files are present inside the exp-002 directory itself. Receipts and
+checkpoints for the EXP-002 evidence surface are held at the
+\texttt{otel-weaver/} parent scope. The three checkpoints with direct bearing on
+EXP-002 are:
+
+\begin{enumerate}
+    \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001}: Design gate passage receipt,
+          SHA-256: \texttt{d4b844c48811199b21d2746af484456d9b2d8643c154988cfcf35fe310efc35a}.
+          Certifies that the categorical boundary rules, scaffold files, and
+          mapping documents were completed. Status: PARTIAL / COMPLETED DESIGN.
+
+    \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001}: Suite-level COMPLETE \& ACTIVE
+          receipt, SHA-256:
+          \texttt{e6bc59b8d210e309228d4bf09c0fa4db55fe310efc35ad1a89b3f021e85a67f1}.
+          Certifies the full five-experiment suite including exp-002's
+          \texttt{bridge.rs} and \texttt{README.md} as created and verified.
+
+    \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001}: Runtime integration gate
+          receipt, SHA-256:
+          \texttt{86ef45b3c63ae38007701169bcf0abbda2694a43160f3f8d3695c6255b02cb44}.
+          Certifies that Schema Version 2 telemetry containing
+          \texttt{process.pi.transition.name} is translated by \texttt{BridgeRx}
+          into the S1 format expected by the court's validators, with test execution
+          proof included.
+\end{enumerate}
+
+All three checkpoints were issued on 2026-06-01 under the authority of the
+\texttt{ggen} generative authority.
+
+\subsection{Checkpoints}
+\label{sec:otel-weaver-exp-002-diff-to-residual-evidence-checkpoints}
+
+The parent-scope checkpoint chain for EXP-002 follows the progression:
+
+\begin{enumerate}
+    \item \textbf{Design gate} (PARTIAL): Boundary invariance rules established,
+          vocabulary translation protocols scaffolded, categorical separation between
+          $\Delta_W$ and $\delta_P$ formally declared. Corresponds to
+          \texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001}.
+
+    \item \textbf{Specification gate} (ALIVE at suite level): All experiment
+          \texttt{README.md} files and source files created and verified. The
+          \texttt{bridge.rs} implementation included in the suite manifest.
+          Corresponds to \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001}.
+
+    \item \textbf{Runtime integration gate} (COMPLETE \& ACTIVE): The full S2-to-S1
+          translation path verified in the \texttt{wasm4pm} integration suite with
+          test execution transcript. Corresponds to
+          \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001}.
+\end{enumerate}
+
+The gate progression does not include an exp-002-specific receipt. The checkpoints
+aggregate evidence across all five experiments in the suite.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:otel-weaver-exp-002-diff-to-residual-evidence-status}
+
+\textbf{Current status: PARTIAL.}
+
+EXP-002 cannot be declared ALIVE because the following gate criteria are unmet:
+
+\begin{enumerate}
+    \item \textbf{Isolated test transcript}: No \texttt{cargo test} output transcript
+          for \texttt{test\_bridge\_translation\_equivalence} in isolation exists
+          inside the exp-002 directory or any exp-002-specific receipt file. The
+          parent-suite checkpoint contains a transcript for
+          \texttt{test\_weaver\_integration\_synthesis} but not the unit test.
+
+    \item \textbf{Confirmed build artifact}: While \texttt{target/debug/deps} shows
+          compiled dependency rlibs (\texttt{serde}, \texttt{serde\_yaml}, etc.),
+          the \texttt{bridge} rlib itself does not appear in the materialized
+          artifact list, suggesting the library may not have been fully compiled to
+          a linkable artifact in isolation.
+
+    \item \textbf{Documented loss semantics}: The \texttt{token\_color} field is
+          dropped silently during \texttt{translate()} with no \texttt{LossReport}
+          receipt documenting the loss as intentional. The doctrine file
+          \texttt{otel-weaver-is-feedstock.md} requires that every projection of
+          telemetry generate a \texttt{LossReport}.
+
+    \item \textbf{Ontology surface}: No TTL/RDF surface exists for the S1/S2 schema
+          types or the \texttt{BridgeRx} translation semantics.
+\end{enumerate}
+
+The evidence that is present (source code, inline test declaration, parent-scope
+checkpoints, doctrine files, mapping YAML) is sufficient to establish that the
+experiment was designed correctly and its core translation logic is sound. The
+missing items are execution transcripts, loss documentation, and ontology
+integration rather than architectural defects. The PARTIAL verdict stands until
+all four criteria above are met and a new exp-002-scoped checkpoint is issued.

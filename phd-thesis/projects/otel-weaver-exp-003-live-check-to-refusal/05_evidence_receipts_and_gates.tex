@@ -1,0 +1,134 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: otel-weaver-exp-003-live-check-to-refusal
+% Thesis Role: live-check-refusal-enforcement-experiment
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-evidence}
+
+\subsection{Tests}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-evidence-tests}
+
+\textbf{Inline unit tests in \texttt{src/validator.rs}:}
+
+\begin{itemize}
+  \item \texttt{test\_successful\_admission}: Constructs a
+        \texttt{RawTelemetryFeedstock} with \texttt{instance\_id: Some("inst-123")},
+        \texttt{activity\_name: Some("task\_a")}, \texttt{witness\_id: Some("witness-01")},
+        and \texttt{witness\_hash: Some("a".repeat(64))}. Asserts \texttt{is\_ok()},
+        then verifies \texttt{admission.payload.instance\_id == "inst-123"} and
+        \texttt{admission.witness.witness\_id == "witness-01"}.
+  \item \texttt{test\_refusal\_missing\_id}: Constructs a feedstock with
+        \texttt{instance\_id: None} and all other fields populated. Asserts
+        \texttt{is\_err()}, then verifies
+        \texttt{refusal.code == RefusalCode::MissingInstanceId}.
+\end{itemize}
+
+These tests exercise the happy path and one refusal code. They do not exercise
+\texttt{MissingActivityName}, \texttt{MissingWitnessId}, or
+\texttt{InvalidWitnessSignature} in the standalone crate; that coverage is provided
+by the integration test.
+
+\textbf{Integration test \texttt{test\_weaver\_integration\_synthesis}
+in \texttt{weaver\_integration\_tests.rs}:}
+
+This single test function exercises five cases via sequential assertion blocks:
+
+\begin{enumerate}
+  \item \textbf{Case 1 --- Nominal admission}: A fully populated
+        \texttt{TelemetryFeedstockS2} with \texttt{transition\_name: "approve\_invoice"}
+        and a 64-character BLAKE3 hex witness hash is translated by \texttt{BridgeRx}
+        and admitted. The resulting \texttt{Admission} is verified for correct
+        \texttt{instance\_id}, \texttt{activity\_name} (mapped from \texttt{transition\_name}),
+        and \texttt{witness\_id} values.
+  \item \textbf{Case 2 --- \texttt{MissingInstanceId}}: Feedstock with
+        \texttt{instance\_id: None}. Asserts \texttt{is\_err()}, verifies
+        \texttt{RefusalCode::MissingInstanceId}, correct violated rule string,
+        original feedstock preservation, and \texttt{blake3\_digest.len() == 64}.
+  \item \textbf{Case 3 --- \texttt{MissingActivityName}}: Feedstock with
+        \texttt{transition\_name: None}. Asserts \texttt{RefusalCode::MissingActivityName}
+        and \texttt{blake3\_digest.len() == 64}.
+  \item \textbf{Case 4 --- \texttt{MissingWitnessId}}: Feedstock with
+        \texttt{witness\_id: None}. Asserts \texttt{RefusalCode::MissingWitnessId}
+        and \texttt{blake3\_digest.len() == 64}.
+  \item \textbf{Case 5 --- \texttt{InvalidWitnessSignature}}: Feedstock with
+        \texttt{witness\_hash: Some("short\_hash")}. Asserts
+        \texttt{RefusalCode::InvalidWitnessSignature} and \texttt{blake3\_digest.len() == 64}.
+\end{enumerate}
+
+The \texttt{blake3\_digest.len() == 64} assertion in cases 2--5 is the critical
+difference from the standalone unit tests: it verifies that the genuine
+\texttt{wasm4pm::crypto::Blake3} hasher was used, not the mock length-based format.
+This assertion is a process-mining-style evidence gate applied to the digest field
+itself.
+
+\subsection{Receipts}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-evidence-receipts}
+
+No dedicated receipt file for EXP-003 was found on disk during evidence extraction.
+The experiment has not manufactured a standalone receipt in the
+\texttt{process-intelligence/receipts/} chain. The \texttt{Refusal} records emitted
+at runtime carry BLAKE3 digests, which are structurally receipt-like but are not
+archived in a \texttt{refusals.json} ledger as specified in the README. The README
+describes this ledger as a production artifact: ``If \texttt{Err}, the \texttt{Refusal}
+is archived to the local auditing ledger (\texttt{refusals.json}), triggering a
+MAPE-K Loop correction or alert.'' This ledger is specified but not implemented.
+
+The experiment's evidentiary weight in the receipt chain is therefore carried
+exclusively by the checkpoint documents and the integration test output, not by a
+standalone refusal ledger.
+
+\subsection{Checkpoints}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-evidence-checkpoints}
+
+\textbf{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001} (dated 2026-06-01, status: COMPLETE
+\& ACTIVE): Certifies that all five OTel Weaver experiments have been created and
+verified, including EXP-003. The checkpoint carries SHA-256 audit seal:
+\begin{verbatim}
+Hash: e6bc59b8d210e309228d4bf09c0fa4db55fe310efc35ad1a89b3f021e85a67f1
+\end{verbatim}
+This checkpoint was manufactured by the \texttt{ggen} generative authority and
+signed by the Dr.\ Wil van der Aalst AGI Swarm Court audit designation.
+
+\textbf{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001} (dated 2026-06-01, status: COMPLETE
+\& ACTIVE): Certifies the runtime integration phase. It documents four validation
+stages (Feedstock Routing, Schema URL Binding, Live-Check Validation, Refusal Mapping)
+and records the following test output:
+\begin{verbatim}
+test test_weaver_integration_synthesis ... ok
+test result: ok. 1 passed; 0 failed; 0 ignored
+\end{verbatim}
+with 62 total tests passing across the workspace. SHA-256 audit seal:
+\begin{verbatim}
+Hash: 86ef45b3c63ae38007701169bcf0abbda2694a43160f3f8d3695c6255b02cb44
+\end{verbatim}
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-evidence-status}
+
+\textbf{Current status: PARTIAL.}
+
+The PARTIAL designation is warranted by the following specific gaps, each documented
+in the open questions layer:
+
+\begin{enumerate}
+  \item The standalone \texttt{validator.rs} uses a mock BLAKE3 digest
+        (\texttt{format!("{:064x}", raw\_str.len())}) rather than a genuine
+        \texttt{blake3} crate invocation, despite \texttt{blake3 1.3} being declared
+        as a dependency in \texttt{Cargo.toml}. Production fidelity of the standalone
+        artifact is unverified.
+  \item Two of the six named laws in \texttt{live-check-finding-to-refusal-map.yaml}
+        (\texttt{DanglingEventObjectLink} and \texttt{SchemaVersionMismatch}) have no
+        corresponding \texttt{RefusalCode} variant, no Rust implementation, and no test.
+  \item No \texttt{Cargo.lock} exists in the experiment directory; the crate compiles
+        only within the parent \texttt{wasm4pm} workspace.
+  \item The \texttt{refusals.json} persistence layer is specified in the README but
+        not implemented.
+  \item The type binding from \texttt{Admission<T,W>} to the Chatman Equation measure
+        operator $\mu$ and the downstream capital-flow/settlement layers exists only
+        at the documentation level; no formal type linkage has been manufactured.
+\end{enumerate}
+
+An ALIVE verdict would require all six named laws to have Rust implementations and
+tests, the standalone crate to compile with a genuine BLAKE3 digest, and the
+\texttt{refusals.json} persistence layer to exist and be tested. None of these
+conditions are currently met.

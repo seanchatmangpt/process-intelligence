@@ -1,0 +1,106 @@
+% FILE: 01_research_question.tex
+% Project: otel-weaver-exp-003-live-check-to-refusal
+% Thesis Role: live-check-refusal-enforcement-experiment
+
+\section{Research Question}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-question}
+
+\subsection{Problem Statement}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-question-problem}
+
+OpenTelemetry telemetry pipelines are structurally optimized for observability: they
+collect, route, and store spans, metrics, and logs with high fidelity. However,
+observability is not process compliance. A telemetry span that passes OTel Weaver
+schema validation --- meaning all required attributes are present and correctly typed
+--- carries no guarantee that the underlying business process executed in a lawful
+order, that the activity was authorized by a named law, or that the execution evidence
+would survive a conformance audit.
+
+The problem addressed by EXP-003 is the ingestion gap: the absence of a structural
+barrier at the telemetry frontier that distinguishes validated feedstock from admitted
+process evidence. Without such a barrier, downstream conformance algorithms receive
+both lawful and unlawful telemetry indiscriminately, producing conformance scores that
+reflect the mixture rather than the law. This is a defect in the process-intelligence
+architecture, not a configuration error.
+
+Doctrine file \texttt{otel-weaver-is-feedstock.md} articulates the Feedstock Theorem:
+$\text{SchemaValidation}(\text{Telemetry}) \neq \text{ProcessCompliance}(\text{ProcessState})$.
+EXP-003 asks whether this theorem can be operationalized as a Rust type gate that makes
+the inequality structurally unencodable: whether it is possible to write code such
+that feedstock which has not passed the refusal gate cannot be typed as admitted evidence,
+and therefore cannot reach the conformance court at all.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-question-old-regime}
+
+The old-regime assumption challenged by EXP-003 is that schema validation is a
+sufficient admission criterion for process analysis. This assumption is embedded in
+observability-centric architectures that pipe validated spans directly into analytics
+engines, SIEM systems, or process-mining tools without an intervening refusal layer.
+
+The assumption manifests in two specific engineering habits. First, the conflation of
+a Weaver finding of \texttt{Compatible} with a green light for process replay: because
+the span is structurally correct, the architecture proceeds as if it is also temporally
+and causally correct. Second, the absence of a \texttt{Refusal} type in the data
+model: when no structured refusal artifact exists, failed validation produces log noise
+rather than an auditable, BLAKE3-digested refusal record. Log noise is not process
+evidence; it cannot be mined, replayed, or audited.
+
+Doctrine file \texttt{weaver-finding-is-not-receipt.md} names this failure mode
+explicitly: ``A system that conflates schema matching with transaction verification
+is vulnerable to silent process failure.'' EXP-003 challenges this assumption by
+replacing the boolean \texttt{Compatible}/\texttt{Incompatible} predicate with a
+typed bifurcation: \texttt{Result<Admission<T,W>, Refusal>}. Neither branch is
+discarded; both are auditable artifacts.
+
+\subsection{Hypothesis}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-question-hypothesis}
+
+\textbf{Hypothesis (AUTHOR THESIS):} A Rust type gate function with the signature
+\texttt{validate\_and\_project: RawTelemetryFeedstock -> Result<Admission<T,W>, Refusal>}
+can enforce the named-law refusal doctrine at the OTel ingestion frontier in a manner
+that is structurally unencodable to bypass: downstream code that types its inputs as
+\texttt{Admission<AdmittedPayload, AlphaWitness>} is statically guaranteed to have
+passed through the refusal gate, because no other construction path for
+\texttt{Admission} exists in the type system.
+
+A secondary hypothesis is that all six named laws documented in
+\texttt{live-check-finding-to-refusal-map.yaml} can be encoded as \texttt{RefusalCode}
+variants with distinct violated-rule strings and BLAKE3-digested refusal records,
+producing an auditable refusal ledger that meets the archival requirements of the
+named-law refusal doctrine. This secondary hypothesis is \textbf{PARTIAL} as of the
+current experiment state: four of the six named laws have corresponding
+\texttt{RefusalCode} variants (\texttt{MissingInstanceId}, \texttt{MissingActivityName},
+\texttt{MissingWitnessId}, \texttt{InvalidWitnessSignature}), while two
+(\texttt{DanglingEventObjectLink} and \texttt{SchemaVersionMismatch}) are specified
+in the YAML mapping but have no corresponding Rust type or test.
+
+\subsection{Success Criteria}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-question-success}
+
+The following criteria define success for EXP-003:
+
+\begin{enumerate}
+  \item The \texttt{validate\_and\_project} function compiles within the
+        \texttt{wasm4pm} workspace, confirming type-law lattice membership via the
+        \texttt{wasm4pm-compat} path dependency.
+  \item The inline unit tests \texttt{test\_successful\_admission} and
+        \texttt{test\_refusal\_missing\_id} pass without modification.
+  \item The integration test \texttt{test\_weaver\_integration\_synthesis} in
+        \texttt{weaver\_integration\_tests.rs} passes all five refusal cases, with
+        each \texttt{Refusal.blake3\_digest} field containing a 64-character hex
+        string produced by \texttt{wasm4pm::crypto::Blake3}.
+  \item Checkpoints \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001} and
+        \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001} carry dated SHA-256 seals
+        confirming the above.
+  \item All four implemented \texttt{RefusalCode} variants are exercised by
+        named test cases, not by a single omnibus test.
+\end{enumerate}
+
+Criteria 1 through 4 are met as evidenced by checkpoint
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001} (dated 2026-06-01, SHA-256:
+\texttt{86ef45b3c63ae38007701169bcf0abbda2694a43160f3f8d3695c6255b02cb44}).
+Criterion 5 is partially met: the integration test exercises all four code variants
+within a single test function \texttt{test\_weaver\_integration\_synthesis}, but they
+are separated into distinct assertion blocks. The experiment status is therefore
+\textbf{PARTIAL}.

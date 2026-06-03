@@ -1,0 +1,89 @@
+% FILE: 03_architecture_and_primitives.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Architecture and Primitives}
+\label{sec:experiments-core-arch}
+
+\subsection{Core Objects}
+\label{sec:experiments-core-arch-objects}
+
+The core objects of the experiment architecture are defined by a three-stage typestate
+lifecycle enforced at compile time in the Rust wasm4pm engine and projected into
+TypeScript through \texttt{visualizer/bindings.d.ts}:
+
+\begin{enumerate}
+  \item \texttt{Evidence<OcelLog, Raw, Ocel20>}---a raw OCEL 2.0 log that has not yet
+    passed through any admission gate. It carries no conformance guarantees and may
+    contain dangling event-object links.
+  \item \texttt{Evidence<OcelLog, Parsed, Ocel20>}---a structurally validated log that
+    has been parsed into the OCEL 2.0 schema. Parsing does not imply conformance; it
+    implies only that the log is well-formed.
+  \item \texttt{Admission<OcelLog, Ocel20>}---the admission-gated form of the log.
+    Only an \texttt{Admission} object may enter the conformance checking pipeline.
+    A \texttt{Refusal<DanglingEventObjectLink, Ocel20>} is emitted when admission
+    fails, naming the specific law that was violated. Conformance is unreachable
+    without a successful Admission.
+\end{enumerate}
+
+Downstream of admission, the primary typed objects are:
+\texttt{WfNetConst<Sound>}---the workflow net input required for board-admissible
+conformance (a bare \texttt{PetriNet} is currently accepted by wasm4pm, which
+constitutes GAP\_001);
+\texttt{Metric<FITNESS, NUM, DEN>} with \texttt{Between01<NUM, DEN>}---the typed
+fitness value whose numerator and denominator are checked at compile time;
+and \texttt{Receipt<Metric<FITNESS, 942, 1000>, Ocel20>}---a BLAKE3-and-Ed25519-signed
+conformance receipt that a board claim may cite.
+
+\subsection{Admissible Transitions}
+\label{sec:experiments-core-arch-transitions}
+
+The admissible state transitions, as documented in \texttt{EVIDENCE\_CHAIN\_TRACE.md},
+form a directed acyclic 7-step chain:
+
+\[
+  \texttt{Raw OCEL} \xrightarrow{\text{parse}} \texttt{Parsed} \xrightarrow{\text{admit}} \texttt{Admission}
+  \xrightarrow{\text{replay / align}} \texttt{Metric} \xrightarrow{\text{sign}} \texttt{Receipt}
+  \xrightarrow{\text{claim}} \texttt{Board Claim}
+\]
+
+Each arrow represents a lawful operator that may only be invoked on the correct
+input type. The A* alignment solver in \texttt{visualizer/alignment.js} operationalizes
+the replay/align step: synchronous moves carry cost~0, log-only moves carry cost~1,
+model-only moves carry cost~1, and a BFS heuristic to the sink bounds the search.
+The EWMA Drift Detector in \texttt{visualizer/drift-detector.js} operates
+orthogonally to the evidence chain: it monitors conformance metric sequences with
+$\lambda = 0.20$, $L = 3.00\sigma$ control limits, and $\mu_0 = 5.0\mathrm{s}$ baseline,
+raising an alert when the upper or lower control limit is crossed.
+
+\subsection{Boundaries}
+\label{sec:experiments-core-arch-boundaries}
+
+Three architectural boundaries delimit the experiment layer. The first boundary is
+the \emph{WASM interface}: \texttt{visualizer/bindings.d.ts} projects Rust typestate
+types (\texttt{EvidenceTs}, \texttt{AdmissionTs}, \texttt{RefusalTs},
+\texttt{ReceiptShapeTs}, \texttt{GraduationCandidateTs}) across the WebAssembly
+boundary into TypeScript. This boundary is documented but not yet wired to an actual
+compiled \texttt{.wasm} module---the linkage is evidenced by type declarations only.
+The second boundary is the \emph{Python/Rust boundary}: the Python scripts verify the
+equations independently of the Rust implementation, providing a cross-language
+consistency check. The third boundary is the \emph{OTel integration boundary}: the
+\texttt{otel\_trace\_integration\_sample.md} documents how OpenTelemetry span data
+flows into BLAKE3 receipt chains, extending the evidence boundary from process-mining
+conformance to production infrastructure telemetry.
+
+\subsection{Failure Modes Refused}
+\label{sec:experiments-core-arch-failures}
+
+The architecture explicitly refuses four failure modes. First, \emph{raw laundering}:
+a \texttt{Refusal<DanglingEventObjectLink, Ocel20>} is emitted when any attempt is
+made to pass a raw log directly into conformance checking, as documented in
+\texttt{RAW\_LAUNDERING\_REFUSAL\_SAMPLE.md}. Second, \emph{out-of-range fitness}:
+the \texttt{Between01<NUM, DEN>} type law triggers a compile error if
+\texttt{NUM > DEN}, preventing any fitness value greater than 1.0 from being
+manufactured. Third, \emph{unsigned claims}: a board claim may not cite a scalar
+fitness number---it must cite a \texttt{Receipt} object containing an Ed25519 signature
+over the BLAKE3 hash of both model and log. Fourth, \emph{unsound net input}:
+the type \texttt{WfNetConst<Sound>} is required for board-admissible conformance;
+however, this refusal is not yet enforced---wasm4pm currently accepts bare
+\texttt{PetriNet} objects, which is the definition of GAP\_001.

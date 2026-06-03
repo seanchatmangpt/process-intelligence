@@ -1,0 +1,22 @@
+slug: gaps
+absolute_path: /Users/sac/process-intelligence/gaps
+description: >
+  Structural gap documentation. Contains GAP_001 (compat-to-wasm bridge missing), GAP_002
+  (OR-join ambiguity), gap closure workflow, gap priority matrix, and gap register. Gaps are
+  permanent records — only resolution addendums may be added.
+detected_languages: []
+detected_frameworks: []
+detected_research_surfaces:
+  - gap-analysis
+  - type-law
+  - conformance-law
+likely_thesis_role: structural-gap-registry-and-closure-tracking
+key_files:
+  - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+  - /Users/sac/process-intelligence/gaps/GAP_002_OR_JOIN_AMBIGUITY.md
+  - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+  - /Users/sac/process-intelligence/gaps/GAP_PRIORITY_MATRIX.md
+  - /Users/sac/process-intelligence/gaps/GAP_CLOSURE_WORKFLOW.md
+readme_present: false
+receipt_present: false
+ontology_present: false

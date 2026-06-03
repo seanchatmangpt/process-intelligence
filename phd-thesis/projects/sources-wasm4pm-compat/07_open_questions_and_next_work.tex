@@ -1,0 +1,119 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+
+\section{Open Questions and Next Work}
+\label{sec:sources-wasm4pm-compat-openquestions}
+
+\subsection{Known Gaps}
+\label{sec:sources-wasm4pm-compat-openquestions-gaps}
+
+Five open questions and structural defects are documented in \texttt{STRUCTURAL\_GAPS.md}
+and \texttt{research-verdict.md}. Two are high-severity and gate the ALIVE verdict:
+
+\textbf{Gap~1 (High): WfNet split-brain.} The forgeable \texttt{WfNet<S>.attest\_witnessed()}
+path exists alongside the non-forgeable \texttt{WfNetConst<\{Witnessed\}>} path. The
+forgeable path is callable without a \texttt{SoundnessProof} token. No compile-fail
+fixture documents this loophole in the ALIVE gate. The ALIVE gate attests to
+\texttt{WfNetConst} non-forgeability (via \texttt{wfnet\_forged\_soundness.rs},
+\texttt{wfnet\_claimed\_as\_witnessed.rs}, \texttt{wfnet\_unknown\_as\_claimed.rs})
+but says nothing about the parallel \texttt{WfNet<S>} path. This is a split-brain: two
+representations of the same concept with different safety guarantees, with the weaker
+one silently available to callers.
+
+\textbf{Gap~2 (Medium): Zero multi-step pipeline witness-consistency compile-fail fixtures.}
+The type system structurally enforces that \texttt{Refusal<R, Ocel20>} cannot be confused
+with \texttt{Refusal<R, Xes1849>} in a chained pipeline, because the \texttt{Refusal<R, W>}
+type carries \texttt{W}. But no fixture mints a receipt proving this guarantee holds
+end-to-end in a multi-stage admission sequence. The guarantee is structural but unwitnessed.
+
+\textbf{Gap~3 (Low): \texttt{CausalNet} \texttt{DependencyMeasure} vs.\ Petri arc weight.}
+No \texttt{newtype} distinction exists between \texttt{DependencyMeasure} (a C-net
+floating-point arc weight representing causal strength in $[0,1]$) and a plain weight in
+a \texttt{BipartiteArcConst}. No compile-fail fixture prevents a caller from treating
+both as equivalent numeric weights. This is a documentation and ALIVE gate coverage gap.
+
+\textbf{Gap~4 (Low): Stochastic Petri nets absent from graduation path.}
+Generalized Stochastic Petri Nets (GSPNs), where transitions carry firing rates or
+weights, have no named graduation path. The closest match is
+\texttt{NeedsDiscovery}, but the graduation boundary documentation does not
+explicitly state this scope exclusion.
+
+\textbf{Gap~5 (Medium): Receipt-shaped object fitness threshold not pinned.}
+The production fitness threshold for receipt-shaping is unresolved: \texttt{research-verdict.md}
+references 0.95 as the board-admissible threshold, while the graduation boundary map
+records 0.85 as the minimum without a board-signed override. Downstream M\&A operations
+require a single pinned value.
+
+\subsection{Deferred Gates}
+\label{sec:sources-wasm4pm-compat-openquestions-deferred}
+
+Three gate conditions are deferred to downstream obligations per
+\texttt{manufacturing-manifest-20260601.yaml} and \texttt{research-verdict.md}:
+
+\begin{enumerate}
+  \item \textbf{wasm4pm core engine alignment} (deadline 2026-06-15): The execution engine
+    must enforce witness lattice monotonicity at every firing event (Axiom~2 runtime
+    verification), implement rejection when \texttt{witness.join() == Top}, and provide
+    integration tests proving witness monotonicity across all process model types.
+  \item \textbf{Ed25519 role-based signature registry} (deadline 2026-06-15): The auditor-vs-runner
+    role distinction is defined at the compat layer but the key distribution mechanism and
+    role registry are downstream obligations not yet implemented.
+  \item \textbf{Receipt-shaped object M\&A schema alignment}: The receipt-shaped object
+    schema must be aligned with the M\&A slide-to-receipt map (referenced as
+    \texttt{ma/define\_slide-to-receipt\_map.md}) to enable board-admissible claim
+    manufacturing from conformance receipts.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:sources-wasm4pm-compat-openquestions-risks}
+
+\textbf{Risk~1 (WfNet split-brain propagation)}: If downstream code accepts
+\texttt{WfNet<SoundnessWitnessed>} as a soundness guarantee, it inherits the weaker
+guarantee without any compile-time warning. The split-brain risk is that the forgeable
+path becomes the de facto API through convention rather than design.
+
+\textbf{Risk~2 (OCEL~2.0 object identity conflicts)}: The compat layer does not yet
+specify behavior when OCEL logs contain object identity conflicts (same object identifier
+with contradictory attribute histories) or multi-valued object relationships with
+non-commutative results. These are real-world scenarios in enterprise event logs.
+
+\textbf{Risk~3 (POWL~2.0 industrial validation)}: POWL~2.0 is a research-tier notation.
+The witness lattice correctly implements POWL~2.0 semantics as specified, but the
+research-verdict (Section~1.3) notes the absence of real-world process examples validating
+fitness across enterprise domains. Five to ten production POWL~2.0 models are recommended
+for Phase~3 empirical validation.
+
+\textbf{Risk~4 (OR-Join quorum semantics)}: The Smart-Completion policy for BPMN~2.0
+OR-Join gateways is adopted in the research-verdict (Section~6.5) but the
+\texttt{STRUCTURAL\_GAPS.md} still records this as requiring downstream obligation
+documentation. The concrete policy must be pinned in a production-facing specification
+before the OR-Join gateway can be considered fully receipted.
+
+\subsection{Next Receipted Work}
+\label{sec:sources-wasm4pm-compat-openquestions-next}
+
+The minimal work required to convert PARTIAL to ALIVE within the dissertation evidence
+chain:
+
+\begin{enumerate}
+  \item \textbf{Deprecate or fence \texttt{WfNet<S>}.} Either mark \texttt{WfNet<S>}
+    \texttt{\#[deprecated]} with a migration note to \texttt{WfNetConst}, or add a
+    compile-fail fixture proving that \texttt{WfNet<SoundnessClaimed>.attest\_witnessed()}
+    is not reachable from outside the \texttt{petri} module. Receipt the result as a new
+    compile-fail fixture and update \texttt{config.toml}.
+  \item \textbf{Manufacture a multi-step pipeline witness-consistency fixture.} Write a
+    compile-fail fixture demonstrating that a \texttt{Refusal<R, Ocel20>} returned from
+    an OCEL admission cannot be passed to a function requiring \texttt{Refusal<R, Xes1849>}
+    in a chained two-stage pipeline. Receipt the result.
+  \item \textbf{Pin the receipt-shaped object fitness threshold.} Commit a single canonical
+    value (0.95 or configurable-with-board-override) to a production-facing specification
+    and reference it from both the compat layer and the M\&A schema.
+  \item \textbf{Manufacture a OCEL~2.0 object identity conflict refusal fixture.} Write a
+    compile-fail or test fixture demonstrating that an OCEL log with contradictory attribute
+    histories for the same object identifier is refused at the compat admission boundary.
+\end{enumerate}
+
+Each item must be receipted via the \texttt{ReceiptLedger} and recorded in the next
+manufacturing manifest (\texttt{manufacturing-manifest-20260602.yaml}) to constitute
+evidence under the Van der Aalst constitution.

@@ -1,0 +1,276 @@
+slug: research-pi-program
+claims:
+  - id: CLM-RESEARCH_PI_PROGRAM-001
+    claim: >-
+      The pi-program is the governance and manufacturing authority layer that defines,
+      enforces, and materializes the complete doctrine stack for full-lifecycle process
+      intelligence, including program-role classification, ontological law surfaces, MAPE-K
+      autonomic governance, and board-admissible artifact manufacturing.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/ggen/ontology/pi-program.ttl
+      - research/pi-program/ggen/ontology/autonomic-law.ttl
+      - research/pi-program/ggen/ontology/governance-policy.ttl
+      - research/pi-program/ggen/ggen.toml
+    evidence_summary: >-
+      The five principal TTL ontology files exist in ggen/ontology/ (17 total TTL files
+      confirmed by filesystem) and the ggen.toml manifest declares the manufacturing pipeline
+      with 61 SPARQL queries and 18 Tera templates, all verified by directory listing.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-002
+    claim: >-
+      The ggen manufacturing pipeline (ggen v26.5.21) is present at
+      research/pi-program/ggen/ggen.toml and encodes 61 SPARQL queries, 18 Tera templates,
+      and 17 OWL/SHACL TTL ontology files, but has never successfully executed: ggen/audit.json
+      records total_duration_ms of 0 and an empty output list.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/ggen/audit.json
+      - research/pi-program/ggen/ggen.toml
+      - research/pi-program/checkpoints/PI_GGEN_UNIFIED_RUN_PARTIAL_001.md
+    evidence_summary: >-
+      ggen/audit.json directly confirms pipeline=[], outputs=[], total_duration_ms=0, and
+      ggen_version=26.5.21; filesystem listing confirms exactly 61 .rq files, 18 template
+      files, and 17 TTL files; PI_GGEN_UNIFIED_RUN_PARTIAL_001 documents the manifest
+      incompatibility as primary blocker.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-003
+    claim: >-
+      Five MAPE-K feedback loop tests were executed on 2026-06-01 and all five PASSED with
+      individual confidence scores (0.98, 0.92, 0.98, 1.0, 0.92), covering fitness
+      degradation, performance bottleneck auto-repair, Declare constraint violation,
+      P-invariant structural violation, and model degradation. However, the deployment is
+      recorded as SIMULATED_DEPLOYMENT with a simulated-cron scheduling system, not a live
+      event source.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/governance/AUTONOMIC_ACTIVATION_LOG_20260601.yaml
+    evidence_summary: >-
+      AUTONOMIC_ACTIVATION_LOG_20260601.yaml records five feedback_loop_testing entries each
+      with test_result: PASSED and specific confidence scores; the same file records status:
+      SIMULATED_DEPLOYMENT at line 185 and scheduling_system: simulated-cron at line 438.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-004
+    claim: >-
+      The receipt chain integrity is broken: the independent chain verifier
+      (RECEIPT_CHAIN_VERIFICATION_20260601.yaml) finds 8 chain breaks across 5 distinct
+      receipt chains and 10/10 hash mismatches, with chain_integrity_status: INVALID and
+      overall_gate_result: FAILED, directly contradicting MANUFACTURING_SUMMARY.md's claim
+      of 100% BLAKE3 receipt coverage for 123/123 artifacts.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/manufacturing/RECEIPT_CHAIN_VERIFICATION_20260601.yaml
+      - research/pi-program/manufacturing/MANUFACTURING_SUMMARY.md
+    evidence_summary: >-
+      RECEIPT_CHAIN_VERIFICATION_20260601.yaml confirms chain_breaks=8, hash_mismatches=10,
+      chain_integrity_status=INVALID, and overall_gate_result=FAILED; MANUFACTURING_SUMMARY.md
+      simultaneously asserts 100% Blake3 Receipt Coverage (123/123), constituting a documented
+      internal inconsistency in the evidence record.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-005
+    claim: >-
+      The 12-gate Van der Aalst conformance audit yields 10 PASS and 2 FAIL: audit_005
+      (No DTO Flattening) is CRITICAL and BLOCKING, identifying two public API methods in
+      wasm4pm-compat (receipt_json() and to_json_string()) that return opaque JSON strings
+      violating the Evidence<T, State, Witness> type law; audit_012 (Remediation Routed) is
+      non-blocking and lacks a documented owner.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/audits/audit-results.yaml
+    evidence_summary: >-
+      audits/audit-results.yaml is cited as the primary audit authority and the two specific
+      FAIL items (audit_005 and audit_012) are described with severity, affected files, and
+      remediation estimates consistent across 05_evidence_receipts_and_gates.tex and
+      07_open_questions_and_next_work.tex.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-006
+    claim: >-
+      The forbidden-collapse taxonomy defines eight OWL individual collapse subtypes
+      (StateTagCollapse, RefusalLawCollapse, EvidenceRefCollapse, LossItemCollapse,
+      WitnessKeyCollapse, JSONSerializationCollapse, SilentFlatteningCollapse,
+      RawEvidenceExportCollapse), each with a collapseStatus property (ACTIVE, MITIGATED, or
+      REMEDIATED) and the Van der Aalst Constitution embedded verbatim in the file's
+      skos:editorialNote.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/ggen/ontology/forbidden-collapse-law.ttl
+    evidence_summary: >-
+      forbidden-collapse-law.ttl exists in the ontology directory and is described consistently
+      across architecture (03) and contribution (06) TeX files; the eight named subtypes and
+      lifecycle status properties are asserted as OWL individuals with collapseLocation,
+      collapseStatus, and collapseAuditResult properties.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-007
+    claim: >-
+      The primary containment invariant encoded in governance-policy.ttl is the LTL safety
+      formula G(¬Compliant(s) ⇒ X(¬Actuated(s))), with a default compliance boundary of
+      fitness ≥ 0.85, and the authority chain ostar-governor → ostar-auditor → ostar-doctor.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/ggen/ontology/governance-policy.ttl
+    evidence_summary: >-
+      governance-policy.ttl exists in the ontology directory; the invariant formula, fitness
+      threshold, and authority chain are cited consistently in 00_project_identity.tex and
+      03_architecture_and_primitives.tex with specific OWL individual names
+      gov:PrimaryContainmentInvariant and gov:LTLSafetyInvariant.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-008
+    claim: >-
+      Phase 2 manufacturing produced 123 artifacts across 6 sub-projects (74 for pi-program
+      root, 42 for prompt-manufactory, 5 for pi-program/api, 1 for pi-program/governance,
+      1 for pi-program/m-and-a), distributed as 84 Markdown documents, 25 YAML manifests,
+      10 JSON receipts, and 4 Rust/other files.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/manufacturing/MANUFACTURING_SUMMARY.md
+      - research/pi-program/.ggen/receipts/phase-2-index.json
+    evidence_summary: >-
+      MANUFACTURING_SUMMARY.md asserts these artifact counts and distribution by type with
+      the breakdown table; the phase-2-index.json exists as a machine-readable counterpart
+      recording 81 artifacts for pi-program sub-projects; the artifact type distribution is
+      a narrative assertion not independently verified against actual emitted files.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-009
+    claim: >-
+      The pi:FORBIDDEN_COLLAPSE taxonomy constitutes a new conceptual primitive in the
+      process-evidence literature by elevating evidence boundary defects to first-class
+      ontological status with lifecycle tracking (ACTIVE/MITIGATED/REMEDIATED),
+      distinguishing the approach from existing process mining literature that treats evidence
+      quality only as scalar properties of the event log.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - research/pi-program/ggen/ontology/forbidden-collapse-law.ttl
+    evidence_summary: >-
+      The ontology file and the eight collapse subtype definitions provide structural backing
+      for the architecture; the claim of novelty relative to existing process mining literature
+      is the author's original analytical assertion and is not verified against the cited
+      literature body.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-010
+    claim: >-
+      The MAPE-K autonomic loop functions as a coordination mechanism rather than a prediction
+      system: the containment invariant G(¬Compliant(s) ⇒ X(¬Actuated(s))) blocks actuation
+      based on current state compliance rather than prediction of future behavior, contributing
+      a coordination-based answer to the dissertation's prediction-versus-coordination tension.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - research/pi-program/ggen/ontology/governance-policy.ttl
+      - research/pi-program/governance/AUTONOMIC_ACTIVATION_LOG_20260601.yaml
+    evidence_summary: >-
+      The LTL invariant formula and five passing MAPE-K tests (simulated) provide empirical
+      backing for the coordination mechanism functioning on covered test scenarios; the framing
+      as a resolution to the prediction-versus-coordination thesis tension is the author's
+      analytical contribution.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-011
+    claim: >-
+      The SPARQL→Tera→BLAKE3 manufacturing pattern is declarative, auditable, and composable,
+      qualifying it as the authoritative architecture for board-admissible artifact
+      manufacturing.
+    claim_type: INTERPRETATION
+    source_files:
+      - research/pi-program/ggen/ggen.toml
+      - research/pi-program/manufacturing/MANUFACTURING_SUMMARY.md
+    evidence_summary: >-
+      The ggen.toml manifest encodes the declarative (query, template, output) triplet
+      structure, and Phase 2 manufacturing demonstrates composability across sub-projects;
+      however, the primary pi-program manufacturing pipeline (ggen-002) never executed
+      end-to-end (total_duration_ms=0), limiting the empirical basis for the auditability
+      claim.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-012
+    claim: >-
+      The MAPE-K deployment and five feedback loop tests represent operational verification
+      of the governance infrastructure. The TeX presentation does not foreground that
+      AUTONOMIC_ACTIVATION_LOG_20260601.yaml records status: SIMULATED_DEPLOYMENT and
+      scheduling_system: simulated-cron, creating an interpretive risk in how readers
+      understand the verification scope.
+    claim_type: INTERPRETATION
+    source_files:
+      - research/pi-program/governance/AUTONOMIC_ACTIVATION_LOG_20260601.yaml
+    evidence_summary: >-
+      The activation log explicitly marks the deployment as SIMULATED_DEPLOYMENT at line 185
+      and simulated-cron at line 438; the TeX presentation in 05_evidence_receipts_and_gates.tex
+      reports test results accurately but does not foreground the simulation boundary, making
+      the framing an interpretive risk that must be disclosed in the dissertation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-013
+    claim: >-
+      The symbolic connection from the pi-program governance authority to capital-flow nodes
+      (AI XYNZ, DAO settlement layers) is grounded in the admissibility boundary gate
+      (audit_003 PASS) and the Chatman Equation, providing the evidentiary basis for capital
+      allocation decisions in downstream DAO governance layers.
+    claim_type: FUTURE_WORK
+    source_files:
+      - research/pi-program/audits/audit-results.yaml
+    evidence_summary: >-
+      The TeX text (06_contribution_to_thesis.tex, 07_open_questions_and_next_work.tex)
+      explicitly acknowledges this connection as AUTHOR THESIS / FUTURE WORK and notes the
+      linkage to AI XYNZ and DAO settlement layers is not documented within any pi-program
+      artifact; the admissibility boundary gate passes, but no receipt evidence exists for
+      the downstream capital-flow integration.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PI_PROGRAM-014
+    claim: >-
+      The OpenAPI 3.0 specification at api/manufactured/openapi-3.0-spec.yaml is published
+      at https://api.process-intelligence.org and serves as the external interface through
+      which downstream capital-flow and settlement infrastructure queries the governance
+      authority layer.
+    claim_type: UNSUPPORTED_REMOVED
+    source_files:
+      - research/pi-program/emitted/ggen-api-manufacturing/receipts/receipt_api_openapi_20260601.json
+    evidence_summary: >-
+      The OpenAPI specification file and its manufacturing receipt exist locally, but no
+      evidence supports a live public URL at https://api.process-intelligence.org; additionally,
+      the ggen-002 manifest never executed (total_duration_ms=0), meaning the file was not
+      manufactured via the declared SPARQL→Tera pipeline, undermining the ontology-derivation
+      claim.
+    confidence: HIGH
+    allowed_in_pdf: false
+
+  - id: CLM-RESEARCH_PI_PROGRAM-015
+    claim: >-
+      The overall status of research-pi-program is PARTIAL as of 2026-06-01, blocked by three
+      critical defects: (1) broken receipt chain integrity (8 chain breaks, 10 hash mismatches);
+      (2) the ggen-002 manifest has never successfully executed (total_duration_ms=0); and (3)
+      audit_005 DTO boundary violation in wasm4pm-compat remains a CRITICAL BLOCKING defect.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/pi-program/manufacturing/RECEIPT_CHAIN_VERIFICATION_20260601.yaml
+      - research/pi-program/ggen/audit.json
+      - research/pi-program/audits/audit-results.yaml
+      - research/pi-program/checkpoints/PI_GGEN_UNIFIED_RUN_PARTIAL_001.md
+    evidence_summary: >-
+      All three defects are independently verified from distinct source files:
+      RECEIPT_CHAIN_VERIFICATION confirms chain_integrity_status=INVALID; ggen/audit.json
+      confirms total_duration_ms=0; audit-results.yaml records audit_005 FAIL with CRITICAL
+      severity; PI_GGEN_UNIFIED_RUN_PARTIAL_001 documents the PARTIAL verdict with 4/14 gates
+      passing.
+    confidence: HIGH
+    allowed_in_pdf: true

@@ -1,0 +1,199 @@
+slug: otel_weaver_exp_003_live_check_to_refusal
+claims:
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-001
+    claim: "EXP-003 implements a type-level gate function with signature `validate_and_project:\
+      \ Feedstock -> Result<Admission<T,W>, Refusal>` in src/validator.rs; unverified\
+      \ feedstock cannot be cast to Admission because no such conversion exists in\
+      \ the type lattice — enforced at compile-time by Rust's ownership model."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/Cargo.toml
+    evidence_summary: "validator.rs defines all types and the validate_and_project\
+      \ function exactly as described; Admission<T,W> has no public constructor other\
+      \ than the gate function, confirmed by direct source inspection."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-002
+    claim: "The inline unit tests test_successful_admission and test_refusal_missing_id\
+      \ pass within the standalone validator.rs, but the standalone build_refusal\
+      \ uses a mock digest (format!(\"{:064x}\", raw_str.len())) rather than a genuine\
+      \ BLAKE3 invocation — despite blake3 1.3 being declared as a Cargo dependency."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/Cargo.toml
+    evidence_summary: "Source inspection of validator.rs line 99 confirms the mock\
+      \ hash format with comment 'Generate simulated BLAKE3 digest'; the inline tests\
+      \ do not assert on the blake3_digest field and therefore cannot detect this\
+      \ gap."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-003
+    claim: "The integration test test_weaver_integration_synthesis in weaver_integration_tests.rs\
+      \ exercises five cases (nominal admission plus all four RefusalCode variants)\
+      \ and asserts blake3_digest.len() == 64 using the genuine wasm4pm::crypto::Blake3\
+      \ hasher, confirming real cryptographic digest production for each refusal."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: "Direct source inspection of weaver_integration_tests.rs confirms\
+      \ five assertion blocks, each calling wasm4pm::crypto::Blake3 in build_refusal,\
+      \ and the checkpoint records 'test test_weaver_integration_synthesis ... ok'\
+      \ with SHA-256 seal 86ef45b3..."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-004
+    claim: "Two of the six named laws in live-check-finding-to-refusal-map.yaml (DanglingEventObjectLink\
+      \ and SchemaVersionMismatch) have no corresponding RefusalCode variant in the\
+      \ Rust implementation and no test; two more (EmptyTrace and InvalidTimestampOrder)\
+      \ also lack dedicated Rust variants, making four of six named laws unimplemented."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/mappings/live-check-finding-to-refusal-map.yaml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+    evidence_summary: "The YAML mapping defines six named laws; validator.rs RefusalCode\
+      \ enum contains only four variants (MissingInstanceId, MissingActivityName,\
+      \ MissingWitnessId, InvalidWitnessSignature), confirmed by direct source inspection\
+      \ of both files."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-005
+    claim: "Checkpoints GGEN_OTEL_WEAVER_PI_ALIVE_001 and GGEN_OTEL_WEAVER_PI_RUNTIME_001,\
+      \ both dated 2026-06-01 and carrying SHA-256 audit seals, certify that all\
+      \ five OTel Weaver experiments were created and the runtime integration test\
+      \ passed with 62 total tests across the wasm4pm workspace."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: "Both checkpoint files exist on disk and contain dated SHA-256\
+      \ seals and test output prose as cited; RUNTIME_001 seal is 86ef45b3c63ae38007701169bcf0abbda2694a43160f3f8d3695c6255b02cb44."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-006
+    claim: "The current experiment status is PARTIAL: success criteria 1-4 are met\
+      \ (compilation, inline tests, integration test, checkpoints), but criterion\
+      \ 5 (all four RefusalCode variants exercised by named individual test cases)\
+      \ is only partially met because all variants are covered within a single test_weaver_integration_synthesis\
+      \ function rather than separate named tests."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: "The integration test source shows one function with five sequential\
+      \ assertion blocks; the PARTIAL designation rests on the author's criterion\
+      \ that variants must be exercised by distinct named test cases, an analytical\
+      \ judgment applied to the verified source."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-007
+    claim: "The refusals.json persistence ledger described in the README — an append-only\
+      \ BLAKE3-sealed file for archiving Refusal records triggered by MAPE-K loop\
+      \ correction — is specified but not implemented; no file I/O code exists in\
+      \ validator.rs or the integration test."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/README.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+    evidence_summary: "validator.rs contains no file I/O code and no reference to\
+      \ refusals.json; the README specifies the ledger as a production artifact, creating\
+      \ a confirmed gap between specification and implementation."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-008
+    claim: "EXP-003 operationalizes the complement of the Feedstock Theorem: the\
+      \ ingestion gate blocks unlawful feedstock from entering the conformance court,\
+      \ converting passive telemetry observation into active coordination enforcement."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/otel-weaver-is-feedstock.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+    evidence_summary: "The doctrine file establishes that telemetry collectors do\
+      \ not block unlawful transitions; the thesis claims EXP-003's gate does exactly\
+      \ that, which is an analytical conclusion the author applies to the verified\
+      \ source code."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-009
+    claim: "The connection between Admission<T,W> and the Chatman Equation measure\
+      \ operator mu(O*) exists only at the documentation level; no formal type binding\
+      \ from Admission to the measure operator or to capital-flow settlement types\
+      \ has been manufactured in the current codebase."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+    evidence_summary: "validator.rs contains no trait bounds or type aliases connecting\
+      \ Admission to mu or settlement types; the TeX explicitly marks this as documentation-level\
+      \ only, confirmed by source absence of the binding."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-010
+    claim: "EXP-003 occupies position three in a five-experiment OTel Weaver integration\
+      \ suite, sitting between EXP-002 (BridgeRx schema-diff bridge) and EXP-004\
+      \ (registry-to-witness code generator); the three are sequentially dependent\
+      \ and none functions correctly in isolation."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+    evidence_summary: "ALIVE_001 checkpoint lists all five experiments and their architectural\
+      \ roles; weaver_integration_tests.rs imports BridgeRx and chains it with validate_and_project,\
+      \ confirming the EXP-002/EXP-003 dependency at the code level."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-011
+    claim: "The AlphaWitness 'Alpha' designation names the first-tier witness in\
+      \ the type-law lattice; future experiments may introduce higher-tier witnesses\
+      \ for multi-stage verification."
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+    evidence_summary: "validator.rs defines AlphaWitness with no documented tier\
+      \ semantics in the source; the multi-tier interpretation is the author's reading\
+      \ of the naming convention with no corroborating design document or code hierarchy\
+      \ found."
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-012
+    claim: "Two ggen templates (pi-live-check-intake.rs.ggen and audit-live-check-findings-routed.sh.ggen)\
+      \ indicate that validator.rs is intended to be manufactured from templates rather\
+      \ than maintained as hand-written code in production."
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    evidence_summary: "The TeX explicitly states template content was not read in\
+      \ depth and the description is inferred from path names and ggen manufacturing\
+      \ context; this is an interpretation from naming convention, not direct template\
+      \ inspection."
+    confidence: LOW
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_003_LIVE_CHECK_TO_REFUSAL-013
+    claim: "Advancing EXP-003 from PARTIAL to ALIVE requires four receipted manufacturing\
+      \ items: genuine BLAKE3 in standalone validator (EXP-003-BLAKE3-001), full\
+      \ six-law Rust coverage (EXP-003-LAWS-001), refusals.json persistence layer\
+      \ (EXP-003-PERSISTENCE-001), and standalone compilation with Cargo.lock (EXP-003-STANDALONE-001)."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+      - /Users/sac/process-intelligence/otel-weaver/mappings/live-check-finding-to-refusal-map.yaml
+    evidence_summary: "Each receipted item maps directly to a confirmed source gap:\
+      \ mock digest in validator.rs (gap 1), four unimplemented named laws confirmed\
+      \ by YAML vs Rust enum comparison (gap 2), absent file I/O (gap 4), absent\
+      \ Cargo.lock (gap 3)."
+    confidence: HIGH
+    allowed_in_pdf: true

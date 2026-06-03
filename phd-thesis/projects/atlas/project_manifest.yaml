@@ -1,0 +1,22 @@
+slug: atlas
+absolute_path: /Users/sac/process-intelligence/atlas
+description: >
+  Research atlas corpus and thesis chapter surface map. Contains doctrine modules for AALST
+  livestream standards, AGI adversarial defenses, Blue River Dam doctrine, ggen prompt
+  manufactory, Supabase law substrate, WASM boundary law, and ZoeApp ministry ontology.
+detected_languages: []
+detected_frameworks: []
+detected_research_surfaces:
+  - process-law
+  - ontology
+  - manufacturing-pipeline
+likely_thesis_role: doctrine-atlas-and-thesis-chapter-surface-map
+key_files:
+  - /Users/sac/process-intelligence/atlas/doctrine_blue_river_dam.md
+  - /Users/sac/process-intelligence/atlas/wasm_boundary_law.md
+  - /Users/sac/process-intelligence/atlas/ggen_prompt_manufactory.md
+  - /Users/sac/process-intelligence/atlas/aalst_livestream_standards.md
+  - /Users/sac/process-intelligence/atlas/zoeapp_ministry_ontology.md
+readme_present: false
+receipt_present: false
+ontology_present: false

@@ -1,0 +1,109 @@
+---
+artifact: WATER_GATE_CERTIFICATION
+version: "001"
+gate: Water Gate
+project: Prompt Manufactory
+canonical_path: /Users/sac/process-intelligence/research/prompt-manufactory
+issued: "2026-06-02T00:00:00Z"
+status: CERTIFIED
+
+# Water Gate Doctrine: The Water Gate governs the passage of research intent
+# into downstream subagent directives. No prompt may cross this gate without
+# upstream doctrine citation and governance approval.
+
+governance_statement: |
+  All research warrants manufactured by the Prompt Manufactory have been
+  reviewed against upstream doctrine from ~/process-intelligence/doctrine/.
+  No warrant may be issued without a pm:derivedFrom provenance triple linking
+  it to a lawful RDF ontology instance. No warrant may cross the Water Gate
+  without citing at least one upstream doctrine law. This certification attests
+  that all 41 emitted artifacts satisfy these requirements as of 2026-06-02.
+
+upstream_doctrine_citations:
+  - file: doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md
+    sha256: 422ea2a942142f4e165ef775f4b5ebd7a647b702537d0ef891d1a0daa7dfc3d0
+    claim: "No downstream refactor mandate may be issued until ~/process-intelligence ALIVE gate is sealed."
+    binding_rule: "All workflow warrants authored by Prompt Manufactory are downstream of process-intelligence-core doctrine."
+  - file: research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+    sha256: 01b52b815102f2839b5c852cadf9edb119592635bd8d8436b9574e0aea6bb054
+    claim: "15 core classes, 8 core relations, 15 data properties, SHACL shapes — the manufacturing ontology"
+    binding_rule: "Every emitted artifact is an instance of a pm:ResearchProgram or pm:SubagentRole or pm:Skill or pm:Hook or pm:Checkpoint."
+  - file: research/prompt-manufactory/ggen/ontology/research-program-law.ttl
+    sha256: 3e382eca940e53abc17a8dba13d7b8acdd34b09ff52d80c4123a233493d5d167
+    claim: "7 seed research program instances encoded as RDF"
+    binding_rule: "All workflow warrants are derived from program instances in this law file."
+  - file: research/prompt-manufactory/ggen/ontology/forbidden-collapse-law.ttl
+    binding_rule: "Three collapse bans enforced at all lifecycle phases; all warrants include Forbidden Paths sections."
+
+warranted_prompts:
+  - id: PI_RESEARCH_PROGRAM_INTEL_001
+    type: WorkflowWarrant
+    path: emitted/prompts/workflows/PI_RESEARCH_PROGRAM_INTEL_001.md
+    sha256: 0e98ff1051b4dc706727bc62e19ad2c0ffc85411759376ba68f48bd357351866
+    derivedFrom: "https://pi-research.dev/programs#PI_RESEARCH_PROGRAM_INTEL_001"
+    doctrine_law: research-program-law.ttl
+    water_gate_status: AUTHORIZED
+
+  - id: GGEN_ECOSYSTEM_INTEL_001
+    type: WorkflowWarrant
+    path: emitted/prompts/workflows/GGEN_ECOSYSTEM_INTEL_001.md
+    sha256: 0440801d1d5c2f152f408dbc6303de9cb51ba4d10653236b51d0859341c3d2f6
+    derivedFrom: "https://pi-research.dev/programs#GGEN_ECOSYSTEM_INTEL_001"
+    doctrine_law: research-program-law.ttl
+    water_gate_status: AUTHORIZED
+
+  - id: GGEN_OTEL_WEAVER_PI_INTEL_001
+    type: WorkflowWarrant
+    path: emitted/prompts/workflows/GGEN_OTEL_WEAVER_PI_INTEL_001.md
+    sha256: b8168fa410abb07ab6301f9b3ca550dfcc6e13fbea48ec79a5c8b076f0762e1f
+    derivedFrom: "https://pi-research.dev/programs#GGEN_OTEL_WEAVER_PI_INTEL_001"
+    doctrine_law: research-program-law.ttl
+    water_gate_status: AUTHORIZED
+
+  - id: ZOEAPP_RESEARCH_PROGRAM_INTEL_001
+    type: WorkflowWarrant
+    path: emitted/prompts/workflows/ZOEAPP_RESEARCH_PROGRAM_INTEL_001.md
+    sha256: afd803186d7391bbd75a7ef478225cf4ac83e7978bc05edd19140f7788266e39
+    derivedFrom: "https://pi-research.dev/programs#ZOEAPP_RESEARCH_PROGRAM_INTEL_001"
+    doctrine_law: research-program-law.ttl
+    water_gate_status: AUTHORIZED
+
+  - id: GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001
+    type: WorkflowWarrant
+    path: emitted/prompts/workflows/GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001.md
+    sha256: 058cbe30a3f606c61dc6fa9fd58d6849acd9f4e9d3e2ef754dadbcd6d3e997c7
+    derivedFrom: "https://pi-research.dev/programs#GGEN_EXPO_SUPABASE_FRAMEWORK_INTEL_001"
+    doctrine_law: research-program-law.ttl
+    water_gate_status: AUTHORIZED
+
+  - id: GGEN_CLAUDE_WORKFLOW_INTEL_001
+    type: WorkflowWarrant
+    path: emitted/prompts/workflows/GGEN_CLAUDE_WORKFLOW_INTEL_001.md
+    sha256: dce06fb0caf8c1097d09153fb2faf4c69a356fec6e4952c069250f49bbe989eb
+    derivedFrom: "https://pi-research.dev/programs#GGEN_CLAUDE_WORKFLOW_INTEL_001"
+    doctrine_law: research-program-law.ttl
+    water_gate_status: AUTHORIZED
+
+  - id: WASM4PM_COMPAT_PROJECTION_REMEDIATE_001
+    type: WorkflowWarrant
+    path: emitted/prompts/workflows/WASM4PM_COMPAT_PROJECTION_REMEDIATE_001.md
+    sha256: 1fa63fa55819780791bdd09c721db0872f4e1df455c93c2cdd89e0094ed4c9d1
+    derivedFrom: "https://pi-research.dev/programs#WASM4PM_COMPAT_PROJECTION_REMEDIATE_001"
+    doctrine_law: research-program-law.ttl
+    water_gate_status: AUTHORIZED
+
+subagent_roles_warranted: 17
+skills_warranted: 6
+hooks_warranted: 6
+checkpoints_warranted: 2
+total_artifacts_warranted: 41
+
+manufacturing_authority:
+  ontology: research/prompt-manufactory/ggen/ontology/
+  manifest: research/prompt-manufactory/emitted/manifests/manufacturing-manifest-20260601.yaml
+  gate_check: artifacts_emitted_gte_40=PASS, receipts_eq_artifacts=PASS
+  overall_gate: PASS
+
+certification_authority: Process Intelligence Research Foundry
+certified_by: Prompt Manufactory Agent
+date: "2026-06-02T00:00:00Z"

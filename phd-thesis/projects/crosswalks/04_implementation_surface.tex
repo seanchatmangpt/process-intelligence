@@ -1,0 +1,101 @@
+% FILE: 04_implementation_surface.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Implementation Surface}
+\label{sec:crosswalks-impl}
+
+\subsection{Source Files}
+\label{sec:crosswalks-impl-files}
+
+The crosswalks project consists of eight Markdown research specification documents. All files were
+last modified between 2026-05-31 and 2026-06-01 (source: evidence extraction timestamp record).
+None are Rust source files; none are test fixtures; none are compiled artifacts. They are research
+specifications that authorise downstream implementation in \texttt{wasm4pm-compat}.
+
+\begin{enumerate}
+  \item \texttt{BPMN\_TO\_WFNET.md} --- Defines the \textsc{BPMN}-to-WF-net projection law,
+        node mapping table, loss taxonomy (7 hard-drop categories, 2 approximation categories),
+        and \texttt{wasm4pm-compat} Rust enforcement pattern with \texttt{BpmnProcess} admission
+        and \texttt{LossPolicy} decision prior to scan.
+  \item \texttt{OCEL\_TO\_XES.md} --- Defines the inherently lossy \textsc{OCEL} 2.0 $\to$
+        \textsc{XES} projection, \texttt{LossPolicy} three-variant enum, \texttt{XesExportRefusal}
+        four-variant enum, and the five-step translation covenant from raw bytes through admitted
+        compat to exported \textsc{XES}.
+  \item \texttt{PROCESS\_TREE\_TO\_WFNET.md} --- Defines the universally lossless Process
+        Tree $\to$ WF-net projection, citing van der Aalst \& Weijters (2004) and Leemans (2022).
+        Specifies \texttt{TypedLoopNode<ARITY>} compile-time arity enforcement and the
+        Inductive Miner conformance pipeline.
+  \item \texttt{WFNET\_TO\_POWL.md} --- Defines the conditionally lossless WF-net $\to$
+        \textsc{POWL} projection, block-structured vs.\ non-block-structured loss detection,
+        and \texttt{TreeProjectable} / \texttt{ExceedsProcessTree} witness markers on the
+        resulting \texttt{Powl} node.
+  \item \texttt{declare\_to\_wasm\_mapping.md} --- Maps four Declare templates (Precedence,
+        Response, Coexistence, Succession) to their \textsc{LTLf} formulas and concrete Rust
+        witness structs with step transition functions and lattice join operators.
+  \item \texttt{pm4py\_to\_wasm4pm\_data\_types.md} --- Defines the \textsc{PM4Py}~$\to$
+        \texttt{wasm4pm-compat} type crosswalk: \texttt{OcelEventLog}, \texttt{XesTrace},
+        \texttt{ActivityName}, \texttt{Timestamp}, \texttt{ResourceId} with constructor
+        validators and referential integrity invariants.
+  \item \texttt{alive\_001\_to\_iso\_compliance.md} --- Maps four \textsc{ALIVE\_001} gates to
+        \textsc{ISO/IEC} 23745, \textsc{ISO} 9001:2015, \textsc{ISO/IEC} 27001, and
+        \textsc{ISO/IEC} 12207:2017, with mathematical formulations for each gate.
+  \item \texttt{bpmn\_to\_declare\_conformance.md} --- Maps four \textsc{BPMN} gateway types
+        (XOR-split, AND-split, sequence flow, loop backward edge) to Declare constraints with
+        \textsc{LTLf} formulas and lattice state spaces.
+\end{enumerate}
+
+\subsection{Commands}
+\label{sec:crosswalks-impl-commands}
+
+\textbf{[AUTHOR THESIS]:} The crosswalks project defines no commands. It is a research
+specification layer. The commands that enforce the crosswalk contracts are located in the
+\texttt{wasm4pm-compat} crate, which is a downstream product of this research. No \texttt{Makefile},
+no \texttt{Cargo.toml}, and no CLI entrypoint exist in \texttt{crosswalks/} directly.
+
+The \texttt{project\_manifest.yaml} records \texttt{detected\_languages: []} and
+\texttt{detected\_frameworks: [wasm4pm, pm4py]}, confirming that the project contains no
+compiled language surface and names its reference frameworks by association rather than
+by direct implementation.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:crosswalks-impl-data}
+
+The crosswalks project defines three categories of data surface:
+
+\begin{description}
+  \item[Node mapping tables:] Each crosswalk document contains a Markdown table mapping source
+    formalism elements to destination formalism elements. These tables are the primary research
+    artifact. The \textsc{BPMN} $\to$ WF-net table has 10 rows; the \textsc{OCEL} $\to$ \textsc{XES}
+    structural mismatch table has 6 dimensions; the Process Tree $\to$ WF-net canonical mapping
+    has 6 operator rows.
+  \item[Loss taxonomy tables:] Each lossy crosswalk documents a ``What Is Lost'' table with
+    columns for lost item, source type, destination type, and loss classification (hard drop
+    vs.\ structural approximation vs.\ information destruction). The \textsc{BPMN} $\to$ WF-net
+    crosswalk lists 9 loss entries; the \textsc{OCEL} $\to$ \textsc{XES} crosswalk lists 7.
+  \item[Mathematical formulations:] The \texttt{alive\_001\_to\_iso\_compliance.md} and
+    \texttt{bpmn\_to\_declare\_conformance.md} crosswalks provide formal mathematical
+    definitions using set-theoretic and \textsc{LTLf} notation. The \textsc{OCEL} 2.0 schema
+    completeness formula is: $\forall e \in E,\ \text{omap}(e) \subseteq O$. The WF-net
+    soundness formulation includes three axioms: option to complete, proper completion, no dead
+    transitions.
+\end{description}
+
+The \texttt{project\_manifest.yaml} records \texttt{ontology\_present: false}: no \textsc{OWL}
+or Turtle ontology file exists directly in \texttt{crosswalks/}. The crosswalk data surfaces are
+purely propositional and relational, not linked-data.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:crosswalks-impl-templates}
+
+The crosswalks project produces no rendered artifacts directly. The Markdown specification files
+are the terminal artifacts of this research layer. Downstream rendering --- as \texttt{wasm4pm-compat}
+Rust source, as \textsc{WASM} binary, as conformance report --- is authorised by the research
+specifications but not performed within \texttt{crosswalks/} itself.
+
+\textbf{[AUTHOR THESIS]:} The crosswalk documents function as templates for the
+\texttt{wasm4pm-compat} API surface. Each Rust struct block (\texttt{WitnessPrecedence},
+\texttt{WitnessResponse}, \texttt{OcelEventLog}, \texttt{XesTrace}) embedded in the crosswalk
+Markdown is a research specification of the type that must appear in the crate. Whether these
+specifications have been materialised in the crate's actual source is a deferred gate
+(see \textsection\ref{sec:crosswalks-evidence}).

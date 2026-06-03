@@ -1,0 +1,213 @@
+slug: research-open-ontologies
+claims:
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-001
+    claim: "The federated dependency graph (Phase 4, 2026-06-01) reports ACYCLIC/CONSISTENT\
+      \ status, gate_pass: true, with 24 TTL files loaded, 4,622 total triples, 871\
+      \ unique entities, zero circular dependencies, and zero dangling references."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/open-ontologies/federated/CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml
+    evidence_summary: "CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml directly records\
+      \ all cited metrics verbatim: ttl_files_loaded: 24, total_triples: 4622, unique_entities:\
+      \ 871, circular_dependencies: 0, dangling_references: 0, dependency_graph_status:\
+      \ ACYCLIC, status: CONSISTENT, gate_pass: true."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-002
+    claim: "The Phase 7 roundtrip report (run-ontology-audit.py via rdflib 2.0.9)\
+      \ confirms 14/14 TTL files loaded with no parse errors, producing a unified\
+      \ graph of 3,684 total triples, 661 unique subjects, and 4/4 SPARQL smoke queries\
+      \ passing; classification: AVAILABLE."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/open-ontologies-roundtrip-report.md
+      - /Users/sac/process-intelligence/run-ontology-audit.py
+    evidence_summary: "The roundtrip report records VALIDATE_PASSED for 14/14 files,\
+      \ total_triples: 3684, unique_subjects: 661, 4/4 QUERY_PASSED, and classification\
+      \ AVAILABLE — all figures match the TeX claims exactly."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-003
+    claim: "The witness lattice in ggen/wasm4pm-compat.ttl defines 8 named compat:WitnessMarker\
+      \ instances forming a join-semilattice: VanDerAalst1989 (lattice_position: bottom),\
+      \ VanDerAalst1998, VanDerAalst2016, Murata1989 (bottom), Weijters2011, Leemans2013,\
+      \ Adriansyah2011, and BlueRiverDam (top)."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/wasm4pm-compat.ttl
+    evidence_summary: "wasm4pm-compat.ttl defines all 8 named WitnessMarker individuals\
+      \ with explicit compat:lattice_position values (bottom/middle/top) confirming\
+      \ the lattice structure; the file was confirmed VALID in the Phase 7 roundtrip."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-004
+    claim: "The current status of the open-ontologies project is PARTIAL: the dependency\
+      \ consistency gate and rdflib load gate are met, but TTL syntax validation via\
+      \ rapper/librdf-utils (Gate 3, 23 violations assumed), SPARQL prefix alignment\
+      \ (Gate 4, 61 violations), and receipt TTL manufacture remain unmet."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/checkpoints/PI_GGEN_UNIFIED_RUN_CONFORMANCE_AUDIT_001.md
+      - /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/open-ontologies-roundtrip-report.md
+    evidence_summary: "PI_GGEN_UNIFIED_RUN_CONFORMANCE_AUDIT_001.md records Gate 3\
+      \ FAIL (23 violations, rapper not installed) and Gate 4 FAIL (61 violations);\
+      \ the roundtrip report records RECEIPT_NOT_FOUND — directly confirming PARTIAL\
+      \ status with identified gaps."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-005
+    claim: "Seven canonical receipts are registered in receipts/RECEIPT_REGISTRY.md\
+      \ certifying major research program milestones: PAPER_CANON, PM4PY_ORACLE, WASM4PM_GAP,\
+      \ LIFECYCLE, MA, STANDARDS, and ADVERSARIAL."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+    evidence_summary: "RECEIPT_REGISTRY.md (version 001, produced 2026-05-31) lists\
+      \ all 7 named receipts with their produced_by, witness, criteria_met, and gaps_remaining\
+      \ fields exactly as described in the TeX."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-006
+    claim: "SPARQL smoke queries count_checkpoints=0 and count_artifacts=0 in the\
+      \ Phase 7 run are caused by a namespace prefix mismatch in the audit tool, not\
+      \ by absent data; sample_subjects confirms that checkpoint and artifact IRIs\
+      \ are present in the unified graph."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/open-ontologies-roundtrip-report.md
+    evidence_summary: "The roundtrip report shows count_checkpoints=0 and count_artifacts=0\
+      \ in the same run that sample_subjects returns the IRI https://process.intelligence/checkpoint/SUBSTRATE_COMPLETE_001,\
+      \ confirming entities are present but addressed under the wrong SPARQL prefix."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-007
+    claim: "The ontology corpus provides a formal type system grounding the admissibility\
+      \ predicate of the Chatman Equation (A = mu(O*)), such that evidence A is admissible\
+      \ if and only if it can be expressed as RDF triples conforming to SHACL shapes,\
+      \ grounded in a named compat:WitnessMarker, and accompanied by a BLAKE3 receipt."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/ggen/wasm4pm-compat.ttl
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl
+      - /Users/sac/process-intelligence/research/open-ontologies/federated/CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml
+    evidence_summary: "The Chatman Equation and its admissibility formalization are\
+      \ the author's analytical framework; the corpus components (WitnessMarkers, SHACL\
+      \ shapes, BLAKE3 receipts) are confirmed by source files, but the formal equation\
+      \ connecting them is the author's thesis construct."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-008
+    claim: "The pi-program.ttl top-level structural ontology imports PROV-O, SKOS,\
+      \ DCTERMS, DCAT, SHACL, and OWL, and defines the pi:ProgramRole taxonomy with\
+      \ 8 named role subclasses."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl
+    evidence_summary: "pi-program.ttl directly declares all six public vocabulary prefix\
+      \ imports and defines pi:ProgramRole with pi:PROGRAM, pi:PROOF_CELL, pi:ENGINE\
+      \ visible in the file; the full 8-role taxonomy is encoded in the same TTL confirmed\
+      \ valid in the Phase 7 roundtrip."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-009
+    claim: "The LTL safety invariant G(not_compliant implies X(not_actuated)) is encoded\
+      \ in governance-policy.ttl and enforced by the MAPE-K loop in autonomic-law.ttl,\
+      \ preventing any autonomic actuation of a non-compliant process."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/autonomic-law.ttl
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/governance-policy.ttl
+    evidence_summary: "Both governance-policy.ttl and autonomic-law.ttl are confirmed\
+      \ loaded in the Phase 7 roundtrip (14/14 valid); the specific LTL invariant is\
+      \ declared as encoded in governance-policy.ttl with the file path confirmed in\
+      \ the known source_files list."
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-010
+    claim: "The conformance audit PI_GGEN_UNIFIED_RUN_CONFORMANCE_AUDIT_001 records\
+      \ 9/15 gates PASS and 6/15 gates FAIL with 101 total violations; critical-path\
+      \ gates blocking ALIVE reissue are Gates 3 (TTL syntax), 4 (SPARQL syntax), and\
+      \ 9 (legacy .ggen classification)."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/checkpoints/PI_GGEN_UNIFIED_RUN_CONFORMANCE_AUDIT_001.md
+    evidence_summary: "PI_GGEN_UNIFIED_RUN_CONFORMANCE_AUDIT_001.md directly records\
+      \ 9 PASS gates, 6 FAIL gates, 101 total violations, and explicitly names Gates\
+      \ 3, 4, 9 as the critical-path blockers for ALIVE reissue."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-011
+    claim: "The federated dependency graph query q2 confirms that 13 M&A claims reference\
+      \ the wasm4pm-compat layer, providing direct evidence that the ontology corpus\
+      \ is being used as a grounding surface for board-admissible claims rather than\
+      \ as documentation alone."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/open-ontologies/federated/CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml
+    evidence_summary: "CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml records q2_ma_claims_referencing_wasm4pm_compat:\
+      \ 13 in the queries_executed section, directly confirming the cited count."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-012
+    claim: "The local class definitions in the ontology corpus are declared as aligned\
+      \ with public standard vocabularies (PROV-O, SKOS, SHACL) by prefix import, but\
+      \ this alignment has not been verified at the semantic level by a formal ontology\
+      \ alignment tool — a known open gap."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl
+      - /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/open-ontologies-roundtrip-report.md
+    evidence_summary: "The TeX explicitly labels this gap as AUTHOR THESIS / INTERPRETATION;\
+      \ pi-program.ttl confirms the prefix imports exist, but no alignment tool output\
+      \ exists in the known source files to confirm semantic subsumption."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-013
+    claim: "A receipt TTL in RDF/PROV-O form describing the ontology corpus provenance\
+      \ does not yet exist; the Phase 7 report records RECEIPT_NOT_FOUND after checking\
+      \ three candidate paths, representing an architectural inconsistency."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/open-ontologies-roundtrip-report.md
+    evidence_summary: "The roundtrip report explicitly records RECEIPT_NOT_FOUND and\
+      \ lists the three checked paths (receipt.ttl, pi-ggen-receipt.ttl, checkpoint-receipt.ttl),\
+      \ all absent, confirming the gap."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-014
+    claim: "The long-term trajectory from receipt chains to DAO settlement and autonomous\
+      \ capital-flow governance is future work and is not implemented or claimed as\
+      \ implemented by the current project."
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: "The TeX explicitly marks this claim as [FUTURE WORK] and states\
+      \ it is not claimed to be implemented; no source files in the known evidence set\
+      \ implement DAO settlement or autonomous capital-flow governance."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_OPEN_ONTOLOGIES-015
+    claim: "Formal ontology alignment verification using tools such as LogMap or AgreementMakerLight\
+      \ to confirm that local class definitions are correctly aligned to PROV-O, SKOS,\
+      \ and SHACL counterparts is required for claims of open-standard interoperability\
+      \ but is deferred as future work not required for program ALIVE."
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: "The TeX explicitly marks this item as [FUTURE WORK] not required\
+      \ for program ALIVE; no alignment tool output exists in any known source file\
+      \ in the evidence set."
+    confidence: HIGH
+    allowed_in_pdf: true

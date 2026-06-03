@@ -1,0 +1,73 @@
+workspace: /Users/sac/process-intelligence/construct8-market-physics
+rustc_version: "1.95.0"
+status: ALIVE
+timestamp: "2026-06-01T00:00:00Z"
+
+crates:
+  - c8-core
+  - c8-graph
+  - c8-market
+  - c8-time
+  - c8-instruments
+  - c8-adversary
+  - c8-receipts
+  - c8-bench
+
+construct8_max_8_enforced: true
+need9_tested: true
+no_live_trading: true
+no_llm_in_runtime: true
+
+cargo_test_output: |
+  c8-core:        5 passed, 0 failed
+  c8-graph:       6 passed, 0 failed
+  c8-market:      4 passed, 0 failed
+  c8-time:        6 passed, 0 failed
+  c8-instruments: 5 passed, 0 failed
+  c8-adversary:   5 passed, 0 failed
+  c8-receipts:    4 passed, 0 failed
+  c8-bench:       0 passed, 0 failed
+  TOTAL:         35 passed, 0 failed
+
+need9_test_evidence:
+  - test: "tests::need9_is_typed_not_string" (c8-core) -- ok
+  - test: "tests::ninth_triple_refuses_with_need9" (c8-graph) -- ok
+
+example_results:
+  market_planck_demo:
+    status: ok
+    output_summary: >
+      Detected MarketPlanckCell (gap=15>=10), emitted delta of 3 triples,
+      applied to GraphField, hash changed 0xCAFEBABEDEADBEEF -> 0xF28DE8F937686C2C,
+      C8Receipt hash generated.
+
+  adversary_gap_demo:
+    status: ok
+    output_summary: >
+      LogicPlayer detected ["price_up","price_down","price_up","volume_spike"],
+      GraphPlayer registered 1 relation break cell.
+      Gap score: 2 (RelationBreak, LiquidityTopologyCollapse).
+      Prophecy illusion explained.
+
+  event_horizon_demo:
+    status: ok
+    output_summary: >
+      Normal state (depth=120) no boundary.
+      Collapsed state (depth=8 < threshold=100) boundary detected.
+      Delta of 2 triples applied, hash changed.
+
+  collider_demo:
+    status: ok
+    output_summary: >
+      Hypotheses h1 (strength=600) + h2 (strength=550) = 1150 > threshold 1000.
+      Hidden body detected, confidence=115%, delta of 2 triples emitted.
+
+gate_verdicts:
+  all_8_crates_compile: PASS
+  cargo_test_passes: PASS
+  at_least_3_examples_run: PASS  # 4/4 run
+  construct8_max_8_enforced: PASS
+  need9_tested: PASS
+  no_live_trading_api: PASS
+  no_llm_in_runtime: PASS
+  implementation_receipt_written: PASS

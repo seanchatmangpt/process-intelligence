@@ -1,0 +1,126 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Open Questions and Next Work}
+\label{sec:comparisons-open}
+
+\subsection{Known Gaps}
+\label{sec:comparisons-open-gaps}
+
+The following gaps are documented by the comparisons corpus itself or are
+directly implied by its coverage matrix:
+
+\begin{enumerate}
+  \item \textbf{No reproducible benchmarks.} All performance figures
+    (8.2M events/sec raw replay, 134.7K events/sec alignment, $< 1$ms
+    instantiation, $2^{18}$ cycles for 1,000-event ZKP proof) are asserted
+    by the source documents. No executable benchmark scripts exist in the
+    comparisons directory or the experiments directory that would reproduce
+    these figures under a declared test harness. This is a PARTIAL finding:
+    the figures are stated but not proven by reproducible infrastructure.
+
+  \item \textbf{Inductive Miner absent from wasm4pm.} The algorithm coverage
+    matrix marks Inductive Miner as absent from wasm4pm and ``Shape'' in
+    wasm4pm-compat (\texttt{process\_tree.rs}, \texttt{powl.rs} carry the
+    structural types). The gap between a ``Shape'' type and a working
+    execution engine has no concrete engineering roadmap in the comparisons
+    corpus. Inductive Miner is classified as critical because it is the
+    primary algorithm for block-structured WF-net and process tree output.
+
+  \item \textbf{OCPQ has no evaluation engine.} Object-Centric Process Query
+    (\texttt{ocpq.rs}: \texttt{ObjectScope}, \texttt{Predicate} tree,
+    \texttt{OcpqQuery}) is a wasm4pm-compat-original query language. No
+    evaluation engine exists anywhere in the stack --- not in wasm4pm, not
+    in PM4Py, not in any external tool. This is the most novel contribution
+    of the corpus and also the least validated.
+
+  \item \textbf{Cross-reference integrity unverified.} Several documents in
+    the comparisons corpus reference external files via \texttt{file://} URIs
+    (\texttt{experiments/pm4py\_vs\_wasm4pm\_capability\_matrix.md},
+    \texttt{experiments/zero-knowledge-benchmarks.md},
+    \texttt{sources/pm4py/oracle-vulnerability.md}) that are not present in
+    the comparisons directory itself. Cross-reference integrity across the
+    full research program has not been verified by an automated link checker.
+
+  \item \textbf{Thesis lineage undocumented within the corpus.} No document
+    in the comparisons directory explicitly names or derives from the Chatman
+    Equation $A = \mu(O^*)$ or references the 2016 language-model experiment.
+    The epistemic chain connecting these comparison tables to the dissertation's
+    foundational thesis is implicit and requires authorial construction
+    (AUTHOR INTERPRETATION).
+\end{enumerate}
+
+\subsection{Deferred Gates}
+\label{sec:comparisons-open-deferred}
+
+The following proof gates are deferred and are not satisfied by the current
+corpus:
+
+\begin{itemize}
+  \item \textbf{Alignment conformance execution gate}: A* alignment over the
+    synchronous product net is present in PM4Py and absent from wasm4pm.
+    wasm4pm-compat carries \texttt{SyncMove}, \texttt{LogOnlyMove}, and
+    \texttt{ModelOnlyMove} type shapes, but no A* implementation. The gate
+    is: wasm4pm alignment conformance $\geq 134.7$K events/sec, matching
+    the asserted benchmark figure. This gate is DEFERRED.
+  \item \textbf{POWL discovery execution gate}: PM4Py 2.7+ has a full POWL
+    discovery algorithm (SHS-Miner). wasm4pm-compat has the richest POWL
+    shape vocabulary in the stack (\texttt{PowlNode}, \texttt{OrderEdge},
+    \texttt{Powl}, \texttt{TreeProjectable}, \texttt{ExceedsProcessTree}).
+    No execution engine. Gate: DEFERRED.
+  \item \textbf{Reproducible benchmark gate}: performance figures require
+    a repeatable benchmark harness against standard process mining datasets
+    (e.g., BPI Challenge logs). Gate: DEFERRED pending benchmark
+    infrastructure manufacture.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:comparisons-open-risks}
+
+\begin{enumerate}
+  \item \textbf{Asserted performance figures may not hold under measurement.}
+    If a reproducible benchmark contradicts the asserted 8.2M events/sec or
+    134.7K events/sec figures, the performance contribution of the corpus would
+    require revision. This risk is mitigated by the architectural contribution
+    (type-law enforcement) which does not depend on performance claims.
+
+  \item \textbf{wasm4pm-compat Shape types may not interoperate with wasm4pm.}
+    The algorithm coverage matrix assumes that wasm4pm-compat shape types
+    (e.g., \texttt{WfNetConst<SOUNDNESS>}, \texttt{ProcessTree}) will serve as
+    reception surfaces for future wasm4pm execution output. If the wasm4pm
+    output types differ from the compat shape types at the API boundary, the
+    ``ready to receive'' claim is overstated (AUTHOR INTERPRETATION of current
+    gap structure).
+
+  \item \textbf{OCPQ may never be implemented.} As a wasm4pm-compat-original
+    invention with no prior art in PM4Py or published process mining literature,
+    OCPQ carries the highest research risk: it may prove computationally
+    intractable, redundant with existing OCEL query languages, or simply
+    unimplemented due to resource constraints.
+\end{enumerate}
+
+\subsection{Next Receipted Work}
+\label{sec:comparisons-open-next}
+
+The next receipted work implied by the comparisons corpus is:
+
+\begin{enumerate}
+  \item \textbf{Benchmark manufacturing receipt}: Manufacture reproducible
+    benchmarks for all asserted performance figures using BPI Challenge log
+    datasets, emit a benchmark receipt with Blake3 hash over the output CSV,
+    and update the comparisons corpus entries to cite the receipt.
+  \item \textbf{Inductive Miner gap closure}: Implement Inductive Miner in
+    wasm4pm with output typed to \texttt{ProcessTree} shapes in wasm4pm-compat.
+    Emit a manufacturing receipt certifying that the wasm4pm output can be
+    admitted through the compat type boundary.
+  \item \textbf{Cross-reference link audit}: Manufacture an automated link
+    checker receipt that verifies all \texttt{file://} URIs in the comparisons
+    corpus resolve to existing files in the research program. Each broken link
+    should produce a gap entry in \texttt{gaps/}.
+  \item \textbf{OCPQ evaluation prototype}: Implement a minimal OCPQ evaluation
+    engine prototype, emit a receipt certifying compilation and at least one
+    passing query test, and close the ``no engine anywhere'' gap with a
+    PARTIAL verdict.
+\end{enumerate}

@@ -1,0 +1,97 @@
+% FILE: 02_lineage_and_context.tex
+% Project: standards
+% Thesis Role: public-standards-compliance-and-gravity-field-mapping
+
+\section{Lineage and Context}
+\label{sec:standards-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:standards-lineage-2016}
+
+The research program's foundational insight originates in a 2016 language-model experiment
+that demonstrated local text imitation does not conserve consequence. A system that
+predicts plausible next tokens produces text that is locally coherent but globally
+unconstrained: it can assert any claim, including false process conformance claims, with
+equal fluency. The experiment established that prediction without evidence is structurally
+incapable of producing trustworthy operational records.
+
+This lesson is directly relevant to the standards project. A process intelligence system
+that issues conformance certificates without formal grounding in a named public standard
+and a named mathematical criterion is exhibiting exactly the failure mode identified in
+2016: it is generating plausible-looking output (a certificate) that has no conserved
+consequence (no verifiable link to the underlying process). The standards registry is
+the architectural response to this failure mode---it is the mechanism by which every
+certificate is forced to name its mathematical ancestor.
+
+The transition from prediction to coordination, which is the central theoretical
+contribution of the dissertation, depends on this mechanism. Coordination requires shared
+referents: two parties can coordinate on a process outcome only if they share a definition
+of what counts as a valid process execution. Public standards supply those shared
+referents. Without this project, the Evidence lattice is a coordination claim without
+a coordination substrate.
+
+\subsection{Enterprise Process Gap}
+\label{sec:standards-lineage-enterprise-gap}
+
+The enterprise process gap is the structural condition in which operational claims made
+to boards, regulators, and transaction partners cannot be traced back to process
+evidence. This gap is not a data quality problem; it is an architectural problem. The
+data may exist in XES or OCEL format, but if no formal mapping connects the format to
+a named validation threshold, the data cannot be used to answer the question a buyer's
+advisor actually asks: ``Can you prove, to a $10^{-6}$ tolerance, that this process ran
+as declared?''
+
+The standards project closes this gap by establishing the Slide-to-Receipt bridge:
+
+\begin{equation}
+  \text{SlideBinding} = \operatorname{BLAKE3}\!\left(
+    \text{SlideUUID} \parallel \text{ReceiptHash} \parallel \text{ClaimValue}
+  \right)
+\end{equation}
+
+This formula, defined in \texttt{public\_standards\_to\_m\&a\_claims.md}, binds every
+slide in an investment presentation containing an operational claim to a wasm4pm execution
+receipt stored on the ledger. The buyer's advisors replicate the metric by executing the
+same conformance query on the log in the Virtual Data Room. The standard (XES, OCEL,
+Petri Net, PROV-O, or Declare) supplies the named format; the Blue River Dam threshold
+($f \ge 0.95$, $p \ge 0.90$) supplies the named criterion; the BLAKE3 receipt supplies
+the cryptographic binding.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:standards-lineage-chatman-equation}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that autonomous agency is a function of
+process observability over the full object lifecycle. The standards project supplies the
+observability substrate: it defines, for each of the 16 public standards, what a lawful
+observation looks like, what an unlawful observation looks like, and what the formal
+criterion for distinguishing the two is.
+
+Concretely, the OCEL 2.0 placement file defines valid observation as conformance to the
+bipartite graph invariant: $\forall (e, o, q) \in \text{E2O},\ e \in \mathcal{E} \land
+o \in \mathcal{O}$. Any event-to-object link that violates this invariant is an unlawful
+observation---a dangling link refused by \texttt{OcelLog::validate} as
+\texttt{OcelRefusal::DanglingEventObjectLink}. The WF-net placement file defines lawful
+process completion as the soundness criteria of van der Aalst (1998): option-to-complete,
+proper completion, and no dead transitions. A process that terminates without reaching the
+sink place $o$ with exactly one token is an unlawful execution. These formal definitions
+are the content of $\mu$: they are the measurement functions that permit the equation to
+be evaluated rather than merely stated.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:standards-lineage-receipts}
+
+The receipt and replay infrastructure of the foundry is architecturally dependent on this
+project. A receipt without a named standard is a hash without a claim. The standards
+project defines what claim each hash certifies: an XES trace receipt certifies that the
+trace $\sigma = \langle e_1, \ldots, e_n \rangle$ satisfies chronological invariance and
+that the cumulative hash $\mathcal{H}(\sigma) = \operatorname{BLAKE3}(\mathcal{H}(e_1)
+\parallel \cdots \parallel \mathcal{H}(e_n))$ is registered on the ledger. An OCEL receipt
+certifies that the bipartite graph $\mathcal{L}$ passes structural validity. A WF-net
+decommissioning receipt (exemplified in \texttt{wf-net\_verification\_specification.md})
+records \texttt{historical\_replay\_fitness: 0.978}, \texttt{precision: 0.912}, and
+\texttt{total\_recorded\_cases: 124500}---named metrics against named thresholds.
+
+The OTel trace integration schema (\texttt{otel\_trace\_integration\_schema.json}) extends
+this architecture to live telemetry: it defines the \texttt{blake3\_receipt} field per
+OTel span and the \texttt{event\_chain\_root} as the BLAKE3 hash of the entire trace,
+making the receipt chain continuous from the genesis span to process closure.

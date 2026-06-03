@@ -1,0 +1,38 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Contribution to the Dissertation}
+\label{sec:research-pi-program-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:research-pi-program-contribution-prediction}
+
+The central thesis tension between prediction and coordination is instantiated in the pi-program as the question of whether governance can be \textit{coordinated} rather than \textit{predicted}. The old-regime answer---deploy governance policies as human-readable documents and rely on human reviewers to predict whether they were followed---fails for the same reason the 2016 language-model lesson applies: the prediction of compliance is not the same as the coordination of compliant behavior.
+
+The pi-program's contribution is to demonstrate that governance can be operationalized as a coordination mechanism. The MAPE-K autonomic loop is not a prediction system; it is a coordination system. It does not predict whether a process will conform to its declared model; it continuously monitors conformance fitness, detects deviations, and routes them to the appropriate authority within a bounded response time. The containment invariant $G(\lnot\mathrm{Compliant}(s) \Rightarrow X(\lnot\mathrm{Actuated}(s)))$ is not a prediction about future behavior; it is a coordination rule that blocks actuation whenever the current state fails compliance, regardless of whether the failure was anticipated.
+
+The five MAPE-K feedback loop tests (all PASSED, avg confidence 0.96) provide empirical evidence that this coordination mechanism functions for the test scenarios covered. The boundary cases of prediction---what happens at the edge of the compliance boundary, when drift is ambiguous, when governance tokens are unavailable---remain areas where the coordination mechanism requires further specification. This is documented as an open question rather than a resolved contribution.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:research-pi-program-contribution-evidence}
+
+The pi-program's most direct contribution to the process-evidence thesis thread is the \texttt{pi:FORBIDDEN\_COLLAPSE} taxonomy. This taxonomy names and formally classifies the eight structural failure modes by which a process intelligence system can destroy the evidentiary value of its own artifacts: type-tag collapse, refusal-law collapse, evidence-reference collapse, loss-item collapse, witness-key collapse, JSON serialization collapse, silent-flattening collapse, and raw-evidence export collapse. Each subtype is an OWL individual, not merely a documentation entry, meaning that a SPARQL query can enumerate active collapses and route them to remediation workflows.
+
+The taxonomy contributes a new primitive to the process-evidence literature: the concept of an \textit{evidence boundary defect} as a first-class ontological individual with a lifecycle status (ACTIVE, MITIGATED, REMEDIATED) and an audit result. Existing process mining literature treats evidence quality as a scalar property of the event log (completeness, accuracy) rather than as a set of named structural failure modes with tracked remediation status. The pi-program's contribution is to elevate evidence boundary defects to the same ontological status as process variants and conformance deviations.
+
+The Van der Aalst Constitution, encoded verbatim in \texttt{forbidden-collapse-law.ttl}'s \texttt{skos:editorialNote}, serves as the authority citation for the entire taxonomy. By embedding the constitution in a machine-readable ontology rather than citing it only in human-readable documentation, the pi-program makes the citation testable: a SPARQL query can verify that the note is present and unaltered, providing a minimal form of citation integrity checking.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:research-pi-program-contribution-manufacturing}
+
+The pi-program establishes the SPARQL$\to$Tera$\to$BLAKE3 manufacturing pattern as the authoritative architecture for board-admissible artifact manufacturing. This pattern has three properties that distinguish it from alternative manufacturing approaches. First, it is \textit{declarative}: the manufacturing specification lives in \texttt{ggen.toml} as a set of (query, template, output) triplets, not in imperative code. Second, it is \textit{auditable}: a third party can re-execute any manufacturing rule and verify that the output matches the receipt, without access to any proprietary tooling beyond the open \texttt{ggen v26.5.21} binary and a SPARQL endpoint. Third, it is \textit{composable}: the Phase 2 manufacturing chain (pi-program root $\to$ pi-program/api $\to$ pi-program/governance $\to$ pi-program/m-and-a) demonstrates that sub-projects can be manufactured as a dependency chain where each sub-project's ggen manifest consumes artifacts from upstream manufacturing stages.
+
+The 81 pi-program artifacts and 42 prompt-manufactory artifacts manufactured in Phase 2 constitute the dissertation's primary empirical evidence base for the manufacturing pattern's scalability. The honest accounting of its defects---the ggen-002 manifest incompatibility, the receipt chain breaks, the hash mismatches---is itself a contribution: it demonstrates that the manufacturing pattern has a formal correctness criterion (the chain verifier gate) that can detect failures the narrative manufacturing summary missed.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:research-pi-program-contribution-capital-flow}
+
+The pi-program's contribution to the capital-flow and settlement thread of the thesis is indirect but structural. The OpenAPI 3.0 specification manufactured at \texttt{api/manufactured/openapi-3.0-spec.yaml} defines the external interface through which downstream capital-flow infrastructure (AI XYNZ, DAO settlement layers) queries the governance authority. By manufacturing the API specification from the ontology---rather than hand-authoring it independently---the pi-program ensures that the external interface is formally grounded in the same ontological law that governs internal manufacturing. A capital-flow agent querying the process intelligence API receives structured responses whose schema is derived from \texttt{pi:ProgramRole} and \texttt{gov:GovernancePolicy} classes, not from ad hoc JSON design decisions.
+
+The \texttt{emitted/alive-partial-matrix.md} and \texttt{emitted/project-registry.yaml} are the board-admissible projections consumed by M\&A decision workflows. Their authority derives from PROCESS\_INTELLIGENCE\_ALIVE\_001 (11/11 gates). The admission boundary gate ($R \vdash P_i = \mu(O^{*}, T, L)$, audit\_003 PASS) certifies that these projections are formally derived from the Chatman Equation, providing the evidentiary basis for capital allocation decisions that downstream DAO governance layers require. The symbolic connection from this governance authority to AI XYNZ downstream nodes is encoded in the audit record but not yet fully documented within the pi-program's own artifacts; this connection is acknowledged as AUTHOR THESIS / FUTURE WORK pending the capital-flow layer's formal specification.

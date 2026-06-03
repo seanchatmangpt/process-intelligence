@@ -1,0 +1,83 @@
+% FILE: 02_lineage_and_context.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Lineage and Context}
+\label{sec:experiments-visualizer-nextjs-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:experiments-visualizer-nextjs-lineage-2016}
+
+The 2016 language-model experiment established that local text imitation does not conserve
+consequence: a model can reproduce the surface form of a process description without preserving
+the causal and temporal structure that makes that description meaningful as a claim about an
+enterprise system. The lesson was that \emph{appearance} and \emph{evidence} are not the same
+thing. A chart that looks like a conformance report is not a conformance report unless its
+values are derived from a lawful replay of real event data against a verified process model.
+
+The visualizer-nextjs project is a direct descendant of this lesson. The fact that its
+\texttt{globals.css} defines a visually sophisticated process-intelligence dashboard --- Petri
+net panels, alignment block sequences, EWMA alarm banners, cryptographic ledger explorers ---
+while \texttt{page.tsx} remains the stock \texttt{create-next-app} welcome page is a precise
+re-instantiation of the 2016 lesson at the UI layer: \emph{the surface vocabulary is present;
+the causal connection to real evidence is absent.} The project is, at status PARTIAL, a
+demonstration that a design system alone cannot constitute a visualization surface any more
+than a text model alone can constitute a process-aware reasoning system.
+
+\subsection{Enterprise Process Gap}
+\label{sec:experiments-visualizer-nextjs-lineage-enterprise-gap}
+
+Enterprise process intelligence systems fail for a predictable structural reason: the artefacts
+they manufacture --- BPMN models, conformance reports, KPI dashboards --- are produced by
+specialists in isolated toolchains and are never connected to the live event logs that would
+allow them to be verified. Process mining tools exist in one silo; business intelligence
+dashboards exist in another; neither is connected to the other by a lawful evidence chain.
+
+The visualizer-nextjs project is designed to close this gap at the observation layer. It is
+intended to be the single surface on which a researcher or auditor can see, simultaneously,
+the Petri net model being replayed, the alignment moves that map the event log to the model,
+the drift signal indicating whether the process is shifting, and the cryptographic receipt
+chain that proves all upstream computation was honest. In the full architecture this surface
+eliminates the need for specialist tooling by making process evidence browser-native and
+auditable without command-line access. AUTHOR THESIS: this architectural position --- a
+single web surface integrating all evidence classes --- is the correct response to the
+enterprise silo failure mode.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:experiments-visualizer-nextjs-lineage-chatman-eq}
+
+The Chatman Equation posits that auditable process intelligence is a function of the
+organization's observable event history: $A = \mu(O^{*})$, where $A$ is the admitted process
+evidence, $\mu$ is the conformance-scoring operator, and $O^{*}$ is the complete object-centric
+event log. The visualizer-nextjs project is the surface through which the output of $\mu$ is
+rendered human-inspectable.
+
+Concretely: the CSS custom properties in \texttt{globals.css} encode the value space of $A$.
+The color tokens \texttt{--color-success}, \texttt{--color-warning}, \texttt{--color-danger},
+and \texttt{--color-glow-green} / \texttt{--color-glow-red} correspond to the ordinal fitness
+levels that $\mu$ can return. The \texttt{.ledger-block-card.healthy} and
+\texttt{.ledger-block-card.tampered} states correspond to the binary integrity verdict of the
+cryptographic receipt chain. Every CSS class in the design system is, in this framing, a
+rendering rule for a term in the value algebra of $A = \mu(O^{*})$.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:experiments-visualizer-nextjs-lineage-receipts}
+
+The receipt and replay subsystem is the epistemic backbone of the research program. As
+documented in the parent experiments corpus (\texttt{EVIDENCE\_CHAIN\_TRACE.md},
+\texttt{checkpoint\_\_experiments\_complete.md}), the full evidence chain runs:
+Raw~$\to$~Parsed~$\to$~Admitted~$\to$~Receipt. The visualizer-nextjs project is designed to
+expose all four stages of this chain through a single browser session.
+
+The \texttt{.receipt-json-body} and \texttt{.verification-console} CSS classes in
+\texttt{globals.css} are the surface markers for the Receipt stage: they define how a receipt
+JSON blob is displayed and how a verification verdict (pass or fail) is communicated to the
+viewer. The \texttt{.ledger-chain-arrow.broken} class encodes the tamper-detection state ---
+the visual signal that a hash-chain break has been detected, meaning one or more upstream
+receipts cannot be verified. These classes constitute a specification for a receipt-aware
+visualization layer that does not yet have a React implementation behind it.
+
+The relationship is therefore one of specification-without-implementation: the receipt and
+replay machinery exists upstream (verified by the EXPERIMENTS\_COMPLETE checkpoint dated
+2026-05-31); the visualization surface has specified how to display its outputs but has not
+yet wired up the connection.

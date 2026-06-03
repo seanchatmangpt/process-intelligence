@@ -36,6 +36,22 @@ pub struct ReplayTrace {
 }
 
 /// MoveKind: classifier for each step in alignment replay
+fn serialize_marking(marking: &Marking) -> String {
+    let mut parts = Vec::new();
+    for (k, v) in &marking.tokens {
+        parts.push(format!("\"{}\":{}", k, v));
+    }
+    format!("{{{}}}", parts.join(","))
+}
+
+fn compute_witness_hash(trace_id: &str, activity: &str) -> String {
+    let mut hasher = crate::crypto::Blake3::new();
+    hasher.update(trace_id.as_bytes());
+    hasher.update(activity.as_bytes());
+    let hash_bytes = hasher.finalize();
+    crate::otel::hex_encode(&hash_bytes)
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MoveKind {
     /// Synchronous move: event matched a transition
@@ -153,7 +169,7 @@ impl ReplayEngine {
             .map(|trace| trace.total_cost as f64)
             .unwrap_or(0.0);
 
-        let fitness = if self.event_log.len() > 0 {
+        let fitness = if !self.event_log.is_empty() {
             1.0 - (best_cost / (self.event_log.len() as f64 * 2.0))
         } else {
             0.0
@@ -170,6 +186,7 @@ impl ReplayEngine {
     }
 
     /// Recursive path exploration with telemetry emission and loop protection
+    #[allow(clippy::too_many_arguments)]
     fn explore_paths(
         &self,
         current_marking: Marking,
@@ -259,6 +276,15 @@ impl ReplayEngine {
                     let end_time = start_time + 1000;
                     let instruction_count = 100;
 
+                    let inst_id = trace_id;
+                    let act_name = transition;
+                    let act_type = Some("task");
+                    let lf = "complete";
+                    let state_before = serialize_marking(&current_marking);
+                    let state_after = serialize_marking(&new_marking);
+                    let wit_id = "replay_engine_v30";
+                    let wit_hash = compute_witness_hash(trace_id, transition);
+
                     let computed_hash = crate::otel::hash_span(
                         prior_hash.as_ref(),
                         trace_id,
@@ -268,6 +294,14 @@ impl ReplayEngine {
                         start_time,
                         end_time,
                         instruction_count,
+                        inst_id,
+                        act_name,
+                        act_type,
+                        lf,
+                        Some(&state_before),
+                        Some(&state_after),
+                        wit_id,
+                        &wit_hash,
                     );
                     let blake3_receipt = crate::otel::hex_encode(&computed_hash);
 
@@ -280,6 +314,14 @@ impl ReplayEngine {
                         end_time_unix_us: end_time,
                         instruction_count,
                         blake3_receipt,
+                        instance_id: inst_id.to_string(),
+                        activity_name: act_name.to_string(),
+                        activity_type: act_type.map(|s| s.to_string()),
+                        lifecycle: lf.to_string(),
+                        token_state_before: Some(state_before),
+                        token_state_after: Some(state_after),
+                        witness_id: wit_id.to_string(),
+                        witness_hash: wit_hash,
                     });
 
                     self.explore_paths(
@@ -317,15 +359,32 @@ impl ReplayEngine {
                 let end_time = start_time + 1000;
                 let instruction_count = 100;
 
+                let inst_id = trace_id;
+                let act_name = format!("Skip:{}", event.activity);
+                let act_type = Some("gate");
+                let lf = "abort";
+                let state_before = serialize_marking(&current_marking);
+                let state_after = serialize_marking(&current_marking);
+                let wit_id = "replay_engine_v30";
+                let wit_hash = compute_witness_hash(trace_id, &act_name);
+
                 let computed_hash = crate::otel::hash_span(
                     prior_hash.as_ref(),
                     trace_id,
                     &span_id,
                     parent_span_id.as_deref(),
-                    &format!("Skip:{}", event.activity),
+                    &act_name,
                     start_time,
                     end_time,
                     instruction_count,
+                    inst_id,
+                    &act_name,
+                    act_type,
+                    lf,
+                    Some(&state_before),
+                    Some(&state_after),
+                    wit_id,
+                    &wit_hash,
                 );
                 let blake3_receipt = crate::otel::hex_encode(&computed_hash);
 
@@ -333,11 +392,19 @@ impl ReplayEngine {
                 next_spans.push(crate::otel::OtelSpan {
                     span_id,
                     parent_span_id,
-                    span_name: format!("Skip:{}", event.activity),
+                    span_name: act_name.clone(),
                     start_time_unix_us: start_time,
                     end_time_unix_us: end_time,
                     instruction_count,
                     blake3_receipt,
+                    instance_id: inst_id.to_string(),
+                    activity_name: act_name,
+                    activity_type: act_type.map(|s| s.to_string()),
+                    lifecycle: lf.to_string(),
+                    token_state_before: Some(state_before),
+                    token_state_after: Some(state_after),
+                    witness_id: wit_id.to_string(),
+                    witness_hash: wit_hash,
                 });
 
                 self.explore_paths(
@@ -374,6 +441,15 @@ impl ReplayEngine {
                         let end_time = start_time + 1000;
                         let instruction_count = 100;
 
+                        let inst_id = trace_id;
+                        let act_name = transition;
+                        let act_type = Some("task");
+                        let lf = "schedule";
+                        let state_before = serialize_marking(&current_marking);
+                        let state_after = serialize_marking(&new_marking);
+                        let wit_id = "replay_engine_v30";
+                        let wit_hash = compute_witness_hash(trace_id, transition);
+
                         let computed_hash = crate::otel::hash_span(
                             prior_hash.as_ref(),
                             trace_id,
@@ -383,6 +459,14 @@ impl ReplayEngine {
                             start_time,
                             end_time,
                             instruction_count,
+                            inst_id,
+                            act_name,
+                            act_type,
+                            lf,
+                            Some(&state_before),
+                            Some(&state_after),
+                            wit_id,
+                            &wit_hash,
                         );
                         let blake3_receipt = crate::otel::hex_encode(&computed_hash);
 
@@ -395,6 +479,14 @@ impl ReplayEngine {
                             end_time_unix_us: end_time,
                             instruction_count,
                             blake3_receipt,
+                            instance_id: inst_id.to_string(),
+                            activity_name: act_name.to_string(),
+                            activity_type: act_type.map(|s| s.to_string()),
+                            lifecycle: lf.to_string(),
+                            token_state_before: Some(state_before),
+                            token_state_after: Some(state_after),
+                            witness_id: wit_id.to_string(),
+                            witness_hash: wit_hash,
                         });
 
                         self.explore_paths(
@@ -535,6 +627,15 @@ impl StepSimulator {
             None
         };
 
+        let inst_id = self.trace_id.clone();
+        let act_name = activity.to_string();
+        let act_type = Some("task");
+        let lf = "complete";
+        let state_before = serialize_marking(&self.current_marking);
+        let state_after = serialize_marking(&resulting_marking);
+        let wit_id = "replay_engine_v30";
+        let wit_hash = compute_witness_hash(&self.trace_id, activity);
+
         let computed_hash = crate::otel::hash_span(
             prior_hash.as_ref(),
             &self.trace_id,
@@ -544,6 +645,14 @@ impl StepSimulator {
             start_time,
             end_time,
             instruction_count,
+            &inst_id,
+            &act_name,
+            act_type,
+            lf,
+            Some(&state_before),
+            Some(&state_after),
+            wit_id,
+            &wit_hash,
         );
 
         let blake3_receipt = crate::otel::hex_encode(&computed_hash);
@@ -556,6 +665,14 @@ impl StepSimulator {
             end_time_unix_us: end_time,
             instruction_count,
             blake3_receipt: blake3_receipt.clone(),
+            instance_id: inst_id,
+            activity_name: act_name,
+            activity_type: act_type.map(|s| s.to_string()),
+            lifecycle: lf.to_string(),
+            token_state_before: Some(state_before),
+            token_state_after: Some(state_after),
+            witness_id: wit_id.to_string(),
+            witness_hash: wit_hash,
         };
 
         let step = StepTrace {
@@ -783,7 +900,7 @@ pub type ReplayedEvidence<W> = Evidence<ReplayTraces, (), W>;
 /// Exported for wasm4pm graduation bridge and FFI boundaries
 #[no_mangle]
 pub extern "C" fn wasm4pm_replay_version() -> u32 {
-    001 // Manufacturing era version
+    1 // Manufacturing era version
 }
 
 #[cfg(test)]

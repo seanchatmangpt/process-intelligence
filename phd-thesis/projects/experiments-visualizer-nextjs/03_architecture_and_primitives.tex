@@ -1,0 +1,122 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Architecture and Primitives}
+\label{sec:experiments-visualizer-nextjs-arch}
+
+\subsection{Core Objects}
+\label{sec:experiments-visualizer-nextjs-arch-objects}
+
+The visualizer-nextjs project defines its core objects through the CSS class vocabulary in
+\texttt{globals.css}. These classes are not merely styling tokens; each one names a
+structural object in the process-intelligence domain that the dashboard is responsible for
+rendering. The five principal object families are:
+
+\begin{description}
+  \item[\textbf{Petri Net Elements}]
+    \texttt{.petri-place}, \texttt{.petri-trans}, \texttt{.petri-arc},
+    \texttt{.petri-place.active}, \texttt{.petri-trans.enabled}, \texttt{.place-token-text}.
+    These classes define the visual atoms of a Petri net SVG panel: places (circles),
+    transitions (rectangles), arcs (directed edges), active places (holding tokens),
+    enabled transitions (fireable given current marking), and the token count label inside
+    an active place. Together they encode the full marking-visible state of a Petri net
+    replay step.
+
+  \item[\textbf{A{*} Alignment Blocks}]
+    \texttt{.alignment-block.sync}, \texttt{.alignment-block.log},
+    \texttt{.alignment-block.model}. These three classes correspond precisely to the three
+    move types in A{*} process alignment: a synchronous move (event matches model transition),
+    a log move (event has no counterpart in the model), and a model move (model transition
+    has no counterpart in the event log). The alignment block sequence is the primary
+    per-trace conformance artefact.
+
+  \item[\textbf{EWMA Drift Detection}]
+    \texttt{.ewma-canvas}, \texttt{.alarm-banner}, \texttt{.alarm-banner.fired}. These
+    classes define the drift-monitoring panel: a canvas element for the EWMA time series
+    and an alarm banner that transitions to the \texttt{fired} state when the EWMA statistic
+    crosses the control limit. The binary fired/unfired state corresponds to the drift alarm
+    signal produced by the upstream EWMA computation.
+
+  \item[\textbf{Cryptographic Ledger}]
+    \texttt{.ledger-block-card.healthy}, \texttt{.ledger-block-card.tampered},
+    \texttt{.ledger-chain-arrow.broken}, \texttt{.receipt-json-body},
+    \texttt{.verification-console}. These classes define the receipt ledger explorer.
+    A block card is healthy when its hash-chain link is verified and tampered when
+    verification fails; a chain arrow is broken when the link between two consecutive
+    blocks cannot be verified. The receipt JSON body and verification console display
+    the raw receipt blob and the pass/fail verdict.
+
+  \item[\textbf{Dashboard Layout}]
+    \texttt{.dashboard-grid} (320px sidebar + 1fr main area), \texttt{.panel},
+    \texttt{.global-metrics-bar}. These classes define the top-level layout container
+    that positions the four evidence panels in a single-page dashboard.
+\end{description}
+
+\subsection{Admissible Transitions}
+\label{sec:experiments-visualizer-nextjs-arch-transitions}
+
+AUTHOR THESIS: The CSS class algebra implies a set of admissible UI state transitions that
+correspond to lawful transitions in the underlying process-intelligence state machine.
+
+\begin{itemize}
+  \item A \texttt{.petri-place} may transition to \texttt{.petri-place.active} only when a
+        token is deposited by a fired transition; it may return to inactive only when a token
+        is consumed.
+  \item A \texttt{.petri-trans} may bear the \texttt{.enabled} modifier only when all input
+        places hold sufficient tokens; it loses \texttt{.enabled} when any input place is
+        drained.
+  \item An \texttt{.alignment-block} must carry exactly one of the three move-type modifiers
+        (\texttt{sync}, \texttt{log}, \texttt{model}); no block may carry zero or more than one.
+  \item An \texttt{.alarm-banner} transitions to \texttt{.fired} only when the EWMA statistic
+        exceeds the control limit; it may not oscillate without a corresponding change in the
+        underlying time series value.
+  \item A \texttt{.ledger-block-card} may transition from \texttt{healthy} to \texttt{tampered}
+        when hash verification fails; the reverse transition is not admissible without a
+        re-verification event being recorded in the receipt chain.
+\end{itemize}
+
+\subsection{Boundaries}
+\label{sec:experiments-visualizer-nextjs-arch-boundaries}
+
+The visualizer-nextjs project is bounded by the following architectural constraints established
+by the project's source files and the broader research program:
+
+\begin{itemize}
+  \item \textbf{Framework:} Next.js 16.2.6 App Router with Turbopack. The \texttt{AGENTS.md}
+        file explicitly warns that this version contains breaking changes relative to prior
+        training data and instructs any authoring agent to read
+        \texttt{node\_modules/next/dist/docs/} before writing code.
+  \item \textbf{Language:} TypeScript 5 with strict mode (\texttt{tsconfig} confirmed).
+  \item \textbf{Styling:} Tailwind CSS v4 with \texttt{@tailwindcss/postcss}; CSS custom
+        properties for the color system; no CSS-in-JS library.
+  \item \textbf{Font system:} Geist and Geist Mono via the Vercel font system, loaded in
+        \texttt{src/app/layout.tsx}.
+  \item \textbf{Scope:} The visualizer is a read-only observation surface. It does not write
+        to the event log, modify process models, or issue receipts. Those responsibilities
+        belong to upstream Rust and Python components.
+\end{itemize}
+
+\subsection{Failure Modes Refused}
+\label{sec:experiments-visualizer-nextjs-arch-failures}
+
+The architecture of the CSS design system explicitly refuses several failure modes by making
+them unrepresentable:
+
+\begin{itemize}
+  \item \textbf{Ambiguous alignment moves:} The three-modifier system for alignment blocks
+        (\texttt{sync}, \texttt{log}, \texttt{model}) makes it structurally impossible to
+        render an alignment block with no move type or with a fabricated move type not
+        recognized by the A{*} algorithm.
+  \item \textbf{Silent tamper:} The \texttt{.ledger-block-card.tampered} class and
+        \texttt{.ledger-chain-arrow.broken} class make hash-chain failure visually
+        unmissable; the design system does not provide a class for a tampered block that
+        appears healthy.
+  \item \textbf{Fired alarm without visual indicator:} The \texttt{.alarm-banner.fired}
+        modifier has no silent state --- a fired alarm is always rendered as a distinct
+        visual element.
+  \item \textbf{Unimplemented panel rendered as empty:} AUTHOR THESIS: The correct failure
+        mode for a panel whose data source is not connected is an explicit error state, not
+        an empty render. The CSS design system does not yet define an error-state class
+        for missing data; this is an open gap.
+\end{itemize}

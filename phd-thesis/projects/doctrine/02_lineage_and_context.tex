@@ -1,0 +1,108 @@
+\section{Lineage and Context}
+\label{sec:doctrine-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:doctrine-lineage-lm}
+
+The thesis lineage originates in a 2016 language-model experiment whose finding is stated
+concisely in the lineage record: local text imitation does not conserve consequence. A system
+that learns to predict the next token in a sequence of human activity records learns the
+surface form of consequential behavior without acquiring any mechanism to validate, refuse, or
+receipt-bear that behavior. Prediction is not coordination. Pattern-matching over logs
+produces outputs that resemble lawful process behavior without being lawful process behavior.
+
+This finding is the epistemic seed of the Blue River Dam doctrine. If a system cannot
+distinguish between a lawful process trace and a statistically plausible imitation of one,
+then no downstream consumer of that system's outputs can rely on them as process evidence.
+The admission layer --- the typed, refusal-capable, receipt-bearing upstream gate --- is the
+architectural response to this insufficiency. It provides what text imitation cannot: a named
+witness, a specific violated law on refusal, and a replayable receipt chain proving that the
+governing act occurred upstream of the data.
+
+The 2016 lesson is not anti-language-model in character. It is a precision claim: language
+models are valid downstream consumers of process truth. They may explain, route, compare,
+summarize, and assist. What they may not do is adjudicate process truth. The Blue River Dam
+doctrine, as stated in \texttt{BLUE\_RIVER\_DAM.md}, draws this line explicitly: ``Agents
+may NOT adjudicate process truth. The kernel adjudicates; the agent cites deterministic
+artifacts. No artifact, no claim.''
+
+\subsection{Enterprise Process Gap}
+\label{sec:doctrine-lineage-enterprise}
+
+The enterprise process gap is the structural consequence of the 2016 lesson operating at
+organizational scale. Enterprises accumulate activity records in logs, dashboards, audit
+trails, and BI platforms that cannot prove a lawful process happened. They issue board-level
+claims, M\&A diligence representations, and regulatory submissions built on data that has no
+admission gate, no named witness, no typed refusal surface, and no replayable receipt.
+
+The doctrine corpus characterizes this gap through the lens of the five maturity levels
+defined in \texttt{PROCESS\_INTELLIGENCE\_DEFINED.md} and \texttt{BLUE\_RIVER\_DAM.md}. A
+Level 1 organization records activity; it has no process mining capability, no formal process
+model, no conformance checking, and no refusal capability. The vast majority of enterprise
+software operates at Level 1 or near it. The sediment accumulates; the governing acts go
+unwitnessed.
+
+The enterprise process gap is not closed by adding a monitoring dashboard or an observability
+layer. These are downstream tools. The gap is closed only by moving the admission and refusal
+gate upstream --- before execution, not after it. This is the Blue River Dam position. The
+dam must be upstream. Everything downstream of the dam is sediment.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:doctrine-lineage-chatman-equation}
+
+The Chatman Equation, expressed in the SPR thesis file as $R \vdash A = \mu(O^*)$, and in
+the Blue River Dam operating equation as $\kappa(\rho(\alpha(\mu(O^*)))) \to \text{ALIVE}
+\mid \text{PARTIAL} \mid \text{REFUSED}$, is the formal generalization of the 2016 lesson.
+It states that admissible process authority $A$ is the result of manufacturing ($\mu$) from
+the knowledge corpus $O^*$, under the refusal gate $R$.
+
+The four-operator chain $\kappa \circ \rho \circ \alpha \circ \mu$ composes the
+manufacturing stack:
+\begin{itemize}
+  \item $\mu(O^*)$ --- manufacture from the knowledge corpus: papers, standards, type laws,
+    and doctrine files are the raw material.
+  \item $\alpha(\cdot)$ --- actuate: the manufactured knowledge must be made consequential via
+    the MAPE-K autonomic loop, not merely stored.
+  \item $\rho(\cdot)$ --- emit evidence: actuation must produce typed, witnessed, receipted
+    evidence artifacts, not narrative outputs.
+  \item $\kappa(\cdot)$ --- gate the outcome: every result is classified as ALIVE (all gates
+    met), PARTIAL (some gates met, gaps documented), or REFUSED (gate violation, named law
+    cited).
+\end{itemize}
+
+No silent success is permitted under this equation. A result that does not achieve ALIVE must
+be classified PARTIAL or REFUSED with explicit gap documentation. The sealed
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} checkpoint and the honest reporting of 15
+algorithm families with execution missing are both direct applications of this equation.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:doctrine-lineage-receipts}
+
+The receipt and replay disciplines are the operationalization of the Chatman Equation's
+evidence-emission requirement. A receipt, as defined in \texttt{RECEIPT\_DOCTRINE.md}, is
+not a hash. A hash proves integrity of bytes. A receipt proves that a named law was applied,
+by a named witness, to a typed result, within a lawful object lifecycle.
+
+\begin{quote}
+$\text{Receipt}\langle T, W\rangle$: $T$ is the result type; $W$ is the witness marker ---
+a zero-sized type naming a specific paper, standard, or law (e.g., \texttt{Ocel20},
+\texttt{Xes1849}, \texttt{WfNetSoundnessPaper}).
+\end{quote}
+
+Two receipts with different witnesses are different types at compile time. They cannot be
+confused or substituted. This is the type-theoretic translation of the audit requirement:
+a claim that something was done under OCEL 2.0 witness cannot be satisfied by a receipt
+issued under XES 1849-2016 witness.
+
+The replay discipline extends this: a receipt that cannot be replayed is narration. The
+BLAKE3 receipt chaining formula $\text{Receipt}_n = \text{BLAKE3}(\text{Receipt}_{n-1}
+\mid\mid \text{new\_action} \mid\mid \text{new\_state} \mid\mid \text{signature})$ produces
+a chain of receipts that can be independently re-derived by any auditor possessing the
+original inputs. This is the machine-verifiable audit trail that the enterprise process gap
+currently lacks.
+
+The lineage from receipts to the broader thesis is direct: receipts and replay are the
+mechanism by which the ggen manufacturing machinery, the wasm4pm execution authority, and the
+downstream capital-flow and settlement surfaces all connect to an auditable chain of process
+truth. Without receipts, every downstream claim is an assertion. With receipts, every
+downstream claim is a proof.

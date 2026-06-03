@@ -1,0 +1,122 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Open Questions and Next Work}
+\label{sec:schemas-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:schemas-open-questions-gaps}
+
+Four structural gaps are identified in the schemas project as of the PARTIAL status assessment:
+
+\begin{description}
+  \item[GAP-S-001: No automated CI schema validation.] No continuous integration pipeline
+    enforces schema conformance against \texttt{rec\_*.json} files at commit time. The five
+    sample receipts were validated by inspection during the authority assessment (2026-06-01),
+    not by a committed validation script. A future commit of a non-conforming receipt would not
+    be rejected by any automated gate. This is the highest-priority gap: a schema without
+    enforcement is a documentation convention, not a proof gate.
+  \item[GAP-S-002: Sample receipts carry hardcoded hashes.] All five production receipts carry
+    BLAKE3 hashes that were not computed by executing the named wasm4pm query against a live
+    event log. The \texttt{RECEIPT\_REGISTRY.md} acknowledges: ``Monetization receipts are
+    samples; production receipts require live data.'' Until live-executed receipts replace the
+    sample receipts, the schema contract is demonstrated in principle but not in practice.
+  \item[GAP-S-003: No public key registry.] The \texttt{validator\_signature} field requires a
+    128-hex Ed25519 signature, but no public key pinning or key-management schema exists. The
+    Ed25519 verifier public key that corresponds to the \texttt{ed25519\_sig\_*} signatures in
+    the sample receipts is not materialized in any schema, registry file, or committed artifact.
+    Without a public key, an auditor cannot verify the signatures.
+  \item[GAP-S-004: Governance boundary between \texttt{schemas/} and \texttt{standards/}
+    is undocumented.] The \texttt{OTelTraceBlake3IntegrationSchema} resides in \texttt{standards/}
+    rather than \texttt{schemas/}. The design rationale for this placement is not recorded.
+    It is unclear whether these two schemas are considered part of the same contractual surface
+    or governed separately, and what authority would adjudicate a conflict between them.
+\end{description}
+
+\subsection{Deferred Gates}
+\label{sec:schemas-open-questions-deferred}
+
+The following proof gates are defined by the research program but deferred to future work:
+
+\begin{enumerate}
+  \item \textbf{Schema validation CI gate}: A CI step that runs \texttt{ajv} or equivalent
+    against all \texttt{rec\_*.json} files using the \texttt{slide\_verification\_ledger.schema.json}
+    schema, failing the build on any non-conforming receipt. This gate must be in place before
+    the schemas project can advance from PARTIAL to ALIVE.
+  \item \textbf{Live receipt generation gate}: A receipted execution of each wasm4pm query
+    against a live or representative event log, producing BLAKE3 hashes from actual file content
+    and Ed25519 signatures from an actual signing key. The five current sample receipts must be
+    replaced by receipts that pass this gate.
+  \item \textbf{Public key materialization gate}: A committed key registry file (e.g.,
+    \texttt{schemas/key\_registry.json}) that pins the Ed25519 public key used to sign receipts,
+    enabling independent signature verification.
+  \item \textbf{Governance documentation gate}: A \texttt{schemas/README.md} or equivalent that
+    documents the design rationale for \texttt{patternProperties} vs. \texttt{\$defs}, the
+    governance boundary between \texttt{schemas/} and \texttt{standards/}, and the version
+    history of the schema.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:schemas-open-questions-risks}
+
+\begin{description}
+  \item[Schema drift risk.] The production receipts (\texttt{rec\_*.json}) carry fields such as
+    \texttt{fitness}, \texttt{precision}, \texttt{ebitda\_impact\_usd}, and
+    \texttt{working\_capital\_released\_usd} that are not enumerated in the base schema. These
+    fields are permitted by the absence of \texttt{additionalProperties: false} inside the
+    \texttt{verification\_results} object. If the base schema is tightened to enforce strict
+    verification results fields, the production receipts will fail validation. This creates a
+    risk that schema evolution will break the sample receipt corpus.
+  \item[Draft version mismatch risk.] The schema file targets JSON Schema draft-07
+    (\texttt{\$schema: http://json-schema.org/draft-07/schema\#}), but the sample receipts
+    reference draft-2020-12 (\texttt{\$schema: https://json-schema.org/draft/2020-12/schema}).
+    Validators that enforce \texttt{\$schema} URI consistency may reject the receipts when
+    validated against the draft-07 schema file. This is a latent compatibility risk that must
+    be resolved before automated CI validation is implemented.
+  \item[Key custody risk.] If the Ed25519 private key used to sign the sample receipts is not
+    securely stored and its public key not committed, the signature verification chain is broken
+    from the moment the signing key is lost. For capital-flow applications, key custody is a
+    legal requirement, not a technical preference.
+  \item[Single-file fragility risk.] The schemas project is a single file with no version
+    history, no README, and no test coverage. Its entire knowledge base is in the schema file
+    and in the five sample receipts. If the schema is modified without a version bump and without
+    re-validating the sample receipts, the PARTIAL status will silently degrade to BLOCKED.
+\end{description}
+
+\subsection{Next Receipted Work}
+\label{sec:schemas-open-questions-next}
+
+The following work items are required to advance the schemas project from PARTIAL to ALIVE.
+Each item is stated as a receipted deliverable---a unit of work that produces a committed artifact
+which can be verified:
+
+\begin{enumerate}
+  \item \textbf{Commit a schema validation script} (\texttt{schemas/validate\_receipts.py} or
+    equivalent) that reads all \texttt{rec\_*.json} files and validates each against
+    \texttt{slide\_verification\_ledger.schema.json}, reporting conformance status.
+    Receipt: a committed test script with a passing run log.
+  \item \textbf{Add CI integration} that runs the validation script on every commit touching
+    \texttt{receipts/rec\_*.json} or \texttt{schemas/*.json}.
+    Receipt: a CI configuration file (e.g., \texttt{.github/workflows/schema\_validate.yml})
+    with a passing run record.
+  \item \textbf{Commit a key registry file} (\texttt{schemas/key\_registry.json}) that pins the
+    Ed25519 public key used to sign receipts, with a format suitable for automated signature
+    verification.
+    Receipt: the key registry file and a committed verification script that uses it to verify
+    at least one sample receipt signature.
+  \item \textbf{Commission live receipt generation} by executing each wasm4pm query against a
+    representative event log, computing BLAKE3 hashes from actual file content, signing with
+    the registered key, and replacing the five sample receipts with live-executed receipts.
+    Receipt: five replacement receipt files with \texttt{verification\_results.status: verified}
+    and hashes computed from non-hardcoded content.
+  \item \textbf{Resolve the draft version mismatch} by aligning the schema file's
+    \texttt{\$schema} URI with the receipts' \texttt{\$schema} URI, or by documenting the
+    intended validation target in a schema README.
+    Receipt: a committed resolution commit with before/after validation output.
+\end{enumerate}
+
+Upon completion of items 1--4, the schemas project will satisfy all ALIVE gate criteria: the
+schema will be mechanically enforced, the receipts will be live-executed evidence, the public
+key will be materialized, and the governance boundary will be documented. The ALIVE verdict
+can then be sealed with a receipt referencing the CI run log and the live receipt files.

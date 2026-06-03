@@ -1,0 +1,119 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Contribution to the Dissertation}
+\label{sec:lifecycle-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:lifecycle-contribution-prediction}
+
+The central thesis question is whether enterprise process intelligence is fundamentally
+a prediction problem or a coordination problem. The lifecycle framework argues directly
+for the coordination position. A process model at L1 (Ad-hoc) has no formal structure
+and cannot support prediction: there is nothing to predict against. A process model at
+L5 (Autonomic) does not predict future behavior in the statistical learning sense; it
+coordinates present behavior through a receipted feedback loop that observes deviations,
+analyzes their cause, plans a repair, and executes it---with every step producing a
+typed artifact.
+
+The distinction is not merely definitional. A prediction-based approach to process
+governance asks: given historical data, what will happen next? A coordination-based
+approach asks: given the declared process model and the observed event log, is the
+current execution conforming, and if not, what action is required and by whom? The
+lifecycle framework encodes the coordination approach in its gate criteria. Gate 3 does
+not predict when fitness will fall below 0.95; it detects that it has fallen below 0.95
+and triggers $T_{\mathrm{elastic}}$ or $T_{\mathrm{compliance}}$ actuation depending on
+the severity. The MAPE-K loop is a coordination architecture, not a prediction engine.
+
+The Board Projection Holography framework extends this contribution by applying
+coordination logic to prospective claims. A board projection is not a statistical
+forecast; it is a projection derived from the verified artifact store through
+deterministic state transition rules, with every projected state carrying a cryptographic
+proof of its provenance. The distinction---proof-backed projection versus statistical
+forecast---is the lifecycle project's contribution to the prediction vs.~coordination
+debate at the governance layer.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:lifecycle-contribution-evidence}
+
+The lifecycle framework's primary contribution to the process evidence corpus is the
+formally specified typed evidence lifecycle $\mathcal{S}$ and the six gate criteria
+that govern stage advancement. This contribution answers the question: what does it mean
+for process evidence to be admissible? The answer is not that the evidence is accurate
+or comprehensive in some informal sense; the answer is that it has traversed the typed
+state machine from \texttt{Raw} through \texttt{Admitted} under a named witness, and
+that every stage transition it has passed through was governed by a formally stated
+mathematical predicate.
+
+The Process Asset Taxonomy distinguishes four categories of evidence: Structural Models
+(WF-nets, BPMN, POWL), Behavioral Logs (XES, OCEL), Verification Profiles (conformance
+reports, alignment scores, soundness receipts), and Cryptographic Receipts (per-action
+proofs and decommissioning receipts). The Process Residual Taxonomy identifies what
+evidence remains after decommissioning: Structural Residuals (process model fragments
+available for reuse), Data Residuals (archived OCEL logs for future discovery runs),
+Resource Competence Profiles (operator skill maps derived from the event log), and
+Declarative Rules (LTL constraints extracted from the conformance history). Together,
+these taxonomies define the full evidence lifecycle from ingestion through archival.
+
+The False-Claim Taxonomy is a negative contribution: it specifies what evidence is not,
+by enumerating five structurally inadmissible claim types. This negative specification
+is as important as the positive one. Without a formal account of what makes a claim
+inadmissible, the admission boundary is vague. The taxonomy gives the boundary a
+rigorous form that can be applied in M\&A diligence review.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:lifecycle-contribution-manufacturing}
+
+The lifecycle framework's contribution to the CodeManufactory manufacturing architecture
+is the specification of the lifecycle as a manufacturing pipeline in which each stage
+is an operator with typed input and typed output. The Design stage manufactures a
+\texttt{WfNetConst<SOUNDNESS>} artifact from a schema and declarative constraints. The
+Simulation stage manufactures a coverability tree and state-space graph from the WF-net.
+The Monitoring stage manufactures \texttt{Metric<Fitness, NUM, DEN>} artifacts from
+event streams. The Repair stage manufactures a repaired \texttt{WfNetConst<SOUNDNESS>}
+and a \texttt{Receipt}. The Optimization stage manufactures a
+\texttt{WfNetConst<SOUNDNESS>} with lower process debt. The Decommissioning stage
+manufactures a Cryptographic Decommissioning Receipt $R_d$ and an archived OCEL log.
+
+The Oblivion Protocol---the three-pass ChaCha20 CSPRNG wipe of WASM linear memory
+at decommission---is a manufacturing constraint: a decommissioned process model cannot
+be re-activated without re-traversing the manufacturing pipeline from Design. This
+constraint enforces the immutability doctrine of the CodeManufactory architecture: once
+decommissioned, a process model's execution authority is permanently revoked and cannot
+be restored without re-manufacturing.
+
+The \texttt{GraduationCandidate} and \texttt{GraduateToWasm4pm} bridge types are the
+manufacturing handoff mechanism between the structure manufacturing layer
+(\texttt{wasm4pm-compat}) and the execution manufacturing layer (\texttt{wasm4pm}).
+An artifact reaches \texttt{GraduationCandidate} status when it has been manufactured
+through the full lifecycle specification surface and is ready for execution authority.
+The graduation bridge formalizes this handoff as a typed operation, preventing
+unauthorized promotion of incomplete artifacts to execution status.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:lifecycle-contribution-capital}
+
+The lifecycle framework's contribution to the capital-flow infrastructure is the
+formal grounding of process intelligence as a transactional instrument. The
+ACQUISITION.md document establishes that a seller who cannot produce admitted logs and
+replayable conformance checks is selling unverifiable narrative, and that the buyer
+who cannot replay claims is accepting unquantified risk. This framing treats process
+intelligence not as an operational nice-to-have but as a capital-flow instrument: the
+presence or absence of a process intelligence package is a direct determinant of
+transaction risk premium and, consequently, of valuation.
+
+The Process Debt quantification formula $D_p = \sum_{c \in L}(C_{\mathrm{deviate}}(c)
++ C_{\mathrm{delay}}(c) + C_{\mathrm{overhead}}(c))$ provides the mechanism for
+converting process conformance metrics into M\&A valuation adjustments. Process debt
+exceeding 15\% of monthly operating cost is defined as the trigger for Debt Actuation
+($T_{\mathrm{compliance}}$) and is simultaneously the threshold at which process debt
+becomes a material post-close integration liability in M\&A diligence.
+
+The five-layer Process Intelligence Diligence Package---model evidence, log evidence,
+conformance evidence, repair evidence, and replay verification---is the capital-flow
+artifact that operationalizes this contribution. A seller who can produce all five
+layers eliminates the epistemic risk premium. A seller who cannot is at a structural
+disadvantage in valuation negotiation. The lifecycle framework is, in this sense, the
+formal specification of process intelligence as a capital-flow instrument at the
+enterprise transaction layer.

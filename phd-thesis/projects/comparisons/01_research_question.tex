@@ -1,0 +1,90 @@
+% FILE: 01_research_question.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Research Question}
+\label{sec:comparisons-rq}
+
+\subsection{Problem Statement}
+\label{sec:comparisons-rq-problem}
+
+The process mining field has converged on PM4Py as its reference implementation.
+PM4Py is a mature Python library covering discovery, conformance, and prediction.
+However, maturity is not correctness: PM4Py returns quality metrics as raw Python
+\texttt{float} values with no bound enforcement, accepts event logs without
+structural admission gates, and handles invalid input with generic Python
+\texttt{Exception} strings. In an enterprise or edge deployment context where
+conformance scores are used to make capital-allocation decisions, a fitness value
+of $1.5$ or $-0.3$ is not a bug to be caught in testing --- it is a latent
+structural defect in the architecture.
+
+The problem this corpus addresses is: \emph{what is the precise, source-traceable
+capability and enforcement boundary of each stack, and where do the gaps between
+stacks constitute engineering debt that must be closed before process intelligence
+artifacts can be treated as board-admissible evidence?}
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:comparisons-rq-old-regime}
+
+The old regime assumes that a conformance score returned by a well-tested library
+is trustworthy, and that runtime exceptions are a sufficient error-handling
+mechanism for invalid process-mining inputs. This assumption has three structural
+defects documented by the corpus:
+
+\begin{enumerate}
+  \item \textbf{Unbounded metrics.} PM4Py returns \texttt{'trace\_fitness'} as a
+    Python \texttt{float}. The value $1.5$ is representable and would not raise an
+    error (\texttt{CONFORMANCE\_METRIC\_SURFACES.md}).
+  \item \textbf{Raw log laundering.} PM4Py and wasm4pm both accept unvalidated
+    \texttt{EventLog} instances directly. wasm4pm silently computes a fitness of
+    $1.0$ for an event log whose traces all have zero events, because the early-
+    continue branch returns \texttt{fitting\_traces += 1} on empty activity lists
+    (\texttt{TYPE\_SAFETY\_COMPARISON.md}).
+  \item \textbf{String-typed errors.} PM4Py error handling surfaces as
+    \texttt{except Exception as e}, where \texttt{e} is a string. Which law was
+    violated is unknown without string parsing. Which standard the log was supposed
+    to satisfy is not encoded in the exception type
+    (\texttt{ADMISSION\_REFUSAL\_VS\_PM4PY\_ERRORS.md}).
+\end{enumerate}
+
+\subsection{Hypothesis}
+\label{sec:comparisons-rq-hypothesis}
+
+The hypothesis of the comparisons corpus is that the Rust type system, used with
+compile-time const generics and typestate patterns, can eliminate all three
+structural defects at the compiler level, with no runtime overhead:
+
+\begin{enumerate}
+  \item \texttt{Metric<KIND, NUM, DEN>} with \texttt{Require<\{NUM <= DEN\}>:
+    IsTrue} makes out-of-range quality metrics a \texttt{rustc} type error, not a
+    runtime assertion.
+  \item \texttt{Evidence<T, State, W>} with a \texttt{pub(crate)} \texttt{Admitted}
+    constructor and the \texttt{Admit::admit()} trait makes raw log laundering a
+    compile-time type error, not a silent wrong result.
+  \item \texttt{Refusal<R, W>} with a closed enum \texttt{R} makes error handling
+    exhaustive, machine-readable, and standard-specific, with no string parsing
+    required.
+\end{enumerate}
+
+\subsection{Success Criteria}
+\label{sec:comparisons-rq-success}
+
+The comparisons corpus considers the hypothesis confirmed if:
+
+\begin{itemize}
+  \item The coverage matrix demonstrates that wasm4pm-compat carries structural
+    type shapes for all major PM4Py algorithms, even where no execution engine
+    exists yet.
+  \item The laundering test table shows that wasm4pm-compat is the only system in
+    the three-stack comparison that prevents raw log laundering at the compiler
+    level.
+  \item The performance matrix shows that wasm4pm achieves near-native throughput
+    ($\geq 96\%$ of native Rust speed for alignment conformance) while adding
+    sandboxed memory isolation and $< 1$ms instantiation overhead.
+  \item The ALIVE gate assessment confirms the comparisons directory as meeting its
+    file-count criterion, contributing to the sealed PROCESS\_INTELLIGENCE\_ALIVE\_001
+    checkpoint.
+\end{itemize}
+
+All four criteria are met in the corpus as assessed on 2026-05-31.

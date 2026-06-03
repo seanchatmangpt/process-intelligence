@@ -1,0 +1,29 @@
+slug: standards
+absolute_path: /Users/sac/process-intelligence/standards
+description: >
+  Public standards compliance maps. Covers XES (IEEE 1849), OCEL 2.0, BPMN 2.0, DECLARE,
+  DFG, Petri nets, POWL, Process Trees, WF-nets, OCPQ, PROV-O, SHACL, SKOS, ODRL, and
+  OTel Weaver. Maps each standard to its process intelligence placement, gravity field,
+  reverse lock-in properties, and M&A claim surface.
+detected_languages:
+  - JSON
+detected_frameworks:
+  - XES
+  - OCEL
+  - BPMN
+  - DECLARE
+detected_research_surfaces:
+  - standards-compliance
+  - process-evidence
+  - conformance-law
+  - m-and-a-claims
+likely_thesis_role: public-standards-compliance-and-gravity-field-mapping
+key_files:
+  - /Users/sac/process-intelligence/standards/OCEL_20.md
+  - /Users/sac/process-intelligence/standards/XES_1849.md
+  - /Users/sac/process-intelligence/standards/PROCESS_STANDARDS_GRAVITY_FIELD.md
+  - /Users/sac/process-intelligence/standards/STANDARDS_TO_BOARD_CLAIMS.md
+  - /Users/sac/process-intelligence/standards/otel_trace_integration_schema.json
+readme_present: false
+receipt_present: false
+ontology_present: false

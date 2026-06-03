@@ -1,0 +1,127 @@
+% FILE: 04_implementation_surface.tex
+% Project: ggen — Governance Generation Engine
+
+\section{Implementation Surface}
+\label{sec:ggen-implementation}
+
+\subsection{Source Files}
+\label{sec:ggen-implementation-source}
+
+The ggen implementation surface consists of specification files rather than compiled source code.
+The \texttt{src/} directory exists but contains no Rust source files, confirming that ggen
+operates as a template-and-query engine whose own implementation is external to this repository.
+The authoritative source files are:
+
+\textbf{Manifest:} \texttt{ggen.toml} (112 lines) defines the project configuration, four
+active generation rules, the inference pass-through rule, query endpoint configuration
+(\texttt{in-memory}, SPARQL 1.1), template engine configuration (Tera, \texttt{autoescape = true},
+\texttt{strict\_variables = true}), and output configuration (\texttt{blake3},
+\texttt{cryptographic-chain}).
+
+\textbf{SPARQL Queries} (4 files in \texttt{queries/}):
+\begin{itemize}
+  \item \texttt{extract-board-claims.rq} --- 70 lines; SELECT with DISTINCT over 14 projected
+    variables; enforces fitness $\geq 0.95$, precision $\geq 0.90$, and log format
+    \texttt{ocel:2.0} or \texttt{xes:1849-2016} via FILTER.
+  \item \texttt{extract-diligence-claims.rq} --- extends the board query with synergy category,
+    debt remediation hours, risk severity, and replay trace deviations.
+  \item \texttt{extract-lifecycle-governance.rq} --- extracts MAPE-K monitor, analyze, plan,
+    execute, and knowledge rules per lifecycle state.
+  \item \texttt{select-witness-projections.rq} --- extracts witness marker positions and lattice
+    properties for Rust enum manufacturing.
+\end{itemize}
+
+\textbf{Governance Rules} (5 files in \texttt{rules/}): \texttt{feature-law.yaml} (542 lines)
+defines six Cargo features with compliance gates; \texttt{ts-projection-law.yaml} defines
+monomorphization rules, brand token rules, and eight verification checkpoints;
+\texttt{wasm-boundary-law.yaml} defines ABI-safe type boundaries; \texttt{component-boundary-law.yaml}
+defines WIT world segregation; \texttt{graduation-law.yaml} defines graduation readiness
+conditions.
+
+\textbf{Audit Scripts} (7 files in \texttt{audits/}, suffix \texttt{.sh.ggen}):
+\texttt{audit-feature-law.sh.ggen} (6 gates), \texttt{audit-ts-projection-surface.sh.ggen},
+\texttt{audit-ts-monomorphization.sh.ggen} (6 gates), \texttt{audit-ts-brand-tokens.sh.ggen}
+(6 gates), \texttt{audit-ts-enum-tagging.sh.ggen} (8 gates),
+\texttt{audit-no-engine-in-wasm-feature.sh.ggen}, and \texttt{audit-component-boundary.sh.ggen},
+totaling 42 or more named gates.
+
+\subsection{Commands}
+\label{sec:ggen-implementation-commands}
+
+The declared interface for invoking ggen is documented in \texttt{README.md} as a command-line
+tool with the following invocation patterns:
+
+\begin{itemize}
+  \item \texttt{ggen --config ggen.toml --execute-all} --- execute all generation rules in the
+    manifest sequentially, sealing each output with a BLAKE3 receipt.
+  \item \texttt{ggen --config ggen.toml --rule <name>} --- execute a single named generation
+    rule; e.g., \texttt{--rule blue-river-orchestrator} or \texttt{--rule wasm4pm-compat-witness-markers}.
+  \item \texttt{ggen --config ggen.toml --verify-all} --- verify all receipts by re-running each
+    originating query and comparing the resulting fitness score to the slide assertion.
+\end{itemize}
+
+The cargo-make integration targets documented in \texttt{GGEN\_MANUFACTURING\_SUMMARY.md} are:
+\texttt{cargo make ggen-feature-plan}, \texttt{cargo make ggen-ts-projection},
+\texttt{cargo make ggen-wasm-boundary}, \texttt{cargo make ggen-wit-world}, and
+\texttt{cargo make audit-ggen-all}. \textit{(FUTURE WORK: the ggen binary does not exist as a
+compiled artifact in this repository; whether these cargo-make targets invoke an external ggen
+binary, a cargo plugin, or were executed manually is not conclusively documented in the available
+artifacts.)}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:ggen-implementation-data}
+
+\textbf{Ontology Extensions:} \texttt{ontology-extensions.ttl} defines the \texttt{ma:}
+namespace (\texttt{https://process.intelligence/ma/}) with the \texttt{ma:BoardClaim} class
+hierarchy and properties \texttt{ma:backedBy}, \texttt{ma:supportedBy}, \texttt{ma:evidencedBy},
+\texttt{ma:quantifies}, and \texttt{ma:hasRemediationPath}. The \texttt{lifecycle:} namespace
+defines \texttt{lifecycle:ProcessState} as a disjoint union of seven state classes with properties
+for monitor, analyze, plan, execute, and knowledge rules. The \texttt{compat:} namespace defines
+\texttt{compat:Evidence<T, State, W>} as a typed container for process evidence.
+
+\textbf{wasm4pm-compat Ontology:} \texttt{wasm4pm-compat.ttl} contains the RDF extensions
+specific to the wasm4pm-compat type law, including witness lattice positions and WASM ABI
+type definitions.
+
+\textbf{Query Endpoint:} The \texttt{[query]} section of \texttt{ggen.toml} specifies
+\texttt{endpoint = "in-memory"} with \texttt{format = "sparql-11"}. The ontology namespace
+prefixes are declared for \texttt{ma:}, \texttt{lifecycle:}, \texttt{wasm4pm:}, and
+\texttt{compat:}. \textit{(INTERPRETATION: the in-memory endpoint implies that ggen loads the
+ontology TTL files into a transient RDF store at manufacturing time rather than connecting to a
+persistent SPARQL endpoint. Whether the conformance verdicts required by
+\texttt{extract-board-claims.rq} were pre-populated in the TTL files or were absent from the
+in-memory store during manufacturing is an open question documented in section
+\ref{sec:ggen-open-questions}.)}
+
+\textbf{Audit Log:} \texttt{audit.json} records \texttt{ggen\_version: 26.5.21},
+\texttt{generated\_at: 2026-06-01T20:38:53.643973+00:00}, and \texttt{validation\_passed: true}.
+The \texttt{inputs} object records empty hash maps for manifest, ontology, template, and query
+hashes, and the \texttt{pipeline} and \texttt{outputs} arrays are empty, indicating the audit
+record was committed before full pipeline execution rather than after it.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:ggen-implementation-templates}
+
+\textbf{\texttt{ma-deck.tera}:} Renders a seven-slide PowerPoint JSON structure: Title Slide,
+Executive Summary, one Claim Detail Slide per board claim (with fitness, precision, receipt hash,
+and event log format), Operational Debt Slide, Synergy Waterfall Slide, Conformance Model
+Summary, and Board Sign-Off Slide with five admissibility declarations and a UUID timestamp.
+
+\textbf{\texttt{ma-diligence.tera}:} Renders a seven-sheet Excel workbook JSON structure:
+Executive\_Summary, Synergy\_Claims, Operational\_Debt, Integration\_Risks, Replay\_Traces,
+Activity\_Impact, and Governance. Every row in every sheet is traceable to a SPARQL query result
+and a conformance verdict.
+
+\textbf{\texttt{blue-river.tera}:} Renders Rust source code for the \texttt{BlueRiverOrchestrator}
+struct. The template iterates over the \texttt{states} variable (populated from
+\texttt{extract-lifecycle-governance.rq} results) to manufacture the \texttt{LifecycleState}
+enum, \texttt{StateDefinition} struct, \texttt{TransitionGuard}, \texttt{StateTransition},
+\texttt{MonitorRule}, \texttt{AnalyzeRule}, \texttt{PlanRule}, \texttt{ExecuteAction}, and
+\texttt{KnowledgeAsset} types. The first manufactured output of this template was sealed as
+output hash \texttt{4e341f5a\ldots} in the chain-root receipt.
+
+\textbf{\texttt{witness-marker.tera}:} Renders the \texttt{WitnessMarker} Rust enum with eight
+named variants and an embedded test module with proofs of join-semilattice monotonicity (idempotency,
+absorption, commutativity), partial order (reflexivity, transitivity), and two additional
+algebraic invariants. The rendered artifact is
+\texttt{../sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs}.

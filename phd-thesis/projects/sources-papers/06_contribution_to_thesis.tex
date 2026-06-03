@@ -1,0 +1,129 @@
+% FILE: 06_contribution_to_thesis.tex
+% PROJECT: sources-papers
+% ROLE: academic-paper-classification-and-evidence-grounding
+
+\section{Contribution to the Dissertation}
+\label{sec:sources-papers-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:sources-papers-contribution-prediction}
+
+The dissertation's central argument is that the dominant paradigm of enterprise
+AI --- prediction --- is insufficient for process-critical systems, and that
+\emph{coordination} grounded in verifiable process evidence is required. The
+paper corpus substantiates this argument with two concrete demonstrations from
+the academic literature.
+
+First, the predictive process monitoring papers catalogued in
+\texttt{PAPER\_TO\_TYPE\_LAW.md} --- Tax et al.\ (2017) LSTM-based prefix
+prediction, Di Francescomarino et al.\ (2017) survey, Polato et al.\ (2018)
+time-aware prediction --- share a structural limitation: their output is
+\texttt{PredictionTarget}, a single predicted value, not a \emph{process
+evidence chain}. The \texttt{PrefixLength} and \texttt{PredictionHorizon} types
+required to make these predictions typed and bounded are documented as MISSING
+from wasm4pm-compat. A system built on prediction alone cannot produce the
+\texttt{Admitted<OcelLog, Ocel20>} $\to$ discovery $\to$ conformance $\to$
+board claim chain that the dissertation's architecture requires.
+
+Second, the adversarial canon analysis in \texttt{adversarial-canon.md}
+demonstrates that prediction is not merely insufficient but actively dangerous
+in adversarial environments. Alpha Miner, Heuristics Miner, and Inductive
+Miner --- the canonical discovery algorithms --- produce incorrect models under
+Sybil attack because they predict process structure from event frequency
+patterns without verifying event provenance. Coordination via BLAKE3-receipted
+event streams is the required correction, not a more sophisticated predictor.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:sources-papers-contribution-evidence}
+
+The paper corpus makes four specific contributions to the dissertation's theory
+of process evidence:
+
+\begin{enumerate}
+  \item \textbf{The Paper-to-Law mapping algorithm} $\mathcal{M}: I_P \to
+    (\mathcal{T}_{\text{Rust}}, \mathcal{W})$ is the first formal account, in
+    this research program, of how academic invariants become compiler-enforced
+    guarantees. The mapping is not interpretive; it is mechanical: every
+    structural invariant that can be expressed without dynamic graph traversal
+    becomes a named Rust type, and every violation of that invariant becomes a
+    compile-time error with a diagnostic citing the originating paper.
+
+  \item \textbf{The 5-valued dynamic valuation lattice}
+    $\mathcal{V} = \{\bot, \text{PossiblySatisfied}, \text{Satisfied},
+    \text{Violated}, \top\}$ from \texttt{declare-satisfaction-lattice.md}
+    provides the mathematical foundation for streaming process evidence
+    production. Evidence is not a binary verdict but a monotonically advancing
+    lattice element: once \texttt{Satisfied} or \texttt{Violated} is reached,
+    the state is permanent and immutable. This property is essential for receipt
+    chain integrity --- a receipt cannot be retroactively invalidated by a later
+    event.
+
+  \item \textbf{The \texttt{Between01<NUM, DEN>} conformance metric bound}
+    makes fitness, precision, and F1 measurements typed at the compile level.
+    The distinction between a measurement (typed, bounded, receipted) and an
+    assertion (untyped floating-point) is the core distinction between process
+    evidence and process narrative.
+
+  \item \textbf{The PARTIAL coverage map} --- 22 named missing types, 14 named
+    missing output shapes --- is itself a contribution to process evidence
+    theory. It demonstrates that the obligation surface is enumerable, that
+    gaps can be named precisely, and that the boundary between ``covered'' and
+    ``not covered'' is a compile-time property, not an opinion.
+\end{enumerate}
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:sources-papers-contribution-manufacturing}
+
+The CodeManufactory thesis argues that process artifacts --- models, receipts,
+conformance scores, board claims --- must be manufactured, not asserted. The
+paper corpus contributes to this argument by defining the manufacturing inputs.
+
+The four core lifecycle algorithms in \texttt{core\_lifecycle\_algorithms.md}
+define the manufacturing pipeline for process evidence:
+
+\begin{enumerate}
+  \item \textbf{Paper-to-Law}: Converts academic invariants into type
+    obligations (the specification layer of the manufacturing pipeline).
+  \item \textbf{PM4Py Oracle Mapping}: Maps PM4Py algorithm capabilities to
+    wasm4pm gap status, establishing the oracle reference for the manufacturing
+    engine's capability surface.
+  \item \textbf{Admission Gate}: Enforces the \texttt{Admitted<T, W>}
+    invariant, preventing raw event laundering from entering the manufacturing
+    pipeline.
+  \item \textbf{Receipt-Bearing Execution}: Cryptographically binds each
+    manufacturing output to the evidence chain, making the provenance of every
+    artifact non-forgeable.
+\end{enumerate}
+
+The graduation boundary taxonomy --- \texttt{NeedsDiscovery},
+\texttt{NeedsConformanceExecution}, \texttt{NeedsObjectCentricQueryExecution},
+\texttt{NeedsReceipts}, \texttt{RebuildingProcessMiningLocally} --- maps
+directly to manufacturing stage classifications: each graduation reason names
+the manufacturing capability that must be present before a paper's algorithms
+can be manufactured as receipted execution artifacts.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:sources-papers-contribution-capital}
+
+The dissertation's long-horizon claim is that verifiable process evidence is a
+prerequisite for capital-flow infrastructure --- settlement systems, DAOs,
+regulatory compliance chains --- that requires machine-readable proof of
+process conformance, not human-readable assertions about process conformance.
+
+The paper corpus contributes to this claim by establishing the board-admissible
+claim taxonomy in \texttt{PAPER\_TO\_BOARD\_CLAIM.md}. A board-admissible
+claim, as defined there, must satisfy three conditions: grounded in a specific
+paper with a specific formal result; verifiable evidence path in
+\texttt{wasm4pm-compat} (named Rust type, compile-fail fixture, or graduation
+boundary); not falsifiable by pointing to a missing type that contradicts the
+claim.
+
+This three-condition definition is the process-evidence analogue of the legal
+definition of admissible evidence. It establishes that the output of the
+manufacturing pipeline --- conformance receipts, fitness scores, alignment
+results --- can function as machine-readable evidence in capital-flow contexts
+where human attestation is insufficient. The 5 Tier-1 structural completeness
+claims currently documented as board-admissible represent the minimal viable
+evidence surface for a process-intelligence-backed capital-flow claim; the 5
+claims explicitly marked NOT board-admissible due to missing types document
+the remaining manufacturing obligation.

@@ -1,0 +1,102 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Architecture and Primitives}
+\label{sec:adversarial-architecture}
+
+\subsection{Core Objects}
+\label{sec:adversarial-architecture-objects}
+
+The adversarial simulation engine (\texttt{simulate\_laundering\_spoofing.py}) is organized
+around five core objects.
+
+\textbf{IngestionBoundary} is the zero-trust ingestion boundary class. Its \texttt{validate\_log}
+method implements five detection rules in sequence: \texttt{reject\_unhashed\_dataframe},
+\texttt{check\_signature\_authenticity}, \texttt{check\_cryptographic\_chain},
+\texttt{check\_timestamp\_monotonicity}, and \texttt{check\_impossible\_velocity}. The method
+returns a structured verdict dictionary containing \texttt{evaluation\_id},
+\texttt{analyzed\_log\_hash\_sha256}, \texttt{verdict} (ACCEPTED or REJECTED),
+\texttt{detection\_rules} (audit trail of which rules fired), and on rejection, a
+\texttt{refusal\_reason} block identifying the failed rule, trace identifier, and detailed
+error message.
+
+\textbf{LaunderingRefusalError} is the custom exception raised when any detection rule fails.
+Its fields are \texttt{rule\_failed}, \texttt{trace\_id}, and \texttt{detailed\_error}. The
+exception is caught within \texttt{validate\_log} and serialized into the
+\texttt{refusal\_reason} block, ensuring that every rejection is fully documented.
+
+\textbf{Wasm4pmBridge} is the ctypes FFI bridge to \texttt{libwasm4pm.dylib}. It wraps five
+library functions: \texttt{wasm\_init} (arena initialization with memory ceiling),
+\texttt{wasm\_alloc} (heap allocation), \texttt{wasm\_parse\_and\_query} (OCEL log parsing
+and OCPQ query evaluation), \texttt{wasm\_shred\_heap} (four-pass zeroization of linear
+memory), and \texttt{wasm\_verify\_jcs\_signature} (Ed25519 signature verification over
+canonical JSON). Error codes are typed constants: \texttt{ERR\_CONFORMANCE\_VIOLATION =
+0xFB03} (signature/conformance failures) and \texttt{ERR\_LIFECYCLE\_VIOLATION = 0xFB05}
+(out-of-bounds pointer safety).
+
+\textbf{GENUINE\_SYSTEM\_KEY} and \textbf{FORGED\_SYSTEM\_KEY} form the authority key pair
+used in signature verification scenarios. The genuine key simulates an ERP system secret;
+the forged key simulates an unauthorized adversary attempting to produce structurally valid
+but cryptographically invalid traces.
+
+\subsection{Admissible Transitions}
+\label{sec:adversarial-architecture-transitions}
+
+The hash chain primitive defines admissible event transitions. The chain link is computed as:
+\[
+  H_j = \text{SHA256}(P_j \,\|\, H_{j-1} \,\|\, S_j)
+\]
+where $P_j$ is the canonical JSON serialization of the event payload (deterministic,
+\texttt{sort\_keys=True}), $H_{j-1}$ is the previous chain link, and $S_j$ is the
+HMAC-SHA256 signature of $P_j$ under the system key. This construction means that any
+modification to a payload---including a single-byte timestamp shift---invalidates the
+signature, which in turn invalidates the chain link, which propagates the invalidation to all
+subsequent events. Event deletion breaks the chain at the point of deletion, producing a
+detectable discontinuity between the expected and actual hash links.
+
+Temporal admissibility requires $T_{\text{ns}}(P_j) \geq T_{\text{ns}}(P_{j-1})$ (monotonicity)
+and $\Delta T \geq 10^9$ nanoseconds (impossible-velocity threshold: one second minimum
+between events). These bounds are operationally motivated: sub-second event sequences in
+enterprise process logs indicate clock manipulation, not genuine process execution.
+
+Witness lattice admissibility is governed by the three structural laws in
+\texttt{sources/wasm4pm-compat/adversarial-type-law.md}: strict injectivity (Law I, the
+Chatman Constraint), exhaustive typestate closure (Law II), and cryptographic isolation of
+witness contexts across epochs via domain separators (Law III: $\text{Hash}_{\text{domain}} =
+H(\text{DomainID}_{\text{epoch}} \,\|\, \text{WitnessData})$).
+
+\subsection{Boundaries}
+\label{sec:adversarial-architecture-boundaries}
+
+The adversarial architecture defines three explicit boundaries. The \textbf{ingestion
+boundary} is the Python \texttt{IngestionBoundary} class, which rejects any input that is a
+raw pandas DataFrame (no cryptographic envelope), a malformed or missing envelope, or a trace
+with a broken hash chain, invalid signature, non-monotonic timestamps, or impossible velocity.
+
+The \textbf{FFI boundary} is the WebAssembly linear memory interface exposed by
+\texttt{Wasm4pmBridge}. It enforces out-of-bounds pointer safety (Scenario 8: offset
+\texttt{0xFFFFFFFF} returns \texttt{ERR\_LIFECYCLE\_VIOLATION}) and post-decommissioning
+memory zeroization (Scenario 9: four-pass \texttt{wasm\_shred\_heap} zeroes all sentinel
+bytes before deallocation).
+
+The \textbf{standards audit boundary} is the \texttt{validate\_standards.py} script, which
+enforces that all six standards placement files contain no placeholder terms (TODO, FIXME,
+stub, etc.), no broken file links, no malformed JSON blocks, and a complete Trans-Standard
+Conversions section with a \texttt{LossReport} schema and \texttt{witness\_signature} field.
+
+\subsection{Failure Modes Refused}
+\label{sec:adversarial-architecture-failure-modes}
+
+The architecture explicitly refuses four failure modes. First, \textbf{raw DataFrame
+injection}: any \texttt{pd.DataFrame} input is immediately rejected with verdict REJECTED and
+rule \texttt{reject\_unhashed\_dataframe}, without further processing. Second,
+\textbf{signature forgery}: traces manufactured under a forged key fail
+\texttt{check\_signature\_authenticity} via \texttt{hmac.compare\_digest}, which is
+constant-time and immune to timing side-channels. Third, \textbf{event deletion}: removing
+an event from a hash-chained trace breaks the chain at the deletion point, which
+\texttt{check\_cryptographic\_chain} detects. Fourth, \textbf{phantom object injection}:
+the OCEL adversarial gravity document (\texttt{standards/ocel-adversarial-gravity.md},
+Section 2.2) identifies object-to-event desynchronization as a compliant-processor
+rejection criterion---dynamic attribute updates not synchronized with active event-to-object
+links must be refused.

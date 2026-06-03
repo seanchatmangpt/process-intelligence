@@ -1,0 +1,130 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Architecture and Primitives}
+\label{sec:lifecycle-architecture}
+
+\subsection{Core Objects}
+\label{sec:lifecycle-architecture-objects}
+
+The lifecycle framework is built on six core typed objects, each carrying formal
+invariants enforced at the type level.
+
+\textbf{WfNetConst\textless SOUNDNESS\textgreater} is the Petri net type with soundness
+class encoded as a const generic. A WF-net $N = (P, T, F)$ must have a unique source
+place $i$ with no incoming arcs, a unique sink place $o$ with no outgoing arcs, and must
+satisfy classical soundness: every reachable marking has a path to the final marking,
+and every transition is live. The soundness class is encoded in the type so that a
+model that has not passed Gate 1 cannot be passed to Gate 2 without a compile-time error.
+
+\textbf{Evidence\textless T, S, W\textgreater} is the typed evidence state machine with
+type parameters for payload type $T$, lifecycle state $S \in \mathcal{S}$, and witness
+type $W$. Cross-state substitution is a type error: $S_1 \neq S_2 \implies
+\mathrm{Evidence}\langle T, S_1, W \rangle \not\leq \mathrm{Evidence}\langle T, S_2, W \rangle$.
+This enforces the one-way door property of the evidence lifecycle.
+
+\textbf{Metric\textless KIND, NUM, DEN\textgreater} is the typed metric with rational
+arithmetic over const generics. Fitness metrics are bounded by
+\texttt{Between01\textless NUM, DEN\textgreater}, preventing any fitness value outside
+$[0, 1]$ from being expressed as a valid type.
+
+\textbf{Receipt} is the per-action proof artifact. Every executed action in the Execute
+component of the MAPE-K loop produces a \texttt{Receipt}. A receipt-less execution is
+not an execution for lifecycle governance purposes.
+
+\textbf{GraduationCandidate} and \textbf{GraduateToWasm4pm} are the bridge types between
+the structure layer (\texttt{wasm4pm-compat}) and the execution layer (\texttt{wasm4pm}).
+An artifact reaches \texttt{GraduationCandidate} status when it satisfies all type-level
+preconditions for full execution authority. The \texttt{GraduateToWasm4pm} trait is the
+formal handoff.
+
+\textbf{Refusal\textless R, W\textgreater} is the typed refusal artifact, carrying the
+named law violated and the witness type. Every admission failure must produce a
+\texttt{Refusal} with a named law; anonymous refusals are structurally inadmissible.
+
+\subsection{Admissible Transitions}
+\label{sec:lifecycle-architecture-transitions}
+
+The lifecycle defines two categories of admissible transitions: evidence lifecycle
+transitions and stage transitions.
+
+Evidence lifecycle transitions are governed by the typed state machine over $\mathcal{S}$:
+\begin{align*}
+\texttt{Raw} &\xrightarrow{\texttt{into\_parsed}} \texttt{Parsed}
+  \xrightarrow{\texttt{Admit::admit}} \texttt{Admitted} \\
+\texttt{Admitted} &\to
+  \begin{cases}
+    \texttt{Projected} \xrightarrow{\texttt{into\_receipted}} \texttt{Receipted} \\
+    \texttt{Exportable} \xrightarrow{\texttt{into\_receipted}} \texttt{Receipted}
+  \end{cases} \\
+\texttt{Raw} &\xrightarrow{\texttt{refuse}} \texttt{Refused}, \quad
+\texttt{Parsed} \xrightarrow{\texttt{into\_refused}} \texttt{Refused}
+\end{align*}
+
+Stage transitions are governed by the six Blue River Dam quality gates. Gate 1 admits
+the process model from Design to Simulation when $\mathrm{sound}(N) \equiv \mathrm{true}$.
+Gate 2 admits the model from Simulation to Monitoring when all reachable markings are
+deadlock-free and the net is 1-bounded. Gate 3 triggers repair when live fitness falls
+below 0.95 and triggers optimization when process debt $D_p$ exceeds 15\% of monthly
+operational cost. Gate 4 returns the model from Repair to Monitoring when the repaired
+model $N'$ is proven sound and repair was isolated to an S-component. Gate 5 returns the
+model from Optimization to Monitoring when the discovered model $N_{\mathrm{opt}}$ has
+lower process debt and is a sound block-structured process tree. Gate 6 admits the model
+from Monitoring to Decommissioning when execution is disabled and $R_d$ is verified.
+
+Autonomic actuation triggers supplement the gate criteria. The elastic actuation trigger
+$T_{\mathrm{elastic}}$ fires when $0.85 \leq f_{\mathrm{align}} < 0.95$, isolating and
+repairing the affected S-component without global lockdown. The compliance actuation
+trigger $T_{\mathrm{compliance}}$ fires when $f_{\mathrm{align}} < 0.85$ or a deadlock
+is reached, requiring Governor token authorization $\mathrm{GovToken}(\Pi_{\mathrm{Gov}})$
+with HSM-signed cryptographic authorization $\Sigma_{\mathrm{Gov}}$.
+
+\subsection{Boundaries}
+\label{sec:lifecycle-architecture-boundaries}
+
+The lifecycle framework enforces three hard boundaries. First, the admission boundary:
+no artifact may participate in conformance computation unless it has passed through
+\texttt{Admit::admit()}. Raw database exports, PDF audit reports, and unstructured CSVs
+are structurally excluded. Second, the soundness boundary: no model may advance from
+Design to Simulation without passing Gate 1. A model that fails \texttt{assert\_soundness}
+is refused at the design stage and must be corrected before advancing. Third, the receipt
+boundary: no stage transition in the Execute component of the MAPE-K loop is recognized
+unless a \texttt{Receipt} artifact is emitted. An unwitnessed repair is not a repair.
+
+The MAPE-K loop boundary is also formally defined: the loop is closed if and only if
+(1) every Monitor observation is a typed admitted artifact, (2) every Analyze conclusion
+is a typed artifact with a confidence score bounded by \texttt{Between01}, (3) every Plan
+is a typed ordered risk-scored action sequence, (4) every Execute action produces a
+receipt, and (5) the Knowledge component can replay any past loop cycle from its typed
+artifact store. Condition (5) distinguishes an autonomic system from a merely reactive one.
+
+\subsection{Failure Modes Refused}
+\label{sec:lifecycle-architecture-failures}
+
+The False-Claim Taxonomy, defined in
+\texttt{lifecycle/define\_false-claim\_taxonomy.md}, specifies the five failure modes
+that the lifecycle framework structurally refuses.
+
+\textbf{Unverified Fitness} is the assertion of high process compliance using superficial
+heuristics instead of formal alignment conformance. The framework refuses any fitness
+claim that cannot be expressed as $\mathrm{fitness}(L, N) = 1 -
+\mathrm{cost}(\sigma, \gamma_{\mathrm{opt}}) / \mathrm{worst\text{-}cost}(\sigma, N)$.
+
+\textbf{Infinite Resource Optimism} is the projection of throughput gains without
+accounting for finite resource capacity. The framework enforces queue-length checks
+using Little's Law ($L = \lambda W$) at Gate 2 and rejects any design optimization
+where resource utilization exceeds 95\%.
+
+\textbf{Soundness Hand-Waving} is the presentation of process models as ``fully optimized''
+without verifying soundness. The framework refuses any model at Gate 1 that does not
+pass \texttt{assert\_soundness}.
+
+\textbf{Receipt-less Performance Claims} are operational statistics not linked to
+verifiable event logs. Every board presentation claim must reference a cryptographic
+receipt hash.
+
+\textbf{Flattened Log Distortions} are fitness score inflations caused by flattening
+multi-object event data into single-case logs. The framework enforces OCEL~2.0
+object-centric validation, preserving exact relationships between events and multiple
+distinct object types.

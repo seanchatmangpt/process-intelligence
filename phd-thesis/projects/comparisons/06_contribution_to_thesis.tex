@@ -1,0 +1,100 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Contribution to the Dissertation}
+\label{sec:comparisons-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:comparisons-contribution-prediction}
+
+The central tension in the dissertation is between \emph{prediction} (a system
+that outputs a probability estimate about future behavior) and
+\emph{coordination} (a system that enforces lawful behavior at the structural
+level, refusing to proceed when invariants are violated). The comparisons corpus
+provides the sharpest empirical demonstration of this tension in the process
+mining domain.
+
+PM4Py is a prediction-adjacent tool: it computes conformance scores, discovers
+process models, and produces quality metrics, but it does not coordinate anything
+--- it accepts any input, returns any output, and leaves enforcement to the caller.
+wasm4pm is a coordination-adjacent tool: its WASM linear memory layout, cycle
+budgets, and BLAKE3/Ed25519 hash chaining enforce structural properties at
+runtime. But it still accepts raw \texttt{EventLog} instances without admission,
+placing coordination responsibility on the caller.
+
+wasm4pm-compat is the dissertation's clearest example of compiler-level
+coordination: the \texttt{Evidence<T, State, W>} type with its closed
+\texttt{pub(crate)} \texttt{Admitted} constructor moves the coordination point
+from runtime to compile time. The comparisons corpus provides the three-way
+table that makes this distinction precise and source-traceable: prediction
+systems return values; coordination systems refuse to compile.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:comparisons-contribution-evidence}
+
+The comparisons corpus defines what counts as lawful process evidence in the
+dissertation's framework. \texttt{Evidence<T, Admitted, W>} is the only carrier
+type that satisfies the evidence standard: it binds a payload \texttt{T}, an
+admission state \texttt{Admitted} (enforced by the compiler), and a witness
+\texttt{W} (a named paper or standard). This is not a runtime certificate; it
+is a type-level proof.
+
+The corpus establishes that PM4Py evidence is not lawful process evidence in this
+sense: a \texttt{dict} returned by \texttt{conformance\_diagnostics\_token\_based\_replay}
+carries no admission state and no named witness. wasm4pm evidence is not lawful
+process evidence either, because raw \texttt{EventLog} instances may enter
+algorithm functions without passing through an admission gate. Only wasm4pm-compat
+evidence satisfies the standard.
+
+The lattice compliance model further shows that process evidence can be
+\emph{cryptographically sealed}: the BLAKE3 hash chain $H_k =
+\text{BLAKE3}(H_{k-1} \| e_k \| W_k)$, together with an Ed25519 signature over
+$(H_n, W_n)$, produces a \texttt{Receipt} that provides mathematical proof of
+process execution integrity. Tamper-resistance is not a post-hoc audit; it is
+a structural property of the evidence chain.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:comparisons-contribution-manufacturing}
+
+The comparisons corpus contributes to the manufacturing architecture layer of the
+dissertation by establishing the type-law boundary between the wasm4pm execution
+engine and the wasm4pm-compat type-law enforcement layer. This boundary is the
+admission gate: the point at which a raw process artifact becomes admitted process
+evidence. The manufacturing pipeline does not begin until this gate is crossed.
+
+The algorithm coverage matrix establishes the current coverage surface:
+Alpha Miner and Heuristics Miner are available as full execution algorithms in
+wasm4pm, with wasm4pm-compat carrying shape types for their outputs
+(\texttt{WfNetConst<SOUNDNESS>} and \texttt{Dfg} respectively). Inductive Miner,
+alignment conformance, POWL discovery, Declare checking, and OC-DFG are absent
+from the wasm4pm execution engine; wasm4pm-compat carries shape types for all of
+them, defining the reception surface for future execution algorithms.
+
+The OCPQ query language (\texttt{ObjectScope}, \texttt{Predicate} tree,
+\texttt{OcpqQuery}) is the manufacturing architecture's most forward-looking
+contribution: it is a wasm4pm-compat-original query language with no execution
+engine anywhere in the stack. Its presence in the type system defines a
+manufacturing surface for future work.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:comparisons-contribution-capital}
+
+The comparisons corpus contributes to the capital-flow and settlement layer of the
+dissertation through the admission gate threshold structure materialized in the
+conformance authority module. The Blue River Dam Gate 3 thresholds --- fitness
+$\geq 0.95$ (automatic pass), $0.85 \leq$ fitness $< 0.95$ (conditional, board
+override required), fitness $< 0.85$ (hard reject) --- are not business rules in
+a configuration file; they are type-level constants compiled into the
+\texttt{ConformanceAdmissionGate} struct.
+
+A capital-flow settlement decision that depends on a conformance verdict can be
+traced to a \texttt{ConformanceCertificate} carrying a Blake3 hash, an Ed25519
+signature, and an \texttt{AdmissionVerdict} enum value (Pass, Conditional, Reject,
+Unknown, Unavailable). The \texttt{Refusal<R, W>} architecture ensures that when
+a settlement is refused, the refusal carries a specific named structural law
+type, not a generic error string --- making the capital-flow refusal reason
+machine-readable and auditable. This is the connection from the comparisons corpus
+to the DAO and settlement layers of the thesis lineage (AUTHOR INTERPRETATION ---
+no document in the comparisons directory itself names capital-flow infrastructure).

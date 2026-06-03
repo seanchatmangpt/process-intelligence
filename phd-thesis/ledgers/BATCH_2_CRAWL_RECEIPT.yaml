@@ -1,0 +1,196 @@
+# BATCH_2_CRAWL_RECEIPT.yaml
+# Batch 2: Roots 11-20 (0-indexed: items 10-19)
+# Generated: 2026-06-01T17:30:25.597495
+# Status: ACTIVE
+# Total crawled: 1
+# Total relevance hits: 56
+
+receipt:
+  batch: 2
+  roots_range: '11-20'
+  engine: python-corpus-cartographer
+  scan_time: 2026-06-01T17:30:25.597514
+  crawled_roots:
+    - root: "~/.cursor"
+      classification: SHOULD_CRAWL
+      hits_count: 56
+      files_scanned: 2191
+      matches:
+        - file: "~/.cursor/plans/knowledge_hooks_event_integration_7ff0ce58.plan.md"
+          lines:
+            - line_number: 2
+              matched_text: "name: Knowledge Hooks Event Integration"
+              keyword: "Knowledge Hooks"
+            - line_number: 3
+              matched_text: "overview: Extend the knowledge hooks ontology to support Claude Code event-based hooks while maintaining backward compatibility with phase-based hooks"
+              keyword: "knowledge hooks"
+            - line_number: 82
+              matched_text: "content: Create docs/knowledge-hooks-claude-integration.md documenting Claude hooks → knowledge hooks mapping and execution model"
+              keyword: "knowledge-hooks"
+            - line_number: 89
+              matched_text: "# Knowledge Hooks: Claude Code Event Integration"
+              keyword: "Knowledge Hooks"
+            - line_number: 93
+              matched_text: "Extend the knowledge hooks system to support event-based execution triggered by Claude Code runtime events (SessionStart, PreToolUse, PostToolUse, etc"
+              keyword: "knowledge hooks"
+            - line_number: 237
+              matched_text: "**Add Knowledge Hooks Integration Guide:**"
+              keyword: "Knowledge Hooks"
+            - line_number: 239
+              matched_text: "- Create `docs/knowledge-hooks-claude-integration.md`:"
+              keyword: "knowledge-hooks"
+            - line_number: 240
+              matched_text: "- Explains Claude hooks → knowledge hooks mapping"
+              keyword: "knowledge hooks"
+            - line_number: 252
+              matched_text: "6. `docs/knowledge-hooks-claude-integration.md` - New file for integration guide"
+              keyword: "knowledge-hooks"
+            - line_number: 271
+              matched_text: "1. Implement knowledge hook runner that:"
+              keyword: "knowledge hook"
+            - line_number: 281
+              matched_text: "- Python entrypoint: `knowledge_hook_runner(event, payload)`"
+              keyword: "knowledge_hook"
+        - file: "~/.cursor/plans/knowledge_hook_engine_implementation_b83ab507.plan.md"
+          lines:
+            - line_number: 2
+              matched_text: "name: Knowledge Hook Engine Implementation"
+              keyword: "Knowledge Hook"
+            - line_number: 3
+              matched_text: "overview: Implement the production line controller hook engine that executes event-based knowledge hooks with strict safety guards, deterministic exec"
+              keyword: "knowledge hooks"
+            - line_number: 6
+              matched_text: "content: Create src/specify_cli/ofmf/knowledge_hook_engine.py with HookEngine class, safety guards (ALLOWED_ACTION_TYPES, FORBIDDEN_PREDICATES), gate_"
+              keyword: "knowledge_hook"
+            - line_number: 39
+              matched_text: "content: Create tests/ofmf/test_knowledge_hook_engine.py with tests for pack gating, planning, execution, safety guards, and determinism"
+              keyword: "knowledge_hook"
+            - line_number: 44
+              matched_text: "content: Update docs/knowledge-hooks-claude-integration.md and docs/hook-authoring-guide.md with engine architecture and execution model"
+              keyword: "knowledge-hooks"
+            - line_number: 50
+              matched_text: "# Knowledge Hook Engine: Production Line Controller"
+              keyword: "Knowledge Hook"
+            - line_number: 54
+              matched_text: "Implement the hook engine that executes event-based knowledge hooks with strict safety guards. The engine is a deterministic dispatcher that takes Cla"
+              keyword: "knowledge hooks"
+            - line_number: 71
+              matched_text: "### 1. Create Hook Engine Module (`src/specify_cli/ofmf/knowledge_hook_engine.py`)"
+              keyword: "knowledge_hook"
+            - line_number: 212
+              matched_text: "\"\"\"Execute event-based knowledge hooks.\"\"\""
+              keyword: "knowledge hooks"
+            - line_number: 215
+              matched_text: "### 9. Add Tests (`tests/ofmf/test_knowledge_hook_engine.py`)"
+              keyword: "knowledge_hook"
+            - line_number: 233
+              matched_text: "- `docs/knowledge-hooks-claude-integration.md` - Add engine architecture section"
+              keyword: "knowledge-hooks"
+            - line_number: 239
+              matched_text: "1. `src/specify_cli/ofmf/knowledge_hook_engine.py` - Main engine class"
+              keyword: "knowledge_hook"
+            - line_number: 245
+              matched_text: "7. `tests/ofmf/test_knowledge_hook_engine.py` - Test suite"
+              keyword: "knowledge_hook"
+            - line_number: 251
+              matched_text: "3. `docs/knowledge-hooks-claude-integration.md` - Document engine"
+              keyword: "knowledge-hooks"
+        - file: "~/.cursor/plans/knowledge_hook_engine_retrofit_0ee98ad6.plan.md"
+          lines:
+            - line_number: 2
+              matched_text: "name: Knowledge Hook Engine Retrofit"
+              keyword: "Knowledge Hook"
+            - line_number: 3
+              matched_text: "overview: Retrofit the existing OFMFEngine to support event-based knowledge hooks by extending existing components rather than creating new ones. Add "
+              keyword: "knowledge hooks"
+            - line_number: 48
+              matched_text: "content: Create tests/ofmf/test_knowledge_hook_engine.py with tests for event-based hooks, pack gating, priority ties, and backward compatibility"
+              keyword: "knowledge_hook"
+            - line_number: 54
+              matched_text: "# Knowledge Hook Engine: Retrofit Existing Implementation"
+              keyword: "Knowledge Hook"
+            - line_number: 58
+              matched_text: "Retrofit the existing `OFMFEngine` to support event-based knowledge hooks by extending existing components. The current engine handles phase-based hoo"
+              keyword: "knowledge hooks"
+            - line_number: 279
+              matched_text: "\"\"\"Execute event-based knowledge hooks.\"\"\""
+              keyword: "knowledge hooks"
+            - line_number: 284
+              matched_text: "**File:** `tests/ofmf/test_knowledge_hook_engine.py` (new file)"
+              keyword: "knowledge_hook"
+            - line_number: 319
+              matched_text: "5. `tests/ofmf/test_knowledge_hook_engine.py` (new):"
+              keyword: "knowledge_hook"
+        - file: "~/.cursor/plans/unified_knowledge_hook_engine_f47ff214.plan.md"
+          lines:
+            - line_number: 2
+              matched_text: "name: Unified Knowledge Hook Engine"
+              keyword: "Knowledge Hook"
+            - line_number: 48
+              matched_text: "content: \"Update documentation to reflect unified execution model: knowledge-hooks-claude-integration.md, hook-authoring-guide.md, ofmf/README.md\""
+              keyword: "knowledge-hooks"
+            - line_number: 54
+              matched_text: "# Unified Knowledge Hook Engine: Single Implementation"
+              keyword: "Knowledge Hook"
+            - line_number: 112
+              matched_text: "- `KH = Namespace(\"urn:ofmf:kh#\")` - Knowledge Hooks namespace (already correct)"
+              keyword: "Knowledge Hooks"
+            - line_number: 425
+              matched_text: "- `docs/knowledge-hooks-claude-integration.md` - Document unified execution model"
+              keyword: "knowledge-hooks"
+        - file: "~/.cursor/projects/Users-sac-unrdf/terminals/671265.txt"
+          lines:
+            - line_number: 32
+              matched_text: "npm notice 4.4kB  ARTIFACTS/diataxis/@unrdf/chatman-equation/diataxis.json"
+              keyword: "chatman-equation"
+            - line_number: 258
+              matched_text: "npm notice 1.0kB  OUT/@unrdf/chatman-equation/explanation/explanation.md"
+              keyword: "chatman-equation"
+            - line_number: 259
+              matched_text: "npm notice 715B   OUT/@unrdf/chatman-equation/how-to/howto-howto-handle-errors.md"
+              keyword: "chatman-equation"
+            - line_number: 260
+              matched_text: "npm notice 780B   OUT/@unrdf/chatman-equation/how-to/howto-howto-integrate-with-chatman-equation.md"
+              keyword: "chatman-equation"
+            - line_number: 261
+              matched_text: "npm notice 710B   OUT/@unrdf/chatman-equation/how-to/howto-howto-use-the-cli.md"
+              keyword: "chatman-equation"
+            - line_number: 262
+              matched_text: "npm notice 963B   OUT/@unrdf/chatman-equation/index.md"
+              keyword: "chatman-equation"
+            - line_number: 263
+              matched_text: "npm notice 982B   OUT/@unrdf/chatman-equation/reference/reference.md"
+              keyword: "chatman-equation"
+            - line_number: 264
+              matched_text: "npm notice 817B   OUT/@unrdf/chatman-equation/tutorials/tutorial-tutorial-getting-started-with-unrdf-chatman-equation.md"
+              keyword: "chatman-equation"
+            - line_number: 1600
+              matched_text: "npm notice 2.0kB  examples/knowledge-hook-manager-usage.mjs"
+              keyword: "knowledge-hook"
+            - line_number: 1632
+              matched_text: "npm notice 10.7kB src/hooks/knowledge-hook-engine.mjs"
+              keyword: "knowledge-hook"
+            - line_number: 1633
+              matched_text: "npm notice 6.6kB  src/hooks/knowledge-hook-manager.mjs"
+              keyword: "knowledge-hook"
+            - line_number: 2031
+              matched_text: "npm notice 📦  @unrdf/chatman-equation@26.4.3"
+              keyword: "chatman-equation"
+            - line_number: 2069
+              matched_text: "npm notice 2.8kB  generated/reference/chatman-equation-api.md"
+              keyword: "chatman-equation"
+            - line_number: 2099
+              matched_text: "npm notice 2.8kB  test/.test-output/reference/chatman-equation-api.md"
+              keyword: "chatman-equation"
+            - line_number: 2118
+              matched_text: "npm notice name:          @unrdf/chatman-equation"
+              keyword: "chatman-equation"
+            - line_number: 2120
+              matched_text: "npm notice filename:      unrdf-chatman-equation-26.4.3.tgz"
+              keyword: "chatman-equation"
+            - line_number: 2128
+              matched_text: "+ @unrdf/chatman-equation@26.4.3"
+              keyword: "chatman-equation"
+            - line_number: 2573
+              matched_text: "npm notice 15.0kB src/knowledge-hook-manager.mjs"
+              keyword: "knowledge-hook"

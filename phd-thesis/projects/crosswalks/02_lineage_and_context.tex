@@ -1,0 +1,85 @@
+% FILE: 02_lineage_and_context.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Lineage and Context}
+\label{sec:crosswalks-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:crosswalks-lineage-2016}
+
+The thesis lineage begins with a 2016 language-model experiment whose conclusion was that local
+text imitation does not conserve consequence. A model that predicts the next token in a sequence
+reproduces the surface distribution of a process without preserving the causal structure that
+makes the process lawful. The model can emit output that looks like a valid event trace while
+the underlying constraints --- precedence, response, coexistence --- are violated.
+
+The crosswalks project is a formal elaboration of this lesson applied to the translation layer
+of process intelligence systems. When \textsc{PM4Py} converts an \textsc{OCEL} log to \textsc{XES}
+by silently dropping non-chosen object types, it performs the same operation structurally: it
+produces an artifact that looks like a complete event log while the causal links to non-chosen
+objects are absent. The \textsc{XES} output imitates the surface of a case-centric log without
+conserving the object-centric consequence. The crosswalk \texttt{OCEL\_TO\_XES.md} names this
+as information destruction and requires a \texttt{LossReport} to accompany it.
+
+The 2016 lesson is thus not merely about language models. It is about the general danger of
+format-preserving projections that do not conserve the structural properties that make the source
+artifact evidentially meaningful.
+
+\subsection{Enterprise Process Gap}
+\label{sec:crosswalks-lineage-enterprise}
+
+The enterprise process gap that motivates this research is the absence of a type-safe translation
+layer between heterogeneous process formalisms. Enterprise process intelligence deployments
+routinely combine data from systems that export in \textsc{BPMN}, \textsc{XES}, \textsc{OCEL},
+and Declare formats. When these formats are combined, translation is unavoidable. The question is
+whether the translation is audited.
+
+The crosswalks project addresses this gap by defining, for each translation direction, the exact
+categories of loss that a production system must account for. The \texttt{BPMN\_TO\_WFNET.md}
+crosswalk lists seven categories of hard drop (annotations, data objects, message flows, lane
+structure, gateway conditions, event types) and two categories of structural approximation
+(\textsc{OR}-gateway over-approximation, loop marker restructuring). An enterprise system that
+ingests \textsc{BPMN} and exports conformance scores must account for all nine categories or
+declare, under a named \texttt{LossPolicy}, which it permits.
+
+\textbf{[AUTHOR THESIS]:} The enterprise process gap is not a data integration problem. It is
+a type-law problem. Closing it requires not better ETL pipelines but formal projection contracts
+that make loss refusable, nameable, and auditable.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:crosswalks-lineage-chatman}
+
+The Chatman Equation $A = \mu(O^*)$ states that an autonomous agent $A$ is a function of the
+object model $O^*$ it observes. The crosswalks project grounds the observational surface of
+$O^*$: it defines which structural properties of a process are preserved when $O^*$ is projected
+from one formalism to another.
+
+\textbf{[INTERPRETATION]:} If the projection from \textsc{OCEL} to \textsc{XES} silently drops
+object types, then the $O^*$ that the agent observes is an approximation of the true object
+model. The conformance verdicts the agent emits are verdicts about the approximation. The
+Chatman Equation is satisfied only if $O^*$ is faithfully represented --- which requires the
+projection to be lawful under an explicit \texttt{LossPolicy}. The crosswalks project defines
+what ``faithful'' means for each formalism pair.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:crosswalks-lineage-receipts}
+
+The receipt and replay infrastructure of the process intelligence foundry requires that every
+evidence artifact carry a provenance chain: a \textsc{BLAKE3} hash over the serialised payload,
+state, witness, and epoch, verified by an Ed25519 signature (source: \texttt{alive\_001\_to\_iso\_compliance.md},
+\textsection 2.3, citing \textsc{ISO/IEC} 27001). This cryptographic binding is only meaningful
+if the artifact it binds faithfully represents its source.
+
+When a \textsc{BPMN} process with \textsc{OR}-gateways is projected to a WF-net by silent
+approximation, the receipt chain binds a structurally compromised artifact. Replay against this
+artifact produces conformance scores that cannot be attributed to the original \textsc{BPMN}
+process. The crosswalks project defines the admission gate that must be passed before a projected
+artifact enters the receipt chain: the \texttt{LossPolicy} must be declared, the \texttt{LossReport}
+must be produced, and the projection must be admitted under the typed witness before its receipt
+is computed.
+
+The \texttt{OCEL\_TO\_XES.md} crosswalk formalises this as a five-step covenant: raw bytes
+\(\to\) \texttt{FormatEnvelope} \(\to\) \texttt{Admission<OcelLog, Ocel20>} \(\to\) lossy
+\texttt{Project} with named \texttt{LossPolicy} \(\to\) \texttt{LossReport} emitted \(\to\)
+projected \texttt{XesLog} admitted for export. No step can be skipped.

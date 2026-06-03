@@ -10,7 +10,7 @@
 
 ## 1. Executive Summary
 
-This audit report certifies that the concept drift detection mechanisms implemented in the `process-intelligence` visualizer workspace satisfy the process intelligence standards defined in `LIVESTREAM_STANDARDS.md`. Specifically, this audit validates:
+This audit report documents findings showing that the concept drift detection mechanisms implemented in the `process-intelligence` visualizer workspace satisfy the process intelligence standards defined in `LIVESTREAM_STANDARDS.md`. The conformance receipt for each finding is the replayed result, not this report. Specifically, this audit validates:
 1. The mathematical rigor of the **Lower Control Limit ($LCL = 0.92$)** used for monitoring conformance alignment fitness.
 2. The implementation of the Exponentially Weighted Moving Average (EWMA) calculations in `experiments/visualizer/app.js` and `experiments/visualizer/dashboard.js`.
 3. The complementary sliding-window DFG profile and execution-time drift detectors in `experiments/visualizer/drift.js` and `experiments/visualizer/drift-detector.js`.

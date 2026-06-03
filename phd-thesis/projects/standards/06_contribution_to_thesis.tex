@@ -1,0 +1,95 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: standards
+% Thesis Role: public-standards-compliance-and-gravity-field-mapping
+
+\section{Contribution to the Dissertation}
+\label{sec:standards-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:standards-contribution-prediction}
+
+The dissertation's central theoretical claim is that the transition from prediction to
+coordination requires shared formal referents---structures that two independent parties
+can both evaluate and agree upon without trusting each other's good faith. The standards
+project is the primary evidence that this transition is achievable in the domain of
+process intelligence.
+
+By mapping 16 public standards to named mathematical formulations and named validation
+thresholds, the project demonstrates that process conformance claims can be made
+coordination-capable: a buyer's advisor and a seller's auditor can both execute the same
+conformance query on the same XES log against the same WF-net model and arrive at the
+same fitness score within a $10^{-6}$ tolerance. This is coordination. Neither party
+needs to trust the other's assertion; each can independently evaluate the shared referent.
+
+The Reverse Porter's Five Forces analysis (\texttt{reverse-porter-five.md}) articulates
+the competitive consequence of this shift: once process evidence is coordination-capable,
+the market structure reorganizes around the standard keeper. The five forces are not
+merely blunted---they are inverted. Threat of new entrants becomes weaponized entry
+channeling; rivalry becomes consensual conformance. This reorganization is only possible
+because the standards project has established the shared referent that makes coordination
+possible in the first place.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:standards-contribution-evidence}
+
+The standards project contributes the \emph{external anchoring} of the Evidence lattice
+\texttt{Evidence<T, State, Witness>}. The lattice is a type-system construct; without
+external anchoring, it witnesses only internal consistency. The 16 standard placements
+provide the anchors: each witness marker in \texttt{src/witness.rs} of the wasm4pm-compat
+crate corresponds to a named public standard, and each standard's placement file defines
+what the witness certifies.
+
+Concretely, the OCEL 2.0 placement defines that the \texttt{Ocel20} witness certifies
+bipartite graph validity: $\forall (e, o, q) \in \text{E2O},\ e \in \mathcal{E} \land
+o \in \mathcal{O}$. The WF-net soundness placement defines that the
+\texttt{WfNetSoundnessPaper} witness certifies option-to-complete, proper completion, and
+no dead transitions per van der Aalst (1998). The \texttt{Xes1849} witness certifies
+trace hash chaining and chronological invariance. These are compile-time invariants in
+Rust, not runtime assertions---the type system enforces that evidence claiming a standard
+carries the correct witness type. The gravity field is not merely a marketing claim; it
+is a compile-time invariant, as stated in \texttt{PROCESS\_STANDARDS\_GRAVITY\_FIELD.md}.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:standards-contribution-manufacturing}
+
+The standards project contributes two architectural layers to the manufacturing pipeline.
+
+\paragraph{The ggen projection map.}
+The file \texttt{public\_standards\_to\_ggen\_projections.md} defines the mapping from
+standard constructs to Rust code artifacts materialized by ggen: Petri net places project
+to Rust structs, BPMN gateways project to \texttt{match}/\texttt{join!} patterns, and
+Declare templates project to FSA implementations. This map is the bridge from the
+standards registry to the wasm4pm execution surface. Without it, ggen would be a code
+emitter without a formal basis; with it, every emitted artifact is traceable to a named
+standard.
+
+\paragraph{The MAPE-K integration.}
+The MAPE-K integration file (\texttt{MAPE\_K\_INTEGRATION.md}) defines how the standards
+architecture maps to the four phases of the autonomic feedback loop. Monitor maps to
+streaming OTel trace ingestion; Analyze maps to streaming conformance checking via
+\texttt{StreamingConformanceSession}; Plan maps to prescriptive process intelligence via
+\texttt{prediction.rs} outcome models and \texttt{diagnostic.rs} remediation shapes;
+Execute maps to \texttt{OcelEvent} actuation. This mapping makes the manufacturing
+architecture self-monitoring: the same standards that define valid process outputs also
+define the monitoring signals that detect deviations from those outputs.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:standards-contribution-capital}
+
+The standards project contributes the legal and cryptographic basis for M\&A-admissible
+process evidence. The Slide-to-Receipt bridge formula
+$\text{SlideBinding} = \operatorname{BLAKE3}(\text{SlideUUID} \parallel \text{ReceiptHash}
+\parallel \text{ClaimValue})$ makes every slide in an investment presentation carrying an
+operational claim independently verifiable by the buyer's advisors. This is not a
+documentation convenience; it is a structural requirement for board admissibility as
+defined in \texttt{ma/define\_board-admissible\_claim\_requirements.md}.
+
+The reverse lock-in doctrine extends this contribution to the capital-flow level. By
+establishing $W_{\text{std}}$ as a publicly archived, cryptographically signed, sound WF-net,
+the standards project creates the conditions for governance rent extraction: standard
+updates, proof generation, proof validation, conformance certification, and market
+intelligence are all services that rational agents in the verified economy must purchase
+from the standard keeper. The Nash equilibrium cage analysis in \texttt{reverse-lock-in.md}
+formalizes this as a game-theoretic outcome: rational agents choose conformance because
+non-conformance is mathematically unprofitable, and the standard becomes the operating
+system of the verified process economy.

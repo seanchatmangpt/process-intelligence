@@ -1,0 +1,94 @@
+\section{Implementation Surface}
+\label{sec:otel-weaver-exp-005-collector-to-intake-implementation}
+
+\subsection{Source Files}
+\label{sec:otel-weaver-exp-005-collector-to-intake-implementation-sources}
+
+The EXP-005 implementation surface consists of three manufactured artifacts and one pending
+output artifact:
+
+\begin{description}
+  \item[\texttt{harness.py}] The Python synthetic load generator. Fires three span classes
+        using the OpenTelemetry Python SDK: Span~A (fully compliant, carries both
+        \texttt{process.pi.instance\_id} and \texttt{process.pi.witness.hash}), Span~B
+        (missing \texttt{process.pi.instance\_id}, expected to be dropped at \texttt{filter/pi}),
+        and Span~C (carries \texttt{process.pi.instance\_id} but missing
+        \texttt{process.pi.witness.hash}, expected to pass the collector but fail the
+        downstream live-check gate). The harness also emits the
+        \texttt{pi.feedstock.operation\_count} cumulative sum metric tagged with the instance
+        ID, providing a counter that can be used to verify round-trip span delivery counts.
+        Source: \texttt{experiments/exp-005-collector-to-pi-intake/harness.py}.
+
+  \item[\texttt{config/otel-collector-config.yaml}] The authoritative collector configuration.
+        Declares the full three-stage pipeline: OTLP receiver (gRPC \texttt{:4317}, HTTP
+        \texttt{:4318}), \texttt{filter/pi} and \texttt{transform/pi} OTTL processors, and
+        \texttt{file/pi\_json} exporter. Contains production-ready OTTL transform rules
+        including the \texttt{set(attributes["pi.intake.ingested\_at"], ...)} and
+        \texttt{set(attributes["pi.intake.collector\_version"], ...)} transform statements.
+        Source: \texttt{experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml}.
+
+  \item[\texttt{README.md}] The experiment specification. Contains the full pipeline diagram,
+        the OCEL~2.0 JSON event schema, the Docker launch command, and the admissibility rules.
+        This is the canonical human-readable specification for the experiment.
+        Source: \texttt{experiments/exp-005-collector-to-pi-intake/README.md}.
+
+  \item[\texttt{output/pi\_intake\_events.json}] The intended OCEL~2.0 JSON intake artifact.
+        PARTIAL: the \texttt{output/} directory exists but \texttt{pi\_intake\_events.json}
+        has not been materialised because no live Docker collector run has been executed.
+\end{description}
+
+\subsection{Commands}
+\label{sec:otel-weaver-exp-005-collector-to-intake-implementation-commands}
+
+The README specifies the following Docker launch command to start the collector:
+\begin{verbatim}
+docker run --rm \
+  -v $(pwd)/config:/etc/otelcol-contrib \
+  -v $(pwd)/output:/output \
+  -p 4317:4317 -p 4318:4318 \
+  otel/opentelemetry-collector-contrib:0.98.0 \
+  --config /etc/otelcol-contrib/otel-collector-config.yaml
+\end{verbatim}
+
+Once the collector is running, the harness is executed with:
+\begin{verbatim}
+python harness.py
+\end{verbatim}
+
+The harness sends spans to the OTLP gRPC endpoint at \texttt{localhost:4317} by default.
+These commands have not been executed against a live collector; their correctness is
+specified but unverified by a live run. \textit{[AUTHOR THESIS: verification requires Docker
+availability and a live OTLP receiver; this is the primary gap in the PARTIAL status.]}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:otel-weaver-exp-005-collector-to-intake-implementation-data}
+
+EXP-005 operates on two ontological surfaces:
+
+\textbf{OTLP span attribute namespace:} The \texttt{process.pi.*} attribute namespace is the
+process-intelligence layer within the OTel attribute hierarchy. Key attributes are
+\texttt{process.pi.instance\_id} (mandatory, string, namespace gatekeeper) and
+\texttt{process.pi.witness.hash} (optional at collector, mandatory at court, 64-char BLAKE3).
+These are mapped in \texttt{otel-weaver/mappings/otel-to-pi-witness-map.yaml}.
+
+\textbf{OCEL~2.0 JSON output schema:} The \texttt{file/pi\_json} exporter writes events in
+OCEL~2.0-compatible JSON structure. Each event record must carry an \texttt{ocel:type} field
+(the lowercased activity name), an \texttt{ocel:timestamp} field (the
+\texttt{pi.intake.ingested\_at} ISO~8601 value injected by \texttt{transform/pi}), and an
+\texttt{ocel:objects} map binding the event to the process instance identified by
+\texttt{process.pi.instance\_id}. The collector-integration-model is documented in
+\texttt{otel-weaver/intel/collector-integration-model.yaml}.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:otel-weaver-exp-005-collector-to-intake-implementation-templates}
+
+The ggen manifest \texttt{live-check-intake.manifest.yaml} is the template-level artifact for
+this experiment. It declares the expected output artifacts (including
+\texttt{pi\_intake\_events.json} and the BLAKE3 receipt at
+\texttt{receipts/live-check-intake-receipt.json}) and their hash expectations. The manifest
+is the upstream trigger for the receipt chain: when the live collector run materialises
+\texttt{pi\_intake\_events.json}, the ggen system is expected to hash the file, compare
+against the manifest declaration, and write the receipt. This receipt-manufacture step has
+not been executed. The rendered artifact (\texttt{live-check-intake-receipt.json}) does not
+exist. The manifest itself is the only rendered template artifact that exists in the
+repository.

@@ -1,0 +1,93 @@
+% FILE: 02_lineage_and_context.tex
+% Project: otel-weaver-exp-003-live-check-to-refusal
+% Thesis Role: live-check-refusal-enforcement-experiment
+
+\section{Lineage and Context}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-lineage-lm}
+
+The thesis lineage originates in a 2016 language-model experiment that established a
+foundational negative result: local text imitation does not conserve consequence.
+A model trained to reproduce surface-level patterns of enterprise documents could emit
+text that was structurally indistinguishable from authoritative records --- meeting
+all schema and formatting criteria --- while carrying no causal or operational validity.
+The model had learned the shape of consequence without the substance.
+
+EXP-003 is, at its root, a mechanized restatement of this lesson applied to telemetry.
+An OTel span that passes Weaver schema validation is the telemetry analog of the 2016
+model's output: it has the correct shape. The attribute keys are present
+(\texttt{process.pi.instance\_id}, \texttt{process.pi.activity.name},
+\texttt{process.pi.witness.id}, \texttt{process.pi.witness.hash}), the types are
+correct, the payload is non-null. But shape does not conserve consequence. A span
+can be structurally perfect and causally fraudulent. The \texttt{validate\_and\_project}
+gate addresses this by requiring not merely the presence of fields but the presence
+of a witness signature that binds the span to a named law and a verifiable hash.
+Without the 64-character BLAKE3 witness hash, the gate issues \texttt{RefusalCode::InvalidWitnessSignature}
+regardless of how well-formed the rest of the feedstock appears.
+
+\subsection{Enterprise Process Gap}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-lineage-gap}
+
+The 2016 lesson exposed a structural gap in enterprise process architectures: systems
+that record process execution as telemetry and systems that validate process compliance
+are almost universally decoupled. Observability tools confirm that instrumentation
+is healthy; compliance tools confirm that processes follow normative models. The
+boundary between the two --- the ingestion frontier where raw telemetry becomes
+process evidence --- is rarely formalized.
+
+In practice, this gap manifests as a trust assumption: telemetry that arrives at
+the process-mining engine is assumed to have been lawfully emitted. This assumption
+is neither verified at ingestion nor cryptographically sealed. When adversarial or
+erroneous telemetry enters the conformance court through this gap, it produces false
+conformance scores, hidden process variants, or silent compliance failures. The
+\texttt{weaver-finding-is-not-receipt.md} doctrine document illustrates this attack
+surface: ``an adversary could generate structurally perfect spans \ldots\ and inject
+them into the telemetry stream to simulate completed transactions. A validation checker
+running OTel Weaver would report a finding of 100\% compliance because the schema is
+satisfied.'' EXP-003 closes this gap by making the frontier explicit and enforced.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-lineage-equation}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that the authoritative state of an
+enterprise system is the measure of its object model under its own operational laws.
+Telemetry is an observation of $O^*$ --- a projection of the object model's runtime
+behavior onto a stream of timestamped spans. The equation implies that $A$ cannot
+be computed from telemetry alone, because the measure $\mu$ requires lawful object
+lifecycle histories, not raw observations.
+
+EXP-003 enforces this implication structurally. The \texttt{Admission<T, W>} type
+represents feedstock that has been projected into a form that is lawful enough to
+enter the measure computation: it carries a witness $W$ (the \texttt{AlphaWitness}
+struct with a verified BLAKE3 hash) that names the law under which the observation
+was made. A \texttt{Refusal} represents feedstock that failed to meet the minimum
+conditions for projection --- it cannot participate in the measure computation because
+it cannot be typed as \texttt{Admission}. The connection between EXP-003 and the
+Chatman Equation is at the documentation level as of this writing; no formal type
+binding from \texttt{Admission<T,W>} to the measure operator $\mu$ exists in the
+current codebase. \textbf{(AUTHOR THESIS / INTERPRETATION)}
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-lineage-receipts}
+
+The receipts-and-replay layer of the thesis lineage holds that every process state
+transition must be grounded in a cryptographically sealed receipt that survives audit.
+EXP-003 operates upstream of this layer: it determines what feedstock is admissible
+as raw material for receipt manufacture. The \texttt{Admission<AdmittedPayload, AlphaWitness>}
+value is not itself a receipt; it is the verified feedstock from which a receipt can
+be manufactured by the \texttt{wasm4pm} conformance court. The \texttt{Refusal} is,
+by contrast, a terminal artifact: it is a BLAKE3-digested record of what was rejected
+and why, and it is the upstream equivalent of a receipt for non-conforming events.
+
+The doctrine file \texttt{weaver-finding-is-not-receipt.md} formalizes this distinction
+through a comparison table: a Weaver finding is ephemeral, software-generated diagnostic
+output; a process receipt is ledger-bound, cryptographically signed, and permanently
+part of the evidence chain. EXP-003 sits at the boundary between these two categories.
+It takes ephemeral Weaver-style findings --- the four structural checks on
+\texttt{instance\_id}, \texttt{activity\_name}, \texttt{witness\_id}, and
+\texttt{witness\_hash} --- and either promotes them into the receipt-manufacturing
+pipeline via \texttt{Admission} or archives them as structured refusal records. The
+persistence layer for refusal records (a \texttt{refusals.json} ledger file described
+in the README) is specified but not yet implemented; this is a documented gap.

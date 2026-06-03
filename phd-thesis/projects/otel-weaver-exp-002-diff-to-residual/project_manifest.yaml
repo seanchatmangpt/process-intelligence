@@ -1,0 +1,21 @@
+slug: otel-weaver-exp-002-diff-to-residual
+absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual
+description: >
+  OTel Weaver experiment 002: Rust-based bridge from Weaver diff output to process
+  intelligence residual evidence type law.
+detected_languages:
+  - Rust
+detected_frameworks:
+  - otel-weaver
+  - wasm4pm-compat
+detected_research_surfaces:
+  - process-evidence
+  - type-law
+  - residual-mapping
+likely_thesis_role: weaver-diff-to-pi-residual-bridge-experiment
+key_files:
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/Cargo.toml
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/README.md
+readme_present: true
+receipt_present: false
+ontology_present: false

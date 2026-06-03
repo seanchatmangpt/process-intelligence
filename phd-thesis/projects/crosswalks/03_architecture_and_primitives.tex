@@ -1,0 +1,117 @@
+% FILE: 03_architecture_and_primitives.tex
+% PROJECT: crosswalks
+% ROLE: type-law-crosswalk-between-standards-and-execution
+
+\section{Architecture and Primitives}
+\label{sec:crosswalks-arch}
+
+\subsection{Core Objects}
+\label{sec:crosswalks-arch-objects}
+
+The crosswalks project defines a layered set of Rust primitives that enforce projection laws at
+the type system level. The foundational primitive is the \texttt{LossPolicy} enum, defined in
+\texttt{wasm4pm-compat/src/loss.rs}:
+
+\begin{verbatim}
+pub enum LossPolicy {
+    RefuseLoss,
+    AllowNamedProjection { projection: ProjectionName },
+    AllowLossWithReport,
+}
+\end{verbatim}
+
+\texttt{ProjectionName} is a \texttt{\&'static str} newtype. It is the audit trail: its value
+appears in the \texttt{LossReport}, travels with the exported artifact, and answers the question
+``why are my objects missing?'' when queried post-projection (source: \texttt{OCEL\_TO\_XES.md}).
+
+The \texttt{LossReport<From, To, DroppedItems>} generic struct is the second core object. It
+binds the source type, the destination type, and an enumeration of dropped items. For \textsc{OCEL}
+to \textsc{XES} projections, \texttt{DroppedItems} includes the count of non-chosen object types,
+dropped \textsc{O2O} link count, and dropped \texttt{ObjectChange} records.
+
+For witness automata, the crosswalks define four Declare witness structs: \texttt{WitnessPrecedence
+\{ a\_seen: bool, violated: bool \}}, \texttt{WitnessResponse \{ pending\_b\_count: u32 \}},
+\texttt{WitnessCoexistence \{ a\_seen: bool, b\_seen: bool \}}, and \texttt{WitnessSuccession
+\{ pending\_a\_for\_b: u32, violated: bool \}} (source: \texttt{declare\_to\_wasm\_mapping.md}).
+
+For WF-net typestates, the crosswalks define three phantom-typed variants:
+\texttt{WfNet<SoundnessClaimed>}, \texttt{WfNet<SoundnessWitnessed>}, and
+\texttt{WfNet<SoundnessUnknown>}. A projection requiring a soundness witness can only accept
+\texttt{WfNet<SoundnessWitnessed>}; passing \texttt{WfNet<SoundnessUnknown>} is a compile error
+(source: \texttt{WFNET\_TO\_POWL.md}).
+
+For data type crossing, the \textsc{PM4Py}~$\to$~\texttt{wasm4pm-compat} crosswalk defines Rust
+newtypes for each \textsc{PM4Py} attribute: \texttt{ActivityName(pub String)},
+\texttt{Timestamp(pub i64)}, and \texttt{ResourceId(pub Uuid)}, each with constructor validators
+that reject empty activity names, negative timestamps, and invalid \textsc{UUID}s (source:
+\texttt{pm4py\_to\_wasm4pm\_data\_types.md}).
+
+\subsection{Admissible Transitions}
+\label{sec:crosswalks-arch-transitions}
+
+Each crosswalk defines the admissible transition path for its projection direction. The general
+pattern, from \texttt{OCEL\_TO\_XES.md}, is:
+\begin{enumerate}
+  \item Raw external bytes $\to$ \texttt{FormatEnvelope \{ kind: FormatKind, \ldots \}}
+  \item \texttt{ImportFormat::import} $\to$ \texttt{Admission<T, W>} or \texttt{Refusal<R, W>}
+  \item Admitted value $\to$ \texttt{Project} with declared \texttt{LossPolicy}
+  \item \texttt{LossReport} emitted and attached
+  \item Projected value $\to$ \texttt{ExportFormat::export} $\to$ \texttt{FormatExport}
+\end{enumerate}
+
+For the lossless direction (Process Tree $\to$ WF-net), steps 3--4 reduce to a single lossless
+projection returning \texttt{WfNet<SoundnessClaimed>} with \texttt{LossPolicy::RefuseLoss} as
+the implicit default.
+
+For witness automata, the admissible transition is the sequential \texttt{step(\&mut self, activity,
+a, b)} function defined for each of the four Declare witness structs. Each step function is a
+deterministic state machine transition. The succession witness's lattice join is:
+\texttt{pending\_a\_for\_b: self.max(other)}, \texttt{violated: self.violated || other.violated};
+a join producing \texttt{violated == true} is rejected as a \texttt{LatticeViolation}.
+
+\subsection{Boundaries}
+\label{sec:crosswalks-arch-boundaries}
+
+The crosswalks project defines four structural boundaries that the \texttt{wasm4pm-compat} crate
+must enforce:
+
+\begin{description}
+  \item[Policy-before-loss:] The \texttt{LossPolicy} must be declared before the projection
+    examines the source artifact for loss-inducing elements. The \texttt{BPMN\_TO\_WFNET.md}
+    crosswalk specifies: scan for \textsc{OR}-gateways and data objects \emph{first}, set policy
+    \emph{before} projection begins.
+  \item[No-direct-conversion:] There is no \texttt{import\_then\_export} that skips the admitted
+    middle. Every translation is \texttt{external $\to$ admitted compat $\to$ external}
+    (source: \texttt{OCEL\_TO\_XES.md}, quoting \texttt{src/formats.rs}).
+  \item[Soundness typestate:] \texttt{WfNet<SoundnessUnknown>} and \texttt{WfNet<SoundnessWitnessed>}
+    are distinct types. Projection paths that require a soundness witness enforce this at the Rust
+    type level.
+  \item[Loop arity:] \texttt{TypedLoopNode<const ARITY: usize>} with
+    \texttt{Require<\{ ARITY == 2 \}>: IsTrue} makes it impossible to construct a loop node with
+    wrong arity. This enforces the Leemans (2022) loop law at compile time.
+\end{description}
+
+\subsection{Failure Modes Refused}
+\label{sec:crosswalks-arch-failures}
+
+The crosswalks define a taxonomy of named refusal types, one per crosswalk direction:
+
+\begin{itemize}
+  \item \texttt{BpmnToWfNetRefusal::InclusiveGatewayNotRepresentable \{ gateway\_id \}} ---
+        emitted when an \textsc{OR}-gateway is detected and \texttt{RefuseLoss} is in effect.
+  \item \texttt{XesExportRefusal::NoCaseNotion}, \texttt{::EmptyCaseNotion}, \texttt{::TotalLoss},
+        \texttt{::LossRefused \{ object\_type\_count, o2o\_count \}} --- four named refusal
+        conditions for \textsc{OCEL} $\to$ \textsc{XES}.
+  \item \texttt{WfNetToPoWlRefusal::NonBlockStructured} --- emitted when a WF-net contains
+        duplicate activity labels, implicit places, non-local arcs, or \textsc{OR}-join patterns
+        under \texttt{RefuseLoss}.
+  \item \texttt{LatticeViolation} --- emitted when the lattice join of two witness states
+        produces \texttt{violated == true} in a succession or XOR-split witness.
+  \item \texttt{CausalDisconnect} --- emitted when an \textsc{OCEL} event references an object
+        identifier that does not exist in the object map (source:
+        \texttt{pm4py\_to\_wasm4pm\_data\_types.md}).
+  \item \texttt{TemporalAnomaly} --- emitted when a \textsc{XES} trace contains events with
+        non-monotonic timestamps.
+\end{itemize}
+
+In every case the refusal is a named Rust type, not a string error message. The name is the law.

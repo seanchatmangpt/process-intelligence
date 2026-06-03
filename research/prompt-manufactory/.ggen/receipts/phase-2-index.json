@@ -1,0 +1,7 @@
+{
+  "project": "prompt-manufactory",
+  "phase": 2,
+  "artifacts_manufactured": 42,
+  "artifact_types": ["workflow-prompts", "subagent-prompts", "checkpoint-prompts", "skill-prompts", "hook-policies"],
+  "receipt_ledger": "../../manufacturing/RECEIPT_LEDGER_20260601.yaml"
+}

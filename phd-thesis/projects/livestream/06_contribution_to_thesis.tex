@@ -1,0 +1,113 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: livestream
+% Thesis Role: real-time-process-broadcast-and-livestream-standards
+
+\section{Contribution to the Dissertation}
+\label{sec:livestream-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:livestream-contribution-prediction}
+
+The dissertation's central argument is that prediction and coordination are
+categorically distinct: a system that predicts the form of process outcomes does
+not thereby coordinate the actual process. The livestream project provides the
+most direct operational demonstration of this distinction in the entire foundry.
+
+The five-agent AGI livestreaming swarm does not predict whether the factory is
+conforming to its declared process model. It observes, in real time, whether the
+observed event sequence is consistent with the declared Petri net model, and it
+acts on that observation through the MAPE-K autonomic controller. This is
+coordination by process evidence, not prediction by pattern completion. The EWMA
+drift detector (alpha\,=\,0.15, LCL\,=\,0.920) ensures that the factory cannot
+coast on a historically good conformance score: each new event is weighted into
+the moving average, and a sustained conformance drop triggers a remediation
+response before the next downstream actuation is authorized.
+
+The conformance audit result (Fitness\,=\,0.9880, Precision\,=\,1.0000) provides
+empirical grounding for this claim: the AGI conversation trace, treated as a process
+execution, is highly consistent with the Blue River Dam thesis Petri net model.
+This means the factory's coordination activity---the sequence of commits, decisions,
+and doctrine emissions that constitute the research program---is not arbitrary. It
+follows a structured process that can be described, checked, and enforced.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:livestream-contribution-evidence}
+
+The livestream project extends the concept of process evidence from static event
+logs (collected, analyzed, reported) to live event streams (emitted, checked,
+acted upon). The \texttt{aalst\_broadcaster.js} module demonstrates that a Git
+repository's commit history can be transformed into an OCEL 2.0-conformant event
+stream with minimal instrumentation: a single \texttt{git log} invocation,
+a pipe-delimiter parse, and a UTC ISO 8601 timestamp conversion. This establishes
+a low-friction path for any software factory to begin emitting process evidence
+without requiring changes to its existing toolchain.
+
+The \texttt{master\_ocel\_stream.js} polling loop demonstrates that a filesystem
+directory of replay files can serve as a live event source, bridging the gap
+between asynchronous file-based data exchange (the zoeapp replay convention) and
+synchronous stream-based process monitoring. The one-second polling interval is
+a pragmatic choice that trades latency for simplicity; the Stream Director audit
+confirms that the rendering latency (6--15\,ms) is dominated by the browser
+simulation loop, not the filesystem poll.
+
+The Petri net snapshot (final sound marking, token at \texttt{[Decommissioning]},
+no deadlocks) is evidence that the process modeled by the broadcast architecture
+is \emph{sound}: it can always reach the terminal state, and it does so with
+exactly one token. Soundness is a necessary condition for a workflow net to be
+suitable for conformance checking; a non-sound net may produce spurious
+conformance results.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:livestream-contribution-manufacturing}
+
+\textbf{[AUTHOR THESIS]} The livestream project contributes to the manufacturing
+architecture by demonstrating that the factory's own operation can be the subject
+of OCEL 2.0 event logging. In conventional CodeManufactory usage, OCEL 2.0 logs
+are emitted by the artifacts being manufactured (e.g., the wasm4pm execution engine
+emitting events as it processes an input event log). The livestream project inverts
+this: the factory itself emits OCEL 2.0 events as it manufactures artifacts. This
+inversion makes the manufacturing pipeline itself auditable by the same process
+mining tools it manufactures support for.
+
+The SHA-256 cryptographic ledger chain links every ledger block to its predecessor,
+creating a tamper-evident record of the factory's manufacturing history. This
+satisfies the foundry's receipt doctrine at the event level: not only are major
+research findings certified by named receipts (as in the RECEIPT\_REGISTRY), but
+every individual factory event is individually chained and verifiable. The M\&A
+Claims Verification Board in the browser visualizer demonstrates the downstream
+consequence: a board-admissible M\&A claim backed by a tampered ledger block is
+automatically rejected, enforcing the principle that capital-flow claims must be
+grounded in verifiable process evidence.
+
+The hot-swappable S-component architecture (\texttt{hotSwapSComponent()}) allows
+the declared process model to be updated as the factory evolves, without stopping
+the conformance checking loop. This is a necessary feature for a living research
+program whose process model evolves as new doctrine is issued.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:livestream-contribution-capital}
+
+The M\&A Claims Verification Board implemented in the browser visualizer represents
+the dissertation's most concrete instantiation of the capital-flow infrastructure
+argument. Three specific M\&A claim categories are evaluated in real time against
+the live event stream:
+\begin{itemize}
+  \item EBITDA synergy claims (\$5M target): validated against process fitness
+    metrics from the conformance stream;
+  \item Compliance enforcement claims (\$3.5M target): validated against DECLARE
+    constraint satisfaction rates in the LTL monitor;
+  \item Data room lineage claims (\$1.2M target): validated against the
+    cryptographic ledger chain integrity.
+\end{itemize}
+
+This architecture demonstrates that capital-flow claims---which in conventional M\&A
+due diligence are supported by static documents and management representations---can
+instead be grounded in live process evidence subject to real-time conformance
+checking. When the AuditLedger detects a tampered block and automatically rejects
+the associated lineage claim, it is demonstrating that process evidence can serve
+as an automated gating mechanism for capital allocation decisions.
+
+\textbf{[FUTURE WORK]} The current implementation evaluates synthetic M\&A claims
+against simulated traces. Connecting the Verification Board to live enterprise event
+streams from actual business processes would constitute a production-grade deployment
+of this architecture.

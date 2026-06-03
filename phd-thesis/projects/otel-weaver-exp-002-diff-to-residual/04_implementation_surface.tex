@@ -1,0 +1,151 @@
+% FILE: 04_implementation_surface.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Implementation Surface}
+\label{sec:otel-weaver-exp-002-diff-to-residual-impl}
+
+\subsection{Source Files}
+\label{sec:otel-weaver-exp-002-diff-to-residual-impl-sources}
+
+The experiment's implementation surface consists of two Rust files and one
+manifest, all located under the experiment root at
+\texttt{otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/}:
+
+\paragraph{src/bridge.rs}
+The sole implementation file. It declares four public items:
+\begin{enumerate}
+    \item \texttt{TelemetryFeedstockS2} --- derives \texttt{Debug}, \texttt{Clone},
+          \texttt{Serialize}, \texttt{Deserialize}; carries \texttt{instance\_id},
+          \texttt{transition\_name}, \texttt{token\_color: Option<String>}, and
+          \texttt{witness\_hash}. Serde rename attributes map Rust field names to
+          their OTel dotted-path attribute names.
+    \item \texttt{TelemetryFeedstockS1} --- derives the same traits; carries
+          \texttt{instance\_id}, \texttt{activity\_name}, and \texttt{witness\_hash}.
+    \item \texttt{BridgeRx} --- does not derive \texttt{Serialize}/\texttt{Deserialize}
+          (it is a processing struct, not a data struct); holds
+          \texttt{pub rename\_map: HashMap<String, String>}; implements \texttt{new()}
+          and \texttt{translate()}.
+    \item The \texttt{\#[cfg(test)] mod tests} block containing
+          \texttt{test\_bridge\_translation\_equivalence}.
+\end{enumerate}
+
+The file imports \texttt{std::collections::HashMap} and
+\texttt{serde::\{Serialize, Deserialize\}}. No other internal crate modules are
+referenced. The library target is the entire file, as declared in \texttt{Cargo.toml}
+with \texttt{path = "src/bridge.rs"}.
+
+\paragraph{Cargo.toml}
+Package manifest declaring:
+\begin{verbatim}
+[package]
+name = "exp-002-weaver-diff-to-pi-residual"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "bridge"
+path = "src/bridge.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+\end{verbatim}
+
+Note that \texttt{serde\_json} and \texttt{serde\_yaml} are declared as
+dependencies but are not imported in \texttt{src/bridge.rs}. They are present to
+support future serialization of feedstock records from JSON and YAML sources at the
+ingestion boundary. The \texttt{Cargo.lock} confirms that dependency resolution
+was completed and the dependency graph was materialized to
+\texttt{target/debug/deps}.
+
+\paragraph{README.md}
+Mathematical specification document covering: the Weaver Diff formal definition
+$\Delta_W(S_1, S_2)$, the PI Conformance Residual $\mathcal{R}_{\Delta}$, the
+Categorical Law $\Delta_W \neq \delta_P$, a worked JSON diff example showing the
+two-tuple S1-to-S2 diff (Rename + Add), a Rust code listing of the full
+\texttt{bridge.rs} implementation, and an explanation of how $\mathcal{R}_{\Delta} = 0$
+is achieved by inserting \texttt{BridgeRx} before the conformance algorithm.
+
+\subsection{Commands}
+\label{sec:otel-weaver-exp-002-diff-to-residual-impl-commands}
+
+The following commands are the operative build and test surface for EXP-002,
+as inferred from the \texttt{Cargo.toml} and the evidence of materialized
+\texttt{target/debug/deps} artifacts:
+
+\begin{verbatim}
+# Build the bridge library
+cargo build
+
+# Run the inline unit test
+cargo test test_bridge_translation_equivalence
+
+# Run the full wasm4pm integration suite
+# (from /Users/sac/process-intelligence/sources/wasm4pm)
+cargo test
+\end{verbatim}
+
+No \texttt{Makefile} or \texttt{cargo make} configuration is present in the
+experiment directory. The experiment is a standalone library crate without a
+binary target; it cannot be run directly but must be consumed by an upstream
+integration harness. The \texttt{cargo test} output transcript for the standalone
+experiment is not present in the repository; only the parent-scope
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} checkpoint contains a test
+transcript (for the \texttt{wasm4pm} integration suite, not exp-002 in isolation).
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:otel-weaver-exp-002-diff-to-residual-impl-data}
+
+Two YAML mapping files at the \texttt{otel-weaver/mappings/} level constitute the
+data surface governing EXP-002's boundary rules:
+
+\paragraph{registry-diff-to-pi-drift-map.yaml}
+Version 1.0.0 file declaring:
+\begin{itemize}
+    \item \texttt{nominal\_isolation\_declaration}: the statement that Weaver schema
+          diffs must never be registered as process drift.
+    \item Four \texttt{schema\_diff\_categories}: \texttt{schema\_addition},
+          \texttt{attribute\_deprecation}, \texttt{type\_change}, and the implicit
+          \texttt{attribute\_rename} case that \texttt{BridgeRx} handles. Each
+          category declares \texttt{process\_drift\_impact: none} or
+          \texttt{none\_unless\_unmapped}.
+    \item Three \texttt{process\_drift\_definitions}: activity skip, sequence
+          violation, and conformance score decay.
+    \item Two \texttt{mapping\_boundary\_rules}: \texttt{drift\_isolation\_rule\_1}
+          and \texttt{drift\_isolation\_rule\_2}.
+\end{itemize}
+
+\paragraph{otel-to-pi-witness-map.yaml}
+Version 1.0.0 file aligned to OTel schema URL
+\texttt{https://opentelemetry.io/schemas/1.25.0}. Declares three witness mapping
+rules translating OTel service identity fields (\texttt{service.name},
+\texttt{service.namespace}, \texttt{telemetry.sdk.name}) to PI feedstock keys
+(\texttt{pi.feedstock.witness.id}, \texttt{pi.feedstock.source},
+\texttt{pi.feedstock.payload\_size}). Includes a
+\texttt{conformance\_isolation.prevention\_rule}: ``Never map feedstock directly
+to court consequences.''
+
+No TTL/RDF ontology surface exists for the S1/S2 schema types or the
+\texttt{BridgeRx} translation semantics as of the current experiment status. This
+is an open gap documented in
+Section~\ref{sec:otel-weaver-exp-002-diff-to-residual-open}.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:otel-weaver-exp-002-diff-to-residual-impl-templates}
+
+EXP-002 is a pure Rust library crate; it does not use OTel Weaver's Jinja2/MiniJinja
+template rendering capability. The template rendering pattern is used in exp-004
+(registry-to-wasm4pm-compat-witness) to manufacture Rust witness type declarations
+from the resolved registry JSON.
+
+The experiment's relationship to Weaver templates is as their consumer: the output
+of a Weaver template run (a set of Rust type declarations derived from the custom
+PI registry defined in exp-001) would be the upstream schema surface that
+\texttt{TelemetryFeedstockS1} and \texttt{TelemetryFeedstockS2} are designed to
+parse. Whether exp-002's structs were manually authored or manufactured from a
+Weaver template run is not documented in the repository.
+\textsc{[AUTHOR THESIS / INTERPRETATION: the manual authorship of the S1/S2 structs
+is an open question that EXP-004's generator pattern is designed to eventually
+replace with registry-driven code manufacture.]}

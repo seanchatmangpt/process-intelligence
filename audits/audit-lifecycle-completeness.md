@@ -132,7 +132,7 @@ For each lifecycle state, the auditor verifies:
 | **PI Requirements** | ✓ COMPLETE | Streaming event ingestion, transaction gatekeeping, marking updates, performance tracking (throughput time, processing time, cost index). |
 | **Compat Laws** | ✓ COMPLETE | XES event format, OCEL 2.0 object tracking, message queue protocols. |
 | **wasm4pm Authorities** | ✓ PARTIAL | Execution kernel checks implicit. No explicit reference to execution-authority-atlas or runtime memory bounds. |
-| **Receipt Shapes** | ✓ COMPLETE | Operational KPI receipts, event logs, compliance exception records. |
+| **Receipt Shapes** | ✓ COMPLETE | Operational KPI receipts, compliance exception receipts. |
 | **Failure Conditions** | ✓ COMPLETE | Non-conforming transactions blocked, routing to repair queue. |
 
 **Residual Gaps:**
@@ -200,7 +200,7 @@ For each lifecycle state, the auditor verifies:
 | **PI Requirements** | ✓ COMPLETE | Log extraction, XES/OCEL conversion, heuristics discovery, baseline fitness calculation, process debt quantification. |
 | **Compat Laws** | ✓ COMPLETE | XES format mapping, OCEL 2.0, discovery algorithm output (DFG, Heuristics Miner). |
 | **wasm4pm Authorities** | ✗ **RESIDUAL** | No reference to mining-authority-map or discovery algorithm constraints (fuel limits, noise filtering). |
-| **Receipt Shapes** | ✓ COMPLETE | Discovery receipt (DFG, heuristics log, alignment report), baseline fitness proof. |
+| **Receipt Shapes** | ✓ COMPLETE | Discovery receipt (typed DFG witness, conformance fitness receipt with BLAKE3 commitment), baseline fitness receipt. |
 | **Failure Conditions** | ✓ COMPLETE | Low baseline fitness (operational control failure), high process debt (integration cost estimate). |
 
 **Residual Gaps:**

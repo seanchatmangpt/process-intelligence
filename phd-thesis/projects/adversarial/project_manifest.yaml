@@ -1,0 +1,24 @@
+slug: adversarial
+absolute_path: /Users/sac/process-intelligence/adversarial
+description: >
+  Adversarial test cases and hostile findings corpus. Red team findings, laundering/spoofing
+  simulation, OCEL adversarial gravity, and validate standards scripts. Implements the Van
+  der Aalst Constitution requirement for negative testing and hostile assumption verification.
+detected_languages:
+  - Python
+detected_frameworks:
+  - pm4py
+detected_research_surfaces:
+  - process-evidence
+  - conformance-law
+  - proof-gate
+likely_thesis_role: adversarial-testing-and-hostile-assumption-verification
+key_files:
+  - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_001.md
+  - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_002.md
+  - /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+  - /Users/sac/process-intelligence/adversarial/validate_standards.py
+  - /Users/sac/process-intelligence/adversarial/RED_TEAM_SCOPE.md
+readme_present: false
+receipt_present: false
+ontology_present: false

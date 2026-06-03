@@ -560,6 +560,14 @@ fn test_e2e_otel_trace_verification() {
         s0_start,
         s0_end,
         s0_ic,
+        "inst_legacy",
+        s0_name,
+        None,
+        "complete",
+        None,
+        None,
+        "witness_legacy",
+        "witness_hash_0",
     );
     let hash0_hex = hex_encode(&hash0);
 
@@ -579,11 +587,19 @@ fn test_e2e_otel_trace_verification() {
         s1_start,
         s1_end,
         s1_ic,
+        "inst_legacy",
+        s1_name,
+        None,
+        "complete",
+        None,
+        None,
+        "witness_legacy",
+        "witness_hash_1",
     );
     let hash1_hex = hex_encode(&hash1);
 
     let valid_json = format!(
-        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"instance_id\": \"inst_legacy\",\n      \"witness_id\": \"witness_legacy\",\n      \"witness_hash\": \"witness_hash_0\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"instance_id\": \"inst_legacy\",\n      \"witness_id\": \"witness_legacy\",\n      \"witness_hash\": \"witness_hash_1\"\n    }}\n  ]\n}}",
         trace_id, hash1_hex,
         s0_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
         s1_id, s0_id, s1_name, s1_start, s1_end, s1_ic, hash1_hex
@@ -592,7 +608,9 @@ fn test_e2e_otel_trace_verification() {
     // Verify valid trace
     let trace = OtelTrace::parse_from_str(&valid_json).unwrap();
     let res = verify_otel_trace(&trace);
-    assert!(res.is_ok());
+    if let Err(e) = res {
+        panic!("verify_otel_trace failed with error: {}", e);
+    }
     assert!(res.unwrap());
 
     // 2. Blake3 receipt mismatch (tampering detection)
@@ -604,19 +622,22 @@ fn test_e2e_otel_trace_verification() {
 
     // 3. Parent-child timing constraint violation
     let invalid_timing_json = format!(
-        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": 900,\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": null,\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"instance_id\": \"inst_legacy\",\n      \"witness_id\": \"witness_legacy\",\n      \"witness_hash\": \"witness_hash_0\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": 900,\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"instance_id\": \"inst_legacy\",\n      \"witness_id\": \"witness_legacy\",\n      \"witness_hash\": \"witness_hash_1\"\n    }}\n  ]\n}}",
         trace_id, hash1_hex,
         s0_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
         s1_id, s0_id, s1_name, s1_end, s1_ic, hash1_hex
     );
     let invalid_timing_trace = OtelTrace::parse_from_str(&invalid_timing_json).unwrap();
     let invalid_timing_res = verify_otel_trace(&invalid_timing_trace);
-    assert!(invalid_timing_res.is_err());
-    assert!(invalid_timing_res.unwrap_err().contains("Parent-child timing constraint violated"));
+    if let Err(e) = invalid_timing_res {
+        assert!(e.contains("Parent-child timing constraint violated"));
+    } else {
+        panic!("expected timing violation");
+    }
 
     // 4. Cyclic parent-child dependency detection
     let cyclic_json = format!(
-        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\"\n    }}\n  ]\n}}",
+        "{{\n  \"trace_id\": \"{}\",\n  \"event_chain_root\": \"{}\",\n  \"spans\": [\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"instance_id\": \"inst_legacy\",\n      \"witness_id\": \"witness_legacy\",\n      \"witness_hash\": \"witness_hash_0\"\n    }},\n    {{\n      \"span_id\": \"{}\",\n      \"parent_span_id\": \"{}\",\n      \"span_name\": \"{}\",\n      \"start_time_unix_us\": {},\n      \"end_time_unix_us\": {},\n      \"instruction_count\": {},\n      \"blake3_receipt\": \"{}\",\n      \"instance_id\": \"inst_legacy\",\n      \"witness_id\": \"witness_legacy\",\n      \"witness_hash\": \"witness_hash_1\"\n    }}\n  ]\n}}",
         trace_id, hash1_hex,
         s0_id, s1_id, s0_name, s0_start, s0_end, s0_ic, hash0_hex,
         s1_id, s0_id, s1_name, s0_start, s0_end, s1_ic, hash1_hex

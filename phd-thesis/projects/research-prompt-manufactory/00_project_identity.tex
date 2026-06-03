@@ -1,0 +1,104 @@
+% FILE: 00_project_identity.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Project Identity: Prompt Manufactory}
+\label{sec:research-prompt-manufactory-identity}
+
+\subsection{Purpose}
+\label{sec:research-prompt-manufactory-identity-purpose}
+
+The Prompt Manufactory is the command-surface manufacturing layer of the Process Intelligence
+research program. Its purpose is to manufacture typed, receipted, ontology-grounded research
+warrants for downstream subagents — with zero hand-written prompt text permitted. Every research
+warrant emitted by the Manufactory carries a \texttt{pm:derivedFrom} triple attesting its
+provenance to a specific RDF instance in graph law, enforced by a SHACL shape constraint that
+rejects any \texttt{pm:RenderedPrompt} lacking this triple.
+
+The doctrine governing the Manufactory is stated explicitly in the checkpoint record
+\texttt{GGEN\_PROMPT\_MANUFACTORY\_PARTIAL\_001.md}: \textit{``The prompt is no longer speech.
+It is a receipted production order emitted from graph law.''} This doctrine inverts the
+conventional assumption that prompts are human-authored natural-language instructions. Instead,
+a prompt in this system is a manufactured artifact with a traceable derivation chain, a type
+classification, and a receipt entry in the \texttt{prompt-receipt-ledger.md}.
+
+The Manufactory serves seven research programs encoded as seed instances in
+\texttt{research-program-law.ttl}: PI, GGEN\_ECOSYSTEM, GGEN\_OTEL, ZOEAPP, EXPO\_SUPABASE,
+CLAUDE\_WORKFLOW, and WASM4PM\_REMEDIATE. For each program, the Manufactory emits workflow
+warrants, subagent role warrants, checkpoint warrants, skill warrants, and hook policy
+documents --- all manufactured from the same graph.
+
+\subsection{Repository Surface}
+\label{sec:research-prompt-manufactory-identity-surface}
+
+The Prompt Manufactory occupies the path
+\texttt{/Users/sac/process-intelligence/research/prompt-manufactory/} within the
+\texttt{process-intelligence} research foundry. Its internal layout enforces strict separation
+of concerns across four layers:
+
+\begin{itemize}
+  \item \textbf{Ontology layer} (\texttt{ggen/ontology/}): Eight Turtle files (\texttt{.ttl})
+    encoding all law. Each file governs a distinct domain: prompt-manufactory (core class
+    definitions), research-program-law (7 seed program instances), workflow-law (INTEL and
+    REMEDIATE workflow structures with 8 phases), subagent-role-law (15 bounded inspection
+    station definitions), skill-law (6 standard-work capabilities), hook-law (6 Andon gate
+    policies), checkpoint-law (ALIVE/PARTIAL verdict structure with 10 gate definitions), and
+    forbidden-collapse-law (3 absolute bans plus 22 legacy \texttt{.ggen} file classification
+    instances).
+  \item \textbf{Query layer} (\texttt{ggen/queries/}): SPARQL SELECT queries that extract
+    structured data from the RDF graph for each warrant type. The core query
+    \texttt{select-workflow-prompts.rq} joins \texttt{pm:ResearchProgram},
+    \texttt{pm:Workflow}, \texttt{pm:Phase}, and \texttt{pm:SubagentRole} across four
+    graph hops.
+  \item \textbf{Template layer} (\texttt{ggen/templates/}): Tera templates (\texttt{.md.tera})
+    that render SPARQL result bindings into Markdown prompt artifacts. Eight template
+    specifications are wired in \texttt{ggen.toml}; one proof specimen
+    (\texttt{workflow-prompt.md.tera}) is operational.
+  \item \textbf{Emission layer} (\texttt{emitted/}): The manufactured artifacts directory,
+    organized into \texttt{prompts/workflows/}, \texttt{prompts/subagents/},
+    \texttt{prompts/checkpoints/}, \texttt{prompts/skills/}, \texttt{prompts/hooks/},
+    \texttt{indexes/}, and \texttt{manifests/}.
+\end{itemize}
+
+The manufacturing engine is ggen v26.5.21, configured in \texttt{ggen.toml} with 6 active
+generation rules. The engine's sync state is recorded in
+\texttt{ggen/.ggen/sync-state.json} with ontology hash
+\texttt{01b52b815102f2839b5c852cadf9edb119592635bd8d8436b9574e0aea6bb054} and
+sync timestamp \texttt{2026-06-01T23:08:25Z}.
+
+\subsection{Primary Research Role}
+\label{sec:research-prompt-manufactory-identity-role}
+
+Within the dissertation, the Prompt Manufactory fills the thesis role of
+\textbf{prompt-manufacturing-and-subagent-command-surface}. It is the layer that converts
+graph-encoded research law into actionable, typed, receipted instructions that subagents
+can execute. This role sits between the ontology layer (where law is declared) and the
+execution layer (where subagents act), acting as the manufacturing bridge.
+
+The Manufactory demonstrates that the command surface of a multi-agent research program
+need not be hand-authored. If law can be encoded as RDF, and if manufacturing rules can
+be specified as SPARQL-plus-Tera pipelines, then every subagent instruction becomes a
+manufactured artifact with provenance, type, and receipt --- properties that hand-written
+prompts cannot possess.
+
+\subsection{Key Artifacts}
+\label{sec:research-prompt-manufactory-identity-artifacts}
+
+The key artifacts produced by or constitutive of the Prompt Manufactory are:
+
+\begin{itemize}
+  \item \texttt{ggen/ontology/prompt-manufactory.ttl} --- 15 core classes, 8 object
+    properties, 7 data properties, SHACL shapes; the foundational schema.
+  \item \texttt{ggen/ggen.toml} --- 6 generation rules wiring SPARQL queries to Tera
+    templates; the manufacturing pipeline specification.
+  \item \texttt{emitted/manifests/manufacturing-manifest-20260601.yaml} --- Records ggen
+    v26.5.21 executing 6 rules, emitting 41 artifacts across 5 types, with overall gate
+    PASS and receipts-equal-artifacts PASS.
+  \item \texttt{emitted/indexes/prompt-receipt-ledger.md} --- The manufacturing receipt
+    ledger documenting the provenance chain for each emitted warrant.
+  \item \texttt{emitted/prompts/workflows/PI\_RESEARCH\_PROGRAM\_INTEL\_001.md} --- The
+    proof-specimen workflow warrant, demonstrating end-to-end manufacture from
+    \texttt{research-program-law.ttl} to receipted Markdown.
+  \item \texttt{checkpoints/GGEN\_PROMPT\_MANUFACTORY\_PARTIAL\_001.md} --- The issued
+    PARTIAL checkpoint with 9/11 audit gates passing, 2 pending, 0 blocking.
+\end{itemize}

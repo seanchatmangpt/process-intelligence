@@ -1,0 +1,22 @@
+slug: otel-weaver-exp-003-live-check-to-refusal
+absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal
+description: >
+  OTel Weaver experiment 003: Rust-based validator that maps Weaver live-check findings to
+  PI refusal policies — enforcement of the named-law refusal doctrine.
+detected_languages:
+  - Rust
+detected_frameworks:
+  - otel-weaver
+  - wasm4pm-compat
+detected_research_surfaces:
+  - refusal-policy
+  - proof-gate
+  - process-evidence
+likely_thesis_role: live-check-refusal-enforcement-experiment
+key_files:
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/Cargo.toml
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/README.md
+readme_present: true
+receipt_present: false
+ontology_present: false

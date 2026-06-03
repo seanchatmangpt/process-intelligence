@@ -1,0 +1,81 @@
+% FILE: 01_research_question.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Research Question}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-question}
+
+\subsection{Problem Statement}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-question-problem}
+
+Operational telemetry is not process evidence. This claim, stated in the doctrine file
+\texttt{otel-weaver/doctrine/telemetry-is-not-process-evidence.md}, identifies a category error
+that pervades observability-first software architectures: engineers instrument code with OpenTelemetry
+spans, collect traces in a backend, and then treat the resulting data as a record of what the process
+did. But a span that carries no Petri net token state, no witness hash, no lifecycle phase, and no
+case identifier cannot be replayed as a lawful process trace. It is a measurement artifact, not a
+process-evidence artifact.
+
+The problem EXP-001 addresses is therefore definitional before it is technical: \emph{what is the
+minimum schema a span must satisfy before it qualifies as admissible process feedstock?}
+The experiment answers this question by constructing a machine-verifiable registry that the OTel
+Weaver toolchain can validate, making the feedstock boundary explicit, externally auditable, and
+version-pinned rather than implicit, undocumented, and drifting.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-question-old-regime}
+
+The old-regime assumption is that any span emitted by a correctly instrumented service constitutes
+a record of what that service did at the process level. This assumption is embedded in the default
+OTel data model, which makes attributes optional and imposes no structural constraints on how
+spans relate to process lifecycle events, token states, or witness identities. Under this assumption,
+conformance checking is impossible: there is no guarantee that two spans describing the same
+activity carry comparable fields, and no mechanism to detect when a span has been emitted outside
+a lawful object lifecycle.
+
+The assumption also conflates schema registry drift with process drift.
+The doctrine file \texttt{otel-weaver/doctrine/registry-diff-is-not-process-drift.md} (AUTHOR THESIS)
+argues that a change in the OTel registry does not imply that the underlying process has changed;
+the two must be tracked independently. EXP-001 challenges the old regime by making the registry
+a typed, versioned artifact subject to Weaver validation, separating schema evolution from
+process-conformance claims.
+
+\subsection{Hypothesis}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-question-hypothesis}
+
+A custom OTel Weaver semantic convention registry, binding eight named span attributes to required
+or recommended cardinality under a version-pinned schema URL, can serve as the machine-verifiable
+feedstock boundary for a process intelligence conformance court. Specifically:
+\begin{enumerate}
+  \item Spans that satisfy all four required attributes
+        (\texttt{process.pi.instance\_id}, \texttt{process.pi.activity.name},
+        \texttt{process.pi.lifecycle}, \texttt{process.pi.witness.hash},
+        \texttt{process.pi.witness.id}) are admissible feedstock for the \texttt{BridgeRx}
+        schema-bridging layer and the \texttt{validate\_and\_project} admission gate.
+  \item Spans that violate one or more required attributes are refused at the gate and assigned
+        a typed \texttt{RefusalCode} from the enum defined in \texttt{validator.rs}, preventing
+        contaminated data from reaching the conformance court.
+  \item The registry itself can be resolved and validated by the \texttt{weaver} CLI without
+        modification to the standard OTel toolchain, demonstrating that process intelligence
+        feedstock constraints are expressible in standard Weaver YAML.
+\end{enumerate}
+
+\subsection{Success Criteria}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-question-success}
+
+Success requires all of the following:
+\begin{itemize}
+  \item \texttt{process\_pi.yaml} passes \texttt{weaver registry validate} without errors
+        against a materialized \texttt{registry/} directory.
+  \item The BLAKE3 receipt declared in \texttt{otel-weaver-source.manifest.yaml} is materialized
+        to disk at \texttt{receipts/otel-weaver-source-receipt.json}, confirming the cryptographic
+        chain is not merely declared but sealed.
+  \item The \texttt{weaver\_integration\_tests.rs} test in \texttt{sources/wasm4pm/tests/}
+        exercises \texttt{process\_pi.yaml} attributes directly, not only the Rust bridge/validator
+        logic in isolation.
+  \item An independent pm4py-based fitness/precision check is run against an event log produced
+        from spans that satisfy the \texttt{process.pi.activity} schema, confirming that schema
+        compliance at the feedstock layer propagates to conformance quality at the replay layer.
+\end{itemize}
+As of 2026-06-01, none of these criteria have been independently verified, placing the experiment
+at PARTIAL status.

@@ -1,0 +1,24 @@
+slug: audits
+absolute_path: /Users/sac/process-intelligence/audits
+description: >
+  Completeness audits corpus. Contains paper coverage audits, type law quality audits,
+  execution boundary audits, fixture quality audits, graduation boundary audits,
+  no-DTO-flattening audits, no-tool-smuggling audits, forensic audit verdicts, Petri net
+  soundness audits, Van der Aalst audit summary, and conformance reports.
+detected_languages:
+  - YAML
+detected_frameworks: []
+detected_research_surfaces:
+  - audit-suite
+  - conformance-law
+  - proof-gate
+likely_thesis_role: completeness-audit-and-compliance-verification-corpus
+key_files:
+  - /Users/sac/process-intelligence/audits/AUDIT_LOG.yaml
+  - /Users/sac/process-intelligence/audits/AUDIT_PAPER_COVERAGE.md
+  - /Users/sac/process-intelligence/audits/CONFORMANCE_REPORT.md
+  - /Users/sac/process-intelligence/audits/forensic_audit_verdict.md
+  - /Users/sac/process-intelligence/audits/VAN_DER_AALST_AUDIT_SUMMARY.txt
+readme_present: false
+receipt_present: false
+ontology_present: false

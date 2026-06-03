@@ -1,0 +1,92 @@
+\section{Open Questions and Next Work}
+\label{sec:sources-wasm4pm-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:sources-wasm4pm-gaps-known}
+
+Ten structural gaps are documented in \texttt{GAP\_ANALYSIS.md} (dated 2026-05-31). The gaps
+represent open research findings rather than implementation failures in \texttt{sources/wasm4pm}.
+
+\textbf{GAP\_001} (Critical): The live \texttt{\textasciitilde/wasm4pm/} codebase carries zero
+\texttt{wasm4pm-compat} dependencies. \texttt{Evidence<T,~State,~W>}, \texttt{Admission<T,~W>},
+\texttt{Refusal<R,~W>}, and \texttt{Metric<KIND,NUM,DEN>} — all defined in \texttt{wasm4pm-compat}
+— are absent from the engine side. The local \texttt{src/graduation.rs} bridges this seam for
+the \texttt{sources/wasm4pm} codebase, but the relationship between the manufactured
+\texttt{sources/wasm4pm} and the live \texttt{\textasciitilde/wasm4pm/} codebase is the
+primary open research question.
+
+\textbf{GAP\_002} (High): The live codebase's error surface is entirely \texttt{String}-typed.
+Every \texttt{wasm4pm\_types::Error} variant carries a \texttt{String} payload with no named
+structural law. \texttt{wasm4pm-compat} mandates named refusal reasons as first-class types.
+
+\textbf{GAP\_003} / \textbf{GAP\_007} (High): The live \texttt{\textasciitilde/wasm4pm/} lacks
+an Inductive Miner implementation (GAP\_003) and lacks alignment-based A* conformance
+(GAP\_007). Both are present in \texttt{sources/wasm4pm} but absent in the live codebase —
+reinforcing the two-codebase ambiguity of GAP\_001.
+
+\textbf{GAP\_004} (High): No POWL discovery algorithm exists despite a spec-compliant
+\texttt{Powl8Op} enum and \texttt{ChoiceGraph} type in the live codebase.
+
+\textbf{GAP\_005} (High): No Object-Centric DFG discovery — all algorithms operate on flat
+\texttt{EventLog} traces, not OCEL with \texttt{e2o}/\texttt{o2o} relations.
+
+\textbf{GAP\_009} (High): BLAKE3 receipt fields in \texttt{Evidence} are initialized to
+\texttt{[0u8;~32]}. The receipt infrastructure is structurally present but hash computation over
+algorithm inputs is not wired.
+
+Remaining gaps (\textbf{GAP\_006} Log Skeleton, \textbf{GAP\_008} OCPQ isolation,
+\textbf{GAP\_010} ETConformance precision) are Medium severity and represent future algorithm
+additions rather than architectural defects.
+
+\subsection{Deferred Gates}
+\label{sec:sources-wasm4pm-gaps-deferred}
+
+The following proof gates are specified but not yet implemented. Variant enumeration API and
+long-distance loop analysis (HIGH severity, Phase~2) are required to complete the Mining
+Authority. Generalization metric computation and multi-model conformance for variant detection
+(MEDIUM severity, Phase~3--5) are required to complete the Conformance Authority. Explicit
+variable tracking in replay and batch replay optimization (MEDIUM/LOW severity, Phase~5--6) are
+required to complete the Replay Authority. Model versioning/rollback and concurrent model
+deployment for A/B testing (MEDIUM severity, Phase~5) are required to complete the Lifecycle
+Authority. Thread-local receipt accumulation for concurrent replay (no severity assigned in the
+research verdict) and archival recovery via board override signature are deferred to Phase~5.
+
+\subsection{Research Risks}
+\label{sec:sources-wasm4pm-gaps-risks}
+
+The primary research risk is the \emph{two-codebase ambiguity}: whether \texttt{sources/wasm4pm}
+(the manufactured codebase with full \texttt{wasm4pm-compat} integration) or the live
+\texttt{\textasciitilde/wasm4pm/} workspace (the engineering codebase without compat consumption)
+constitutes the authoritative wasm4pm. The dissertation must resolve this question before making
+final claims about the execution authority. If the live codebase is authoritative, then GAP\_001
+through GAP\_010 are live defects, not research findings in a separate artifact.
+
+A secondary risk is the \emph{receipt-field zero-initialization}: BLAKE3 hash fields initialized
+to \texttt{[0u8;~32]} mean that receipts are currently structurally present but cryptographically
+empty. If a spot-audit is conducted before the hash computation is wired, the audit will confirm
+structural correctness but cannot confirm cryptographic binding. This must be resolved before any
+capital-flow claim is made on the basis of receipt chain integrity.
+
+A third risk is \emph{compile-time vs. runtime metric gap}: \texttt{Between01<NUM,DEN>} works
+only for const-generic parameters, while all runtime algorithm outputs require the separate
+\texttt{RuntimeBetween01} path. The bridge between the two is not systematic across the
+\texttt{Evidence} wrapper.
+
+\subsection{Next Receipted Work}
+\label{sec:sources-wasm4pm-gaps-next-work}
+
+The following work items require receipted completion before the dissertation can close the
+open questions. (1) Resolve the two-codebase ambiguity: determine whether \texttt{sources/wasm4pm}
+is a specification artifact or the authoritative execution engine, and document the resolution in
+a new checkpoint file. (2) Wire BLAKE3 hash computation over algorithm inputs in all
+\texttt{Evidence<T,~S,~W>} constructors, replacing \texttt{[0u8;~32]} initialization with
+actual hash computation; seal the result with a new manufacturing receipt. (3) Implement
+\texttt{wasm4pm-compat} consumption in the live \texttt{\textasciitilde/wasm4pm/} workspace
+(closing GAP\_001); issue a checkpoint receipt upon successful compilation with the
+\texttt{GraduateToWasm4pm} trait implemented. (4) Implement the Inductive Miner cut-detection
+algorithm in the live codebase (closing GAP\_003); issue a discovery receipt confirming
+block-structured soundness by construction. (5) Wire the A* alignment engine into the live
+conformance surface (closing GAP\_007); issue a conformance receipt confirming the fitness
+equation is computed from actual alignment moves, not from token replay. All five items must
+be completed and receipted before any ALIVE verdict is issued for the live
+\texttt{\textasciitilde/wasm4pm/} workspace. [FUTURE WORK]

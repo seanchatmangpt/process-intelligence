@@ -1,0 +1,274 @@
+slug: prompts
+claims:
+  - id: CLM-PROMPTS-001
+    claim: >-
+      The prompts/ directory contains 16 top-level directive documents and 10
+      execution-plan blueprints organized under execution-plans/, covering targets
+      including wasm4pm refactor, wasm4pm-compat gap closure, ggen projection
+      integration, Blue River Dam lifecycle authority, audit mesh expansion, M&A
+      deck manufacture, paper fixture manufacture, PM4Py benchmark comparison,
+      public standards expansion, and the v30-execution mandate.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/checkpoint__downstream_prompts_complete.md
+      - /Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md
+      - /Users/sac/process-intelligence/prompts/downstream_ggen_projection_integration.md
+      - /Users/sac/process-intelligence/prompts/downstream_blue_river_dam_lifecycle_authority.md
+      - /Users/sac/process-intelligence/prompts/downstream_pm4py_benchmark_comparison.md
+    evidence_summary: >-
+      Directory listing of /Users/sac/process-intelligence/prompts/ confirms 16
+      top-level .md files and an execution-plans/ subdirectory with 10 blueprint
+      files.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-002
+    claim: >-
+      The checkpoint file checkpoint__downstream_prompts_complete.md establishes a
+      verification checklist confirming that all twelve downstream directives are
+      complete and free of placeholders. The checklist carries directive verdicts
+      dated 2026-05-31 but does not carry a cryptographic validator_signature field.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/checkpoint__downstream_prompts_complete.md
+    evidence_summary: >-
+      The checkpoint file exists and contains an enumerated checklist of twelve
+      downstream directive files with absolute file:/// links and link-integrity
+      requirements, but carries no BLAKE3/Ed25519 validator_signature field.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-003
+    claim: >-
+      The downstream_wasm4pm_refactor.md mandate is authorized for downstream
+      execution ONLY after the PROCESS_INTELLIGENCE_ALIVE_001 seal is produced, and
+      explicitly prohibits invocation before that seal exists on the ground that
+      invocation before the seal means acting on unverified research claims.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md
+    evidence_summary: >-
+      The refactor mandate file contains the verbatim Authorization Condition block
+      stating the precondition and prohibition.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-004
+    claim: >-
+      The PROCESS_INTELLIGENCE_ALIVE_001 seal is not materialized within the
+      prompts/ directory; its issuance must be confirmed by examining receipts/ and
+      checkpoints/ in the parent research program, leaving the corpus authorization
+      status PARTIAL.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md
+      - /Users/sac/process-intelligence/prompts/checkpoint__downstream_prompts_complete.md
+    evidence_summary: >-
+      No PROCESS_INTELLIGENCE_ALIVE_001 seal file is present in the prompts/
+      directory or its execution-plans/ subdirectory; the alive_status from the
+      known evidence register is PARTIAL.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-005
+    claim: >-
+      The ProcessIntelligenceVerificationReceipt JSON schema requires a receipt_id
+      (UUID), target_log_hash (SHA-256), process_model_hash (SHA-256), fitness and
+      precision values computed by wasm4pm, validator_signature (base64-encoded
+      Ed25519), and a timestamp. Receipts are refused if any required field is
+      missing, the timestamp is future-dated or stale beyond 90 days, or the Ed25519
+      signature fails verification against the RoleKeyRegistry.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/downstream_ggen_projection_integration.md
+    evidence_summary: >-
+      The ggen integration directive file contains the verbatim JSON schema and
+      enumerated rejection rules including the 90-day staleness threshold and Ed25519
+      signature verification requirement.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-006
+    claim: >-
+      The PM4Py benchmark directive specifies speedup targets of Inductive Miner
+      >=20x faster, A* alignment >=22x faster, Petri net soundness >=30x faster, and
+      DFG mining >=25x faster than PM4Py, with correctness tolerances of fitness
+      within +/-0.001 and precision within +/-0.01. These are success criteria, not
+      achieved results; no benchmark receipts exist in the prompts/ directory.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/downstream_pm4py_benchmark_comparison.md
+    evidence_summary: >-
+      The benchmark comparison directive file contains the exact performance targets
+      in a coverage matrix table; no execution receipts are present in the directory.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-007
+    claim: >-
+      The Chatman Equation (kappa o rho o alpha o mu) is physically instantiated as a
+      three-phase cryptographic bridge in the blue-river-dam-bridge.md blueprint:
+      Admission Phase (wasm4pm-compat generates preliminary AST and BLAKE3 hash of
+      raw binary stream), Attestation and Receipt Phase (wasm4pm synthesizes a
+      Receipt with H_orig, H_exec, and Sig_adm), and Execution Phase (sandbox
+      verifies Sig_adm and H_exec before instantiation via Rust typestate
+      enforcement).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/execution-plans/blue-river-dam-bridge.md
+    evidence_summary: >-
+      The blue-river-dam-bridge.md execution blueprint exists in the execution-plans/
+      subdirectory and specifies the three-phase cryptographic linkage with BLAKE3
+      and Ed25519 fields at the schema level.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-008
+    claim: >-
+      The Blue River Dam lifecycle defines six admissible gate transitions with
+      specific proof receipts: Gate 1 requires all four WF-net axioms; Gate 3
+      (conformance stay) admits automatically at fitness >=0.95, requires Board
+      override at 0.85<=f<0.95, and emits a RefusalReport at f<0.85; Gate 6
+      (Decommissioning) requires a BLAKE3 chain of all prior receipts and zeroize
+      confirmation of linear memory scrubbing.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/downstream_blue_river_dam_lifecycle_authority.md
+    evidence_summary: >-
+      The Blue River Dam lifecycle authority directive file exists and specifies gate
+      mapping definitions, transition validators, and cryptographic decommission
+      rules per the checkpoint checklist.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-009
+    claim: >-
+      The ggen integration directive maps alignment fitness thresholds to EBITDA
+      impact percentages: fitness >=0.95 yields +5% EBITDA (HIGH confidence,
+      automatic admissibility); 0.85<=fitness<0.95 yields +3% EBITDA (MEDIUM
+      confidence, board override required); fitness<0.85 yields a refused claim with
+      -8% to -15% EBITDA risk mitigation. These figures are derived from the research
+      program's own M&A board claim taxonomy documents and no external empirical
+      study is cited.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/prompts/downstream_ggen_projection_integration.md
+    evidence_summary: >-
+      The ggen directive exists and specifies these thresholds, but the TeX file
+      explicitly flags that the EBITDA figures are derived from the research
+      program's own taxonomy documents with no external empirical grounding --
+      making them internally-derived values requiring independent validation before
+      board-admissible use.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-010
+    claim: >-
+      The absence-proof fixture strategy mandates compile-fail fixtures in
+      tests/absence-proofs/ using @ts-expect-error directives validated by a custom
+      runner wrapping tsc --noEmit, covering three categories: cross-boundary
+      capability leakage, typestate violation (WasmModule<Unverified> cannot be
+      passed to linkModule), and memory safety constraints. Success criterion is 100%
+      of defined illegal states manifesting as compilation errors.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/execution-plans/absence-proof-fixtures.md
+    evidence_summary: >-
+      The absence-proof-fixtures.md blueprint file exists in execution-plans/ and
+      specifies the three fixture categories, the @ts-expect-error mechanism, and
+      the custom tsc runner approach.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-011
+    claim: >-
+      The corpus satisfies completion criteria 1-4 defined in
+      checkpoint__downstream_prompts_complete.md as of 2026-05-31 (directives
+      present, authority sources referenced, completion criteria expressed as
+      verifiable artifacts, no untagged blocking claims), but criterion 5 remains
+      PARTIAL because evidence of the PROCESS_INTELLIGENCE_ALIVE_001 seal's issuance
+      does not appear within the prompts/ directory.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/checkpoint__downstream_prompts_complete.md
+      - /Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md
+    evidence_summary: >-
+      The checkpoint file documents the five criteria; criteria 1-4 are satisfiable
+      by corpus contents; criterion 5 is unmet because the ALIVE_001 seal is not
+      present in the prompts/ directory, consistent with the alive_status: PARTIAL
+      finding.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-012
+    claim: >-
+      ZKP infrastructure (SNARK/STARK proofs referenced in
+      execution-plans/zkp-execution-boundaries.md) has no implementation in either
+      wasm4pm or wasm4pm-compat, and no gap document tracks this as a formal gap
+      with defined completion criteria, constituting an unfalsifiable claim in the
+      architecture description.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/prompts/execution-plans/absence-proof-fixtures.md
+    evidence_summary: >-
+      The TeX file identifies this as a structural gap: ZKP references appear in the
+      blueprint but no gap register entry exists and no implementation path is
+      defined; next-work section calls for opening a gap register entry before
+      engineering can be authorized.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-013
+    claim: >-
+      The 'AGI Court' referenced in v30-execution-mandate.md is an authority-naming
+      convention for the research program's own mandate-issuance process, not an
+      external judicial or regulatory body, and its authority relationship to the gap
+      register agent mandates is not formally specified in the mandate's seven-line
+      text.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/prompts/v30-execution-mandate.md
+    evidence_summary: >-
+      The v30-execution-mandate.md file exists and is seven lines; the TeX file
+      explicitly labels the AGI Court interpretation as 'AUTHOR THESIS /
+      INTERPRETATION' and notes the mandate lacks the mathematical depth of other
+      directives.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-014
+    claim: >-
+      No ProcessIntelligenceVerificationReceipt JSON artifacts, no BLAKE3 hashes,
+      and no Ed25519 signatures exist as materialized files within the prompts/
+      directory. The receipt schemas are specifications of artifacts to be
+      manufactured by downstream engineering work, not achieved artifacts.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/prompts/checkpoint__downstream_prompts_complete.md
+    evidence_summary: >-
+      Directory inspection of /Users/sac/process-intelligence/prompts/ confirms only
+      .md files are present; no .json receipt files exist; the checkpoint file itself
+      carries no validator_signature field.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-PROMPTS-015
+    claim: >-
+      The corpus implements a four-layer manufacturing architecture (research
+      authority layer, directive layer, blueprint layer, verification layer) that
+      maintains formal authorization chains through all layers of translation from
+      theorem to implementation, demonstrating that a research program can produce
+      engineering-grade mandates with gap-register traceability and cryptographic
+      proof requirements.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md
+      - /Users/sac/process-intelligence/prompts/downstream_ggen_projection_integration.md
+      - /Users/sac/process-intelligence/prompts/checkpoint__downstream_prompts_complete.md
+    evidence_summary: >-
+      The four-layer architecture is the author's analytical framing of the corpus
+      structure; the layers are instantiated in actual files, but the claim that it
+      'maintains formal authorization chains from theorem to implementation' is an
+      analytical conclusion about design intent, not an empirically verified result.
+    confidence: MEDIUM
+    allowed_in_pdf: true

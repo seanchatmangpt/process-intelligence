@@ -1,0 +1,122 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Open Questions and Next Work}
+\label{sec:experiments-visualizer-openq}
+
+\subsection{Known Gaps}
+\label{sec:experiments-visualizer-openq-gaps}
+
+Four confirmed gaps exist in the \texttt{experiments-visualizer} as of the current evidence
+state. These gaps are documented from direct inspection of the source artifacts and are not
+inferences.
+
+\textbf{Gap 1: No automated runtime test harness.}
+\texttt{visualizer-validation.ts} exercises TypeScript type shapes at compile time only. There
+is no runtime test harness, Jest suite, or browser automation framework confirming that the
+MAPE-K loop executes correctly end-to-end, that the SHA-256 chain grows correctly across
+multiple blocks, that the EWMA drift detector correctly triggers UCL/LCL violations, or that
+the DECLARE validator correctly evaluates streaming traces. The v30.1.1 conformance claim in
+\texttt{LIVESTREAM\_STANDARDS.md} is a specification document, not a test result.
+
+\textbf{Gap 2: No visualizer-specific ALIVE checkpoint.}
+The \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md} verdict covers the overall process
+intelligence program. No checkpoint document exists that issues an ALIVE verdict specifically
+for the \texttt{experiments-visualizer} dashboard. The project's ALIVE status is inferred
+from the broader checkpoint, making the attribution PARTIAL under the thesis immutability
+doctrine.
+
+\textbf{Gap 3: Four independent SHA-256 implementations.}
+SHA-256 is independently implemented in \texttt{blockchain.js}
+(\texttt{CryptographicAuditChain.sha256}), \texttt{autonomic.js} (\texttt{sha256}),
+\texttt{ledger.js} (\texttt{sha256}), and \texttt{dashboard.js} (\texttt{sha256}). It is
+unconfirmed whether these are intentionally independent (defense-in-depth) or should reference
+a single canonical implementation. If the implementations differ, blocks manufactured by
+different modules may produce inconsistent hashes for identical inputs, undermining the
+tamper-evidence guarantee.
+
+\textbf{Gap 4: AGI swarm specification without implementation.}
+\texttt{LIVESTREAM\_STANDARDS.md} specifies a 5-agent AGI swarm architecture (Stream Director,
+Telemetry Auditor, A* Alignment Referee, Drift Sentry, Ledger Custodian). No agent
+orchestration code, OBS bindings, or inter-agent communication protocol is present in the
+codebase. The swarm architecture is a specification document only; its implementation status
+is unconfirmed.
+
+\subsection{Deferred Gates}
+\label{sec:experiments-visualizer-openq-deferred}
+
+The following proof gates are deferred pending further work:
+
+\begin{enumerate}
+  \item \textbf{Runtime execution gate:} Automated confirmation that all seven subsystems
+        execute correctly in a live browser session, producing mutually consistent outputs
+        without error. Requires a browser automation framework (e.g.\ Playwright or Puppeteer)
+        wired to the dashboard entry point.
+  \item \textbf{Visualizer-specific ALIVE checkpoint:} A checkpoint document issued specifically
+        for the \texttt{experiments-visualizer} satisfying all gate criteria independently of
+        the broader process intelligence program checkpoint.
+  \item \textbf{WASM provenance tracing:} Confirmation that \texttt{bindings.d.ts} is the
+        authoritative projection of the Rust wasm4pm WASM module's type surface, with a
+        traceable connection to a Cargo build script, \texttt{wasm-bindgen} configuration, or
+        equivalent generation mechanism. Currently the file is labeled ``generated compile-time
+        TypeScript type definitions'' but no generation pipeline is visible in the visualizer
+        directory.
+  \item \textbf{SHA-256 canonicalization:} Confirmation that the four SHA-256 implementations
+        produce identical output for identical inputs, or formal documentation of why
+        independent implementations are required.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:experiments-visualizer-openq-risks}
+
+\textbf{Risk 1: Specification-implementation gap.}
+The \texttt{LIVESTREAM\_STANDARDS.md} v30.1.1 conformance claim is the most aggressive quality
+assertion in the codebase, prohibiting all mocks, placeholders, and stubs. Without automated
+runtime testing, this claim cannot be verified. If any of the 13 JS modules contains a
+stubbed path that is activated only under specific runtime conditions, the conformance claim
+is falsified without any existing test being able to detect it.
+
+\textbf{Risk 2: Single-threaded execution limits.}
+The browser's single-threaded JavaScript event loop imposes a fundamental constraint on the
+MAPE-K tick cycle: all seven subsystems must complete their computation within a single event
+loop iteration without blocking the rendering thread. If the A* alignment solver's
+priority-queue search takes too long on a complex trace, the dashboard will appear to freeze.
+No performance benchmarks or tick-budget measurements are present in the codebase.
+
+\textbf{Risk 3: Indirect WASM boundary.}
+The connection between \texttt{bindings.d.ts} and the actual Rust wasm4pm WASM module is not
+directly traceable from the visualizer directory. If the TypeScript declarations have drifted
+from the actual WASM exports, the compile-time type gate passes while the runtime boundary
+produces type errors. This risk cannot be resolved without tracing the provenance of
+\texttt{bindings.d.ts} to its upstream source.
+
+\subsection{Next Receipted Work}
+\label{sec:experiments-visualizer-openq-next}
+
+The following work items, if completed, would close the deferred gates and advance the project
+from PARTIAL to ALIVE status. Each item must be receipted upon completion under the process
+intelligence receipt chain protocol.
+
+\begin{enumerate}
+  \item Manufacture a browser automation test suite (Playwright recommended) covering the
+        full MAPE-K tick cycle, SHA-256 chain growth, DECLARE constraint evaluation over
+        streaming traces, and EWMA UCL/LCL breach detection. Receipt the test results as
+        a \texttt{ReceiptShapeTs}-conforming record.
+
+  \item Issue a visualizer-specific ALIVE checkpoint in
+        \texttt{/Users/sac/process-intelligence/checkpoints/} satisfying all four gates
+        independently of the broader program checkpoint.
+
+  \item Canonicalize the SHA-256 implementation into a single shared module imported by
+        \texttt{blockchain.js}, \texttt{autonomic.js}, \texttt{ledger.js}, and
+        \texttt{dashboard.js}. Alternatively, document the rationale for independent
+        implementations and confirm output equivalence.
+
+  \item Trace the provenance of \texttt{bindings.d.ts} to its upstream source in the Rust
+        wasm4pm build pipeline and document the traceability chain in a receipt.
+
+  \item Implement or formally specify the 5-agent swarm roles defined in
+        \texttt{LIVESTREAM\_STANDARDS.md} as either automated test agents or documented
+        human observer protocols with formal handoff criteria.
+\end{enumerate}

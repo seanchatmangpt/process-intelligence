@@ -1,0 +1,87 @@
+% FILE: 02_lineage_and_context.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+
+\section{Lineage and Context}
+\label{sec:gaps-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:gaps-lineage-2016}
+
+The 2016 language-model experiment established that local text imitation does not
+conserve consequence. A model trained to reproduce the surface patterns of a process
+description will emit plausible-sounding outputs while failing to preserve the causal
+and sequential constraints that make the described process real. Applied to process
+mining, this lesson manifests as the compat-wasm gap: wasm4pm-compat was designed to
+enforce consequence-preservation at the type level — ensuring that only evidence
+admitted under named laws can enter the execution engine — but because the execution
+engine does not import the enforcement layer, the conservation guarantee exists only
+in the compat layer's local text (its type definitions and trait declarations) and is
+not conserved across the boundary.
+
+The gap registry documents exactly this failure mode. \texttt{GraduateToWasm4pm} is
+declared in wasm4pm-compat as the mechanism by which admitted evidence crosses into
+wasm4pm. The trait is a consequence-conservation mechanism: it is supposed to ensure
+that the causal history attached to an admitted \texttt{Evidence<T, Admitted, W>} value
+is preserved when that value enters the execution engine. But wasm4pm implements nothing.
+The trait is orphaned. Consequence is not conserved. The 2016 lesson repeats at the
+type-system layer.
+
+\subsection{Enterprise Process Gap}
+\label{sec:gaps-lineage-enterprise}
+
+The enterprise process gap that motivates the broader dissertation is the difference
+between the process an organization declares and the process it actually executes, as
+revealed by event log analysis under the Van der Aalst Constitution. The gap registry
+enacts this distinction at the software architecture level. wasm4pm-compat declares
+a type-law enforcement architecture. wasm4pm executes a different architecture — one
+that accepts raw, unvalidated \texttt{EventLog} objects with no reference to the declared
+laws. The declared architecture and the executed architecture are non-conformant.
+
+This is not a rhetorical analogy. The \texttt{GAP\_CLOSURE\_WORKFLOW.md} document
+frames the V30.1.1 Epoch governance under three constitutional directives, the first
+of which invokes the soundness requirement from van der Aalst (1998): every Petri net
+must be sound, bounded, and live, and the option-to-complete property must be
+compile-time verifiable. GAP\_003 documents that wasm4pm cannot satisfy this requirement
+because it implements only Alpha Miner, which produces unsound WF-nets. The enterprise
+process gap between declared soundness and executed unsoundness is real, grounded in
+the absence of an \texttt{InductiveMiner} implementation.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:gaps-lineage-chatman-equation}
+
+\textbf{AUTHOR THESIS:} The Chatman Equation $A = \mu(O^*)$ holds that autonomy is a
+function of the operator applied to the open ontology. For the equation to produce a
+valid autonomy measurement, $O^*$ must be grounded — the open ontology must contain
+evidence that has been admitted under named laws, not raw assertions. The gap registry
+documents that the current wasm4pm stack cannot satisfy this grounding requirement
+because the admission gate (wasm4pm-compat) is disconnected from the execution engine
+(wasm4pm). Every algorithm function that accepts raw \texttt{EventLog} is accepting
+ungrounded input into the $O^*$ computation. The autonomy measurement that results is
+not a valid application of the Chatman Equation — it is a computation over unverified
+data presented in the structural form of verified data.
+
+Closing GAP\_001 is therefore not merely an engineering task. It is a prerequisite for
+any valid application of the Chatman Equation to process evidence manufactured by the
+wasm4pm stack.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:gaps-lineage-receipts}
+
+The receipt chain is the mechanism by which process evidence becomes auditable across
+the full lifecycle: from raw observation, through admission, through execution, through
+conformance assessment, to a final verdict that can be replayed deterministically from
+the same inputs. GAP\_001 breaks the receipt chain at the boundary between admission
+and execution. GAP\_001 documents this explicitly: ``Receipts from wasm4pm-compat
+admission cannot be linked to wasm4pm execution'' (\texttt{GAP\_001\_COMPAT\_WASM\_BRIDGE.md},
+Impact Assessment table). The result is that even if wasm4pm-compat emits a valid
+admission receipt, and even if wasm4pm produces an execution result, the two cannot be
+linked into a single auditable chain. Replay of the execution from the admission receipt
+is impossible because wasm4pm does not carry the admission receipt into its computation.
+
+GAP\_008 extends this concern to the compile-fail test fixtures: fixtures that fail on
+E0425 (type not found in scope) are import errors, not structural law receipts. An
+E0425 failure can be resolved by adding a \texttt{use} statement, regardless of the
+law's intent. True type-law receipts must fail on E0308 (type mismatch), E0599 (method
+not found), E0277 (trait bound not satisfied), or E0080 (const eval failure) —
+failures that cannot be bypassed without violating the structural law the fixture is
+meant to enforce.

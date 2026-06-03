@@ -1,0 +1,86 @@
+% Blue River Dam — Research Question
+% PhD Thesis Chapter: Lifecycle Authority and Governance Engine
+
+\section{Research Question}
+\label{sec:blue-river-dam-question}
+
+\subsection{Problem Statement}
+\label{sec:blue-river-dam-question-problem}
+
+Process governance in enterprise systems is typically expressed as policy
+documents, configuration files, or runtime checks embedded in application
+logic. These mechanisms share a structural defect: the policy and the process
+it governs occupy the same mutable runtime space. A process can violate its
+declared governance model and continue executing; the violation is detected
+only if a monitoring agent happens to observe it. The declaration and the
+enforcement are separated by an unbounded observability gap.
+
+This problem becomes acute in autonomic systems where the process itself is
+responsible for detecting and remediating its own deviations. If the governance
+model that defines what constitutes a deviation can be bypassed or drifted, the
+entire autonomic loop loses its normative anchor. The system may emit receipts,
+transition states, and report fitness scores while operating in a regime that
+no human approver ever authorized.
+
+The specific question this project addresses is: \emph{Can process lifecycle
+governance be encoded as compile-time constraints such that illegal state
+transitions, authority boundary violations, and unsafe memory operations are
+structurally impossible --- not merely detected after the fact?}
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:blue-river-dam-question-old-regime}
+
+The old-regime assumption is that governance is a runtime concern --- that
+process compliance is checked by validators, monitors, and audit logs that
+observe an already-running process and report deviations as exceptions. Under
+this assumption, a process is presumed compliant until proven otherwise. The
+burden of proof falls on the monitoring infrastructure, which can be unavailable,
+delayed, or incomplete.
+
+Blue River Dam challenges this assumption at its foundation. The thesis
+claim --- supported by the compile-time evidence documented in
+\texttt{GENERATION\_RECEIPT.md} --- is that governance rules can be
+encoded as Rust type constraints such that a binary that successfully compiles
+cannot, by construction, execute an illegal transition. Compliance is not
+checked; it is \emph{required by the language}. The old-regime monitoring
+infrastructure becomes a secondary audit layer over an already-constrained
+execution environment, rather than the primary enforcement mechanism.
+
+\subsection{Hypothesis}
+\label{sec:blue-river-dam-question-hypothesis}
+
+A Rust library manufactured from formal governance doctrine, using typestate
+encoding and \texttt{\#![forbid(unsafe\_code)]}, will satisfy three
+properties simultaneously: (1) every lifecycle state transition is guarded
+by a named quality gate whose criterion is expressed in the source as a
+typed predicate; (2) every MAPE-K component produces a typed artifact
+(Evidence, Analysis, Plan, Receipt, Knowledge) that downstream components
+consume by type rather than by convention; and (3) the compiled binary is
+incapable of executing a path that would leave the system in an undocumented
+state. These three properties together constitute compile-time governance
+closure.
+
+\subsection{Success Criteria}
+\label{sec:blue-river-dam-question-success}
+
+Success is measured against four criteria, all of which are verified by the
+artifacts in this project:
+
+\begin{enumerate}
+  \item \textbf{Zero unsafe code.} The \texttt{\#![forbid(unsafe\_code)]}
+    attribute is present in \texttt{src/lib.rs} and compilation succeeds,
+    as certified by \texttt{GENERATION\_RECEIPT.md}.
+  \item \textbf{MAPE-K loop closure.} All five loop-closure conditions
+    (typed Evidence, typed Analysis, typed Plan, typed Receipt, replayable
+    Knowledge) are satisfied, as documented in the receipt.
+  \item \textbf{All six quality gates implemented.} Gates covering Design,
+    Simulation, Monitoring, Repair, Optimization, and Decommissioning states
+    are callable and gate-guarded in \texttt{transition\_state()}.
+  \item \textbf{Tests pass.} The initial 5/5 receipt-certified tests pass;
+    the 3 post-receipt tests (\texttt{test\_validate\_wf\_net\_soundness},
+    \texttt{test\_compute\_fitness\_genuine},
+    \texttt{test\_mape\_k\_cycle\_execution}) exercise the deeper
+    WF-net soundness and fitness computation paths whose pass/fail status
+    is not yet captured in a receipt (see
+    Section~\ref{sec:blue-river-dam-questions-gaps}).
+\end{enumerate}

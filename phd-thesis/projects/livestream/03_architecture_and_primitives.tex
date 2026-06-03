@@ -1,0 +1,121 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: livestream
+% Thesis Role: real-time-process-broadcast-and-livestream-standards
+
+\section{Architecture and Primitives}
+\label{sec:livestream-arch}
+
+\subsection{Core Objects}
+\label{sec:livestream-arch-objects}
+
+The livestream architecture is organized around six core object classes, each
+implemented as a JavaScript class or module:
+
+\textbf{PetriNet, Place, Transition, Arc, SComponent.} The \texttt{PetriNet} class
+models the workflow net as a directed bipartite graph of \texttt{Place} and
+\texttt{Transition} nodes connected by \texttt{Arc} edges. Each \texttt{SComponent}
+is a structurally bounded subnet of the Petri net that can be hot-swapped at runtime
+via \texttt{hotSwapSComponent()}, allowing the declared process model to be updated
+without halting the factory. The Petri net snapshot (\texttt{PETRI\_NET\_SNAPSHOT.md},
+base64-encoded) records the final sound marking: a single token at the
+\texttt{[Decommissioning]} place with no tokens in intermediate places and no
+deadlocks, satisfying proper completion criteria.
+
+\textbf{AlignmentSolver.} Implements A* optimal alignment of observed traces against
+the Petri net model. The priority queue drives the search over the product of the
+trace and the reachability graph of the net. The conformance audit result
+(Fitness\,=\,0.9880, Precision\,=\,1.0000) was produced by applying the alignment
+solver to the AGI conversation trace against the Blue River Dam thesis model. The
+solver handles collision in event IDs (e1/e2) detected by the replay aggregator.
+
+\textbf{AutonomicController.} Implements the MAPE-K feedback loop: Monitor (poll
+the event stream), Analyze (compute fitness against the declared model), Plan
+(select a remediation action), Execute (apply rate limiting, dynamic route changes,
+or S-component hot-swap). The \texttt{tick()} method is called on every simulation
+step and is rate-limited to prevent oscillation.
+
+\textbf{AuditLedger.} A SHA-256 cryptographic blockchain where block $i$ carries
+hash $H_i = \text{SHA-256}(i \| t \| \text{case\_id} \| \text{payload} \| H_{i-1})$.
+Interactive tamper testing is supported: injecting fake trace data into any block
+causes the ledger to immediately flag a signature mismatch and reject the M\&A data
+lineage claim associated with that block.
+
+\textbf{EWMACalculator.} Computes the exponentially weighted moving average of
+conformance fitness across the live event stream. Parameters: alpha\,=\,0.15,
+LCL\,=\,0.920. When the EWMA fitness crosses the LCL, the Drift Sentry agent raises
+an alert and the autonomic controller is notified to execute a remediation plan.
+
+\textbf{Five-Agent Swarm.} Stream Director (visual layout, latency governance,
+60.0\,FPS target), Telemetry Auditor (XES/OCEL 2.0 schema compliance), A*~Alignment
+Referee (optimal alignment oversight), Drift Sentry (EWMA drift detection),
+Ledger Custodian (cryptographic chain integrity). Each agent holds an independent
+audit mandate and can issue PASS or FAIL verdicts independently of the others.
+
+\subsection{Admissible Transitions}
+\label{sec:livestream-arch-transitions}
+
+The browser visualizer models a linear workflow net with five transitions connecting
+six places:
+\[
+  p\_start \xrightarrow{t\_create} p\_created
+           \xrightarrow{t\_receive} p\_received
+           \xrightarrow{t\_audit} p\_audited
+           \xrightarrow{t\_approve} p\_approved
+           \xrightarrow{t\_close} p\_end
+\]
+Place coordinates are fixed: $p\_start\,(80,150) \to p\_end\,(880,150)$ at 160-unit
+intervals. Token animation follows a two-stage slide: Place\,$\to$\,Transition\,$\to$\,
+Next Place. If a transition fires without a token in its preset, the violation handler
+registers a missing-token statistic and flashes the preset place red. This violation
+containment protocol is what makes the DECLARE constraint monitor operationally useful:
+violations are caught at the moment of emission, not retrospectively.
+
+The four JavaScript broadcast modules each emit events that are admissible under the
+OCEL 2.0 event envelope: \texttt{ocel:activity} (string), \texttt{ocel:timestamp}
+(UTC ISO 8601), \texttt{ocel:vmap} (key-value attribute map),
+\texttt{ocel:omap} (list of associated object identifiers).
+
+\subsection{Boundaries}
+\label{sec:livestream-arch-boundaries}
+
+The livestream layer imposes the following hard boundaries:
+
+\begin{itemize}
+  \item \textbf{Source boundary:} The four broadcast modules read from three external
+    sources---the \texttt{process-intelligence} Git repository, the zoeapp replays
+    directory (\texttt{/Users/sac/zoeapp/replays/}), and the Gemini chatlog directory
+    (\texttt{/Users/sac/.gemini/tmp/zoeapp/chats}). Events that cannot be parsed
+    from these sources are silently dropped (catch blocks with empty handlers in
+    \texttt{replay\_aggregator.js} and \texttt{master\_ocel\_stream.js}); this is
+    a documented boundary, not a hidden failure mode.
+  \item \textbf{Conformance boundary:} The autonomic controller will not authorize
+    downstream actuation when conformance fitness is below LCL\,=\,0.920. This
+    boundary enforces the Chatman Equation admissibility constraint at the factory
+    level.
+  \item \textbf{Ledger boundary:} The AuditLedger rejects any trace whose SHA-256
+    hash does not match the declared chain. M\&A data lineage claims that depend on
+    a tampered ledger block are automatically invalidated.
+\end{itemize}
+
+\subsection{Failure Modes Refused}
+\label{sec:livestream-arch-failures}
+
+The livestream architecture explicitly refuses the following failure modes:
+
+\textbf{Silent schema drift.} The Telemetry Auditor agent exists precisely to prevent
+the telemetry schema from drifting away from XES/OCEL 2.0 compliance without
+detection. Its FAIL verdict (v30.1.2, 2026-06-01) is the mechanism working as
+designed: non-compliance is surfaced, not hidden.
+
+\textbf{Undetected conformance drop.} The EWMA calculator (alpha\,=\,0.15) applies
+exponential weighting so that a sudden fitness drop is amplified rather than
+smoothed. The LCL\,=\,0.920 is set conservatively above the observed conformance
+metric (0.9880), ensuring that even a small degradation triggers an alert.
+
+\textbf{Tamper-invisible ledger modification.} The SHA-256 chain makes any
+retroactive modification to a ledger block detectable by recomputing the hash of
+every subsequent block.
+
+\textbf{Unauditable agent actuation.} Every agent action in the five-agent swarm
+that affects the factory state must produce an event in the OCEL 2.0 stream, making
+agent behavior subject to the same conformance checking as human-authored commits.

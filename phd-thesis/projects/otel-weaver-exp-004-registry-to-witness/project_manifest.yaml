@@ -1,0 +1,23 @@
+slug: otel-weaver-exp-004-registry-to-witness
+absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness
+description: >
+  OTel Weaver experiment 004: Rust-based codegen converting Weaver semantic convention
+  registries into wasm4pm-compat witness lattice markers.
+detected_languages:
+  - Rust
+detected_frameworks:
+  - otel-weaver
+  - wasm4pm-compat
+  - ggen
+detected_research_surfaces:
+  - witness-lattice
+  - type-law
+  - semconv-mapping
+likely_thesis_role: semconv-to-witness-lattice-codegen-experiment
+key_files:
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/bridge.rs
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generator.rs
+  - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md
+readme_present: true
+receipt_present: false
+ontology_present: false

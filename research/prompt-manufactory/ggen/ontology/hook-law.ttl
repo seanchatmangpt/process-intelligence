@@ -4,7 +4,7 @@
 # ============================================================================
 # HOOK LAW — Andon Gates (Deterministic Lifecycle Enforcement)
 # ============================================================================
-# Hooks are Claude Code lifecycle automations that enforce refusal conditions.
+# Hooks are Claude Code Andon gates — deterministic enforcement points that enforce admission/refusal conditions at named lifecycle boundaries.
 # They run deterministically at specific events, not at model discretion.
 # ============================================================================
 

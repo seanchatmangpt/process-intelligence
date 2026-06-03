@@ -1,0 +1,78 @@
+% FILE: 02_lineage_and_context.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Lineage and Context}
+\label{sec:adversarial-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:adversarial-lineage-2016}
+
+The thesis lineage begins with a 2016 language-model experiment whose conclusion was that local
+text imitation does not conserve consequence. A model that can reproduce the surface form of a
+process description does not thereby understand the process, cannot detect when the process
+deviates from its declared form, and cannot produce evidence that a process claim is true. This
+lesson is the deepest motivation for the adversarial corpus.
+
+The adversarial corpus operationalizes this lesson as a falsification requirement: it is
+insufficient to claim that a process intelligence system produces conforming output. The claim
+must survive an adversary who controls the input. A system that accepts timestamp-laundered
+logs, event-deleted traces, or forged signatures has not achieved process intelligence; it has
+achieved a more sophisticated form of text imitation. The ten scenarios in
+\texttt{simulate\_laundering\_spoofing.py} are the direct descendants of the 2016 lesson,
+translated into executable Python tests that assert the system cannot be fooled.
+
+\subsection{Enterprise Process Gap}
+\label{sec:adversarial-lineage-enterprise}
+
+The enterprise process gap---the observation that declared processes and actual runtime
+processes routinely diverge---is the empirical ground for the adversarial corpus. The gap
+manifests in three forms identified by the adversarial canon
+(\texttt{sources/papers/adversarial-canon.md}): Sybil attacks on event correlation (forged
+case identifiers causing state-space explosion), non-deterministic reality receipts
+(out-of-band state changes misinterpreted as noise by discovery algorithms), and the XES
+flat-earth problem (lossy ETL transformations that allow adversarial event selection without
+schema violation).
+
+These forms of the enterprise process gap are not theoretical. They are the adversarial
+surfaces that any process intelligence system deployed in an ERP, CRM, or SCM environment
+will face. The adversarial corpus provides the rejection mechanisms: hash chain integrity
+verification detects event deletion, signature authenticity checks detect timestamp
+modification and key forgery, and the \texttt{reject\_unhashed\_dataframe} rule blocks the
+entire class of raw mutable-data injection attacks.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:adversarial-lineage-chatman-equation}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that accountable process output is a function of
+a specified object-centric transformation. The adversarial corpus provides the negative
+complement of this equation: it defines what happens when $\mu$ is forged, when the inputs to
+$O^*$ are corrupted, and when the receipt certifying $A$ is manufactured from an adversarial
+key.
+
+The Chatman Constraint (\texttt{sources/wasm4pm-compat/adversarial-type-law.md}, Law I) is
+the injectivity requirement that makes the equation non-trivially falsifiable:
+$\forall S_a, S_b \in \text{StateSpace},\ S_a \neq S_b \implies C(S_a) \neq C(S_b)$.
+If this constraint is not enforced, state-space aliasing allows an adversary to forge a
+computationally indistinguishable but semantically distinct witness state. The adversarial
+corpus demonstrates that the Chatman Constraint must be a structural law at the
+compiler/scaffolding level, not a runtime check, because a runtime check can itself be forged
+if the witness lattice is malformed.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:adversarial-lineage-receipts}
+
+The receipt mechanism in the process-intelligence foundry is the primary defense against
+adversarial process claims. The ADVERSARIAL\_RECEIPT in \texttt{receipts/RECEIPT\_REGISTRY.md}
+certifies the adversarial workflow under the Chicago TDD hostile assumptions doctrine,
+witnessing that challenges cover raw laundering, metric fabrication, and conformance theater.
+
+Replay is the adversarial surface that the receipt mechanism must foreclose. The adversarial
+audit report (\texttt{audits/adversarial\_audit\_v30.1.1.md}) identifies memory-snapshot
+replay as Vulnerability Vector 2: snapshotting WASM linear memory and replaying evidence
+blocks in different execution contexts. The mitigation is monotonic session-based epoch
+counters and hash-salted state transitions, ensuring that replayed sessions and signature
+reuse across epochs are rejected at the boundary. Witness Lattice Monotonicity
+($W_{\text{new}} = W_{\text{old}} \sqcup w_{\text{step}}$) provides the same protection at
+the type-law level: any non-monotonic transition triggers a self-halt before a fraudulent
+receipt can be emitted.

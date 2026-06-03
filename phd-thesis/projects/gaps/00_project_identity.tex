@@ -1,0 +1,90 @@
+% FILE: 00_project_identity.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+% Generated for: Sean Chatman PhD Dissertation
+
+\section{Project Identity}
+\label{sec:gaps-identity}
+
+\subsection{Purpose}
+\label{sec:gaps-identity-purpose}
+
+The \texttt{gaps/} directory is the structural gap registry for the
+\texttt{process-intelligence} research foundry. Its purpose is to maintain a permanent,
+immutable record of every named defect identified between the wasm4pm-compat type-law
+enforcement layer and the wasm4pm execution engine. Under the immutability doctrine
+inherited from \texttt{process-intelligence} governance, gap records are never deleted
+or overwritten; they may only be extended by dated resolution addendums. A gap that
+carries no resolution addendum is formally open, regardless of any informal claim to the
+contrary. This single rule ensures that the registry functions as a tamper-evident audit
+surface: board-level claims about type-law enforcement, process-evidence provenance, and
+algorithm soundness can be falsified by consulting the gap register and verifying that the
+gap blocking the claim has been formally closed.
+
+The registry is not aspirational documentation. Each gap entry contains direct code
+citations — Cargo.toml excerpts, Rust type signatures, and error enum variants —
+that constitute empirical proof of the defect. GAP\_001, the most critical entry,
+reproduces the \texttt{wasm4pm/Cargo.toml} dependency block verbatim to demonstrate that
+\texttt{wasm4pm-compat} does not appear in it, thereby proving the bridge is entirely
+absent rather than merely incomplete.
+
+\subsection{Repository Surface}
+\label{sec:gaps-identity-surface}
+
+The registry is located at \texttt{\textasciitilde/process-intelligence/gaps/} and
+comprises five authored Markdown documents at the time of this writing:
+
+\begin{itemize}
+  \item \texttt{GAP\_REGISTER.md} — master index of all eight named gaps with severity,
+        status, and priority columns.
+  \item \texttt{GAP\_001\_COMPAT\_WASM\_BRIDGE.md} — deep-dive on the critical-path
+        compat-to-wasm bridge defect, including two-universe diagrams and a five-condition
+        remediation checklist.
+  \item \texttt{GAP\_002\_OR\_JOIN\_AMBIGUITY.md} — analysis of the BPMN OR-Join
+        non-determinism problem and its resolution under the v30.1.1 Smart-Completion
+        policy.
+  \item \texttt{GAP\_PRIORITY\_MATRIX.md} — dependency graph, blocking-claims table,
+        and sequenced closure plan covering all eight gaps.
+  \item \texttt{GAP\_CLOSURE\_WORKFLOW.md} — governance workflow under the V30.1.1 Epoch,
+        including three-phase execution plan and constitutional directives.
+\end{itemize}
+
+No receipt files, checkpoint files, ontology files, or test fixtures reside in the
+\texttt{gaps/} directory itself. Evidence is purely documentary and analytical.
+Resolution artifacts, when produced, are expected to materialize in the broader
+\texttt{receipts/} and \texttt{checkpoints/} directories of the research foundry.
+
+\subsection{Primary Research Role}
+\label{sec:gaps-identity-role}
+
+Within the dissertation, the gap registry serves the role of \emph{structural-gap-registry-and-closure-tracking}.
+It provides the evidentiary basis for every claim that the current implementation stack
+is incomplete. The registry makes falsifiability concrete: a reader who disputes a
+``type-law enforcement is absent'' claim can navigate to GAP\_001 and examine the Cargo.toml
+citation. Without the gap registry, the dissertation's architectural claims rest on
+positive assertion alone. With it, they rest on artifact-grounded defect records that
+follow the Van der Aalst Constitution's requirement that every conformance verdict be
+derivable from observable evidence rather than from code inspection or verbal testimony.
+
+The registry also establishes the ordering authority for downstream remediation work.
+No wasm4pm refactor is authorized until the research program approves the remediation
+path documented in the relevant gap record.
+
+\subsection{Key Artifacts}
+\label{sec:gaps-identity-artifacts}
+
+The eight named gaps constitute the primary artifacts of this directory:
+
+\begin{description}
+  \item[GAP\_001] compat-to-wasm bridge missing — CRITICAL, Open, P1.
+  \item[GAP\_002] named law refusals missing / OR-Join ambiguity — CRITICAL, Resolved
+        under v30.1.1 Smart-Completion Policy (status discrepancy with
+        \texttt{GAP\_REGISTER.md} is itself a documented open question).
+  \item[GAP\_003] Inductive Miner missing from wasm4pm — MAJOR, Open, P2.
+  \item[GAP\_004] alignment-based conformance missing — MAJOR, Open, P2.
+  \item[GAP\_005] OCPQ evaluation engine missing — MAJOR, Open, P3.
+  \item[GAP\_006] POWL discovery missing — MINOR, Open, P3.
+  \item[GAP\_007] WfNet split-brain forgeability — MINOR, Open in register but described
+        as Resolved in closure workflow (status discrepancy noted).
+  \item[GAP\_008] E0425 compile\_fail fixtures are not true type-law receipts — MINOR,
+        Open, P2.
+\end{description}

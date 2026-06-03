@@ -1,0 +1,24 @@
+slug: receipts
+absolute_path: /Users/sac/process-intelligence/receipts
+description: >
+  Cryptographic receipt chain corpus. Contains JSON receipts for EBITDA rework, WC/AR, SLA
+  risk, compliance risk, and residual standard claims. Also includes receipt registry,
+  wasm4pm generation receipts, and M&A deck rendering authority assessment. The physical
+  receipt chain anchoring all board-admissible claims.
+detected_languages:
+  - JSON
+detected_frameworks: []
+detected_research_surfaces:
+  - receipt-chain
+  - m-and-a-claims
+  - process-evidence
+likely_thesis_role: cryptographic-receipt-chain-and-claim-provenance
+key_files:
+  - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+  - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+  - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+  - /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+  - /Users/sac/process-intelligence/receipts/blue_river_generation.md
+readme_present: false
+receipt_present: true
+ontology_present: false

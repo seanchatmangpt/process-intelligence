@@ -1,0 +1,107 @@
+% FILE: 02_lineage_and_context.tex
+% PROJECT: ma — M&A Claim Taxonomy and Board Projection Surface
+
+\section{Lineage and Context}
+\label{sec:ma-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:ma-lineage-2016}
+
+The thesis lineage opens in 2016 with a language-model experiment whose finding was not about
+language models per se but about the fundamental inadequacy of local text imitation as a model
+of consequential enterprise behavior. A system that predicts the next token in a sentence---or
+the next step in a process description---does not conserve consequence. It can produce fluent
+process narratives that describe processes which never ran, cannot be replayed, and contain
+no evidence of actual organizational execution.
+
+The M\&A domain makes this lesson acute. A PowerPoint deck presenting synergy projections is
+precisely a language-model artifact: it is a fluent narrative about an organizational future
+that may or may not be grounded in the operational reality of either the acquirer or the target.
+The 2016 lesson---that imitation without process truth is dangerous---is, in the M\&A domain,
+a capital-market failure mode. Buyers pay merger premiums for operational claims that are no
+more grounded than next-token predictions.
+
+The \texttt{ma/} module does not merely diagnose this failure. It defines the replacement
+infrastructure: a claim taxonomy in which every assertion is grounded in an event log, every
+event log is cryptographically chained, and every conformance result is independently replayable.
+
+\subsection{Enterprise Process Gap}
+\label{sec:ma-lineage-gap}
+
+The 2016 lesson opens onto a structural enterprise process gap: the gap between what
+organizations claim about their processes and what their event logs, if examined, would reveal.
+This gap is not a minor measurement error. It is systematic. Management-prepared operational
+presentations routinely omit rework intensity, compliance violations, SLA breach frequency,
+and shadow-IT workarounds---not necessarily through deception but through the absence of any
+methodology to measure and present these facts in a form an external party can verify.
+
+The Operational Debt Taxonomy (source: \texttt{define\_operational\_debt\_taxonomy.md}) names
+four classes of this gap:
+
+\begin{itemize}
+  \item \textbf{Process Spaghetti}: High trace entropy $H(L) > 3.0$ indicating variant
+    explosion. Haircut impact: 10--15\% valuation discount.
+  \item \textbf{Compliance Deficits}: Systematic rule violations exceeding five per 10,000
+    cases. Haircut impact: 5--20\% valuation discount.
+  \item \textbf{Legacy Lock-In}: Dependency on systems whose latency exceeds $3\times$ modern
+    equivalents. Integration cost impact: 10--30\%.
+  \item \textbf{Shadow IT Workarounds}: High ``manual update'' event rates indicating
+    disconnected systems requiring undocumented human steps to function.
+\end{itemize}
+
+The Hostile Takeover Receipt taxonomy (source: \texttt{hostile-takeover-receipts.md}) observes
+that incumbent management in a hostile scenario actively conceals these classes of operational
+debt---and that HTR replay surfaces them precisely because replaying event streams without the
+undocumented manual steps causes the replay to fail, making the ghost dependencies visible.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:ma-lineage-chatman-equation}
+
+The Chatman Equation $A = \mu(O^*)$ expresses the core thesis claim: an agent's authority $A$
+over an outcome is a function $\mu$ of the operational star $O^*$---the complete, replayable,
+cryptographically attested record of how outcomes were achieved. In the M\&A context, the
+equation has a direct financial interpretation.
+
+A seller who can produce $O^*$---a complete OCEL 2.0 event log with process model, conformance
+certificate, and receipt chain---has demonstrable authority over the claimed operational outcome.
+The merger premium is the market's valuation of $\mu(O^*)$: the premium for certainty over
+estimation, for replayability over narration. A seller who cannot produce $O^*$ is selling
+$\mu(\emptyset)$---a claim whose authority is zero because its operational basis is
+unverifiable.
+
+The Board Claim Taxonomy (source: \texttt{BOARD\_CLAIM\_TAXONOMY.md}) operationalizes this
+through six tiers. T1 (Existence) and T2 (Coverage) claims correspond to $\mu(\emptyset)$:
+they assert that a process exists or that metrics have been counted, but they are not buyer-
+verifiable because they cannot be replayed. T3 (Conformance) through T6 (Recovery) claims
+correspond to increasing levels of $O^*$ completeness: each requires an event log, a
+process model, a conformance certificate, and---at T5 and T6---a live wasm4pm query or a
+full variant-analysis and remediation receipt. The thesis argues that M\&A valuations should
+price the tier of the seller's claims, not merely their numerical value.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:ma-lineage-receipts}
+
+The receipt infrastructure defined in the \texttt{ma/} module is not a new invention for M\&A.
+It is the same receipt chain that \texttt{ggen} and \texttt{wasm4pm} use for operational
+process evidence---extended to the capital-market surface. Each JSON receipt in
+\texttt{receipts/} contains:
+
+\begin{itemize}
+  \item A \texttt{slide\_id} UUID linking the receipt to a specific board presentation slide.
+  \item A \texttt{target\_log\_hash}: \texttt{BLAKE3} hash of the event log against which the
+    claim was computed.
+  \item A \texttt{process\_model\_hash}: \texttt{BLAKE3} hash of the Petri net or process tree
+    used for conformance checking.
+  \item A \texttt{query\_definition} referencing the \texttt{wasm4pm} engine and query URI.
+  \item \texttt{verification\_results} with numeric fitness, precision, throughput, and
+    financial impact values.
+  \item A \texttt{validator\_signature}: Ed25519 signature over the RFC 8785 JCS-canonical
+    form of the receipt JSON.
+\end{itemize}
+
+The receipt for EBITDA optimization (\texttt{rec\_ebitda\_rework\_001.json}) illustrates the
+structure concretely: slide UUID \texttt{8a3e811c-...}, BLAKE3 log hash
+\texttt{ee9ab723...}, fitness 0.982, precision 0.945, projected EBITDA impact \$1,250,000,
+Ed25519 signature \texttt{ed25519\_sig\_8a3e811c\_02e0df2f...}. This is not narration. It is
+a cryptographically signed commitment to a specific numerical claim derivable from a specific
+event log by a specific query---independently executable by any party with the VDR contents.

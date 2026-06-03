@@ -1,0 +1,133 @@
+% Blue River Dam — Architecture and Primitives
+% PhD Thesis Chapter: Lifecycle Authority and Governance Engine
+
+\section{Architecture and Primitives}
+\label{sec:blue-river-dam-architecture}
+
+\subsection{Core Objects}
+\label{sec:blue-river-dam-architecture-objects}
+
+The library is organized around two orthogonal hierarchies that intersect
+in the \texttt{BlueRiverDamOrchestrator} root struct.
+
+\textbf{Authority hierarchy (Blue River Dam doctrine §4):}
+\begin{description}
+  \item[\texttt{Governor}] Root authority. Carries \texttt{authority\_id:
+    "ostar-governor"} and \texttt{sealed\_policies: "hsm-sealed-ltl-policies"}.
+    Issues the authority token that all downstream roles require.
+  \item[\texttt{Architect}] Process topology designer. Exposes
+    \texttt{validate\_wf\_net\_soundness(\&PetriNetTopology)} implementing a
+    BFS/DFS two-pass reachability check: forward from the unique source place,
+    reverse from the unique sink place. Returns \texttt{ArchitectRefusal::UnsoundNet}
+    if any place or transition is unreachable in either direction.
+  \item[\texttt{Operator}] Instance launcher. Exposes
+    \texttt{launch\_instance(topology\_approved: bool)}, refusing execution with
+    \texttt{OperatorRefusal::UnapprovedTopology} when the boolean is false.
+  \item[\texttt{Auditor}] Conformance monitor. Exposes
+    \texttt{compute\_fitness(\&EventTrace) -> ConformanceMetric} using a
+    Longest Common Subsequence algorithm against reference sequence
+    \texttt{[1, 2, 3]}, returning fitness $\in [0.0, 1.0]$, alignment move
+    count, and the 0.95 threshold.  Also exposes
+    \texttt{check\_conformance(ConformanceMetric)} which returns
+    \texttt{ConformanceViolation::CriticalDeviation} for $f < 0.85$ and
+    \texttt{ConformanceViolation::WarningDeviation} for $f < 0.95$.
+  \item[\texttt{Doctor}] Remediation authority. Exposes
+    \texttt{rollback\_to\_last\_compliant(violation, \&mut Knowledge)} which
+    updates the Knowledge store and returns the next admissible lifecycle state.
+\end{description}
+
+\textbf{MAPE-K component hierarchy (MAPE\_K\_MAP.md):}
+\begin{description}
+  \item[\texttt{Monitor}] Ingests \texttt{EventStream} and produces
+    \texttt{Vec<Evidence>} (typed, timestamped, with \texttt{admitted: bool}
+    admission gate).
+  \item[\texttt{Analyzer}] Produces \texttt{Analysis} artifacts with
+    \texttt{diagnosis: String} and \texttt{confidence: f64}. Implements
+    \texttt{alignment\_computation()} grouping events by \texttt{case\_id}
+    and computing per-case LCS fitness.
+  \item[\texttt{Planner}] Produces \texttt{Plan} artifacts with
+    \texttt{actions: Vec<ActionType>}, \texttt{risk\_level: RiskLevel}, and
+    \texttt{requires\_authorization: bool}. Risk-high plans require Governor
+    token validation before execution.
+  \item[\texttt{Executor}] Produces \texttt{Receipt} artifacts per executed
+    action via \texttt{execute\_plan(\&Plan)}.
+  \item[\texttt{Knowledge}] Persistent store with fields
+    \texttt{reference\_model}, \texttt{historical\_metrics},
+    \texttt{violation\_patterns}, \texttt{successful\_repairs},
+    \texttt{repair\_success\_count}, and \texttt{repair\_failure\_count}.
+\end{description}
+
+\subsection{Admissible Transitions}
+\label{sec:blue-river-dam-architecture-transitions}
+
+The \texttt{LifecycleState} enum defines seven states:
+\texttt{Design}, \texttt{Simulation}, \texttt{Monitoring}, \texttt{Repair},
+\texttt{Optimization}, \texttt{Decommissioning}, \texttt{Terminated}.
+The \texttt{transition\_state()} method in \texttt{BlueRiverDamOrchestrator}
+exhaustively pattern-matches on the current state. Admissible transitions are:
+
+\begin{itemize}
+  \item \texttt{Design} $\to$ \texttt{Simulation}: guarded by Gate~1
+    (WF-net soundness: \texttt{QualityGate::gate\_1\_soundness()}).
+  \item \texttt{Simulation} $\to$ \texttt{Monitoring}: guarded by Gate~2
+    (reachability graph bounded, no deadlocks: \texttt{gate\_2\_reachability()}).
+  \item \texttt{Monitoring} $\to$ \texttt{Monitoring}: stable operational
+    state; Gate~3 (fitness $\geq 0.95$ or signed override) governs event
+    admission.
+  \item \texttt{Monitoring} $\to$ \texttt{Repair}: triggered by
+    \texttt{handle\_deviation()} when $f < 0.85$ or $f < 0.95$.
+  \item \texttt{Repair} $\to$ \texttt{Monitoring}: guarded by Gate~4
+    (soundness preservation: \texttt{gate\_4\_repair\_soundness()}).
+  \item \texttt{Monitoring} $\to$ \texttt{Optimization}: triggered by
+    \texttt{handle\_debt\_trigger()} when debt $> 15\%$.
+  \item \texttt{Optimization} $\to$ \texttt{Monitoring}: guarded by Gate~5
+    (debt reduction verified: \texttt{gate\_5\_optimization\_debt()}).
+  \item \texttt{Monitoring/Decommissioning} $\to$ \texttt{Terminated}: via
+    \texttt{retire\_process()} emitting \texttt{Receipt\{action\_id:
+    0xDEC0FFEE\}}, guarded by Gate~6 (auditable archival).
+\end{itemize}
+
+No backward edge from \texttt{Monitoring} to \texttt{Design} is defined;
+the exhaustive match makes such a transition a compile-time error.
+
+\subsection{Boundaries}
+\label{sec:blue-river-dam-architecture-boundaries}
+
+The external boundary of Blue River Dam is the \texttt{EventStream} input and
+the \texttt{Receipt}/\texttt{OrchestrationRefusal} output of
+\texttt{mape\_k\_cycle()}. Downstream systems (wasm4pm) communicate through
+this boundary. Internal authority boundaries are enforced by the method
+signatures: \texttt{Operator::launch\_instance()} requires a boolean approval
+token that only the Architect can issue after \texttt{validate\_wf\_net\_soundness()}
+returns \texttt{Ok(())}. High-risk plans set \texttt{requires\_authorization:
+true}, which the caller must resolve against the Governor before execution is
+permitted. These are not documented conventions; they are enforced by the type
+system.
+
+\subsection{Failure Modes Refused}
+\label{sec:blue-river-dam-architecture-failures}
+
+The following failure modes are structurally refused by the implementation:
+
+\begin{description}
+  \item[Unsafe memory operations] Refused by \texttt{\#![forbid(unsafe\_code)]}.
+    Any future patch introducing an \texttt{unsafe} block will fail to compile.
+  \item[Illegal backward state transition] Refused by the exhaustive
+    \texttt{transition\_state()} match. There is no arm for
+    \texttt{Monitoring} $\to$ \texttt{Design}.
+  \item[Unapproved topology launch] Refused by
+    \texttt{OperatorRefusal::UnapprovedTopology} when \texttt{topology\_approved
+    = false}.
+  \item[Multi-source or multi-sink WF-net] Refused by
+    \texttt{ArchitectRefusal::UnsoundNet} in
+    \texttt{validate\_wf\_net\_soundness()}. The test
+    \texttt{test\_validate\_wf\_net\_soundness} in \texttt{src/lib.rs}
+    demonstrates this refusal for a two-source net and an unreachable-node net.
+  \item[Empty plan execution] Refused by
+    \texttt{ExecutorRefusal::NoActionsToExecute} when
+    \texttt{plan.actions.is\_empty()}.
+  \item[Gate violation on transition] Refused by
+    \texttt{OrchestrationRefusal::GateViolation} returned from
+    \texttt{transition\_state()} when any gate's \texttt{passes} field is
+    false.
+\end{description}

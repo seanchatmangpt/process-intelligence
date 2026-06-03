@@ -1,0 +1,262 @@
+slug: otel-weaver-exp-001-custom-pi-registry
+generated: "2026-06-01"
+referee_note: >
+  Claims extracted from 8 TeX source files and evaluated against known evidence
+  at /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry
+  and adjacent corpus. Alive status for the project is PARTIAL per explicit
+  self-declaration in the TeX sources and confirmed by receipt non-materialization.
+
+claims:
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-001
+    claim: >
+      The process.pi.activity span group defines exactly eight named attributes
+      in two cardinality classes: five required (process.pi.instance_id,
+      process.pi.activity.name, process.pi.lifecycle, process.pi.witness.hash,
+      process.pi.witness.id) and three recommended (process.pi.token.state_before,
+      process.pi.token.state_after, process.pi.activity.type), bound to
+      file_format 1.2.0 and schema_url https://opentelemetry.io/schemas/1.25.0.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/semconv/process_pi.yaml
+    evidence_summary: >
+      process_pi.yaml was read directly; it declares exactly eight attributes
+      under process.pi.activity, with five required and three recommended,
+      pinned to file_format 1.2.0 and the stated schema_url.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-002
+    claim: >
+      EXP-001 status is PARTIAL, not ALIVE, because the BLAKE3 receipt file
+      declared in otel-weaver-source.manifest.yaml at
+      receipts/otel-weaver-source-receipt.json has not been materialized on disk.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/ggen/manifests/otel-weaver-source.manifest.yaml
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    evidence_summary: >
+      The manifest file exists on disk and declares the receipt store location;
+      a filesystem check confirmed the receipt JSON file does not exist at
+      /Users/sac/process-intelligence/receipts/otel-weaver-source-receipt.json.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-003
+    claim: >
+      Three checkpoint files document a chronological gate sequence for the OTel
+      Weaver manufacturing pipeline: GGEN_OTEL_WEAVER_PI_PARTIAL_001.md (design
+      gate PASSED), GGEN_OTEL_WEAVER_PI_ALIVE_001.md (COMPLETE and ACTIVE status,
+      SHA-256 sealed), and GGEN_OTEL_WEAVER_PI_RUNTIME_001.md (runtime integration
+      gate PASSED, citing 62 passing tests).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >
+      All three checkpoint files exist on disk in otel-weaver/checkpoints/;
+      the RUNTIME checkpoint was read and confirms 62 tests pass across wasm4pm,
+      wasm4pm-compat, and blue_river_dam with 1 test named directly.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-004
+    claim: >
+      The integration test test_weaver_integration_synthesis in
+      sources/wasm4pm/tests/weaver_integration_tests.rs passed (1 passed, 0 failed)
+      per the RUNTIME checkpoint, but it is unconfirmed whether the test exercises
+      process_pi.yaml schema attributes directly or only the downstream Rust
+      bridge/validator logic.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+    evidence_summary: >
+      The RUNTIME checkpoint text and test output confirm 1 test passed, and the
+      test file exists on disk; however, the checkpoint does not state whether the
+      YAML schema attributes were directly exercised, making the test scope ambiguous.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-005
+    claim: >
+      Telemetry is not process evidence. A span carrying no Petri net token state,
+      no witness hash, no lifecycle phase, and no case identifier cannot be replayed
+      as a lawful process trace; it is a measurement artifact, not a process-evidence
+      artifact.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/telemetry-is-not-process-evidence.md
+    evidence_summary: >
+      The doctrine file telemetry-is-not-process-evidence.md exists on disk and is
+      explicitly cited in the TeX as the source of this categorical claim; the
+      doctrine files directory was confirmed to contain this file.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-006
+    claim: >
+      Registry diff is not process drift: a change to process_pi.yaml does not imply
+      that the underlying process has changed; schema evolution and process-conformance
+      tracking must be maintained independently.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/registry-diff-is-not-process-drift.md
+    evidence_summary: >
+      The doctrine file registry-diff-is-not-process-drift.md exists on disk and
+      is explicitly marked (AUTHOR THESIS) in the TeX source at 01_research_question.tex.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-007
+    claim: >
+      OTel Weaver is a feedstock-layer tool, not a process-intelligence tool:
+      it validates that spans satisfy a schema but does not determine whether
+      those spans conform to a process model. The process-intelligence claim
+      begins after the feedstock boundary, not at it.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/otel-weaver-is-feedstock.md
+    evidence_summary: >
+      The doctrine file otel-weaver-is-feedstock.md exists on disk and is
+      directly cited in 03_architecture_and_primitives.tex as the source of
+      this boundary invariant.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-008
+    claim: >
+      The weaver registry validate command cannot be confirmed to have been run
+      against process_pi.yaml because the required otel-weaver/registry/ directory
+      does not appear to exist on disk, leaving machine-verifiability of the
+      schema unconfirmed.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/README.md
+    evidence_summary: >
+      A filesystem check confirmed the otel-weaver/registry/ directory does not
+      exist; the README specifies weaver registry validate requires this directory
+      to be present, making the validation step unverifiable from current evidence.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-009
+    claim: >
+      The ALIVE checkpoint (GGEN_OTEL_WEAVER_PI_ALIVE_001.md) was issued by the
+      ggen manufacturing authority -- the same system that manufactured the registry --
+      making the ALIVE status self-referential rather than independently verified.
+      No independent verifier (human auditor, CI pipeline, or pm4py replay) has
+      confirmed any gateway assertion.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >
+      The TeX explicitly flags this self-certification circularity as the primary
+      research risk in 07_open_questions_and_next_work.tex; the checkpoint files
+      exist and were confirmed to carry ggen as their sole issuing authority.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-010
+    claim: >
+      The Chatman Equation A = mu(O*) interprets EXP-001 such that mu is the Weaver
+      manufacturing pipeline, O* is the process intelligence ontology surface, and
+      A (the architecture) is the process.pi.activity span group; the registry is
+      the manufactured form of the process intelligence ontology expressed in a
+      standard-conforming schema language.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-001-custom-pi-registry/02_lineage_and_context.tex
+    evidence_summary: >
+      This is the author's original analytical framing of EXP-001 within the
+      dissertation's theoretical equation; it is marked (AUTHOR THESIS) and no
+      external source is cited for the equation itself.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-011
+    claim: >
+      Two OTel-to-PI mapping files exist: otel-to-pi-witness-map.yaml (mapping OTel
+      span fields to process intelligence witness attributes) and
+      otel-signal-to-process-evidence-map.yaml (mapping OTel signal types to
+      process-evidence categories), providing the formal crosswalk between the
+      telemetry standard and the process-evidence type system.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/mappings/otel-to-pi-witness-map.yaml
+      - /Users/sac/process-intelligence/otel-weaver/mappings/otel-signal-to-process-evidence-map.yaml
+    evidence_summary: >
+      A directory listing of otel-weaver/mappings/ confirmed both files exist on
+      disk at the declared paths.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-012
+    claim: >
+      No pm4py-based fitness or precision check has been run against event logs
+      produced from process.pi.activity-instrumented spans; schema compliance at
+      the feedstock layer has not been demonstrated to propagate to conformance
+      quality at the replay layer.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    evidence_summary: >
+      The TeX explicitly states this absence in 05_evidence_receipts_and_gates.tex
+      and 07_open_questions_and_next_work.tex; no pm4py conformance output file
+      was found in the evidence corpus, confirming the gap is real and unresolved.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-013
+    claim: >
+      The process.pi.activity.type attribute being recommended rather than required
+      means a span lacking an architectural category tag can pass the admission gate
+      and reach the conformance court; whether this is a deliberate design choice or
+      an oversight is not determinable from the evidence corpus alone.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/semconv/process_pi.yaml
+    evidence_summary: >
+      The YAML confirms process.pi.activity.type is recommended, not required;
+      the TeX flags this as an open gap (GAP-OW-004) and explicitly labels its
+      ambiguity as INTERPRETATION, which this ledger preserves.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-014
+    claim: >
+      The seven doctrine files referenced in the TeX reduce to six confirmed files
+      on disk: otel-weaver-is-feedstock.md, telemetry-is-not-process-evidence.md,
+      registry-diff-is-not-process-drift.md, no-dashboard-truth.md,
+      observability-by-design-vs-process-intelligence.md, and weaver-finding-is-not-receipt.md.
+      The TeX claim of seven doctrine files is overcounted by one.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/otel-weaver-is-feedstock.md
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/telemetry-is-not-process-evidence.md
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/registry-diff-is-not-process-drift.md
+    evidence_summary: >
+      A directory listing of otel-weaver/doctrine/ returned exactly six files,
+      not seven as stated in the TeX; three are directly cited and confirmed,
+      the other three exist but are not individually verified in the audit.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-OTEL_WEAVER_EXP_001_CUSTOM_PI_REGISTRY-015
+    claim: >
+      Advancing EXP-001 from PARTIAL to ALIVE requires four receipted work items:
+      materializing the registry/ directory and running weaver registry validate,
+      extending the integration test to exercise schema attributes directly,
+      running a pm4py conformance check achieving fitness > 0.8 and precision > 0.8
+      against a minimal reference model, and optionally promoting process.pi.activity.type
+      from recommended to required.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-001-custom-pi-registry/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      The TeX section 07_open_questions_and_next_work.tex enumerates these four
+      work items explicitly in a numbered list under Next Receipted Work; none of
+      these items have been confirmed as completed in the current evidence corpus.
+    confidence: HIGH
+    allowed_in_pdf: true

@@ -1,0 +1,211 @@
+%% ============================================================
+%% main.tex — PhD Dissertation Orchestration
+%% Sean Chatman
+%% Process Intelligence Research Foundry
+%% ~/process-intelligence/phd-thesis
+%% ============================================================
+\documentclass[12pt,a4paper]{report}
+
+%% --- Core Packages ---
+\usepackage[
+  top=30mm,
+  bottom=30mm,
+  left=35mm,
+  right=25mm
+]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+%% --- Typography ---
+\usepackage{setspace}
+\doublespacing
+
+%% --- Headers and Footers ---
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%% --- Mathematics ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{corollary}{Corollary}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+
+%% --- Graphics ---
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{{figures/}{projects/}}
+
+%% --- Tables ---
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+
+%% --- Code Listings ---
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{codeblue}{rgb}{0.13,0.29,0.53}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+
+\lstdefinestyle{piStyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegray}\itshape,
+  keywordstyle=\color{codeblue}\bfseries,
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  frame=single,
+  rulecolor=\color{codegray}
+}
+\lstset{style=piStyle}
+
+%% --- Bibliography ---
+\usepackage[
+  backend=bibtex,
+  style=authoryear,
+  sorting=nyt,
+  natbib=true,
+  maxbibnames=10,
+  maxcitenames=2
+]{biblatex}
+\addbibresource{bibliography.bib}
+
+%% --- Hyperlinks (load last) ---
+\usepackage[
+  colorlinks=true,
+  linkcolor=codeblue,
+  citecolor=codeblue,
+  urlcolor=codepurple,
+  pdftitle={Full-Lifecycle Process Intelligence: The Chatman Equation and Receipt-Backed Manufacturing},
+  pdfauthor={Sean Chatman},
+  pdfsubject={PhD Dissertation},
+  pdfkeywords={process intelligence, event logs, OCEL, CodeManufactory, ggen, receipt chain}
+]{hyperref}
+
+%% --- Glossary ---
+\input{glossary}
+
+%% ============================================================
+%% DOCUMENT BEGIN
+%% ============================================================
+\begin{document}
+
+%% ============================================================
+%% FRONTMATTER
+%% ============================================================
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+%% Title Page
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\LARGE\bfseries Full-Lifecycle Process Intelligence:\par}
+  \vspace{0.5cm}
+  {\Large\bfseries The Chatman Equation and Receipt-Backed Manufacturing\par}
+  \vspace{2cm}
+  {\large Sean Chatman\par}
+  \vspace{1cm}
+  {\normalsize
+    A dissertation submitted in partial fulfilment of the requirements\\
+    for the degree of Doctor of Philosophy\par
+  }
+  \vspace{1.5cm}
+  {\normalsize Process Intelligence Research Foundry\par}
+  \vspace{0.5cm}
+  {\normalsize 2026\par}
+  \vfill
+  {\small
+    \textit{The product is CodeManufactory; RevOps is merely proof that CodeManufactory works.}\par
+  }
+\end{titlepage}
+
+%% Frontmatter includes
+\include{frontmatter/abstract}
+\include{frontmatter/dedication}
+\include{frontmatter/acknowledgements}
+\include{frontmatter/declaration}
+
+%% Table of Contents
+\tableofcontents
+\listoffigures
+\listoftables
+
+\clearpage
+
+%% ============================================================
+%% MAINMATTER
+%% ============================================================
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\include{chapters/00_preface}
+\include{chapters/01_origin_2016_language_model}
+\include{chapters/02_prediction_is_not_coordination}
+\include{chapters/03_enterprise_process_gap}
+\include{chapters/04_chatman_equation}
+\include{chapters/05_process_evidence_and_receipts}
+\include{chapters/05b_knowledge_hooks_and_autonomic_knowledge_actuation}
+\include{chapters/06_ggen_and_open_ontologies}
+\include{chapters/07_command_grammar_and_execution}
+\include{chapters/08_post_cyberpunk_pcp}
+\include{chapters/09_ai_xynz_and_capital_flow}
+\include{chapters/10_industry_complete_architecture}
+\include{chapters/11_evaluation_and_receipts}
+\include{chapters/12_conclusion}
+
+%% ============================================================
+%% APPENDICES
+%% ============================================================
+\appendix
+
+%% Project chapters included selectively based on thesis narrative
+%% Core implementation projects
+\include{projects/ggen/00_project_identity}
+\include{projects/otel-weaver/00_project_identity}
+\include{projects/sources-wasm4pm/00_project_identity}
+\include{projects/sources-wasm4pm-compat/00_project_identity}
+
+%% Experiment chapters
+\include{projects/otel-weaver-exp-001-custom-pi-registry/00_project_identity}
+\include{projects/otel-weaver-exp-002-diff-to-residual/00_project_identity}
+\include{projects/otel-weaver-exp-003-live-check-to-refusal/00_project_identity}
+\include{projects/otel-weaver-exp-004-registry-to-witness/00_project_identity}
+\include{projects/otel-weaver-exp-005-collector-to-intake/00_project_identity}
+
+%% Research and doctrine
+\include{projects/sources-papers/00_project_identity}
+\include{projects/sources-pm4py/00_project_identity}
+\include{projects/research-open-ontologies/00_project_identity}
+\include{projects/doctrine/00_project_identity}
+
+%% ============================================================
+%% BIBLIOGRAPHY
+%% ============================================================
+\printbibliography[heading=bibintoc,title={Bibliography}]
+
+\end{document}

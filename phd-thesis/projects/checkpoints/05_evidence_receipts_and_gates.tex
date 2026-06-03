@@ -1,0 +1,105 @@
+\section{Evidence, Receipts, and Gates}
+\label{sec:checkpoints-evidence}
+
+\subsection{Tests}
+\label{sec:checkpoints-evidence-tests}
+
+The test evidence for the checkpoint system is recorded in GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md.
+The document records the complete test execution output for the \texttt{test\_weaver\_integration\_synthesis}
+test in \texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs}:
+
+\begin{verbatim}
+   Compiling wasm4pm v30.1.2
+    Finished test profile [unoptimized + debuginfo] in 0.17s
+     Running tests/weaver_integration_tests.rs
+running 1 test
+test test_weaver_integration_synthesis ... ok
+test result: ok. 1 passed; 0 failed; 0 ignored
+\end{verbatim}
+
+The runtime checkpoint further records that 62 total tests pass across the wasm4pm,
+wasm4pm-compat, and blue\_river\_dam packages simultaneously, confirming that the OTel integration
+has zero side effects and enforces strict nominal category separation across all three package
+boundaries.
+
+The SUBSTRATE\_COMPLETE\_001 checkpoint records 5 of 5 integration tests passing in the Blue River
+Dam orchestrator at \texttt{blue\_river\_dam/src/lib.rs}, with zero unsafe code enforced by the
+\texttt{\#![forbid(unsafe\_code)]} attribute. The tests exercise all five MAPE-K loop components:
+Governor (LTL policy enforcement), Architect (Workflow Net soundness validation), Operator (instance
+launch and approval gates), Auditor (conformance monitoring), and Doctor (rollback and remediation).
+
+\subsection{Receipts}
+\label{sec:checkpoints-evidence-receipts}
+
+The receipt chain is indexed in \texttt{receipts/RECEIPT\_REGISTRY.md} and contains seven canonical
+research program receipts as of the program ALIVE assessment:
+
+\begin{enumerate}
+  \item \textbf{PAPER\_CANON\_RECEIPT} --- Certifies sources/papers inventory with 14+ classified
+        paper sources; witness: van der Aalst corpus plus IEEE/ACM bibliography.
+  \item \textbf{PM4PY\_ORACLE\_RECEIPT} --- Certifies PM4Py API surface mapping; 14+ PM4Py studies;
+        8 CRITICAL/HIGH gaps tracked in gaps/ directory.
+  \item \textbf{WASM4PM\_GAP\_RECEIPT} --- Certifies 8 identified gaps with severity, priority, and
+        compat path; witness: PM4Py oracle plus wasm4pm-compat graduation surface.
+  \item \textbf{LIFECYCLE\_RECEIPT} --- Certifies 41+ lifecycle phase definitions covering ingest
+        through archive; witness: process mining lifecycle literature plus wasm4pm-compat typestate.
+  \item \textbf{MA\_RECEIPT} --- Certifies 40+ M\&A claim category files; categories: fitness
+        claims, variant claims, SLA compliance, rework rate, cycle time, automation readiness.
+  \item \textbf{STANDARDS\_RECEIPT} --- Certifies 52+ standards files covering XES (IEEE 1849),
+        OCEL 2.0, BPMN 2.0, PNML, WfMC, OASIS, IEEE, GDPR, SOC2, ISO 27001.
+  \item \textbf{ADVERSARIAL\_RECEIPT} --- Certifies adversarial challenges to each major claim;
+        witness: Chicago TDD hostile assumptions doctrine.
+\end{enumerate}
+
+The SUBSTRATE\_COMPLETE\_001 checkpoint records five additional BLAKE3-sealed generation receipts
+for the wasm4pm core modules (mining, conformance, replay, lifecycle, Blue River Dam), each sealing
+the rendering authority for the corresponding module's witness markers.
+
+\subsection{Checkpoints}
+\label{sec:checkpoints-evidence-checkpoints}
+
+The following checkpoints are sealed and immutable in the ledger as of 2026-06-01:
+
+\begin{itemize}
+  \item \textbf{PROCESS\_INTELLIGENCE\_PARTIAL\_001} --- Bootstrap state; criteria population
+        authorized. PARTIAL is honorable.
+  \item \textbf{PROCESS\_INTELLIGENCE\_ALIVE\_001} --- 12 of 12 gates pass; five mathematical
+        invariants verified; verification status code 0x00 (SUCCESS\_ALIVE).
+  \item \textbf{ALIVE\_GATE\_ASSESSMENT} (2026-05-31) --- Exact gate counts recorded; 748 commits
+        at assessment.
+  \item \textbf{PI\_RESEARCH\_PROGRAM\_ALIVE\_001} (2026-06-01) --- 342 artifacts; 894 commits;
+        12 of 12 gates; BLAKE3 seal e7c8f2d94a71b5c3\ldots; code 0x0F\_ALL\_GATES\_PASS.
+  \item \textbf{SUBSTRATE\_COMPLETE\_001} (2026-06-01) --- Six manufacturing phases complete;
+        5 of 5 tests passing; status code 0x00 (SUCCESS).
+  \item \textbf{GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001} (2026-06-01) --- 45 artifacts; 3 of 4 audits
+        PASS; SHA-256 seal d5d7990b798b31a3\ldots
+  \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001} (2026-06-01) --- Design gate passed; scaffold
+        verified; SHA-256 seal d4b844c48811199b\ldots
+  \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001} (2026-06-01) --- Five OTel experiments complete;
+        SHA-256 seal e6bc59b8d210e309\ldots
+  \item \textbf{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001} (2026-06-01) --- 62 tests passing; SHA-256
+        seal 86ef45b3c63ae380\ldots
+  \item \textbf{PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA} --- Adversarial OMEGA verdict;
+        20-agent swarm; all attack vectors neutralized; V30.1.1 locked.
+\end{itemize}
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:checkpoints-evidence-status}
+
+The overall status of the checkpoint ledger as of 2026-06-01 is \textbf{ALIVE}. The primary evidence
+for this status is the PI\_RESEARCH\_PROGRAM\_ALIVE\_001 checkpoint, which records 12 of 12 audit
+gates passing against a declared gate table, 342 research artifacts across 12 categories, and a
+BLAKE3 cryptographic seal. The checkpoint is immutable; it stands as issued.
+
+Two items remain in PARTIAL state, both non-blocking to the program ALIVE verdict. The
+GGEN\_ECOSYSTEM\_INTEL gate 1 (No DTO Flattening) is failing because \texttt{to\_json\_string()} and
+\texttt{receipt\_json()} methods reside in wasm4pm-compat rather than the wasm4pm engine. Remediation
+requires moving these methods and re-running boundary audits to seal GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_002.
+The OTel trace deserialization boundary (GAP\_002) is PARTIAL because the full OTel-to-OCEL
+translation rule set is not yet finalized; GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_002 is pending.
+
+Five open gaps are documented and accepted as non-blocking: GAP\_001 (wasm4pm-compat graduation
+boundary signal, deferred to Phase 12), GAP\_002 (OTel trace deserialization, in progress), GAP\_003
+(M\&A deck rendering performance, Phase 12 candidate), GAP\_004 (Blue River orchestrator fault
+tolerance, Phase 12 candidate), GAP\_005 (advanced LTL verification coverage, Phase 13 research).
+All five have documented remediation plans. None block the program ALIVE verdict.

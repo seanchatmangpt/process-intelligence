@@ -1,0 +1,1903 @@
+# MASTER CLAIM LEDGER
+# Generated: 2026-06-01
+# Source: Aggregated from 34 project claim ledgers
+# Authority: phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+#
+# CLAIM TYPE LEGEND:
+#   SOURCE_SUPPORTED   - Backed by a directly readable source file
+#   INTERPRETATION     - Reasoned inference from source evidence
+#   AUTHOR_THESIS      - Original analytical claim by the author
+#   FUTURE_WORK        - Planned but not yet executed
+#   UNSUPPORTED_REMOVED - Retracted / not allowed in PDF
+
+---
+generated: "2026-06-01"
+total_claims: 510
+total_projects: 34
+
+claim_type_summary:
+  SOURCE_SUPPORTED: 298
+  AUTHOR_THESIS: 105
+  INTERPRETATION: 56
+  FUTURE_WORK: 45
+  UNSUPPORTED_REMOVED: 6
+
+confidence_summary:
+  HIGH: 374
+  MEDIUM: 119
+  LOW: 17
+
+allowed_in_pdf_summary:
+  true: 504
+  false: 6
+
+projects:
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: adversarial
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: adversarial
+    claim_count: 14
+    claims:
+      - id: CLM-ADVERSARIAL-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The adversarial corpus implements ten executable attack scenarios with Python assert
+          statements in simulate_laundering_spoofing.py (531 lines).
+      - id: CLM-ADVERSARIAL-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          XES (IEEE 14845) and OCEL 2.0 are structurally vulnerable to silent tampering,
+          timeline manipulation, and phantom-object injection.
+      - id: CLM-ADVERSARIAL-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Classical discovery algorithms structurally fail under Sybil attack.
+      - id: CLM-ADVERSARIAL-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Chatman Constraint (strict injectivity) is documented as Law I in adversarial-type-law.md.
+      - id: CLM-ADVERSARIAL-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The adversarial corpus holds ALIVE status per ADVERSARIAL_RECEIPT, ten executable scenarios,
+          and the ALIVE OMEGA checkpoint.
+      - id: CLM-ADVERSARIAL-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The adversarial audit report carries VERIFIED/PASS with BLAKE3 checksum over 567 commits
+          and Ed25519 signature.
+      - id: CLM-ADVERSARIAL-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The ALIVE OMEGA checkpoint was issued after a twenty-agent adversarial swarm tested all
+          attack vectors.
+      - id: CLM-ADVERSARIAL-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Scenarios 6-9 require a compiled libwasm4pm.dylib that does not currently exist.
+      - id: CLM-ADVERSARIAL-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The graduation bridge from wasm4pm-compat to wasm4pm is one-sided (GAP_001).
+      - id: CLM-ADVERSARIAL-010
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Reality Receipt mechanism addresses PROV-O vulnerabilities through hash chaining and
+          impossible-velocity detection.
+      - id: CLM-ADVERSARIAL-011
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          Coordination is not an enhancement to process intelligence but its prerequisite.
+      - id: CLM-ADVERSARIAL-012
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          PM4Py algorithm count claims have not been verified against the actual pm4py source tree.
+      - id: CLM-ADVERSARIAL-013
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Chatman Constraint is not yet enforced at the compiler or scaffolding level.
+      - id: CLM-ADVERSARIAL-014
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Next receipted work items include compiling libwasm4pm.dylib, closing GAP_001, running
+          a pm4py source-level audit, and manufacturing RED_TEAM_FINDINGS_003.md.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: atlas
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: atlas
+    claim_count: 15
+    claims:
+      - id: CLM-ATLAS-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The atlas project is a flat collection of seven doctrine-surface markdown files with no
+          subdirectories, build artifacts, or internal receipt chain.
+      - id: CLM-ATLAS-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The atlas is PARTIAL status; the foundry it maps is ALIVE per PI_RESEARCH_PROGRAM_ALIVE_001.
+      - id: CLM-ATLAS-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Aalst Broadcaster transforms raw Git history into an OCEL 2.0-conformant event stream.
+      - id: CLM-ATLAS-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Supabase Law Substrate governs six tables via RLS with five actor_* demonstration tables.
+      - id: CLM-ATLAS-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The GGEN Prompt Manufactory defines TTL -> RQ -> TERA -> Prompt transformation chain.
+      - id: CLM-ATLAS-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The WASM Boundary Law enforces strict separation between Specta (Type Surface) and
+          tsify/wasm-bindgen (Binary Surface).
+      - id: CLM-ATLAS-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The AGI Adversarial Defenses module names four Iron Law safeguards.
+      - id: CLM-ATLAS-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The receipt chain comprises seven canonical receipts defined in RECEIPT_REGISTRY.md.
+      - id: CLM-ATLAS-009
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Chatman Equation A = mu(O*, T, L) maps the seven atlas doctrine modules onto its formal
+          operators.
+      - id: CLM-ATLAS-010
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The atlas PARTIAL status is a structural property, not a deficiency.
+      - id: CLM-ATLAS-011
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Each of the seven atlas doctrine modules encodes a coordination law rather than a predictive
+          claim.
+      - id: CLM-ATLAS-012
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The manufacturing surface is multiplicative rather than additive (Combinatorial Maximalism).
+      - id: CLM-ATLAS-013
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The five demonstration-mode actor_* tables present a concrete adversarial risk if cited as
+          production authorization doctrine.
+      - id: CLM-ATLAS-014
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ZoeApp Ministry Ontology is too thin for full dissertation citation depth: no Petri net
+          or typestate encoding.
+      - id: CLM-ATLAS-015
+        claim_type: INTERPRETATION
+        confidence: LOW
+        allowed_in_pdf: true
+        claim: >-
+          The PI_RESEARCH_PROGRAM_ALIVE_001 checkpoint carries BLAKE3 hash e7c8f2d9... and verification
+          code 0x0F_ALL_GATES_PASS.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: audits
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: audits
+    claim_count: 15
+    claims:
+      - id: CLM-AUDITS-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Five deterministic re-executable shell audit scripts exist with committed receipt files.
+      - id: CLM-AUDITS-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Audit 1 (no DTO flattening) returns FAIL due to DTO_001 violation in wasm4pm-compat.
+          Audits 2-5 all return PASS. Status is PARTIAL.
+      - id: CLM-AUDITS-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The forensic audit verdict confirms 84 total tests passing across three crates with zero
+          stubs, mocks, or hardcoded outputs.
+      - id: CLM-AUDITS-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The compile-fail fixture corpus contains 199 fixtures with 97.7% valid law-proving error
+          code coverage and zero E0425 defects.
+      - id: CLM-AUDITS-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ALIVE_001 adversarial audit certifies 567 commits across 12 corpus directories with
+          genesis block SHA-256: 787985dd...
+      - id: CLM-AUDITS-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The A* alignment referee audit documents three test case scenarios averaging ~74 microseconds
+          resolution time.
+      - id: CLM-AUDITS-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Two contradictory verdicts exist: Telemetry Auditor (0% OCEL 2.0 compliance) vs Stream
+          Director (PASS), unreconciled as of 2026-06-01.
+      - id: CLM-AUDITS-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          AUDIT_PAPER_COVERAGE.md catalogues 81 papers with ~4 COVERED_BY_TYPE claims assessed as
+          inflated.
+      - id: CLM-AUDITS-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          All nine board claim types across four strategic domains are FULLY SUPPORTED per audit.
+      - id: CLM-AUDITS-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Petri net soundness audit verifies three WF-net invariants via DFS reachability with
+          MAX_STATES ceiling of 10,000.
+      - id: CLM-AUDITS-011
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The 12-state autonomic lifecycle is fully reachable with no deadlock traps per the soundness
+          audit.
+      - id: CLM-AUDITS-012
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          A formal audit precedence protocol is required to resolve contradictory verdicts.
+      - id: CLM-AUDITS-013
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The rebranding audit identifies required TTL renames from ZOEapp to PCP namespace but does
+          not confirm renames were applied.
+      - id: CLM-AUDITS-014
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Quality enforcement requires coordination (deterministic audit execution) rather than
+          prediction, because DTO_001 is undetectable by behavioral testing.
+      - id: CLM-AUDITS-015
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          PROCESS_INTELLIGENCE_COMPAT_CONFORMANCE_001 cannot be declared until DTO_001 remediation
+          is applied and all five audits return PASS.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: blue-river-dam
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: blue-river-dam
+    claim_count: 15
+    claims:
+      - id: CLM-BLUE_RIVER_DAM-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Blue River Dam is synthesized (not hand-coded) from five formal doctrine sources via the
+          Lifecycle Orchestrator Renderer; lib.rs is 965 lines.
+      - id: CLM-BLUE_RIVER_DAM-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The project has zero external Rust dependencies.
+      - id: CLM-BLUE_RIVER_DAM-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The library enforces zero unsafe code via #![forbid(unsafe_code)] with zero-warning
+          compilation.
+      - id: CLM-BLUE_RIVER_DAM-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          lib.rs contains exactly 8 test functions: 5 certified at receipt time, 3 added post-receipt.
+      - id: CLM-BLUE_RIVER_DAM-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          A compiled ARM64 Mach-O test binary exists at target/debug/deps/blue_river_dam-89f933de4cf483d1
+          (1,272,256 bytes).
+      - id: CLM-BLUE_RIVER_DAM-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The project is ALIVE: two receipts exist declaring ORCHESTRATOR_ALIVE and SUBSTRATE_COMPLETE_001
+          attests Phase 6 completion.
+      - id: CLM-BLUE_RIVER_DAM-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Quality gates 1, 2, 4, and 6 return hardcoded passes: true; only Gate 3 dynamically computes
+          from a fitness argument.
+      - id: CLM-BLUE_RIVER_DAM-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Executor::execute_plan() does not enforce the requires_authorization flag on high-risk plans.
+      - id: CLM-BLUE_RIVER_DAM-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Auditor::compute_fitness() uses a hardcoded reference sequence [1, 2, 3] rather than the
+          Knowledge.reference_model (documented Risk 1).
+      - id: CLM-BLUE_RIVER_DAM-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The autonomic activation log records SIMULATED_DEPLOYMENT status; actual deployment has not
+          been executed.
+      - id: CLM-BLUE_RIVER_DAM-011
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Blue River Dam constitutes a coordination-first process governance model making illegal
+          backward transitions structurally impossible to compile.
+      - id: CLM-BLUE_RIVER_DAM-012
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The authority_id "ostar-governor" programmatically instantiates the Chatman Equation A =
+          mu(O*).
+      - id: CLM-BLUE_RIVER_DAM-013
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The 2016 language-model lesson motivates compile-time governance as the only governance that
+          conserves consequence.
+      - id: CLM-BLUE_RIVER_DAM-014
+        claim_type: FUTURE_WORK
+        confidence: LOW
+        allowed_in_pdf: true
+        claim: >-
+          Blue River Dam's governance architecture could gate financial payouts, making governance
+          structurally equivalent to a legal contract.
+      - id: CLM-BLUE_RIVER_DAM-015
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The autonomic activation log records 5 feedback loop tests with confidence scores 0.92-1.0
+          and 4 deployment gates cleared with overall status ALL_GATES_PASSED.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: checkpoints
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: checkpoints
+    claim_count: 15
+    claims:
+      - id: CLM-CHECKPOINTS-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The checkpoint ledger operates under a no-forced-ALIVE rule; a single unmet threshold
+          produces PARTIAL.
+      - id: CLM-CHECKPOINTS-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ALIVE_GATE_ASSESSMENT records 12/12 criteria met with exact artifact counts per domain.
+      - id: CLM-CHECKPOINTS-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          PI_RESEARCH_PROGRAM_ALIVE_001 documents 342 total artifacts, 894 commits, BLAKE3 seal
+          e7c8f2d9..., verification code 0x0F_ALL_GATES_PASS.
+      - id: CLM-CHECKPOINTS-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          GGEN_OTEL_WEAVER_PI_RUNTIME_001 records 62 total tests passing across wasm4pm, wasm4pm-compat,
+          and blue_river_dam.
+      - id: CLM-CHECKPOINTS-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          SUBSTRATE_COMPLETE_001 records five sealed BLAKE3 generation receipts for wasm4pm core
+          modules.
+      - id: CLM-CHECKPOINTS-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          RECEIPT_REGISTRY.md indexes seven canonical research program receipts.
+      - id: CLM-CHECKPOINTS-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          PETRI_NET_SNAPSHOT.md records base64-encoded Petri net final marking of [Decommissioning]:1
+          confirming deadlock-free process completion.
+      - id: CLM-CHECKPOINTS-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          PROCESS_INTELLIGENCE_ADVERSARIAL_V30.1.1_OMEGA records a 20-agent swarm OMEGA verdict with
+          all attack vectors neutralized.
+      - id: CLM-CHECKPOINTS-009
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The checkpoint ledger constitutes a process truth authority applying process-mining
+          conformance reflexively to the research program itself (fitness 1.0 = 12/12 gates).
+      - id: CLM-CHECKPOINTS-010
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ALIVE gate assessment relies on file counts asserted in Markdown rather than CI-logged
+          outputs of verification bash scripts.
+      - id: CLM-CHECKPOINTS-011
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          Quality gates verifying doctrine file citations require a separate audit workflow that
+          samples and checks citation presence.
+      - id: CLM-CHECKPOINTS-012
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Five open gaps are documented and accepted as non-blocking to the program ALIVE verdict.
+      - id: CLM-CHECKPOINTS-013
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Three downstream workflows are authorized and ready upon program ALIVE: ggen ecosystem,
+          OTel trace deserialization, and M&A deck manufacturing.
+      - id: CLM-CHECKPOINTS-014
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Evidence<T, State, W> type-law carrier pattern applies as a research governance
+          mechanism; every receipt is an instance of this pattern.
+      - id: CLM-CHECKPOINTS-015
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          GGEN_ECOSYSTEM_INTEL_ALIVE_001 records 3/4 boundary audits passing; Audit 1 fails due to
+          DTO_001 (to_json_string() and receipt_json()); remediation is 4-6 hours.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: comparisons
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: comparisons
+    claim_count: 15
+    claims:
+      - id: CLM-COMPARISONS-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          wasm4pm-compat makes out-of-range quality metrics a rustc compile-time type error via
+          Metric<KIND, NUM, DEN> with const-generic bounds.
+      - id: CLM-COMPARISONS-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          wasm4pm silently computes fitness=1.0 for an event log whose traces all have zero events
+          (silent wrong result / raw laundering).
+      - id: CLM-COMPARISONS-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Only wasm4pm-compat prevents raw event log laundering at the compiler level; PM4Py fails
+          with runtime error; wasm4pm produces silent wrong result.
+      - id: CLM-COMPARISONS-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          wasm4pm achieves 8.2M events/sec raw trace replay and 134.7K events/sec alignment
+          conformance at 96.6% and 96.2% of native Rust speed.
+      - id: CLM-COMPARISONS-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The algorithm coverage matrix classifies eleven algorithms; wasm4pm is missing Inductive
+          Miner, Alignment Conformance, POWL Discovery, Declare Checking, Log Skeleton, and OC-DFG.
+      - id: CLM-COMPARISONS-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The conformance authority module was compiled with 0 errors, contains 664 lines, passes
+          8/8 unit tests, sealed by BLAKE3 hash 75508e6e... on 2026-06-01.
+      - id: CLM-COMPARISONS-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The PROCESS_INTELLIGENCE_ALIVE_001 checkpoint was sealed 2026-05-31 with 12/12 criteria;
+          comparisons satisfied criterion 8 with actual count 11.
+      - id: CLM-COMPARISONS-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The witness join-semilattice with Monotonicity Axiom 2 is sound and complete; BLAKE3 hash
+          chain H_k = BLAKE3(H_{k-1} || e_k || W_k) provides cryptographic tamper-resistance.
+      - id: CLM-COMPARISONS-009
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Chatman Equation A = mu(O*) grounds the comparisons corpus: a conformance verdict is
+          lawful only if input log was admitted through a named-law gate.
+      - id: CLM-COMPARISONS-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          PM4Py error handling surfaces as generic except Exception as e making it impossible to
+          determine which structural law was violated without string parsing.
+      - id: CLM-COMPARISONS-011
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The OCPQ query language is a wasm4pm-compat-original invention with no evaluation engine
+          and no prior art in published process mining literature.
+      - id: CLM-COMPARISONS-012
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          All performance figures in the comparisons corpus are asserted by source documents rather
+          than measured by reproducible benchmark scripts (documented PARTIAL finding).
+      - id: CLM-COMPARISONS-013
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Admission gate thresholds (fitness >= 0.95 automatic, 0.85-0.95 conditional, < 0.85 hard
+          reject) are compiled as type-level constants, not runtime configuration.
+      - id: CLM-COMPARISONS-014
+        claim_type: INTERPRETATION
+        confidence: LOW
+        allowed_in_pdf: true
+        claim: >-
+          wasm4pm-compat shape types for missing algorithms will serve as reception surfaces for
+          future wasm4pm execution engine output.
+      - id: CLM-COMPARISONS-015
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The connection between the comparisons corpus and a capital-flow settlement layer is
+          authorial interpretation; no comparisons document names capital-flow infrastructure.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: crosswalks
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: crosswalks
+    claim_count: 15
+    claims:
+      - id: CLM-CROSSWALKS-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The crosswalks directory contains exactly eight Markdown documents covering every major
+          translation surface.
+      - id: CLM-CROSSWALKS-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          PM4Py's convert_to_petri_net(bpmn) silently approximates OR-gateways, drops data objects,
+          annotations, and lane structure, and returns no record of what was lost.
+      - id: CLM-CROSSWALKS-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          PM4Py's convert_to_event_log(ocel) picks a default case notion without declaration and drops
+          all non-chosen object types.
+      - id: CLM-CROSSWALKS-004
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Every cross-formalism projection can be given a formal type-law contract (LossPolicy enum)
+          that names each category of loss.
+      - id: CLM-CROSSWALKS-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Process Tree to WF-net projection is universally lossless per the block-structure theorem
+          (van der Aalst and Weijters 2004; Leemans 2022).
+      - id: CLM-CROSSWALKS-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          ALIVE_001 gate criterion 9 (crosswalks/ file count >= 3) was verified MET with actual count 8.
+      - id: CLM-CROSSWALKS-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The crosswalks project is PARTIAL: structural contracts defined but no BLAKE3-signed receipt
+          and no compilation evidence for Rust structs in wasm4pm-compat.
+      - id: CLM-CROSSWALKS-008
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The enterprise process gap is a type-law problem, not a data integration problem.
+      - id: CLM-CROSSWALKS-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The OCEL to XES projection follows a mandatory five-step covenant with no step skippable.
+      - id: CLM-CROSSWALKS-010
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          An OCEL log projected to XES without a LossReport is laundered evidence.
+      - id: CLM-CROSSWALKS-011
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          alive_001_to_iso_compliance.md maps ALIVE_001 gates to ISO/IEC 23745, ISO 9001:2015, ISO/IEC
+          27001, and ISO/IEC 12207:2017.
+      - id: CLM-CROSSWALKS-012
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ISO standard mappings are author-level research claims, not certified compliance
+          assertions.
+      - id: CLM-CROSSWALKS-013
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          A Turtle or OWL ontology for the crosswalk taxonomy enabling SPARQL queries over projection
+          direction will be authored as future work.
+      - id: CLM-CROSSWALKS-014
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          If wasm4pm-compat implements OR-gateway approximation rather than refusal, the
+          BpmnToWfNetRefusal::InclusiveGatewayNotRepresentable type would be unreachable.
+      - id: CLM-CROSSWALKS-015
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The crosswalks project defines no commands, no Makefile, no Cargo.toml, and no CLI
+          entrypoint; it consists entirely of research specification Markdown.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: doctrine
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: doctrine
+    claim_count: 14
+    claims:
+      - id: CLM-DOCTRINE-001
+        claim_type: UNSUPPORTED_REMOVED
+        confidence: MEDIUM
+        allowed_in_pdf: false
+        claim: >-
+          [RETRACTED] The doctrine corpus comprises 34 canonical markdown files. Actual count is 33.
+      - id: CLM-DOCTRINE-002
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The PROCESS_INTELLIGENCE_ALIVE_001 checkpoint is sealed at 588 commits with 12/12 gate
+          criteria verified and authorizes six downstream workflows.
+      - id: CLM-DOCTRINE-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Blue River Dam doctrine frames downstream data as sediment, verbatim in BLUE_RIVER_DAM.md.
+      - id: CLM-DOCTRINE-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Evidence<T, State, W> carrier enforces a typed one-way lifecycle enforced at compile time;
+          Evidence::raw(v) is the only free constructor.
+      - id: CLM-DOCTRINE-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          A Receipt<T, W> is not a hash; it is proof that a named law was applied by a named witness
+          within a lawful object lifecycle.
+      - id: CLM-DOCTRINE-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          All fifteen algorithm families in the doctrine taxonomy show wasm4pm execution as missing.
+      - id: CLM-DOCTRINE-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          GAP_001 is the critical structural defect: GraduateToWasm4pm exists in compat but wasm4pm
+          has no corresponding import or implementation.
+      - id: CLM-DOCTRINE-008
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Chatman Equation kappa(rho(alpha(mu(O*)))) -> ALIVE | PARTIAL | REFUSED is the formal
+          generalization of the doctrine.
+      - id: CLM-DOCTRINE-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The doctrine corpus contains no runnable source code, compiled binaries, or integration
+          tests; its authority derives from the quality and sourcing of its claims.
+      - id: CLM-DOCTRINE-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The doctrine corpus specifies any downstream refactor requires the ALIVE_001 seal as a
+          manufacturing precondition.
+      - id: CLM-DOCTRINE-011
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          Refusal capital is the accumulated set of typed, witnessed, receipted refusals constituting
+          a non-copyable competitive moat.
+      - id: CLM-DOCTRINE-012
+        claim_type: AUTHOR_THESIS
+        confidence: LOW
+        allowed_in_pdf: true
+        claim: >-
+          A 2016 language-model experiment demonstrated that local text imitation does not conserve
+          consequence (GAP_005: no source artifact).
+      - id: CLM-DOCTRINE-013
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The BLAKE3 receipt chaining formula Receipt_n = BLAKE3(Receipt_{n-1} || new_action ||
+          new_state || signature) is specified in RECEIPT_DOCTRINE.md.
+      - id: CLM-DOCTRINE-014
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Heuristics Miner requires a CausalNet structural type not yet typed in wasm4pm-compat,
+          creating a structural gap before the execution gap.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: experiments-core
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: experiments-core
+    claim_count: 15
+    claims:
+      - id: CLM-EXPERIMENTS_CORE-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          verify_equations.py runs five fitness cases and four OCPQ refinement cases reporting 100%
+          correctness with zero assertion failures.
+      - id: CLM-EXPERIMENTS_CORE-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          validate_log_fitness.py verifies the Van der Aalst weighted log fitness equation on four
+          Petri net token replay scenarios.
+      - id: CLM-EXPERIMENTS_CORE-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          replay_receipt_sample.md provides a CryptographicReplayReceipt JSON schema with fitness=0.982,
+          BLAKE3 hashes, and Ed25519 signature.
+      - id: CLM-EXPERIMENTS_CORE-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          audit__experiment_completeness.md records 18 out of 18 experiments as PASSED with concrete
+          JSON schemas and no stubs or mocks.
+      - id: CLM-EXPERIMENTS_CORE-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          EVIDENCE_CHAIN_TRACE.md documents a 7-step lawful evidence chain and identifies GAP_001 as
+          a blocking defect.
+      - id: CLM-EXPERIMENTS_CORE-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          GAP_001 is a blocking defect: wasm4pm's APIs accept flat EventLog and bare PetriNet rather
+          than Admission<OcelLog, Ocel20> typed inputs.
+      - id: CLM-EXPERIMENTS_CORE-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The pm4py-comparison benchmark matrix records DFG Discovery at 37.5x, Alpha Miner at 34.2x,
+          Token Replay at 39.3x speedup.
+      - id: CLM-EXPERIMENTS_CORE-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          ZKP benchmark results show wasm4pm completing 10,000-event conformance in 2^18 cycles vs
+          PM4Py timing out at 2^30+ cycles.
+      - id: CLM-EXPERIMENTS_CORE-009
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          ZKP benchmark results are not reproducible from repository artifacts; they may be aspirational
+          rather than empirical.
+      - id: CLM-EXPERIMENTS_CORE-010
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          All five receipt artifacts are authored schema-level demonstrations with hand-authored JSON;
+          none were manufactured by a running wasm4pm engine.
+      - id: CLM-EXPERIMENTS_CORE-011
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          visualizer-validation.ts validates ten WASM boundary types at TypeScript compile time only;
+          no runtime assertions exist.
+      - id: CLM-EXPERIMENTS_CORE-012
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ma-deck-projection/ and wasm4pm-gap-analysis/ subdirectories are completely empty (64
+          bytes each), representing declared experiments not yet manufactured (GAP_002).
+      - id: CLM-EXPERIMENTS_CORE-013
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Closing GAP_001 requires refactoring wasm4pm's public API, a breaking change requiring
+          research program authorization per CLAUDE.md.
+      - id: CLM-EXPERIMENTS_CORE-014
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          paper-fixture-design/spec.md describes GAN-based adversarial trace generation but no GAN
+          implementation or fixture files are present (GAP_003).
+      - id: CLM-EXPERIMENTS_CORE-015
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Translating a conformance receipt into a dollar-denominated M&A synergy projection must be
+          deferred until ma-deck-projection/ is populated and GAP_001 is closed.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: experiments-visualizer
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: experiments-visualizer
+    claim_count: 15
+    claims:
+      - id: CLM-EXPERIMENTS_VISUALIZER-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The experiments-visualizer is a zero-dependency pure browser SPA implementing seven
+          simultaneous subsystems.
+      - id: CLM-EXPERIMENTS_VISUALIZER-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The repository surface consists of 13 JavaScript modules, one TypeScript validation file,
+          one bindings.d.ts; TypeScript is the sole devDependency.
+      - id: CLM-EXPERIMENTS_VISUALIZER-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          visualizer-validation.ts exercises all 10 type projections from bindings.d.ts at compile time
+          including a BLAKE3 process hash and fitness=0.982.
+      - id: CLM-EXPERIMENTS_VISUALIZER-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The SHA-256 audit chain uses genesis message 'Blue River Dam Autonomic Ledger Initialized'
+          and chains via H_i = SHA-256(i || t || case_id || payload || H_{i-1}).
+      - id: CLM-EXPERIMENTS_VISUALIZER-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          AutonomicController implements MAPE-K via tick(metrics, net) comparing fitness against
+          conformanceThreshold=0.90.
+      - id: CLM-EXPERIMENTS_VISUALIZER-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The LIVESTREAM_STANDARDS.md zero-mocks claim is a specification document, not an executable
+          test result.
+      - id: CLM-EXPERIMENTS_VISUALIZER-007
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The visualizer satisfies three of four proof gates (type, formula, audit at source) but not
+          the runtime execution gate; status is PARTIAL.
+      - id: CLM-EXPERIMENTS_VISUALIZER-008
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          EvidenceTs<T, State, Witness> typestate wrapper operationalizes the Chatman Equation A =
+          mu(O*) through the TypeScript type system.
+      - id: CLM-EXPERIMENTS_VISUALIZER-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          replay_receipt_sample.md contains a ReceiptShapeTs-conforming record with fitness=0.982 and
+          BLAKE3 hash 4a7b744c... against which visualizer-validation.ts validates.
+      - id: CLM-EXPERIMENTS_VISUALIZER-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Four independent SHA-256 implementations exist across blockchain.js, autonomic.js, ledger.js,
+          and dashboard.js; canonicalization is unconfirmed.
+      - id: CLM-EXPERIMENTS_VISUALIZER-011
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The 5-agent AGI swarm architecture in LIVESTREAM_STANDARDS.md is a specification document
+          only; no agent orchestration code or OBS bindings exist.
+      - id: CLM-EXPERIMENTS_VISUALIZER-012
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The five domain receipts confirm the ReceiptShapeTs receipt-chain architecture has been
+          applied to capital-flow process domains.
+      - id: CLM-EXPERIMENTS_VISUALIZER-013
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          bindings.d.ts is labeled as generated from a Cargo build pipeline but no generation pipeline
+          is visible; traceability is a deferred gate.
+      - id: CLM-EXPERIMENTS_VISUALIZER-014
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          No visualizer-specific ALIVE checkpoint has been issued; ALIVE attribution is PARTIAL.
+      - id: CLM-EXPERIMENTS_VISUALIZER-015
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          A browser automation test harness covering MAPE-K tick, SHA-256 chain growth, DECLARE
+          evaluation, and EWMA breach detection is required to advance from PARTIAL to ALIVE.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: experiments-visualizer-nextjs
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: experiments-visualizer-nextjs
+    claim_count: 15
+    claims:
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Bootstrapped via create-next-app targeting Next.js 16.2.6 and React 19.2.4 with BUILD_ID
+          9NFA-LnYiAijWLGnz8L79.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The primary page (src/app/page.tsx) remains the stock create-next-app welcome page; no
+          process-intelligence-specific React components have been implemented.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The globals.css (972 lines) encodes a complete dark-mode dashboard design system covering
+          five distinct visual subsystems.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          No testing framework is declared as a dependency; no test files are present in src/ or at
+          the project root.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Project status is PARTIAL: scaffold compiles, CSS design system is complete, but page.tsx
+          is unimplemented, no data-fetching layer, no tests, no receipt, no ALIVE checkpoint.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-006
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The CSS class algebra for three A* alignment move types (sync, log, model) is isomorphic to
+          the three lawful move types in A* process alignment.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          AGENTS.md warns that Next.js 16 has breaking changes and instructs agents to read
+          node_modules/next/dist/docs/ before writing code.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-008
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The visualizer-nextjs is the human-facing observation layer serving as the terminal stage of
+          the evidence chain at which evidence becomes auditable by a human principal.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          layout.tsx loads Geist and Geist Mono fonts from the Vercel font system and applies globals.css
+          application-wide.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-010
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          A CSS design system alone cannot constitute a visualization surface; without React components
+          wired to data sources, the project is a specification without implementation.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-011
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The most architecturally coherent data source would be a WASM-compiled wasm4pm module served
+          from a Next.js API route.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-012
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The full capital-flow use case would require the ledger explorer to display receipts from
+          multiple counterparty process chains.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-013
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          A complete CodeManufactory proof should include at least one web-surface artifact that passes
+          all proof gates; visualizer-nextjs is the designated candidate.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-014
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          globals.css defines no error-state classes; a panel that fails to fetch data would render as
+          empty rather than an explicit error state.
+      - id: CLM-EXPERIMENTS_VISUALIZER_NEXTJS-015
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The recommended path from PARTIAL to ALIVE follows five receipted work items in dependency
+          order.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: gaps
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: gaps
+    claim_count: 12
+    claims:
+      - id: CLM-GAPS-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          wasm4pm does not import wasm4pm-compat; two parallel type universes exist with no bridge
+          (GAP_001, now showing Closed in GAP_REGISTER.md).
+      - id: CLM-GAPS-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          wasm4pm error enum carries String-typed reasons with no named law type and no witness marker
+          (GAP_002, now Closed).
+      - id: CLM-GAPS-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          GraduateToWasm4pm trait is orphaned: wasm4pm implements nothing for it.
+      - id: CLM-GAPS-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          Gap registry achieves PARTIAL status: five gap documents with eight named defects; no gap
+          has a formal resolution addendum with receipt at TeX authoring time.
+      - id: CLM-GAPS-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          GAP_002 (OR-Join ambiguity) has a status discrepancy resolved under v30.1.1 Smart-Completion
+          Policy.
+      - id: CLM-GAPS-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The critical path follows GAP_007 -> GAP_001 -> GAP_002 with P2/P3 gaps parallelizable after
+          GAP_001 closure.
+      - id: CLM-GAPS-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          E0425-failing compile_fail fixtures are import errors, not type-law receipts; true structural
+          law receipts must fail on E0308, E0599, E0277, or E0080.
+      - id: CLM-GAPS-008
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Type-law enforcement is only meaningful when enforcement and execution share a single type
+          universe; a compat layer speaking a different type language is architecturally equivalent to
+          a doorman who never communicates with the building.
+      - id: CLM-GAPS-009
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          Closing GAP_001 is a prerequisite for any valid application of the Chatman Equation A =
+          mu(O*) to process evidence manufactured by the wasm4pm stack.
+      - id: CLM-GAPS-010
+        claim_type: UNSUPPORTED_REMOVED
+        confidence: HIGH
+        allowed_in_pdf: false
+        claim: >-
+          [RETRACTED] The SWARM Verification Guard is an implemented monitoring architecture. No
+          implementation evidence found.
+      - id: CLM-GAPS-011
+        claim_type: UNSUPPORTED_REMOVED
+        confidence: HIGH
+        allowed_in_pdf: false
+        claim: >-
+          [RETRACTED] All eight named gaps are currently open. GAP_REGISTER.md now lists all eight as
+          Closed.
+      - id: CLM-GAPS-012
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The V30.1.1 Epoch governance defines three constitutional directives: mathematical soundness,
+          non-forgeability, and exhaustive telemetry.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: ggen
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: ggen
+    claim_count: 14
+    claims:
+      - id: CLM-GGEN-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          ggen operates as a configuration-driven pipeline declared in ggen.toml, sealing each output
+          with a BLAKE3 cryptographic receipt linked to the previous receipt hash.
+      - id: CLM-GGEN-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The BLAKE3 receipt chain consists of three unbroken receipts forming a tamper-evident
+          manufacturing history.
+      - id: CLM-GGEN-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Receipts 2 and 3 record output_hashes: [] meaning no new artifacts were produced; current
+          status is PARTIAL.
+      - id: CLM-GGEN-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Seven audit shell scripts in audits/ define 42 or more named proof gates.
+      - id: CLM-GGEN-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The audit scripts exist as manufactured artifacts but audit.json's inputs, pipeline, and
+          outputs fields are all empty.
+      - id: CLM-GGEN-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Embedded Rust test suites in Tera templates define four lawful algebraic proof obligations.
+      - id: CLM-GGEN-007
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          ggen challenges the old-regime assumption that capital-market artifacts are prepared by human
+          analysts; both capital-market artifacts and autonomic runtime code can be manufactured from a
+          shared ontological source.
+      - id: CLM-GGEN-008
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The FILTER(false) no-op in the inference.rules normalize rule is an architectural statement
+          encoding inference discipline.
+      - id: CLM-GGEN-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ggen CLI and cargo-make targets are declared in README.md but no compiled ggen binary or
+          Rust src/ files implementing that interface exist.
+      - id: CLM-GGEN-010
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          TTL files define schema only with no populated verdict instances, leaving open whether the M&A
+          deck was ever manufactured with actual conformance data.
+      - id: CLM-GGEN-011
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The visualizer-dashboard-nextjs generation rule is explicitly disabled in ggen.toml due to a
+          Tera template parse error deferred to Phase 6 recovery.
+      - id: CLM-GGEN-012
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          ggen is the direct engineering instantiation of the Chatman Equation A = mu(O*) where mu is
+          the three-layer pipeline (SPARQL extraction, Tera rendering, BLAKE3 sealing).
+      - id: CLM-GGEN-013
+        claim_type: FUTURE_WORK
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Blue River orchestrator, once manufactured and deployed in an M&A context, will monitor
+          post-close process behavior and trigger remediation.
+      - id: CLM-GGEN-014
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          PROCESS_INTELLIGENCE_ALIVE_001 is referenced as pending final audit in GGEN_MANUFACTURING_SUMMARY.md
+          but no committed checkpoint file has been located in the receipts or checkpoints directories.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: lifecycle
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: lifecycle
+    claim_count: 14
+    claims:
+      - id: CLM-LIFECYCLE-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The lifecycle directory contains 43 Markdown source files with no TTL/RDF or executable
+          test files.
+      - id: CLM-LIFECYCLE-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The lifecycle project defines a typed evidence state machine over S = {Raw, Parsed, Admitted,
+          Refused, Projected, Exportable, Receipted} enforced via Evidence<T, S, W> in wasm4pm-compat.
+      - id: CLM-LIFECYCLE-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Six Blue River Dam quality gates govern stage transitions from Design through Decommissioning.
+      - id: CLM-LIFECYCLE-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Process Intelligence Maturity Model defines five levels (L1 Ad-hoc through L5 Autonomic).
+      - id: CLM-LIFECYCLE-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The LIFECYCLE_RECEIPT in RECEIPT_REGISTRY.md is satisfied with no gaps remaining, certifying
+          41+ lifecycle phase files.
+      - id: CLM-LIFECYCLE-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The lifecycle project is PARTIAL: doctrine surface is complete but no executable test suite
+          has run assertion blueprints against real Petri nets.
+      - id: CLM-LIFECYCLE-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          MAPE_K_MAP.md lists eight capabilities required in wasm4pm that are not present in
+          wasm4pm-compat, making the implementation gap visible.
+      - id: CLM-LIFECYCLE-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Process Debt formula D_p = sum(C_deviate + C_delay + C_overhead); debt > 15% of monthly
+          operating cost is the Debt Actuation trigger.
+      - id: CLM-LIFECYCLE-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Cryptographic Decommissioning Receipt Rd = Ed25519_{K_priv}(BLAKE3(N) || BLAKE3(L_final)
+          || C_total || F_final || T_retire) seals the lifecycle at decommission.
+      - id: CLM-LIFECYCLE-010
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The M&A diligence gap is a structural property of how enterprise process management has been
+          practiced, creating an epistemic risk premium that replayable process evidence eliminates.
+      - id: CLM-LIFECYCLE-011
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Enterprise process intelligence is fundamentally a coordination problem, not a prediction
+          problem.
+      - id: CLM-LIFECYCLE-012
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The 0.95 fitness threshold at Gate 3 is a declared board-level standard, not an empirical
+          value.
+      - id: CLM-LIFECYCLE-013
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          An executable test suite implementing all four assertion blueprints against at least one
+          WF-net and one real event log is required to advance lifecycle from PARTIAL to ALIVE.
+      - id: CLM-LIFECYCLE-014
+        claim_type: FUTURE_WORK
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Board Projection Holography framework (v30.1.1) allows prospective board claims derived
+          from the historical artifact set O* (deferred work).
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: livestream
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: livestream
+    claim_count: 14
+    claims:
+      - id: CLM-LIVESTREAM-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          aalst_broadcaster.js transforms the Git commit history into an OCEL 2.0-conformant event
+          stream.
+      - id: CLM-LIVESTREAM-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The conformance audit of the AGI conversation trace produced Fitness = 0.9880 and Precision
+          = 1.0000.
+      - id: CLM-LIVESTREAM-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Telemetry Auditor Agent audit (v30.1.2, 2026-06-01) issued a FAIL verdict: 0% OCEL 2.0
+          compliance and 2/5 XES score.
+      - id: CLM-LIVESTREAM-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Stream Director Agent audit (v30.1.2, 2026-06-01) issued a PASS verdict with 60.0 FPS,
+          6-15 ms latency, 0.0% frame drop rate.
+      - id: CLM-LIVESTREAM-005
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Overall project status is PARTIAL: Telemetry Auditor FAIL constitutes a failing test under
+          the foundry's gate doctrine.
+      - id: CLM-LIVESTREAM-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          AALST_CERTIFIED_ALIVE.md certifies the Zoe Framework AGI conversation under v30.1.1 with
+          SHA-256 ea15dda1...
+      - id: CLM-LIVESTREAM-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          agent_conversation_log.js contains a syntax error at line 18 making the module non-executable
+          in its committed form.
+      - id: CLM-LIVESTREAM-008
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The autonomic MAPE-K controller with alpha=0.15 and LCL=0.920 directly instantiates the
+          Chatman Equation admissibility constraint.
+      - id: CLM-LIVESTREAM-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Petri net snapshot records a final sound marking with a single token at [Decommissioning]
+          and no deadlocks.
+      - id: CLM-LIVESTREAM-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The conformance audit metrics (Fitness=0.9880, Precision=1.0000) cannot be independently
+          reproduced because the audit document names no tool, input log path, or model definition.
+      - id: CLM-LIVESTREAM-011
+        claim_type: INTERPRETATION
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Stream Director PASS verdict was issued by the same agent swarm that performed DOM
+          remediation; an independent re-audit has not been filed.
+      - id: CLM-LIVESTREAM-012
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The M&A Claims Verification Board evaluates EBITDA ($5M), compliance ($3.5M), and data room
+          lineage ($1.2M) claims in real time with tamper-detection.
+      - id: CLM-LIVESTREAM-013
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Connecting the M&A Claims Verification Board to live enterprise event streams is future work
+          not yet implemented.
+      - id: CLM-LIVESTREAM-014
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Five work items are required to advance livestream from PARTIAL to ALIVE.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: ma
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: ma
+    claim_count: 13
+    claims:
+      - id: CLM-MA-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ma/ module defines a complete M&A claim taxonomy where every assertion traces through a
+          BLAKE3-hashed, Ed25519-signed, JCS-canonical JSON receipt.
+      - id: CLM-MA-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Five concrete receipt JSON files exist in receipts/ with real BLAKE3 hashes, wasm4pm query
+          definitions, and numeric results.
+      - id: CLM-MA-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The five receipt JSON files are specification-illustrative artifacts, not receipts produced
+          by executing wasm4pm queries against real enterprise event logs.
+      - id: CLM-MA-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Board Claim Taxonomy defines a six-tier maturity ladder (T1 Existence through T6
+          Recovery) where T3+ require fitness >= 0.95 and precision >= 0.90.
+      - id: CLM-MA-005
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Reverse Porter Five Forces inversion is an original thesis contribution not derived from
+          a single prior source.
+      - id: CLM-MA-006
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Reverse Porter Five Forces network-effect claim (Force 4) is theoretical as of 2026-06-01;
+          no external buyer or auditor has adopted wasm4pm receipts.
+      - id: CLM-MA-007
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Chatman Equation A = mu(O*) has a direct M&A financial interpretation: a seller with
+          conformance certificate commands a merger premium equal to the market's valuation of mu(O*).
+      - id: CLM-MA-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          Operational debt taxonomy defines four debt classes with specific valuation haircut ranges:
+          10-15% spaghetti, 5-20% compliance deficits, 10-30% legacy lock-in.
+      - id: CLM-MA-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          Synergy claims require Behavioral Profile Similarity Sim(M1, M2, C) >= 0.75 (Weidlich 2011)
+          and Execution Path Intersection evidence.
+      - id: CLM-MA-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          ma/ is PARTIAL: doctrinal gates all pass but three execution gates fail — no real event logs,
+          wasm4pm query artifacts unconfirmed, renderer not executed.
+      - id: CLM-MA-011
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The Board Projection Renderer compresses traditional seven-week Quality-of-Earnings timelines
+          to a three-day buyer replication window (reasoned projection, not demonstrated).
+      - id: CLM-MA-012
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The admissibility thresholds fitness >= 0.95 and precision >= 0.90 are grounded in
+          Adriansyah 2014 but have not been empirically validated for M&A contexts.
+      - id: CLM-MA-013
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The connection between the Hostile Takeover Receipt taxonomy, the Chatman Equation, and the
+          2016 LM experiment lineage is not explicit within the ma/ module (Gap 4).
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # PROJECT: otel-weaver
+  # ──────────────────────────────────────────────────────────────────────────
+  - slug: otel-weaver
+    claim_count: 14
+    claims:
+      - id: CLM-OTEL_WEAVER-001
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Feedstock Theorem (Telemetry ∈ Feedstock; SchemaValidation(Telemetry) !=
+          ProcessCompliance(ProcessState)) is anchored at TELEMETRY_NOT_EVIDENCE_001.
+      - id: CLM-OTEL_WEAVER-002
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The project contains six immutable doctrine files, five YAML mapping tables, and five
+          experiment subdirectories (exp-001 through exp-005).
+      - id: CLM-OTEL_WEAVER-003
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The Admission<T,W> gate type and Refusal struct are specified in exp-003/src/validator.rs
+          with Cargo.toml declaring a path dependency on wasm4pm-compat.
+      - id: CLM-OTEL_WEAVER-004
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Three ggen-signed checkpoint files exist with SHA-256 seals: PARTIAL_001 (d4b844c4...),
+          ALIVE_001 (e6bc59b8...), RUNTIME_001 (86ef45b3...).
+      - id: CLM-OTEL_WEAVER-005
+        claim_type: INTERPRETATION
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          RUNTIME_001 cites 1 passed / 0 failed in weaver_integration_tests.rs and 62 total tests;
+          the test file exists but no compiled binary or independent test runner output was found.
+      - id: CLM-OTEL_WEAVER-006
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Project status is PARTIAL: RUNTIME_001 checkpoint runtime execution claims are narrated
+          rather than materialized as compiled artifacts on disk.
+      - id: CLM-OTEL_WEAVER-007
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The BridgeRx schema translation bridge maps a schema version diff ΔW to a zero PI
+          conformance residual R_Δ = 0.
+      - id: CLM-OTEL_WEAVER-008
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          No generated/ directory exists in otel-weaver; three ggen templates have been authored but
+          ggen actuation has not materialized output files to disk.
+      - id: CLM-OTEL_WEAVER-009
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Receipt files otel-weaver-source-receipt.json and pi-telemetry-bridge-receipt.json do not
+          exist on disk.
+      - id: CLM-OTEL_WEAVER-010
+        claim_type: SOURCE_SUPPORTED
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          NO_DASHBOARD_TRUTH_001 doctrine refuses treatment of observability dashboard output as
+          process conformance verdicts.
+      - id: CLM-OTEL_WEAVER-011
+        claim_type: AUTHOR_THESIS
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The ActivityWitness lattice join operation's soundness for pairs of non-empty witnesses is
+          unspecified and has not been formally proven.
+      - id: CLM-OTEL_WEAVER-012
+        claim_type: AUTHOR_THESIS
+        confidence: MEDIUM
+        allowed_in_pdf: true
+        claim: >-
+          The otel-weaver ingestion layer is architecturally load-bearing within the Chatman foundry
+          equation A = mu(O*).
+      - id: CLM-OTEL_WEAVER-013
+        claim_type: INTERPRETATION
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          The RUNTIME_001 audit authority label 'Dr. Wil van der Aalst AGI Swarm Court' is a
+          ggen-generated narrative construct, not an endorsement by the real Van der Aalst.
+      - id: CLM-OTEL_WEAVER-014
+        claim_type: FUTURE_WORK
+        confidence: HIGH
+        allowed_in_pdf: true
+        claim: >-
+          Advancing from PARTIAL to ALIVE requires ggen template actuation, wasm4pm-compat path
+          dependency verification, materialized cargo test output, and two receipt JSON files on disk.
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # NOTE: Additional projects (otel-weaver-exp-001 through otel-weaver-exp-005,
+  # phd-thesis, prompts, receipts, research-open-ontologies, research-pi-program,
+  # research-prompt-manufactory, schemas, sources-papers, sources-pm4py,
+  # sources-wasm4pm, sources-wasm4pm-compat, standards) follow the same structure
+  # with 510 total claims across all 34 projects.
+  # Full claim text is in each project's claim_ledger.yaml.
+  # This master ledger aggregates metadata, counts, and status summaries.
+  # ──────────────────────────────────────────────────────────────────────────
+
+  - slug: otel-weaver-exp-001-custom-pi-registry
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-001-custom-pi-registry/claim_ledger.yaml
+
+  - slug: otel-weaver-exp-002-diff-to-residual
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-002-diff-to-residual/claim_ledger.yaml
+
+  - slug: otel-weaver-exp-003-live-check-to-refusal
+    claim_count: 13
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-003-live-check-to-refusal/claim_ledger.yaml
+
+  - slug: otel-weaver-exp-004-registry-to-witness
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/claim_ledger.yaml
+
+  - slug: otel-weaver-exp-005-collector-to-intake
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-005-collector-to-intake/claim_ledger.yaml
+
+  - slug: phd-thesis
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/claim_ledger.yaml
+
+  - slug: prompts
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/prompts/claim_ledger.yaml
+
+  - slug: receipts
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/receipts/claim_ledger.yaml
+
+  - slug: research-open-ontologies
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/research-open-ontologies/claim_ledger.yaml
+
+  - slug: research-pi-program
+    claim_count: 14
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/research-pi-program/claim_ledger.yaml
+
+  - slug: research-prompt-manufactory
+    claim_count: 13
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/research-prompt-manufactory/claim_ledger.yaml
+
+  - slug: schemas
+    claim_count: 13
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/schemas/claim_ledger.yaml
+
+  - slug: sources-papers
+    claim_count: 14
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/sources-papers/claim_ledger.yaml
+
+  - slug: sources-pm4py
+    claim_count: 14
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/sources-pm4py/claim_ledger.yaml
+
+  - slug: sources-wasm4pm
+    claim_count: 14
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/sources-wasm4pm/claim_ledger.yaml
+
+  - slug: sources-wasm4pm-compat
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/sources-wasm4pm-compat/claim_ledger.yaml
+
+  - slug: standards
+    claim_count: 15
+    source_file: /Users/sac/process-intelligence/phd-thesis/projects/standards/claim_ledger.yaml

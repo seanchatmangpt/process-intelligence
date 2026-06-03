@@ -5,13 +5,13 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 # Select hook policies
 # Used by hook-policy.md.tera to render hook policy documentation
 
-SELECT ?hookId ?hookLabel ?hookTrigger ?hookAction
+SELECT ?hookId ?hookLabel ?hookMission ?hookComment
 WHERE {
   ?hook a pm:HookPolicy ;
     rdfs:label ?hookLabel ;
-    pm:hookTrigger ?hookTrigger ;
-    pm:hookAction ?hookAction .
-  
-  OPTIONAL { ?hook pm:hookId ?hookId . }
+    pm:mission ?hookMission .
+
+  BIND(STRAFTER(STR(?hook), "#") AS ?hookId)
+  OPTIONAL { ?hook rdfs:comment ?hookComment . }
 }
 ORDER BY ?hookLabel

@@ -6,6 +6,12 @@ pub struct Sha256 {
     pub len: u64,
 }
 
+impl Default for Sha256 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Sha256 {
     pub fn new() -> Self {
         Self {
@@ -222,6 +228,12 @@ pub struct Blake3 {
     pub chunk_counter: u64,
 }
 
+impl Default for Blake3 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Blake3 {
     pub fn new() -> Self {
         Self {
@@ -370,7 +382,7 @@ fn hash_chunk(
     chunk_counter: u64,
     flags: u32,
 ) -> [u32; 8] {
-    let num_blocks = (chunk_bytes.len() + 63) / 64;
+    let num_blocks = chunk_bytes.len().div_ceil(64);
     let num_blocks = if num_blocks == 0 { 1 } else { num_blocks };
     let mut cv = BLAKE3_IV;
     for i in 0..num_blocks {
@@ -407,6 +419,12 @@ pub struct Sha512 {
     pub state: [u64; 8],
     pub buffer: [u8; 128],
     pub len: u64,
+}
+
+impl Default for Sha512 {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Sha512 {
@@ -552,6 +570,7 @@ impl Sha512 {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct FieldElement(pub [u64; 4]);
 
+#[allow(clippy::should_implement_trait, clippy::needless_range_loop)]
 impl FieldElement {
     pub const P: Self = FieldElement([
         0xffffffffffffffed, 0xffffffffffffffff,
@@ -639,6 +658,7 @@ fn res_gte_p(res: [u64; 4]) -> bool {
     true
 }
 
+#[allow(clippy::needless_range_loop)]
 fn reduce_512(product: [u64; 8]) -> FieldElement {
     let mut high = [0u64; 4];
     let mut carry = (product[3] >> 63) as u128;
@@ -720,6 +740,7 @@ pub struct CurvePoint {
     pub t: FieldElement,
 }
 
+#[allow(clippy::should_implement_trait, clippy::needless_range_loop)]
 impl CurvePoint {
     pub const D: FieldElement = FieldElement([
         0x75eb4dca135978a3, 0x00700a4d4141d8ab,
@@ -1242,7 +1263,7 @@ fn parse_number(chars: &[char], idx: &mut usize) -> Result<JsonValue, String> {
     }
     while *idx < chars.len() {
         let c = chars[*idx];
-        if c.is_digit(10) || c == '.' || c == 'e' || c == 'E' || c == '+' || c == '-' {
+        if c.is_ascii_digit() || c == '.' || c == 'e' || c == 'E' || c == '+' || c == '-' {
             num_str.push(c);
             *idx += 1;
         } else {

@@ -1,0 +1,58 @@
+\chapter{Command Grammar and Execution}
+\label{chap:command_grammar}
+
+\section{The Interface Problem}
+
+The Chatman Equation requires that consequential actions be attributable, replayable, and admissible. But equations do not operate enterprise systems. Commands do. The gap between a formal admissibility criterion and a running production system is bridged by an interface: a mechanism through which agents --- human or automated --- invoke operations on systems, and through which those invocations are recorded, constrained, and verifiable.
+
+Most enterprise software interfaces are not designed with these properties. REST APIs accept arbitrary JSON payloads. Web forms accept text in fields. Database stored procedures accept parameters of declared types. None of these interfaces, in their standard forms, enforce the constraint that the invoking agent is operating within a declared process stage, that the operation is permitted by the current process state, or that the invocation produces a process event that can be replayed.
+
+This chapter describes the research program's approach to interface design: the clap-noun-verb command grammar, the command surface as a public operating handle, and the project command as a receipted interface.
+
+\section{The clap-noun-verb Grammar}
+
+The command grammar used throughout this research program is built on \texttt{clap} (Command Line Argument Parser for Rust) and organized around a noun-verb structure. This structure is not arbitrary. It reflects a specific theory of interface design for process-intelligence-compatible systems.
+
+The noun identifies the object being operated on: the artifact type, the process stage, the resource. The verb identifies the operation being performed: \texttt{manufacture}, \texttt{verify}, \texttt{receipt}, \texttt{replay}, \texttt{audit}. Together, noun and verb constitute a command that is:
+
+\begin{itemize}
+  \item \textbf{Inspectable}: the grammar is defined in code that can be read, audited, and version-controlled. The set of permitted noun-verb combinations is finite and declared.
+  \item \textbf{Constrained}: a command surface that defines permitted nouns and verbs cannot be invoked with nouns or verbs outside the declared set. This is a structural enforcement of the admissibility boundary.
+  \item \textbf{Loggable}: every invocation of a noun-verb command is a discrete event. It has a timestamp, an agent identity (the process context in which the command was invoked), and a set of parameters. This event can be written to a process-intelligence event log.
+\end{itemize}
+
+The noun-verb structure also provides human legibility. A command like \texttt{ggen artifact manufacture --template invoice --source orders.ttl} is legible to a domain expert who has not read the source code. The noun (\texttt{artifact}) identifies what is being operated on. The verb (\texttt{manufacture}) identifies the operation. The flags (\texttt{--template}, \texttt{--source}) identify the inputs. This legibility supports auditability: a non-technical auditor can review a command log and identify what operations were performed.
+
+\section{Command Surfaces as Public Operating Handles}
+
+A command surface is the complete set of noun-verb combinations that a system exposes. It is the system's public operating handle: the set of operations through which agents interact with the system, and through which the system's behavior can be observed, constrained, and audited.
+
+The research program treats command surfaces as first-class artifacts. Each project's command surface is documented, version-controlled, and receipted. Changes to the command surface are not routine code changes. They are interface changes --- changes to the system's public operating handle --- and they require the same level of scrutiny as changes to the process model itself.
+
+This treatment of command surfaces has several consequences.
+
+First, it establishes a clear boundary between implementation and interface. The implementation of a command may change substantially between releases. The interface --- the noun-verb grammar, the parameter types, the expected behavior --- must change only through a deliberate, documented, receipted process.
+
+Second, it supports the replay requirement. If every consequential operation is invoked through a command surface, and every command invocation is logged as a process event, then the event log contains a complete, replayable record of all system operations. This is the operational realization of $O^{*}$ in the Chatman Equation: the observed operational state is constructed from the command log.
+
+Third, it enables the construction of witness lattices. A witness lattice is a formal structure that records which types of commands are compatible with which process states. The \texttt{sources-wasm4pm-compat} project (\textsc{partial}) is the research program's investigation of witness-lattice construction and verification. The connection to command surfaces is direct: the witness lattice defines the type-level constraints on command invocations, and the command surface is the runtime realization of those constraints.
+
+\section{Deterministic Execution Grammar}
+
+The phrase ``deterministic execution grammar'' refers to the property that a command surface, combined with a process model, produces a deterministic mapping from process state to permitted command set. At any given point in the process lifecycle, the set of commands that are lawfully invocable is determined by the current process state, not by the preferences of the invoking agent.
+
+This determinism is the interface-layer analog of the projection function $\mu$ in the Chatman Equation. The process model encodes the law. The command surface exposes the law as an operating handle. The deterministic execution grammar enforces the law at the invocation boundary: an attempt to invoke a command that is not permitted by the current process state is rejected before it can produce a process event.
+
+The \texttt{blue-river-dam} project (\textsc{alive}) implements the lifecycle authority and governance engine that enforces this determinism. Its ALIVE status means that the receipt chain for its governance enforcement has been verified: the commands it permits are documented, the process states they are permitted in are declared, and the rejections of impermissible commands are logged and replayable.
+
+\section{Project Commands as Receipted Interfaces}
+
+The culminating claim of this chapter is that project commands --- the specific noun-verb combinations defined in each project's command surface --- are receipted interfaces. An interface is receipted when its invocations are logged as process events, when those events are included in the project's receipt chain, and when the receipt chain can be verified by replay.
+
+This is a strong requirement. It means that a project's receipt chain is not just a record of its manufacturing outputs. It is a record of the interface operations through which those outputs were produced. The two are not separable: an artifact whose manufacturing command is not in the receipt chain is an artifact whose provenance is incomplete.
+
+The practical implication is that projects which produce artifacts without logging their command invocations cannot achieve \textsc{alive} status. Their artifacts exist, but their provenance is incomplete. They are, in the vocabulary of the verdict system, \textsc{partial} at best.
+
+This requirement has shaped the design of every project in the corpus. The \texttt{research-prompt-manufactory} project (\textsc{partial}) is explicitly organized around the command surface for prompt manufacturing: each prompt is manufactured by a specific command invocation, and the invocation is logged. The \texttt{ggen} project's recursive manufacturing (Chapter~\ref{chap:ggen}) is designed to ensure that \texttt{ggen}'s own command invocations are receipted. The \texttt{audits/} project (\textsc{partial}) produces receipted audit reports by logging the audit commands that produced them.
+
+The command grammar is, in this sense, the enforcement layer of the entire research program. It is the mechanism by which the Chatman Equation's admissibility requirement is implemented at the invocation boundary. Without it, the equation is a formal statement without operational force. With it, the equation governs every consequential operation in the system.

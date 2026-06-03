@@ -1,0 +1,139 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: audits
+% Role: completeness-audit-and-compliance-verification-corpus
+
+\section{Open Questions and Next Work}
+\label{sec:audits-open}
+
+\subsection{Known Gaps}
+\label{sec:audits-open-gaps}
+
+Six classes of known gaps have been identified across the audit corpus as of
+2026-06-01.
+
+\textbf{DTO\_001: JSON method naming violation (blocking).} Two method names in
+\texttt{wasm4pm-compat}~--- \texttt{to\_json\_string()} at
+\texttt{compat/src/manufacturing/mod.rs:735} and \texttt{receipt\_json()} at
+\texttt{compat/src/manufacturing/traits.rs:34}~--- violate the DTO flattening
+prohibition. The remediation is precisely specified: rename
+\texttt{to\_json\_string()} to \texttt{serialize\_receipt()} and
+\texttt{receipt\_json()} to \texttt{encode\_receipt\_proof()}. The remediation is
+documented but not executed as of this writing.
+
+\textbf{Cross-witness fixture coverage: 38+ pairs untested.} The type-law quality
+audit identifies 10+ named witness markers in the witness lattice, yielding
+approximately 45 possible pairwise confusion scenarios. Only 7 are currently
+covered by explicit compile-fail fixtures. The 7 covered pairs address the most
+important combinations (OCEL vs.\ XES, XES vs.\ WF-net, OCEL vs.\ POWL), but 38
+or more pairwise non-forgeability receipts remain unmanufactured. This leaves the
+non-forgeability claim of the \texttt{Evidence<T>} type partially unreceipted.
+
+\textbf{Ontology rebranding: ZOEapp to PCP.} The \texttt{rebranding\_ontology\_audit.md}
+identifies required renames across 4 or more TTL ontology files from ZOEapp
+namespace to PCP namespace. The audit lists findings but does not confirm the
+renames were applied. The current rebranding status is unresolved.
+
+\textbf{Lifecycle completeness: 5 residual gaps.} The lifecycle completeness
+audit (\texttt{audit-lifecycle-completeness.md}) identifies five residual gaps
+where wasm4pm execution boundary conditions are not mapped to corresponding
+lifecycle stage specifications: RESIDUAL-DESIGN-001 (wasm4pm execution boundary
+conditions not mapped to Design-stage model constraints), RESIDUAL-SIM-001
+(memory and fuel constraints not mapped to simulation-time complexity estimation),
+RESIDUAL-SIM-002 (no receipt format specification for simulation proof
+reachability witnesses), RESIDUAL-MON-001, and RESIDUAL-MON-002 (Monitoring
+stage wasm4pm authority gaps).
+
+\textbf{Telemetry compliance conflict: XES/OCEL verdict discrepancy.} The
+telemetry auditor (Agent~2) found a \textsc{fail} on XES/OCEL compliance~--- 0\%
+OCEL 2.0 compliance and a 2/5 XES score. The stream director (Agent~1) declared
+\textsc{pass} after DOM remediation on the same codebase surface. These two
+verdicts are in partial conflict and have not been reconciled. The conflicting
+verdicts constitute an open audit finding that must be resolved before the
+telemetry surface can be declared conformant.
+
+\textbf{Graduation boundary sealing: thin fixture coverage.} The type-law quality
+audit notes that the graduation boundary sealing is documented primarily in
+docstrings and \texttt{CLAUDE.md} rather than type-sealed by compile-fail
+fixtures. Only two fixtures explicitly test engine boundary rejection
+(\texttt{conformance\_checker\_absent.rs} and
+\texttt{dfg\_engine\_boundary\_rejected.rs}). At minimum, one engine-boundary
+compile-fail fixture per \texttt{GraduationReason} variant is recommended.
+
+\subsection{Deferred Gates}
+\label{sec:audits-open-deferred}
+
+Three gates are deferred pending resolution of the known gaps above.
+
+\textbf{PROCESS\_INTELLIGENCE\_COMPAT\_CONFORMANCE\_001} is deferred until
+Audit~1 returns \textsc{pass}. Preconditions: \textsc{dto\_001} remediation
+applied, \texttt{cargo test --lib} passes in the compat crate, and
+\texttt{run\_audit\_1.sh} emits \textsc{pass}.
+
+\textbf{Cross-witness non-forgeability certification} is deferred until the
+38+ missing pairwise cross-witness compile-fail fixtures are manufactured and
+committed to the fixture corpus.
+
+\textbf{Lifecycle-wasm4pm authority mapping} is deferred until all five residual
+gaps (RESIDUAL-DESIGN-001, RESIDUAL-SIM-001, RESIDUAL-SIM-002, RESIDUAL-MON-001,
+RESIDUAL-MON-002) are closed with explicit wasm4pm execution boundary
+specifications added to the corresponding lifecycle stage definition files.
+
+\subsection{Research Risks}
+\label{sec:audits-open-risks}
+
+Three research risks are assessed as non-trivial.
+
+\textbf{Verdict drift between agent audits.} The telemetry auditor / stream
+director conflict demonstrates that agent audits targeting the same surface can
+reach contradictory verdicts. As the audit corpus grows, the risk of contradictory
+verdicts increases. Without a defined precedence rule (e.g., a more recent audit
+supersedes an older one for the same surface), contradictions accumulate as
+unresolved debt. [AUTHOR THESIS: a formal audit precedence protocol is required.]
+
+\textbf{Fixture corpus drift.} The compile-fail fixture corpus proves law at the
+type-system level, but only for the type-law surface that was declared when the
+fixture was written. As the \texttt{wasm4pm-compat} crate evolves, fixtures may
+become stale~--- testing a type that no longer exists, or missing a type that was
+added. The zero-\texttt{E0425} finding confirms the corpus is clean today, but
+maintaining this property requires a fixture maintenance protocol.
+
+\textbf{Ontology-code surface misalignment.} The rebranding audit finding~---
+where TTL ontology files still carry ZOEapp namespace labels while the code has
+moved to PCP branding~--- illustrates a systematic risk: ontology surfaces evolve
+on a different cadence than code surfaces, and without a continuous audit
+coupling them, they drift. This is the process-intelligence equivalent of the
+enterprise process gap: the declared ontology is not the executed ontology.
+
+\subsection{Next Receipted Work}
+\label{sec:audits-open-next}
+
+The following work items are ordered by priority and each requires a committed
+receipt before being considered complete.
+
+\begin{enumerate}
+  \item \textbf{Apply \textsc{dto\_001} remediation} (Priority~1, blocking):
+    Rename the two offending methods in \texttt{compat/src/manufacturing/},
+    verify \texttt{cargo test --lib} passes, re-run \texttt{run\_audit\_1.sh},
+    commit the updated receipt, and declare
+    \texttt{PROCESS\_INTELLIGENCE\_COMPAT\_CONFORMANCE\_001}.
+
+  \item \textbf{Manufacture missing cross-witness fixtures} (Priority~2): Add
+    one compile-fail fixture per untested pairwise combination from the 45-pair
+    space, starting with \texttt{WfNetSoundnessPaper vs.\ PowlPaper},
+    \texttt{ProcessTreePaper vs.\ WfNetSoundnessPaper}, and
+    \texttt{Ocel20 vs.\ DeclarePaper}.
+
+  \item \textbf{Close residual lifecycle gaps} (Priority~3): Add explicit
+    wasm4pm execution boundary specifications (\texttt{GasMeter} constraints,
+    memory ceiling implications, receipt format for reachability witnesses) to
+    the Design and Simulation stage lifecycle definition files.
+
+  \item \textbf{Resolve telemetry audit conflict} (Priority~4): Determine the
+    authoritative verdict on XES/OCEL compliance, document the resolution in a
+    corrective audit addendum, and commit a reconciled receipt.
+
+  \item \textbf{Confirm ontology rebranding} (Priority~5): Apply the ZOEapp
+    to PCP renames across all identified TTL files, re-run the rebranding audit,
+    and commit the clean receipt confirming zero residual ZOEapp namespace
+    references.
+\end{enumerate}

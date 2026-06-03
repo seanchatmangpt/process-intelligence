@@ -1,0 +1,15 @@
+[package]
+name = "c8-receipts"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+c8-core = { path = "../c8-core" }
+c8-graph = { path = "../c8-graph" }
+blake3 = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+c8-market = { path = "../c8-market" }
+c8-time = { path = "../c8-time" }

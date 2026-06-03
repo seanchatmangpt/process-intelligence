@@ -1,0 +1,146 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Architecture and Primitives}
+\label{sec:otel-weaver-exp-002-diff-to-residual-arch}
+
+\subsection{Core Objects}
+\label{sec:otel-weaver-exp-002-diff-to-residual-arch-objects}
+
+The experiment defines five core objects in \texttt{src/bridge.rs}:
+
+\paragraph{TelemetryFeedstockS2}
+A \texttt{serde}-deserializable Rust struct representing telemetry conforming to
+schema version S2 of the process intelligence semantic conventions. It carries four
+fields:
+\begin{itemize}
+    \item \texttt{instance\_id}: mapped from \texttt{process.pi.instance\_id}
+    \item \texttt{transition\_name}: mapped from \texttt{process.pi.transition.name}
+          (the renamed field)
+    \item \texttt{token\_color}: mapped from \texttt{process.pi.token.color} as
+          \texttt{Option<String>} (the added field, supporting Colored Petri Nets)
+    \item \texttt{witness\_hash}: mapped from \texttt{process.pi.witness.hash}
+\end{itemize}
+
+\paragraph{TelemetryFeedstockS1}
+A \texttt{serde}-deserializable Rust struct representing telemetry conforming to
+schema version S1. It carries three fields:
+\begin{itemize}
+    \item \texttt{instance\_id}: mapped from \texttt{process.pi.instance\_id}
+    \item \texttt{activity\_name}: mapped from \texttt{process.pi.activity.name}
+          (the original field name, expected by the conformance court)
+    \item \texttt{witness\_hash}: mapped from \texttt{process.pi.witness.hash}
+\end{itemize}
+The absence of \texttt{token\_color} in S1 is intentional: the S1 schema predates
+Colored Petri Net token tracking. What happens to the \texttt{token\_color} value
+during translation is an open question documented in
+Section~\ref{sec:otel-weaver-exp-002-diff-to-residual-open}.
+
+\paragraph{BridgeRx}
+The central translation struct. It holds a
+\texttt{rename\_map: HashMap<String, String>} that registers known field renames from
+S2 to S1. At construction (\texttt{BridgeRx::new()}), the map is populated with the
+single known rename:
+\begin{verbatim}
+"process.pi.transition.name" -> "process.pi.activity.name"
+\end{verbatim}
+The \texttt{translate(\&self, input: TelemetryFeedstockS2) -> TelemetryFeedstockS1}
+method applies the rename, preserves the witness hash, and drops \texttt{token\_color}.
+
+\paragraph{PI Conformance Residual $\mathcal{R}_{\Delta}$}
+The mathematical proof target. Defined in \texttt{README.md} as:
+\[
+    \mathcal{R}_{\Delta} = |f_{S_1}(\mathcal{L}_2, M) - f_{S_2}(\mathcal{L}_2, M)|
+\]
+After \texttt{BridgeRx} translation, $\mathcal{R}_{\Delta} = 0$ because the
+translated S1 record is evaluated by the S1 parser, eliminating the fitness
+discrepancy between parser versions.
+
+\paragraph{Weaver Diff $\Delta_W(S_1, S_2)$}
+A set of \texttt{(path, op, value)} tuples where
+$op \in \{\text{Add}, \text{Remove}, \text{Rename}, \text{TypeChange}\}$.
+The experiment's worked example in \texttt{README.md} shows a two-tuple diff:
+a \texttt{Rename} on \texttt{process.pi.activity.name} and an \texttt{Add} on
+\texttt{process.pi.token.color}.
+
+\subsection{Admissible Transitions}
+\label{sec:otel-weaver-exp-002-diff-to-residual-arch-transitions}
+
+The \texttt{BridgeRx} architecture admits only one lawful transition path from
+S2 feedstock to the conformance boundary: through \texttt{translate()}. The Rust
+type system enforces this: the conformance court's validators accept
+\texttt{TelemetryFeedstockS1}, not \texttt{TelemetryFeedstockS2}. There is no
+implicit coercion between the two types; the only path from one to the other is
+the explicit \texttt{bridge.translate(s2\_record)} call.
+
+This is an architectural enforcement of the categorical law
+$\Delta_W \neq \delta_P$ at the type level: S2 records simply cannot be evaluated
+for process conformance without passing through the bridge. The Rust compiler
+refuses to compile code that attempts to pass an S2 struct where an S1 struct is
+expected, making the category separation a build-time guarantee rather than a
+runtime convention.
+
+The upstream \texttt{Admission<T,W>} and \texttt{Refusal} type-law patterns
+(documented in exp-003 and referenced in \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md})
+represent the next admissible transition after bridging: a translated S1 record
+may enter the \texttt{Admission} gate; a record that fails the gate emits a
+\texttt{Refusal} with a cryptographic BLAKE3 digest of the failure context.
+
+\subsection{Boundaries}
+\label{sec:otel-weaver-exp-002-diff-to-residual-arch-boundaries}
+
+Two boundary rules are formally defined in
+\texttt{mappings/registry-diff-to-pi-drift-map.yaml}:
+
+\paragraph{drift\_isolation\_rule\_1}
+Condition: a telemetry field is missing because of a schema diff (e.g., attribute
+deprecation). Then: do not report process drift; route to the Weaver Diff Log at
+\texttt{checkpoints/weaver\_diff\_registry.json}.
+
+\paragraph{drift\_isolation\_rule\_2}
+Condition: a telemetry field is missing but is present in the current schema version.
+Then: report Process Drift (Activity Skip / Data Under-provisioning) to the process
+drift court at \texttt{checkpoints/process\_drift\_court.json}.
+
+These two rules together define the decision tree that the ingestion layer must
+execute before any conformance algorithm fires. \texttt{BridgeRx} is the
+implementation of \texttt{drift\_isolation\_rule\_1} for the \texttt{Rename} case:
+it ensures that a field missing from S1 terms but present in S2 terms is not routed
+to the drift court.
+
+The \texttt{otel-to-pi-witness-map.yaml} mapping file defines the boundary rules for
+translating OTel service identity to PI witness IDs, ensuring that the
+\texttt{pi.feedstock.witness.id} field is correctly populated as telemetry crosses
+the ingestion boundary. The mapping also enforces the conformance isolation
+prevention rule: ``Never map feedstock directly to court consequences.''
+
+\subsection{Failure Modes Refused}
+\label{sec:otel-weaver-exp-002-diff-to-residual-arch-failures}
+
+The architecture of EXP-002 is designed to refuse three specific failure modes:
+
+\begin{enumerate}
+    \item \textbf{Measurement theater}: Schema naming updates flagged as compliance
+          violations. Refused by \texttt{BridgeRx} translating S2 field names to S1
+          expectations before the conformance algorithm evaluates fitness.
+
+    \item \textbf{Categorical collapse}: The false inference that
+          $\Delta_W(S_1, S_2) = \delta_P(\mathcal{L}_1, \mathcal{L}_2)$. Refused
+          by the type system (S2 and S1 are distinct types) and by the doctrine
+          files anchored at \texttt{REGISTRY\_DIFF\_NOT\_DRIFT\_001} and
+          \texttt{OTEL\_WEAVER\_FEEDSTOCK\_001}.
+
+    \item \textbf{Witness hash corruption}: The BLAKE3 hash emitted by
+          instrumentation is altered during schema translation. Refused by the
+          \texttt{translate()} implementation's direct field assignment
+          \texttt{witness\_hash: input.witness\_hash} with no transformation, and
+          asserted by \texttt{test\_bridge\_translation\_equivalence}.
+\end{enumerate}
+
+The \texttt{doctrine/registry-diff-is-not-process-drift.md} file also documents a
+fourth failure mode this architecture prevents: the \textbf{false negative}, where
+actual process drift (e.g., bypass of approval gates) goes undetected because the
+telemetry payload is structurally clean under the current Weaver schema. By keeping
+the conformance court independent of schema validation, genuine process deviations
+remain visible even when the telemetry surface is structurally compliant.

@@ -1,0 +1,113 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: standards
+% Thesis Role: public-standards-compliance-and-gravity-field-mapping
+
+\section{Open Questions and Next Work}
+\label{sec:standards-open}
+
+\subsection{Known Gaps}
+\label{sec:standards-open-gaps}
+
+Four structural gaps are documented as of the ALIVE checkpoint. These are not gaps in the
+completed crosswalk---all 16 verified standards remain ALIVE---but gaps in the boundary
+between the crosswalk and the downstream execution surface.
+
+\paragraph{OCPQ query evaluation engine (AUTHOR THESIS).}
+The OCPQ placement file is VERIFIED in the audit matrix. Structural shapes for object-centric
+process queries exist in \texttt{src/ocpq.rs} in the wasm4pm codebase. However, the query
+evaluation engine itself has not graduated to wasm4pm: the shapes define the query language
+surface but do not yet execute queries against OCEL 2.0 logs. This is documented as a
+graduation boundary item. Until the evaluation engine graduates, OCPQ claims about query
+answering are PARTIAL at the execution level, though ALIVE at the type-law level.
+
+\paragraph{SHACL shapes for OCEL 2.0 RDF representation.}
+The SHACL placement file describes the Shapes Constraint Language validation surface for
+OCEL 2.0 RDF representations. No \texttt{.shacl} or \texttt{.ttl} files exist in the
+\texttt{standards/} directory. The surface is documented but not materialized as a
+machine-executable artifact. This means SHACL validation of OCEL 2.0 RDF cannot currently
+be run without authoring the shape files.
+
+\paragraph{OTel Weaver process-specific semantic conventions.}
+The OTel Weaver placement maps the Weaver framework to the process intelligence context.
+However, the actual \texttt{.tera} template files and \texttt{.yaml} convention files that
+would define process-specific semantic conventions (e.g., activity name attribution, lifecycle
+state encoding, object type labeling) are not present in the \texttt{standards/} directory.
+The convention framework is mapped; the conventions themselves are deferred.
+
+\paragraph{Log Skeleton (Verbeek 2018) placement.}
+Log Skeleton is noted in the project materials as having structural shape coverage via
+\texttt{DeclareConstraint}, but it does not appear among the 16 verified standards and has
+no dedicated placement file in the audit matrix. Its conformance checking capability has
+not graduated.
+
+\subsection{Deferred Gates}
+\label{sec:standards-open-deferred}
+
+The following proof gates are deferred to future work phases:
+
+\begin{enumerate}
+  \item \textbf{OCPQ execution graduation}: A gate requiring that the OCPQ evaluation
+        engine execute at least one multi-object query against a production-grade OCEL 2.0
+        log and emit a receipt recording the query AST, the result set hash, and the
+        non-forgeability witness.
+  \item \textbf{SHACL/OCEL RDF validation}: A gate requiring that SHACL shape files for
+        OCEL 2.0 RDF representation be authored, published, and validated against at least
+        one conformant and one non-conformant OCEL 2.0 RDF graph, with deterministic
+        validation receipts.
+  \item \textbf{OTel Weaver convention authoring}: A gate requiring that at least three
+        process-specific semantic conventions be authored in Weaver \texttt{.yaml} format
+        and validated against the OTel trace integration schema.
+  \item \textbf{Empirical competitor conformance measurement}: The Nash equilibrium cage
+        analysis in \texttt{reverse-lock-in.md} describes expected competitor behavior but
+        records no executed experiment with a measured competitor conformance adoption rate.
+        A future gate requires at least one documented case of a competing system's traces
+        being evaluated against $W_{\text{std}}$ with a recorded fitness score.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:standards-open-risks}
+
+\paragraph{Nash equilibrium empirical gap.}
+The reverse lock-in mathematical formalism is a strategic doctrine supported by formal
+game theory and competitor payoff analysis. However, no executed experiment or measured
+competitor conformance adoption rate is recorded. The Game-Theoretic Equilibrium section
+of \texttt{reverse-lock-in.md} describes expected behavior. This is documented as a known
+gap; until empirical data exists, the Nash equilibrium claim is INTERPRETATION / FUTURE
+WORK rather than a finding supported by evidence.
+
+\paragraph{OCPQ expressiveness boundary.}
+The OCPQ placement documents query AST caching and result-set non-forgeability, but the
+boundary of the OCPQ query language with respect to OCEL 2.0 expressiveness has not been
+formally characterized. It is possible that some multi-object queries required by the
+M\&A evidence path fall outside the current OCPQ language definition.
+
+\paragraph{SHACL/OCEL 2.0 shape completeness.}
+The OCEL 2.0 bipartite graph invariants are formally defined in the placement file, but
+their translation into SHACL shapes may encounter RDF serialization issues. The global
+Python/RDF rules note that the \texttt{format:turtle} serializer has known issues; OCEL
+2.0 RDF shapes will need to be authored in N-Triples format and validated accordingly.
+
+\subsection{Next Receipted Work}
+\label{sec:standards-open-next}
+
+The next receipted work items, each of which will produce a named checkpoint on the ledger,
+are:
+
+\begin{enumerate}
+  \item Author SHACL shape files for OCEL 2.0 RDF and issue a validation receipt recording
+        at least one conformant and one non-conformant result.
+  \item Graduate the OCPQ query evaluation engine to wasm4pm and issue a query execution
+        receipt recording the query AST hash, result set size, and non-forgeability witness.
+  \item Author OTel Weaver \texttt{.yaml} semantic conventions for process intelligence
+        (minimum: activity name, lifecycle state, object type) and validate against the
+        existing OTel trace integration schema.
+  \item Design and execute an empirical measurement of the reverse lock-in doctrine: apply
+        $W_{\text{std}}$ conformance checking to at least one external process model and
+        record the fitness score, precision, and any Blue River Dam rejection events.
+  \item Author a Log Skeleton (Verbeek 2018) placement file and graduate it as standard 17
+        in the audit matrix, with a signed checkpoint update.
+\end{enumerate}
+
+Each of these items will close a documented gap and extend the ALIVE scope of the standards
+project. None may be claimed ALIVE until the receipt, tests, and checkpoint all exist per
+the foundry's immutability doctrine.

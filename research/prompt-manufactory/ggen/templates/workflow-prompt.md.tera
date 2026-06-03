@@ -13,27 +13,62 @@
 |----------|-------|
 | **Program ID** | {{ programId }} |
 | **Mission** | {{ mission }} |
-| **Authority:** Research Program Law |
+| **Workflow** | {{ workflow }} |
 
 ---
 
-## Workflow Phases
+## Workflow Phase: {{ phaseLabel | default(value="UNSPECIFIED") }}
 
-{%- for phase in phase %}
-### Phase: {{ phaseLabel }}
+**Phase Mission:** {{ phaseMission | default(value="UNSPECIFIED") }}
 
-- **Mission:** {{ phaseMission }}
-- **Subagent Role:** {{ agentLabel }}
-  - **Agent Mission:** {{ agentMission }}
-  - **Output Contract:** {{ outputContract }}
-  - **Owned Surface:** {{ ownedSurface | default(value="UNRESTRICTED") }}
-  - **Forbidden Surface:** {{ forbiddenSurface | default(value="NONE") }}
+### Assigned Subagent Role
 
-{%- endfor %}
+| Property | Value |
+|----------|-------|
+| **Role** | {{ agentLabel | default(value="UNASSIGNED") }} |
+| **Agent Mission** | {{ agentMission | default(value="UNSPECIFIED") }} |
+| **Output Contract** | {{ outputContract | default(value="UNSPECIFIED") }} |
+| **Owned Surface** | {{ ownedSurface | default(value="UNRESTRICTED") }} |
+| **Forbidden Surface** | {{ forbiddenSurface | default(value="NONE") }} |
 
 ---
 
-## Manufacturing Authority
+## Forbidden Paths
+
+The following execution paths are absolutely forbidden under this warrant:
+
+- Declaring ALIVE verdict when any required audit gate has failed
+- Emitting prompts without a `pm:derivedFrom` provenance triple
+- Introducing `.ggen` extension files as source surfaces
+- Collapsing `Evidence<T, State, W>` into untyped JSON strings without boundary classification
+- Skipping phases or bypassing subagent role assignments
+- Hand-coding program artifacts instead of rendering from templates
+
+**Authority:** `forbidden-collapse-law.ttl` — three collapse bans enforced at all lifecycle phases.
+
+---
+
+## Artifact Lifecycle
+
+Artifacts manufactured under this warrant follow the lawful lifecycle:
+
+| Stage | Artifact | Gate | Verdict |
+|-------|----------|------|---------|
+| Census | Census report | Ontology Availability | PASS/FAIL |
+| Classify | TTL ontology instances | Query Syntax + Template Syntax | PASS/FAIL |
+| Manifest | Projection manifests | Manifest Schema Validation | PASS/FAIL |
+| Queries | SPARQL `.rq` files | SPARQL Validation | PASS/FAIL |
+| Templates | Tera `.tera` files | Template Validation | PASS/FAIL |
+| Conformance | Audit result files | Van der Aalst Conformance | PASS/FAIL |
+| Reconciliation | Unified program map | Warrant Completeness | PASS/FAIL |
+| Checkpoint | ALIVE/PARTIAL verdict | All 8 gates | ALIVE/PARTIAL |
+
+**Lifecycle Rule:** No artifact may advance to the next stage unless its gate verdict is PASS.
+**Fallback Rule:** PARTIAL is the lawful verdict when any gate is FAIL. No forced ALIVE.
+
+---
+
+## Manufacturing Authorization
 
 - **Authority Layer:** Research Program Law
 - **Warrant Type:** Workflow Permit

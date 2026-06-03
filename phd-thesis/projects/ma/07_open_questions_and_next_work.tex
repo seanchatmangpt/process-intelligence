@@ -1,0 +1,127 @@
+% FILE: 07_open_questions_and_next_work.tex
+% PROJECT: ma — M&A Claim Taxonomy and Board Projection Surface
+
+\section{Open Questions and Next Work}
+\label{sec:ma-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:ma-gaps-known}
+
+Four structural gaps are identified as of the thesis writing date (2026-06-01). These are not
+ambiguities in the doctrine---the doctrine is APPROVED. They are gaps between the specified
+execution capability and the demonstrated execution capability.
+
+\paragraph{Gap 1: No Real Enterprise Event Logs.}
+The five receipt JSON files contain realistic and structurally correct values. The EBITDA
+receipt reports fitness 0.982, precision 0.945, and a \$1,250,000 impact. These values are
+consistent with the mathematical formulas and admissibility thresholds. However, they were not
+produced by executing wasm4pm queries against actual enterprise event logs extracted from a
+real ERP or CRM system. No real transaction data room has been connected to this framework.
+The receipts are specification-illustrative, not execution-derived. (Source: evidence
+extraction from \texttt{receipts/} directory and module structure audit.)
+
+\paragraph{Gap 2: wasm4pm Query Artifacts Unconfirmed on Disk.}
+The receipt files reference wasm4pm query URIs at absolute paths (e.g.,
+\texttt{file:///Users/sac/process-intelligence/sources/wasm4pm/queries/ebitda\_rework\_reduction.wasm}).
+These paths are cited in the receipt \texttt{query\_definition} fields but have not been
+confirmed to exist as compiled \texttt{.wasm} binaries. The connection between the claim
+taxonomy specifications and the wasm4pm execution engine is asserted by reference but not
+demonstrated from within this module.
+
+\paragraph{Gap 3: Reverse Porter Five Forces---No External Adoption Evidence.}
+The Reverse Porter Five Forces document is the strongest conceptual differentiator in the
+module. Force 4 (substitute prevention via receipt dependency) argues that buyers who build
+analytical workflows on wasm4pm receipts cannot switch to a process-evidence competitor
+without re-running all historical conformance queries. This is a network-effect claim whose
+validity depends on external adoption. As of 2026-06-01, no external buyer or auditor has
+adopted wasm4pm receipts. The network effect is theoretical. (AUTHOR THESIS: this is an
+honest assessment of the current state, not a defect in the framework's logic.)
+
+\paragraph{Gap 4: HTR-to-Chatman-Equation Lineage Unspecified Within Module.}
+The Hostile Takeover Receipt taxonomy (v30.1.1) references ``Otar Generative Pipeline
+receipts'' as the basis for unforgeable process replay. The connection between the HTR
+taxonomy, the Chatman Equation $A = \mu(O^*)$, and the 2016 language-model experiment
+lineage is not made explicit within the \texttt{ma/} module itself. The capital-flow and
+AI XYNZ connections to this M\&A surface remain unspecified in module documentation.
+(Source: structural audit of \texttt{hostile-takeover-receipts.md}.)
+
+\subsection{Deferred Gates}
+\label{sec:ma-gaps-deferred}
+
+The following proof gates are explicitly deferred to the execution phase:
+
+\begin{itemize}
+  \item \textbf{Claims data population:} A JSON array of board claims derived from an actual
+    transaction data room must be provided as input to the Board Projection Renderer. No
+    target company has been identified or engaged.
+  \item \textbf{Receipt generation from live wasm4pm execution:} Five receipts must be
+    produced by executing wasm4pm queries against real XES/OCEL 2.0 logs and verifying that
+    the output matches the specification receipt schema.
+  \item \textbf{End-to-end renderer execution:} The seven-step pipeline (Claims JSON $\to$
+    Tera2 $\to$ pptx-rs $\to$ calamine $\to$ validation $\to$ ledger seal) must be executed
+    to produce a sealed PowerPoint deck and Excel workbook. Rendering libraries are specified
+    but not invoked.
+  \item \textbf{Auditor path live trial:} The five-step auditor verification protocol must
+    be executed by an independent party using only the VDR contents. No such trial has
+    occurred.
+  \item \textbf{Negative testing:} Non-conforming traces must be injected into wasm4pm
+    queries to verify correct rejection. This is specified in the admissibility framework but
+    not executed.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:ma-gaps-risks}
+
+\paragraph{Risk 1: Admissibility Threshold Calibration.}
+The thresholds $f \ge 0.95$, $p \ge 0.90$ are grounded in academic process mining literature
+(Adriansyah 2014). Their applicability to M\&A due-diligence contexts---where event logs may
+be incomplete, noisy, or extracted under adversarial conditions---has not been empirically
+validated. Real enterprise event logs frequently exhibit lower fitness due to exception
+handling, manual interventions, and system migration artifacts. A target whose best-faith
+process achieves fitness 0.88 would fail the T3 admissibility gate as currently specified.
+The threshold calibration may require empirical adjustment once real logs are available.
+
+\paragraph{Risk 2: OCEL 2.0 Adoption Lag.}
+The module mandates OCEL 2.0 as the preferred event log format for multi-object processes.
+As of 2026, OCEL 2.0 tooling adoption in enterprise ERP systems (SAP, Oracle, Salesforce) is
+nascent. A real diligence engagement may require XES extraction with manual object-centric
+enrichment---a labor-intensive process that partly offsets the 7-to-3-day compression claim.
+
+\paragraph{Risk 3: wasm4pm Query Portability.}
+The receipt schema references wasm4pm query URIs as absolute local paths. In a real VDR
+context, queries must be portable across buyer and auditor environments. The portability of
+compiled \texttt{.wasm} binaries across runtime environments, and the specification of
+the wasm4pm runtime interface that auditors must install, are not fully specified in the
+current module.
+
+\subsection{Next Receipted Work}
+\label{sec:ma-gaps-next}
+
+The following work items are required to advance the module from PARTIAL to ALIVE status.
+Each must produce a receipt or checkpoint before the gate is considered closed:
+
+\begin{enumerate}
+  \item \textbf{Confirm wasm4pm query artifacts:} Verify that the five query \texttt{.wasm}
+    files referenced in receipts exist on disk and execute correctly against synthetic event
+    logs. Produce a receipt for each successful execution.
+  \item \textbf{Synthetic event log construction:} Manufacture XES and OCEL 2.0 event logs
+    with known properties (fitness, entropy, rework rate) to serve as the canonical test
+    inputs for the framework. Receipt each log with its BLAKE3 hash.
+  \item \textbf{End-to-end renderer execution on synthetic data:} Execute the seven-step
+    Board Projection Renderer pipeline using synthetic claims data and synthetic receipts.
+    Produce a sealed PowerPoint and Excel artifact. Receipt the ledger root hash.
+  \item \textbf{Auditor protocol dry run:} Execute the five-step auditor verification
+    protocol against the synthetic VDR. Document which steps pass, which require tooling
+    not yet specified, and what the independent replay deviation is.
+  \item \textbf{Negative testing:} Inject five classes of non-conforming traces (skipped
+    steps, wrong actor, out-of-order events, timestamp violations, SoD violations) and
+    verify that the wasm4pm queries and admissibility protocol correctly reject each.
+  \item \textbf{HTR-to-Chatman lineage documentation:} Add an explicit section to
+    \texttt{hostile-takeover-receipts.md} tracing the HTR taxonomy to the Chatman Equation
+    $A = \mu(O^*)$ and the 2016 language-model lineage, establishing the capital-flow
+    surface as a named terminus in the thesis architecture.
+\end{enumerate}
+
+None of these items alter the doctrine. All of them are execution-layer tasks whose
+receipts will constitute the evidence base for elevating the module's status from PARTIAL
+to ALIVE.

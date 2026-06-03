@@ -1,0 +1,24 @@
+slug: lifecycle
+absolute_path: /Users/sac/process-intelligence/lifecycle
+description: >
+  Process lifecycle state definitions and transition rules. Defines all lifecycle states:
+  acquisition, activation, archive, board-projection, construction, decommissioning, design,
+  integration, monitoring, operation, optimization, repair, simulation. Includes MAPE-K map,
+  maturity model, Blue River Dam lifecycle gate map, and autonomic knowledge actuation map.
+detected_languages: []
+detected_frameworks:
+  - MAPE-K
+detected_research_surfaces:
+  - lifecycle-governance
+  - autonomic-actuation
+  - process-evidence
+likely_thesis_role: process-lifecycle-state-definitions-and-transitions
+key_files:
+  - /Users/sac/process-intelligence/lifecycle/MAPE_K_MAP.md
+  - /Users/sac/process-intelligence/lifecycle/MATURITY_MODEL.md
+  - /Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md
+  - /Users/sac/process-intelligence/lifecycle/define_autonomic_knowledge_actuation_map.md
+  - /Users/sac/process-intelligence/lifecycle/define_process_asset_taxonomy.md
+readme_present: false
+receipt_present: false
+ontology_present: false

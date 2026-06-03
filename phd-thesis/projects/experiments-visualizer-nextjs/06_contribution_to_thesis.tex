@@ -1,0 +1,99 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Contribution to the Dissertation}
+\label{sec:experiments-visualizer-nextjs-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:experiments-visualizer-nextjs-contribution-prediction}
+
+The dissertation's central axis distinguishes prediction --- the generation of plausible
+future states from a model trained on past data --- from coordination --- the alignment of
+observed event behaviour against a declared process model in a way that can be audited and
+receipted. The visualizer-nextjs project contributes to the coordination side of this axis
+by serving as the human-auditable endpoint of the coordination chain.
+
+The CSS design system makes the coordination/prediction distinction visible at the UI layer.
+The alignment block panel (\texttt{.alignment-block.sync/.log/.model}) renders the output
+of A{*} conformance checking, which is a coordination operation: it compares what happened
+(the event log) against what was declared (the Petri net model) and records the moves needed
+to reconcile them. The EWMA drift panel (\texttt{.ewma-canvas}, \texttt{.alarm-banner})
+renders the output of a statistical process-control operation, which monitors whether the
+process is drifting away from its coordinated baseline. Neither of these panels has
+anything to do with prediction in the machine-learning sense; both are coordination
+evidence surfaces.
+
+AUTHOR THESIS: The existence of a browser-native coordination evidence surface is a
+necessary condition for the dissertation's claim that process intelligence can be made
+auditable outside specialist tooling. The visualizer-nextjs project is the proposed
+implementation of that surface, and its PARTIAL status documents the remaining distance
+between specification and proof.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:experiments-visualizer-nextjs-contribution-evidence}
+
+Process evidence, in the sense used by the research program, is evidence that a lawful
+process occurred --- not merely that a system returned a result. The visualizer-nextjs
+project contributes to the process evidence thesis by demonstrating that the type algebra
+of process evidence can be encoded in a CSS class vocabulary and used as a rendering
+specification for a web dashboard.
+
+Specifically, the \texttt{globals.css} file is a formal enumeration of the observable
+states of process evidence across four evidence classes: Petri net marking states, A{*}
+alignment move types, EWMA alarm states, and cryptographic receipt verification states.
+By encoding these states as CSS classes with no overlap and no ambiguity, the design
+system asserts that the visualization surface is type-safe with respect to the process
+evidence it displays --- it cannot render an alignment move that is neither sync, log,
+nor model; it cannot render a ledger block that is neither healthy nor tampered.
+
+This contribution is genuine even in the project's current PARTIAL state. The design
+system is a manufactured artefact that is part of the research record. Its class vocabulary
+is cited in this thesis as evidence of what the full visualization surface would need
+to encode, and it constitutes a partial specification for the implementation work that
+remains.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:experiments-visualizer-nextjs-contribution-manufacturing}
+
+The visualizer-nextjs project contributes to the CodeManufactory manufacturing architecture
+by demonstrating that a web-based observation surface can be designed as a manufacturing
+target. The \texttt{AGENTS.md} file's instruction to read Next.js 16 documentation from
+\texttt{node\_modules/} before writing code reveals that the project was designed with
+agentic authorship in mind --- the authoring agent is expected to manufacture React
+components against the CSS specification, not hand-author them interactively.
+
+This positions the visualizer's \texttt{globals.css} as a \emph{manufacturing specification}:
+a formal description of what the manufacturing pipeline must produce. In the CodeManufactory
+framing, the CSS file is the seed; the React component implementations are the bred artefacts;
+the test suite is the proof gate; and the receipt is the manufacturing record. The project
+is, at PARTIAL status, a case study in a manufacturing pipeline that has produced a valid
+seed but has not yet advanced through the subsequent stages.
+
+The project also demonstrates that the manufacturing architecture extends to the web UI layer:
+it is not confined to Rust binary artefacts or Python analysis scripts. AUTHOR THESIS: a
+complete CodeManufactory proof should include at least one web-surface artefact that passes
+all proof gates, and the visualizer-nextjs project is the designated candidate for that role.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:experiments-visualizer-nextjs-contribution-capital}
+
+The dissertation's capital-flow and settlement layer requires an observation surface through
+which auditors, counterparties, and governance participants can inspect the process evidence
+that underlies capital-allocation decisions. The visualizer-nextjs project is the proposed
+web surface for this function.
+
+The cryptographic ledger explorer --- \texttt{.ledger-block-card.healthy/.tampered},
+\texttt{.ledger-chain-arrow.broken}, \texttt{.receipt-json-body},
+\texttt{.verification-console} --- is the subsystem most directly relevant to capital-flow
+infrastructure. In a settlement context, a receipt ledger block represents a unit of
+committed process evidence: a claim that a specific process event occurred, was admitted to
+the model, was conformance-scored, and was receipted by a tamper-evident chain. The
+tamper-detection UI states (\texttt{.tampered}, \texttt{.broken}) make it visible to an
+auditor when the evidentiary chain supporting a settlement claim has been compromised.
+
+FUTURE WORK: The full capital-flow use case would require the ledger explorer to display
+receipts from multiple counterparty process chains, not just a single local chain, and
+to support cross-chain receipt verification. This is beyond the current scope of the
+project but is implied by the dashboard grid's design (\texttt{.dashboard-grid} with
+a 320-pixel sidebar suitable for a case/counterparty navigator).

@@ -1,0 +1,131 @@
+% FILE: 07_open_questions_and_next_work.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+
+\section{Open Questions and Next Work}
+\label{sec:gaps-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:gaps-open-questions-known}
+
+Five open questions are documented for the gap registry component:
+
+\textbf{1. GAP\_001 upstream work:} GAP\_001 is marked Open with no closure date.
+The gap document authorizes downstream wasm4pm refactoring only after the research
+program approves the remediation path. It is not known whether any upstream work has
+begun on adding wasm4pm-compat to \texttt{wasm4pm/Cargo.toml}, or whether the gap
+remains entirely theoretical. The five-condition remediation checklist in
+\texttt{GAP\_001\_COMPAT\_WASM\_BRIDGE.md} is precise and actionable, but no
+implementation evidence exists in the \texttt{gaps/} directory.
+
+\textbf{2. GAP\_002 register discrepancy:} GAP\_002 is listed as RESOLVED in its
+own document (\texttt{GAP\_002\_OR\_JOIN\_AMBIGUITY.md}) under the v30.1.1
+Smart-Completion Policy, but it appears as CRITICAL/Open in \texttt{GAP\_REGISTER.md}.
+It is not established whether the register is stale or whether the resolution is partial.
+The Smart-Completion Policy itself (the dynamic Reachability Matrix) requires an
+execution engine that evaluates it — whether that engine exists in wasm4pm is not
+documented in the \texttt{gaps/} directory.
+
+\textbf{3. GAP\_007 register discrepancy:} GAP\_007 (WfNet split-brain) is described
+in the closure workflow as having been Resolved (the workflow describes specific changes:
+\texttt{attest\_witnessed()} changed to \texttt{pub(crate)}, a \texttt{\#[allow(dead\_code)]}
+attribute added, a replacement compile-fail fixture authored for E0624). However, the
+master register lists GAP\_007 as Open. Which source is authoritative is not established
+by any resolution addendum.
+
+\textbf{4. Receipt chain for gap closures:} Gap closures are supposed to produce
+resolution addendum documents. No resolution addendum exists for any of the eight gaps.
+It is not established whether gap closures produce artifacts in the \texttt{receipts/}
+or \texttt{checkpoints/} directories of the broader foundry, or whether no closures
+have occurred.
+
+\textbf{5. SWARM Verification Guard implementation status:} The five-agent AGI swarm
+described in \texttt{GAP\_CLOSURE\_WORKFLOW.md} (Drift Sentry, Telemetry Auditor,
+Ledger Custodian, Alignment Referee, Stream Director) has no corroborating implementation
+evidence in the \texttt{gaps/} directory. Whether this architecture is implemented,
+partially implemented, or aspirational design intent is not determinable from the
+available source files.
+
+\subsection{Deferred Gates}
+\label{sec:gaps-open-questions-deferred}
+
+The following proof gates cannot be activated until their prerequisite gaps are closed:
+
+\begin{itemize}
+  \item \textbf{Process evidence provenance gate} (requires GAP\_001): Cannot assert
+        that process evidence admitted through compat flows into wasm4pm algorithms.
+  \item \textbf{Named-law refusal gate} (requires GAP\_001 + GAP\_002): Cannot assert
+        that wasm4pm returns named-law refusals with structural law identity.
+  \item \textbf{Sound discovery gate} (requires GAP\_003): Cannot assert that discovery
+        produces sound process trees.
+  \item \textbf{Alignment conformance gate} (requires GAP\_004): Cannot assert that
+        conformance reports alignment-based fitness with \texttt{Between01} bounds.
+  \item \textbf{OCPQ execution gate} (requires GAP\_005): Cannot assert that OCPQ
+        queries execute against admitted OCEL logs.
+  \item \textbf{POWL discovery gate} (requires GAP\_006): Cannot assert that POWL
+        discovery is available.
+  \item \textbf{WF-net non-forgeability gate} (requires GAP\_007): Cannot assert that
+        WF-net attestation is non-forgeable via the public type surface.
+  \item \textbf{Fixture receipt gate} (requires GAP\_008): Cannot assert that all
+        compile\_fail fixtures are true structural law receipts.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:gaps-open-questions-risks}
+
+\textbf{Risk 1 — Critical-path depth:} GAP\_001 is described as High effort and is
+the blocker for five of the seven remaining open gaps. If the wasm4pm refactor required
+to close GAP\_001 encounters architectural resistance (breaking WASM binary compatibility,
+requiring breaking changes to public API surfaces, or conflicting with existing wasm4pm
+deployment targets), the entire P1/P2 closure queue is delayed indefinitely.
+
+\textbf{Risk 2 — Register staleness:} Two discrepancies already exist between individual
+gap documents and the master register (GAP\_002 and GAP\_007). If the register is not
+updated as gap closures occur, it will cease to be the authoritative source of truth.
+The immutability doctrine requires addendums but does not specify who is responsible
+for updating the master register. This governance gap could produce an incoherent
+registry where some gaps appear open in the register and resolved in their documents.
+
+\textbf{Risk 3 — SWARM Verification Guard aspirationality:} If the five-agent monitoring
+system is aspirational rather than implemented, the governance workflow document
+overstates the enforcement surface available for gap closure verification. \textbf{AUTHOR THESIS:}
+Aspirational architecture descriptions in governance documents should be marked as
+\textsc{Future Work} until implementation evidence exists.
+
+\subsection{Next Receipted Work}
+\label{sec:gaps-open-questions-next}
+
+The following actions constitute the minimum next receipted work for the gap registry
+component:
+
+\begin{enumerate}
+  \item \textbf{Reconcile GAP\_002 and GAP\_007 discrepancies:} Author resolution
+        addendums for both gaps that establish the authoritative status (Resolved or
+        Open) with code citations from the relevant source files. Update the master
+        register to match.
+
+  \item \textbf{Author downstream prompt:} The authorization clause in
+        \texttt{GAP\_001\_COMPAT\_WASM\_BRIDGE.md} specifies that the next authorized
+        action is for the research program to draft
+        \texttt{prompts/downstream\_wasm4pm\_refactor.md} with GAP\_001 remediation
+        requirements. This prompt has not been authored; authoring it is the gatekeeping
+        action required before any GAP\_001 remediation can begin.
+
+  \item \textbf{Close GAP\_007 (low effort):} The priority matrix identifies GAP\_007
+        as the recommended first closure because it is low effort and independent. The
+        closure workflow describes the specific changes required. If GAP\_007 is already
+        resolved (as the workflow suggests), a resolution addendum with code citations
+        should be produced to formally close it in the register.
+
+  \item \textbf{Replace E0425 fixtures (GAP\_008):} GAP\_008 is independent and can
+        proceed without waiting for GAP\_001. Replacing E0425-failing fixtures with
+        E0308, E0599, E0277, and E0080 fixtures is a contained change to wasm4pm-compat
+        that improves the receipt quality of the entire type-law enforcement surface.
+
+  \item \textbf{Initiate GAP\_001 remediation:} Once the downstream prompt is authored
+        and the research program authorizes the refactor, begin the Cargo.toml change,
+        thread \texttt{Admitted} types into algorithm signatures, implement
+        \texttt{GraduateToWasm4pm}, replace at least one \texttt{ValidationError(String)}
+        with a named law refusal type, and link the first execution receipt to its
+        compat admission receipt. All five conditions must be met before GAP\_001 can be
+        formally closed.
+\end{enumerate}

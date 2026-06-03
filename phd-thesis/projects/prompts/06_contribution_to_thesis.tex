@@ -1,0 +1,103 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: prompts — Downstream Manufacturing Prompt Corpus
+
+\section{Contribution to the Dissertation}
+\label{sec:prompts-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:prompts-contribution-prediction}
+
+The dissertation's central claim is that the failure mode of AI-adjacent systems is
+not inaccurate prediction but incoherent coordination---the inability of components to
+prove to one another that a shared invariant has been maintained. The prompt corpus
+contributes to this claim by demonstrating what coordination without proof looks like
+in practice and then specifying what proof-bearing coordination requires.
+
+The old regime of downstream engineering coordination is represented by informal
+specifications: a directive that says ``implement Inductive Miner'' without specifying
+the return type, the authority source, the completion criterion, or the blocking
+claims. Such a directive cannot coordinate because a downstream engineer has no
+mechanism to verify that the implementation satisfies the research program's
+requirements. The engineer might implement an algorithm that produces structurally
+correct-looking output that is unsound, and no artifact would capture the failure
+before it propagates into M\&A claims.
+
+The corpus's contribution is the proof-bearing directive format: each directive
+carries a named law type for every refusal, a compile-time fixture for every
+structural guarantee, an authority source for every mandate, and an explicit list of
+blocking claims that must carry \texttt{[BLOCKED: GAP\_NNN]} labels until the
+underlying gap is closed. This format makes coordination verifiable: the directive
+either satisfies its completion criterion or it does not, and the determination is
+mechanical.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:prompts-contribution-evidence}
+
+The corpus makes a concrete contribution to the process evidence chain by specifying
+the \texttt{ProcessIntelligenceVerificationReceipt} schema as the atomic unit of
+board-admissible evidence. This schema links three artifacts that are conventionally
+kept separate: the source event log (captured by \texttt{target\_log\_hash}), the
+process model (captured by \texttt{process\_model\_hash}), and the conformance result
+(captured by \texttt{fitness}, \texttt{precision}, and \texttt{throughput\_days}),
+all bound together by an Ed25519 signature from a registered validator.
+
+The fitness equation $f(\sigma, N) = \frac{1}{2}(1 - m/c) + \frac{1}{2}(1 - r/p)$
+(where $m$ is missing tokens, $c$ is consumed tokens, $r$ is remaining tokens, and
+$p$ is produced tokens) and the A* alignment cost function $K(a, \gg) = 1$,
+$K(\gg, t) = 1$, $K(a, t) = 0$ iff $\operatorname{label}(t) = a$ are embedded as
+requirements in the refactor mandate. These formulas establish that conformance
+checking must be alignment-based, not token-replay-based, because token replay
+produces fitness values that can be artificially inflated by model simplification.
+The corpus thus contributes to the process evidence literature by mandating the
+stronger conformance method.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:prompts-contribution-manufacturing}
+
+The corpus contributes a formal manufacturing architecture for the translation from
+research finding to engineering specification. The architecture has four layers:
+
+\begin{enumerate}
+  \item \textbf{Research authority layer}: Gap register, adversarial red-team
+    findings, conformance authority maps, M\&A claim taxonomies. These authorize
+    directives but do not themselves specify engineering work.
+  \item \textbf{Directive layer} (the corpus): Translates research authority into
+    sequenced, gated engineering tasks with explicit completion criteria and blocking
+    claims.
+  \item \textbf{Blueprint layer} (execution plans): Provides mathematical and
+    cryptographic detail for the most complex directive requirements---lattice
+    mathematics, BLAKE3/Ed25519 receipt construction, typestate enforcement patterns,
+    absence-proof fixture strategies.
+  \item \textbf{Verification layer}: Compile-pass and compile-fail fixtures, receipt
+    schemas, benchmark targets, and gap-register updates that confirm completion.
+\end{enumerate}
+
+This four-layer architecture is the manufacturing pipeline for process intelligence
+engineering. It demonstrates that a research program can maintain formal authorization
+chains through all layers of translation from theorem to implementation.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:prompts-contribution-capital}
+
+The corpus makes its most novel contribution at the intersection of process evidence
+and capital-flow claims. The ggen integration directive specifies a complete pipeline
+from receipt-shaped process evidence to board-admissible M\&A claims, with EBITDA
+impact percentages tied to alignment fitness thresholds:
+
+\begin{itemize}
+  \item Fitness $\geq 0.95$: Conformance claim with \texttt{HIGH} confidence,
+    $+5\%$ EBITDA impact, automatic board admissibility.
+  \item $0.85 \leq \text{fitness} < 0.95$: Qualified conformance with \texttt{MEDIUM}
+    confidence, $+3\%$ EBITDA impact, board override required.
+  \item Fitness $< 0.85$: Non-conformance detection, \texttt{LOW} confidence, claim
+    refused, risk mitigation emitted with $-8\%$ to $-15\%$ EBITDA impact.
+\end{itemize}
+
+The EBITDA figures are derived from the M\&A board claim taxonomy documents
+(\texttt{ma/define\_board\_claim\_taxonomy.md}), which are themselves products of the
+research program. Whether these figures are grounded in empirical studies or in the
+research program's own assertion is an open question (see
+Section~\ref{sec:prompts-open-questions}). The contribution, regardless, is formal:
+it establishes that capital-flow claims must carry receipt chains, and that the
+receipt chain is the legally admissible foundation for acquisition valuation
+adjustments.

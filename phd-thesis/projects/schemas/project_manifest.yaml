@@ -1,0 +1,17 @@
+slug: schemas
+absolute_path: /Users/sac/process-intelligence/schemas
+description: >
+  Schema definitions for PI data structures. Contains slide verification ledger JSON schema
+  grounding the structural contract between M&A deck generation and receipt validation.
+detected_languages:
+  - JSON
+detected_frameworks: []
+detected_research_surfaces:
+  - type-law
+  - m-and-a-claims
+likely_thesis_role: data-schema-definitions-for-ma-and-receipt-surfaces
+key_files:
+  - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+readme_present: false
+receipt_present: false
+ontology_present: false

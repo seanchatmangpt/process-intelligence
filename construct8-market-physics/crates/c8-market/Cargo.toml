@@ -1,0 +1,8 @@
+[package]
+name = "c8-market"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+c8-core = { path = "../c8-core" }
+c8-graph = { path = "../c8-graph" }

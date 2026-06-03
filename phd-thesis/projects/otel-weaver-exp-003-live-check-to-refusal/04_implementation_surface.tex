@@ -1,0 +1,129 @@
+% FILE: 04_implementation_surface.tex
+% Project: otel-weaver-exp-003-live-check-to-refusal
+% Thesis Role: live-check-refusal-enforcement-experiment
+
+\section{Implementation Surface}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-implementation}
+
+\subsection{Source Files}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-implementation-sources}
+
+\textbf{\texttt{src/validator.rs}} is the primary implementation artifact. It defines
+all seven types (\texttt{RawTelemetryFeedstock}, \texttt{AdmittedPayload},
+\texttt{AlphaWitness}, \texttt{Admission<T,W>}, \texttt{Refusal}, \texttt{RefusalCode})
+and the two functions (\texttt{validate\_and\_project}, \texttt{build\_refusal}).
+The \texttt{build\_refusal} internal constructor constructs the BLAKE3 digest field
+using a mock format in the standalone artifact: \texttt{format!("{:064x}", raw\_str.len())}.
+This is a deterministic length-based hash, not a cryptographic BLAKE3 invocation.
+The comment in the source reads: ``Generate simulated BLAKE3 digest of the failure
+context.'' This mock is a documented limitation of the standalone crate and is
+superseded by the integration test implementation described below.
+
+The inline test module at the bottom of \texttt{validator.rs} contains two test
+functions: \texttt{test\_successful\_admission}, which constructs a fully populated
+\texttt{RawTelemetryFeedstock} with a 64-\texttt{"a"} character witness hash and
+asserts \texttt{Ok(admission)}, and \texttt{test\_refusal\_missing\_id}, which
+constructs a feedstock with \texttt{instance\_id: None} and asserts
+\texttt{Err(refusal)} with \texttt{refusal.code == RefusalCode::MissingInstanceId}.
+
+\textbf{\texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs}} is the
+integration-layer implementation. It redefines the type hierarchy (\texttt{TelemetryFeedstockS2},
+\texttt{TelemetryFeedstockS1}, \texttt{BridgeRx}, \texttt{Refusal}, \texttt{RefusalCode},
+\texttt{AdmittedPayload}, \texttt{AlphaWitness}, \texttt{Admission<T,W>}) in the
+\texttt{wasm4pm} test harness context and imports \texttt{wasm4pm::crypto::Blake3}
+for genuine BLAKE3 digest computation in \texttt{build\_refusal}. The integration
+test uses a Schema Version 2 feedstock struct (\texttt{TelemetryFeedstockS2}) with
+\texttt{transition\_name} instead of \texttt{activity\_name}, and the \texttt{BridgeRx}
+schema bridge performs the \texttt{process.pi.transition.name} to
+\texttt{process.pi.activity.name} mapping before the gate checks run.
+
+\textbf{\texttt{Cargo.toml}} at the experiment root declares the crate as edition
+2021 with four dependencies: \texttt{serde 1.0} (with the \texttt{derive} feature),
+\texttt{serde\_json 1.0}, \texttt{blake3 1.3}, and \texttt{wasm4pm-compat} as a
+local path crate at \texttt{../../../../wasm4pm-compat}. No \texttt{Cargo.lock} file
+is present in the experiment directory, meaning the crate has not been compiled in
+isolation; compilation occurs only within the parent \texttt{wasm4pm} workspace.
+
+\subsection{Commands}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-implementation-commands}
+
+The following commands apply to the experiment, all executed from within the parent
+\texttt{wasm4pm} workspace root (not the experiment directory, due to the absence
+of a standalone \texttt{Cargo.lock}):
+
+\begin{verbatim}
+# Run inline unit tests in validator.rs (standalone, if workspace is configured)
+cargo test -p exp-003-live-check-to-refusal
+
+# Run the integration test in the wasm4pm test harness
+cargo test --test weaver_integration_tests
+
+# Run all 62 tests across the workspace
+cargo test
+\end{verbatim}
+
+The checkpoint \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001} records the following
+test output from the integration run:
+\begin{verbatim}
+running 1 test
+test test_weaver_integration_synthesis ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored;
+  0 measured; 0 filtered out; finished in 0.00s
+\end{verbatim}
+
+The 62 total test count is cited in the checkpoint as passing across the
+\texttt{wasm4pm}, \texttt{wasm4pm-compat}, and \texttt{blue\_river\_dam} packages.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-implementation-data}
+
+\textbf{\texttt{otel-weaver/mappings/live-check-finding-to-refusal-map.yaml}} is
+the authoritative mapping artifact. Version 1.0.0, authority: Process Intelligence
+Research Foundry, nominal role: \texttt{intake\_court\_admission}. It defines six
+refusal mappings keyed by \texttt{finding\_id}, each carrying a \texttt{named\_law}
+field (the canonical law name), a \texttt{standard\_reference} (XES 1849, OCEL 2.0,
+or \texttt{wasm4pm-compat loss covenant}), a \texttt{verdict}
+(\texttt{violation\_halt} or \texttt{escalation\_warning}), a \texttt{refusal\_action}
+string, and a \texttt{remediation} guidance string.
+
+\textbf{\texttt{otel-weaver/mappings/otel-to-pi-witness-map.yaml}} defines the
+witness mapping rules that govern how OTel resource attributes (\texttt{service.name},
+\texttt{service.namespace}, \texttt{telemetry.sdk.name}) are translated into
+\texttt{pi.feedstock.witness.id} values. Version 1.0.0, schema URL:
+\texttt{https://opentelemetry.io/schemas/1.25.0}. It also contains a
+\texttt{conformance\_isolation} rule: ``Never map feedstock directly to court
+consequences. A witness only asserts observations of feedstock, not conformity verdicts.''
+
+\textbf{\texttt{otel-weaver/doctrine/otel-weaver-is-feedstock.md}} formalizes the
+Feedstock Theorem:
+$\text{Telemetry} \in \text{Feedstock}$ and
+$\text{SchemaValidation}(\text{Telemetry}) \neq \text{ProcessCompliance}(\text{ProcessState})$.
+Status: ALIVE --- anchored at \texttt{OTEL\_WEAVER\_FEEDSTOCK\_001}.
+
+\textbf{\texttt{otel-weaver/doctrine/weaver-finding-is-not-receipt.md}} defines the
+nominal category boundary between Weaver findings and process receipts via a five-row
+comparison table covering type level, verification scope, audit value, storage, and
+witness marker. Status: ALIVE --- anchored at \texttt{WEAVER\_FINDING\_NOT\_RECEIPT\_001}.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-implementation-templates}
+
+Two \texttt{ggen} templates support EXP-003's manufacturing pipeline context:
+
+\textbf{\texttt{otel-weaver/ggen/templates/pi-live-check-intake.rs.ggen}} is the
+manufacturing template for intake code. Its presence in the \texttt{ggen/templates/}
+directory indicates that the \texttt{validate\_and\_project} function is intended to
+be manufactured from a template rather than written by hand in production; the current
+\texttt{validator.rs} is a hand-coded prototype.
+
+\textbf{\texttt{otel-weaver/ggen/audits/audit-live-check-findings-routed.sh.ggen}}
+is the audit template for verifying that all live-check findings are routed to the
+correct \texttt{RefusalCode} variant. Its purpose is to serve as an automated gate
+in the manufacturing pipeline confirming that no finding is silently discarded
+without a corresponding refusal record.
+
+Neither template file was read in depth during evidence extraction; their content
+is described here based on their path names and the ggen manufacturing context
+established by checkpoint \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001}.
+\textbf{(INTERPRETATION: template content inferred from naming convention)}

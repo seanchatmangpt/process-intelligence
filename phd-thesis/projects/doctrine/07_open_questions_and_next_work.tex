@@ -1,0 +1,129 @@
+\section{Open Questions and Next Work}
+\label{sec:doctrine-open}
+
+\subsection{Known Gaps}
+\label{sec:doctrine-open-gaps}
+
+The doctrine corpus is explicit and self-documenting about its structural gaps. This section
+enumerates the five primary gaps in evidential priority order, following the hostile-witness
+posture of the research program: gaps are reported to close them, not to minimize them.
+
+\paragraph{GAP\_001 --- Compat-to-Wasm Bridge Missing (CRITICAL).}
+This is the highest-priority structural gap blocking Level 5 process authority. The
+\texttt{GraduateToWasm4pm} trait exists in wasm4pm-compat's \texttt{graduation} module but
+wasm4pm has no corresponding import, no implementation, and no \texttt{wasm4pm-compat} entry
+in its \texttt{Cargo.toml}. Wasm4pm algorithm functions accept raw \texttt{\&EventLog}
+without passing through \texttt{Admit::admit()}: \texttt{discover\_ilp\_petri\_net\_from\_log},
+\texttt{discover\_performance\_dfg\_from\_log}, and \texttt{discover\_simple\_process\_tree\_from\_log}
+all take unadmitted input. Wasm4pm's refusal surface uses \texttt{ValidationError(String)}
+catch-alls, the forbidden anti-pattern. The consequence is a two-universe problem:
+\texttt{Evidence\textless{}T, Admitted, Ocel20\textgreater{}} $\neq$ \texttt{EventLog} and
+there is no translation layer in either codebase.
+
+\paragraph{GAP\_002 --- Execution Layer Uniformly Missing.}
+All fifteen algorithm families in the taxonomy show wasm4pm execution as \emph{Missing}.
+The structural types exist in compat (for Alpha Miner, Inductive Miner, Token Replay,
+Alignment-Based Conformance, POWL, DFG, DECLARE, Log Skeleton, OCPQ, OC-Petri Mining) but
+no execution authority has been implemented. The entire discovery and conformance execution
+layer is structurally specified but not operational. This gap is a consequence of GAP\_001:
+until the bridge exists, execution cannot receive admitted evidence.
+
+\paragraph{GAP\_003 --- Three Witness Types Unimplemented.}
+\texttt{DivergenceWitness} and \texttt{ConvergenceWitness} are needed to ground the OCEL 2.0
+supremacy claim in \texttt{OBJECT\_CENTRIC\_SUPREMACY.md}. \texttt{OcDfgEdge\textless{}ObjectType\textgreater{}}
+with \texttt{PhantomData} marker is needed for OC-DFG grounding. These types are declared in
+doctrine but have no corresponding implementation receipts in the wasm4pm-compat source.
+
+\paragraph{GAP\_004 --- WASM Boundary Law and BPMN OR-Join Doctrine Without Test Fixtures.}
+The WASM boundary law (\texttt{wasm-boundary-law.md}, specifying the Specta and tsify
+serialization constraints) and the BPMN OR-Join Smart-Completion doctrine
+(\texttt{bpmn-or-join-completion.md}) exist as specifications but have no corresponding
+compile-fail tests, compile-pass fixtures, or receipt chain. They are doctrine without
+execution evidence, and therefore PARTIAL by the ALIVE gate definition.
+
+\paragraph{GAP\_005 --- Upstream and Downstream Lineage Ends Not Documented in Doctrine.}
+The thesis lineage maps the 2016 LM experiment $\to$ Chatman Equation $\to$ receipts $\to$
+ggen $\to$ wasm4pm $\to$ Post-Cyberpunk PCP $\to$ AI XYNZ $\to$ capital-flow. The upstream
+end (the 2016 LM experiment evidence) and the downstream ends (PCP, XYNZ, capital-flow
+surfaces) are referenced in the thesis lineage but are not documented within the doctrine
+corpus itself. No doctrine file cites the specific 2016 experiment artifacts or links to the
+PCP/XYNZ repositories with receipt-bearing evidence.
+
+\subsection{Deferred Gates}
+\label{sec:doctrine-open-deferred}
+
+Three gate conditions are deferred pending GAP\_001 resolution:
+
+\begin{enumerate}
+  \item \textbf{Algorithm Execution Gates}: No algorithm family may be declared ALIVE until
+    wasm4pm implements the bridge intake for that family's \texttt{GraduationCandidate}.
+    All fifteen families are currently deferred.
+  \item \textbf{Decommission and Archive Receipts}: The two terminal lifecycle stages have
+    no receipt-bearing execution evidence. A process instance cannot be declared fully closed
+    until closure receipts exist for these stages.
+  \item \textbf{M\&A Deck Manufacturing Receipt}: The five board-admissibility criteria
+    for the M\&A deck manufacturing algorithm are specified in doctrine, but no deck has been
+    manufactured with a receipted output tracing to admitted process evidence. This is the
+    highest-value projection surface and the highest-priority deferred manufacturing gate.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:doctrine-open-risks}
+
+Three research risks are identified from the doctrine corpus evidence:
+
+\paragraph{Risk 1 --- Two-Universe Divergence.} The longer wasm4pm and wasm4pm-compat evolve
+independently, the larger the translation cost of closing GAP\_001. If wasm4pm adds
+algorithm functions that take raw \texttt{EventLog} parameters, and wasm4pm-compat adds new
+witness markers, the bridge will require increasingly complex type-erasure logic. Every
+release cycle without GAP\_001 closure increases the structural debt.
+
+\paragraph{Risk 2 --- Doctrine Inflation Without Execution.} The doctrine corpus is growing:
+34 files and 25 examined for this chapter. If doctrine continues to be manufactured without
+corresponding execution receipts, the gap between the formal specification and the operational
+surface will widen. Doctrine that cannot be actuated is documentation. The autonomic
+actuation law is clear: knowledge that cannot actuate with receipt and replay is PARTIAL.
+
+\paragraph{Risk 3 --- Partial Heuristics Miner Structural Coverage.} The Heuristics Miner
+(Weijters and Ribeiro 2011) requires a \texttt{CausalNet} structural type that is not yet
+typed in compat. Unlike other algorithm families where compat structural coverage is complete,
+this family has a structural gap \emph{before} the execution gap. If the algorithm taxonomy
+is cited in M\&A diligence without this distinction, the claim would be overstated.
+
+\subsection{Next Receipted Work}
+\label{sec:doctrine-open-next}
+
+The six authorized downstream workflows from \texttt{DOWNSTREAM\_AUTHORIZATION\_LAW.md}
+constitute the next receipted work program. In evidential priority order:
+
+\begin{enumerate}
+  \item \textbf{GAP\_001 Close Plan (prerequisite for all others)}: Design and document the
+    bridge layer between wasm4pm-compat's \texttt{GraduationCandidate\textless{}T\textgreater{}}
+    and wasm4pm's algorithm intake. Commit with type: \texttt{gap} and
+    \texttt{research-compat}. Receipt: commit hash referencing \texttt{GAP\_001} in the gap
+    document.
+  \item \textbf{wasm4pm-compat Gap Close}: Close all structural gaps in the compat type
+    surfaces, including \texttt{CausalNet}, \texttt{DivergenceWitness},
+    \texttt{ConvergenceWitness}, and \texttt{OcDfgEdge\textless{}ObjectType\textgreater{}}.
+    Gate: all trybuild compile-fail and compile-pass fixtures must be receipted.
+  \item \textbf{wasm4pm Refactor}: Align wasm4pm algorithm functions to accept
+    \texttt{Evidence\textless{}T, Admitted, W\textgreater{}} rather than raw
+    \texttt{EventLog}. Replace \texttt{ValidationError(String)} with named law types.
+    Gate: wasm4pm-compat ALIVE gate must pass after refactor.
+  \item \textbf{PM4Py Benchmark Comparison}: For each PM4Py capability, produce the
+    $\Omega(c)$ mapping per Algorithm 2 (PM4Py Oracle Mapping). Gate:
+    \texttt{BlueRiverReady(c)} must hold for all covered capabilities.
+  \item \textbf{ggen Projection Target Expansion}: Expand ggen projection targets to cover all
+    twelve lifecycle stages and all board projection claim types. Gate: projection outputs
+    must be traceable to receipted process evidence.
+  \item \textbf{M\&A Deck Manufacturing}: Manufacture a full M\&A-ready deck where every
+    slide claim satisfies the six board-admissibility criteria. Gate: every $B_i$ must
+    satisfy Evidence$_i$, TypeLaw$_i$, Receipt$_i$, Replay$_i$, Standard$_i$, and
+    Lifecycle$_i$. Receipt: deck manufacturing receipt referencing all supporting process
+    evidence.
+\end{enumerate}
+
+Each item in this list is authorized by the sealed ALIVE\_001 checkpoint and must produce
+receipts traceable to that checkpoint. No item may be initiated without first verifying the
+seal status. No item may be declared complete without a commit receipt referencing
+ALIVE\_001.

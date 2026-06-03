@@ -1,0 +1,85 @@
+% FILE: 01_research_question.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Research Question}
+\label{sec:schemas-research-question}
+
+\subsection{Problem Statement}
+\label{sec:schemas-research-question-problem}
+
+Process intelligence claims made in M\&A due diligence contexts carry financial consequences.
+A claim that annual EBITDA will increase by \$1,250,000 via purchase order rework reduction
+(as asserted in \texttt{rec\_ebitda\_rework\_001.json}) is not an opinion---it is a quantified
+projection that a board will rely upon in approving or rejecting a transaction. The problem is
+that no structural contract previously existed between the process mining execution layer and the
+board presentation layer. Claims could be assembled, formatted, and presented without any
+mechanism to verify that the underlying event log hash, process model hash, conformance metric,
+and cryptographic signature were present and structurally valid.
+
+This gap is not merely an engineering inconvenience. Under the Van der Aalst doctrine applied in
+this research program, a model-vs-log mismatch is a \emph{defect}, not a discrepancy. By
+extension, a claim that cannot be structurally validated against a schema is a defect in the
+evidence chain, regardless of whether the underlying numbers are correct.
+
+The research question therefore is: \emph{what is the minimal, mechanically enforceable structural
+contract that makes a process intelligence receipt admissible as board-level M\&A evidence?}
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:schemas-research-question-old-regime}
+
+The old-regime assumption is that process mining outputs---fitness scores, conformance verdicts,
+variant analyses---are self-evidencing. Under this assumption, a practitioner produces a report
+that asserts a fitness value of 0.982 and a precision of 0.945, and the board accepts those
+numbers because the practitioner is credentialed and the tool is reputable. There is no structural
+requirement that the assertion be linked to a specific event log by a cryptographic hash, that the
+process model be identified by content address, or that the entire payload be signed by a verifiable
+key.
+
+This assumption fails in adversarial contexts. An auditor representing a counterparty in an
+M\&A transaction cannot re-execute the analysis unless the event log is identified by hash and the
+query is specified by URI. A court cannot evaluate the integrity of the claim without a signature.
+A seller cannot defend a claim against a buyer's challenge without a receipt that is independent
+of the seller's own assertions.
+
+The schemas project challenges this assumption directly: it asserts that a receipt without a
+structural contract is not a receipt---it is an informal note.
+
+\subsection{Hypothesis}
+\label{sec:schemas-research-question-hypothesis}
+
+The hypothesis is that a JSON Schema with \texttt{patternProperties} keyed on UUIDv4 identifiers,
+requiring BLAKE3 hashes of both the event log and the process model, a typed query definition with
+an engine enum constraining execution to \texttt{wasm4pm} or \texttt{pm4py}, a verification status
+enum, and a 128-hex Ed25519 signature, constitutes a sufficient structural contract for
+board-admissible process intelligence receipts.
+
+Sufficiency here means: any receipt conforming to this schema carries enough information for an
+independent auditor to re-execute the query on the identified event log, compare the result to the
+stored verification metrics, verify the cryptographic signature against a known public key, and
+render a conformance verdict without relying on the original analyst's testimony.
+
+This hypothesis is supported by the five sample receipts in the \texttt{receipts/} directory, each
+of which conforms to the schema by inspection and carries sufficient content for independent
+re-execution---subject to the caveat that no automated CI enforcement existed at time of assessment.
+
+\subsection{Success Criteria}
+\label{sec:schemas-research-question-success}
+
+Success is defined across three levels:
+
+\begin{enumerate}
+  \item \textbf{Structural completeness}: Every required field is present in the schema, and the
+    field patterns (64-hex BLAKE3, 128-hex Ed25519, UUIDv4) are tight enough to reject malformed
+    values without accepting invalid content.
+  \item \textbf{Receipt conformance}: All five production receipts (\texttt{rec\_ebitda\_rework\_001.json}
+    through \texttt{rec\_residual\_standard\_005.json}) conform to the schema, demonstrating that
+    the contract is practicable for real M\&A deck assertions.
+  \item \textbf{Pipeline integration}: The schema is referenced by the M\&A deck rendering authority
+    assessment (dated 2026-06-01) and by the slide-to-receipt map, establishing that the schema is
+    the governing contract for the full seven-step rendering pipeline---not a standalone document.
+\end{enumerate}
+
+Levels 1 and 2 are met as of the PARTIAL status assessment. Level 3 is met at the documentation
+level. The remaining gap is Level~0: no automated schema validation exists at commit time, meaning
+the contract is not mechanically enforced in continuous integration.

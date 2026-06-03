@@ -1,0 +1,70 @@
+\chapter{\texttt{ggen} and Open Ontologies}
+\label{chap:ggen}
+
+\section{The Artifact Manufacturing Problem}
+
+The Chatman Equation requires a projection function $\mu$ that is deterministic, auditable, and bounded. In software terms, this means that the transformation from observed operational state to admissible action basis must be:
+
+\begin{itemize}
+  \item Defined by inspectable rules, not by model weights.
+  \item Reproducible: the same input produces the same output on every evaluation.
+  \item Traceable: the output artifact is linked to the law that produced it, so that the artifact's provenance is recoverable.
+\end{itemize}
+
+A prediction system cannot satisfy these requirements. Its transformation is determined by weights that are not human-inspectable, its outputs are probabilistic rather than deterministic, and its output artifacts carry no recoverable link to the rules that shaped them.
+
+\texttt{ggen} --- the graph-query-template manufacturing engine --- was built to satisfy these requirements. It is the implementation of $\mu$ for the artifact-manufacturing domain. It manufactures artifacts under law: given a graph query and a template, it produces an artifact that is traceable to both, and that cannot be produced in a way that violates the law encoded in the query.
+
+\section{Graph Law and SPARQL}
+
+The law in \texttt{ggen} is encoded in SPARQL queries against RDF graphs. SPARQL is the W3C standard query language for the Resource Description Framework. It operates on triple-store graphs --- collections of subject-predicate-object statements --- and returns structured result sets that can be bound to templates.
+
+The choice of SPARQL and RDF is not incidental. It reflects a commitment to open, inspectable, standardized meaning-bearing infrastructure. RDF triples are human-readable. SPARQL queries are human-readable. A manufacturing process encoded in SPARQL against an RDF graph can be audited by any party with access to the graph and the queries. It does not require a proprietary runtime. It does not require model weights. It requires only the graph, the query, and the template.
+
+This is the open-ontology commitment: the meaning-bearing layer of the manufacturing process is public, standardized, and auditable. Chapter~\ref{chap:ggen} and the \texttt{research-open-ontologies} project together constitute the research program's formalization of this commitment.
+
+In practice, \texttt{ggen}'s SPARQL queries traverse a process graph --- a graph whose nodes are process concepts (artifacts, agents, stages, constraints) and whose edges are process relationships (produces, requires, precedes, satisfies). The query returns bindings: specific values for template variables. The template is a Tera template (Rust's standard templating engine), which receives the bindings and materializes the artifact.
+
+\section{Tera Templates and Artifact Manufacturing}
+
+Tera templates are the output layer of \texttt{ggen}. A Tera template defines the structure of the artifact to be manufactured: its sections, its required fields, its formatting conventions. The template receives bindings from the SPARQL query and materializes them into a concrete artifact.
+
+The manufacturing process is therefore:
+
+\[
+\text{Graph} + \text{SPARQL Query} \xrightarrow{\mu} \text{Bindings} + \text{Tera Template} \xrightarrow{\text{materialize}} \text{Artifact}
+\]
+
+The artifact is not manufactured by a prediction system. It is manufactured by a law: the SPARQL query encodes the law, the graph provides the evidence, and the template defines the form. If the graph does not contain the required evidence, the query returns no bindings, and no artifact is manufactured. This is the manufacturing analog of the Chatman Equation's admissibility condition: if $O^{*}$ is insufficient, $A$ is not admitted.
+
+The \texttt{ggen} project's current status is \textsc{partial}. The core manufacturing machinery exists and has been demonstrated to operate. The gap between \textsc{partial} and \textsc{alive} involves the completeness of the receipt chain for \texttt{ggen}'s own outputs --- a recursive requirement that is discussed in the next section.
+
+\section{Recursive Manufacturing: \texttt{ggen} Operating on Itself}
+
+The most distinctive feature of \texttt{ggen} as a research artifact is its recursive structure: \texttt{ggen} manufactures artifacts from graph law, and some of those artifacts are \texttt{ggen} configurations. The engine operates on itself.
+
+This recursion is not a parlor trick. It is a structural requirement for a manufacturing system that claims to satisfy the Chatman Equation. If \texttt{ggen}'s own configurations were authored manually --- by a human or a prediction system --- they would not be traceable to the graph law that governs them. They would be assertions, not receipted artifacts. To close this loop, \texttt{ggen} must be able to manufacture its own configuration artifacts from the same SPARQL-plus-template machinery it uses to manufacture all other artifacts.
+
+The phase-2 index in \texttt{ggen/.ggen/receipts/phase-2-index.json} documents the state of this recursive manufacturing operation. The receipts index records which \texttt{ggen} configurations have been manufactured by \texttt{ggen} itself, which graph law was applied, and which templates were used. This is the receipt chain for \texttt{ggen}'s own operation.
+
+The significance of recursive manufacturing extends beyond \texttt{ggen}. It establishes a general principle: a manufacturing system whose own configurations are not manufactured under law is a system with an unverifiable bootstrap. The configurations could have been produced by any process, including manual authoring or prediction. Recursive manufacturing closes the bootstrap: the manufacturing law applies to the manufacturing system's own configurations, not just to its outputs.
+
+\section{Open Ontologies: Public Ontology Surfaces}
+
+The \texttt{research-open-ontologies} project is the research program's investigation of publicly available ontology surfaces --- formal, machine-readable descriptions of domain concepts and their relationships, published under open licenses.
+
+Open ontologies are significant for the process-intelligence program for three reasons.
+
+First, they provide a shared vocabulary for meaning-bearing assertions. When a process event is described using terms from a public ontology --- a W3C standard, a schema.org type, an industry ontology --- the meaning of those terms is publicly documented and not subject to private redefinition. This supports the auditability requirement: a third party can verify the meaning of a process event without access to proprietary documentation.
+
+Second, they provide a basis for cross-domain interoperability. An artifact manufactured using terms from a public ontology can be understood by any system that implements the ontology. This is the foundation for the industry-complete architecture described in Chapter~\ref{chap:industry_architecture}: industry-specific process intelligence built on open ontological foundations that can interoperate across the NAICS classification space.
+
+Third, they provide a gravity field for standards alignment. The \texttt{standards/} project (\textsc{alive}) maps public standards --- OCEL, BPMN, XES, ISO 15926, SOC 2, GDPR --- to the process-intelligence infrastructure. Open ontologies that are aligned with these standards provide a path from process events to compliance evidence that does not require proprietary translation layers.
+
+The \texttt{research-open-ontologies} project is currently \textsc{partial}. The investigation of specific ontology surfaces --- including schema.org, the Financial Industry Business Ontology (FIBO), and domain-specific public ontologies --- is ongoing. The gap between \textsc{partial} and \textsc{alive} is documented, and the path involves confirming which ontology surfaces are sufficiently stable and authoritative to ground production-grade process-intelligence claims.
+
+\section{The Meaning-Bearing Layer}
+
+The combination of \texttt{ggen} and open ontologies constitutes the meaning-bearing layer of the research program. ``Meaning-bearing'' is used here with precision: it refers to the property that artifacts and assertions carry recoverable, verifiable references to their ontological grounding. A manufactured artifact that references a public ontology term is meaning-bearing because its meaning can be recovered from a public, inspectable source. A predicted artifact that uses similar vocabulary without ontological grounding is not meaning-bearing in this sense --- its meaning is a function of statistical co-occurrence in training data, not of recoverable reference.
+
+This distinction is the implementation-layer analog of the prediction-vs-coordination distinction established in Chapter~\ref{chap:prediction_not_coordination}. Prediction produces vocabulary. Manufacturing under law produces meaning-bearing artifacts. The manufacturing law is encoded in SPARQL. The meaning is grounded in open ontologies. The result is an artifact whose provenance, meaning, and admissibility are all recoverable --- the full Chatman Equation in operational form.

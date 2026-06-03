@@ -1,0 +1,74 @@
+\section{Lineage and Context}
+\label{sec:checkpoints-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:checkpoints-lineage-2016}
+
+The research lineage begins with a 2016 language-model experiment whose finding was that local text
+imitation does not conserve consequence. A model that reproduces the surface patterns of a corpus
+does not reproduce the causal structure that produced the corpus. Predictions can be locally
+plausible and globally incoherent. This lesson established the foundational distinction between
+description and consequence that runs through the entire thesis: describing a process is not the
+same as demonstrating that the process is sound.
+
+The checkpoint ledger is a direct institutional response to this lesson. The ALIVE verdict mechanism
+was designed specifically to prevent the research program from falling into the same trap at the level
+of knowledge claims. A research report that \emph{describes} a doctrine does not constitute evidence
+that the doctrine has been manufactured at minimum viable density. The gate criteria quantify the
+minimum density. The audit verification script in RESEARCH\_CRITERIA.md can be re-run at any time to
+confirm that the counts remain valid. The ledger converts the 2016 lesson from a philosophical caution
+into an operational constraint on the research program itself.
+
+\subsection{Enterprise Process Gap}
+\label{sec:checkpoints-lineage-enterprise-gap}
+
+The enterprise context that motivates process intelligence research is the gap between declared
+processes and enacted processes in production environments. Organizations describe their workflows in
+BPMN diagrams, SLA documents, and governance frameworks. Actual execution departs from these
+declarations in ways that are invisible unless process-mining tools are applied to the execution
+logs.
+
+The checkpoint ledger addresses an analogous gap at the research program level. The declared
+research process is the gate criteria table: twelve categories, each with a minimum count. The
+enacted research process is the actual artifact inventory at the moment of assessment. The ledger
+makes the gap visible by recording both the declared threshold and the actual count for each gate.
+Where the count exceeds the threshold, the gate passes. Where it falls short, the gate fails and the
+verdict is PARTIAL. The enterprise process gap is not merely a domain problem to be studied; it is
+a pattern that the research program must not reproduce in its own operation.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:checkpoints-lineage-chatman-equation}
+
+The Chatman Equation $A = \mu(O^{*})$ expresses the thesis that any admissible process artifact is a
+function of the organizational substrate $O^{*}$ applied through the manufacturing operator $\mu$.
+In the checkpoint context, the admissibility boundary is stated formally as $R \vdash P_i = \mu(O^*, T, L)$,
+where $R$ is the research program's type-law authority, $P_i$ is the process artifact being admitted,
+$T$ is the type-law surface, and $L$ is the event log evidence. This invariant is listed as the first
+mathematical invariant in PROCESS\_INTELLIGENCE\_ALIVE\_001.md and is marked verified at the time of
+sealing.
+
+The checkpoint system operationalizes the Chatman Equation by requiring that every ALIVE verdict be
+traceable to a manufacturing event with a named witness. The admissibility boundary is not satisfied
+by assertion; it is satisfied by the presence of artifacts whose counts can be verified against the
+declared thresholds. The gate criteria table is the $O^{*}$ substrate encoded as a minimum density
+specification. The artifact inventory is the $\mu$ application result. The ALIVE verdict is the
+admission decision.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:checkpoints-lineage-receipts-replay}
+
+Receipts and replay are the two mechanisms by which process evidence acquires its authority in the
+thesis architecture. A receipt is a typed, witnessed, bound evidence artifact: it records what was
+manufactured, under which witness marker, and against which criterion. Replay is the ability to
+re-execute a manufacturing pipeline and verify that the output matches the receipt. Together they form
+the evidence chain that the checkpoint ledger references.
+
+Every ALIVE verdict in the ledger cites at least one receipt. The RECEIPT\_REGISTRY.md indexes seven
+canonical research program receipts: PAPER\_CANON\_RECEIPT, PM4PY\_ORACLE\_RECEIPT,
+WASM4PM\_GAP\_RECEIPT, LIFECYCLE\_RECEIPT, MA\_RECEIPT, STANDARDS\_RECEIPT, and
+ADVERSARIAL\_RECEIPT. Each receipt names the workflow that manufactured it, the witness law it
+satisfies, the result type, the criteria met, and the gaps remaining. The SUBSTRATE\_COMPLETE\_001
+checkpoint extends this pattern to BLAKE3-sealed generation receipts for five wasm4pm core modules:
+mining (839 lines), conformance (647 lines), replay (467 lines), lifecycle (839 lines), and the Blue
+River Dam orchestrator (629 lines). The receipt chain is the audit trail that makes ALIVE verdicts
+replayable rather than merely asserted.

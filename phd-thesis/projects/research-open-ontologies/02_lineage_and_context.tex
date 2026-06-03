@@ -1,0 +1,86 @@
+% FILE: 02_lineage_and_context.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Lineage and Context}
+\label{sec:research-open-ontologies-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:research-open-ontologies-lm-lesson}
+
+The 2016 language-model experiment established that local text imitation does not conserve
+consequence. A system that predicts the next token in a process description does not thereby
+understand the process. Predictions are statistically plausible but causally ungrounded: a
+predicted process step has no claim on the event log, no receipt tying it to an observed
+execution, and no typed witness connecting it to a formal theory of process.
+
+The open-ontologies project is the direct architectural response to this lesson at the
+knowledge representation layer. Rather than relying on statistical patterns over text, it
+requires that every process intelligence concept --- every class, property, individual, and
+relationship --- be expressed as a typed RDF triple in a public standard vocabulary or in a
+local extension namespace that is explicitly declared and referenced. A concept that cannot
+be expressed as a triple cannot be queried, cannot be validated by SHACL, and cannot serve
+as the input to a receipted manufacturing rule. This is not a style preference; it is an
+architectural enforcement of the consequence-conservation requirement exposed by the 2016
+experiment.
+
+\subsection{Enterprise Process Gap}
+\label{sec:research-open-ontologies-enterprise-gap}
+
+The enterprise process gap is the observation that organizations generate vast quantities of
+event data but lack the vocabulary infrastructure to make auditable claims about what that
+data proves. Fitness scores are reported in dashboards without naming the conformance algorithm,
+the reference model, or the event log used. M\&A due diligence documents claim ``process
+efficiency'' without specifying what process model was verified, at what fitness threshold,
+against which event log, with what receipt.
+
+The open-ontologies project addresses this gap by defining a shared vocabulary that makes
+such claims expressible as structured assertions. \texttt{wasm4pm:ConformanceVerdict}
+requires \texttt{fitness >= 0.95} and \texttt{precision >= 0.90} backed by a
+\texttt{BLAKE3 CryptographicReceipt}. \texttt{ma:BoardClaim} is an OWL class hierarchy
+with subclasses \texttt{SynergyProjection}, \texttt{OperationalDebtClaim},
+\texttt{IntegrationRiskClaim}, \texttt{ProcessAssetClaim}, and \texttt{ControlClaim} ---
+each requiring a named receipt type and a named witness marker before the claim is
+board-admissible. Without this ontology layer, the claims remain informal and therefore
+inadmissible under the program COVENANT.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:research-open-ontologies-chatman-equation}
+
+The Chatman Equation, $A = \mu(O^*)$, defines process intelligence as the composition of
+admissible evidence ($A$) with the manufacturing function ($\mu$) applied to the open-source
+manufacturing platform ($O^*$). The open-ontologies project provides the type system that
+makes ``admissible'' a formal predicate rather than a subjective judgment.
+
+Specifically: evidence $A$ is admissible in the sense of the Chatman Equation if and only if
+it can be expressed as a collection of RDF triples conforming to the shapes defined by the
+SHACL constraints in the corpus, grounded in a named \texttt{compat:WitnessMarker} from the
+witness lattice, and accompanied by a BLAKE3 receipt. The open-ontologies corpus therefore
+instantiates the admissibility predicate of the equation. It is the formal interface between
+raw execution evidence (OTel traces, event logs) and the manufacturing function $\mu$ that
+transforms evidence into board-admissible artifacts.
+
+The federated dependency graph's \texttt{gate\_pass: true} status (Phase~4, 2026-06-01) is
+therefore not merely a technical validation result; it is the certification that the
+admissibility predicate of the Chatman Equation is currently satisfiable for the ontology corpus.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:research-open-ontologies-receipts-replay}
+
+The receipt chain is the cryptographic enforcement mechanism for the admissibility predicate.
+Seven canonical receipts in \path{receipts/RECEIPT\_REGISTRY.md} certify the major research
+program milestones: PAPER\_CANON, PM4PY\_ORACLE, WASM4PM\_GAP, LIFECYCLE, MA, STANDARDS, and
+ADVERSARIAL. Each receipt names the operator that produced it, the named witness it was
+produced under, and the open items that remain.
+
+The open-ontologies project sits at the junction between the receipt chain and the ontology
+corpus. The ggen manufacturing pipeline (declared in \path{ggen/ggen.toml}) uses BLAKE3
+checksums as its \texttt{checksum\_algorithm} and \texttt{cryptographic-chain} as its
+\texttt{proof\_format}. This means every artifact manufactured by a SPARQL-to-Tera rule is
+itself a node in a receipted chain that can be replayed: given the same ontology graph and
+the same SPARQL query, the same artifact must be reproducible with the same BLAKE3 hash.
+
+Replay is the Van der Aalst Constitution's requirement applied to manufacturing: do not trust
+the code path that claims to have manufactured an artifact; trust only the evidence that the
+artifact can be re-derived from a conforming knowledge source. The open-ontologies project
+provides that conforming knowledge source.

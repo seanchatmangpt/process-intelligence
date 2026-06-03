@@ -1,0 +1,100 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Project Identity Chapter
+% Thesis Role: semconv-to-witness-lattice-codegen-experiment
+
+\section{Project Identity}
+\label{sec:otel-weaver-exp-004-registry-to-witness-identity}
+
+\subsection{Purpose}
+\label{sec:otel-weaver-exp-004-registry-to-witness-purpose}
+
+Experiment EXP-004 exists to answer a precise engineering question embedded in the broader
+research program: can the structural definitions encoded in an OpenTelemetry Weaver
+convention registry be mechanically transformed into Rust types that satisfy the
+\texttt{wasm4pm-compat} type-court boundary at compile time, without hand-written foreign
+function interface code?
+
+The experiment demonstrates a Rust-based code generation pipeline that reads a resolved
+OTel Weaver convention registry (\texttt{process\_pi.yaml}), parses its JSON schema
+representation, identifies activity groups keyed on \texttt{process.pi.activity}, and
+materializes type-safe \texttt{ActivityWitness} structs implementing the \texttt{Lattice}
+trait with BLAKE3-sealed witness fields. The output artifact,
+\texttt{src/generated\_witnesses.rs}, enforces compile-time structural conformity between
+OTel telemetry feedstock and the \texttt{wasm4pm-compat} type-court boundary, eliminating
+an entire class of manual FFI coding errors.
+
+The practical claim is narrow but load-bearing: if the convention registry changes, the
+generator can be re-executed and any downstream code that previously compiled against the
+old witnesses will fail to compile against the new ones. Schema drift becomes a compile
+error rather than a silent runtime defect. This property is stated in the project
+\texttt{README.md}: ``This ensures that any modifications to the telemetry definitions
+(feedstock) are instantly propagated as compiler errors if the \texttt{wasm4pm-compat}
+court tries to use invalid witness mappings.''
+
+\subsection{Repository Surface}
+\label{sec:otel-weaver-exp-004-registry-to-witness-repo}
+
+The experiment resides at:
+\begin{verbatim}
+/Users/sac/process-intelligence/otel-weaver/experiments/
+    exp-004-registry-to-wasm4pm-compat-witness/
+\end{verbatim}
+
+The directory surface comprises three substantive artifacts: the \texttt{README.md}
+documenting the full architectural pipeline and generator logic; \texttt{codegen/generator.rs},
+the executable Rust generator; and \texttt{src/generated\_witnesses.rs}, the materialized
+output artifact stamped with generation timestamp \texttt{2026-06-01T10:10:51-07:00}.
+
+No \texttt{Cargo.toml} manifest exists within the experiment directory. The generator
+carries \texttt{serde} and \texttt{serde\_json} as implicit dependencies, meaning the
+stated compilation path (\texttt{rustc --crate-type bin -O codegen/generator.rs}) is
+architecturally incomplete as a standalone crate. The generator operates as a research
+artifact within the broader \texttt{wasm4pm} ecosystem rather than as a standalone compiled
+binary. This limitation is documented explicitly in the open questions
+(Section~\ref{sec:otel-weaver-exp-004-registry-to-witness-gaps}).
+
+EXP-004 is one of five experiments in the \texttt{otel-weaver} suite. Its sibling
+experiments address schema invariance and drift management (EXP-002), live-check-to-refusal
+type gating (EXP-003), and OTel Collector ingestion configuration (EXP-005).
+
+\subsection{Primary Research Role}
+\label{sec:otel-weaver-exp-004-registry-to-witness-role}
+
+Within the dissertation, EXP-004 occupies the role of
+\emph{semconv-to-witness-lattice-codegen-experiment} as declared in
+\texttt{project\_manifest.yaml}. It demonstrates that process-evidence witnesses are not
+hand-crafted abstractions but artifacts that can be manufactured from machine-readable
+convention definitions. This shifts the epistemological weight of the architecture: rather
+than trusting that a human developer correctly transcribed OTel field names into Rust
+structs, the type system itself enforces fidelity between the convention registry and the
+court boundary.
+
+The research surfaces covered by this experiment --- witness lattice, type law, and
+convention mapping --- connect the feedstock layer (OTel Weaver) to the court layer
+(\texttt{wasm4pm-compat}) through a code-generation step that is itself auditable and
+re-executable. This traceability is the contribution the experiment makes to the
+manufacturing architecture thesis.
+
+\subsection{Key Artifacts}
+\label{sec:otel-weaver-exp-004-registry-to-witness-artifacts}
+
+\begin{itemize}
+  \item \textbf{\texttt{codegen/generator.rs}} --- The Rust executable that parses the
+    resolved schema JSON and materializes \texttt{ActivityWitness} and \texttt{Lattice}
+    definitions. Filters on group id \texttt{process.pi.activity}; maps attribute ids to
+    Rust field names via string replacement.
+  \item \textbf{\texttt{src/generated\_witnesses.rs}} --- The materialized Rust output.
+    Confirmed to exist on disk matching the README specification exactly. Header comment
+    carries generation timestamp \texttt{2026-06-01T10:10:51-07:00} as the sole provenance
+    record.
+  \item \textbf{\texttt{semconv/process\_pi.yaml}} (EXP-001) --- The source OTel Weaver
+    registry defining \texttt{process.pi.activity} with attributes
+    \texttt{process.pi.instance\_id}, \texttt{process.pi.witness.id}, and
+    \texttt{process.pi.witness.hash}.
+  \item \textbf{Checkpoint \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}} --- Parent
+    ecosystem checkpoint, status COMPLETE \& ACTIVE, sealed with SHA-256 hash
+    \texttt{e6bc59b8d210e309228d4bf09c0fa4db55fe310efc35ad1a89b3f021e85a67f1}.
+  \item \textbf{Checkpoint \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}} --- Runtime
+    integration checkpoint reporting 62 tests passing across \texttt{wasm4pm},
+    \texttt{wasm4pm-compat}, and \texttt{blue\_river\_dam} packages.
+\end{itemize}

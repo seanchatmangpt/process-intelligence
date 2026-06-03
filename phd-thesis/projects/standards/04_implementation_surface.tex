@@ -1,0 +1,117 @@
+% FILE: 04_implementation_surface.tex
+% Project: standards
+% Thesis Role: public-standards-compliance-and-gravity-field-mapping
+
+\section{Implementation Surface}
+\label{sec:standards-impl}
+
+\subsection{Source Files}
+\label{sec:standards-impl-sources}
+
+The 52 source files of the standards project are organized into four functional categories.
+All paths are absolute under \texttt{/Users/sac/process-intelligence/standards/}.
+
+\paragraph{Standard placement files (16 files).}
+Each placement file is a fully realized schema with no stubs, as confirmed by the
+graduation gate. Representative placement files include:
+\begin{itemize}
+  \item \texttt{xes\_process-intelligence\_placement.md}: XES (IEEE 1849) ontological
+        mapping, trace hash chaining formula, chronological invariance constraint, XES-to-OCEL
+        and OCEL-to-XES loss policies with signed LossReport schemas.
+  \item \texttt{ocel\_process-intelligence\_placement.md}: OCEL 2.0 bipartite graph
+        formulation $\mathcal{L}=(\mathcal{E}, \mathcal{O}, \text{E2O}, \text{O2O}, \Delta)$,
+        dimensional schema $(\mathcal{OT}, \mathcal{AT}, \lambda)$, SHACL constraint
+        references, and multi-object alignment rules.
+  \item \texttt{petri\_net\_placement.md}: Places, transitions, arcs, enabling and firing
+        rules, 1-boundedness enforcement.
+  \item \texttt{wf-net\_placement.md}: Source/sink place requirements, short-circuited
+        liveness, soundness criteria grounded in van der Aalst (1998).
+  \item \texttt{declare\_placement.md}: 21 LTL$_f$ Declare templates, FSA trace
+        acceptance, \texttt{DeclareTemplate} enum variants, violation records.
+\end{itemize}
+
+\paragraph{Strategic doctrine files (7 files).}
+These files elaborate the competitive and mathematical implications of the standards
+registry:
+\begin{itemize}
+  \item \texttt{PROCESS\_STANDARDS\_GRAVITY\_FIELD.md}: The gravitational model; 12+
+        public standards as the center around which all process intelligence capability
+        orbits.
+  \item \texttt{reverse-lock-in.md}: $W_{\text{std}}$ as Nash equilibrium cage; formal
+        competitor behavioral restriction; nullification event ledger schema.
+  \item \texttt{reverse-porter-five.md}: Inversion of all five Porter competitive forces
+        via Full-Lifecycle Process Intelligence; game-theoretic equilibrium analysis.
+  \item \texttt{MAPE\_K\_INTEGRATION.md}: Monitor=OTel ingestion, Analyze=streaming
+        conformance, Plan=prescriptive shapes, Execute=\texttt{OcelEvent} actuation.
+\end{itemize}
+
+\paragraph{M\&A integration files (4 files).}
+\begin{itemize}
+  \item \texttt{public\_standards\_to\_m\&a\_claims.md}: Board-level assertion table;
+        Slide-to-Receipt bridge formula; buyer replication requirements.
+  \item \texttt{public\_standards\_to\_blue\_river\_dam.md}: Validation gate execution
+        protocol; dynamic threshold enforcement; POWL Projection Law.
+  \item \texttt{STANDARDS\_TO\_BOARD\_CLAIMS.md}: Cross-walk from standards metrics
+        to board-admissible assertions.
+  \item \texttt{public\_standards\_to\_lifecycle\_actuation.md}: Actuation transaction
+        JSON with \texttt{preflight\_soundness\_proof} signature.
+\end{itemize}
+
+\paragraph{Adversarial and verification files.}
+\begin{itemize}
+  \item \texttt{ocel-adversarial-gravity.md}: Adversarial test report OCEL-XES-ADV-V30.1.1.
+  \item \texttt{xes-cryptographic-tombstoning.md}: XES GDPR/RTBF compliance gap analysis;
+        \texttt{Event<Encrypted<PII>> $\to$ Event<Tombstoned<BLAKE3\_Receipt>>} typestate
+        injection specification.
+  \item \texttt{wf-net\_verification\_specification.md} v30.1.2: Karp-Miller Coverability
+        Graph construction; Short-Circuited Petri Net analysis; Rust engine blueprint.
+\end{itemize}
+
+\subsection{Commands}
+\label{sec:standards-impl-commands}
+
+The standards project does not expose a build artifact or CLI binary. Its outputs are
+markdown placement files, JSON schemas, and checkpoint ledger entries. The canonical
+verification command is to run the conformance checker in wasm4pm against an event log
+with a placement file's thresholds as configuration. The audit matrix at
+\texttt{audit\_\_standards\_coverage.md} serves as the human-readable verification record;
+the checkpoint JSON block in \texttt{checkpoint\_\_public\_standards\_crosswalk\_complete.md}
+serves as the machine-readable ledger entry.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:standards-impl-data}
+
+\paragraph{JSON Schema surface.}
+The OTel trace integration schema (\texttt{otel\_trace\_integration\_schema.json}) is a
+machine-validatable JSON Schema. It defines the \texttt{blake3\_receipt} field as a
+required property of each OTel span, typed as a 64-character hexadecimal string. The
+\texttt{event\_chain\_root} property captures the BLAKE3 hash of the entire trace, providing
+a single-field integrity check for the complete span sequence.
+
+\paragraph{Ledger block schema.}
+The checkpoint file defines the ledger block schema with the following required fields:
+\texttt{checkpoint\_id}, \texttt{timestamp}, \texttt{status}, \texttt{standards\_count\_verified},
+\texttt{standards\_directory\_hash} (BLAKE3), and \texttt{witness\_signature} (ED25519).
+The WF-net decommissioning receipt example extends this schema with process-specific
+fields: \texttt{historical\_replay\_fitness: 0.978}, \texttt{precision: 0.912}, and
+\texttt{total\_recorded\_cases: 124500}.
+
+\paragraph{LossReport schema.}
+Every trans-standard conversion emits a JSON \texttt{LossReport} with: \texttt{loss\_report\_id},
+\texttt{timestamp}, \texttt{source\_format}, \texttt{target\_format}, \texttt{structural\_changes}
+(sub-object naming per-conversion-type quantities such as discarded O2O links, pruned
+E2O links, synthetic objects materialized), and \texttt{witness\_signature}.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:standards-impl-templates}
+
+The project's primary rendered artifacts are the placement files themselves---each is a
+fully realized document rather than a template. The \texttt{docs-law\_\_standards\_readme.md}
+defines the ledger block schema and serves as the authoritative reference for the
+directory's structure and conventions.
+
+The ggen projection map (\texttt{public\_standards\_to\_ggen\_projections.md}) defines
+the mapping from standard constructs to Rust code artifacts: Petri net places project
+to Rust structs, BPMN gateways project to \texttt{match}/\texttt{join!} patterns, and
+Declare templates project to FSA implementations. These projections are the bridge from
+the standards registry to executable wasm4pm code.

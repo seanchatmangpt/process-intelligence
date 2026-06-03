@@ -1,0 +1,117 @@
+% FILE: 04_implementation_surface.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+
+\section{Implementation Surface}
+\label{sec:sources-wasm4pm-compat-implementation}
+
+\subsection{Source Files}
+\label{sec:sources-wasm4pm-compat-implementation-sources}
+
+The implementation surface comprises 19 files totaling 3{,}100+ lines as certified by
+\texttt{DELIVERY\_CHECKLIST.md} (2026-05-31). The key Rust modules are:
+
+\textbf{\texttt{compat/src/lib.rs}}: The public API surface. Declares \texttt{\#![forbid(unsafe\_code)]},
+re-exports from \texttt{graduation} and \texttt{manufacturing} modules. Public exports
+include \texttt{GraduateToWasm4pm}, \texttt{GraduationCandidate}, \texttt{GraduationReason},
+\texttt{RenderEngine}, \texttt{RenderError}, \texttt{TemplateContext}, \texttt{ModuleSpec},
+\texttt{RenderContext}, \texttt{RustGenerator}, \texttt{GeneratedModule},
+\texttt{TomlGenerator}, \texttt{Dependency}, \texttt{CargoTomlBuilder},
+\texttt{ReceiptLedger}, \texttt{ArtifactReceipt}, \texttt{ComplianceAuditor},
+\texttt{AuditResult}, \texttt{AuditLevel}, and \texttt{AuditFinding}.
+
+\textbf{\texttt{compat/src/graduation.rs}}: Defines the graduation bridge. The
+\texttt{GraduationReason} enum is annotated \texttt{\#[non\_exhaustive]}, preventing
+downstream code from matching exhaustively and thereby coupling to the current variant
+set. The \texttt{GraduateToWasm4pm} trait enforces that any type crossing the graduation
+boundary must produce a \texttt{GraduationCandidate} with a non-empty \texttt{subject}
+and \texttt{evidence\_ref} (enforced by \texttt{is\_grounded()}).
+
+\textbf{\texttt{compat/manufacturing/receipt\_ledger.rs}}: The \texttt{ArtifactReceipt}
+struct carries a BLAKE3 content hash, a witness marker, a lifecycle state (always
+\texttt{Sealed}), a Unix timestamp, a template source path, a context snapshot as
+\texttt{HashMap<String, String>}, and Boolean fields for \texttt{compiled} and
+\texttt{audit\_passed}. The \texttt{ReceiptLedger} wraps a \texttt{HashMap<String,
+ArtifactReceipt>} with \texttt{record()}, \texttt{get()}, \texttt{all()},
+\texttt{verify\_all()}, and \texttt{count\_by\_witness()} methods.
+
+\textbf{\texttt{compat/manufacturing/audit.rs}}: Defines \texttt{ComplianceAuditor},
+\texttt{AuditResult}, \texttt{AuditLevel}, and \texttt{AuditFinding}. Contains
+\texttt{\#[test]} blocks verifying audit logic.
+
+\textbf{\texttt{compat/manufacturing/rendering\_engine.rs}} and
+\textbf{\texttt{toml\_generator.rs}}: Together they constitute 5 rendering engines
+spanning 965 total lines (AUTHOR INTERPRETATION based on DELIVERY\_CHECKLIST
+total-line count and per-file breakdown). Each contains \texttt{\#[test]} blocks.
+
+\subsection{Commands}
+\label{sec:sources-wasm4pm-compat-implementation-commands}
+
+The manufacturing pipeline is orchestrated by \texttt{cargo make} per the global
+build-tool preference. The ALIVE gate is invoked as:
+
+\begin{verbatim}
+cargo make test          # 406 compile-pass + 398 compile-fail fixtures
+cargo make check         # type-check without full fixture run
+\end{verbatim}
+
+The \texttt{ggen} manufacturing engine operates as a SPARQL query runner plus Tera
+template renderer. Three queries are executed against
+\texttt{ggen/wasm4pm-compat.ttl}: \texttt{select-witness-projections.rq} (8 triples),
+\texttt{select-process-forms.rq} (15 triples), and
+\texttt{select-boundary-crossings.rq} (36 triples). Three Tera templates are rendered:
+\texttt{witness-marker.tera}, \texttt{process-form.tera}, and \texttt{wasm-boundary.tera}.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:sources-wasm4pm-compat-implementation-data}
+
+The authoritative data surface is \texttt{ggen/wasm4pm-compat.ttl}, an RDF ontology
+in Turtle format. It is the single source of truth from which all manufactured artifacts
+derive: the eight witness markers, five process forms, and twelve boundary crossings are
+all declared in this ontology and extracted via SPARQL. Any change to the artifact set
+must be reflected first in the ontology.
+
+Supporting data surfaces include:
+\begin{itemize}
+  \item \texttt{type-law-atlas.md} (v30.1.1): inventories the five type-law domains.
+  \item \texttt{witness-lattices.md}: algebraic witness structure definitions.
+  \item \texttt{admission-refusal-map.md}: boundary control rule documentation.
+  \item \texttt{loss-policy-map.md}: thermodynamic loss limit specifications.
+  \item \texttt{GRADUATION\_BOUNDARY\_MAP.md}: formal graduation boundary conditions.
+  \item \texttt{STRUCTURAL\_GAPS.md}: open defect documentation per Van der Aalst
+    constitution requirements (defects are first-class, not footnotes).
+  \item \texttt{research-verdict.md} (v30.1.2): phase graduation verdict document.
+\end{itemize}
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:sources-wasm4pm-compat-implementation-templates}
+
+The \texttt{compat/templates/} directory contains 11 Jinja2-style \texttt{.rs.j2} templates
+covering: compile-pass fixtures (\texttt{compile\_pass\_fixture.rs.j2}), compile-fail
+fixtures (\texttt{compile\_fail\_fixture.rs.j2}), and nine domain-specific module templates.
+The \texttt{config.toml} declares the fixture counts that constitute the ALIVE gate
+(406 compile-pass, 398 compile-fail).
+
+Three sealed artifacts were materialized from the \texttt{ggen/} templates on 2026-06-01:
+
+\textbf{\texttt{witness-markers-20260601.rs}} (187 lines, 7{,}942 bytes): Materialized
+from \texttt{witness-marker.tera} by rendering 8 rows from the
+\texttt{select-witness-projections.rq} query result. Contains the \texttt{WitnessMarker}
+enum, \texttt{witness\_join}, \texttt{witness\_leq}, and \texttt{\#[test]} blocks.
+Witness at manufacture: \texttt{BlueRiverDam} (top).
+
+\textbf{\texttt{process-forms-20260601.md}} (293 lines, 8{,}794 bytes): Materialized
+from \texttt{process-form.tera} by rendering 5 rows from the
+\texttt{select-process-forms.rq} query result. Covers WF-net, BPMN~2.0 Gateway,
+OCEL~2.0, Process Tree, and Process-Log Alignment forms.
+Witness at manufacture: \texttt{VanDerAalst1998} (middle).
+
+\textbf{\texttt{boundary-law-20260601.wit}} (256 lines, 9{,}156 bytes): Materialized
+from \texttt{wasm-boundary.tera} by rendering 12 rows from the
+\texttt{select-boundary-crossings.rq} query result. Defines the WIT world for
+all 12 component boundary crossings. WIT syntax validation: PASS; WASM component model
+compliance: PASS. Witness at manufacture: \texttt{BlueRiverDam} (top).
+
+All three artifacts are recorded in the \texttt{ReceiptLedger} with lifecycle state
+\texttt{Sealed} and Ed25519 signature status \texttt{ISSUED} per the
+\texttt{manufacturing-manifest-20260601.yaml}.

@@ -1,0 +1,945 @@
+# PROJECT_INDEX.yaml
+# Corpus Cartographer — PhD Thesis Manufacturing Run
+# Generated: 2026-06-01
+# Authority: /Users/sac/process-intelligence (research foundry root)
+# Updated: 2026-06-01 — manifest paths added for all 34 projects
+#
+# This index is the canonical ledger of all meaningful research projects
+# discovered in the process-intelligence repository. Each entry is a
+# project that contributes to the PhD thesis lineage:
+#   2016 language-model experiment → Chatman Equation A=μ(O*) → receipts/replay →
+#   ggen/Open Ontologies → clap-noun-verb command grammar → wasm4pm/process-evidence →
+#   Post-Cyberpunk PCP → AI XYNZ → capital-flow/settlement/DAO → industry-complete architecture
+
+projects:
+
+  - slug: blue-river-dam
+    absolute_path: /Users/sac/process-intelligence/blue_river_dam
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/project_manifest.yaml
+    description: >
+      Synthesized (not hand-coded) lifecycle orchestrator for the process intelligence
+      governance system. Implements the Blue River Dam doctrine with full MAPE-K loop
+      closure. Upstream closure layer, governance bounds, and autonomic actuation authority.
+      Generated Rust library compiled to cdylib/rlib with zero unsafe code.
+    detected_languages:
+      - Rust
+    detected_frameworks:
+      - MAPE-K
+      - Blue River Dam doctrine
+    detected_research_surfaces:
+      - lifecycle-governance
+      - autonomic-actuation
+      - receipt-chain
+      - petri-net-formalism
+      - LTL-invariants
+    likely_thesis_role: lifecycle-authority-and-governance-engine
+    key_files:
+      - /Users/sac/process-intelligence/blue_river_dam/Cargo.toml
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+      - /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+      - /Users/sac/process-intelligence/blue_river_dam/README.md
+    readme_present: true
+    receipt_present: true
+    ontology_present: false
+
+  - slug: ggen
+    absolute_path: /Users/sac/process-intelligence/ggen
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/ggen/project_manifest.yaml
+    description: >
+      Governance Generation Engine — configuration-driven artifact manufacturing system
+      built on SPARQL queries and Tera templates. Transforms process intelligence ontology
+      into board-admissible M&A decks, diligence workbooks, Blue River orchestrators,
+      wasm4pm-compat law, and TypeScript visualizer dashboards. The manufacturing machinery
+      of the entire research foundry.
+    detected_languages:
+      - SPARQL
+      - Turtle
+      - Tera
+      - Rust
+      - TOML
+    detected_frameworks:
+      - ggen
+      - SPARQL/RDF
+      - Tera templates
+    detected_research_surfaces:
+      - ontology
+      - command-grammar
+      - receipt-chain
+      - manufacturing-pipeline
+      - board-claims
+      - witness-lattice
+    likely_thesis_role: manufacturing-machinery-and-code-generation-engine
+    key_files:
+      - /Users/sac/process-intelligence/ggen/ggen.toml
+      - /Users/sac/process-intelligence/ggen/ontology-extensions.ttl
+      - /Users/sac/process-intelligence/ggen/wasm4pm-compat.ttl
+      - /Users/sac/process-intelligence/ggen/queries/extract-board-claims.rq
+      - /Users/sac/process-intelligence/ggen/templates/blue-river.tera
+    readme_present: true
+    receipt_present: true
+    ontology_present: true
+
+  - slug: otel-weaver
+    absolute_path: /Users/sac/process-intelligence/otel-weaver
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver/project_manifest.yaml
+    description: >
+      OpenTelemetry Weaver integration and doctrines. Bridges raw distributed software
+      telemetry to high-assurance Process Intelligence. Establishes formal doctrines
+      governing OTel data ingestion, enforcing separation between observability and
+      business-legal reality (conformance, accountability, court-admissible evidence).
+      Contains five experiments mapping Weaver schemas to process-evidence types.
+    detected_languages:
+      - Rust
+      - Python
+      - YAML
+      - Turtle
+      - Tera
+    detected_frameworks:
+      - otel-weaver
+      - OpenTelemetry
+      - ggen
+    detected_research_surfaces:
+      - process-evidence
+      - telemetry-ingestion
+      - semconv-mapping
+      - refusal-policy
+      - receipt-chain
+    likely_thesis_role: telemetry-to-process-evidence-ingestion-layer
+    key_files:
+      - /Users/sac/process-intelligence/otel-weaver/README.md
+      - /Users/sac/process-intelligence/otel-weaver/mappings/otel-signal-to-process-evidence-map.yaml
+      - /Users/sac/process-intelligence/otel-weaver/mappings/otel-to-pi-witness-map.yaml
+      - /Users/sac/process-intelligence/otel-weaver/doctrine/otel-weaver-is-feedstock.md
+      - /Users/sac/process-intelligence/otel-weaver/ggen/ggen.toml
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: otel-weaver-exp-001-custom-pi-registry
+    absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-001-custom-pi-registry/project_manifest.yaml
+    description: >
+      OTel Weaver experiment 001: Custom process intelligence semantic convention registry.
+      Defines semconv YAML for process intelligence spans and attributes to drive
+      Weaver-validated telemetry ingestion.
+    detected_languages:
+      - YAML
+    detected_frameworks:
+      - otel-weaver
+      - OpenTelemetry
+    detected_research_surfaces:
+      - semconv-mapping
+      - process-evidence
+    likely_thesis_role: otel-semconv-evidence-surface-experiment
+    key_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/semconv/process_pi.yaml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-001-custom-pi-weaver-registry/README.md
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: otel-weaver-exp-002-diff-to-residual
+    absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-002-diff-to-residual/project_manifest.yaml
+    description: >
+      OTel Weaver experiment 002: Weaver schema diff to PI residual mapping. Rust-based
+      bridge from Weaver diff output to process intelligence residual evidence type law.
+    detected_languages:
+      - Rust
+    detected_frameworks:
+      - otel-weaver
+      - wasm4pm-compat
+    detected_research_surfaces:
+      - process-evidence
+      - type-law
+      - residual-mapping
+    likely_thesis_role: weaver-diff-to-pi-residual-bridge-experiment
+    key_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/Cargo.toml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-002-weaver-diff-to-pi-residual/README.md
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: otel-weaver-exp-003-live-check-to-refusal
+    absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-003-live-check-to-refusal/project_manifest.yaml
+    description: >
+      OTel Weaver experiment 003: Live check finding to refusal map. Rust-based validator
+      that maps Weaver live-check findings to PI refusal policies — enforcement of the
+      named-law refusal doctrine.
+    detected_languages:
+      - Rust
+    detected_frameworks:
+      - otel-weaver
+      - wasm4pm-compat
+    detected_research_surfaces:
+      - refusal-policy
+      - proof-gate
+      - process-evidence
+    likely_thesis_role: live-check-refusal-enforcement-experiment
+    key_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/Cargo.toml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/src/validator.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/README.md
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: otel-weaver-exp-004-registry-to-witness
+    absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-004-registry-to-witness/project_manifest.yaml
+    description: >
+      OTel Weaver experiment 004: Registry to wasm4pm-compat witness generation.
+      Rust-based codegen that converts Weaver semantic convention registries into
+      wasm4pm-compat witness lattice markers.
+    detected_languages:
+      - Rust
+    detected_frameworks:
+      - otel-weaver
+      - wasm4pm-compat
+      - ggen
+    detected_research_surfaces:
+      - witness-lattice
+      - type-law
+      - semconv-mapping
+    likely_thesis_role: semconv-to-witness-lattice-codegen-experiment
+    key_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/bridge.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/src/generator.rs
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-004-registry-to-wasm4pm-compat-witness/codegen
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: otel-weaver-exp-005-collector-to-intake
+    absolute_path: /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/otel-weaver-exp-005-collector-to-intake/project_manifest.yaml
+    description: >
+      OTel Weaver experiment 005: OTel Collector to PI intake pipeline. Python harness
+      with YAML collector config that routes live OTel collector output into process
+      intelligence intake.
+    detected_languages:
+      - Python
+      - YAML
+    detected_frameworks:
+      - OpenTelemetry
+      - otel-weaver
+    detected_research_surfaces:
+      - telemetry-ingestion
+      - process-evidence
+    likely_thesis_role: live-telemetry-to-pi-intake-experiment
+    key_files:
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/harness.py
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/config/otel-collector-config.yaml
+      - /Users/sac/process-intelligence/otel-weaver/experiments/exp-005-collector-to-pi-intake/README.md
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: sources-wasm4pm
+    absolute_path: /Users/sac/process-intelligence/sources/wasm4pm
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/sources-wasm4pm/project_manifest.yaml
+    description: >
+      wasm4pm execution authority source. High-performance cryptographically sandboxed
+      WASM execution engine for process intelligence (v30.1.2). Contains Rust source for
+      conformance, mining, replay, lifecycle, LTL, crypto, graduation, and OCEL v2 modules.
+      Zero external dependencies beyond wasm4pm-compat. This is the execution authority.
+    detected_languages:
+      - Rust
+    detected_frameworks:
+      - wasm4pm
+      - WASM
+    detected_research_surfaces:
+      - process-evidence
+      - conformance-checking
+      - mining-authority
+      - replay-authority
+      - lifecycle-governance
+      - receipt-chain
+      - OCEL-v2
+    likely_thesis_role: core-wasm-execution-authority
+    key_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/Cargo.toml
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/lib.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/EXECUTION_AUTHORITY_ATLAS.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/MINING_AUTHORITY_MAP.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/GAP_ANALYSIS.md
+    readme_present: false
+    receipt_present: true
+    ontology_present: false
+
+  - slug: sources-wasm4pm-compat
+    absolute_path: /Users/sac/process-intelligence/sources/wasm4pm-compat
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/sources-wasm4pm-compat/project_manifest.yaml
+    description: >
+      wasm4pm-compat type law atlas and witness lattice foundry. Contains type law atlas,
+      witness lattice definitions, loss policy maps, admission-refusal maps, and graduation
+      boundary maps. The type foundry — paper-complete doorway and process-evidence type law.
+      Manufactured outputs include Rust witness markers and boundary forms.
+    detected_languages:
+      - Rust
+      - Turtle
+      - Tera
+    detected_frameworks:
+      - wasm4pm-compat
+      - ggen
+    detected_research_surfaces:
+      - type-law
+      - witness-lattice
+      - loss-policy
+      - admission-refusal
+      - graduation-boundary
+    likely_thesis_role: type-foundry-and-witness-lattice-authority
+    key_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/compat/Cargo.toml
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/TYPE_LAW_ATLAS.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/WITNESS_LATTICE.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/GRADUATION_BOUNDARY_MAP.md
+      - /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: sources-papers
+    absolute_path: /Users/sac/process-intelligence/sources/papers
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/sources-papers/project_manifest.yaml
+    description: >
+      Academic paper analysis and classification corpus. Contains paper-to-type-law mappings,
+      paper-to-execution-law mappings, paper-to-board-claim mappings, and adversarial canon
+      analysis. Covers Alpha Miner, Inductive Miner, DECLARE, OCEL 2.0, POWL, YAWL,
+      and BPMN or-join analyses. Forms the academic grounding for all downstream claims.
+    detected_languages: []
+    detected_frameworks:
+      - pm4py
+      - wasm4pm
+    detected_research_surfaces:
+      - paper-canon
+      - type-law
+      - execution-law
+      - board-claims
+    likely_thesis_role: academic-paper-classification-and-evidence-grounding
+    key_files:
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_TYPE_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_EXECUTION_LAW.md
+      - /Users/sac/process-intelligence/sources/papers/PAPER_TO_BOARD_CLAIM.md
+      - /Users/sac/process-intelligence/sources/papers/PAPER_CANON_SCOPE.md
+      - /Users/sac/process-intelligence/sources/papers/OCEL_2_0_ANALYSIS.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: sources-pm4py
+    absolute_path: /Users/sac/process-intelligence/sources/pm4py
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/sources-pm4py/project_manifest.yaml
+    description: >
+      PM4Py capability atlas and comparative oracle analysis. Contains capability atlas,
+      oracle map, divergence matrix, algorithm crosswalk, process form crosswalk, and
+      NOT-to-copy list. PM4Py serves as the comparative oracle for conformance checking,
+      process discovery, fitness/precision evaluation.
+    detected_languages:
+      - Python
+    detected_frameworks:
+      - pm4py
+    detected_research_surfaces:
+      - conformance-checking
+      - mining-authority
+      - comparative-oracle
+    likely_thesis_role: pm4py-comparative-oracle-atlas
+    key_files:
+      - /Users/sac/process-intelligence/sources/pm4py/CAPABILITY_ATLAS.md
+      - /Users/sac/process-intelligence/sources/pm4py/ORACLE_MAP.md
+      - /Users/sac/process-intelligence/sources/pm4py/NOT_TO_COPY.md
+      - /Users/sac/process-intelligence/sources/pm4py/algorithm-crosswalk.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: research-open-ontologies
+    absolute_path: /Users/sac/process-intelligence/research/open-ontologies
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/research-open-ontologies/project_manifest.yaml
+    description: >
+      Open ontologies research surface. RDF ontology research corpus covering federated
+      cross-project dependency graph. Studies how public ontologies (PROV-O, SKOS, ODRL,
+      DCTERMS, SHACL) ground process intelligence claims. Authority for the ontology layer
+      of the thesis.
+    detected_languages:
+      - Turtle
+      - SPARQL
+    detected_frameworks:
+      - RDF
+      - SHACL
+      - PROV-O
+    detected_research_surfaces:
+      - ontology
+      - federated-graph
+      - cross-project-dependency
+    likely_thesis_role: open-ontology-research-and-rdf-authority
+    key_files:
+      - /Users/sac/process-intelligence/research/open-ontologies/federated/CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml
+    readme_present: false
+    receipt_present: false
+    ontology_present: true
+
+  - slug: research-pi-program
+    absolute_path: /Users/sac/process-intelligence/research/pi-program
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/research-pi-program/project_manifest.yaml
+    description: >
+      Process Intelligence Program governance and manufacturing authority. Contains the
+      full PI program ontology (19 TTL files), SPARQL query audit suite (60+ queries),
+      Tera templates, governance policy enforcement, autonomic activation logs, API
+      specification, deployment records, manufacturing receipts, and self-repair artifacts.
+      The program governance layer that oversees all downstream manufacturing.
+    detected_languages:
+      - Turtle
+      - SPARQL
+      - Tera
+      - YAML
+    detected_frameworks:
+      - ggen
+      - SPARQL/RDF
+    detected_research_surfaces:
+      - ontology
+      - governance-policy
+      - receipt-chain
+      - audit-suite
+      - manufacturing-pipeline
+      - autonomic-actuation
+    likely_thesis_role: pi-program-governance-and-ontology-authority
+    key_files:
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/governance-policy.ttl
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ontology/autonomic-law.ttl
+      - /Users/sac/process-intelligence/research/pi-program/ggen/ggen.toml
+      - /Users/sac/process-intelligence/research/pi-program/manufacturing/RECEIPT_LEDGER_20260601.yaml
+    readme_present: false
+    receipt_present: true
+    ontology_present: true
+
+  - slug: research-prompt-manufactory
+    absolute_path: /Users/sac/process-intelligence/research/prompt-manufactory
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/research-prompt-manufactory/project_manifest.yaml
+    description: >
+      Prompt manufacturing research program. Manufactures typed, receipted, ontology-grounded
+      prompts for downstream subagents. Contains ontology for checkpoint law, forbidden-collapse
+      law, hook law, skill law, subagent role law, and workflow law. Emits manufactured
+      prompt artifacts for checkpoints, hooks, skills, subagents, and workflows.
+    detected_languages:
+      - Turtle
+      - SPARQL
+      - Tera
+    detected_frameworks:
+      - ggen
+      - SPARQL/RDF
+    detected_research_surfaces:
+      - ontology
+      - manufacturing-pipeline
+      - receipt-chain
+      - command-grammar
+      - prompt-manufacturing
+    likely_thesis_role: prompt-manufacturing-and-subagent-command-surface
+    key_files:
+      - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+      - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/workflow-law.ttl
+      - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/skill-law.ttl
+      - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ggen.toml
+      - /Users/sac/process-intelligence/research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    readme_present: false
+    receipt_present: true
+    ontology_present: true
+
+  - slug: doctrine
+    absolute_path: /Users/sac/process-intelligence/doctrine
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/doctrine/project_manifest.yaml
+    description: >
+      Immutable process law definitions — the foundational doctrine corpus. Contains
+      canonical doctrine files: Blue River Dam, Autonomic Knowledge Actuation, Full-Lifecycle
+      Process Intelligence, M&A-Ready Process Intelligence, Conformance as Law, Evidence Chain,
+      Van der Aalst Canon, Object-Centric Supremacy, Algorithm Taxonomy, Receipt Doctrine,
+      and Downstream Authorization Law. These files may only be appended, never rebased.
+    detected_languages: []
+    detected_frameworks: []
+    detected_research_surfaces:
+      - process-law
+      - receipt-doctrine
+      - conformance-law
+      - lifecycle-governance
+      - m-and-a-claims
+    likely_thesis_role: immutable-process-law-foundation
+    key_files:
+      - /Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md
+      - /Users/sac/process-intelligence/doctrine/CONFORMANCE_AS_LAW.md
+      - /Users/sac/process-intelligence/doctrine/RECEIPT_DOCTRINE.md
+      - /Users/sac/process-intelligence/doctrine/VAN_DER_AALST_CANON.md
+      - /Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_DEFINED.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: lifecycle
+    absolute_path: /Users/sac/process-intelligence/lifecycle
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/lifecycle/project_manifest.yaml
+    description: >
+      Process lifecycle state definitions and transition rules. Defines all lifecycle states:
+      acquisition, activation, archive, board-projection, construction, decommissioning, design,
+      integration, monitoring, operation, optimization, repair, simulation. Includes MAPE-K map,
+      maturity model, Blue River Dam lifecycle gate map, and autonomic knowledge actuation map.
+    detected_languages: []
+    detected_frameworks:
+      - MAPE-K
+    detected_research_surfaces:
+      - lifecycle-governance
+      - autonomic-actuation
+      - process-evidence
+    likely_thesis_role: process-lifecycle-state-definitions-and-transitions
+    key_files:
+      - /Users/sac/process-intelligence/lifecycle/MAPE_K_MAP.md
+      - /Users/sac/process-intelligence/lifecycle/MATURITY_MODEL.md
+      - /Users/sac/process-intelligence/lifecycle/define_blue_river_dam_lifecycle_gate_map.md
+      - /Users/sac/process-intelligence/lifecycle/define_autonomic_knowledge_actuation_map.md
+      - /Users/sac/process-intelligence/lifecycle/define_process_asset_taxonomy.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: ma
+    absolute_path: /Users/sac/process-intelligence/ma
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/ma/project_manifest.yaml
+    description: >
+      M&A claim taxonomy, board admissibility framework, and buyer reliance proofs.
+      Contains master M&A-ready process intelligence framework, board claim taxonomy,
+      synergy proof claims, integration risk claims, operational debt claims, diligence
+      claim requirements, slide-to-receipt map, reverse Porter Five, and hostile takeover
+      receipts. The board projection surface for thesis commercialization claims.
+    detected_languages: []
+    detected_frameworks: []
+    detected_research_surfaces:
+      - m-and-a-claims
+      - board-claims
+      - receipt-chain
+      - process-evidence
+    likely_thesis_role: ma-claim-taxonomy-and-board-projection-surface
+    key_files:
+      - /Users/sac/process-intelligence/ma/README.md
+      - /Users/sac/process-intelligence/ma/MASTER_m&a-ready_process_intelligence_framework.md
+      - /Users/sac/process-intelligence/ma/BOARD_CLAIM_TAXONOMY.md
+      - /Users/sac/process-intelligence/ma/SLIDE_TO_RECEIPT_MAP.md
+      - /Users/sac/process-intelligence/ma/REVERSE_PORTER_FIVE.md
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: standards
+    absolute_path: /Users/sac/process-intelligence/standards
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/standards/project_manifest.yaml
+    description: >
+      Public standards compliance maps. Covers XES (IEEE 1849), OCEL 2.0, BPMN 2.0,
+      DECLARE, DFG, Petri nets, POWL, Process Trees, WF-nets, OCPQ, PROV-O, SHACL,
+      SKOS, ODRL, and OTel Weaver. Maps each standard to its process intelligence
+      placement, gravity field, reverse lock-in properties, and M&A claim surface.
+    detected_languages:
+      - JSON
+    detected_frameworks:
+      - XES
+      - OCEL
+      - BPMN
+      - DECLARE
+    detected_research_surfaces:
+      - standards-compliance
+      - process-evidence
+      - conformance-law
+      - m-and-a-claims
+    likely_thesis_role: public-standards-compliance-and-gravity-field-mapping
+    key_files:
+      - /Users/sac/process-intelligence/standards/OCEL_20.md
+      - /Users/sac/process-intelligence/standards/XES_1849.md
+      - /Users/sac/process-intelligence/standards/PROCESS_STANDARDS_GRAVITY_FIELD.md
+      - /Users/sac/process-intelligence/standards/STANDARDS_TO_BOARD_CLAIMS.md
+      - /Users/sac/process-intelligence/standards/otel_trace_integration_schema.json
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: crosswalks
+    absolute_path: /Users/sac/process-intelligence/crosswalks
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/crosswalks/project_manifest.yaml
+    description: >
+      Type-law crosswalk mappings between standards and execution surfaces. Covers
+      BPMN-to-WF-net, OCEL-to-XES, Process Tree-to-WF-net, WF-net-to-POWL,
+      DECLARE-to-WASM mapping, pm4py-to-wasm4pm data types, and alive-001 ISO compliance.
+    detected_languages: []
+    detected_frameworks:
+      - wasm4pm
+      - pm4py
+    detected_research_surfaces:
+      - type-law
+      - conformance-checking
+      - standards-compliance
+    likely_thesis_role: type-law-crosswalk-between-standards-and-execution
+    key_files:
+      - /Users/sac/process-intelligence/crosswalks/BPMN_TO_WFNET.md
+      - /Users/sac/process-intelligence/crosswalks/OCEL_TO_XES.md
+      - /Users/sac/process-intelligence/crosswalks/declare_to_wasm_mapping.md
+      - /Users/sac/process-intelligence/crosswalks/pm4py_to_wasm4pm_data_types.md
+      - /Users/sac/process-intelligence/crosswalks/alive_001_to_iso_compliance.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: comparisons
+    absolute_path: /Users/sac/process-intelligence/comparisons
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/comparisons/project_manifest.yaml
+    description: >
+      Cross-system capability comparisons. Contains pm4py vs wasm4pm architecture,
+      conformance metric surfaces, type safety comparison, wasm vs native PM performance,
+      declarative vs imperative conformance, lattice vs trace compliance checking,
+      algorithm coverage matrix, and admission-refusal vs pm4py errors comparison.
+    detected_languages: []
+    detected_frameworks:
+      - pm4py
+      - wasm4pm
+    detected_research_surfaces:
+      - comparative-oracle
+      - conformance-checking
+      - type-law
+    likely_thesis_role: cross-system-capability-comparison-corpus
+    key_files:
+      - /Users/sac/process-intelligence/comparisons/PM4PY_VS_WASM4PM_CONFORMANCE.md
+      - /Users/sac/process-intelligence/comparisons/ALGORITHM_COVERAGE_MATRIX.md
+      - /Users/sac/process-intelligence/comparisons/TYPE_SAFETY_COMPARISON.md
+      - /Users/sac/process-intelligence/comparisons/CONFORMANCE_METRIC_SURFACES.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: gaps
+    absolute_path: /Users/sac/process-intelligence/gaps
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/gaps/project_manifest.yaml
+    description: >
+      Structural gap documentation. Contains GAP_001 (compat-to-wasm bridge missing),
+      GAP_002 (OR-join ambiguity), gap closure workflow, gap priority matrix, and
+      gap register. Gaps are permanent records — only resolution addendums may be added.
+    detected_languages: []
+    detected_frameworks: []
+    detected_research_surfaces:
+      - gap-analysis
+      - type-law
+      - conformance-law
+    likely_thesis_role: structural-gap-registry-and-closure-tracking
+    key_files:
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+      - /Users/sac/process-intelligence/gaps/GAP_002_OR_JOIN_AMBIGUITY.md
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+      - /Users/sac/process-intelligence/gaps/GAP_PRIORITY_MATRIX.md
+      - /Users/sac/process-intelligence/gaps/GAP_CLOSURE_WORKFLOW.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: checkpoints
+    absolute_path: /Users/sac/process-intelligence/checkpoints
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/checkpoints/project_manifest.yaml
+    description: >
+      Phase milestone verdicts corpus. Contains ALIVE, PARTIAL, and FAILED checkpoint
+      verdicts for the research program. Includes PROCESS_INTELLIGENCE_ALIVE_001,
+      PI_RESEARCH_PROGRAM_ALIVE_001, GGEN_ECOSYSTEM_INTEL_ALIVE_001, and multiple
+      PARTIAL/RUNTIME verdicts. Checkpoint verdicts are permanent — they stand as issued.
+    detected_languages: []
+    detected_frameworks: []
+    detected_research_surfaces:
+      - receipt-chain
+      - process-evidence
+      - proof-gate
+    likely_thesis_role: phase-milestone-verdict-ledger
+    key_files:
+      - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+      - /Users/sac/process-intelligence/checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md
+      - /Users/sac/process-intelligence/checkpoints/GGEN_ECOSYSTEM_INTEL_ALIVE_001.md
+      - /Users/sac/process-intelligence/checkpoints/SUBSTRATE_COMPLETE_001.md
+      - /Users/sac/process-intelligence/checkpoints/RESEARCH_CRITERIA.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: adversarial
+    absolute_path: /Users/sac/process-intelligence/adversarial
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/adversarial/project_manifest.yaml
+    description: >
+      Adversarial test cases and hostile findings. Red team findings, simulate
+      laundering/spoofing, OCEL adversarial gravity, validate standards scripts.
+      Implements the Van der Aalst Constitution requirement for negative testing
+      and process intelligence hostile assumption verification.
+    detected_languages:
+      - Python
+    detected_frameworks:
+      - pm4py
+    detected_research_surfaces:
+      - process-evidence
+      - conformance-law
+      - proof-gate
+    likely_thesis_role: adversarial-testing-and-hostile-assumption-verification
+    key_files:
+      - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_001.md
+      - /Users/sac/process-intelligence/adversarial/RED_TEAM_FINDINGS_002.md
+      - /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+      - /Users/sac/process-intelligence/adversarial/validate_standards.py
+      - /Users/sac/process-intelligence/adversarial/RED_TEAM_SCOPE.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: experiments-core
+    absolute_path: /Users/sac/process-intelligence/experiments
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/experiments-core/project_manifest.yaml
+    description: >
+      Core benchmark experiments and verification scripts. Contains pm4py comparison,
+      wasm4pm-compat evaluation, wasm4pm gap analysis, ma-deck projection, paper fixture
+      design, and Python validation scripts (validate_log_fitness.py, verify_equations.py,
+      validate_ocpq_refinement.py). Top-level experimental benchmark corpus.
+    detected_languages:
+      - Python
+    detected_frameworks:
+      - pm4py
+      - wasm4pm
+    detected_research_surfaces:
+      - conformance-checking
+      - process-evidence
+      - proof-gate
+    likely_thesis_role: benchmark-experiments-and-equation-verification
+    key_files:
+      - /Users/sac/process-intelligence/experiments/validate_log_fitness.py
+      - /Users/sac/process-intelligence/experiments/verify_equations.py
+      - /Users/sac/process-intelligence/experiments/validate_ocpq_refinement.py
+      - /Users/sac/process-intelligence/experiments/pm4py-comparison/report.md
+      - /Users/sac/process-intelligence/experiments/wasm4pm-gap-analysis/report.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: experiments-visualizer
+    absolute_path: /Users/sac/process-intelligence/experiments/visualizer
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/experiments-visualizer/project_manifest.yaml
+    description: >
+      Process intelligence simulation dashboard visualizer. JavaScript application with
+      Petri net, DECLARE, autonomic feedback loop, drift detector, blockchain, alignment,
+      and token game modules. Pure browser-based autonomic feedback loop controls and
+      process intelligence dashboard.
+    detected_languages:
+      - TypeScript
+      - JavaScript
+    detected_frameworks: []
+    detected_research_surfaces:
+      - process-evidence
+      - conformance-checking
+      - autonomic-actuation
+    likely_thesis_role: process-intelligence-simulation-dashboard
+    key_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/package.json
+      - /Users/sac/process-intelligence/experiments/visualizer/app.js
+      - /Users/sac/process-intelligence/experiments/visualizer/petri.js
+      - /Users/sac/process-intelligence/experiments/visualizer/autonomic.js
+      - /Users/sac/process-intelligence/experiments/visualizer/README.md
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: experiments-visualizer-nextjs
+    absolute_path: /Users/sac/process-intelligence/experiments/visualizer-nextjs
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/experiments-visualizer-nextjs/project_manifest.yaml
+    description: >
+      Next.js process intelligence visualizer dashboard. TypeScript/React application
+      (Next.js 16, React 19) providing the full web-based process intelligence
+      visualization surface. Uses Tailwind CSS for styling.
+    detected_languages:
+      - TypeScript
+      - JavaScript
+    detected_frameworks:
+      - Next.js
+      - React
+    detected_research_surfaces:
+      - process-evidence
+      - manufacturing-pipeline
+    likely_thesis_role: web-based-pi-visualization-surface
+    key_files:
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/package.json
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/src/app/page.tsx
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/README.md
+      - /Users/sac/process-intelligence/experiments/visualizer-nextjs/CLAUDE.md
+    readme_present: true
+    receipt_present: false
+    ontology_present: false
+
+  - slug: audits
+    absolute_path: /Users/sac/process-intelligence/audits
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/audits/project_manifest.yaml
+    description: >
+      Completeness audits corpus. Contains paper coverage audits, type law quality audits,
+      execution boundary audits, fixture quality audits, graduation boundary audits,
+      no-DTO-flattening audits, no-tool-smuggling audits, forensic audit verdicts,
+      petri net soundness audits, Van der Aalst audit summary, and conformance reports.
+    detected_languages:
+      - YAML
+    detected_frameworks: []
+    detected_research_surfaces:
+      - audit-suite
+      - conformance-law
+      - proof-gate
+    likely_thesis_role: completeness-audit-and-compliance-verification-corpus
+    key_files:
+      - /Users/sac/process-intelligence/audits/AUDIT_LOG.yaml
+      - /Users/sac/process-intelligence/audits/AUDIT_PAPER_COVERAGE.md
+      - /Users/sac/process-intelligence/audits/CONFORMANCE_REPORT.md
+      - /Users/sac/process-intelligence/audits/forensic_audit_verdict.md
+      - /Users/sac/process-intelligence/audits/VAN_DER_AALST_AUDIT_SUMMARY.txt
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: receipts
+    absolute_path: /Users/sac/process-intelligence/receipts
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/receipts/project_manifest.yaml
+    description: >
+      Cryptographic receipt chain corpus. Contains JSON receipts for EBITDA rework,
+      WC/AR, SLA risk, compliance risk, and residual standard claims. Also includes
+      receipt registry, wasm4pm generation receipts, and M&A deck rendering authority
+      assessment. The physical receipt chain anchoring all board-admissible claims.
+    detected_languages:
+      - JSON
+    detected_frameworks: []
+    detected_research_surfaces:
+      - receipt-chain
+      - m-and-a-claims
+      - process-evidence
+    likely_thesis_role: cryptographic-receipt-chain-and-claim-provenance
+    key_files:
+      - /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+      - /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+      - /Users/sac/process-intelligence/receipts/blue_river_generation.md
+    readme_present: false
+    receipt_present: true
+    ontology_present: false
+
+  - slug: livestream
+    absolute_path: /Users/sac/process-intelligence/livestream
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/livestream/project_manifest.yaml
+    description: >
+      AALST livestream standards and real-time process broadcast modules. Contains
+      autonomic feedback loop broadcaster, master OCEL stream, replay aggregator,
+      conformance audit, and agent conversation log. Atlas surface covering
+      AALST livestream standards, AGI adversarial defenses, and doctrine modules.
+    detected_languages:
+      - JavaScript
+    detected_frameworks: []
+    detected_research_surfaces:
+      - process-evidence
+      - conformance-checking
+      - OCEL-v2
+    likely_thesis_role: real-time-process-broadcast-and-livestream-standards
+    key_files:
+      - /Users/sac/process-intelligence/livestream/aalst_broadcaster.js
+      - /Users/sac/process-intelligence/livestream/master_ocel_stream.js
+      - /Users/sac/process-intelligence/livestream/replay_aggregator.js
+      - /Users/sac/process-intelligence/livestream/conformance_audit.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: atlas
+    absolute_path: /Users/sac/process-intelligence/atlas
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/atlas/project_manifest.yaml
+    description: >
+      Research atlas corpus. Contains doctrine, AALST livestream standards, AGI adversarial
+      defenses, Blue River Dam doctrine, ggen prompt manufactory, Supabase law substrate,
+      WASM boundary law, and ZoeApp ministry ontology. The curated surface-map of all
+      major doctrine themes for thesis chapter organization.
+    detected_languages: []
+    detected_frameworks: []
+    detected_research_surfaces:
+      - process-law
+      - ontology
+      - manufacturing-pipeline
+    likely_thesis_role: doctrine-atlas-and-thesis-chapter-surface-map
+    key_files:
+      - /Users/sac/process-intelligence/atlas/doctrine_blue_river_dam.md
+      - /Users/sac/process-intelligence/atlas/wasm_boundary_law.md
+      - /Users/sac/process-intelligence/atlas/ggen_prompt_manufactory.md
+      - /Users/sac/process-intelligence/atlas/aalst_livestream_standards.md
+      - /Users/sac/process-intelligence/atlas/zoeapp_ministry_ontology.md
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: prompts
+    absolute_path: /Users/sac/process-intelligence/prompts
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/prompts/project_manifest.yaml
+    description: >
+      Downstream implementation prompts and execution plans. Contains prompts for wasm4pm
+      refactor, M&A deck manufacture, paper fixture manufacturing, public standards expansion,
+      ggen projection integration, Blue River Dam lifecycle authority, and compat gap close.
+      Also contains v30 execution mandate and downstream prompt execution plans.
+    detected_languages:
+      - SPARQL
+      - Tera
+    detected_frameworks:
+      - ggen
+    detected_research_surfaces:
+      - command-grammar
+      - manufacturing-pipeline
+    likely_thesis_role: downstream-manufacturing-prompt-corpus
+    key_files:
+      - /Users/sac/process-intelligence/prompts/downstream_wasm4pm_refactor.md
+      - /Users/sac/process-intelligence/prompts/downstream_m&a_deck_manufacturing.md
+      - /Users/sac/process-intelligence/prompts/v30-execution-mandate.md
+      - /Users/sac/process-intelligence/queries/extract-pcp-types.rq
+      - /Users/sac/process-intelligence/templates/pcp-types.ts.tera
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: schemas
+    absolute_path: /Users/sac/process-intelligence/schemas
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/schemas/project_manifest.yaml
+    description: >
+      Schema definitions for PI data structures. Contains slide verification ledger
+      JSON schema. Grounds the structural contract between M&A deck generation and
+      receipt validation.
+    detected_languages:
+      - JSON
+    detected_frameworks: []
+    detected_research_surfaces:
+      - type-law
+      - m-and-a-claims
+    likely_thesis_role: data-schema-definitions-for-ma-and-receipt-surfaces
+    key_files:
+      - /Users/sac/process-intelligence/schemas/slide_verification_ledger.schema.json
+    readme_present: false
+    receipt_present: false
+    ontology_present: false
+
+  - slug: phd-thesis
+    absolute_path: /Users/sac/process-intelligence/phd-thesis
+    manifest: /Users/sac/process-intelligence/phd-thesis/projects/phd-thesis/project_manifest.yaml
+    description: >
+      PhD thesis corpus manufacturing workspace. Manufactures the full artifact corpus
+      for the dissertation grounded in Van der Aalst Constitution and full-lifecycle
+      process intelligence doctrine. Contains chapters, frontmatter, project artifacts,
+      ledgers (WORKFLOW_RECEIPT.yaml, DO_NOT_CLAIM_LEDGER.md), and manufacturing scripts.
+    detected_languages:
+      - YAML
+    detected_frameworks:
+      - ggen
+    detected_research_surfaces:
+      - receipt-chain
+      - manufacturing-pipeline
+      - proof-gate
+    likely_thesis_role: dissertation-corpus-manufacturing-workspace
+    key_files:
+      - /Users/sac/process-intelligence/phd-thesis/README.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/WORKFLOW_RECEIPT.yaml
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/PROJECT_INDEX.yaml
+    readme_present: true
+    receipt_present: true
+    ontology_present: false

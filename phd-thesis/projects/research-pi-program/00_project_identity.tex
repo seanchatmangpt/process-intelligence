@@ -1,0 +1,47 @@
+% FILE: 00_project_identity.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Project Identity}
+\label{sec:research-pi-program-identity}
+
+\subsection{Purpose}
+\label{sec:research-pi-program-identity-purpose}
+
+The Process Intelligence Program (\texttt{research/pi-program}) is the governance and manufacturing authority layer of the Process Intelligence research foundry. Its purpose is to define, enforce, and materialize the complete doctrine stack required for full-lifecycle process intelligence---covering program-role classification, ontological law surfaces, MAPE-K autonomic governance, and board-admissible artifact manufacturing.
+
+Unlike downstream execution products such as \texttt{wasm4pm} or the \texttt{wasm4pm-compat} compatibility layer, the pi-program does not execute process mining algorithms directly. Instead, it manufactures the governance artifacts that authorize downstream execution. Every claim emitted by a downstream project must trace its authority back to an ontology assertion, a SPARQL query, and a Tera template within this program. The principle is strict: no manufacturing claim is board-admissible unless its provenance chain---ontology triple, SPARQL selection, Tera rendering, BLAKE3 receipt---is intact and independently verifiable.
+
+The program's MAPE-K autonomic governance loop (Monitor, Analyze, Plan, Execute, Knowledge) operationalizes the primary containment invariant: \( G(\lnot\mathrm{Compliant}(s) \Rightarrow X(\lnot\mathrm{Actuated}(s))) \). Concretely, any system state that fails the compliance boundary (fitness $\geq$ 0.85 by default) must not proceed to actuation. The Andon gate infrastructure, manufactured from \texttt{autonomic-law.ttl} and \texttt{governance-policy.ttl}, enforces this invariant at runtime via five policy gates registered in Blue River Dam.
+
+\subsection{Repository Surface}
+\label{sec:research-pi-program-identity-repository}
+
+The pi-program occupies \texttt{/Users/sac/process-intelligence/research/pi-program/} and is organized into the following principal subdirectories: \texttt{ggen/} (manufacturing pipeline: \texttt{ggen.toml}, 17 TTL ontology files, 61 SPARQL queries, 18 Tera templates), \texttt{governance/} (MAPE-K deployment artifacts and policy enforcement verification), \texttt{checkpoints/} (immutable PARTIAL and FAILED verdict records), \texttt{audits/} (Van der Aalst conformance audit results), \texttt{manufacturing/} (receipt ledger, receipt chain verification, manufacturing summary), \texttt{emitted/} (materialized artifacts including alive-partial matrix, project registry, and API documentation), \texttt{self-repair/} (drift detection SPARQL rules), \texttt{api/} (manufactured OpenAPI 3.0 specification), and \texttt{intel/} (ontology census and checkpoint census documents).
+
+The manufacturing pipeline is orchestrated by \texttt{ggen v26.5.21} via a \texttt{ggen.toml} manifest that encodes \texttt{[[generation.rules]]} triplets: each rule binds a SPARQL query file, a Tera template, and an output path. The ggen tool enforces \texttt{strict\_variables=true} and \texttt{proof\_format=cryptographic-chain}, ensuring that template rendering is deterministic and every emitted artifact receives a BLAKE3 receipt.
+
+\subsection{Primary Research Role}
+\label{sec:research-pi-program-identity-role}
+
+Within the THESIS LINEAGE, the pi-program occupies the position of the governance authority that grounds the Chatman Equation \( A = \mu(O^{*}, T, L) \) in formal ontological law. It sits above all downstream execution projects and below only the 2016 language-model lesson and the enterprise process gap that motivated the research program. In the lineage chain, it is the bridge between the \texttt{ggen}/Open Ontologies layer and the \texttt{wasm4pm}/process-evidence execution layer.
+
+The program's thesis role is designated \textbf{pi-program-governance-and-ontology-authority}. It is the only artifact surface in the research program that asserts \texttt{pi:ProgramRole} classifications for all 10 downstream projects, enforces the \texttt{pi:GraduationReason} taxonomy that governs when execution must graduate from the COMPATIBILITY\_LAYER to the ENGINE, and records the forbidden-collapse law surfaces that define structural defects whose recurrence is prohibited.
+
+\subsection{Key Artifacts}
+\label{sec:research-pi-program-identity-artifacts}
+
+The following artifacts are authoritative for this project's claims. All paths are relative to \texttt{/Users/sac/process-intelligence/}:
+
+\begin{itemize}
+  \item \texttt{research/pi-program/ggen/ggen.toml} --- Manufacturing pipeline manifest (ggen v26.5.21), 18 Tera templates, 61 SPARQL queries.
+  \item \texttt{research/pi-program/ggen/ontology/pi-program.ttl} --- Top-level program-role OWL ontology; defines 31 \texttt{pi:ProgramRole} subclasses.
+  \item \texttt{research/pi-program/ggen/ontology/autonomic-law.ttl} --- MAPE-K loop OWL definitions; mints \texttt{mape:MAPEKLoop} and component types.
+  \item \texttt{research/pi-program/ggen/ontology/governance-policy.ttl} --- LTL safety invariant encoding; \texttt{gov:PrimaryContainmentInvariant}.
+  \item \texttt{research/pi-program/ggen/ontology/forbidden-collapse-law.ttl} --- Eight collapse subtypes with \texttt{collapseStatus} (ACTIVE/MITIGATED/REMEDIATED) and Van der Aalst Constitution verbatim.
+  \item \texttt{research/pi-program/governance/AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml} --- 5 MAPE-K feedback loop tests, all PASSED, average confidence 0.96; 4/4 deployment gates PASS.
+  \item \texttt{research/pi-program/manufacturing/MANUFACTURING\_SUMMARY.md} --- 123 artifacts across 6 projects; 100\% BLAKE3 receipt coverage reported.
+  \item \texttt{research/pi-program/manufacturing/RECEIPT\_CHAIN\_VERIFICATION\_20260601.yaml} --- Chain integrity audit: 28 receipts verified, 8 chain breaks, 10 hash mismatches documented.
+  \item \texttt{research/pi-program/audits/audit-results.yaml} --- 12-gate Van der Aalst conformance audit; 10 PASS, 2 FAIL.
+  \item \texttt{research/pi-program/api/manufactured/openapi-3.0-spec.yaml} --- OpenAPI 3.0 specification manufactured via SPARQL$\to$Tera from \texttt{api-specification.ttl}.
+\end{itemize}

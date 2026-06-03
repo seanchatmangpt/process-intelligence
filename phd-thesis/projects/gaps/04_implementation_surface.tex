@@ -1,0 +1,107 @@
+% FILE: 04_implementation_surface.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+
+\section{Implementation Surface}
+\label{sec:gaps-implementation}
+
+\subsection{Source Files}
+\label{sec:gaps-implementation-source}
+
+The implementation surface of the gap registry consists entirely of authored Markdown
+documents. No Rust source files, ontology files, receipt files, or test fixtures reside
+in the \texttt{gaps/} directory itself. The directory is a documentary layer; it
+describes and analyzes implementation surfaces located elsewhere in the
+\texttt{process-intelligence} foundry and in the adjacent \texttt{wasm4pm} repository.
+
+The five source files are:
+
+\begin{description}
+  \item[\texttt{GAP\_REGISTER.md}] The master index. Provides the canonical status table
+        (eight gaps, severity, status, and priority), a two-line problem statement for
+        each gap, and a resolution description. The register is the authority surface;
+        any discrepancy between the register and an individual gap document should be
+        treated as a discrepancy requiring a resolution addendum, not silently resolved
+        in favor of either source.
+
+  \item[\texttt{GAP\_001\_COMPAT\_WASM\_BRIDGE.md}] The most detailed individual gap
+        document. Contains the full Cargo.toml evidence block, three Rust function
+        signatures from wasm4pm algorithm files (\texttt{ilp\_discovery.rs},
+        \texttt{process\_tree.rs}, \texttt{performance\_dfg.rs}), the complete wasm4pm
+        error enum from \texttt{wasm4pm-types/src/error.rs}, the two-universe ASCII
+        diagram, the five-condition remediation checklist, and the authorization clause
+        blocking downstream refactors until the research program approves the remediation
+        path.
+
+  \item[\texttt{GAP\_002\_OR\_JOIN\_AMBIGUITY.md}] Documents the BPMN OR-Join
+        non-determinism problem and the v30.1.1 Smart-Completion resolution. Includes
+        the formal mathematical policy expressed in LaTeX notation. Shorter than GAP\_001
+        because the resolution is documented rather than pending.
+
+  \item[\texttt{GAP\_PRIORITY\_MATRIX.md}] The dependency and sequencing analysis.
+        Provides the formal dependency graph as an ASCII directed acyclic graph, the
+        priority matrix table, the P1/P2/P3 closure sequences, the critical path
+        (\texttt{GAP\_007 $\rightarrow$ GAP\_001 $\rightarrow$ GAP\_002}), and the
+        blocking-claims table that maps each board-level or research-level claim to the
+        gap that must be closed before the claim can be made.
+
+  \item[\texttt{GAP\_CLOSURE\_WORKFLOW.md}] The governance workflow document under the
+        V30.1.1 Epoch. Provides the three constitutional directives, a three-phase
+        execution plan (Phase 1: P1 gaps; Phase 2: P2 and P3 gaps; with specific
+        remediation steps for each gap), and a description of the SWARM Verification
+        Guard architecture. The SWARM Verification Guard (Drift Sentry, Telemetry
+        Auditor, Ledger Custodian, Alignment Referee, Stream Director) is described as
+        a five-agent monitoring system. No corroborating evidence of its implementation
+        exists in the \texttt{gaps/} directory; this description is noted as
+        potentially aspirational architecture. \textbf{INTERPRETATION:} The research
+        program treats this section as a design intent statement, not an implemented
+        system claim.
+\end{description}
+
+\subsection{Commands}
+\label{sec:gaps-implementation-commands}
+
+No CLI commands are defined within the gap registry itself. The registry is a read-write
+documentary surface maintained by human or agent authorship following the governance
+rules of the V30.1.1 Epoch. Gap records are authored in Markdown following the
+template structure visible in the five existing documents: gap ID, severity, status,
+discovered date, source reference, summary, expected capability, observed capability
+(with code citations), impact assessment, and authorization clause.
+
+The commands that would constitute gap closure actions are located in the remediating
+projects: Cargo commands in wasm4pm for dependency addition, Rust source edits in
+wasm4pm for algorithm signature changes, and fixture replacements in wasm4pm-compat for
+GAP\_008. The gap registry does not execute these commands; it authorizes and tracks them.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:gaps-implementation-data}
+
+The gap registry does not define ontology files, TTL graphs, or structured data schemas.
+Its data surface is the gap record format: a structured Markdown template with mandatory
+fields (gap ID, severity, status, discovered date) and recommended sections
+(summary, expected capability, observed capability, impact assessment, remediation path,
+authorization). This format is consistent across all five existing documents and
+constitutes the implicit schema of the registry.
+
+The dependency graph in \texttt{GAP\_PRIORITY\_MATRIX.md} is a data structure in
+documentary form — an ASCII directed acyclic graph encoding the partial order over gap
+closures. The blocking-claims table is a relational structure mapping claim strings to
+gap identifiers. Neither is machine-readable in its current form; both are human-auditable
+documentation intended to govern the sequencing of remediation work.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:gaps-implementation-templates}
+
+The gap record template implicit in the existing documents provides the pattern for
+future gap additions. Each new gap document must include: a formal gap ID in the series
+GAP\_001 through GAP\_N; a severity classification (CRITICAL, MAJOR, or MINOR); a
+status (Open or Resolved with resolution reference); a discovery date and source
+citation; a summary of the defect; an expected capability statement grounded in
+existing doctrine; an observed capability statement with direct code citations; an
+impact assessment table; a remediation path with specific conditions; and an
+authorization clause.
+
+Resolution addendums follow the same template with a header marking them as addendums
+and a date. Gaps are never edited to remove their Open status; the status field is
+updated in the master \texttt{GAP\_REGISTER.md} and the resolution addendum is appended
+to the individual gap document. This is the immutability doctrine applied to documentary
+artifacts.

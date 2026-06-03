@@ -1,0 +1,129 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: audits
+% Role: completeness-audit-and-compliance-verification-corpus
+
+\section{Architecture and Primitives}
+\label{sec:audits-arch}
+
+\subsection{Core Objects}
+\label{sec:audits-arch-objects}
+
+The audits corpus is organized around five core object classes.
+
+\textbf{GraduationReason enum.} Defined in the \texttt{wasm4pm-compat}
+projection layer, this enum encodes the reason a given capability must graduate
+from the projection layer to the \texttt{wasm4pm} execution engine. Its
+variants are: \texttt{NeedsReplay}, \texttt{NeedsConformanceExecution},
+\texttt{NeedsDiscovery}, \texttt{NeedsObjectCentricQueryExecution},
+\texttt{NeedsReceipts}, and \texttt{NeedsBenchmarkGate}. Audit~2 verifies that
+all seven forbidden tool functions (\texttt{simulate\_replay},
+\texttt{compute\_alignment}, \texttt{discover\_model}, \texttt{execute\_ocpq},
+\texttt{run\_conformance}, \texttt{mint\_receipt}, \texttt{benchmark\_gate\_run})
+are absent from \texttt{compat/src}, ensuring that execution logic has not been
+smuggled into the projection layer.
+
+\textbf{Receiptable trait.} The \texttt{Receiptable} trait defines the four
+methods required for a type to participate in the cryptographic receipt chain:
+\texttt{content\_hash()}, \texttt{witness()}, \texttt{verify\_receipt()}, and
+\texttt{encode\_receipt\_proof()}. Audit~5 verifies that this trait is fully
+implemented on the \texttt{ArtifactReceipt} type and that \texttt{ArtifactReceipt.verify()}
+checks all four required fields (content hash non-empty, witness marker
+non-empty, template source non-empty, timestamp \(> 0\)).
+
+\textbf{Evidence\textlangle T, State, Witness\textrangle.} The three-axiom
+evidence type constitutes the type-law surface for the entire projection layer.
+Its three axioms are: cryptographic binding (the content hash binds the artifact
+payload), lattice monotonicity (witness accumulation is monotonically increasing
+under the join operation \(W_{\text{new}} = W_{\text{old}} \sqcup w_{\text{step}}\)),
+and signature admissibility (only signatures produced by the authorized signing
+key are accepted). The compile-fail fixture corpus, with 199 fixtures and 97.7\%
+valid law-proving error codes, constitutes the type-law receipt for all three
+axioms.
+
+\textbf{Admission refusal signatures.} The six admission refusal conditions~---
+\texttt{HashMismatch}, \texttt{TemporalAnomaly}, \texttt{CausalDisconnect},
+\texttt{TypeViolation}, \texttt{InvalidSignature}, \texttt{LatticeViolation}~---
+define the boundary conditions under which the projection layer refuses to accept
+an artifact as evidence. These are not error codes: they are typed refusals that
+carry the reason for non-admission, enabling downstream auditors to classify
+violations by law category.
+
+\textbf{Autonomic lifecycle states.} The 12-state autonomic lifecycle
+(\texttt{Design}, \texttt{Construction}, \texttt{Simulation},
+\texttt{Integration}, \texttt{Activation}, \texttt{Operation},
+\texttt{Monitoring}, \texttt{Repair}, \texttt{Optimization},
+\texttt{Decommissioning}, \texttt{Archive}, \texttt{BoardProjection}) defines the
+state machine that governs artifact progression. The Petri net soundness audit
+confirms all 12 states are reachable from \texttt{Design} via quality gate events
+and that no state is a deadlock trap.
+
+\subsection{Admissible Transitions}
+\label{sec:audits-arch-transitions}
+
+Transitions between audit states are governed by the following rules, derived
+from the deterministic audit program.
+
+A projection layer may advance from \textsc{unaudited} to \textsc{audited} only
+after all five deterministic shell audits emit \textsc{pass}. Currently, the
+layer is in state \textsc{partial}: Audits 2--5 have emitted \textsc{pass}; Audit
+1 has emitted \textsc{fail} due to the \textsc{dto\_001} violation.
+
+A graduation checkpoint may be committed only when the layer is in state
+\textsc{audited} and the \texttt{AUDIT\_LOG.yaml} records all five audits as
+\textsc{pass}.
+
+A board claim may be submitted for M\&A consideration only when its claim type
+has a verified receipt shape, a research support citation, a public standard
+reference, and a lifecycle state mapping. The board claim support audit
+(\texttt{audit-board-claim-support.md}) confirms all nine claim types across
+four strategic domains are \textsc{supported}.
+
+\subsection{Boundaries}
+\label{sec:audits-arch-boundaries}
+
+The audits corpus enforces three boundary types.
+
+\textbf{DTO flattening boundary.} The \texttt{\_json} pattern is prohibited in
+method names within the \texttt{wasm4pm-compat} crate. JSON is a casual carrier.
+Methods with \texttt{\_json} suffixes signal that structured \texttt{Evidence<T>}
+types are being collapsed to payload strings, destroying the cryptographic binding
+that makes the evidence a valid receipt. This boundary is enforced by Audit~1.
+
+\textbf{Tool smuggling boundary.} Execution tools (conformance checking, replay,
+discovery, OCPQ execution, receipt minting, benchmark gating) must not appear in
+the \texttt{compat/src} directory. Their presence in the projection layer would
+mean that the projection layer has absorbed responsibilities that belong to the
+\texttt{wasm4pm} execution engine, violating the graduation boundary. This is
+enforced by Audit~2.
+
+\textbf{Feature isolation boundary.} The default feature set of
+\texttt{wasm4pm-compat} must contain only \texttt{serde}. No \texttt{specta},
+\texttt{wasm-bindgen}, or \texttt{tsify} dependencies may appear in the default
+feature. This prevents accidental execution-tool smuggling through transitive
+dependency injection. This is enforced by Audit~3.
+
+\subsection{Failure Modes Refused}
+\label{sec:audits-arch-failures}
+
+The audits corpus explicitly refuses four classes of failure.
+
+\textbf{Stub and mock contamination.} The forensic audit verdict confirms zero
+stubs, mocks, or \texttt{TODO} comments in any source file. The single instance
+of \texttt{mock\_sig} in the test suite is a local test variable representing an
+invalid signature, not a deferred implementation.
+
+\textbf{Hardcoded output.} No pre-populated result artifacts, logs, or
+attestation files exist in the workspace that predate execution. All 84 tests
+perform actual mathematical computation.
+
+\textbf{E0425 fixture defects.} Zero \texttt{E0425} ("cannot find value in
+scope") errors appear in the compile-fail fixture corpus. This error indicates a
+fixture that fails due to a missing symbol rather than a type-law violation~---
+an absence-proof defect that would register as a false receipt. The corpus is
+entirely free of this class of defect.
+
+\textbf{Non-monotonic witness transitions.} Any witness transition where
+\(W_{\text{new}} \sqsubset W_{\text{old}}\) (a decrease in the witness lattice)
+or \(W_{\text{new}} = \top\) (a contradiction) triggers a self-halt at the
+\texttt{wasm4pm} execution layer, as documented in the adversarial audit's
+mitigation of the witness lattice tampering threat vector.

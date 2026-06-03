@@ -1,0 +1,101 @@
+% FILE: 02_lineage_and_context.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+
+\section{Lineage and Context}
+\label{sec:otel-weaver-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:otel-weaver-lineage-2016}
+
+The foundational intellectual event in this research program's lineage was a 2016 experiment
+demonstrating that local text imitation does not conserve consequence. A language model trained
+to reproduce the surface form of a process description---its vocabulary, sentence structure,
+and topical coverage---failed to preserve the causal dependencies and lifecycle constraints
+embedded in the original. The model could produce output that \emph{resembled} a process
+specification without \emph{representing} the process's legal and temporal obligations.
+
+This lesson maps directly onto the \texttt{otel-weaver} problem. An OpenTelemetry span resembles
+a process event: it has a name, a timestamp, a duration, and contextual attributes. A Weaver
+schema validation pass resembles a conformance verdict: it checks structure against a declared
+template. But resemblance is not identity. The 2016 lesson established that surface-form fidelity
+is insufficient for consequence-conserving representation. The \texttt{otel-weaver} doctrine layer
+operationalizes this lesson at the ingestion stratum: a span that passes schema validation has
+demonstrated structural fidelity, not process fidelity. The Feedstock Theorem
+($\text{SchemaValidation}(\text{Telemetry}) \neq \text{ProcessCompliance}(\text{ProcessState})$)
+is the type-system encoding of the 2016 finding.
+
+The implication for the \texttt{otel-weaver} architecture is that no amount of schema richness
+in the \texttt{process.pi} semantic convention registry can substitute for a formal admission
+gate. The registry makes feedstock more \emph{legible}; it does not make feedstock
+\emph{evidence}. That promotion requires a witness seal---the \texttt{ActivityWitness} struct
+binding the admitted payload to a lattice-bounded accountability structure.
+
+\subsection{Enterprise Process Gap}
+\label{sec:otel-weaver-lineage-enterprise}
+
+The enterprise process gap---the structural failure of deployed software systems to produce
+auditable evidence of the processes they claim to execute---manifests acutely in organizations
+that have adopted OpenTelemetry. These organizations possess rich observability infrastructure:
+distributed traces, metric pipelines, structured log aggregation, and Weaver-validated schema
+registries. Yet when asked to demonstrate that a specific business process executed in conformance
+with its declared model, they cannot produce a replay-grade event log. They can produce dashboards.
+They can produce alert histories. They cannot produce a process conformance receipt.
+
+The \texttt{otel-weaver} project names this gap at the ingestion layer. The gap exists precisely
+at the transition from OTel span to OCEL event. The \texttt{OtelToOcelLossPolicy} artifact
+specifies three categories of loss that are mandatory to declare: \texttt{span\_duration\_truncation}
+(temporal precision lost when mapping span timing to OCEL timestamps),
+\texttt{resource\_scope\_collapse} (hierarchical resource context flattened into flat OCEL
+attributes), and \texttt{causality\_to\_correlation\_degradation} (causal span relationships
+degraded to correlational case identifiers). Each of these losses reduces the downstream
+process-intelligence layer's ability to reconstruct lawful object lifecycles.
+
+The enterprise process gap is therefore not a gap in instrumentation density---most organizations
+have abundant telemetry---but a gap in \emph{evidence-grade projection}: the formal, loss-declared,
+witness-sealed transformation from raw observability signal to process-intelligence feedstock.
+\texttt{otel-weaver} is the research foundry's answer to this specific gap.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:otel-weaver-lineage-chatman-equation}
+
+The Chatman Equation $A = \mu(O^*)$ asserts that every asserted activity $A$ is the manufactured
+output $\mu$ of an authoritative object state $O^*$. This equation governs the entire foundry's
+claim-making architecture: no activity may be asserted without tracing to an authoritative object.
+The \texttt{otel-weaver} ingestion layer is the mechanism by which raw telemetry is either
+\emph{promoted} to a candidate $O^*$ or \emph{refused} before it can contaminate the equation's
+input domain.
+
+Concretely, an OTel span arrives at the ingestion layer as untyped feedstock. The
+\texttt{process.pi} registry specifies what a span must contain to be a candidate activity
+witness: a valid \texttt{instance\_id}, a declared \texttt{activity.name}, a \texttt{lifecycle}
+state, token state fields (\texttt{before}/\texttt{after}), a \texttt{witness.id}, and a
+\texttt{witness.hash} in BLAKE3 64-character format. If any required field is absent or malformed,
+the \texttt{Admission<T,\,W>} gate emits a \texttt{Refusal} with a \texttt{RefusalCode} and
+\texttt{violated\_rule} reference. The refused span never enters the equation's domain.
+
+If the span passes, it is wrapped in an \texttt{Admission<T,\,W>} struct where \texttt{W} is an
+\texttt{ActivityWitness} lattice element. This struct is the typed form of a candidate $O^*$. Only
+at this point may downstream components---\texttt{wasm4pm}, \texttt{wasm4pm-compat}, the M\&A
+claim layer---treat the payload as a process-evidence input. The Chatman Equation's integrity
+depends on the ingestion gate holding this boundary without exception.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:otel-weaver-lineage-receipts}
+
+The foundry's receipt architecture requires that every claim be cryptographically anchored to an
+immutable artifact. The \texttt{otel-weaver} project contributes to this architecture at two
+levels. First, the \texttt{Refusal} type requires a \texttt{blake3\_digest} of the refused
+feedstock payload, creating an auditable record of what was rejected and why. Second, the
+\texttt{ggen}-manufactured manifest chain produces BLAKE3-chained receipt files at
+\texttt{receipts/otel-weaver-source-receipt.json} and \texttt{receipts/pi-telemetry-bridge-receipt.json},
+referenced in the project's two manifest files.
+
+The Replay Test---a ground truth criterion requiring independent third-party replayability without
+visualization---is the ultimate arbiter of whether the ingestion layer has succeeded. A process
+event log derived through \texttt{otel-weaver}'s ingestion pipeline must support replay: a third
+party, given the OCEL log and the declared process model, must be able to reproduce the conformance
+verdict without access to dashboards, alerts, or observability infrastructure. This criterion is
+what distinguishes a receipt from a reading. The \texttt{otel-weaver} ingestion layer is designed
+so that every admitted payload carries enough information for replay, and every loss is declared
+in a \texttt{LossReport} so that the replay analyst knows what was irreversibly discarded.

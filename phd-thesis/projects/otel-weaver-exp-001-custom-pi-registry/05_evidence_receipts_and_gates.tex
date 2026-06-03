@@ -1,0 +1,106 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-evidence}
+
+\subsection{Tests}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-evidence-tests}
+
+The RUNTIME checkpoint (\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}) cites 62 total passing
+tests across three packages: \texttt{wasm4pm}, \texttt{wasm4pm-compat}, and
+\texttt{blue\_river\_dam}. One test is named directly:
+\texttt{test\_weaver\_integration\_synthesis} in
+\texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs}, reported as 1 passed.
+
+These test counts are taken from the checkpoint at face value. The audit raises a critical question:
+whether \texttt{test\_weaver\_integration\_synthesis} exercises the \texttt{process\_pi.yaml}
+schema attributes directly --- by constructing spans that satisfy or violate the eight defined
+attributes and verifying the admission/refusal outcome --- or whether it validates only the
+downstream Rust logic in \texttt{bridge.rs} and \texttt{validator.rs} without importing the YAML
+schema. If the latter, the 62 passing tests do not constitute evidence that
+\texttt{process\_pi.yaml} has been machine-validated against its declared schema contract. This
+distinction is not resolvable from the checkpoint text alone and is marked as an open gap
+(FUTURE WORK).
+
+No pm4py-based fitness or precision tests against event logs produced from
+\texttt{process.pi.activity}-instrumented spans have been identified in the evidence corpus.
+The absence of process-mining-layer tests means that schema compliance at the feedstock layer has
+not been demonstrated to propagate to conformance quality at the replay layer. This gap is
+structurally significant: it is the difference between \emph{schema correctness} and
+\emph{process evidence sufficiency}.
+
+\subsection{Receipts}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-evidence-receipts}
+
+The receipt chain is declared in \texttt{otel-weaver/ggen/manifests/otel-weaver-source.manifest.yaml}:
+
+\begin{itemize}
+  \item \texttt{receipt.format}: \texttt{cryptographic-chain}
+  \item \texttt{algorithm}: \texttt{blake3}
+  \item \texttt{store\_location}: \texttt{receipts/otel-weaver-source-receipt.json}
+\end{itemize}
+
+The receipt file at the declared store location
+(\texttt{/Users/sac/process-intelligence/receipts/otel-weaver-source-receipt.json}) does not
+appear to exist on disk as of the evidence audit date (2026-06-01). This is the most significant
+evidence gap for EXP-001's status claim. A declared receipt chain that has not been materialized
+is an aspirational artifact, not a sealed one. The ALIVE checkpoint was issued by the ggen
+manufacturing authority, which is the same system that declared the receipt chain --- making
+the ALIVE status self-referential rather than independently verified.
+
+Per the Absolute Laws governing this dissertation: status cannot be claimed as ALIVE unless
+receipt, tests, and checkpoint all exist. The receipt has not been confirmed to exist on disk.
+EXP-001's status is therefore PARTIAL, not ALIVE.
+
+\subsection{Checkpoints}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-evidence-checkpoints}
+
+Three checkpoint files exist and are confirmed in the evidence corpus:
+
+\begin{enumerate}
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md} --- design gate PASSED.
+        This checkpoint confirms that the schema design passed an initial gate evaluation; it
+        does not confirm runtime validation or receipt materialization.
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md} --- status: COMPLETE and ACTIVE,
+        SHA-256 sealed by the ggen manufacturing authority. This checkpoint asserts that the
+        registry manufacturing pipeline completed successfully and the resulting artifact is
+        active. The SHA-256 seal is over the checkpoint document itself, not over the
+        \texttt{process\_pi.yaml} artifact or the BLAKE3 receipt.
+  \item \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} --- runtime integration gate PASSED,
+        citing 62 passing tests across \texttt{wasm4pm}, \texttt{wasm4pm-compat}, and
+        \texttt{blue\_river\_dam}. This checkpoint provides the strongest external evidence for
+        EXP-001's integration into the broader system, but see the test-scope caveat in
+        Section~\ref{sec:otel-weaver-exp-001-custom-pi-registry-evidence-tests}.
+\end{enumerate}
+
+The three checkpoints establish a chronological gate sequence: design gate $\to$ ALIVE
+declaration $\to$ runtime integration confirmation. This sequence is the expected form for a
+manufacturing pipeline checkpoint chain, and its existence is a positive indicator. The PARTIAL
+status reflects gaps in the materialized evidence beneath the checkpoints, not a rejection of
+the checkpoints themselves.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-evidence-status}
+
+\textbf{Status: PARTIAL.}
+
+The PARTIAL designation reflects the following specific gaps:
+\begin{enumerate}
+  \item The BLAKE3 receipt file declared in the manifest has not been confirmed to exist on disk.
+        A declared receipt is not a sealed receipt.
+  \item The \texttt{weaver registry validate} command has not been confirmed to have been run
+        against a materialized \texttt{registry/} directory. The \texttt{registry/} directory
+        does not appear to exist at \texttt{otel-weaver/registry/}.
+  \item The integration test \texttt{test\_weaver\_integration\_synthesis} has not been
+        confirmed to exercise \texttt{process\_pi.yaml} schema attributes directly.
+  \item No independent pm4py-based fitness/precision check has been run against event logs
+        produced from \texttt{process.pi.activity}-instrumented spans.
+\end{enumerate}
+
+EXP-001 satisfies the structural and documentary requirements for a manufacturing pipeline entry:
+it has a schema artifact, a ggen template, a manifest, a mapping surface, and three checkpoints.
+It does not yet satisfy the receipt-plus-tests-plus-independent-validation requirement for full
+ALIVE status. The three checkpoint files are acknowledged as the strongest available evidence.
+Full ALIVE status requires materialization of the items listed above.

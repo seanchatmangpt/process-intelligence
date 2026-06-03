@@ -1,0 +1,235 @@
+---
+# Claim Ledger: standards project
+# Generated: 2026-06-01
+# Referee: Claude Code (claude-sonnet-4-6)
+
+slug: standards
+
+claims:
+  - id: CLM-STANDARDS-001
+    claim: >-
+      The standards project contains exactly 52 fully realized files as of checkpoint
+      timestamp 2026-05-31T23:59:59Z, covering 16 public standards with zero stubs or
+      placeholder content across all placement files.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/checkpoint__public_standards_crosswalk_complete.md
+      - /Users/sac/process-intelligence/standards/audit__standards_coverage.md
+    evidence_summary: >-
+      The checkpoint ledger entry (chk-public-standards-crosswalk-001, status PASSED,
+      standards_count_verified: 16) and audit matrix (all 16 VERIFIED) together confirm
+      completeness; directory listing confirms exactly 52 files exist.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-002
+    claim: >-
+      All 16 public standards (13 core process standards and 3 metadata standards) carry
+      VERIFIED status in the audit matrix, with absolute paths to each placement file.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/audit__standards_coverage.md
+    evidence_summary: >-
+      The audit matrix explicitly lists all 16 standards (XES, OCEL, POWL, OCPQ, BPMN,
+      Petri Net, WF-Net, Declare, DFG, Process Tree, PROV-O, OTel Weaver, DCTERMS, SHACL,
+      SKOS, ODRL) each with status VERIFIED and an absolute file path.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-003
+    claim: >-
+      The Slide-to-Receipt bridge formula binds every M&A presentation slide containing
+      an operational claim to a wasm4pm execution receipt via:
+      SlideBinding = BLAKE3(SlideUUID || ReceiptHash || ClaimValue).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/public_standards_to_m&a_claims.md
+    evidence_summary: >-
+      The formula appears verbatim in public_standards_to_m&a_claims.md with LaTeX
+      rendering; the checkpoint confirms this file is part of the verified artifact set.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-004
+    claim: >-
+      The Blue River Dam enforces three mandatory validation gates: aggregate replay
+      fitness f >= 0.95 (hard floor f >= 0.85 even with board override), process model
+      precision p >= 0.90, and automatic freeze-and-abort on 1-boundedness violation.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/public_standards_to_blue_river_dam.md
+    evidence_summary: >-
+      All three gate conditions and the board-override floor are stated verbatim in
+      public_standards_to_blue_river_dam.md with explicit threshold values.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-005
+    claim: >-
+      The adversarial test report OCEL-XES-ADV-V30.1.1 identifies four structural
+      vulnerabilities in XES and OCEL native formats: phantom-object injection, timeline
+      manipulation, hash-chain paradox, and cryptographic tombstone deficiencies.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/ocel-adversarial-gravity.md
+      - /Users/sac/process-intelligence/standards/xes-cryptographic-tombstoning.md
+    evidence_summary: >-
+      The adversarial test report (OCEL-XES-ADV-V30.1.1) and cryptographic tombstoning
+      file are confirmed present in the standards directory and cited in the checkpoint
+      as part of the ALIVE evidence set.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-006
+    claim: >-
+      A WF-net decommissioning receipt example records historical_replay_fitness: 0.978,
+      precision: 0.912, and total_recorded_cases: 124500 as named metrics against named
+      thresholds.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/public_standards_to_decommissioning.md
+    evidence_summary: >-
+      These exact numeric values appear in public_standards_to_decommissioning.md (not in
+      wf-net_verification_specification.md as the TeX files imply); the data exists but
+      the TeX file attribution is imprecise about which file contains the example.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-007
+    claim: >-
+      The gravity field is not merely a marketing claim but a compile-time invariant:
+      each public standard maps to a non-forgeable Rust witness type in src/witness.rs
+      of the wasm4pm-compat crate, enforced by the Rust type system.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/PROCESS_STANDARDS_GRAVITY_FIELD.md
+    evidence_summary: >-
+      PROCESS_STANDARDS_GRAVITY_FIELD.md states verbatim: 'the gravity field is not just
+      a marketing claim. It is a compile-time invariant,' with the witness.rs mechanism
+      described.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-008
+    claim: >-
+      The ggen projection map defines mappings from standard constructs to Rust code
+      artifacts: Petri net places project to Rust structs, BPMN gateways project to
+      match/join! patterns, and Declare templates project to FSA implementations.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/public_standards_to_ggen_projections.md
+    evidence_summary: >-
+      The ggen projections file explicitly tabulates these mappings and confirms the ggen
+      engine translates BPMN/Petri Net/POWL trees into typed Rust code compiled to
+      WebAssembly.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-009
+    claim: >-
+      The reverse lock-in doctrine creates a Nash equilibrium where rational agents choose
+      conformance to W_std because non-conformance is mathematically unprofitable, making
+      the standard the operating system of the verified process economy.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/standards/reverse-lock-in.md
+      - /Users/sac/process-intelligence/standards/reverse-porter-five.md
+    evidence_summary: >-
+      The Nash equilibrium payoff matrix and competitor behavioral analysis are documented
+      in reverse-lock-in.md, but no empirical measurement of competitor conformance
+      adoption rate exists; the claim rests on a game-theoretic model, not observed data.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-010
+    claim: >-
+      The five Porter competitive forces are fully inverted by Full-Lifecycle Process
+      Intelligence: threat of new entrants becomes weaponized entry channeling, and
+      competitive rivalry becomes asymmetric ontological warfare.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/standards/reverse-porter-five.md
+    evidence_summary: >-
+      The reverse-porter-five.md file presents this inversion as the author's strategic
+      analysis built on the formal W_std foundation; it is an analytical thesis, not an
+      empirically measured competitive outcome.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-011
+    claim: >-
+      The OCPQ query evaluation engine has not graduated to wasm4pm; structural shapes
+      exist in src/ocpq.rs but the evaluation engine does not yet execute queries against
+      OCEL 2.0 logs, making OCPQ claims PARTIAL at the execution level though ALIVE at
+      the type-law level.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/ocpq_placement.md
+      - /Users/sac/process-intelligence/standards/audit__standards_coverage.md
+    evidence_summary: >-
+      The OCPQ placement file is VERIFIED in the audit matrix at the type-law level; the
+      TeX explicitly marks execution capability as a graduation boundary item, consistent
+      with the deferred status.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-012
+    claim: >-
+      No .shacl or .ttl SHACL shape files exist in the standards/ directory, meaning
+      SHACL validation of OCEL 2.0 RDF cannot currently be executed without authoring
+      the shape files first.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/shacl_validation_placement.md
+    evidence_summary: >-
+      A directory listing of /Users/sac/process-intelligence/standards/ confirms no
+      .shacl or .ttl files are present; the shacl_validation_placement.md file exists as
+      documentation only, with no executable shape artifacts.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-013
+    claim: >-
+      An empirical measurement of competitor conformance adoption under the reverse
+      lock-in doctrine has not yet been executed; applying W_std conformance checking to
+      any external process model with a recorded fitness score remains deferred work.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/standards/reverse-lock-in.md
+    evidence_summary: >-
+      Both the TeX open-questions section and reverse-lock-in.md acknowledge that no
+      executed experiment with a measured competitor conformance adoption rate exists;
+      this is listed as a deferred gate in the next-receipted-work list.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-014
+    claim: >-
+      The OTel trace integration schema (otel_trace_integration_schema.json) defines the
+      blake3_receipt field as a required property of each OTel span (64-character hex
+      string) and the event_chain_root as the BLAKE3 hash of the entire trace.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/standards/otel_trace_integration_schema.json
+    evidence_summary: >-
+      The JSON schema file is confirmed present in the standards directory; the checkpoint
+      audit and docs-law readme both cite it as a machine-validatable artifact defining
+      these exact fields.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-STANDARDS-015
+    claim: >-
+      The standards project's process evidence claims are independently replicable by
+      buyer's advisors to a 10^-6 tolerance by executing the same conformance query on
+      the same XES log against the same WF-net model.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/standards/public_standards_to_m&a_claims.md
+      - /Users/sac/process-intelligence/standards/public_standards_to_blue_river_dam.md
+    evidence_summary: >-
+      The 10^-6 tolerance is stated as a design property of the Slide-to-Receipt bridge
+      architecture; it is the author's architectural thesis about replicability, not yet
+      demonstrated with a documented buyer-advisor replication experiment.
+    confidence: MEDIUM
+    allowed_in_pdf: true

@@ -1,0 +1,151 @@
+% FILE: 04_implementation_surface.tex
+% PROJECT: sources-papers
+% ROLE: academic-paper-classification-and-evidence-grounding
+
+\section{Implementation Surface}
+\label{sec:sources-papers-impl}
+
+\subsection{Source Files}
+\label{sec:sources-papers-impl-files}
+
+The \texttt{sources/papers} directory contains 15 files as of the ALIVE gate
+assessment (2026-05-31). These files do not contain Rust source code, test
+fixtures, or TOML configurations --- those artifacts live in
+\texttt{wasm4pm-compat}. The paper corpus files are research documents that
+\emph{specify} what must exist in implementation, not implementations
+themselves. The distinction is intentional: research authority is separated
+from implementation authority.
+
+The primary files and their roles are:
+
+\begin{description}
+  \item[\texttt{paper-canon.md} (v30.1.2)] The master conformance registry.
+    Provides per-paper conformance claims for 9 core papers with 150+ formal
+    objects, 75+ algorithms, 120+ failure conditions, and 25+ board claim
+    archetypes. Status: COMPLETE.
+
+  \item[\texttt{PAPER\_CANON\_SCOPE.md}] Scope boundary document defining
+    which papers are in-scope for the 81-paper classification and why.
+
+  \item[\texttt{PAPER\_TO\_TYPE\_LAW.md}] The primary obligation surface for
+    \texttt{wasm4pm-compat}. Enumerates 18 fully covered papers, 39 at
+    graduation boundary, and 10 partial papers with 22 named missing types.
+
+  \item[\texttt{PAPER\_TO\_EXECUTION\_LAW.md}] The primary obligation surface
+    for \texttt{wasm4pm}. Enumerates 29 algorithms with input/output type
+    shapes; all carry \texttt{NO} wasm4pm coverage, documenting the graduation
+    obligation.
+
+  \item[\texttt{PAPER\_TO\_BOARD\_CLAIM.md}] Maps verified type-law coverage
+    to board-admissible claims. Five Tier-1 structural completeness claims are
+    documented with named evidence paths; five board claims are explicitly
+    marked NOT board-admissible due to missing types.
+
+  \item[\texttt{WORKFLOW\_LEDGER.md} / \texttt{workflow-ledger.md}] The
+    ledger tracking which papers have been analysed, which obligations have
+    been issued, and which receipt events have been emitted.
+
+  \item[\texttt{adversarial-canon.md}] Byzantine-fault-tolerant requirements:
+    Sybil attack resistance via BLAKE3 cryptographic receipts, non-deterministic
+    reality receipt handling, typestate progression enforcement.
+
+  \item[\texttt{ALPHA\_MINER\_ANALYSIS.md}] Deep analysis of Alpha Miner
+    (van der Aalst, Weijters, Maruster 2004) covering PM4Py coverage,
+    wasm4pm-compat coverage, and P0 execution gaps. Identifies the critical
+    open question: whether \texttt{wasm4pm-algos/src/alpha.rs} incorrectly
+    types its output as \texttt{WfNetConst<Sound>}.
+
+  \item[\texttt{INDUCTIVE\_MINER\_ANALYSIS.md}] Confirms that Inductive Miner
+    is MISSING from wasm4pm. All board claims about ``sound algorithm
+    discovery'' are currently unattested.
+
+  \item[\texttt{OCEL\_2\_0\_ANALYSIS.md}] Documents the 7-object OCEL 2.0
+    type surface and confirms full coverage in \texttt{src/ocel.rs}.
+
+  \item[\texttt{DECLARE\_ANALYSIS.md}] Documents the 12 LTLf DECLARE
+    templates and their encoding as \texttt{ConstParamTy} variants.
+
+  \item[\texttt{POWL\_ANALYSIS.md}] Documents the POWL 2.0 ChoiceGraph shape
+    as absent from \texttt{wasm4pm-compat src/powl.rs} and \texttt{mineDG}
+    as absent from wasm4pm. Identifies this as a strategic first-mover
+    opportunity since PM4Py mainline also lacks it.
+
+  \item[\texttt{YAWL\_WORKFLOW\_ANALYSIS.md}] Documents YAWL soundness
+    (van der Aalst \& ter Hofstede 2004) and the \texttt{WfNetConst<SOUNDNESS>}
+    encoding via WOFLAN reduction.
+
+  \item[\texttt{ALIGNMENT\_CONFORMANCE\_ANALYSIS.md}] Documents the
+    alignment-based conformance obligation (Adriansyah et al.\ 2011) and
+    confirms that \texttt{AlignmentResult}, \texttt{MoveCost}, and
+    \texttt{OptimalAlignment} shapes are currently MISSING from
+    \texttt{wasm4pm-compat}.
+
+  \item[\texttt{core\_lifecycle\_algorithms.md}] Formalizes four algorithms
+    (Paper-to-Law, PM4Py Oracle, Admission Gate, Receipt-Bearing Execution)
+    with LaTeX-formatted mathematical foundations.
+
+  \item[\texttt{runtime-verification-wasm.md}] Working paper formalizing Petri
+    net soundness, optimal alignment cost minimization ($A^*$-based), and LTLf
+    constraint evaluation for WASM execution contexts.
+
+  \item[\texttt{declare-satisfaction-lattice.md}] Defines the 5-valued dynamic
+    valuation lattice $\mathcal{V}$ with verified join-semilattice structure.
+\end{description}
+
+\subsection{Commands}
+\label{sec:sources-papers-impl-commands}
+
+The paper corpus does not expose CLI commands directly. The obligation artifacts
+it manufactures are consumed by two downstream CLI surfaces. In
+\texttt{wasm4pm-compat}, the command \texttt{cargo test --test ui} runs
+trybuild compile-fail and compile-pass fixtures that verify the type-law
+obligations derived from the paper corpus. In \texttt{wasm4pm}, the execution
+obligation table drives the algorithm implementation backlog.
+
+Within the research foundry, the paper corpus is maintained through the
+conventional commit type \texttt{research-paper}, e.g.:
+\begin{verbatim}
+research-paper: classify Van der Aalst OCEL 2.0 spec → type-law surface
+research-paper: document Alpha Miner P0 gap in wasm4pm-algos output type
+\end{verbatim}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:sources-papers-impl-data}
+
+The paper corpus does not contain TTL, TOML, or RDF files. Its data surface
+is structured Markdown with embedded mathematical notation and explicit
+cross-references to Rust source paths. The formal structure is:
+
+\begin{itemize}
+  \item \textbf{Per-paper records}: title, authors, year, formal objects,
+    algorithms, failure conditions, compat type-law obligations, wasm4pm
+    execution obligations, board claim relevance.
+  \item \textbf{Coverage ledger}: 81 papers $\times$ 5 coverage statuses with
+    stated reasons for each classification.
+  \item \textbf{Obligation backlog}: 22 named missing types, 14 named missing
+    output shapes, cross-referenced to specific papers and specific
+    \texttt{wasm4pm-compat} source file paths.
+  \item \textbf{Graduation reason taxonomy}: Five \texttt{GraduationReason}
+    variants (\texttt{NeedsDiscovery}, \texttt{NeedsConformanceExecution},
+    \texttt{NeedsObjectCentricQueryExecution}, \texttt{NeedsReceipts},
+    \texttt{RebuildingProcessMiningLocally}) mapped to algorithm families and
+    specific papers.
+\end{itemize}
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:sources-papers-impl-templates}
+
+The paper corpus manufactures two classes of rendered artifacts. The first
+class is obligation specifications consumed by implementors: the
+\texttt{PAPER\_TO\_TYPE\_LAW.md}, \texttt{PAPER\_TO\_EXECUTION\_LAW.md}, and
+\texttt{PAPER\_TO\_BOARD\_CLAIM.md} documents function as implementation
+contracts. The second class is formal mathematical working papers
+(\texttt{runtime-verification-wasm.md}, \texttt{declare-satisfaction-lattice.md},
+\texttt{core\_lifecycle\_algorithms.md}) that provide the theoretical grounding
+for implementation decisions in \texttt{wasm4pm-compat} and \texttt{wasm4pm}.
+
+No TTL ontology files, no TOML configuration files, and no test fixture files
+exist within the papers directory itself. The test fixtures (compile-pass and
+compile-fail) that verify the type-law obligations are located in
+\texttt{wasm4pm-compat/tests/ui/}, with paths cross-referenced from the paper
+corpus documents.

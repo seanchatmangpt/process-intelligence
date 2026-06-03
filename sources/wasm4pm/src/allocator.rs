@@ -24,8 +24,7 @@ pub struct DoubleBufferedArena {
 
 impl DoubleBufferedArena {
     pub fn new(ceiling: usize) -> Self {
-        let mut buffer = Vec::with_capacity(ceiling + 8);
-        buffer.resize(ceiling + 8, 0);
+        let buffer = vec![0; ceiling + 8];
         let base_addr = buffer.as_ptr() as usize;
         let aligned_addr = (base_addr + 7) & !7;
         let aligned_offset = aligned_addr - base_addr;
@@ -103,9 +102,9 @@ impl DoubleBufferedArena {
                 let remaining = self.buffer.len() - offset;
                 let chunk_size = std::cmp::min(64, remaining);
                 let chunk_ptr = unsafe { self.buffer.as_mut_ptr().add(offset) };
-                for i in 0..chunk_size {
+                for (i, &byte) in bytes.iter().enumerate().take(chunk_size) {
                     unsafe {
-                        std::ptr::write_volatile(chunk_ptr.add(i), bytes[i]);
+                        std::ptr::write_volatile(chunk_ptr.add(i), byte);
                     }
                 }
                 offset += chunk_size;

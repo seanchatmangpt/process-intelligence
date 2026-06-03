@@ -1,0 +1,93 @@
+% FILE: 06_contribution_to_thesis.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Contribution to the Dissertation}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-contribution-prediction}
+
+The dissertation's central argument distinguishes prediction from coordination: prediction models
+future states from historical data; coordination enforces lawful state transitions in running
+processes. The process intelligence architecture that the dissertation proposes is coordination-first:
+it does not predict what processes will do; it determines whether what processes did was lawful,
+and it does so from evidence that can be independently verified and replayed.
+
+EXP-001 contributes to this argument by establishing that the coordination claim begins at the
+feedstock layer. A process intelligence system that ingests unstructured telemetry cannot make
+coordination claims: it can only make statistical claims about span distributions. By requiring
+that admissible spans carry \texttt{process.pi.lifecycle} (one of six lawful lifecycle values),
+\texttt{process.pi.activity.name} (a Petri net transition label), and
+\texttt{process.pi.witness.hash} (a BLAKE3-sealed witness), EXP-001 ensures that the
+coordination claim is grounded in evidence that was structurally enforced at emission time, not
+inferred post hoc from unstructured logs.
+
+The schema boundary is therefore the first coordination gate in the architecture. It precedes the
+admission gate (\texttt{validate\_and\_project}), the bridging layer (\texttt{BridgeRx}), and
+the conformance court (\texttt{wasm4pm}). All of those gates assume that their input has already
+passed the feedstock schema check. The dissertation's coordination claim is only as strong as its
+weakest feedstock constraint, and EXP-001's required-attribute set is what makes those constraints
+machine-verifiable.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-contribution-evidence}
+
+The dissertation argues that process evidence requires four properties: \emph{case identity}
+(the event can be grouped with other events belonging to the same process instance),
+\emph{activity identity} (the event maps to a named transition in a declared process model),
+\emph{temporal ordering} (the event carries a timestamp that establishes its position in the
+instance's lifecycle), and \emph{witness integrity} (the event's payload has been sealed by an
+identifiable, verifiable witness). Standard OTel spans satisfy none of these properties by
+default.
+
+EXP-001 contributes a concrete instantiation of all four properties in a standard-conforming
+schema:
+\begin{itemize}
+  \item Case identity $\to$ \texttt{process.pi.instance\_id} (required)
+  \item Activity identity $\to$ \texttt{process.pi.activity.name} (required, Petri net transition label)
+  \item Lifecycle phase $\to$ \texttt{process.pi.lifecycle} (required, six-value enumeration)
+  \item Witness integrity $\to$ \texttt{process.pi.witness.hash} + \texttt{process.pi.witness.id} (both required)
+\end{itemize}
+
+The two recommended attributes (\texttt{process.pi.token.state\_before}/\texttt{state\_after})
+add Petri net state evidence beyond the four foundational properties. This contribution is
+empirical: the schema is a concrete artifact, not a design proposal, and it is validated against
+the OTel Weaver toolchain rather than against the author's intent alone (subject to the PARTIAL
+qualification that the \texttt{weaver registry validate} run has not been confirmed).
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-contribution-manufacturing}
+
+In the dissertation's manufacturing architecture, every artifact has a declared provenance chain:
+a ggen template, a manifest, a pipeline execution, and a receipt. EXP-001 is the entry-layer
+artifact in the OTel Weaver integration suite's manufacturing chain, and it demonstrates that a
+schema definition --- typically treated as a configuration file with no formal provenance --- can
+be placed under the same manufacturing discipline as code artifacts.
+
+The ggen template (\texttt{pi-weaver-registry.yaml.ggen}) is the manufacturing input. The
+manifest (\texttt{otel-weaver-source.manifest.yaml}) governs the pipeline. The checkpoint
+sequence (PARTIAL $\to$ ALIVE $\to$ RUNTIME) records the pipeline's gate progression. The
+declared BLAKE3 receipt chain (currently PARTIAL) is the provenance seal. This pattern ---
+template $\to$ manifest $\to$ gates $\to$ receipt --- is the standard manufacturing discipline
+applied to every artifact in the dissertation's evidence corpus. EXP-001's contribution is to
+demonstrate that the discipline extends to schema artifacts as well as code artifacts.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-contribution-capital-flow}
+
+The dissertation's capital-flow infrastructure layer requires that process events in financial
+and operational workflows be traceable, auditable, and replayable (AUTHOR THESIS). In the
+capital-flow context, a process event is not merely a log entry: it is a claim about value
+exchange, obligation fulfillment, or settlement state. Such claims require exactly the evidence
+properties that EXP-001's schema enforces: case identity (which transaction instance?), activity
+identity (which settlement step?), lifecycle phase (was this an initiation, a completion, or an
+abort?), and witness integrity (who sealed this claim, and can the seal be verified?).
+
+EXP-001 contributes the feedstock schema that would allow capital-flow process events to enter
+the process intelligence conformance court as lawful evidence. Without this schema, capital-flow
+telemetry from OTel-instrumented services is indistinguishable from operational telemetry at the
+feedstock layer. With it, a capital-flow service can emit spans that carry the required attributes,
+pass the admission gate, be projected to OCEL, and be replayed against a declared settlement
+process model with measurable fitness and precision. This is the path from operational telemetry
+to auditable capital-flow process intelligence, and EXP-001's schema is its entry point.

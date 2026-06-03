@@ -1,0 +1,101 @@
+% FILE: 02_lineage_and_context.tex
+% Project: audits
+% Role: completeness-audit-and-compliance-verification-corpus
+
+\section{Lineage and Context}
+\label{sec:audits-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:audits-lineage-lm}
+
+The 2016 language-model experiment established the founding negative result of
+this research program: local text imitation does not conserve consequence. A
+system can produce outputs that are locally indistinguishable from correct
+outputs while failing to preserve the causal and temporal structure that makes
+those outputs meaningful as process evidence.
+
+This lesson directly motivates the audits corpus. A test suite that checks
+whether \texttt{to\_json\_string()} returns a valid JSON string is performing
+local text imitation~--- it verifies the form of the output but not its
+consequence within the process-law chain. The \textsc{dto\_001} violation is not
+a behavioral defect: the method returns a correct string. It is a
+\emph{consequence defect}: the method name signals that structured
+\texttt{Evidence<T>} has been collapsed to a casual carrier, destroying the
+downstream receipting capability. Only a process-level audit~--- one that checks
+the type-law surface, not the output surface~--- can detect this class of
+defect.
+
+The audits corpus is therefore the direct descendant of the 2016 lesson applied
+to quality enforcement: conformance checking must operate at the level of
+process law, not behavioral output.
+
+\subsection{Enterprise Process Gap}
+\label{sec:audits-lineage-enterprise}
+
+The enterprise process gap that motivates the full research program is the
+systematic inability of enterprise software systems to provide evidence that the
+process they declared as their operating model is the process that actually
+executed. Event logs exist, but they are not systematically derived from OTel
+traces into object-centric OCEL format. Process models are declared in BPMN or
+Petri net notation, but they are not routinely compared against discovered models
+from the event evidence. When auditors ask whether a compliance process executed
+correctly, the honest answer in most enterprise systems is: the code ran, the
+test passed, but the process is unwitnessed.
+
+The audits corpus addresses this gap within the research foundry itself. By
+applying Van der Aalst conformance auditing to the foundry's own codebase~---
+using deterministic shell scripts as the audit instrument and committed text
+files as the receipt chain~--- the corpus demonstrates that the methodology
+closes the enterprise process gap at the system level. The \texttt{ALIVE\_001}
+adversarial audit certifying 567 commits across 12 corpus directories is the
+receipt that the foundry's own process is audited and witnessed.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:audits-lineage-chatman-equation}
+
+The Chatman Equation, \(A = \mu(O)\), states that autonomic alignment \(A\) is
+the measure of operator coverage \(\mu\) over the object space \(O\). In the
+context of the audits corpus, this equation manifests as the requirement that
+every audit result~--- every \textsc{pass} or \textsc{fail}~--- must be a
+measure over a defined object space.
+
+For the five deterministic shell audits, the object space is the
+\texttt{wasm4pm-compat} crate surface: its method names, its feature
+dependencies, its exported public items, its \texttt{Receiptable} trait
+implementations. Each audit defines a measurement function \(\mu\) over this
+surface and returns a scalar verdict. The graduation checkpoint
+\texttt{PROCESS\_INTELLIGENCE\_COMPAT\_CONFORMANCE\_001} is admissible only when
+\(\mu\) returns \textsc{pass} for all five measurement functions simultaneously.
+
+The neuro-symbolic verification audit (\texttt{neuro-symbolic-verification.md})
+references the Chatman Equation directly in the context of type-law coverage:
+\emph{``By enforcing the Chatman Equation (\(A = \mu(O^*)\)), the system
+guarantees that no adversarial process topology can escape explicit symbolic
+resolution.''} This is an \textsc{author thesis} interpretation of the equation
+applied to the audit domain~--- [AUTHOR THESIS].
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:audits-lineage-receipts}
+
+The receipts-and-replay doctrine holds that no claim is admissible unless it is
+accompanied by a cryptographic receipt that can be replayed to regenerate the
+claim from first principles. The audits corpus operationalizes this doctrine at
+two levels.
+
+At the \emph{shell level}, each of the five deterministic audits is
+re-executable: running \texttt{bash run\_audit\_1.sh} must produce byte-identical
+output to the committed \texttt{audit-no-dto-flattening.txt} receipt. This
+reproducibility constraint is enforced by the audit's determinism~--- all pattern
+searches and structural traversals are deterministic Bash operations with no
+random or time-dependent components.
+
+At the \emph{cryptographic level}, the agent audit receipts are signed with
+SHA-256 hashes and, for the \texttt{ALIVE\_001} certification, with BLAKE3 and
+Ed25519. The genesis block SHA-256 hash
+\texttt{787985dd49ff98f9803851093406bdfc2eb7ab5f71b374d01d5b9a0ea952fc26} and the
+\texttt{ALIVE\_001} signature \texttt{BLAKE3(567\_commits\_15\_dirs) +
+Ed25519(teamwork\_preview\_worker\_m5\_1)} constitute a cryptographic ledger that
+is itself audited by the ledger custodian agent, whose \texttt{test\_sha256\_
+ledger\_compliance} Rust integration test verifies cross-language equivalence of
+the SHA-256 block chain between \texttt{experiments/visualizer/ledger.js} and
+\texttt{sources/wasm4pm/src/crypto.rs}.

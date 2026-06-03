@@ -1,0 +1,583 @@
+# EVIDENCE LEDGER
+# Generated: 2026-06-01
+# Authority: phd-thesis/ledgers/DO_NOT_CLAIM_LEDGER.md
+# Purpose: Enumerate all receipts, test files, checkpoint files, and ontology
+#          files found across all projects in the process-intelligence foundry.
+
+---
+generated: "2026-06-01"
+
+summary:
+  receipts_found: 31
+  test_files_found: 11
+  checkpoint_files_found: 25
+  ontology_files_found: 27
+
+# ──────────────────────────────────────────────────────────────────────────────
+# RECEIPTS
+# All JSON receipt files, markdown generation receipts, and YAML manufacturing
+# receipts found across the foundry.
+# ──────────────────────────────────────────────────────────────────────────────
+receipts:
+
+  # M&A Claim Receipts (signed JSON)
+  - path: /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+    type: MA_CLAIM_RECEIPT
+    description: EBITDA rework reduction receipt; fitness=0.982, precision=0.945, $1.25M EBITDA impact
+    cryptographic: ed25519 validator_signature present; BLAKE3 target_log_hash present
+    status: SAMPLE (not produced by live wasm4pm execution)
+
+  - path: /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+    type: MA_CLAIM_RECEIPT
+    description: Working capital AR velocity receipt; $1.37M impact
+    cryptographic: ed25519 validator_signature present; BLAKE3 target_log_hash present
+    status: SAMPLE (not produced by live wasm4pm execution)
+
+  - path: /Users/sac/process-intelligence/receipts/rec_risk_sla_003.json
+    type: MA_CLAIM_RECEIPT
+    description: Risk SLA penalty exposure receipt; $450K cap
+    cryptographic: ed25519 validator_signature present; BLAKE3 target_log_hash present
+    status: SAMPLE (not produced by live wasm4pm execution)
+
+  - path: /Users/sac/process-intelligence/receipts/rec_risk_compliance_004.json
+    type: MA_CLAIM_RECEIPT
+    description: Risk compliance leakage receipt; $0.00 leakage
+    cryptographic: ed25519 validator_signature present; BLAKE3 target_log_hash present
+    status: SAMPLE (not produced by live wasm4pm execution)
+
+  - path: /Users/sac/process-intelligence/receipts/rec_residual_standard_005.json
+    type: MA_CLAIM_RECEIPT
+    description: Residual standardization receipt
+    cryptographic: ed25519 validator_signature present; BLAKE3 target_log_hash present
+    status: SAMPLE (not produced by live wasm4pm execution)
+
+  # ggen BLAKE3 chain receipts
+  - path: /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-175316.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: ggen manufacturing chain root; operation de2ad19f; output_hash 4e341f5a... for blue_river_dam/src/lib.rs
+    cryptographic: BLAKE3 hash chain; previous_receipt_hash null (chain root)
+    status: SEALED
+
+  - path: /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-203853.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: ggen manufacturing run 2; operation 95a9448c; output_hashes empty
+    cryptographic: BLAKE3 hash chain; previous_receipt_hash 612d222...
+    status: SEALED (no artifacts produced)
+
+  - path: /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-230600.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: ggen manufacturing run 3; operation 09084e1e; output_hashes empty
+    cryptographic: BLAKE3 hash chain; previous_receipt_hash 057521e5...
+    status: SEALED (no artifacts produced)
+
+  - path: /Users/sac/process-intelligence/ggen/.ggen/receipts/latest.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: ggen latest receipt pointer
+    cryptographic: BLAKE3 hash chain
+    status: POINTER
+
+  - path: /Users/sac/process-intelligence/ggen/.ggen/receipts/phase-2-index.json
+    type: GGEN_PHASE_INDEX
+    description: ggen Phase 2 index; artifacts_manufactured 0
+    status: INDEXED
+
+  # pi-program chain receipts
+  - path: /Users/sac/process-intelligence/research/pi-program/.ggen/receipts/phase-2-index.json
+    type: GGEN_PHASE_INDEX
+    description: pi-program Phase 2 manufacturing index
+    status: INDEXED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/.ggen/receipts/sync-20260601-203958.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: pi-program ggen manufacturing sync run 1
+    status: SEALED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/.ggen/receipts/sync-20260601-230734.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: pi-program ggen manufacturing sync run 2
+    status: SEALED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/.ggen/receipts/latest.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: pi-program ggen latest receipt pointer
+    status: POINTER
+
+  # pi-program API manufacturing receipts
+  - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-api-manufacturing/receipts/receipt_api_openapi_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: OpenAPI 3.0 specification manufacturing receipt (pipeline execution unconfirmed)
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-api-manufacturing/receipts/receipt_api_guide_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API guide manufacturing receipt
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-api-manufacturing/receipts/receipt_api_auth_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API authentication manufacturing receipt
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-api-manufacturing/receipts/receipt_api_ratelimit_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API rate limit manufacturing receipt
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-api-manufacturing/receipts/receipt_api_examples_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API examples manufacturing receipt
+    status: ISSUED
+
+  # pi-program api/ duplicates
+  - path: /Users/sac/process-intelligence/research/pi-program/api/emitted/ggen-api-manufacturing/receipts/receipt_api_openapi_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API openapi receipt (api/ subdirectory copy)
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/api/emitted/ggen-api-manufacturing/receipts/receipt_api_guide_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API guide receipt (api/ subdirectory copy)
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/api/emitted/ggen-api-manufacturing/receipts/receipt_api_auth_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API auth receipt (api/ subdirectory copy)
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/api/emitted/ggen-api-manufacturing/receipts/receipt_api_ratelimit_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API rate limit receipt (api/ subdirectory copy)
+    status: ISSUED
+
+  - path: /Users/sac/process-intelligence/research/pi-program/api/emitted/ggen-api-manufacturing/receipts/receipt_api_examples_20260601.json
+    type: API_MANUFACTURING_RECEIPT
+    description: API examples receipt (api/ subdirectory copy)
+    status: ISSUED
+
+  # prompt-manufactory chain receipts
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/.ggen/receipts/phase-2-index.json
+    type: GGEN_PHASE_INDEX
+    description: prompt-manufactory Phase 2 manufacturing index; artifacts_manufactured 42
+    status: INDEXED
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/.ggen/receipts/sync-20260601-204040.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: prompt-manufactory ggen sync run 1
+    status: SEALED
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/.ggen/receipts/sync-20260601-230722.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: prompt-manufactory ggen sync run 2
+    status: SEALED
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/.ggen/receipts/sync-20260601-230825.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: prompt-manufactory ggen sync run 3
+    status: SEALED
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/.ggen/receipts/latest.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: prompt-manufactory ggen latest pointer
+    status: POINTER
+
+  # Root .ggen chain
+  - path: /Users/sac/process-intelligence/.ggen/receipts/sync-20260601-231201.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: Root process-intelligence ggen sync receipt
+    status: SEALED
+
+  - path: /Users/sac/process-intelligence/.ggen/receipts/latest.json
+    type: GGEN_BLAKE3_CHAIN_RECEIPT
+    description: Root process-intelligence ggen latest pointer
+    status: POINTER
+
+  # Markdown/YAML receipts referenced in project ledgers
+  receipts_referenced_in_ledgers_but_not_json:
+    - path: /Users/sac/process-intelligence/receipts/RECEIPT_REGISTRY.md
+      description: Registry of seven canonical research program receipts
+    - path: /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+      description: Blue River Dam generation receipt; ORCHESTRATOR_ALIVE
+    - path: /Users/sac/process-intelligence/receipts/blue_river_generation.md
+      description: Upstream Blue River Dam receipt; ORCHESTRATOR_ALIVE
+    - path: /Users/sac/process-intelligence/receipts/wasm4pm_conformance_authority_generation.md
+      description: Conformance authority receipt v30.1.2; BLAKE3 75508e6e...; 8/8 tests
+    - path: /Users/sac/process-intelligence/receipts/wasm4pm_mining_generation.md
+      description: Mining module generation receipt
+    - path: /Users/sac/process-intelligence/receipts/wasm4pm_conformance_generation.md
+      description: Conformance module generation receipt
+    - path: /Users/sac/process-intelligence/receipts/wasm4pm_replay_generation.md
+      description: Replay module generation receipt
+    - path: /Users/sac/process-intelligence/receipts/wasm4pm_lifecycle_generation.md
+      description: Lifecycle module generation receipt
+    - path: /Users/sac/process-intelligence/sources/wasm4pm/MINING_RENDER_RECEIPT.md
+      description: Mining render receipt; Receipt ID MINING_AUTHORITY_RENDER_001
+    - path: /Users/sac/process-intelligence/sources/wasm4pm-compat/manufactured/manifests/manufacturing-manifest-20260601.yaml
+      description: wasm4pm-compat manufacturing manifest; three sealed artifacts
+
+# ──────────────────────────────────────────────────────────────────────────────
+# TEST FILES
+# All test files found across the foundry (Rust test files, Python test scripts,
+# TypeScript validation files).
+# ──────────────────────────────────────────────────────────────────────────────
+test_files:
+
+  # Rust test files
+  - path: /Users/sac/process-intelligence/sources/wasm4pm/tests/integration_tests.rs
+    type: RUST_INTEGRATION_TEST
+    description: wasm4pm integration test suite
+    project: sources-wasm4pm
+
+  - path: /Users/sac/process-intelligence/sources/wasm4pm/tests/e2e_tests.rs
+    type: RUST_E2E_TEST
+    description: wasm4pm end-to-end test suite
+    project: sources-wasm4pm
+
+  - path: /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+    type: RUST_INTEGRATION_TEST
+    description: wasm4pm OTel Weaver integration test; test_weaver_integration_synthesis (1 passed);
+                 five RefusalCode variant assertions with genuine wasm4pm::crypto::Blake3
+    project: sources-wasm4pm / otel-weaver
+
+  # Python test/validation scripts
+  - path: /Users/sac/process-intelligence/experiments/verify_equations.py
+    type: PYTHON_VERIFICATION_SCRIPT
+    description: Verifies five fitness cases and four OCPQ refinement cases; all 9 pass
+    project: experiments-core
+
+  - path: /Users/sac/process-intelligence/experiments/validate_log_fitness.py
+    type: PYTHON_VALIDATION_SCRIPT
+    description: Validates Van der Aalst weighted log fitness equation on four Petri net scenarios
+    project: experiments-core
+
+  - path: /Users/sac/process-intelligence/experiments/validate_ocpq_refinement.py
+    type: PYTHON_VALIDATION_SCRIPT
+    description: Validates OCPQ refinement cases
+    project: experiments-core
+
+  - path: /Users/sac/process-intelligence/adversarial/validate_standards.py
+    type: PYTHON_VALIDATION_SCRIPT
+    description: Standards validation script in adversarial corpus
+    project: adversarial
+
+  - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/validate_all_templates.py
+    type: PYTHON_VALIDATION_SCRIPT
+    description: Validates all ggen templates for pi-program
+    project: research-pi-program
+
+  - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/validate_all_templates_v2.py
+    type: PYTHON_VALIDATION_SCRIPT
+    description: Validates all ggen templates for pi-program (v2)
+    project: research-pi-program
+
+  # TypeScript validation files
+  - path: /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+    type: TYPESCRIPT_COMPILE_TIME_VALIDATION
+    description: Validates ten WASM boundary types from bindings.d.ts at compile time; uses fitness=0.982
+    project: experiments-visualizer
+
+  # Simulation/executable adversarial tests
+  - path: /Users/sac/process-intelligence/adversarial/simulate_laundering_spoofing.py
+    type: PYTHON_ADVERSARIAL_SIMULATION
+    description: 531 lines; ten attack scenarios; 25 assert statements; Scenarios 6-9 require libwasm4pm.dylib
+    project: adversarial
+
+# ──────────────────────────────────────────────────────────────────────────────
+# CHECKPOINT FILES
+# All checkpoint .md files documenting ALIVE, PARTIAL, or FAILED verdicts.
+# ──────────────────────────────────────────────────────────────────────────────
+checkpoint_files:
+
+  # Primary research program checkpoints
+  - path: /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+    verdict: ALIVE
+    description: Primary PI research program ALIVE; 12/12 gate criteria met; sealed 2026-05-31
+
+  - path: /Users/sac/process-intelligence/checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md
+    verdict: ALIVE
+    description: Program ALIVE 001; 342 artifacts, 894 commits, verification code 0x0F_ALL_GATES_PASS
+
+  - path: /Users/sac/process-intelligence/checkpoints/ALIVE_GATE_ASSESSMENT.md
+    verdict: ALIVE
+    description: Full 12-gate assessment table; exact artifact counts per domain; dated 2026-05-31
+
+  - path: /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_PARTIAL_001.md
+    verdict: PARTIAL
+    description: Research program initial partial checkpoint
+
+  - path: /Users/sac/process-intelligence/checkpoints/SUBSTRATE_COMPLETE_001.md
+    verdict: COMPLETE
+    description: Phase 6 substrate completion; five sealed BLAKE3 generation receipts
+
+  - path: /Users/sac/process-intelligence/checkpoints/GGEN_ECOSYSTEM_INTEL_ALIVE_001.md
+    verdict: ALIVE
+    description: ggen ecosystem intel ALIVE; 3/4 boundary audits PASS; Audit 1 (DTO) FAIL
+
+  - path: /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ADVERSARIAL_V30.1.1_OMEGA.md
+    verdict: OMEGA
+    description: 20-agent adversarial swarm OMEGA verdict; all attack vectors neutralized
+
+  - path: /Users/sac/process-intelligence/checkpoints/RESEARCH_CRITERIA.md
+    verdict: CRITERIA_DEFINITION
+    description: ALIVE gate criteria definition document; verification script reference
+
+  - path: /Users/sac/process-intelligence/checkpoints/PETRI_NET_SNAPSHOT.md
+    verdict: SNAPSHOT
+    description: Base64-encoded Petri net final marking; [Decommissioning]:1; all intermediate places 0
+
+  - path: /Users/sac/process-intelligence/checkpoints/LIVESTREAM_STATUS_001.md
+    verdict: STATUS
+    description: Livestream status checkpoint
+
+  # OTel Weaver checkpoints (in otel-weaver/checkpoints/)
+  - path: /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    verdict: PARTIAL
+    description: OTel Weaver design gate PASSED; EXP-001 through EXP-005 design complete
+
+  - path: /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    verdict: ALIVE
+    description: OTel Weaver ALIVE; SHA-256 e6bc59b8...; all five experiments declared ACTIVE
+
+  - path: /Users/sac/process-intelligence/otel-weaver/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    verdict: ALIVE
+    description: OTel Weaver runtime integration PASSED; 62 total tests; SHA-256 86ef45b3...
+
+  # OTel Weaver checkpoints duplicated in root checkpoints/
+  - path: /Users/sac/process-intelligence/checkpoints/GGEN_OTEL_WEAVER_PI_ALIVE_001.md
+    verdict: ALIVE
+    description: Root copy of OTel Weaver ALIVE checkpoint
+
+  - path: /Users/sac/process-intelligence/checkpoints/GGEN_OTEL_WEAVER_PI_PARTIAL_001.md
+    verdict: PARTIAL
+    description: Root copy of OTel Weaver PARTIAL checkpoint
+
+  - path: /Users/sac/process-intelligence/checkpoints/GGEN_OTEL_WEAVER_PI_RUNTIME_001.md
+    verdict: ALIVE
+    description: Root copy of OTel Weaver RUNTIME checkpoint
+
+  # phd-thesis project checkpoints
+  - path: /Users/sac/process-intelligence/phd-thesis/projects/checkpoints/source_index.md
+    verdict: INDEX
+    description: Checkpoints project source index for the phd-thesis workspace
+
+  # research/pi-program checkpoints
+  - path: /Users/sac/process-intelligence/research/pi-program/checkpoints/PI_GGEN_UNIFIED_RUN_PARTIAL_001.md
+    verdict: PARTIAL
+    description: pi-program ggen unified run PARTIAL; 4/14 gates passing; manifest incompatibility as primary blocker
+
+  - path: /Users/sac/process-intelligence/research/pi-program/checkpoints/PI_GGEN_UNIFIED_RUN_CONFORMANCE_AUDIT_001.md
+    verdict: PARTIAL
+    description: pi-program conformance audit; 9/15 PASS, 6/15 FAIL, 101 total violations
+
+  - path: /Users/sac/process-intelligence/research/pi-program/checkpoints/PI_GGEN_VALIDATOR_RECOVERY_PARTIAL_001.md
+    verdict: PARTIAL
+    description: pi-program validator recovery attempt PARTIAL
+
+  - path: /Users/sac/process-intelligence/research/pi-program/checkpoints/PI_GGEN_VALIDATOR_RECOVERY_FINAL_FAILED_001.md
+    verdict: FAILED
+    description: pi-program validator recovery final attempt FAILED
+
+  # research/prompt-manufactory checkpoints
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    verdict: PARTIAL
+    description: Prompt Manufactory PARTIAL; 9/11 audit gates PASS; status code 0x01
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/emitted/prompts/checkpoints/CHECKPOINT_PARTIAL.md
+    verdict: PARTIAL
+    description: Manufactured partial checkpoint artifact from prompt-manufactory
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/emitted/prompts/checkpoints/CHECKPOINT_ALIVE.md
+    verdict: NONE
+    type: manufactured-template
+    description: Manufactured alive checkpoint template from prompt-manufactory. This file is a template that authorizes agents to emit ALIVE verdicts — it is NOT a project's own ALIVE receipt. verdict changed from ALIVE to NONE: a template cannot be its own proof.
+
+# ──────────────────────────────────────────────────────────────────────────────
+# ONTOLOGY FILES
+# All OWL/SHACL/Turtle (.ttl) ontology files found across the foundry.
+# ──────────────────────────────────────────────────────────────────────────────
+ontology_files:
+
+  # ggen/ ontology files
+  - path: /Users/sac/process-intelligence/ggen/ontology-extensions.ttl
+    namespace: ggen extension ontology
+    project: ggen
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/ggen/wasm4pm-compat.ttl
+    namespace: compat
+    project: ggen
+    description: Defines 8 named compat:WitnessMarker instances forming a join-semilattice
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  # research/pi-program/ggen/ontology/ (17 TTL files total)
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-program.ttl
+    namespace: pi
+    project: research-pi-program
+    description: Top-level structural ontology; imports PROV-O, SKOS, DCTERMS, DCAT, SHACL, OWL;
+                 defines pi:ProgramRole with 8 named role subclasses
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/autonomic-law.ttl
+    namespace: auto
+    project: research-pi-program
+    description: MAPE-K autonomic governance law; enforces G(not_compliant => X(not_actuated))
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/governance-policy.ttl
+    namespace: gov
+    project: research-pi-program
+    description: Primary containment invariant; LTL safety formula; authority chain ostar-governor
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/forbidden-collapse-law.ttl
+    namespace: collapse
+    project: research-pi-program
+    description: Eight OWL individual collapse subtypes with collapseStatus lifecycle tracking
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-audit-law.ttl
+    namespace: pi-ggen
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-unified-run.ttl
+    namespace: pi-ggen
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-project-registry.ttl
+    namespace: pi-ggen
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-invalid-extension-ledger.ttl
+    namespace: pi-ggen
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/conformance-ledger.ttl
+    namespace: cl
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/graduation-boundary.ttl
+    namespace: gb
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/checkpoint-ledger.ttl
+    namespace: ckpt
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-checkpoint-ledger.ttl
+    namespace: pi-ggen
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/research-artifact-ledger.ttl
+    namespace: ral
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-source-ledger.ttl
+    namespace: pi-ggen
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/api-specification.ttl
+    namespace: api
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/project-registry.ttl
+    namespace: pr
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  - path: /Users/sac/process-intelligence/research/pi-program/ggen/ontology/pi-ggen-generation-ledger.ttl
+    namespace: pi-ggen
+    project: research-pi-program
+    status: VALID (Phase 7 roundtrip: confirmed loaded)
+
+  # research/prompt-manufactory/ggen/ontology/ (8 TTL files)
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+    namespace: pm
+    project: research-prompt-manufactory
+    description: Prompt Manufactory ontology; 15 classes; pm:RenderedPrompt warrant type
+    status: VALID (all 8 ontologies parse without error per GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md)
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/research-program-law.ttl
+    namespace: rpl
+    project: research-prompt-manufactory
+    description: Research program law; 7 seed research programs
+    status: VALID
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/workflow-law.ttl
+    namespace: wfl
+    project: research-prompt-manufactory
+    status: VALID
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/subagent-role-law.ttl
+    namespace: srl
+    project: research-prompt-manufactory
+    description: 15 subagent roles with owned/forbidden surfaces and output contracts
+    status: VALID
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/hook-law.ttl
+    namespace: hl
+    project: research-prompt-manufactory
+    description: 6 hook policies
+    status: VALID
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/checkpoint-law.ttl
+    namespace: cl
+    project: research-prompt-manufactory
+    description: 10 checkpoint gates
+    status: VALID
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/forbidden-collapse-law.ttl
+    namespace: fcl
+    project: research-prompt-manufactory
+    description: 3 forbidden-collapse bans; 22 legacy .ggen files classified
+    status: VALID
+
+  - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/skill-law.ttl
+    namespace: skl
+    project: research-prompt-manufactory
+    status: VALID
+
+# ──────────────────────────────────────────────────────────────────────────────
+# CROSS-PROJECT EVIDENCE SUMMARY
+# ──────────────────────────────────────────────────────────────────────────────
+cross_project_summary:
+
+  federated_dependency_graph:
+    path: /Users/sac/process-intelligence/research/open-ontologies/federated/CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml
+    ttl_files_loaded: 24
+    total_triples: 4622
+    unique_entities: 871
+    circular_dependencies: 0
+    dangling_references: 0
+    dependency_graph_status: ACYCLIC
+    status: CONSISTENT
+    gate_pass: true
+
+  roundtrip_report:
+    path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-validator-recovery/open-ontologies-roundtrip-report.md
+    ttl_files_loaded: 14
+    total_triples: 3684
+    unique_subjects: 661
+    sparql_smoke_queries: 4/4 QUERY_PASSED
+    classification: AVAILABLE
+    receipt_status: RECEIPT_NOT_FOUND
+
+  receipt_chain_integrity:
+    path: /Users/sac/process-intelligence/research/pi-program/manufacturing/RECEIPT_CHAIN_VERIFICATION_20260601.yaml
+    chain_breaks: 8
+    hash_mismatches: 10
+    chain_integrity_status: INVALID
+    overall_gate_result: FAILED
+    note: >-
+      MANUFACTURING_SUMMARY.md claims 100% BLAKE3 receipt coverage (123/123 artifacts).
+      RECEIPT_CHAIN_VERIFICATION_20260601.yaml directly contradicts this with INVALID status.
+      This is a documented internal inconsistency in the evidence record.

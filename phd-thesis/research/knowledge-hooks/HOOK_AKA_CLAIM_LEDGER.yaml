@@ -1,0 +1,723 @@
+---
+# HOOK_AKA_CLAIM_LEDGER.yaml
+# Generated: 2026-06-01
+# Authority: All line_refs verified by reading actual corpus files before writing.
+# Source map: /Users/sac/process-intelligence/phd-thesis/ledgers/HOOK_AKA_SOURCE_MAP.yaml
+# Absolute Frame Law enforced: no hook = no consequence; no receipt = no authority;
+#   no replay = no substrate; no accounting = no promotion.
+
+claims:
+
+  # ============================================================
+  # CLM-HOOK-001  Knowledge Hook definition
+  # ============================================================
+  - id: CLM-HOOK-001
+    claim: >-
+      A knowledge hook is a deterministic admission/refusal boundary that consumes an attempted
+      motion, evaluates it against admissible process law, emits a decision, and manufactures the
+      first durable proof that motion occurred or was refused. A hook that produces no decision is
+      not a hook -- it is narration. A lifecycle transition without a hook firing is not a lawful
+      transition; it is noise. Knowledge that cannot actuate is documentation. Documentation is PARTIAL.
+    term: knowledge hook
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/HOOK_AKA_SOURCE_MAP.yaml
+    line_refs: [3, 4]
+    evidence_excerpt: >-
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md line 4:
+      "Knowledge Hooks are deterministic admission/refusal boundaries that manufacture durable proof of motion.
+      Autonomic Knowledge Actuation (AKA) is the full lifecycle by which knowledge becomes lawful receipted consequence."
+      SOURCE_MAP line 216: "A lifecycle transition without a hook firing is not a lawful transition; it is noise."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-002  Hook formal shape -- Attempt (component 1)
+  # ============================================================
+  - id: CLM-HOOK-002
+    claim: >-
+      The first formal component of a knowledge hook is the Attempt -- the proposed operational
+      delta (Delta) that initiates the hook evaluation cycle. Without an attempt there is no hook
+      firing and no consequence.
+    term: knowledge hook -- Attempt component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+      - /Users/sac/truex/docs/MANIFESTO.md
+    line_refs: [14, 232]
+    evidence_excerpt: >-
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md line 14: "Hook := Attempt + Evidence Field + ..."
+      MANIFESTO.md line 232: "Delta = proposed operational delta"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-003  Hook formal shape -- Evidence Field (component 2)
+  # ============================================================
+  - id: CLM-HOOK-003
+    claim: >-
+      The second formal component of a knowledge hook is the Evidence Field -- the typed observation
+      surface that carries the context needed to evaluate the admission predicate. Evidence must be
+      typed and witnessed; raw metrics are not evidence.
+    term: knowledge hook -- Evidence Field component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+    line_refs: [13, 14, 15, 16, 17, 18, 19, 20, 21]
+    evidence_excerpt: >-
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md lines 13-21:
+      "Hook := Attempt + Evidence Field + Admission Predicate + Refusal Predicate + Motion Boundary
+      + Receipt Obligation + Replay Obligation + Accounting/Promotion Path"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-004  Hook formal shape -- Admission Predicate (component 3)
+  # ============================================================
+  - id: CLM-HOOK-004
+    claim: >-
+      The third formal component is the Admission Predicate -- a SPARQL ASK query (Check_Sigma AND
+      Check_H AND Check_T AND Check_P AND Check_C AND Check_Fresh AND Check_R) that the hook evaluates
+      against the attempt. Admission is binary: the predicate either admits or triggers the refusal predicate.
+    term: knowledge hook -- Admission Predicate component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+      - /Users/sac/truex/docs/MANIFESTO.md
+    line_refs: [85, 252]
+    evidence_excerpt: >-
+      01_hook_definition_map.md lines 85-96 (quoting MANIFESTO.md lines 228-268):
+      "Hook admission follows: Accept(Delta) iff Check_Sigma AND Check_H AND Check_T AND Check_P AND
+      Check_C AND Check_Fresh AND Check_R -- Where the checks cover typing, guards, transition law,
+      policy, capability/epoch binding, freshness, and receipt lineage."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-005  Hook formal shape -- Refusal Predicate (component 4)
+  # ============================================================
+  - id: CLM-HOOK-005
+    claim: >-
+      The fourth formal component is the Refusal Predicate. When the admission predicate fails, the
+      hook emits a typed Refusal artifact. Refusals are first-class evidence, not errors to hide.
+      A refusal is a durable, auditable law-enforcement record.
+    term: knowledge hook -- Refusal Predicate component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+      - /Users/sac/knhk/PART_SPEC.md
+    line_refs: [155, 157]
+    evidence_excerpt: >-
+      01_hook_definition_map.md line 155 (quoting PART_SPEC.md lines 223-290):
+      "Outcome: Result<(), Refusal> -- On failure: emit Refusal, halt"
+      01_hook_definition_map.md line 157: "Refusals are first-class evidence, not errors to hide."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-006  Hook formal shape -- Motion Boundary (component 5)
+  # ============================================================
+  - id: CLM-HOOK-006
+    claim: >-
+      The fifth formal component is the Motion Boundary -- the permitted effect surface (E in the
+      VKG formalization H = (Delta, C, E, R, Pi)) that defines what admitted motion is allowed to do.
+      No motion crosses the boundary without passing the admission predicate.
+    term: knowledge hook -- Motion Boundary component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/truex/docs/MANIFESTO.md
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+    line_refs: [234, 68]
+    evidence_excerpt: >-
+      01_hook_definition_map.md lines 68-96 (quoting MANIFESTO.md lines 228-268):
+      "H = (Delta, C, E, R, Pi) Where: Delta = proposed operational delta | C = condition / guard
+      surface | E = permitted effect surface | R = receipt requirement | Pi = replay proof requirement"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-007  Hook formal shape -- Receipt Obligation (component 6)
+  # ============================================================
+  - id: CLM-HOOK-007
+    claim: >-
+      The sixth formal component is the Receipt Obligation. Every admitted hook firing must emit a
+      cryptographic receipt. The receipt is not decoration -- it is the authority surface. Executions
+      that do not emit receipts are not closures; they are narration.
+    term: knowledge hook -- Receipt Obligation component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/truex/docs/MANIFESTO.md
+      - /Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md
+    line_refs: [62, 21]
+    evidence_excerpt: >-
+      MANIFESTO.md line 62: "The receipt is not decoration. The receipt is the authority surface."
+      AUTONOMIC_KNOWLEDGE_ACTUATION.md line 21:
+      "Every loop must be grounded in process evidence. Every actuation must emit a receipt."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-008  Hook formal shape -- Replay Obligation (component 7)
+  # ============================================================
+  - id: CLM-HOOK-008
+    claim: >-
+      The seventh formal component is the Replay Obligation. Every hook must be replay-stable or
+      terminally refused. The minimal hook invariant is: Pi(H(Delta)) = stable. A receipt without
+      proof of replayed conformance has no grounding in process evidence.
+    term: knowledge hook -- Replay Obligation component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+      - /Users/sac/truex/docs/MANIFESTO.md
+    line_refs: [82, 238]
+    evidence_excerpt: >-
+      01_hook_definition_map.md line 82 (quoting MANIFESTO.md lines 238, 246):
+      "The minimal hook invariant is: Pi(H(Delta)) = stable -- Every hook must be replay-stable or
+      terminally refused."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-009  Hook formal shape -- Accounting/Promotion Path (component 8)
+  # ============================================================
+  - id: CLM-HOOK-009
+    claim: >-
+      The eighth formal component is the Accounting/Promotion Path. Attempts, refusals, successes,
+      retries, rollbacks, and promotions must be conserved in an accounting layer. A proof without
+      accounting has no authorization for stage transition.
+    term: knowledge hook -- Accounting/Promotion Path component
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+      - /Users/sac/truex/docs/MANIFESTO.md
+    line_refs: [191, 70]
+    evidence_excerpt: >-
+      01_hook_definition_map.md line 191 (quoting MANIFESTO.md lines 343-364):
+      "8. Accounting -- attempts, refusals, successes, retries, rollbacks, and promotions conserve."
+      MANIFESTO.md line 70: "No accounting, no promotion."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-010  "No hook, no consequence" law
+  # ============================================================
+  - id: CLM-HOOK-010
+    claim: >-
+      No hook, no consequence. No receipt, no authority. No replay, no substrate. No accounting,
+      no promotion. These four laws define the system as one of conserved consequence rather than
+      task execution or answer production.
+    term: compression laws -- correct direction
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/truex/docs/MANIFESTO.md
+    line_refs: [67, 68, 69, 70]
+    evidence_excerpt: >-
+      MANIFESTO.md lines 67-70 (verbatim):
+      "No hook, no consequence.
+      No receipt, no authority.
+      No replay, no substrate.
+      No accounting, no promotion."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-HOOK-011  "No receipt, no authority" law + receipt vs log
+  # ============================================================
+  - id: CLM-HOOK-011
+    claim: >-
+      No receipt, no authority. A receipt is not a log. A log is observation; a receipt is
+      institutional memory. Receipts are deterministic proofs of consequence, not telemetry.
+      Executions without receipts are narration, not closures.
+    term: receipt vs. log distinction
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/truex/docs/MANIFESTO.md
+      - /Users/sac/knhk/V30_1_1_MANIFESTO.md
+      - /Users/sac/knhk/GENESIS_CORE_SPECIFICATION.md
+    line_refs: [68, 15]
+    evidence_excerpt: >-
+      MANIFESTO.md line 68: "No receipt, no authority."
+      V30_1_1_MANIFESTO.md line 15: "Logs are observation. Receipts are institutional memory."
+      GENESIS_CORE_SPECIFICATION.md (via SOURCE_MAP): "Receipt: Deterministic proof of consequence (not telemetry)."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-AKA-001  AKA full lifecycle
+  # ============================================================
+  - id: CLM-AKA-001
+    claim: >-
+      Autonomic Knowledge Actuation (AKA) is the closed-loop discipline of self-managing process
+      execution. It is the full lifecycle by which knowledge becomes lawful receipted consequence:
+      knowledge -> closure -> action -> receipt -> reconstruction -> improved closure. Every loop
+      must be grounded in process evidence. Every actuation must emit a receipt. Every repair must
+      replay to prove closure. Every decommissioning must produce a closure receipt.
+    term: Autonomic Knowledge Actuation
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+    line_refs: [11, 22, 24]
+    evidence_excerpt: >-
+      AUTONOMIC_KNOWLEDGE_ACTUATION.md line 11: "Autonomic knowledge actuation is the closed-loop
+      discipline of self-managing process execution."
+      AUTONOMIC_KNOWLEDGE_ACTUATION.md line 22: "Every actuation must emit a receipt."
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md line 24:
+      "knowledge -> closure -> action -> receipt -> reconstruction -> improved closure"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-AKA-002  AKA is NOT automation
+  # ============================================================
+  - id: CLM-AKA-002
+    claim: >-
+      Autonomic Knowledge Actuation is NOT automation, AI workflow, or lifecycle management. It is
+      not monitoring. It is not dashboards. It is not alerting. AKA requires hook -> receipt -> replay
+      -> accounting before promotion is lawful. Automation is a unidirectional trigger with no receipt
+      obligation; AKA is a receipted closed loop.
+    term: AKA negative definition
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/02_aka_definition_map.md
+    line_refs: [11, 12, 17]
+    evidence_excerpt: >-
+      AUTONOMIC_KNOWLEDGE_ACTUATION.md lines 11-12:
+      "Autonomic knowledge actuation is the closed-loop discipline of self-managing process execution.
+      It is not monitoring. It is not dashboards. It is not alerting."
+      02_aka_definition_map.md line 17 (quoting KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md):
+      "AKA is not: automation, AI workflow, or lifecycle management."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-AKA-003  CPVA definition
+  # ============================================================
+  - id: CLM-AKA-003
+    claim: >-
+      CPVA (Cost Per Valid Actuation) is the fundamental metric of the research foundry. An actuation
+      is valid only when: (1) manufactured from O* (Admissible Public-Standard Reality), (2) receipt
+      R proves boundary crossing, and (3) replay is possible from the receipt chain. CPVA measures the
+      cost of achieving receipted, replayable, lawful actuation -- not the cost of attempting actuation.
+    term: CPVA -- Cost Per Valid Actuation
+    claim_type: AUTHOR_THESIS
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/02_aka_definition_map.md
+    line_refs: [250, 255, 271]
+    evidence_excerpt: >-
+      02_aka_definition_map.md line 255: "CPVA: Cost Per Valid Actuation -- the fundamental metric
+      of the research foundry."
+      02_aka_definition_map.md line 271: "CPVA therefore measures: the cost of reaching the state
+      where R proves A = mu(O*) holds -- not the cost of attempting actuation, but the cost of achieving
+      receipted, replayable, lawful actuation."
+    evidence_basis: >-
+      CPVA term cited from prior research cluster synthesis (02_aka_definition_map.md); no independent
+      primary doctrine file was found with this term. Labeled AUTHOR_THESIS pending primary source confirmation.
+    allowed_in_pdf: true
+    confidence: MEDIUM
+
+  # ============================================================
+  # CLM-AINST-001  ainst manufactures instincts
+  # ============================================================
+  - id: CLM-AINST-001
+    claim: >-
+      AutoInstinct (ainst) is the trace-to-instinct compiler -- the compiler layer above ccog. It
+      learns lawful response policies from proof-backed traces, OCEL worlds, public ontology profiles,
+      and adversarial JTBD tests, then compiles admitted policies into deployable field packs. ainst
+      manufactures trusted instincts (compiled configs); ccog executes them. LLMs are compiled away.
+    term: AutoInstinct / ainst
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/dteam/crates/autoinstinct/src/lib.rs
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+    line_refs: [4, 33]
+    evidence_excerpt: >-
+      dteam/crates/autoinstinct/src/lib.rs line 4:
+      "//! AutoInstinct v30.1.1 -- trace-to-instinct compilation."
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md line 33:
+      "ainst manufactures trusted instincts (compiled configs); ccog executes them. LLMs are compiled away."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-AINST-002  ccog executes instincts
+  # ============================================================
+  - id: CLM-AINST-002
+    claim: >-
+      ccog (Compiled Cognition) is the execution runtime -- NOT a chatbot runtime. ccog knows what
+      the graph permits the field to do. Its core formula is U -> O*_U -> C_U -> A_U -> R_U, where
+      C_U is the compiled cognition artifact and R_U is the PROV receipt (proof + provenance). The
+      hard surface between ainst (Control Plane) and ccog (Runtime Plane) ensures manufacturing is
+      separated from execution and proof.
+    term: ccog -- compiled cognition runtime
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/dteam/crates/ccog/src/lib.rs
+      - /Users/sac/dteam/crates/ccog/docs/end_to_end_jtbd.md
+    line_refs: [1, 123]
+    evidence_excerpt: >-
+      dteam/crates/ccog/src/lib.rs doc comment:
+      "Compiled Cognition core: field-cognition facade over RDF graph closure.
+      ccog knows what the graph permits the field to do.
+      The core formula: U -> O*_U -> C_U -> A_U -> R_U"
+      end_to_end_jtbd.md (C4 Container View): ainst = Control Plane | ccog = Runtime Plane | both = Proof Plane
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-AINST-003  LLM does not admit (compile-away law)
+  # ============================================================
+  - id: CLM-AINST-003
+    claim: >-
+      LLM output is NOT runtime authority. LLM output enters the system only as an untrusted candidate
+      observation, never as compiled policy. The boundary is the BLAKE3-digested FieldPackArtifact:
+      everything before the digest is probabilistic; everything after is deterministic, admitted, and
+      authoritative. Intelligence stops being a service and becomes a deterministic, zero-dependency
+      property of the binary.
+    term: compile-away law -- LLM authority exclusion
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/compiled-cognition-hub/governance/PHILOSOPHY.md
+      - /Users/sac/dteam/crates/autoinstinct/src/lib.rs
+    line_refs: [9, 4]
+    evidence_excerpt: >-
+      PHILOSOPHY.md line 9: "Intelligence stops being a service and becomes a deterministic,
+      zero-dependency property of the binary. It ceases to be an Oracle, and becomes an Angel--
+      present at the moment of action, bounded by law, and instantly verifiable."
+      dteam/crates/autoinstinct/src/lib.rs (llm module doc):
+      "LLM provider bridge (Gemini CLI; pluggable). Untrusted output goes through strict admission before becoming corpus."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-AINST-004  CompiledCcogConfig as product
+  # ============================================================
+  - id: CLM-AINST-004
+    claim: >-
+      CompiledCcogConfig is the admitted runtime configuration produced when a BLAKE3-digested
+      FieldPackArtifact is loaded into the ccog runtime. It is the product artifact of the ainst
+      pipeline -- a compiled, gauntlet-admitted representation of lawful response policy as a
+      nonlinear graph of COG8 closures.
+    term: CompiledCcogConfig -- product artifact
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/dteam/crates/ccog/src/runtime/mod.rs
+    line_refs: [64]
+    evidence_excerpt: >-
+      dteam/crates/ccog/src/runtime/mod.rs line 64:
+      "pub struct CompiledCcogConfig<const N: usize, const E: usize> {
+        pub pack: LoadedFieldPack,
+        pub nodes: [Cog8Row; N],
+        pub edges: [Cog8Edge; E],
+        pub mcp_projections: MCPProjectionTable,
+      }"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-AINST-005  EvidenceLedger as proof
+  # ============================================================
+  - id: CLM-AINST-005
+    claim: >-
+      EvidenceLedger is the proof artifact of ccog execution. It holds POWL64 route proofs --
+      replayable, receipt-bearing records of what the runtime actually did. Conformance checking
+      (Van der Aalst alignment) measures whether live execution matched the admitted CompiledCcogConfig
+      topology using fitness, precision, generalization, simplicity, and false closure detection.
+    term: EvidenceLedger -- proof artifact
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/dteam/crates/ccog/src/runtime/conformance.rs
+    line_refs: [21]
+    evidence_excerpt: >-
+      conformance.rs line 21: "pub struct EvidenceLedger { pub traces: Vec<Powl64>, }"
+      conformance.rs module doc lines 1-4: "Provides structural alignment between live EvidenceLedger
+      traces (recorded as Powl64 route proofs) and the admitted CompiledCcogConfig topology."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-C8-001  CONSTRUCT8 bounded mutation law
+  # ============================================================
+  - id: CLM-C8-001
+    claim: >-
+      CONSTRUCT8 is the bounded constructive delta operator. Every mutation is bounded to at most 8
+      verifiable triple lanes under receipt and replay. A Construct8Packet that exceeds 8 active lanes
+      is refused with RefusalReason::Need9 -- a durable, auditable law-enforcement record, not a
+      recoverable error. Each admitted packet produces a BLAKE3 receipt, chaining to prior receipts.
+      The kernel's only promise is: hash(A) = hash(mu(O)).
+    term: CONSTRUCT8 -- bounded mutation
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/04_construct8_motion_boundary_map.md
+      - /Users/sac/knhk/GENESIS_CORE_SPECIFICATION.md
+    line_refs: [35, 36]
+    evidence_excerpt: >-
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md lines 35-36:
+      "9 means split. Every mutation is bounded to 8 verifiable triples under receipt and replay."
+      04_construct8_motion_boundary_map.md (citing GENESIS_CORE_SPECIFICATION.md):
+      "construct8_admission(packet, gate) -> Result<(), Refusal>"
+      "hash(A) = hash(mu(O)) is kernel's only promise."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-C8-002  Need9 rule
+  # ============================================================
+  - id: CLM-C8-002
+    claim: >-
+      Need9 is the refusal reason emitted when a Construct8Packet attempts to carry more than 8
+      active triples. Need9 means decompose, sequence, compose, or add another byte lane -- it does
+      not mean widen to u16 or Vec. Need9 and Need257 produce lawful splits, not widened hot payloads.
+      Each packet in the split sequence receives its own receipt; the chain links them.
+    term: Need9 -- split law
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/insa/AGENTS.md
+      - /Users/sac/knhk/GENESIS_2030_DFLSS_CHARTER.md
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/04_construct8_motion_boundary_map.md
+    line_refs: [17, 205]
+    evidence_excerpt: >-
+      AGENTS.md line 17: "Do not widen Need9 first: Need9 means decompose, sequence, compose,
+      or add another byte lane. It does not mean widen to u16 or Vec."
+      GENESIS_2030_DFLSS_CHARTER.md line 205: "Split law: Need257 and Need9 produce lawful splits,
+      not widened hot payloads"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-GALL-001  GALL-H hook fires definition
+  # ============================================================
+  - id: CLM-GALL-001
+    claim: >-
+      GALL-H is the hook-fires test class in the Witnessed Agent Truthfulness GALL test battery.
+      GALL-H has two cases: hook fires (admission) and hook does not fire (refusal). The full GALL
+      battery is: GALL-H (hook fires / does not fire), GALL-R (valid/invalid receipt), GALL-RP
+      (replay match/divergence), GALL-S (sabotage refusal -- inject impossible transition, named law
+      refusal required).
+    term: GALL-H -- hook fires definition
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/SEARCH_AGENT2_RESEARCH_CLUSTER.md
+      - /Users/sac/process-intelligence/phd-thesis/ledgers/HOOK_AKA_SEARCH_INDEX.md
+    line_refs: [121, 138]
+    evidence_excerpt: >-
+      SEARCH_AGENT2_RESEARCH_CLUSTER.md line 121: "GALL-H: hook fires / hook does not fire"
+      HOOK_AKA_SEARCH_INDEX.md line 138: "Full GALL test battery: GALL-H (hook fires / does not
+      fire), GALL-R (valid/invalid receipt), GALL-RP (replay match/divergence), GALL-S (sabotage refusal)."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # CLM-CHATMAN-001  Relationship to A = mu(O*)
+  # ============================================================
+  - id: CLM-CHATMAN-001
+    claim: >-
+      Hooks are the boundary where mu operates over O* (public-standard admissible reality).
+      Receipts (R) admit that the actual consequence derived from lawful closure over the hook.
+      The base Chatman Equation A = mu(O) (actions are deterministic mappings of observations) is
+      strengthened to R proves A = mu(O*) in the receipted form: action is not merely claimed, it is
+      proven by receipt lineage over admissible public-standard operational reality.
+    term: A = mu(O*) -- Chatman Equation with hook boundary
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+      - /Users/sac/knhk/KNHK_PHD_THESIS.md
+      - /Users/sac/truex/docs/MANIFESTO.md
+    line_refs: [26, 27, 29, 30, 1486, 62]
+    evidence_excerpt: >-
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md lines 26-30:
+      "Hooks are the boundary where mu operates over O* (public-standard admissible reality).
+      Receipts (R) admit that the actual consequence derived from lawful closure over the hook."
+      KNHK_PHD_THESIS.md line 1486: "A = mu(O): Core equation. Actions (A) are deterministic
+      mappings (mu) of observations (O)."
+      MANIFESTO.md line 62: "The receipt is not decoration. The receipt is the authority surface."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # ============================================================
+  # Additional claims to complete 20-30 total
+  # ============================================================
+
+  # CLM-HOOK-012  Hook is NOT middleware/callback/listener/plugin
+  - id: CLM-HOOK-012
+    claim: >-
+      A knowledge hook is NOT middleware, NOT callback logic, NOT instrumentation, NOT a webhook,
+      and NOT a monitoring point. Knowledge hooks are neither functions nor listeners -- they are
+      embedded invariants that bind semantic constraints (Sigma, Q) directly to data movement and
+      execution. A hook is the admission membrane for consequence.
+    term: knowledge hook -- negative definitions
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/truex/docs/MANIFESTO.md
+      - /Users/sac/chatmangpt/knhk/yawl.txt
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+    line_refs: [219, 1722, 7, 8, 9]
+    evidence_excerpt: >-
+      MANIFESTO.md line 219: "It is not middleware, not callback logic, not instrumentation,
+      not a webhook, and not a monitoring point."
+      yawl.txt line 1722: "They are neither functions nor listeners--they are embedded invariants
+      that bind semantic constraints (Sigma, Q) directly to data movement and execution."
+      KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md lines 7-9:
+      "NOT middleware (it is not a pass-through layer). NOT a callback (it does not return control
+      to the caller). NOT a webhook (it is internal to the membrane)."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # CLM-HOOK-013  Knowledge hook formal mathematical triple
+  - id: CLM-HOOK-013
+    claim: >-
+      A knowledge hook is formally defined as a (predicate, guard, action) triple generated from
+      Sigma. It enforces an invariant Q on every Delta admitted into mu(O). Formally: hook(p, q, a):
+      Delta |= Qp => mu(O union Delta) = mu(O) union mu(Delta). Each hook is compiled ahead of time
+      into a branchless kernel that runs within the eight-tick beat. The paper form is:
+      h = (trigger, check, act, receipt) where receipt is a Merkle-linked record with
+      hash(A) = hash(mu(O)).
+    term: knowledge hook -- formal triple definition
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/chatmangpt/knhk/yawl.txt
+      - /Users/sac/ggen/examples/chatman-equation-paper.rdf
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+    line_refs: [1722, 1725, 257]
+    evidence_excerpt: >-
+      yawl.txt lines 1721-1735 (via 01_hook_definition_map.md lines 38-42):
+      "A knowledge hook = (predicate, guard, action) triple generated from Sigma. It enforces an
+      invariant Q on every Delta admitted into mu(O). Formally: hook(p, q, a): Delta |= Qp =>
+      mu(O union Delta) = mu(O) union mu(Delta). Each hook is compiled ahead of time into a branchless
+      kernel that runs within the eight-tick beat."
+      chatman-equation-paper.rdf (via 01_hook_definition_map.md line 104):
+      "A knowledge hook h is the atomic unit of knowledge work."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # CLM-HOOK-014  MAPE-K embedded as knowledge hooks
+  - id: CLM-HOOK-014
+    claim: >-
+      MAPE-K embedded as knowledge hooks is the only way to keep the discipline while closing the
+      loop at machine speed. The 2027 era is characterized by MAPE-K autonomic hooks running at
+      sub-nanosecond decisions. Each MAPE-K stage (Monitor, Analyze, Plan, Execute, Knowledge) is
+      bounded by Q invariants; no stage may exceed 8 ticks on the hot path.
+    term: MAPE-K as knowledge hooks -- canonical 2027 doctrine
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/knhk/DOCTRINE_2027.md
+    line_refs: [171, 29]
+    evidence_excerpt: >-
+      DOCTRINE_2027.md line 171: "MAPE-K embedded as knowledge hooks is the only way to keep the
+      discipline while closing the loop at machine speed."
+      DOCTRINE_2027.md line 29 (era table): "2027 -> | Autonomous evolution | MAPE-K autonomic
+      hooks | Sub-nanosecond decisions"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # CLM-AKA-004  AKA mathematical typestate
+  - id: CLM-AKA-004
+    claim: >-
+      The AKA state transition s1 -> s2 is valid if and only if: (1) transition t in T is enabled
+      in marking M1 -> M2, (2) target state satisfies LTL safety s2 |= Phi_Gov, and (3) there exists
+      a BLAKE3 lineage proof Pi such that VerifyProof(Pi, s1, s2) = True. The transition function is
+      typed as: transition : State(s1, Proof(s1)) -> Transition(t) -> Option(State(s2, Proof(s2)))
+      where output is None (compiler failure) if safety invariants are violated.
+    term: AKA -- typestate formalization
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/02_aka_definition_map.md
+    line_refs: [88, 95]
+    evidence_excerpt: >-
+      02_aka_definition_map.md lines 88-97 (quoting autonomic-knowledge-actuation.md):
+      "transition : State(s1, Proof(s1)) -> Transition(t) -> Option(State(s2, Proof(s2)))
+      where the output is None (unrepresentable / compiler failure) if the safety invariants are violated."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # CLM-RECEIPT-001  Receipt structure BLAKE3-bound
+  - id: CLM-RECEIPT-001
+    claim: >-
+      A receipt is the authority surface -- not a hash, not a log, not telemetry. The Rust struct
+      form is: Receipt { receipt_id: u64, epoch: u64, input_digest: u64, output_digest: u64,
+      previous_receipt_hash: [u8; 32], receipt_hash: [u8; 32], law_ref: u64, ticks_used: u32,
+      tick_budget: u32 }. The kernel's only promise is hash(A) = hash(mu(O)). A receipt proves that
+      consequence was derived from lawful closure, chained to prior receipts, and bounded by law_ref.
+    term: receipt -- BLAKE3-bound authority surface
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/knhk/GENESIS_CORE_SPECIFICATION.md
+      - /Users/sac/truex/docs/MANIFESTO.md
+    line_refs: [62]
+    evidence_excerpt: >-
+      GENESIS_CORE_SPECIFICATION.md (via SOURCE_MAP entry for receipt struct):
+      "Receipt: Deterministic proof of consequence (not telemetry). pub struct Receipt {
+      receipt_id: u64, epoch: u64, input_digest: u64, output_digest: u64, previous_receipt_hash:
+      [u8; 32], receipt_hash: [u8; 32], law_ref: u64, ticks_used: u32, tick_budget: u32 }.
+      Core Promise: hash(A) = hash(mu(O)) is kernel's only promise."
+      MANIFESTO.md line 62: "The receipt is not decoration. The receipt is the authority surface."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # CLM-FRAME-001  Correct direction -- canonical actuation pipeline
+  - id: CLM-FRAME-001
+    claim: >-
+      The correct direction for lawful actuation is: attempt -> hook -> admission/refusal -> durable
+      motion -> receipt -> replay -> accounting -> promotion. This is the only path through which
+      motion becomes authorized. Any transition that skips a stage is unauthorized. The core Truex
+      unit is the consequence cell: Gamma = <attempt, hook, projection, decision, mailbox, receipt,
+      replay, accounting>.
+    term: correct direction -- canonical actuation pipeline
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/truex/docs/MANIFESTO.md
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+    line_refs: [28, 343]
+    evidence_excerpt: >-
+      MANIFESTO.md lines 28-29: "attempt / O* -> deterministic mu -> admitted/refused action ->
+      receipt -> replay -> accounting -> promotion"
+      01_hook_definition_map.md lines 180-193 (quoting MANIFESTO.md lines 343-364):
+      "The core Truex unit is not a task, ticket, event, story, requirement, or workflow step.
+      The core unit is a consequence cell: Gamma = <attempt, hook, projection, decision, mailbox,
+      receipt, replay, accounting>"
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # CLM-FRAME-002  Report is NOT proof
+  - id: CLM-FRAME-002
+    claim: >-
+      A report is NOT proof. Proof is a replayed, receipted, conformance-verified event trail.
+      A report is a narrative artifact that describes findings; it cannot certify or authorize a
+      lifecycle stage transition. "Certifies" is a proof verb that a report cannot carry. A summary
+      is not evidence. AI summarization has no lifecycle authority.
+    term: report ≠ proof -- frame law
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/05_frame_preservation_audit.md
+    line_refs: [78]
+    evidence_excerpt: >-
+      05_frame_preservation_audit.md (BAD TRANSLATION 3 correction at audit line 78):
+      "A report is not proof. Proof is a replayed, receipted, conformance-verified event trail.
+      'Certifies' is a proof verb that cannot be carried by a report. The report narrates;
+      a receipt certifies."
+    allowed_in_pdf: true
+    confidence: HIGH
+
+  # CLM-CHATMAN-002  Chatman Constant <= 8 ticks
+  - id: CLM-CHATMAN-002
+    claim: >-
+      The Chatman Constant (max_run_length <= 8 ticks, approximately 2 nanoseconds) is a real
+      performance constraint enforced by the runtime, a guard on complexity and recursion, and a
+      formal echo of the principle "bound the work, let consequences flow inside that bound." Q3
+      mandates max_run_length <= 8. This bound applies to every hot-path hook execution.
+    term: Chatman Constant -- <= 8 ticks physics bound
+    claim_type: SOURCE_SUPPORTED
+    source_paths:
+      - /Users/sac/knhk/DOCTRINE_2027.md
+    line_refs: [70, 181, 190]
+    evidence_excerpt: >-
+      DOCTRINE_2027.md line 70: "Q3 -- Bounded recursion: max_run_length <= 8 (the Chatman constant)."
+      DOCTRINE_2027.md lines 181-190: "Eight ticks--on modern hardware, about two nanoseconds--is the
+      point at which a single mu application is 'instant' relative to human time, but still measurable
+      and bounded relative to physics and other mu. [...] bound the work, let consequences flow inside that bound."
+    allowed_in_pdf: true
+    confidence: HIGH

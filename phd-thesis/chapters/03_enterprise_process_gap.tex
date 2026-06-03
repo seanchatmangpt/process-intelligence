@@ -1,0 +1,48 @@
+\chapter{The Enterprise Process Gap}
+\label{chap:enterprise_gap}
+
+\section{The Fundamental Misconception}
+
+The dominant data paradigm in enterprise software is relational. Tables, rows, columns, foreign keys. The enterprise truth, in this paradigm, is a snapshot: the current state of each entity, recorded in a normalized schema, queryable via SQL. This paradigm has served well for decades. It is not wrong. But it is incomplete in a way that has become consequential precisely as AI systems attempt to automate enterprise work.
+
+The incompleteness is this: tables record state. They do not record motion. They record what is true now. They do not record how things came to be true, in what order, through what sequence of actions, involving which agents, crossing which system boundaries, with what exceptions and rework.
+
+The enterprise is not a snapshot. The enterprise is a process. The truth of an enterprise is not a table. The truth of an enterprise is a history of events. The gap between these two representations --- between the relational snapshot and the process history --- is the enterprise process gap. It is the gap that makes most enterprise AI deployments structurally incapable of doing what their vendors claim.
+
+\section{Data as Operational Motion}
+
+When a purchase order moves from approval to payment, that movement is an event. It has a timestamp. It involves an agent. It changes the state of an artifact. It crosses a system boundary. It may trigger downstream events. It may require exceptions that produce rework cycles. Every one of these facts is operationally significant. Every one of these facts is invisible in a relational snapshot.
+
+The purchase order table records the current state of the order: approved, paid, voided. It does not record the sequence of state changes. It does not record which approval step required a second-level authorization because the amount exceeded a threshold. It does not record the three-day gap between approval and payment initiation that indicates a treasury constraint. It does not record the exception that was handled by a different team than the one that initiated the order.
+
+These operational facts --- the motion of work through a process --- are the enterprise truth. They are the facts that compliance auditors need. They are the facts that process-improvement analysts need. They are the facts that governance frameworks require. And they are precisely the facts that relational schemas, as typically deployed, do not preserve.
+
+Process-mining research, following the foundational work of Van der Aalst, has formalized this observation. The Object-Centric Event Log standard (OCEL 2.0) defines a data model for capturing process events in a way that preserves the operational motion: each event records the activity performed, the timestamp, the objects involved, and the relationships between those objects \cite{vanderaalst2022ocel}. The result is an event log that can be analyzed, replayed, and checked for conformance against a declared process model.
+
+\section{Query Patterns, Lineage, and Handoffs}
+
+The enterprise process gap manifests in specific, recurring patterns.
+
+\textbf{Query patterns.} An enterprise query that asks ``how many purchase orders were approved last month'' is a state query. It can be answered from a relational snapshot. But the query ``what was the median time between order submission and first approval, broken down by approver and exception type'' is a process query. It requires event-log data. Most enterprise reporting infrastructures are built for state queries. Process queries require a different infrastructure --- one that the research program in \texttt{sources-pm4py} and \texttt{sources-wasm4pm} is designed to provide.
+
+\textbf{Lineage.} In data governance, lineage refers to the ability to trace the origin and transformation history of a data artifact. But lineage in the process sense is richer: it includes not just the data transformations but the human and automated actions that produced them. Which agent approved this artifact? At what stage of the process? Under what authority? Was an exception triggered? Relational lineage tools answer the first question. Process lineage answers all of them. The receipt chain documented in \texttt{receipts/} and formalized in the Chatman Equation is the process-lineage mechanism for this research program.
+
+\textbf{Handoffs.} A handoff is the unit of coordination. It is the moment at which responsibility for an artifact or a process stage passes from one agent to another. Handoffs are the invisible seams of enterprise work. They are where most exceptions originate, where most process variance accumulates, and where most compliance risk concentrates. They are also precisely what relational schemas do not capture. A handoff is a process event, not a state. It does not appear in the purchase-order table. It appears in the event log --- if the event log exists.
+
+\section{Governance and Workflow}
+
+Enterprise governance frameworks --- SOC 2, GDPR, ISO 27001, and others --- require process evidence. They require the ability to demonstrate that controls were applied, that handoffs were authorized, that exceptions were handled within policy, and that the declared process matches the actual process. The standards research in \texttt{standards/} maps these requirements to the process-evidence infrastructure documented in this program.
+
+Workflow systems attempt to address the handoff problem by imposing structure on process execution. But most deployed workflow systems do not produce process-mining-compatible event logs. They produce workflow records --- system artifacts that record state transitions within the workflow engine but not the full operational context of the work. The gap between a workflow record and an OCEL-compatible event log is exactly the gap that the \texttt{otel-weaver} project family is designed to bridge: converting OpenTelemetry traces --- which are the closest to process-event data that most operational systems produce --- into process-intelligence-compatible intake.
+
+\section{Why Tables Are Not the Enterprise Truth}
+
+The argument of this chapter can be stated simply. The enterprise truth is a process. A process is a sequence of events involving agents, artifacts, and system boundaries. Tables record states. States are not sequences. States do not record agents. States do not record boundaries. Therefore, tables are not the enterprise truth.
+
+This is not a criticism of relational databases. It is a statement about the scope of their representation. Relational databases are excellent at what they do: recording current state, enforcing integrity constraints, supporting high-throughput queries. They are not designed to record process history. They are not designed to support conformance checking. They are not designed to produce event logs that can be replayed against process models.
+
+The enterprise AI gap is, at its root, a consequence of this mismatch. AI systems trained on relational data --- which is to say, most enterprise AI systems --- are trained on state snapshots. They are being asked to automate processes. State snapshots do not contain enough information to automate processes. The systems fail, or they produce the appearance of automation while hiding the failure behind fluent output.
+
+The research program documented here is organized around the process layer, not the state layer. Every project in the thirty-four-project corpus --- from \texttt{blue-river-dam} to \texttt{receipts} to \texttt{experiments-core} --- operates on process events, not relational snapshots. The evaluation (Chapter~\ref{chap:evaluation}) is organized around process evidence, not benchmark scores. The infrastructure (Chapter~\ref{chap:industry_architecture}) is designed around process-event ingestion, not database query optimization.
+
+The enterprise process gap is the gap that makes this research program necessary.

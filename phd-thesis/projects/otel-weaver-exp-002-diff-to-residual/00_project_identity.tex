@@ -1,0 +1,110 @@
+% FILE: 00_project_identity.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Project Identity}
+\label{sec:otel-weaver-exp-002-diff-to-residual-identity}
+
+\subsection{Purpose}
+\label{sec:otel-weaver-exp-002-diff-to-residual-identity-purpose}
+
+Experiment EXP-002 establishes a formal, executable boundary between design-time
+telemetry schema evolution and runtime process behavioral deviation. Its immediate
+engineering purpose is to manufacture the Rust library crate
+\texttt{exp-002-weaver-diff-to-pi-residual}, which implements a schema-translation
+bridge called \texttt{BridgeRx}. The bridge intercepts incoming telemetry feedstock
+that conforms to schema version S2 and translates it into the S1-compatible structure
+that the conformance court's validators expect, before any conformance algorithm fires.
+
+The broader scientific purpose is to prove that the PI Conformance Residual
+$\mathcal{R}_{\Delta} = |f_{S_1}(\mathcal{L}_2, M) - f_{S_2}(\mathcal{L}_2, M)|$
+can be driven to zero by a lawfully placed translation layer. Without this bridge, a
+schema attribute rename---such as the Petri-net-motivated change from
+\texttt{process.pi.activity.name} to \texttt{process.pi.transition.name}---would
+cause the conformance court to misclassify a structurally clean telemetry record as a
+process violation, triggering a false compliance alert. EXP-002 proves that this
+category of false positive is preventable at the architectural boundary rather than
+requiring post-hoc court correction.
+
+The experiment is the second of five in the OTel Weaver series
+(exp-001 through exp-005). Its upstream dependency is the custom process intelligence
+semantic convention registry defined in exp-001. Its downstream consumers include
+exp-003 (live-check to refusal) and exp-004 (registry-to-witness code generation),
+which both assume that telemetry entering the conformance boundary is already
+normalized to the court's expected schema surface.
+
+\subsection{Repository Surface}
+\label{sec:otel-weaver-exp-002-diff-to-residual-identity-repository}
+
+The experiment lives at:
+\begin{verbatim}
+/Users/sac/process-intelligence/otel-weaver/experiments/
+    exp-002-weaver-diff-to-pi-residual/
+\end{verbatim}
+
+The Rust library crate is declared in
+\texttt{Cargo.toml} with package name \texttt{exp-002-weaver-diff-to-pi-residual},
+library target \texttt{bridge}, and source path \texttt{src/bridge.rs}. Declared
+dependencies are \texttt{serde} (v1.0, derive feature), \texttt{serde\_json} (v1.0),
+and \texttt{serde\_yaml} (v0.9). The Cargo dependency graph was materialized to
+\texttt{target/debug/deps} including compiled \texttt{serde}, \texttt{serde\_json},
+\texttt{serde\_yaml}, \texttt{indexmap}, and \texttt{hashbrown} rlibs, confirming that
+\texttt{cargo build} was executed at some point in the experiment's history.
+
+Parent-scope checkpoints are held at
+\texttt{/Users/sac/process-intelligence/otel-weaver/checkpoints/} and cover the full
+five-experiment suite rather than individual experiments. No receipt files are present
+inside the exp-002 directory itself; the checkpoint scope is intentionally aggregated
+at the \texttt{otel-weaver/} level.
+
+\subsection{Primary Research Role}
+\label{sec:otel-weaver-exp-002-diff-to-residual-identity-role}
+
+Within the dissertation, EXP-002 occupies the role of
+\emph{weaver-diff-to-pi-residual-bridge-experiment}. Its specific scientific
+contribution is the formal categorical separation encoded in the invariant:
+\[
+    \Delta_W(S_1, S_2) \neq \delta_P(\mathcal{L}_1, \mathcal{L}_2)
+\]
+This law states that a Weaver Diff---a set of \texttt{(path, op, value)} tuples where
+$op \in \{\text{Add}, \text{Remove}, \text{Rename}, \text{TypeChange}\}$---belongs to
+the schema metadata plane and must never be evaluated inside the process behavioral
+deviation court. The experiment manufactures an executable proof of this law as a
+Rust type system and runtime translation bridge rather than as an informal assertion.
+
+EXP-002 directly supports the thesis's claim that full-lifecycle process intelligence
+requires strict nominal category separation enforced at every ingestion boundary, and
+that engineering mechanisms (not documentation conventions) must maintain those
+categories under schema evolution pressure.
+
+\subsection{Key Artifacts}
+\label{sec:otel-weaver-exp-002-diff-to-residual-identity-artifacts}
+
+The following artifacts constitute the experiment's evidence surface, as extracted
+from the repository:
+
+\begin{itemize}
+    \item \texttt{src/bridge.rs} --- Single source file implementing \texttt{BridgeRx},
+          \texttt{TelemetryFeedstockS1}, \texttt{TelemetryFeedstockS2}, and the inline
+          unit test \texttt{test\_bridge\_translation\_equivalence}.
+    \item \texttt{Cargo.toml} --- Library crate manifest declaring the \texttt{bridge}
+          target and three serde-family dependencies.
+    \item \texttt{README.md} --- Mathematical framework document defining
+          $\Delta_W$, $\delta_P$, and $\mathcal{R}_{\Delta}$ with worked JSON diff
+          examples and Rust code listings.
+    \item \texttt{target/debug/deps/} --- Materialized dependency artifacts confirming
+          \texttt{cargo build} was executed.
+    \item \texttt{../checkpoints/GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md} --- Parent-scope
+          checkpoint certifying the full five-experiment suite as COMPLETE \& ACTIVE
+          (SHA-256: \texttt{e6bc59b8d210e309228d4bf09c0fa4db55fe310efc35ad1a89b3f021e85a67f1}).
+    \item \texttt{../checkpoints/GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} --- Runtime
+          integration checkpoint citing 62 passing tests across \texttt{wasm4pm},
+          \texttt{wasm4pm-compat}, and \texttt{blue\_river\_dam}
+          (SHA-256: \texttt{86ef45b3c63ae38007701169bcf0abbda2694a43160f3f8d3695c6255b02cb44}).
+    \item \texttt{../doctrine/registry-diff-is-not-process-drift.md} --- Doctrine file
+          anchored at \texttt{REGISTRY\_DIFF\_NOT\_DRIFT\_001} formalizing the categorical
+          separation this experiment enforces.
+    \item \texttt{../mappings/registry-diff-to-pi-drift-map.yaml} --- YAML boundary rules
+          (\texttt{drift\_isolation\_rule\_1}, \texttt{drift\_isolation\_rule\_2}) routing
+          schema-diff events away from the process drift court.
+\end{itemize}

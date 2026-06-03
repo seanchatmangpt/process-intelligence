@@ -1,0 +1,125 @@
+\section{Open Questions and Next Work}
+\label{sec:otel-weaver-exp-005-collector-to-intake-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:otel-weaver-exp-005-collector-to-intake-open-questions-gaps}
+
+EXP-005 has five documented open questions, all arising from the absence of a live Docker
+collector run:
+
+\begin{enumerate}
+  \item \textbf{No live collector execution.} The \texttt{output/pi\_intake\_events.json}
+        artifact has never been materialised. The collector pipeline specification and harness
+        are complete, but the experiment has not been run against an actual OTLP stream. This
+        is the primary gap.
+
+  \item \textbf{End-to-end integration not wired.} Span~C is admitted by the collector's
+        \texttt{filter/pi} but the README states it will fail live-check schema validation.
+        The downstream live-check service (EXP-003 \texttt{validator.rs}) must be run as a
+        second stage after the collector writes \texttt{pi\_intake\_events.json}. Whether
+        this two-stage integration is wired end-to-end --- i.e., whether \texttt{validator.rs}
+        reads from the same \texttt{output/} directory that the collector writes to --- has
+        not been confirmed. \textit{[AUTHOR THESIS: the integration path exists by design in
+        the collector-integration-model.yaml but has not been executed.]}
+
+  \item \textbf{BLAKE3 receipt creation trigger undefined.} The
+        \texttt{live-check-intake.manifest.yaml} references a BLAKE3 receipt at
+        \texttt{receipts/live-check-intake-receipt.json}. The mechanism that triggers receipt
+        creation --- whether it is the ggen system, a post-run hook, or a manual step --- is
+        not specified in any source file examined. The receipt does not exist, and the trigger
+        for its creation has not been identified.
+
+  \item \textbf{Config field name mismatch.} The collector config uses \texttt{max\_megabytes}
+        in the file rotation block; the README uses \texttt{max\_size\_megabytes}. The
+        \texttt{otel/opentelemetry-collector-contrib:0.98.0} image accepts one form and
+        rejects the other at startup. A startup failure would prevent any span from being
+        processed. The correct form must be confirmed against the 0.98.0 release notes or by
+        a trial Docker run.
+
+  \item \textbf{Metrics pipeline gap.} The \texttt{harness.py} emits a
+        \texttt{pi.feedstock.operation\_count} cumulative sum metric on port~\texttt{4318}.
+        The collector config declares no metrics pipeline. Metrics are silently dropped.
+        Whether this is intentional (metrics are out of scope for EXP-005) or a gap that
+        requires a \texttt{metrics/pi\_intake} pipeline to capture per-instance operation
+        counts for process mining has not been decided.
+\end{enumerate}
+
+\subsection{Deferred Gates}
+\label{sec:otel-weaver-exp-005-collector-to-intake-open-questions-deferred}
+
+The following proof gates are deferred pending live execution:
+
+\begin{itemize}
+  \item \textbf{Filter gate:} Span~B confirmed absent from \texttt{pi\_intake\_events.json}
+        after a live run.
+  \item \textbf{Transform gate:} Span~A confirmed to carry \texttt{pi.intake.ingested\_at}
+        (ISO~8601) and \texttt{pi.intake.collector\_version} fields in the output JSON.
+  \item \textbf{Court gate:} Span~C confirmed to produce a sealed refusal record from
+        \texttt{validator.rs} when the end-to-end two-stage pipeline is executed.
+  \item \textbf{Receipt gate:} \texttt{live-check-intake-receipt.json} materialised and
+        matching the manifest declaration.
+  \item \textbf{Config gate:} Collector starts without error on the current
+        \texttt{otel-collector-config.yaml}; field name mismatch resolved.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:otel-weaver-exp-005-collector-to-intake-open-questions-risks}
+
+\begin{description}
+  \item[Docker availability risk] The experiment requires Docker and network access to pull
+        \texttt{otel/opentelemetry-collector-contrib:0.98.0}. If the image is unavailable or
+        the version is deprecated, the experiment cannot be executed as specified. Mitigation:
+        pin the image digest in the Docker run command.
+
+  \item[Config startup failure risk] The \texttt{max\_megabytes} / \texttt{max\_size\_megabytes}
+        field name mismatch may cause the collector to fail at startup, preventing any span
+        processing. This risk is not mitigated by the current specification. Resolution
+        requires a trial Docker run or inspection of the 0.98.0 changelog.
+
+  \item[OTTL version risk] OTTL processor syntax is version-sensitive. The OTTL rules in
+        \texttt{otel-collector-config.yaml} were written for the 0.98.0 image. If the image
+        version is changed during execution, OTTL syntax errors may silently cause the
+        \texttt{filter/pi} or \texttt{transform/pi} processors to pass all spans unfiltered
+        or drop all spans unconditionally.
+
+  \item[Downstream coupling risk] The Span~C end-to-end integration test requires EXP-003's
+        \texttt{validator.rs} to be operational and reading from the correct output path.
+        If EXP-003 is not deployed alongside the EXP-005 collector, the Span~C refusal path
+        cannot be verified.
+\end{description}
+
+\subsection{Next Receipted Work}
+\label{sec:otel-weaver-exp-005-collector-to-intake-open-questions-next}
+
+The following work items, each requiring a receipted output artifact, must be completed to
+advance EXP-005 from PARTIAL to ALIVE:
+
+\begin{enumerate}
+  \item \textbf{Resolve config field name.} Inspect the 0.98.0 release notes or run
+        \texttt{docker run otel/opentelemetry-collector-contrib:0.98.0 --config} with a
+        minimal config to confirm the correct rotation field name. Update
+        \texttt{otel-collector-config.yaml}. Receipted artifact: corrected YAML with a
+        git commit recording the resolution.
+
+  \item \textbf{Execute live collector run.} Run the Docker command from the README with
+        the corrected config. Execute \texttt{python harness.py}. Confirm
+        \texttt{output/pi\_intake\_events.json} is materialised. Receipted artifact:
+        the \texttt{pi\_intake\_events.json} file.
+
+  \item \textbf{Verify Span~A/B/C outcomes.} Inspect the JSON output to confirm Span~A is
+        present with injected fields, Span~B is absent, and Span~C is present. Receipted
+        artifact: a verification report committed to the experiment directory.
+
+  \item \textbf{Execute end-to-end with EXP-003.} Deploy \texttt{validator.rs} against the
+        materialised \texttt{pi\_intake\_events.json}. Confirm Span~C produces a sealed
+        refusal record. Receipted artifact: the refusal record with BLAKE3 seal.
+
+  \item \textbf{Materialise BLAKE3 receipt.} Trigger the ggen receipt-manufacture step for
+        \texttt{live-check-intake.manifest.yaml}. Confirm
+        \texttt{receipts/live-check-intake-receipt.json} is written with the correct hash.
+        Receipted artifact: \texttt{live-check-intake-receipt.json}.
+
+  \item \textbf{Upgrade checkpoint.} With all five receipted artifacts in place, issue a new
+        checkpoint upgrading EXP-005 from PARTIAL to ALIVE. Receipted artifact: a new
+        checkpoint file in \texttt{otel-weaver/checkpoints/}.
+\end{enumerate}

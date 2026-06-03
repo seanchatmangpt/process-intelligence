@@ -1,0 +1,8 @@
+{
+  "project": "pi-program",
+  "phase": 2,
+  "artifacts_manufactured": 81,
+  "subprojects": ["root", "api", "governance", "m-and-a"],
+  "artifact_types": ["governance-ledgers", "api-specs", "manifests"],
+  "receipt_ledger": "../manufacturing/RECEIPT_LEDGER_20260601.yaml"
+}

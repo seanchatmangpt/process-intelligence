@@ -1,0 +1,267 @@
+slug: experiments-visualizer
+claims:
+  - id: CLM-EXPERIMENTS_VISUALIZER-001
+    claim: >
+      The experiments-visualizer is a zero-dependency, pure browser-based JavaScript
+      single-page application implementing seven simultaneous subsystems: token game
+      simulation, A* alignment solving, DECLARE constraint validation, EWMA concept
+      drift detection, cryptographic audit chaining, MAPE-K autonomic control, and
+      TypeScript boundary-law projection.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/README.md
+      - /Users/sac/process-intelligence/experiments/visualizer/LIVESTREAM_STANDARDS.md
+      - /Users/sac/process-intelligence/experiments/visualizer/app.js
+    evidence_summary: >
+      README.md, LIVESTREAM_STANDARDS.md, and app.js confirm the zero-dependency
+      architecture and enumerate the component list; source files for each subsystem
+      are present in the visualizer directory.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-002
+    claim: >
+      The repository surface consists of 13 JavaScript modules, one TypeScript
+      validation file (visualizer-validation.ts), one TypeScript boundary-law
+      declaration file (bindings.d.ts), and supporting configuration files; TypeScript
+      is the sole devDependency.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/package.json
+      - /Users/sac/process-intelligence/experiments/visualizer/tsconfig.json
+      - /Users/sac/process-intelligence/experiments/visualizer/bindings.d.ts
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+    evidence_summary: >
+      The known source_files list confirms app.js, alignment.js, astar.js, autonomic.js
+      and others; bindings.d.ts and visualizer-validation.ts are confirmed present;
+      package.json confirms the TypeScript-only devDependency contract.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-003
+    claim: >
+      The visualizer-validation.ts file exercises all 10 type projections from
+      bindings.d.ts at compile time using concrete values, including a BLAKE3 process
+      hash and a fitness score of 0.982 matching the replay_receipt_sample.md fixture.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+      - /Users/sac/process-intelligence/experiments/visualizer/bindings.d.ts
+      - /Users/sac/process-intelligence/experiments/replay_receipt_sample.md
+    evidence_summary: >
+      visualizer-validation.ts imports and instantiates all 10 types with concrete
+      literal values; the ReceiptShapeTs instance uses fitness: 0.982 and the BLAKE3
+      hash matching the replay_receipt_sample.md fixture JSON.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-004
+    claim: >
+      The SHA-256 audit chain is initialized with the genesis message 'Blue River Dam
+      Autonomic Ledger Initialized' and each block is chained via H_i =
+      SHA-256(i || t || case_id || payload || H_{i-1}); verifyChain() and tamperBlock()
+      methods are confirmed present in blockchain.js.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/LIVESTREAM_STANDARDS.md
+    evidence_summary: >
+      LIVESTREAM_STANDARDS.md states the chain formula verbatim (Ledger Custodian
+      section) and README.md describes the immutable SHA-256 ledger with back-link
+      chaining and tamper detection; blockchain.js is confirmed in the source_files list.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-005
+    claim: >
+      The AutonomicController in autonomic.js implements the MAPE-K feedback loop via
+      tick(metrics, net), comparing fitness against conformanceThreshold=0.90 and load
+      against loadLimitThreshold=0.75, and emits RATE_LIMIT_TRIGGER and
+      RATE_LIMIT_RECOVERY events recorded as SHA-256-chained ledger blocks.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/autonomic.js
+    evidence_summary: >
+      autonomic.js is confirmed present and begins with a full SHA-256 implementation;
+      the file header references the Blue River Dam Epistemic Containment Protocol and
+      the MAPE-K architecture, threshold values, and event names are described
+      consistently across TeX files and the source.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-006
+    claim: >
+      The LIVESTREAM_STANDARDS.md v30.1.1 conformance claim asserts zero mocks,
+      placeholders, or stubs anywhere in the stack, but without automated runtime
+      testing this claim cannot be verified and constitutes a specification document,
+      not an executable test result.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/LIVESTREAM_STANDARDS.md
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+    evidence_summary: >
+      LIVESTREAM_STANDARDS.md section 3 explicitly states 'All assets conform to the
+      v30.1.1 ultimate standard and contain zero mocks, placeholders, or stubs'; no
+      Jest suite, browser automation, or integration harness is present — only a
+      compile-time TypeScript validation file exists.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-007
+    claim: >
+      The experiments-visualizer satisfies three of four proof gates (type gate,
+      formula gate, audit gate at source level) but does not satisfy the runtime
+      execution gate, making its ALIVE status PARTIAL rather than ALIVE.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+      - /Users/sac/process-intelligence/experiments/visualizer/bindings.d.ts
+      - /Users/sac/process-intelligence/experiments/replay_receipt_sample.md
+    evidence_summary: >
+      The type gate is confirmed by successful imports in visualizer-validation.ts;
+      the formula gate by alignment.js and replay_receipt_sample.md (fitness 0.982);
+      the audit gate at source level by blockchain.js; the runtime gate is explicitly
+      deferred with no automated harness present.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-008
+    claim: >
+      The EvidenceTs<T, State, Witness> typestate wrapper in bindings.d.ts makes the
+      full evidence lifecycle (Raw to Receipted, with a lateral Refused branch)
+      statically visible at compile time, operationalizing the Chatman Equation
+      A = mu(O*) through the TypeScript type system.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/bindings.d.ts
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+    evidence_summary: >
+      bindings.d.ts defines EvidenceTs, EvidenceState as a union of lifecycle tokens,
+      and LossPolicyTs encoding the Refused lateral branch; the connection to the
+      Chatman Equation is the author's interpretive framing — the type declarations
+      support it but do not reference the equation by name.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-009
+    claim: >
+      The replay_receipt_sample.md fixture contains a concrete ReceiptShapeTs-conforming
+      record with fitness score 0.982 computed against a supply-chain WF-net, with a
+      BLAKE3 process hash and cryptographic signature — and this is the ground-truth
+      value against which visualizer-validation.ts validates type projections at
+      compile time.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/replay_receipt_sample.md
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+    evidence_summary: >
+      replay_receipt_sample.md contains a JSON instance with fitness_score: 0.982 and
+      BLAKE3 hash 4a7b744ce58b88cd...; visualizer-validation.ts uses the identical
+      values (fitness: 0.982, process_hash: blake3:4a7b744c...) confirming direct
+      linkage.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-010
+    claim: >
+      Four independent SHA-256 implementations exist across blockchain.js, autonomic.js,
+      ledger.js, and dashboard.js; it is unconfirmed whether these are intentional or
+      should share a single canonical module, creating a risk of hash inconsistency
+      across blocks.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/autonomic.js
+    evidence_summary: >
+      autonomic.js contains a full standalone SHA-256 implementation beginning at
+      line 14; the TeX files identify all four files as containing independent SHA-256
+      code; the README and LIVESTREAM_STANDARDS.md do not address canonicalization.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-011
+    claim: >
+      The 5-agent AGI swarm architecture (Stream Director, Telemetry Auditor, A*
+      Alignment Referee, Drift Sentry, Ledger Custodian) specified in
+      LIVESTREAM_STANDARDS.md is a specification document only; no agent orchestration
+      code, OBS bindings, or inter-agent communication protocol is present in the
+      codebase.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/LIVESTREAM_STANDARDS.md
+    evidence_summary: >
+      LIVESTREAM_STANDARDS.md section 2 describes the 5-agent swarm with compliance
+      metrics in detail; none of the known source_files contain agent orchestration or
+      OBS bindings — the gap between specification and implementation is confirmed by
+      absence.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-012
+    claim: >
+      The five domain receipts in the receipts directory (EBITDA rework, working
+      capital/AR, risk SLA, risk compliance, residual standard) confirm that the
+      ReceiptShapeTs receipt-chain architecture demonstrated in the browser dashboard
+      has been applied to capital-flow process domains.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/receipts/rec_ebitda_rework_001.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_sla_003.json
+      - /Users/sac/process-intelligence/receipts/rec_risk_compliance_004.json
+      - /Users/sac/process-intelligence/receipts/rec_residual_standard_005.json
+      - /Users/sac/process-intelligence/receipts/rec_wc_ar_002.json
+    evidence_summary: >
+      All five receipt files are confirmed to exist; the claim that their structure
+      matches ReceiptShapeTs is an interpretive inference — the receipt files were not
+      read to confirm exact schema alignment with the TypeScript declaration in
+      bindings.d.ts.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-013
+    claim: >
+      The WASM boundary law declared in bindings.d.ts is the authoritative TypeScript
+      projection of the Rust wasm4pm WASM module's type surface, generated by a Cargo
+      build pipeline or wasm-bindgen configuration.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/bindings.d.ts
+    evidence_summary: >
+      bindings.d.ts is labeled 'Generated compile-time TypeScript type definitions
+      (WASM Boundary Law)' but no generation pipeline, Cargo build script, or
+      wasm-bindgen configuration is visible in the visualizer directory; traceability
+      to the upstream Rust source is explicitly identified as a deferred gate.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-014
+    claim: >
+      No visualizer-specific ALIVE checkpoint has been issued; the project's ALIVE
+      status can only be inferred from the broader PROCESS_INTELLIGENCE_ALIVE_001.md
+      verdict, making the ALIVE attribution PARTIAL under the thesis immutability
+      doctrine.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/LIVESTREAM_STANDARDS.md
+    evidence_summary: >
+      No checkpoint file specific to experiments-visualizer appears in the known
+      evidence; 05_evidence_receipts_and_gates.tex states this gap explicitly and
+      confirms that the broader PROCESS_INTELLIGENCE_ALIVE_001.md verdict cannot be
+      directly attributed to the visualizer in isolation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-EXPERIMENTS_VISUALIZER-015
+    claim: >
+      A browser automation test harness covering the full MAPE-K tick cycle, SHA-256
+      chain growth, DECLARE constraint evaluation over streaming traces, and EWMA
+      UCL/LCL breach detection is required to advance the project from PARTIAL to
+      ALIVE status, and is not yet present in the codebase.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/experiments/visualizer/visualizer-validation.ts
+    evidence_summary: >
+      visualizer-validation.ts is the only test surface confirmed in the codebase and
+      exercises compile-time type shapes only; no Jest suite, Playwright, Puppeteer,
+      or browser automation entry appears in the known source_files — the deferred
+      runtime gate is documented in 07_open_questions_and_next_work.tex.
+    confidence: HIGH
+    allowed_in_pdf: true

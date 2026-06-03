@@ -1,0 +1,85 @@
+\section{Evidence, Receipts, and Gates}
+\label{sec:sources-wasm4pm-evidence}
+
+\subsection{Tests}
+\label{sec:sources-wasm4pm-evidence-tests}
+
+All 31 tests pass as of 2026-06-01, with a total runtime of 10.60 seconds across four test
+suites: unit tests (inline within source modules), integration tests
+(\texttt{tests/integration\_tests.rs}), end-to-end tests (\texttt{tests/e2e\_tests.rs}), and
+weaver integration tests (\texttt{tests/weaver\_integration\_tests.rs}).
+
+The conformance module (\texttt{src/conformance.rs}) carries six inline unit tests:
+\texttt{test\_conformance\_verdict\_fitness} (verifies \texttt{ConformanceVerdict::fitness\_score}
+returns correct values for all three variants);
+\texttt{test\_conformance\_verdicts\_aggregation} (verifies aggregate fitness computation across
+multiple cases); \texttt{test\_alignment\_fitness} (verifies the van der Aalst fitness equation
+$f = 0.5(1 - m/c) + 0.5(1 - r/p)$ with known token counts);
+\texttt{test\_astar\_alignment\_correctness\_and\_performance} (verifies A* search in
+synchronous product space reaches correct alignment within the 5000-iteration cap);
+\texttt{test\_compile\_time\_metrics} (verifies \texttt{Between01<NUM,DEN>} const generic
+compilation with valid and invalid bounds); \texttt{test\_runtime\_metric\_validation} (verifies
+\texttt{RuntimeBetween01} rejects NaN, $\pm\infty$, and out-of-bounds \texttt{f64} values).
+
+The mining module (\texttt{src/mining/mod.rs}) carries seven inline unit tests:
+\texttt{test\_alpha\_witness\_lattice\_bottom} (verifies \texttt{AlphaWitness::bottom()} returns
+empty sets); \texttt{test\_inductive\_witness\_lattice\_top} (verifies
+\texttt{InductiveWitness::top()} returns saturated counts); \texttt{test\_heuristics\_witness\_join}
+(verifies lattice join is monotone); \texttt{test\_petri\_net\_serialization};
+\texttt{test\_process\_tree\_serialization}; \texttt{test\_alpha\_miner\_discovery} (end-to-end
+alpha miner from event log to \texttt{Evidence<ProcessModel::Net,~Admitted,~AlphaWitness>});
+\texttt{test\_dfg\_miner\_discovery}. The graduation module (\texttt{src/graduation.rs}) carries
+four inline tests: \texttt{test\_valid\_intake}, \texttt{test\_ungrounded\_intake},
+\texttt{test\_reason\_mismatch}, and \texttt{test\_invalid\_witness\_state}, verifying all four
+intake pathways of the \texttt{GraduateToWasm4pm} trait.
+
+\subsection{Receipts}
+\label{sec:sources-wasm4pm-evidence-receipts}
+
+The primary receipt artifact is \texttt{MINING\_RENDER\_RECEIPT.md}: Receipt ID
+\texttt{MINING\_AUTHORITY\_RENDER\_001}, Authority: Mining Authority wasm4pm v30.1.2, Timestamp:
+2026-06-01T00:00:00Z, Status: SEALED. The sealed artifact is \texttt{src/mining/mod.rs} with
+SHA-256 content hash
+\texttt{08a067d1ee19ea67150c194e9a2db7d86dfd994223b922de7e8606f45fbdf8e5}. The receipt documents
+six manufacturing steps: (1) extraction of mining authority specifications from
+\texttt{mining-authority-map.md}; (2) template application from
+\texttt{wasm4pm-compat/compat/templates/mining/}; (3) artifact materialization to
+\texttt{src/mining/mod.rs}; (4) zero-warning compilation verification (\texttt{cargo build
+-{}-release}, 1.73s); (5) \texttt{Evidence<T,~State,~W>} type correctness audit across all four
+witness types; (6) authority sealing with receipt signature.
+
+The \texttt{Evidence<T,~Admitted,~W>} carrier type carries a \texttt{Blake3Hash([u8;~32])} field
+in every instance. As documented in the open questions (GAP from the provenancce chain analysis),
+all current implementations initialize this field to \texttt{Blake3Hash([0u8;~32])}: the
+cryptographic infrastructure is structurally present but hash computation over algorithm inputs is
+not yet wired. This is a documented open gap, not a silent omission.
+
+\subsection{Checkpoints}
+\label{sec:sources-wasm4pm-evidence-checkpoints}
+
+The \texttt{research-verdict.md} (dated 2026-05-31, Authority: Execution Agent, Classification:
+Doctoral-Level Authority Specification) serves as the checkpoint document for this project. It
+classifies four execution authorities to doctoral-level precision and issues a GO verdict for
+engineering. The document records specification completeness for all four authorities (Mining,
+Conformance, Replay, Lifecycle), documents all proof obligations, FFI boundaries, error handling,
+and implementation guidance. The verdict confidence is stated as ``DOCTORAL THESIS (99\%
+confidence in specification completeness).'' The \texttt{EXECUTION\_AUTHORITY\_ATLAS.md}
+(dated 2026-05-31, Agent: E3, Status: RESEARCH PASS COMPLETE) serves as the audit checkpoint for
+the live \texttt{\textasciitilde/wasm4pm/} codebase, confirming the ten gaps and the critical
+GAP\_001 finding.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:sources-wasm4pm-evidence-status}
+
+\textbf{Status: ALIVE.} The status is ALIVE because all three required conditions are met: (1)
+the receipt is present and sealed (\texttt{MINING\_RENDER\_RECEIPT.md}, status SEALED,
+2026-06-01T00:00:00Z); (2) all 31 tests pass (unit + integration + end-to-end + weaver,
+10.60s runtime); (3) the research verdict checkpoint (2026-05-31) issues a GO verdict with
+doctoral-level specification completeness for all four execution authorities. The ten open gaps
+(GAP\_001 through GAP\_010) documented in \texttt{GAP\_ANALYSIS.md} represent known open
+research findings. GAP\_001 (zero \texttt{wasm4pm-compat} consumption in the live
+\texttt{\textasciitilde/wasm4pm/} codebase) is the most critical; it does not block the ALIVE
+verdict for \texttt{sources/wasm4pm} because the local \texttt{src/graduation.rs} bridges the
+type-law seam on this side of the boundary. The ALIVE verdict reflects the state of this
+manufactured codebase; the relationship to the live \texttt{\textasciitilde/wasm4pm/} codebase
+is the primary open research question.

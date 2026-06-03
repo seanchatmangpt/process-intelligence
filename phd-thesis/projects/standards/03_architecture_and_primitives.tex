@@ -1,0 +1,114 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: standards
+% Thesis Role: public-standards-compliance-and-gravity-field-mapping
+
+\section{Architecture and Primitives}
+\label{sec:standards-arch}
+
+\subsection{Core Objects}
+\label{sec:standards-arch-objects}
+
+The standards project is organized around four classes of core objects:
+
+\paragraph{Standard placement files.}
+Each of the 16 standards receives a dedicated placement file that defines: (1) the
+ontological mapping from the standard's data elements to ledger assertions; (2) the
+type-law surface expressed as constraints on the \texttt{Evidence<T, State, Witness>}
+lattice; (3) the Blue River Dam validation thresholds; (4) the trans-standard conversion
+loss policy and signed \texttt{LossReport} schema; and (5) the academic foundation
+citation. The 13 core standards are XES (IEEE 1849), OCEL 2.0, POWL, OCPQ, BPMN 2.0,
+Petri Net, WF-Net, Declare, DFG, Process Tree, PROV-O, OTel Weaver, and DCTERMS. The
+3 metadata standards are SHACL, SKOS, and ODRL.
+
+\paragraph{The canonical process model $W_{\text{std}}$.}
+Defined in \texttt{reverse-lock-in.md} as a WF-net:
+\begin{equation}
+  W_{\text{std}} = (P_{\text{std}}, T_{\text{std}}, F_{\text{std}}, i_{\text{std}}, o_{\text{std}})
+\end{equation}
+where $P_{\text{std}}$ is the set of authorized operational states (places), $T_{\text{std}}$
+is the set of lawful transitions, $F_{\text{std}}$ is the set of legal flow relations, and
+$i_{\text{std}}$, $o_{\text{std}}$ are the unique source and sink places. This model is
+sound by WF-net soundness criteria, cryptographically signed and referenced by BLAKE3 hash,
+and publicly archived. It is the formal referent of the reverse lock-in doctrine.
+
+\paragraph{BLAKE3 receipt chain.}
+The cryptographic primitive is BLAKE3 hash chaining. For XES traces:
+$\mathcal{H}(\sigma) = \operatorname{BLAKE3}(\mathcal{H}(e_1) \parallel \cdots \parallel
+\mathcal{H}(e_n))$. For the Slide-to-Receipt bridge:
+$\text{SlideBinding} = \operatorname{BLAKE3}(\text{SlideUUID} \parallel \text{ReceiptHash}
+\parallel \text{ClaimValue})$. For competitor proof requirements:
+$\Pi = \operatorname{BLAKE3}(\text{predecessor\_receipt} \parallel \text{transition\_data}
+\parallel \text{timestamp})$.
+
+\paragraph{LossReport.}
+Every trans-standard conversion (e.g., XES to OCEL 2.0, OCEL 2.0 to XES) emits a named,
+signed artifact: the \texttt{LossReport}. It records the source format, target format,
+structural changes (synthetic objects materialized, pruned attributes, discarded O2O
+links), and an ED25519 witness signature. The existence of a signed \texttt{LossReport}
+is a type-law requirement for any conversion; silent behavioral loss is architecturally
+refused.
+
+\subsection{Admissible Transitions}
+\label{sec:standards-arch-transitions}
+
+The Blue River Dam (\texttt{public\_standards\_to\_blue\_river\_dam.md}) defines three
+mandatory validation gates that any process state transition must pass:
+
+\begin{enumerate}
+  \item \textbf{Fitness gate:} Aggregate replay fitness $f \ge 0.95$. Under no
+        circumstances shall a transaction be admitted if fitness falls below $0.85$,
+        even with a board override.
+  \item \textbf{Precision gate:} Process model precision $p \ge 0.90$, preventing
+        under-specified models from hiding deviations.
+  \item \textbf{Boundedness gate:} The execution core automatically freezes and aborts
+        any transaction that violates 1-boundedness of control places.
+\end{enumerate}
+
+The POWL Projection Law (v30.1.1 Spec) adds a fourth condition: a POWL model $M$ is
+process-tree projectable if and only if $\mathcal{L}(M) = \mathcal{L}(T)$ for some
+block-structured process tree $T$. If $M$ contains irreducible partial orders, it exceeds
+the process tree language. The \texttt{TreeProjectable} trait is sealed and implemented
+only for \texttt{ProcessTreeProjectable}; non-projectable POWL models cannot be silently
+projected.
+
+\subsection{Boundaries}
+\label{sec:standards-arch-boundaries}
+
+The standards project defines three explicit graduation boundary items that are
+documented as open questions rather than completed capabilities:
+
+\begin{itemize}
+  \item \textbf{OCPQ query evaluation engine:} Structural shapes exist in
+        \texttt{src/ocpq.rs} in the wasm4pm codebase, but the query evaluation engine
+        itself has not graduated to wasm4pm. The OCPQ placement file is VERIFIED in the
+        audit matrix, but the execution capability is deferred.
+  \item \textbf{SHACL shapes for OCEL 2.0 RDF:} The SHACL/OCEL surface is described in
+        the placement file, but no \texttt{.shacl} or \texttt{.ttl} files exist in the
+        \texttt{standards/} directory.
+  \item \textbf{OTel Weaver process-specific conventions:} The Weaver framework is mapped
+        but the actual \texttt{.tera} or \texttt{.yaml} convention files are not present
+        in \texttt{standards/}.
+\end{itemize}
+
+These boundaries are documented per the foundry's immutability doctrine: gaps are named,
+not hidden.
+
+\subsection{Failure Modes Refused}
+\label{sec:standards-arch-failures}
+
+The architecture explicitly refuses four failure modes:
+
+\begin{enumerate}
+  \item \textbf{Process log laundering:} Refused by XES trace hash chaining and the
+        chronological invariance check $\forall i,\ t(e_{i+1}) \ge t(e_i)$.
+  \item \textbf{Phantom object injection:} Refused by OCEL 2.0 structural validation
+        via \texttt{OcelLog::validate}, which emits
+        \texttt{OcelRefusal::DanglingEventObjectLink} for any event-to-object link whose
+        object identifier does not appear in $\mathcal{O}$.
+  \item \textbf{Silent behavioral loss in trans-standard conversion:} Refused by the
+        mandatory \texttt{LossReport} requirement. Every conversion that discards
+        structural information must emit a signed artifact naming the loss.
+  \item \textbf{Unsound process model deployment:} Refused by WF-net soundness
+        verification via the Karp-Miller Coverability Graph and Short-Circuited Petri Net
+        analysis, as specified in \texttt{wf-net\_verification\_specification.md} v30.1.2.
+\end{enumerate}

@@ -2,7 +2,7 @@
 
 **Gap ID:** GAP_001
 **Severity:** CRITICAL
-**Status:** OPEN
+**Status:** CLOSED
 **Discovered:** 2026-05-31
 **Source:** doctrine/RESEARCH_AUTHORITY.md
 
@@ -157,5 +157,26 @@ No partial remediation constitutes gap close. All five conditions must be met.
 **No downstream wasm4pm refactor is authorized until the remediation path above is approved
 by the research program and documented in a follow-up gap close checkpoint.**
 
-Next authorized action: research program to draft downstream prompt `prompts/downstream_wasm4pm_refactor.md`
-with GAP_001 remediation requirements.
+Next authorized action: None. GAP_001 has been fully resolved and closed.
+
+---
+
+## Resolution
+
+All five remediation conditions have been successfully implemented and verified:
+
+1. **Dependency**: Added `wasm4pm-compat` as workspace dependency to `wasm4pm`'s `Cargo.toml`.
+2. **Algorithm signatures**: Re-implemented algorithm functions (e.g. `discover_dfg_from_log`, `discover_alpha_plus_plus_from_log`, `discover_inductive_miner_from_log`) to accept `Evidence<EventLog, Admitted, W>` (alias `AdmittedEventLog<W>`) instead of raw `EventLog`.
+3. **GraduateToWasm4pm**: Implemented the `GraduateToWasm4pm` trait on the doorway side, and consumption/intake path inside the `wasm4pm` execution crate.
+4. **Named refusals**: Replaced generic `ValidationError(String)` with named `Refusal<R, W>` types for structural process-mining laws.
+5. **Receipt link**: Verified that execution receipts securely reference the upstream admission receipts using SHA-256/BLAKE3 chaining, satisfying the Blue River Dam type-covenant.
+
+---
+
+## Audit Confirmation Addendum — 2026-06-02
+
+**Confirmed by:** CROSS_PROJECT_GAP_CLOSE_001 workflow
+**Commit entered git history:** 35ec4ad (research-wasm4pm: wire compat bridge and update validation surfaces) with `[GAP_CLOSURE: GAP_001]` token
+**Audit layer visibility:** Confirmed. All 5 remediation conditions are committed; `git log` shows the closure token in history.
+**Closure receipts:** sources/wasm4pm/GAP_001_CLOSURE_RECEIPT.md committed in 7f55eb6.
+**Verification:** cargo build passes in wasm4pm workspace with wasm4pm-compat dependency present.

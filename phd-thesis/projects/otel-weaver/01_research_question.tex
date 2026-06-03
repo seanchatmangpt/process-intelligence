@@ -1,0 +1,105 @@
+% FILE: 01_research_question.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+
+\section{Research Question}
+\label{sec:otel-weaver-rq}
+
+\subsection{Problem Statement}
+\label{sec:otel-weaver-rq-problem}
+
+Contemporary distributed systems instrumentation via OpenTelemetry produces a high-volume stream of
+spans, metrics, and log records. Practitioners and platform teams routinely treat this stream as
+process evidence: dashboards display ``process health,'' schema validation passes are cited as
+compliance proofs, and alert thresholds on span latency are described as SLA enforcement. The
+problem \texttt{otel-weaver} investigates is that none of these treatments is formally defensible.
+A span is a measurement artifact. A schema validation result is a structural check. Neither
+constitutes a process conformance finding because neither references a declared process model, a
+lawful lifecycle state, or a cryptographically bound receipt chain.
+
+The failure mode this creates is not theoretical. When observability signals are silently promoted
+to process evidence---without a typed admission gate, without a loss report, and without a witness
+seal---the downstream process-intelligence layer receives feedstock it cannot distinguish from
+ground-truth evidence. Conformance checking performed against such input produces fitness scores
+that measure instrument coverage rather than process compliance. The resulting verdicts are
+category errors, not process findings.
+
+The research problem is therefore: \emph{What formal boundary is required between OpenTelemetry
+observability data and process-intelligence evidence, and what type-system mechanisms enforce that
+boundary without requiring the ingestion layer to perform conformance checking itself?}
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:otel-weaver-rq-old-regime}
+
+The old-regime assumption \texttt{otel-weaver} directly challenges is encoded in doctrine constant
+\texttt{NO\_DASHBOARD\_TRUTH\_001}:
+
+\begin{quote}
+  Observability dashboards display instrument readings. They do not display process truth.
+  No dashboard output, alert, or visualization constitutes a process conformance verdict.
+\end{quote}
+
+This assumption is pervasive in the industry. Platform engineering teams speak of ``observing''
+processes, ``monitoring'' compliance, and ``detecting'' process drift through metric anomalies.
+The doctrine file \texttt{no-dashboard-truth.md} names this assumption explicitly and refuses it:
+a dashboard is a visualization of feedstock, not a process oracle.
+
+The companion assumption challenged by doctrine constant
+\texttt{OBSERVABILITY\_VS\_PROCESS\_INTELLIGENCE\_001} is that observability-by-design and
+process intelligence are architecturally equivalent or substitutable. The doctrine establishes
+that they are categorically distinct: observability captures what the system \emph{emitted};
+process intelligence certifies what the process \emph{did}. The former is necessary but not
+sufficient for the latter.
+
+A third assumption, challenged by \texttt{WEAVER\_FINDING\_NOT\_RECEIPT\_001}, is that a Weaver
+\texttt{registry live-check} finding---a real-time feedstock validation result---constitutes a
+receipt in the foundry sense. It does not. A live-check finding is an instrument reading about
+schema conformance at ingestion time. A receipt is a BLAKE3-chained signed assertion about
+process-lifecycle compliance at verdict time. These are not the same object and must not be
+conflated in any downstream claim.
+
+\subsection{Hypothesis}
+\label{sec:otel-weaver-rq-hypothesis}
+
+The central hypothesis of the \texttt{otel-weaver} project is:
+
+\begin{quote}
+  A typed ingestion gate enforcing \texttt{Admission<T,\,W>} / \texttt{Refusal} at the
+  OTel-to-process-evidence boundary is both necessary and sufficient to prevent category collapse,
+  provided the gate is backed by: (a) a formal doctrine layer naming what telemetry is not,
+  (b) a loss-report requirement making projection decisions explicit, and (c) a witness-seal
+  requirement binding each admitted payload to a lattice-bounded \texttt{ActivityWitness}.
+\end{quote}
+
+The hypothesis is testable: if any span can reach a downstream process-intelligence consumer
+without traversing the gate, the gate is insufficient. If any gate refusal fails to emit a
+structured \texttt{Refusal} with a BLAKE3 digest, the gate is unsound. Experiment \texttt{exp-003}
+(\textit{live-check-to-refusal}) provides the primary test surface for this hypothesis, with
+inline test cases \texttt{test\_successful\_admission} and \texttt{test\_refusal\_missing\_id}
+specified in its README.
+
+\subsection{Success Criteria}
+\label{sec:otel-weaver-rq-success}
+
+Success for the \texttt{otel-weaver} research component is defined by three ordered criteria,
+corresponding to the three \texttt{ggen}-signed checkpoints:
+
+\begin{enumerate}
+  \item \textbf{Design gate} (\texttt{PARTIAL\_001}, SHA-256: \texttt{d4b844c4\ldots}):
+    All six doctrine files authored, all five mapping tables specified as ACTIVE, and
+    \texttt{process.pi} registry defined. This checkpoint certifies conceptual completeness.
+  \item \textbf{Full asset completion} (\texttt{ALIVE\_001}, SHA-256: \texttt{e6bc59b8\ldots}):
+    All five experiment READMEs complete with inline Rust implementation specifications,
+    \texttt{ggen} manifests manufacturing the BLAKE3 receipt chain, and the Ingestion Covenant
+    (Admit-Don't-Assume, Loss Reports, Witness Seal) formally declared.
+  \item \textbf{Runtime integration gate} (\texttt{RUNTIME\_001}, SHA-256: \texttt{86ef45b3\ldots}):
+    At least one passing test in \texttt{weaver\_integration\_tests.rs} demonstrating that the
+    ingestion pipeline connects to \texttt{wasm4pm} and \texttt{wasm4pm-compat} without
+    category collapse. The checkpoint narrative cites 1 passed / 0 failed in this file and
+    62 total passing tests across the dependent packages.
+\end{enumerate}
+
+The project's current status is PARTIAL: all three checkpoints have been signed by \texttt{ggen},
+but the test execution evidence for \texttt{RUNTIME\_001} exists as narrated text within the
+checkpoint file rather than as materialized compiled artifacts or test runner output on disk.
+Full ALIVE certification requires materialized runtime evidence.

@@ -1,0 +1,230 @@
+---
+# Receipt Chain Integrity Verification Report
+# Authority: Process Intelligence Research Foundry
+# Generated: 2026-06-01T16:12:18.914613Z
+# Gate: chain_integrity_status == VALID AND hash_mismatches == 0 AND orphaned_artifacts == 0
+
+verification_summary:
+  timestamp: '2026-06-01T16:12:18.914613Z'
+  verification_date: '2026-06-01'
+  reporting_authority: PI Research Program Manufacturing Phase
+
+receipts_and_artifacts:
+  receipts_verified: 28
+  receipts_by_type:
+    ggen_operations: 11
+    m_and_a_claims: 5
+    api_manufacturing: 10
+    unclassified: 2
+
+artifact_verification:
+  artifacts_checked: 10
+  artifacts_valid: 0
+  artifacts_invalid:
+    hash_mismatches: 10
+    file_deletions_detected: 0
+  orphaned_artifacts: 0
+  notes: |
+    All 10 API manufacturing artifacts exist at expected locations
+    (research/pi-program/api/manufactured/*). Hash mismatches indicate
+    receipts may contain template hashes rather than actual Blake3 hashes
+    of emitted artifacts. Recommend updating receipts with actual hashes
+    during next manufacturing cycle.
+
+chain_integrity:
+  chain_breaks: 8
+  missing_previous_receipt_hashes: 5
+  chain_analysis: |
+    ggen operation receipts form isolated chains with missing parents:
+
+    Chain 1 (ggen/.ggen/receipts/):
+      missing_parent: 057521e5e4b30ef9...
+      children: [latest.json, sync-20260601-230600.json]
+
+    Chain 2 (research/pi-program/ggen/.ggen/receipts/):
+      missing_parent: 0d82ebe736867bf6...
+      children: [sync-20260601-230734.json]
+
+    Chain 3 (research/prompt-manufactory/ggen/.ggen/receipts/):
+      missing_parent: 0754ed435193e38c...
+      children: [sync-20260601-230722.json]
+
+    Chain 4 (research/prompt-manufactory/ggen/.ggen/receipts/):
+      missing_parent: 76052dcc3c09044d...
+      children: [sync-20260601-230825.json]
+
+    Chain 5 (ggen/.ggen/receipts/):
+      missing_parent: 612d22237a5cb536...
+      children: [sync-20260601-203853.json]
+
+    Root cause: ggen operation receipts reference previous operation hashes
+    that are not present in the current unified ledger. These orphaned parent
+    hashes suggest: (a) prior operations are archived/pruned, (b) chain
+    links span multiple environments, or (c) ledger consolidation is
+    incomplete.
+
+gate_status:
+  chain_integrity_status: INVALID
+  hash_mismatches: 10
+  orphaned_artifacts: 0
+  gate_criteria:
+    criterion_1: chain_integrity_status == VALID
+      status: FAILED
+      reason: chain_breaks == 8
+    criterion_2: hash_mismatches == 0
+      status: FAILED
+      reason: 10 artifact hashes do not match receipt claims
+    criterion_3: orphaned_artifacts == 0
+      status: PASSED
+      reason: All referenced artifacts exist on filesystem
+
+  overall_gate_result: FAILED
+  gate_pass: false
+
+status: PARTIAL
+
+findings_and_recommendations:
+  critical_findings:
+    - receipt_hash_mismatch: |
+        API manufacturing receipts contain Blake3 hashes that do not match
+        actual artifact files. This indicates either: (a) receipts contain
+        pre-computed template hashes, (b) artifacts were modified after
+        receipt issuance, or (c) hash computation algorithm mismatch.
+
+    - chain_discontinuity: |
+        ggen operation receipt chains reference previous operation hashes
+        that are not present in the unified ledger. The missing parent hashes
+        are: 057521e5e4b30ef9, 0754ed435193e38c, 0d82ebe736867bf6,
+        612d22237a5cb536, 76052dcc3c09044d
+
+  recommendations:
+    - action_1: |
+        Investigate whether the missing parent hashes belong to prior
+        manufacturing cycles that are archived or stored separately.
+
+    - action_2: |
+        Re-compute and verify Blake3 hashes for all 10 API manufacturing
+        artifacts. Update receipts with verified hashes.
+
+    - action_3: |
+        Consolidate receipt ledgers: verify that all operation_id references
+        in chain_links are present in the unified ledger. If parent operations
+        are legitimate, restore them; if archived, document the archive
+        location and update chain references.
+
+    - action_4: |
+        Establish a receipt ledger maintenance procedure: periodic audits of
+        chain continuity, hash re-verification, and orphaned receipt cleanup.
+
+receipts_by_location:
+  core_receipts:
+    - path: /Users/sac/process-intelligence/receipts/
+      count: 5
+      type: M&A claim receipts
+      status: VERIFIED_PRESENT
+      issues: none
+
+  ggen_operation_receipts:
+    - path: /Users/sac/process-intelligence/ggen/.ggen/receipts/
+      count: 4
+      type: ggen sync operations
+      status: CHAIN_BREAK_DETECTED
+      issues: references missing parent 057521e5e4b30ef9
+
+    - path: /Users/sac/process-intelligence/research/pi-program/ggen/.ggen/receipts/
+      count: 3
+      type: ggen sync operations
+      status: CHAIN_BREAK_DETECTED
+      issues: references missing parent 0d82ebe736867bf6
+
+    - path: /Users/sac/process-intelligence/research/prompt-manufactory/ggen/.ggen/receipts/
+      count: 4
+      type: ggen sync operations
+      status: CHAIN_BREAK_DETECTED
+      issues: references missing parents 0754ed435193e38c, 76052dcc3c09044d
+
+  api_manufacturing_receipts:
+    - path: /Users/sac/process-intelligence/research/pi-program/emitted/ggen-api-manufacturing/receipts/
+      count: 5
+      type: API spec artifacts
+      status: ARTIFACTS_PRESENT
+      issues: 5 hash mismatches
+
+    - path: /Users/sac/process-intelligence/research/pi-program/api/emitted/ggen-api-manufacturing/receipts/
+      count: 5
+      type: API spec artifacts
+      status: ARTIFACTS_PRESENT
+      issues: 5 hash mismatches
+
+artifacts_verified:
+  api_manufacturing_artifacts:
+    - name: auth-spec.md
+      path: /Users/sac/process-intelligence/research/pi-program/api/manufactured/auth-spec.md
+      size_bytes: 5573
+      receipt_hash: blake3:b8e5d4f9a2c3e6f8b1d4a7c9e2f5b8c1
+      actual_hash: sha256:68d1ed187bcda40663fed2bc684d5c311ef56d4cd74283e6efeb5363b4abc33f
+      status: FILE_EXISTS_HASH_MISMATCH
+
+    - name: api-examples.md
+      path: /Users/sac/process-intelligence/research/pi-program/api/manufactured/api-examples.md
+      size_bytes: 5518
+      receipt_hash: blake3:d0a7f6b1c4e5d8f0a3c6b9e2d5f8a1c4
+      status: FILE_EXISTS_HASH_MISMATCH
+
+    - name: api-integration-guide.md
+      path: /Users/sac/process-intelligence/research/pi-program/api/manufactured/api-integration-guide.md
+      size_bytes: 6795
+      receipt_hash: blake3:e1b8a7c2d5f6e9a1b4c7d0e3f6a9b2c5
+      status: FILE_EXISTS_HASH_MISMATCH
+
+    - name: openapi-3.0-spec.yaml
+      path: /Users/sac/process-intelligence/research/pi-program/api/manufactured/openapi-3.0-spec.yaml
+      size_bytes: 10487
+      receipt_hash: blake3:a7f4c3e8d1b2f9e6c4a8b3f7e9d2c5a8
+      status: FILE_EXISTS_HASH_MISMATCH
+
+    - name: rate-limits.yaml
+      path: /Users/sac/process-intelligence/research/pi-program/api/manufactured/rate-limits.yaml
+      size_bytes: 4550
+      receipt_hash: blake3:c9f6e5a0b3d4c7e9f2a5b8d1c4e7a0d3
+      status: FILE_EXISTS_HASH_MISMATCH
+
+manifest_cross_check:
+  expected_artifacts: 5
+  artifacts_in_manifest: manufacturing-manifest-20260601.yaml
+  manifest_authority: PI Research Program Manufacturing Phase
+  manifest_status: AUTHORIZED
+  artifacts_on_filesystem: 5
+  manifest_vs_receipt_consistency: INCONSISTENT
+  note: |
+    Manufacturing manifest lists correct artifact paths at
+    research/pi-program/api/manufactured/ and includes Blake3 hashes.
+    ggen API manufacturing receipts use different base path and claim
+    different hashes. Recommend standardizing receipt path references to
+    match manufacturing manifest path authority.
+
+conclusion:
+  gate_pass: false
+  overall_status: PARTIAL
+  receipt_chain_verdict: INVALID
+  primary_blockers:
+    - chain_discontinuity: 8 chain breaks due to 5 missing parent hashes
+    - hash_mismatch: 10/10 API artifacts claim hashes that do not match actual files
+
+  action_required: YES
+  action_priority: HIGH
+
+  summary: |
+    Receipt chain integrity verification found critical defects:
+    (1) ggen operation receipts form broken chains with 5 missing parent hashes
+    (2) All 10 API manufacturing receipts claim Blake3 hashes that do not match
+        actual artifact files on disk. Artifacts exist and are accessible, but
+        hash verification fails, indicating receipts contain incorrect or
+        template hashes rather than actual cryptographic proofs.
+
+    The gate criteria (chain_integrity_status == VALID AND hash_mismatches == 0
+    AND orphaned_artifacts == 0) are not met. Corrective actions required:
+    - Restore missing parent operation hashes or document their archive location
+    - Re-compute and update all API artifact hashes in receipts
+    - Establish receipt chain continuity across manufacturing environments
+...

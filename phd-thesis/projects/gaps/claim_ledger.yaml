@@ -1,0 +1,199 @@
+slug: gaps
+claims:
+  - id: CLM-GAPS-001
+    claim: "wasm4pm does not import wasm4pm-compat; two parallel type universes exist with no
+      bridge, causing every algorithm function to accept raw, unvalidated EventLog with no
+      admission gate, witness tag, or lifecycle state."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+    evidence_summary: "GAP_001_COMPAT_WASM_BRIDGE.md reproduces the wasm4pm/Cargo.toml dependency
+      block verbatim confirming no wasm4pm-compat entry, and lists three algorithm function
+      signatures accepting raw EventLog. GAP_REGISTER.md confirms this as a CRITICAL defect.
+      Note: GAP_REGISTER.md now shows Status Closed, meaning this defect was subsequently
+      resolved; the TeX narrative describes the pre-closure state accurately as of discovery."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-002
+    claim: "The wasm4pm error enum carries String-typed reasons for every variant
+      (ValidationError(String), ParseError(String), ExecutionError(String), etc.) with no named
+      law type and no witness marker, making refusals untraceable to specific structural laws."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+    evidence_summary: "GAP_001_COMPAT_WASM_BRIDGE.md reproduces the complete
+      wasm4pm-types/src/error.rs enum verbatim with ten String-typed variants; GAP_REGISTER.md
+      documents GAP_002 as requiring replacement with named Refusal<R, W> types. GAP_REGISTER.md
+      now shows both closed, indicating this describes the pre-closure state."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-003
+    claim: "The GraduateToWasm4pm trait declared in wasm4pm-compat/src/graduation.rs is orphaned:
+      wasm4pm implements nothing for it, severing the intended bridge for admitted evidence to
+      cross into the execution engine."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+    evidence_summary: "GAP_001_COMPAT_WASM_BRIDGE.md explicitly documents that GraduateToWasm4pm
+      is declared on the compat side with no implementation in wasm4pm, including a two-universe
+      ASCII diagram illustrating the severed bridge."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-004
+    claim: "The gap registry achieves PARTIAL status: five detailed gap documents with code
+      citations exist covering eight named defects, but no gap has a formal resolution addendum
+      with an accompanying receipt, and no checkpoint has been issued."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+      - /Users/sac/process-intelligence/gaps/GAP_PRIORITY_MATRIX.md
+    evidence_summary: "GAP_REGISTER.md confirms five authored documents and eight named gaps. The
+      TeX file 05_evidence_receipts_and_gates.tex states no receipt or checkpoint files reside in
+      gaps/. However, GAP_REGISTER.md now lists all eight gaps as Closed — the PARTIAL status
+      reflects the state at TeX authoring, not the current source state."
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-005
+    claim: "GAP_002 (OR-Join ambiguity) has a status discrepancy: it is listed as Resolved in
+      GAP_002_OR_JOIN_AMBIGUITY.md under the v30.1.1 Smart-Completion Policy, but the master
+      register requires a reconciling resolution addendum for the discrepancy to be formally
+      settled."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_002_OR_JOIN_AMBIGUITY.md
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+    evidence_summary: "GAP_002_OR_JOIN_AMBIGUITY.md carries Status RESOLVED under v30.1.1
+      Smart-Completion; GAP_REGISTER.md now shows GAP_002 Closed with resolution description. The
+      discrepancy the TeX files document was real at authoring time and has since been reconciled."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-006
+    claim: "The critical path to a law-conformant stack follows the sequence GAP_007 → GAP_001 →
+      GAP_002, with all P2 and P3 gaps (GAP_003 through GAP_006, GAP_008) parallelizable after
+      GAP_001 is closed."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_PRIORITY_MATRIX.md
+    evidence_summary: "GAP_PRIORITY_MATRIX.md contains an ASCII directed acyclic graph and
+      P1/P2/P3 closure sequences explicitly documenting this dependency ordering and critical
+      path."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-007
+    claim: "E0425-failing compile_fail fixtures in wasm4pm-compat are import errors, not type-law
+      receipts; true structural law receipts must fail on E0308, E0599, E0277, or E0080."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+    evidence_summary: "GAP_REGISTER.md documents GAP_008 as fixtures failing on E0425 (type not
+      found) being import errors rather than structural law receipts, and specifies the correct
+      error codes. GAP_REGISTER.md shows GAP_008 Closed with E0425 fixtures replaced."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-008
+    claim: "Type-law enforcement can only be meaningful when enforcement and execution share a
+      single type universe; a compat layer speaking a different type language from its execution
+      engine is architecturally equivalent to a doorman who never communicates with the building
+      he guards."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+    evidence_summary: "Explicitly marked AUTHOR THESIS in 01_research_question.tex; grounded in
+      the two-universe diagram in GAP_001_COMPAT_WASM_BRIDGE.md demonstrating the structural
+      consequence of disconnected type universes, but the architectural equivalence framing is the
+      author's analytical interpretation."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-009
+    claim: "Closing GAP_001 is a prerequisite for any valid application of the Chatman Equation
+      A = μ(O*) to process evidence manufactured by the wasm4pm stack, because every algorithm
+      function accepting raw EventLog produces ungrounded input into the O* computation."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+    evidence_summary: "Explicitly marked AUTHOR THESIS in 02_lineage_and_context.tex; the
+      structural grounding (raw EventLog inputs) is documented in GAP_001, but the connection to
+      the Chatman Equation is the author's analytical extension beyond what any gap document
+      claims."
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-010
+    claim: "The SWARM Verification Guard (five-agent system: Drift Sentry, Telemetry Auditor,
+      Ledger Custodian, Alignment Referee, Stream Director) is an implemented monitoring
+      architecture for gap closure verification."
+    claim_type: UNSUPPORTED_REMOVED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_CLOSURE_WORKFLOW.md
+    evidence_summary: "GAP_CLOSURE_WORKFLOW.md describes the five-agent swarm but provides no
+      implementation evidence. The TeX file 04_implementation_surface.tex explicitly flags this
+      as potentially aspirational architecture. No corroborating source files, test fixtures, or
+      receipts exist in gaps/. The claim of implementation is unverifiable."
+    confidence: HIGH
+    allowed_in_pdf: false
+
+  - id: CLM-GAPS-011
+    claim: "All eight named gaps are currently open with no resolution addendum and no receipt,
+      making the gap registry PARTIAL rather than ALIVE."
+    claim_type: UNSUPPORTED_REMOVED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+    evidence_summary: "The TeX files assert PARTIAL status with all gaps open, but GAP_REGISTER.md
+      currently lists all eight gaps as Closed with resolution descriptions and closure details.
+      The PARTIAL/all-gaps-open claim was accurate at TeX authoring time but is contradicted by
+      the current authoritative source file."
+    confidence: HIGH
+    allowed_in_pdf: false
+
+  - id: CLM-GAPS-012
+    claim: "The V30.1.1 Epoch governance defines three constitutional directives: mathematical
+      soundness (van der Aalst 1998), non-forgeability (Blue River Dam Doctrine requiring
+      cryptographic proof witnesses for every lifecycle transition), and exhaustive telemetry (no
+      event silently dropped without a signed LossReport)."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_CLOSURE_WORKFLOW.md
+    evidence_summary: "GAP_CLOSURE_WORKFLOW.md Section 1 (Governance Principles) lists all three
+      constitutional directives verbatim under the V30.1.1 Epoch heading."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-013
+    claim: "The gap registry operates under an immutability doctrine: gap records are never
+      deleted or overwritten but only extended by dated resolution addendums, and a gap with no
+      resolution addendum is formally open regardless of informal claims."
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+      - /Users/sac/process-intelligence/gaps/GAP_CLOSURE_WORKFLOW.md
+    evidence_summary: "Both GAP_REGISTER.md and GAP_CLOSURE_WORKFLOW.md apply this doctrine;
+      GAP_001_COMPAT_WASM_BRIDGE.md demonstrates the pattern with a Resolution section appended
+      to the original defect record rather than overwriting it."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GAPS-014
+    claim: "The wasm4pm stack cannot support settlement-grade process evidence for capital-flow
+      infrastructure until all eight named gaps are formally closed with receipts and resolution
+      addendums."
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/gaps/GAP_001_COMPAT_WASM_BRIDGE.md
+      - /Users/sac/process-intelligence/gaps/GAP_REGISTER.md
+    evidence_summary: "Explicitly marked AUTHOR THESIS in 06_contribution_to_thesis.tex; grounded
+      in GAP_001's impact assessment (type-law enforcement zero, admission gate missing, receipt
+      chain broken), but the extension to capital-flow settlement authorization is the author's
+      analytical thesis connecting gap evidence to downstream infrastructure requirements."
+    confidence: MEDIUM
+    allowed_in_pdf: true

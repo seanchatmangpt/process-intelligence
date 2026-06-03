@@ -1,0 +1,106 @@
+% FILE: 04_implementation_surface.tex
+% Project: adversarial
+% Thesis Role: adversarial-testing-and-hostile-assumption-verification
+
+\section{Implementation Surface}
+\label{sec:adversarial-implementation}
+
+\subsection{Source Files}
+\label{sec:adversarial-implementation-sources}
+
+The adversarial implementation surface consists of two executable Python scripts and twelve
+supporting research documents.
+
+\textbf{\texttt{adversarial/simulate\_laundering\_spoofing.py}} (531 lines) is the primary
+simulation engine. It implements the \texttt{IngestionBoundary}, \texttt{LaunderingRefusalError},
+and \texttt{Wasm4pmBridge} classes and the \texttt{run\_simulation\_tests} function containing
+ten scenarios with Python \texttt{assert} statements. The script requires Python 3 with
+\texttt{json}, \texttt{hashlib}, \texttt{hmac}, \texttt{uuid}, \texttt{ctypes}, and
+\texttt{pandas}. Scenarios 0 through 5 operate entirely in Python and do not require
+\texttt{libwasm4pm.dylib}. Scenarios 6 through 9 require the compiled library at
+\texttt{sources/wasm4pm/target/debug/libwasm4pm.dylib} or the equivalent \texttt{.so} path;
+the \texttt{locate\_library()} function probes four candidate paths and raises
+\texttt{FileNotFoundError} if none exists.
+
+\textbf{\texttt{adversarial/validate\_standards.py}} (139 lines) validates six standards
+placement files: XES (\texttt{xes\_process-intelligence\_placement.md}), OCEL 2.0
+(\texttt{ocel\_process-intelligence\_placement.md}), BPMN
+(\texttt{bpmn\_process-intelligence\_placement.md}), POWL
+(\texttt{powl\_placement.md}), Declare (\texttt{declare\_placement.md}), and OCPQ
+(\texttt{ocpq\_placement.md}). For each placement file the script applies four checks:
+placeholder term detection (regex against TODO, FIXME, unimplemented, stub, tbd),
+broken-link validation for \texttt{file:///} URIs against the filesystem, malformed JSON
+block detection, and presence of the Trans-Standard Conversions section with
+\texttt{LossReport} schema and \texttt{witness\_signature} field. The script exits 0 on
+pass and 1 on fail; both exit codes are meaningful for CI pipeline integration.
+
+Supporting research documents include \texttt{adversarial/RED\_TEAM\_SCOPE.md} (charter),
+\texttt{adversarial/RED\_TEAM\_FINDINGS\_001.md} and
+\texttt{adversarial/RED\_TEAM\_FINDINGS\_002.md} (ten structured findings),
+\texttt{adversarial/simulation\_models\_specification.md} (verified execution logs for six
+primary scenarios), \texttt{standards/ocel-adversarial-gravity.md} (PROV-O gap analysis),
+\texttt{sources/papers/adversarial-canon.md} (Sybil-attack canon),
+\texttt{sources/wasm4pm-compat/adversarial-type-law.md} (three structural laws for witness
+lattice integrity), \texttt{experiments/raw-laundering\_refusal\_sample.md} (concrete JSON
+refusal instance), \texttt{prompts/execution-plans/raw-laundering-block.md} (downstream
+execution plan), and \texttt{atlas/agi\_adversarial\_defenses.md} (AGI adversarial defense
+atlas).
+
+\subsection{Commands}
+\label{sec:adversarial-implementation-commands}
+
+The simulation engine is invoked directly:
+\begin{verbatim}
+python3 adversarial/simulate_laundering_spoofing.py
+\end{verbatim}
+A successful run prints scenario-by-scenario verdicts and terminates with the message
+\texttt{ALL ADVERSARIAL SIMULATION SCENARIOS SUCCESSFULLY VERIFIED}. Scenarios 6 through 9
+will raise \texttt{FileNotFoundError} if \texttt{libwasm4pm.dylib} is absent; this is a
+known open question (see Section~\ref{sec:adversarial-questions-gaps}).
+
+The standards audit script is invoked from the repository root:
+\begin{verbatim}
+python3 adversarial/validate_standards.py
+\end{verbatim}
+A passing audit prints \texttt{AUDIT PASSED} and exits 0. A failing audit prints the
+per-file error list and exits 1.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:adversarial-implementation-data}
+
+The adversarial corpus interacts with three data surfaces. The \textbf{log envelope format}
+is a Python dictionary with a \texttt{traces} list, where each trace contains a
+\texttt{trace\_id} and an \texttt{events} list. Each event contains a \texttt{payload}
+dictionary (with \texttt{event\_id}, \texttt{activity\_name}, \texttt{timestamp\_ns},
+\texttt{attributes}), a \texttt{signature} (HMAC-SHA256 hexdigest), and a
+\texttt{hash\_chain\_link} (SHA-256 hexdigest). Canonical serialization uses
+\texttt{json.dumps} with \texttt{sort\_keys=True} and \texttt{separators=(',', ':')}.
+
+The \textbf{wasm4pm linear memory layout} is managed via \texttt{wasm\_alloc} offsets.
+Heap reads and writes use \texttt{ctypes.memmove} through absolute pointers returned by
+\texttt{wasm\_get\_absolute\_ptr}. The \texttt{wasm\_shred\_heap} function applies a
+four-pass zeroization protocol; Scenario 9 verifies that sentinel bytes are unreadable after
+the call.
+
+The \textbf{OCEL adversarial ontology surface} is analyzed in
+\texttt{standards/ocel-adversarial-gravity.md}: the OCEL SQLite schema (\texttt{event},
+\texttt{object}, \texttt{event\_object} tables) and the OCEL JSON schema (\texttt{events},
+\texttt{objects}, \texttt{relationships} arrays) both lack PROV-O enforcement. The Reality
+Receipt mechanism addresses this by wrapping OCEL/XES events in a signed cryptographic
+envelope at the wasm4pm interception proxy.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:adversarial-implementation-templates}
+
+The primary rendered artifact is the \texttt{LogLaunderingRefusalLog} JSON schema, whose
+concrete instance is documented in \texttt{experiments/raw-laundering\_refusal\_sample.md}.
+This schema specifies the structure of refusal responses: \texttt{evaluation\_id},
+\texttt{analyzed\_log\_hash\_sha256}, \texttt{verdict}, \texttt{detection\_rules} (a boolean
+map of all five rules), and \texttt{refusal\_reason} (\texttt{rule\_failed},
+\texttt{trace\_id}, \texttt{detailed\_error}). The schema serves as the contract between the
+ingestion boundary and any downstream audit or gap-remediation workflow.
+
+The \texttt{RED\_TEAM\_FINDINGS} template requires each finding to specify: finding number,
+severity (CRITICAL/MAJOR/MINOR/EXPECTED), challenge category from the seven-category charter,
+specific document and claim challenged, and remediation path or the token
+\texttt{[UNRESOLVABLE PRE-ALIVE]}.

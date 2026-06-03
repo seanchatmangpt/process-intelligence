@@ -1,0 +1,144 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Open Questions and Next Work}
+\label{sec:otel-weaver-exp-002-diff-to-residual-open}
+
+\subsection{Known Gaps}
+\label{sec:otel-weaver-exp-002-diff-to-residual-open-gaps}
+
+Four open questions were identified during evidence extraction, as documented in the
+evidence record for this experiment:
+
+\paragraph{Gap 1: Isolated test transcript}
+The inline unit test \texttt{test\_bridge\_translation\_equivalence} is declared in
+\texttt{src/bridge.rs} and asserts correct translation behavior, but no
+\texttt{cargo test} output transcript for this test in isolation is present in the
+exp-002 directory or in any exp-002-scoped receipt file. The parent-scope checkpoint
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} contains a transcript for the
+\texttt{wasm4pm} integration suite test \texttt{test\_weaver\_integration\_synthesis},
+but this is not the same as the exp-002 unit test. It is unknown whether the unit
+test was run in isolation or only as part of the broader suite, and whether it passed
+in isolation is not documented.
+
+\paragraph{Gap 2: Bridge rlib materialization}
+The \texttt{target/debug/deps} directory shows compiled serde-family dependency
+rlibs (\texttt{serde}, \texttt{serde\_yaml}, \texttt{serde\_json}, \texttt{indexmap},
+\texttt{hashbrown}), confirming \texttt{cargo build} reached dependency compilation.
+However, the \texttt{bridge} rlib for the \texttt{exp-002-weaver-diff-to-pi-residual}
+crate itself does not appear in the documented artifact list. This suggests the
+library may not have been compiled to a linkable artifact in isolation, or the
+evidence of its compilation was not captured.
+
+\paragraph{Gap 3: token\_color loss semantics}
+The \texttt{BridgeRx::translate()} method drops \texttt{token\_color} silently:
+the \texttt{TelemetryFeedstockS2.token\_color} field (typed
+\texttt{Option<String>}) is not mapped to any field in the returned
+\texttt{TelemetryFeedstockS1}. The doctrine file
+\texttt{otel-weaver-is-feedstock.md} mandates that every projection of telemetry
+generate a \texttt{LossReport}: ``If we project a trace containing 500
+microsecond-level spans into 5 key activity events, the lost spans must be accounted
+for and sealed with a LossReport receipt.'' No \texttt{LossReport} for the
+\texttt{token\_color} drop exists. It is unknown whether this loss is intentional
+and considered acceptable, or whether it is an oversight requiring a remediation
+path.
+
+\paragraph{Gap 4: TTL/RDF ontology surface}
+No TTL or RDF ontology file exists for the S1/S2 schema types, the \texttt{BridgeRx}
+translation semantics, or the categorical law $\Delta_W \neq \delta_P$ as expressed
+in the OWL/RDF vocabulary used by the broader research program. The OCEL and
+process-intelligence ontology layer that the research program requires for formal
+knowledge graph integration is absent for this experiment. This means EXP-002's
+types cannot be queried or reasoned about in the ontology layer.
+
+\subsection{Deferred Gates}
+\label{sec:otel-weaver-exp-002-diff-to-residual-open-deferred}
+
+The following proof gates were present in the success criteria
+(Section~\ref{sec:otel-weaver-exp-002-diff-to-residual-rq-success}) but are deferred
+pending the resolution of the gaps above:
+
+\begin{enumerate}
+    \item \textbf{Isolated test execution receipt}: A gate requiring a
+          \texttt{cargo test test\_bridge\_translation\_equivalence} transcript
+          inside an exp-002-scoped receipt file. Blocked by Gap 1.
+    \item \textbf{Bridge rlib compilation proof}: A gate requiring the
+          \texttt{bridge.rlib} artifact to appear in the materialized dependency
+          graph with a documented SHA-256 checksum. Blocked by Gap 2.
+    \item \textbf{LossReport for token\_color}: A gate requiring either a
+          \texttt{LossReport} struct declaration covering the \texttt{token\_color}
+          field drop, or a documented design decision that Colored Petri Net token
+          color is out of scope for the S1 conformance surface. Blocked by Gap 3.
+    \item \textbf{Ontology TTL surface}: A gate requiring a TTL file registering
+          the \texttt{BridgeRx} translation as an OWL individual with properties
+          linking the S1 and S2 schema types. Blocked by Gap 4.
+\end{enumerate}
+
+The ALIVE declaration for EXP-002 specifically (as distinct from the suite-level
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001} checkpoint) requires all four deferred
+gates to be passed and a new exp-002-scoped checkpoint issued.
+
+\subsection{Research Risks}
+\label{sec:otel-weaver-exp-002-diff-to-residual-open-risks}
+
+\paragraph{Rename-only coverage}
+The current \texttt{BridgeRx} implementation handles only the \texttt{Rename} op
+(specifically \texttt{transition.name} to \texttt{activity.name}) via a hardcoded
+entry in the \texttt{rename\_map}. The \texttt{Add} op for
+\texttt{process.pi.token.color} is recognized at the S2 struct level but silently
+dropped. The \texttt{Remove} and \texttt{TypeChange} ops are not implemented. If
+future schema versions introduce removes or type changes, the bridge will not handle
+them correctly and may pass malformed records to the conformance court.
+
+\paragraph{Hardcoded rename map}
+The \texttt{rename\_map} is populated in \texttt{BridgeRx::new()} with a
+hardcoded string pair. It is not driven by the Weaver diff output at runtime.
+This means the bridge does not generalize to arbitrary schema diffs; it must be
+manually updated for each new diff. A production implementation would need to
+parse the Weaver diff JSON (as shown in the \texttt{README.md} example) and
+populate the rename map dynamically.
+
+\paragraph{Experiment series dependency}
+EXP-002 assumes that the upstream exp-001 custom PI Weaver registry defines the
+canonical field names for both S1 and S2 (\texttt{process.pi.activity.name},
+\texttt{process.pi.transition.name}). If exp-001's registry is modified, the S1/S2
+struct definitions in \texttt{bridge.rs} may become stale. The dependency on
+exp-001 is not formally declared in \texttt{Cargo.toml}; it is only documented
+in the \texttt{README.md} narrative.
+
+\subsection{Next Receipted Work}
+\label{sec:otel-weaver-exp-002-diff-to-residual-open-next}
+
+The following work items, when completed, would advance EXP-002 from PARTIAL to ALIVE:
+
+\begin{enumerate}
+    \item \textbf{Run and capture isolated test}: Execute
+          \texttt{cargo test test\_bridge\_translation\_equivalence} from the
+          exp-002 directory, capture the output transcript, and commit it as a
+          receipt file at
+          \texttt{exp-002-weaver-diff-to-pi-residual/receipts/test\_run\_\{date\}.txt}.
+
+    \item \textbf{Document or implement LossReport}: Either add a \texttt{LossReport}
+          struct to \texttt{bridge.rs} that is emitted when \texttt{token\_color} is
+          dropped during \texttt{translate()}, or commit a design decision document
+          explicitly stating that Colored Petri Net token color is out of scope for
+          S1 conformance and its loss is intentional and acceptable.
+
+    \item \textbf{Manufacture TTL ontology surface}: Author a TTL file declaring the
+          \texttt{BridgeRx} translation as an OWL individual, registering
+          \texttt{TelemetryFeedstockS1} and \texttt{TelemetryFeedstockS2} as OWL
+          classes with the categorical law $\Delta_W \neq \delta_P$ expressed as an
+          OWL disjointness axiom. Place the file at
+          \texttt{exp-002-weaver-diff-to-pi-residual/ontology/bridge.ttl}.
+
+    \item \textbf{Issue exp-002 scoped checkpoint}: After items 1--3 are complete,
+          issue a checkpoint file \texttt{EXP\_002\_BRIDGE\_ALIVE\_001.md} at
+          \texttt{otel-weaver/checkpoints/} declaring ALIVE status with SHA-256
+          receipt for the test transcript, the LossReport commit, and the TTL file.
+\end{enumerate}
+
+The dependency chain to exp-003 (live-check to refusal) means that exp-003's ALIVE
+declaration also depends on exp-002's ALIVE gate being passed, since the live-check
+validator is designed to receive records that have already been normalized by
+\texttt{BridgeRx}.

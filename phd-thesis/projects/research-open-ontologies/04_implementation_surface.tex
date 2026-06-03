@@ -1,0 +1,152 @@
+% FILE: 04_implementation_surface.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Implementation Surface}
+\label{sec:research-open-ontologies-implementation}
+
+\subsection{Source Files}
+\label{sec:research-open-ontologies-source-files}
+
+The implementation surface spans two categories: ontology definition files (TTL) and the
+manufacturing pipeline configuration (TOML, SPARQL, Tera).
+
+\paragraph{Core Ontology Files (TTL).}
+All 14 TTL files in \path{research/pi-program/ggen/ontology/} were validated in the Phase~7
+roundtrip report as loading cleanly via rdflib~2.0.9 with no parse errors:
+
+\begin{itemize}
+  \item \texttt{checkpoint-ledger.ttl} --- 221 triples, 46 subjects. Records sealed
+        checkpoints with their verdicts and timestamps.
+  \item \texttt{conformance-ledger.ttl} --- 156 triples. Tracks conformance verdict
+        instances with fitness and precision scores.
+  \item \texttt{forbidden-collapse-law.ttl} --- 202 triples. Encodes the
+        \texttt{pi:FORBIDDEN\_COLLAPSE} DTO boundary law.
+  \item \texttt{graduation-boundary.ttl} --- 155 triples. Defines the boundary crossing
+        conditions for artifact graduation from PARTIAL to ALIVE.
+  \item \texttt{pi-ggen-audit-law.ttl} --- 327 triples, 71 subjects. Audit rule
+        definitions for the ggen manufacturing conformance gates.
+  \item \texttt{pi-ggen-checkpoint-ledger.ttl} --- 466 triples, 97 subjects, 91
+        predicates. The largest single file; records the full checkpoint history of the
+        ggen manufacturing ecosystem.
+  \item \texttt{pi-ggen-generation-ledger.ttl} --- 316 triples. Records each
+        manufactured artifact with its SPARQL rule provenance.
+  \item \texttt{pi-ggen-invalid-extension-ledger.ttl} --- 260 triples. Records
+        extension violations detected during ggen audit cycles.
+  \item \texttt{pi-ggen-project-registry.ttl} --- 349 triples, 40 predicates.
+        Registers all projects with their roles under \texttt{pi:ProgramRole}.
+  \item \texttt{pi-ggen-source-ledger.ttl} --- 513 triples, 66 subjects. The
+        largest source ledger; records all research artifacts with their provenance.
+  \item \texttt{pi-ggen-unified-run.ttl} --- 168 triples. Records the Phase~11
+        unified ggen run with gate outcomes.
+  \item \texttt{pi-program.ttl} --- 176 triples. Top-level program ontology
+        importing PROV-O, SKOS, DCTERMS, DCAT, SHACL, OWL.
+  \item \texttt{project-registry.ttl} --- 195 triples. Cross-project dependency
+        registry at the program level.
+  \item \texttt{research-artifact-ledger.ttl} --- 238 triples. Comprehensive ledger
+        of 342 research artifacts classified by type and phase.
+\end{itemize}
+
+\paragraph{Root-Level Extension Files.}
+\begin{itemize}
+  \item \path{ggen/wasm4pm-compat.ttl} --- Witness lattice and compat type law.
+        Defines 8 \texttt{compat:WitnessMarker} instances, 6 \texttt{compat:TypeLawAtom}
+        individuals, 9 \texttt{compat:BoundaryCrossing} individuals, and the
+        \texttt{compat:ProcessForm} class with \texttt{WorkflowNetForm} and subclasses.
+  \item \path{ggen/ontology-extensions.ttl} --- Additional ontology extensions for
+        the ggen manufacturing ecosystem.
+  \item \path{research/pi-program/ggen/ontology/autonomic-law.ttl} --- MAPE-K loop
+        and autonomic policy ontology.
+  \item \path{research/pi-program/ggen/ontology/governance-policy.ttl} --- LTL safety
+        invariants and governance rules.
+  \item \path{research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl} ---
+        Prompt manufacturing surface ontology.
+\end{itemize}
+
+\subsection{Commands}
+\label{sec:research-open-ontologies-commands}
+
+The primary audit command is:
+\begin{verbatim}
+python3 run-ontology-audit.py
+\end{verbatim}
+This invokes the \texttt{OntologyAuditor} class, which performs TTL load validation,
+namespace conflict detection, and SPARQL smoke queries against the unified rdflib graph.
+The Phase~7 report (\path{open-ontologies-roundtrip-report.md}) was produced by this
+command.
+
+The ggen manufacturing pipeline is invoked via:
+\begin{verbatim}
+ggen generate --config ggen/ggen.toml
+\end{verbatim}
+This executes the three SPARQL-to-Tera generation rules declared in the manifest,
+writing receipted artifacts to \path{sources/wasm4pm-compat/manufactured/} and recording
+the run in \path{ggen/.ggen/receipts/}.
+
+Validation experiments are available at:
+\begin{verbatim}
+python3 adversarial/validate_standards.py
+python3 adversarial/simulate_laundering_spoofing.py
+python3 experiments/validate_ocpq_refinement.py
+python3 experiments/validate_log_fitness.py
+\end{verbatim}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:research-open-ontologies-data-surfaces}
+
+The federated dependency graph (\path{federated/CROSS\_PROJECT\_DEPENDENCY\_GRAPH\_20260601.yaml})
+is the governance artifact. It records, as of Phase~4 (2026-06-01):
+\begin{itemize}
+  \item \texttt{ttl\_files\_loaded: 24}
+  \item \texttt{total\_triples: 4622}
+  \item \texttt{unique\_entities: 871}
+  \item \texttt{circular\_dependencies: 0}
+  \item \texttt{dangling\_references: 0}
+  \item \texttt{dependency\_graph\_status: ACYCLIC}
+  \item \texttt{status: CONSISTENT}
+  \item \texttt{gate\_pass: true}
+\end{itemize}
+
+Specific cross-program query results from Phase~4:
+\begin{itemize}
+  \item \texttt{q2\_ma\_claims\_referencing\_wasm4pm\_compat: 13} --- confirms M\&A
+        claims are grounded in the compat layer.
+  \item \texttt{q3\_governance\_rules\_blue\_river: 2} --- confirms governance rules
+        reference the Blue River autonomic orchestrator.
+  \item \texttt{checkpoints\_found: 1} --- one checkpoint individual found in the
+        Phase~4 corpus.
+\end{itemize}
+
+The SPARQL namespace declarations used by ggen (from \path{ggen/ggen.toml}) are:
+\texttt{ma}, \texttt{lifecycle}, \texttt{wasm4pm}, \texttt{compat} --- all under the
+\texttt{https://process.intelligence/} base URI.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:research-open-ontologies-templates}
+
+Three Tera templates are declared in \path{ggen/ggen.toml}:
+
+\begin{description}
+  \item[\texttt{templates/witness-marker.tera}]
+        Consumes \path{queries/select-witness-projections.rq}. Manufactures
+        \path{sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs}
+        --- a Rust enum encoding the witness lattice for use in wasm4pm-compat's
+        type system. Audience: wasm4pm-compat type system. Compliance: lattice
+        monotonicity (join-semilattice properties).
+
+  \item[\texttt{templates/process-form.tera}]
+        Consumes \path{queries/select-process-forms.rq}. Manufactures
+        \path{sources/wasm4pm-compat/manufactured/forms/process-forms-20260601.md}
+        --- Markdown documentation of type-law definitions for process forms.
+        Audience: Process Intelligence Research Foundry. Compliance: process form
+        admissibility boundaries.
+
+  \item[\texttt{templates/wasm-boundary.tera}]
+        Consumes \path{queries/select-boundary-crossings.rq}. Manufactures
+        \path{sources/wasm4pm-compat/manufactured/boundaries/boundary-law-20260601.wit}
+        --- a WebAssembly Interface Types (WIT) boundary definition file.
+        Audience: wasm4pm execution engine. Compliance: WASM component model type safety.
+\end{description}
+
+All three artifacts are written in \texttt{Overwrite} mode and checksummed with BLAKE3,
+with the receipt written to \path{ggen/.ggen/receipts/}.

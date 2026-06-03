@@ -1,0 +1,68 @@
+\chapter{AI XYNZ and Capital-Flow Infrastructure}
+\label{chap:ai_xynz}
+
+\section{The Capital-Language Problem}
+
+Capital flows. It flows from investors to companies, from companies to suppliers, from regulators to markets, from settlement systems to custodians. Every step in this flow is a process event. Every process event has an agent, a timestamp, an amount, a jurisdiction, and a set of regulatory constraints that determine whether the flow is lawful.
+
+The capital-language problem is the observation that the language of capital --- the terms, relationships, and constraints that govern capital flows --- is not natively representable in the data infrastructure of most financial systems. Financial systems record transactions. They record account balances. They record contract terms in natural language documents that require legal interpretation to apply. They do not, in their standard forms, record capital-flow events as process-mining-compatible event logs. They do not enforce that the declared process for a capital flow matches the actual process. They do not produce receipts that can be replayed against a conforming capital-flow process model.
+
+AI XYNZ is the research program's capital-flow infrastructure: the architecture for making capital flows receipted, replayable, and conformance-verifiable against declared process models and regulatory frameworks.
+
+\section{The Degree as Credential Bit}
+
+The credential system that governs access to capital markets is built on formal qualifications: degrees, licenses, certifications, registrations. A Series 7 license authorizes certain securities transactions. A CFA designation attests to certain analytical competencies. A law degree from an accredited institution is required for certain legal representations. These credentials are, in information-theoretic terms, credential bits: they carry one bit of information (has/does not have) about a specific qualification.
+
+The problem with credential bits is that they do not carry provenance. A credential is issued at a point in time by an institution. Its validity at a later time is not a property of the credential itself --- it is a property of the ongoing relationship between the credential holder and the issuing institution. License suspensions, revocations, and expirations are not embedded in the credential bit. They are maintained in separate registries that must be consulted to verify current validity.
+
+The receipt infrastructure provides a better model. A receipted credential is not a static bit. It is a process event: the issuance of the credential, including the evidence that grounded the issuance, the authority that authorized it, and the process that produced it. A receipted credential can be verified by replaying the issuance process against the declared issuance model. Its current validity can be verified by replaying the credential's lifecycle events against the declared lifecycle model for that credential type.
+
+This receipted-credential model is the foundation of AI XYNZ's capital-market authority stack. Access to capital markets is governed by credentials. Receipted credentials are verifiable, replayable, and auditable in ways that static credential bits are not. The move from credential bits to receipted credentials is the same move as the broader transition from prediction to receipted coordination, applied to the credentialing domain.
+
+\section{The Securities and Capital-Market Authority Stack}
+
+The capital-market authority stack is a layered architecture, each layer grounded in law, regulation, and public standards:
+
+\begin{description}
+  \item[Layer 1: Jurisdiction] The regulatory framework that governs the capital flow. Securities laws (SEC, FINRA in the US; FCA in the UK; ESMA in the EU), AML/KYC requirements, and investor accreditation rules define the outer boundary of permissible operations.
+  \item[Layer 2: Instrument Type] The classification of the capital instrument (equity, debt, derivative, commodity, currency). Instrument type determines which subset of the jurisdictional framework applies, which disclosure requirements are active, and which settlement mechanisms are available.
+  \item[Layer 3: Process Model] The declared process for the specific capital-flow operation: issuance, transfer, settlement, redemption, default resolution. The process model is declared in advance and is the standard against which the actual process is conformance-checked.
+  \item[Layer 4: Event Log] The OCEL-compatible event log that records the actual capital-flow events. This is $O^{*}$ for the capital-flow domain.
+  \item[Layer 5: Receipt Chain] The cryptographic receipt chain that certifies each capital-flow event as admissible: grounded in the event log, conforming to the process model, authorized by the credentialed agent, and compliant with the jurisdictional framework.
+\end{description}
+
+This stack is the formal architecture of AI XYNZ. Each layer is a dependency of the layer above it. A receipt chain that does not reference a process model is unverifiable. A process model that is not grounded in jurisdictional framework is potentially unlawful. A capital flow that produces no event log cannot be conformance-checked. The stack enforces these dependencies structurally.
+
+\section{Settlement, DAO, and Smart Contracts}
+
+Settlement is the final step in a capital-flow process: the transfer of ownership or obligation from one party to another, with finality. Settlement finality --- the point at which a transfer is irreversible --- is a legal construct that varies by jurisdiction and instrument type. It is also a process event: it has a timestamp, an agent, and a set of attributes that record the terms of the settlement.
+
+Distributed Autonomous Organizations (DAOs) and smart contracts provide a mechanism for encoding settlement rules in executable code. A smart contract specifies, in formal logic, the conditions under which a capital transfer occurs and the effects of that transfer on the state of the contract. The execution of the contract produces a transaction on the underlying blockchain, which is a process event with cryptographic finality.
+
+The AI XYNZ architecture treats smart contract execution as a source of process events: each contract execution is an event that can be included in the OCEL-compatible event log, receipted, and conformance-checked against the declared settlement process model. The DAO layer provides the governance mechanism: the rules that determine which agents can invoke which contract functions are encoded in the DAO's governance logic, which is itself a process model.
+
+This is not a theoretical architecture. The \texttt{ma/} project (\textsc{partial}) documents the M\&A claim taxonomy and board-projection surface, which includes capital-flow claims that require the settlement architecture. The \texttt{schemas/} project (\textsc{partial}) defines the data schemas for receipt and capital-flow surfaces. The connection between the M\&A taxonomy and the settlement architecture is through the receipt chain: M\&A claims that require capital-flow evidence are grounded in receipted capital-flow events, not in pro-forma projections.
+
+\section{Post-Quantum Receipt Infrastructure}
+
+Cryptographic receipt chains rely on the security of the cryptographic primitives used to construct them. Current standard primitives --- RSA, ECDSA, and related algorithms --- are vulnerable to attacks by sufficiently capable quantum computers. The timeline for quantum computers capable of breaking these primitives is not precisely known, but the risk is real enough that standards bodies (NIST, notably) have invested in post-quantum cryptography (PQC) standardization.
+
+The AI XYNZ architecture includes a post-quantum receipt infrastructure. This is not a future-state requirement. Capital-market receipts that are issued today may need to be verified in ten or twenty years, by which time quantum-capable attack infrastructure may be available. A receipt chain that cannot survive that verification window is a receipt chain with a known future failure mode.
+
+The PQC receipt infrastructure uses cryptographic primitives from the NIST PQC standard: lattice-based digital signatures and hash-based commitment schemes that are resistant to known quantum attacks. The receipt chain's commitment structure --- each receipt commits to the prior receipt, the evidence it references, and the action it certifies --- is preserved under the PQC primitives. The external interface of the receipt chain is identical. The internal cryptographic construction is quantum-resistant.
+
+\section{Capital-Flow Operating Infrastructure}
+
+The complete AI XYNZ capital-flow operating infrastructure is the integration of all the components described in this chapter:
+
+\begin{itemize}
+  \item Receipted credentials grounding agent authority.
+  \item A layered capital-market authority stack from jurisdiction through receipt chain.
+  \item OCEL-compatible capital-flow event logs as $O^{*}$.
+  \item Smart contract and DAO governance as process-model enforcement.
+  \item Post-quantum receipt infrastructure for long-duration verifiability.
+\end{itemize}
+
+This infrastructure does not predict capital flows. It receipts them. It does not assert that a settlement occurred. It provides the evidence that replay can verify. It does not claim that a credential is valid. It provides a receipt chain that makes validity verifiable.
+
+The infrastructure is, in this sense, the Chatman Equation applied to the capital-market domain. $A = \mu(O^{*})$ for capital flows means: a capital-flow action is only valid when it is projected from verified capital-flow event evidence, and the receipt $R \vdash A = \mu(O^{*})$ certifies the evaluation. This is customer infrastructure for capital markets: it serves the investors, regulators, and counterparties who need to verify that capital flows occurred as declared, not the vendor who needs to claim that they did.

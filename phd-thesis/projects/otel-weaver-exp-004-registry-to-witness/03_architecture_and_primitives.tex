@@ -1,0 +1,129 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Architecture and Primitives Chapter
+
+\section{Architecture and Primitives}
+\label{sec:otel-weaver-exp-004-registry-to-witness-architecture}
+
+\subsection{Core Objects}
+\label{sec:otel-weaver-exp-004-registry-to-witness-objects}
+
+The experiment defines four categories of core objects, documented in the project
+\texttt{README.md} and materialized in \texttt{src/generated\_witnesses.rs}.
+
+\textbf{Registry parsing structs.} Three \texttt{serde}-derived Rust structs decode the
+resolved schema JSON: \texttt{ResolvedSchema} (top-level wrapper containing a
+\texttt{Vec<SchemaGroup>}), \texttt{SchemaGroup} (carries \texttt{id}, \texttt{group\_type},
+\texttt{brief}, and \texttt{Vec<SchemaAttribute>}), and \texttt{SchemaAttribute} (carries
+\texttt{id}, \texttt{attr\_type}, \texttt{brief}, and \texttt{requirement\_level}). These
+structs are the generator-side representation of the Weaver convention registry; they do
+not appear in the materialized output.
+
+\textbf{The Lattice trait.} Materialized as:
+\begin{verbatim}
+pub trait Lattice: Eq + PartialOrd + Serialize {
+    fn bottom() -> Self;
+    fn top() -> Self;
+    fn join(&self, other: &Self) -> Self;
+}
+\end{verbatim}
+This trait defines the algebraic contract that all process-evidence witnesses must satisfy.
+The bounds \texttt{Eq + PartialOrd + Serialize} ensure that witnesses can be compared,
+ordered, and serialized for court audit. The three methods define the lattice structure:
+a minimal element (no evidence), a maximal element (sealed contradiction indicator), and
+a join operation that merges compatible witnesses or escalates to the top on conflict.
+
+\textbf{ActivityWitness.} The central materialized struct, forged from the
+\texttt{process.pi.activity} group definition:
+\begin{verbatim}
+pub struct ActivityWitness {
+    pub instance_id: String,   // process.pi.instance_id
+    pub witness_id: String,    // process.pi.witness.id
+    pub witness_hash: String,  // process.pi.witness.hash (BLAKE3 64-char hex)
+}
+\end{verbatim}
+Field names are derived from the OTel attribute ids by stripping the \texttt{process.pi.}
+prefix and replacing dots with underscores. The \texttt{serde rename} annotations preserve
+the original dotted attribute names for JSON round-tripping.
+
+\textbf{Admission and Refusal.} These boundary types from the \texttt{wasm4pm-compat}
+court (\texttt{weaver\_integration\_tests.rs}) consume the materialized witnesses.
+\texttt{Admission<T,\,W>} wraps a validated payload with a witness, and \texttt{Refusal}
+carries a \texttt{RefusalCode}, a \texttt{violated\_rule} string, the raw feedstock, and a
+BLAKE3 digest of the failure context.
+
+\subsection{Admissible Transitions}
+\label{sec:otel-weaver-exp-004-registry-to-witness-transitions}
+
+The \texttt{Lattice} implementation for \texttt{ActivityWitness} defines the admissible
+partial order over witness states. The \texttt{partial\_cmp} method encodes three
+transition rules, as materialized in \texttt{generated\_witnesses.rs}:
+
+\begin{enumerate}
+  \item \textbf{Equal witnesses.} Two \texttt{ActivityWitness} values with identical field
+    contents compare as \texttt{Equal}. This represents two observers independently sealing
+    the same execution event.
+  \item \textbf{Bottom to non-bottom.} A witness with an empty \texttt{witness\_hash}
+    compares as \texttt{Less} than any witness with a non-empty hash. This models the
+    transition from no evidence to some evidence --- the foundational admissibility
+    requirement for entering the conformance court.
+  \item \textbf{Incomparable paths.} Two distinct witnesses both carrying non-empty,
+    differing \texttt{witness\_hash} values return \texttt{None} from \texttt{partial\_cmp}.
+    They represent divergent execution paths that cannot be linearly ordered. The
+    \texttt{join} of two such witnesses returns \texttt{Lattice::top()}, signalling
+    a contradiction in the evidence surface.
+\end{enumerate}
+
+The \texttt{BridgeRx} struct in \texttt{weaver\_integration\_tests.rs} handles the
+schema-version transition between OTel attribute naming conventions. It maps
+\texttt{process.pi.transition.name} (Schema Version~2) to \texttt{process.pi.activity.name}
+(Schema Version~1) via a rename map. This bridge is the runtime complement to the
+compile-time structural mapping performed by the generator.
+
+\subsection{Boundaries}
+\label{sec:otel-weaver-exp-004-registry-to-witness-boundaries}
+
+Three categorical boundaries are enforced by the architecture, documented in
+\texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}:
+
+\textbf{Telemetry is feedstock, not court.} No telemetry collector or Weaver registry
+component is permitted to calculate conformance verdicts or emit process compliance claims.
+The collector records spans; the court replays them against a normative model. This
+boundary is the central axiom of the feedstock doctrine.
+
+\textbf{Schema divergence is not process drift.} A change to a convention attribute
+namespace ($\Delta_W$) is a design-time modification. A deviation in activity execution
+ordering ($\delta_P$) is a runtime behavioral violation. These must not be conflated.
+The \texttt{BridgeRx} handles $\Delta_W$ at the ingestion boundary; the conformance court
+handles $\delta_P$ downstream.
+
+\textbf{No feedstock enters the core without admission.} Per the Ingestion Covenant in
+\texttt{otel-weaver-is-feedstock.md}, raw telemetry spans must pass through the
+\texttt{validate\_and\_project} function (implemented in \texttt{weaver\_integration\_tests.rs})
+before entering the conformance court. Validation failure routes to a structured
+\texttt{Refusal} record, not a runtime panic or silent discard.
+
+\subsection{Failure Modes Refused}
+\label{sec:otel-weaver-exp-004-registry-to-witness-refusals}
+
+The test suite \texttt{test\_weaver\_integration\_synthesis} verifies five distinct
+refusal cases, confirming that the boundary enforces its contracts:
+
+\begin{itemize}
+  \item \textbf{MissingInstanceId} --- feedstock lacking \texttt{process.pi.instance\_id}
+    is routed to refusal with rule string
+    \texttt{process.pi.instance\_id must be provided and non-empty}.
+  \item \textbf{MissingActivityName} --- feedstock lacking
+    \texttt{process.pi.transition.name} is refused before schema translation is attempted.
+  \item \textbf{MissingWitnessId} --- feedstock lacking \texttt{process.pi.witness.id} is
+    refused, ensuring no anonymous witness enters the court.
+  \item \textbf{InvalidWitnessSignature} --- a \texttt{witness\_hash} shorter than 64
+    characters is refused with code \texttt{InvalidWitnessSignature}. The 64-character
+    requirement corresponds to the BLAKE3 hex output length.
+  \item \textbf{Schema translation failure} --- if the \texttt{BridgeRx} cannot map
+    Schema~V2 attributes to Schema~V1 format, the feedstock is refused with code
+    \texttt{MissingActivityName}.
+\end{itemize}
+
+Each \texttt{Refusal} record carries its own BLAKE3 digest of the failure context, sealing
+the refusal against post-hoc tampering. The test suite verifies that
+\texttt{refusal.blake3\_digest.len() == 64} in all failure cases.

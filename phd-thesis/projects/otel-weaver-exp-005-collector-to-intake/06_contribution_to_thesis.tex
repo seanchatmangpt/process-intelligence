@@ -1,0 +1,81 @@
+\section{Contribution to the Dissertation}
+\label{sec:otel-weaver-exp-005-collector-to-intake-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:otel-weaver-exp-005-collector-to-intake-contribution-prediction}
+
+The central thesis claim is that process intelligence requires coordination evidence, not
+prediction output. EXP-005 contributes the first operational demonstration that the boundary
+between prediction-layer telemetry and coordination-layer process evidence can be enforced
+at the infrastructure level without application-side changes. The \texttt{filter/pi} OTTL
+processor is the operational instantiation of this boundary: it enforces the presence of
+\texttt{process.pi.instance\_id}, which is the attribute that binds a span to a coordination
+event (an instance of a named process) rather than treating it as a prediction-layer
+observation (a metric from an arbitrary service). The distinction is not theoretical; it is
+enforced by a silently-dropping filter that is architecturally prior to any process mining
+stage.
+
+This contribution is PARTIAL in its evidentiary weight: the architecture is correct and the
+specification is complete, but the claim that the filter \textit{actually drops} Span~B
+when connected to a live OTLP stream has not been confirmed by observed output. The
+contribution is therefore admitted as a design-level contribution, not an experimental-result
+contribution, until the live run is executed.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:otel-weaver-exp-005-collector-to-intake-contribution-process-evidence}
+
+EXP-005 contributes the OCEL~2.0 JSON output schema as the process evidence format for the
+OTel Weaver pipeline series. The \texttt{transform/pi} processor's injection of
+\texttt{pi.intake.ingested\_at} (collector-clock ISO~8601 timestamp) is a specific
+contribution to the process evidence quality argument: by anchoring the event timestamp to
+the collector clock rather than the emitter clock, the experiment eliminates clock-skew
+between emitting services as a source of process ordering uncertainty. This is a direct
+requirement of the Van der Aalst Constitution (temporal conformance criterion) from the
+process-mining-chicago-tdd rules: stages must occur in lawful order with no impossible
+overlaps, which requires a single authoritative clock for event timestamps in the log.
+
+The three-class Span~A/B/C taxonomy is a process evidence quality taxonomy: Span~A
+represents evidence that can be mined, Span~B represents non-evidence that must be excluded,
+and Span~C represents evidence that can be mined but will fail conformance court validation.
+This taxonomy is the first classification of live OTLP spans by their process evidence quality,
+and it provides the dissertation with a concrete, falsifiable test surface for the claim that
+process evidence can be separated from non-evidence at the collector boundary.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:otel-weaver-exp-005-collector-to-intake-contribution-manufacturing}
+
+EXP-005 establishes the collector pipeline as an operator in the CodeManufactory manufacturing
+architecture. Specifically, the three-stage pipeline (OTLP receiver $\to$ filter+transform
+processors $\to$ file exporter) is a manufacturing pipeline in the canonical sense: it
+receives feedstock (raw OTLP spans), applies lawful operators (filter by attribute presence,
+transform by OTTL rules), and emits artifacts (OCEL~2.0 JSON records). The
+\texttt{transform/pi} processor is a manufacturing operator in the exact sense of the
+CodeManufactory terminology: it transforms feedstock into a canonical artifact form without
+altering the upstream service's output.
+
+The experiment also establishes the \texttt{BridgeRx} schema-version translation bridge as
+a manufacturing primitive: it protects the conformance court from Weaver schema diffs by
+translating span attributes to the canonical court-internal representation before validation.
+This is an instance of the general principle that manufacturing pipelines should be
+schema-version-isolated from both upstream feedstock and downstream courts, with explicit
+bridge operators at each boundary. \textit{[AUTHOR THESIS: the BridgeRx bridge is referenced
+in the collector-integration-model.yaml but its implementation is located in EXP-003's
+validator.rs; its full implementation surface is outside the direct scope of EXP-005.]}
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:otel-weaver-exp-005-collector-to-intake-contribution-capital-flow}
+
+In the dissertation's capital-flow / settlement / DAO architecture layer, process intelligence
+is the evidence layer that validates whether a capital-flow event (a transaction, a settlement,
+a DAO governance vote) was executed by a lawful process or by an unlawful shortcut. EXP-005
+contributes the live telemetry ingestion boundary for this evidence layer. A capital-flow
+system instrumented with OpenTelemetry would emit spans for every significant transaction
+event. EXP-005 demonstrates that those spans can be routed through the collector pipeline
+and converted into OCEL~2.0 process evidence without requiring the capital-flow system to
+implement process intelligence awareness. The collector boundary is the sovereignty boundary:
+it is where the capital-flow system's observability output becomes the process intelligence
+system's evidence input. The \texttt{process.pi.instance\_id} attribute is the capital-flow
+process instance binding --- the identifier that links a span to a specific settlement
+instance, DAO proposal, or transaction workflow. \textit{[AUTHOR THESIS: the capital-flow
+binding is an architectural projection; EXP-005 does not implement or test a capital-flow
+use case directly.]}

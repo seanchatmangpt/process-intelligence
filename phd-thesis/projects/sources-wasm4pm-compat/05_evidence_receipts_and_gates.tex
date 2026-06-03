@@ -1,0 +1,121 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+% NOTE: Status is PARTIAL — the WfNet split-brain and zero multi-step pipeline
+%       witness-consistency fixtures mean the ALIVE gate is not fully closed.
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:sources-wasm4pm-compat-evidence}
+
+\subsection{Tests}
+\label{sec:sources-wasm4pm-compat-evidence-tests}
+
+The test surface is organized around two distinct test categories: compile-pass fixtures
+and compile-fail fixtures. The ALIVE gate as declared in
+\texttt{compat/templates/config.toml} requires 406 compile-pass fixtures and 398
+compile-fail fixtures (804 total). As of 2026-06-01, the dominant error code across
+compile-fail fixtures is \texttt{E0308} (type mismatch, 262 fixtures), followed by
+\texttt{E0277} (trait bound not satisfied, 20 fixtures). The \texttt{Between01} and
+\texttt{ConditionCell} law gates produce \texttt{E0277}; the typestate/witness confusion
+fixtures produce \texttt{E0308}.
+
+Inline \texttt{\#[test]} blocks present in the source tree include:
+
+\begin{itemize}
+  \item \texttt{witness-markers-20260601.rs}: \texttt{test\_witness\_lattice\_monotonicity()}
+    verifies idempotency ($a \sqcup a = a$) and absorption ($a \sqsubseteq b \Rightarrow
+    a \sqcup b = b$); \texttt{test\_witness\_partial\_order()} verifies the partial order
+    relation \texttt{witness\_leq}.
+  \item \texttt{compat/manufacturing/receipt\_ledger.rs}: \texttt{test\_receipt\_creation()}
+    verifies that a new \texttt{ArtifactReceipt} passes \texttt{verify()} with non-empty
+    \texttt{content\_hash}; \texttt{test\_ledger\_recording()} verifies that a recorded
+    artifact is retrievable and that \texttt{all().len() == 1}.
+  \item \texttt{compat/manufacturing/audit.rs}: \texttt{\#[test]} blocks verifying audit
+    logic (specific names documented in source; content confirmed present).
+  \item \texttt{compat/manufacturing/rendering\_engine.rs}: \texttt{\#[test]} blocks
+    verifying Tera rendering paths.
+  \item \texttt{compat/manufacturing/toml\_generator.rs}: \texttt{\#[test]} blocks
+    verifying TOML generation correctness.
+\end{itemize}
+
+Compile-fail fixtures covering the \texttt{WfNetConst} path include
+\texttt{wfnet\_forged\_soundness.rs} (proves \texttt{E0451}: field \texttt{\_seal} is
+private), \texttt{wfnet\_claimed\_as\_witnessed.rs}, and
+\texttt{wfnet\_unknown\_as\_claimed.rs}. The cross-witness confusion fixtures
+\texttt{evidence\_wrong\_witness\_ocel\_as\_xes.rs} and
+\texttt{evidence\_wrong\_witness\_xes\_as\_ocel.rs} prove that
+\texttt{Evidence<T, \_, Ocel20>} $\neq$ \texttt{Evidence<T, \_, Xes1849>}.
+
+\subsection{Receipts}
+\label{sec:sources-wasm4pm-compat-evidence-receipts}
+
+Three artifact receipts were issued on 2026-06-01 and recorded in
+\texttt{manufacturing-manifest-20260601.yaml}:
+
+\begin{enumerate}
+  \item \textbf{witness-markers-20260601-receipt}: artifact ref
+    \texttt{witness-markers-20260601}, witness \texttt{BlueRiverDam}, receipt type
+    \texttt{artifact-completion}, signature algorithm Ed25519, signature status ISSUED.
+  \item \textbf{process-forms-20260601-receipt}: artifact ref
+    \texttt{process-forms-20260601}, witness \texttt{VanDerAalst1998}, receipt type
+    \texttt{artifact-completion}, signature algorithm Ed25519, signature status ISSUED.
+  \item \textbf{boundary-law-20260601-receipt}: artifact ref
+    \texttt{boundary-law-20260601}, witness \texttt{BlueRiverDam}, receipt type
+    \texttt{artifact-completion}, signature algorithm Ed25519, signature status ISSUED.
+\end{enumerate}
+
+All receipts carry BLAKE3 content hashes (template placeholders in the manifest record
+the hash slot structure; the production hash values are sealed at manufacture time).
+All gate verifications in the manifest are recorded as \texttt{true}: witness projections
+valid, Rust syntax valid, process forms valid, markdown valid, boundary definitions valid,
+WIT syntax valid, WASM component model compliant.
+
+The \texttt{ReceiptLedger} in \texttt{receipt\_ledger.rs} provides the runtime receipt
+registry. The \texttt{ArtifactReceipt} struct sets \texttt{lifecycle\_state = "Sealed"}
+at construction time and exposes \texttt{with\_compilation(bool)} and
+\texttt{with\_audit(bool)} builder methods. The \texttt{ReceiptLedger::verify\_all()}
+method checks that all registered receipts satisfy non-empty \texttt{content\_hash},
+\texttt{witness}, \texttt{template\_source}, and positive \texttt{timestamp}.
+
+\subsection{Checkpoints}
+\label{sec:sources-wasm4pm-compat-evidence-checkpoints}
+
+The \texttt{research-verdict.md} document (version 30.1.2, dated 2026-05-31, authority:
+Conformance Agent, classification: Foundational Type-Law Ruling) functions as the
+phase graduation checkpoint. It declares GRADUATION-READY status across five audit
+categories and provides the Doctoral Thesis Verdict: ``WASM4PM-COMPAT: FULLY GRADUATED
+AND COMPLETE'' subject to five previously identified issues all marked RESOLVED.
+
+The \texttt{manufacturing-manifest-20260601.yaml} records 100\% manufacturing completion:
+\texttt{completion\_percentage: 100}, \texttt{all\_artifacts\_valid: true},
+\texttt{all\_receipts\_issued: true}, \texttt{all\_gates\_passed: true}. The manifest
+identifies its predecessor (\texttt{manufacturing-manifest-20260531.yaml}) and its
+expected successor (\texttt{manufacturing-manifest-20260602.yaml}), establishing a
+receipt chain with forward and backward links.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:sources-wasm4pm-compat-evidence-status}
+
+\textbf{Project status: PARTIAL.}
+
+Despite the research-verdict declaring GRADUATION-READY, the status at the dissertation
+layer is PARTIAL because two structural defects documented in \texttt{STRUCTURAL\_GAPS.md}
+remain open and uncovered by ALIVE-gate fixtures:
+
+\textbf{Defect~1 (High severity): WfNet split-brain.} Two incompatible representations
+coexist for WF-net soundness: \texttt{WfNet<S>} (typestate tokens, forgeable) and
+\texttt{WfNetConst<const SOUNDNESS: SoundnessState>} (const-generic, non-forgeable). The
+\texttt{WfNet<S>.attest\_witnessed()} method is callable from \texttt{WfNet<SoundnessClaimed>}
+to \texttt{WfNet<SoundnessWitnessed>} without a proof token. No compile-fail fixture
+covers this forgeable path. The ALIVE gate does not witness the most critical soundness
+non-forgeability invariant.
+
+\textbf{Defect~2 (Medium severity): Zero multi-step pipeline witness-consistency fixtures.}
+The type system structurally prevents a \texttt{Refusal<R, Ocel20>} from being confused
+with a \texttt{Refusal<R, Xes1849>} in a chained pipeline, but no compile-fail fixture
+receipts this guarantee end-to-end in a multi-stage admission sequence. Under the Van der
+Aalst constitution, an unreceipted guarantee is a structural claim, not a witnessed fact.
+
+Until these two defects are closed with receipted compile-fail fixtures, the ALIVE verdict
+cannot be issued. The PARTIAL status is the accurate characterization of the project's
+current standing within the dissertation evidence chain.

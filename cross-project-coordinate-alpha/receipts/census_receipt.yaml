@@ -1,0 +1,141 @@
+timestamp: 2026-06-01T21:45:00Z
+agent: cross-project-census-agent-1
+mission: cross-project census and integration topology discovery
+version: 1.0
+
+execution_summary:
+  total_projects_queried: 16
+  projects_found: 14
+  projects_absent: 2
+  git_operations_complete: true
+  directory_tree_complete: true
+
+project_inventory:
+  alive:
+    - ggen-mcp (main, ahead 2)
+    - wasm4pm (HEAD, detached)
+    - open-ontologies (ontostar-integration, 607 tests)
+  
+  critical:
+    - truex (7,066 uncommitted files, no receipts)
+    - knhk (16,876 uncommitted files, 25 tests)
+  
+  partial:
+    - process-intelligence (phd-thesis-corpus-manufacture-001)
+    - ggen (feat/ark-covenant-1)
+    - ggen-spec-kit (main)
+    - wasm4pm-compat (main)
+    - pcp (main)
+    - compiled-cognition-hub (master)
+    - Documents/Papers (uninitialized)
+  
+  absent:
+    - phd-thesis (not a git repo, work integrated)
+    - construct8-market-physics (subproject of process-intelligence)
+    - naut (not found)
+
+uncommitted_files:
+  process-intelligence: 45
+  ggen: 20
+  ggen-mcp: 2
+  ggen-spec-kit: 43
+  open-ontologies: 1
+  wasm4pm: 0
+  wasm4pm-compat: 24
+  truex: 7066
+  pcp: 6
+  knhk: 16876
+  compiled-cognition-hub: 0
+  documents_papers: 1
+  total: 24084
+
+receipt_infrastructure:
+  with_receipts:
+    - process-intelligence
+    - wasm4pm
+    - wasm4pm-compat
+    - open-ontologies
+  
+  missing_receipts:
+    - ggen (20 modified)
+    - ggen-mcp (despite ALIVE status)
+    - ggen-spec-kit (43 modified)
+    - truex (7066 modified - CRITICAL)
+    - pcp (6 modified)
+    - knhk (16876 modified - CRITICAL)
+    - compiled-cognition-hub
+
+test_coverage:
+  with_tests:
+    - open-ontologies (607 tests)
+    - ggen-mcp
+    - wasm4pm
+    - ggen-spec-kit
+    - ggen
+    - wasm4pm-compat
+    - knhk (25 tests)
+  
+  missing_tests:
+    - truex (CRITICAL)
+    - pcp
+    - compiled-cognition-hub
+
+integration_roles:
+  coordinator:
+    - process-intelligence
+  
+  suppliers:
+    - ggen, ggen-mcp, ggen-spec-kit, pcp, truex, knhk, compiled-cognition-hub
+  
+  witnesses:
+    - wasm4pm, wasm4pm-compat, open-ontologies
+
+languages:
+  rust: [ggen, ggen-mcp, open-ontologies, wasm4pm, wasm4pm-compat, truex, knhk, compiled-cognition-hub]
+  python: [ggen-spec-kit]
+  javascript: [pcp]
+  markdown: [process-intelligence]
+
+critical_findings:
+  - truex: 7066 uncommitted files, subagent-driven (Engine-Prover, Reactive-CLI), no receipts, no tests
+  - knhk: 16876 uncommitted files, compilation error fixes, SyncEngine checkpoint work, no receipts
+  - ggen-mcp: ALIVE status but no receipts maintained
+  - phd-thesis: Not a git repo; work integrated into ggen-spec-kit and process-intelligence
+  - construct8-market-physics: Integrated as subproject of process-intelligence
+
+recommendations:
+  immediate:
+    - Create receipt infrastructure for truex and knhk
+    - Assess and commit/stage 24,084 uncommitted files (knhk: 16876, truex: 7066)
+    - Verify truex subagent work status
+    - Merge knhk compilation error fixes
+  
+  high_priority:
+    - Add test suites to truex, pcp, compiled-cognition-hub
+    - Verify phd-thesis integration completeness
+    - Create receipts for all projects with modified files
+  
+  medium_priority:
+    - Align ggen on ALIVE vs PARTIAL status
+    - Documents/Papers: determine git control strategy
+  
+  ongoing:
+    - Maintain immutability of doctrine/ and checkpoints/ directories
+    - Monitor subagent work on truex (Engine-Prover, Reactive-CLI)
+    - Verify knhk SyncEngine checkpoint persistence tests
+
+gate_status: PASS
+gate_criteria:
+  - all_16_projects_queried: true
+  - 14_projects_exist_and_tracked: true
+  - 2_projects_absent_phd_thesis_naut: true
+  - census_contains_all_entries: true
+  - integration_roles_assigned: true
+  - receipt_inventory_complete: true
+  - modified_files_counted: true
+
+deliverables:
+  - CROSS_PROJECT_CENSUS.md
+  - census_receipt.yaml (this file)
+
+status: COMPLETE

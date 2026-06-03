@@ -1,0 +1,92 @@
+% FILE: 01_research_question.tex
+% Project: prompts — Downstream Manufacturing Prompt Corpus
+
+\section{Research Question}
+\label{sec:prompts-question}
+
+\subsection{Problem Statement}
+\label{sec:prompts-question-problem}
+
+The central problem this corpus addresses is the gap between research findings and
+engineering execution in process intelligence systems. Research programs can produce
+rigorous findings---gap registers, adversarial red-team results, conformance authority
+maps---without those findings ever reaching an execution engine in a form that is
+traceable, authorized, and cryptographically verifiable. Downstream engineering work
+frequently proceeds from informal summaries, losing the formal authority chain that
+makes a research finding legally and scientifically admissible.
+
+This corpus asks: \emph{What is the minimal formal structure required for a research
+finding to authorize downstream engineering work, such that every implementation step
+carries a traceable mandate and every acceptance criterion is a verifiable proof gate?}
+The answer it proposes is a prompt corpus whose directives carry authority sources,
+gap-register pointers, completion criteria expressed as compile-time fixtures, and
+explicit blocking claims that prevent false progress reporting.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:prompts-question-old-regime}
+
+The old-regime assumption challenged by this corpus is that engineering specifications
+can be written informally and that validation is a post-hoc activity. In conventional
+software development, a specification might say ``implement Inductive Miner'' and
+leave correctness verification to unit tests that pass or fail at runtime. The corpus
+challenges this by requiring that every algorithm return a typed artifact
+(\texttt{TypedProcessTree}, \texttt{Metric<FITNESS,N,D>}) whose type structure encodes
+the algorithm's mathematical guarantee at compile time. A runtime test that passes
+despite a structurally unsound model is not a valid acceptance criterion; only a
+compile-time proof that an unsound model cannot be represented is acceptable.
+
+The old regime also assumed that M\&A claims could be derived from executive
+judgment. This corpus challenges that assumption by requiring that every board-level
+claim trace to a \texttt{ProcessIntelligenceVerificationReceipt} with an Ed25519
+signature from a registered validator, a SHA-256 hash of the source log, and a
+fitness value computed by alignment-based conformance checking. Claims without
+receipts are refused at the ggen admission gateway.
+
+\subsection{Hypothesis}
+\label{sec:prompts-question-hypothesis}
+
+The hypothesis is: a downstream manufacturing directive layer, structured as an
+authorized prompt corpus with gap-register traceability and compile-time proof
+requirements, can close the translation gap between research findings and engineering
+execution without loss of formal rigor. Specifically, the following translations are
+hypothesized to be achievable:
+
+\begin{itemize}
+  \item Gap-register entries (GAP\_001 through GAP\_008) can be directly translated
+    into engineering tasks whose completion criteria are expressed as compile-pass
+    or compile-fail fixtures, making acceptance mechanically verifiable.
+  \item Fitness thresholds derived from conformance theory (fitness $\geq 0.95$,
+    $0.85 \leq f < 0.95$, $f < 0.85$) can be directly mapped to board-admissible
+    EBITDA impact claims ($+5\%$, $+3\%$, $-8\%$ to $-15\%$) without introducing
+    additional assumptions.
+  \item The Chatman Equation $\kappa \circ \rho \circ \alpha \circ \mu$ can be
+    physically instantiated as a cryptographic bridge between two Rust crates, with
+    each composition step enforced at the type level.
+\end{itemize}
+
+\subsection{Success Criteria}
+\label{sec:prompts-question-success}
+
+Success for this corpus is defined by the following criteria, per
+\texttt{checkpoint\_\_downstream\_prompts\_complete.md}:
+
+\begin{enumerate}
+  \item All twelve downstream directive files are present, complete, and free of
+    placeholders or \texttt{TODO} markers.
+  \item Every directive references an explicit authority source (research checkpoint
+    or gap register entry).
+  \item Every completion criterion is expressed as a concrete, mechanically verifiable
+    artifact: a compile-pass test, a compile-fail fixture with a matching
+    \texttt{.stderr} file, a JSON receipt schema, or a named Rust type.
+  \item No directive contains blocking claims that are not explicitly labeled
+    \texttt{[BLOCKED: GAP\_NNN]}.
+  \item The \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} seal is documented as the
+    authorization gate, and no directive claims execution without referencing this
+    precondition.
+\end{enumerate}
+
+As of 2026-05-31, the corpus satisfies criteria 1--4. Criterion 5 remains
+\textbf{PARTIAL}: the seal is referenced as a precondition but evidence of its
+issuance does not appear within the \texttt{prompts/} directory itself.
+\end{enumerate}
+\end{itemize}

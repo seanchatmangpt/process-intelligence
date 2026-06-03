@@ -1,0 +1,139 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Architecture and Primitives}
+\label{sec:research-prompt-manufactory-architecture}
+
+\subsection{Core Objects}
+\label{sec:research-prompt-manufactory-architecture-objects}
+
+The Prompt Manufactory's object model is defined in \texttt{prompt-manufactory.ttl} and
+comprises 15 classes grounded in public vocabularies (PROV-O, DCTERMS, DCAT, SKOS, SHACL).
+The core objects and their roles in the manufacturing pipeline are:
+
+\begin{description}
+  \item[\texttt{pm:ResearchProgram}] The top-level program node. Subclass of
+    \texttt{prov:Entity}. Carries a \texttt{pm:programId} (required by SHACL), a
+    \texttt{pm:mission} string, and \texttt{pm:hasWorkflow} references. Seven seed instances
+    are encoded in \texttt{research-program-law.ttl}: PI, GGEN\_ECOSYSTEM, GGEN\_OTEL,
+    ZOEAPP, EXPO\_SUPABASE, CLAUDE\_WORKFLOW, WASM4PM\_REMEDIATE.
+
+  \item[\texttt{pm:Workflow}] A phase-sequenced execution container. The INTEL workflow
+    defines 8 ordered phases: Census, Classify, Manifest, Queries, Templates, Conformance,
+    Reconciliation, and Checkpoint. The REMEDIATE workflow defines 1 phase. Both are encoded
+    in \texttt{workflow-law.ttl} as named RDF instances with \texttt{pm:hasPhase} links.
+
+  \item[\texttt{pm:Phase}] A bounded stage within a workflow. Carries a label and mission,
+    and links to one or more \texttt{pm:SubagentRole} instances via
+    \texttt{pm:hasSubagentRole}. Phase 1 (Census) assigns 7 subagent roles simultaneously;
+    subsequent phases assign 1 each.
+
+  \item[\texttt{pm:SubagentRole}] A bounded inspection station. Required by SHACL to carry
+    \texttt{pm:mission}. Also carries \texttt{pm:ownsSurface} (file or directory the
+    subagent is authorized to inspect), \texttt{pm:forbidsSurface} (surface the subagent
+    must not touch), \texttt{pm:hasOutputContract} (required output artifact path), and
+    \texttt{pm:hasRefusalGate} (condition under which the subagent must refuse to proceed).
+    Fifteen roles are defined in \texttt{subagent-role-law.ttl}.
+
+  \item[\texttt{pm:HookPolicy}] An Andon gate --- a deterministic lifecycle enforcement
+    hook. Six policies are defined in \texttt{hook-law.ttl}, governing conditions under
+    which the manufacturing pipeline must halt before proceeding.
+
+  \item[\texttt{pm:Checkpoint}] An ALIVE/PARTIAL verdict record. Required by SHACL to
+    carry \texttt{dct:issued} with a \texttt{xsd:dateTime} value. Ten gate definitions
+    are encoded in \texttt{checkpoint-law.ttl}.
+
+  \item[\texttt{pm:RenderedPrompt}] The manufactured research warrant. Required by SHACL
+    to carry \texttt{pm:derivedFrom} pointing to at least one \texttt{prov:Entity} --- the
+    ontology source from which the warrant was manufactured. This constraint is the
+    foundational proof-of-manufacture requirement.
+
+  \item[\texttt{pm:Receipt}] A proof-of-execution artifact. Carries a
+    \texttt{pm:proves} link to the \texttt{pm:RenderedPrompt} it certifies and a derivation
+    hash. The receipt is the replay anchor.
+
+  \item[\texttt{pm:PromptClass}] A type enumeration for warrants:
+    INTEL $\mid$ RECONCILE $\mid$ REMEDIATE $\mid$ SYNC $\mid$ AUDIT $\mid$ CHECKPOINT
+    $\mid$ SPR $\mid$ LIVESTREAM. Research programs declare their prompt class via
+    \texttt{pm:hasPromptClass}.
+
+  \item[\texttt{pm:InvalidGgenFile}] A classification record for legacy \texttt{.ggen}
+    files. Carries \texttt{pm:filePath}, \texttt{pm:ownerProject},
+    \texttt{pm:classification}, \texttt{pm:blockingStatus}, and
+    \texttt{pm:remediationRoute}. Twenty-two instances are encoded in
+    \texttt{forbidden-collapse-law.ttl}.
+\end{description}
+
+\subsection{Admissible Transitions}
+\label{sec:research-prompt-manufactory-architecture-transitions}
+
+The Prompt Manufactory enforces a strict law-to-artifact transition pipeline. Admissible
+transitions in the manufacturing graph are:
+
+\begin{enumerate}
+  \item \textbf{Graph loading}: All 8 \texttt{.ttl} ontology files load into the RDF graph
+    without parse error. This is the entry gate.
+  \item \textbf{SPARQL extraction}: A \texttt{.rq} query executes against the loaded graph
+    and returns a non-empty result set binding the variables required by its paired template.
+  \item \textbf{Tera rendering}: The result set bindings are injected into the \texttt{.tera}
+    template, producing a Markdown artifact at the path specified by the generation rule's
+    \texttt{output\_file} field.
+  \item \textbf{Derivation assertion}: The rendered artifact receives a
+    \texttt{pm:derivedFrom} triple in the graph, asserting its provenance.
+  \item \textbf{Receipt emission}: An entry is created in the \texttt{prompt-receipt-ledger.md}
+    recording the artifact's provenance chain, manufacture timestamp, and proof gates.
+  \item \textbf{Manifest recording}: The manufacturing manifest
+    (\texttt{manufacturing-manifest-20260601.yaml}) records the total artifacts emitted and
+    the gate check results.
+\end{enumerate}
+
+Transitions are governed by ggen v26.5.21, which executes 6 generation rules in the order
+specified in \texttt{ggen.toml}. Conflict mode is set to \texttt{fail}, meaning any
+generation rule that produces a conflict with an existing artifact halts the pipeline rather
+than silently overwriting.
+
+\subsection{Boundaries}
+\label{sec:research-prompt-manufactory-architecture-boundaries}
+
+The Prompt Manufactory enforces strict surface boundaries. The source layer (\texttt{ggen/})
+accepts only \texttt{.ttl}, \texttt{.rq}, \texttt{.tera}, and \texttt{ggen.toml} files.
+The emission layer (\texttt{emitted/}) is the only valid destination for manufactured
+artifacts. Subagent roles are bounded by \texttt{pm:ownsSurface} and
+\texttt{pm:forbidsSurface} assertions: the Census role for the ggen surface
+(\texttt{role\_ggen\_census}) explicitly forbids \texttt{.ggen} files as source surfaces;
+the engine census role forbids \texttt{../wasm4pm-compat/} and
+\texttt{../process-intelligence/}.
+
+The \texttt{ggen.toml} records \texttt{hand\_coding = false} as a project-level assertion,
+establishing that no artifact in the emission layer may have been authored by hand. Any
+artifact lacking a \texttt{pm:derivedFrom} triple violates the SHACL shape and fails the
+``no hand-written program prompts'' audit gate.
+
+\subsection{Failure Modes Refused}
+\label{sec:research-prompt-manufactory-architecture-failures}
+
+The \texttt{forbidden-collapse-law.ttl} codifies three failure modes that the Prompt
+Manufactory absolutely refuses:
+
+\begin{description}
+  \item[\texttt{pm:FORBIDDEN\_ggen\_source\_files}] No \texttt{.ggen} extension files
+    permitted in source directories. Audit rule: \texttt{find . -name `*.ggen'} in
+    \texttt{prompt-manufactory/ggen/} must return zero results. As of checkpoint
+    PARTIAL\_001, this gate passes.
+
+  \item[\texttt{pm:FORBIDDEN\_dto\_flattening}] No collapse of structured
+    \texttt{Evidence<T, State, W>} into casual JSON/string carriers without boundary
+    classification. Examples include \texttt{EvidenceDto}, \texttt{payload\_json}, or
+    \texttt{state\_tag} as unbounded strings. Refusal condition:
+    \texttt{REFUSAL\_DTO\_COLLAPSE}.
+
+  \item[\texttt{pm:FORBIDDEN\_forced\_alive}] No ALIVE verdict claimed when critical
+    audit gates have failed or prerequisite proofs are incomplete. The checkpoint record
+    explicitly states: \textit{``Declaring ALIVE from file-count completion alone would be
+    propaganda. PARTIAL acknowledges what works and what awaits.''}
+\end{description}
+
+These refusals are encoded as named RDF classes, not as documentation commentary, making
+them queryable, auditable, and enforceable through SPARQL ASK queries that the manufacturing
+pipeline can execute as proof gates before emitting any ALIVE verdict.

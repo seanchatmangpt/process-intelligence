@@ -1,0 +1,26 @@
+slug: experiments-core
+absolute_path: /Users/sac/process-intelligence/experiments
+description: >
+  Core benchmark experiments and verification scripts. Contains pm4py comparison,
+  wasm4pm-compat evaluation, wasm4pm gap analysis, ma-deck projection, paper fixture design,
+  and Python validation scripts (validate_log_fitness.py, verify_equations.py,
+  validate_ocpq_refinement.py).
+detected_languages:
+  - Python
+detected_frameworks:
+  - pm4py
+  - wasm4pm
+detected_research_surfaces:
+  - conformance-checking
+  - process-evidence
+  - proof-gate
+likely_thesis_role: benchmark-experiments-and-equation-verification
+key_files:
+  - /Users/sac/process-intelligence/experiments/validate_log_fitness.py
+  - /Users/sac/process-intelligence/experiments/verify_equations.py
+  - /Users/sac/process-intelligence/experiments/validate_ocpq_refinement.py
+  - /Users/sac/process-intelligence/experiments/pm4py-comparison/report.md
+  - /Users/sac/process-intelligence/experiments/wasm4pm-gap-analysis/report.md
+readme_present: false
+receipt_present: false
+ontology_present: false

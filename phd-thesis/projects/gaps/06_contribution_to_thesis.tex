@@ -1,0 +1,96 @@
+% FILE: 06_contribution_to_thesis.tex
+% PROJECT: gaps — Structural Gap Registry and Closure Tracking
+
+\section{Contribution to the Dissertation}
+\label{sec:gaps-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:gaps-contribution-prediction}
+
+The gap registry makes a specific contribution to the dissertation's treatment of the
+prediction-versus-coordination distinction. The old-regime process mining paradigm treats
+conformance checking as a post-hoc prediction exercise: given an observed trace and a
+reference model, predict whether the trace conforms. This prediction is made after the
+fact, using approximation methods (token replay) that produce fitness values lacking
+tight bounds.
+
+The gap registry documents the gap between this prediction-oriented architecture and a
+coordination-oriented one. In a coordination-oriented architecture, the type system
+coordinates the admission of evidence before it reaches the execution engine. An
+algorithm that accepts only \texttt{Evidence<EventLog, Admitted, W>} at its boundary
+is not predicting whether the input is valid — it is enforcing, at compile time, that
+the input has already been admitted under named laws. GAP\_001 documents the precise
+engineering delta between these two paradigms: the absence of wasm4pm-compat in the
+wasm4pm dependency graph. The transition from prediction to coordination is not
+philosophical; it is a Cargo.toml edit and a set of function signature changes, with
+a five-condition checklist in GAP\_001 specifying exactly what constitutes the
+completed transition.
+
+GAP\_004 extends this contribution: alignment-based conformance with
+\texttt{Metric<FITNESS, N, D>} bounded by \texttt{Between01} replaces token-replay
+approximation with exact optimal-alignment fitness. This is a shift from a predicted
+approximation to a coordinated measurement with known bounds.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:gaps-contribution-evidence}
+
+The gap registry contributes to the dissertation's theory of process evidence by
+identifying the precise locations where the evidence lifecycle is broken. Process
+evidence is not merely data about a process — it is data with a documented chain of
+custody, from raw observation through admission under named laws through execution in
+a type-safe engine through conformance assessment with bounded metrics. The gap registry
+maps every break in this chain:
+
+\begin{itemize}
+  \item GAP\_001 breaks the chain at the admission-to-execution boundary.
+  \item GAP\_002 breaks the refusal surface — string-typed errors cannot be traced to
+        named laws and cannot participate in evidence chains.
+  \item GAP\_007 breaks the WF-net attestation link — a forgeable attestation path
+        means WF-net soundness proofs are not trustworthy receipt artifacts.
+  \item GAP\_008 breaks the compile-fail fixture chain — E0425 failures are import
+        errors, not type-law evidence.
+\end{itemize}
+
+The contribution is not merely identifying these breaks. It is establishing the
+evidentiary standard that determines what counts as a repair: the five-condition
+GAP\_001 checklist, the named error code requirements of GAP\_008 (E0308, E0599, E0277,
+E0080), and the non-forgeability requirement of GAP\_007 (\texttt{pub(crate)} or
+\texttt{\#[deprecated]} gating of \texttt{attest\_witnessed()}).
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:gaps-contribution-manufacturing}
+
+The gap registry contributes to the CodeManufactory manufacturing architecture by
+demonstrating what a proof gate means in practice. A proof gate is not a runtime check
+that can be bypassed by providing a conforming input — it is a type-system constraint
+that cannot be bypassed at all without violating a structural law. The gap registry
+documents the delta between the current state (runtime checks producing
+\texttt{ValidationError(String)}) and the required state (compile-time type-law gates
+producing \texttt{Refusal<R, W>} with named law type \texttt{R}).
+
+The dependency graph in \texttt{GAP\_PRIORITY\_MATRIX.md} is itself a manufacturing
+architecture artifact: it specifies the partial order over proof-gate manufacturing
+steps, from GAP\_007 (lowest effort, independent) through GAP\_001 (critical-path
+blocker) to the P2 and P3 gaps that can proceed in parallel once the bridge is in place.
+The critical path \texttt{GAP\_007 $\rightarrow$ GAP\_001 $\rightarrow$ GAP\_002}
+is the minimum manufacturing sequence required before any board-level process evidence
+claim can be asserted with receipt-chain support.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:gaps-contribution-capital-flow}
+
+\textbf{AUTHOR THESIS:} The capital-flow and settlement infrastructure described in the
+thesis lineage (Post-Cyberpunk PCP, AI XYNZ, DAO settlement) requires that process
+evidence flows through a verifiable chain from observation to settlement authorization.
+A settlement authorization that cannot be traced to admitted, receipted process evidence
+is not a valid settlement — it is an assertion without grounding.
+
+The gap registry contributes to this layer by documenting precisely why the current
+wasm4pm stack cannot support settlement-grade process evidence. GAP\_001's impact
+assessment states that the type-law enforcement is zero, the admission gate is missing,
+the witness discipline is missing, the lifecycle state is missing, and the receipt chain
+is broken. A system with these defects cannot produce process evidence that meets the
+evidentiary standard required for capital-flow authorization. The gap registry therefore
+defines the engineering preconditions for capital-flow infrastructure deployment: all
+eight named gaps must be formally closed, with receipts and resolution addendums, before
+the wasm4pm stack can be claimed as settlement-grade process evidence infrastructure.

@@ -1,0 +1,102 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:experiments-visualizer-evidence}
+
+\subsection{Tests}
+\label{sec:experiments-visualizer-evidence-tests}
+
+The test surface for the \texttt{experiments-visualizer} is \texttt{visualizer-validation.ts},
+a TypeScript source file that exercises the boundary-law type projections declared in
+\texttt{bindings.d.ts} at compile time. The validation file exercises all 10 type projections:
+\texttt{EvidenceTs}, \texttt{AdmissionTs}, \texttt{RefusalTs}, \texttt{LossPolicyTs},
+\texttt{LossReportTs}, \texttt{ReceiptShapeTs}, \texttt{GraduationCandidateTs}, and brand tags
+\texttt{OcelBrand}, \texttt{XesBrand}, and \texttt{WfNetBrand}. Concrete values are used
+throughout: the BLAKE3 process hash appears as a literal string, and the fitness score of 0.982
+matches the \texttt{replay\_receipt\_sample.md} fixture.
+
+This test confirms the \textbf{type gate} only. It does not confirm runtime behavior. No Jest
+suite, browser automation framework, or integration test harness is present in the codebase.
+The MAPE-K loop tick cycle, the SHA-256 chain integrity across multiple blocks, the EWMA drift
+detector's UCL/LCL boundary behavior, and the Canvas token game rendering are not covered by
+any automated test. This is a confirmed gap documented in the open questions
+(Section~\ref{sec:experiments-visualizer-openq}).
+
+The \texttt{checkpoint\_\_experiments\_complete.md} confirms that 16 experiment fixtures were
+verified, but this verification is described as manual inspection, not automated test execution.
+The \texttt{LIVESTREAM\_STANDARDS.md} specifies 5-agent swarm monitoring as the operational
+quality mechanism during live demonstration sessions, not a pre-deployment test harness.
+
+\subsection{Receipts}
+\label{sec:experiments-visualizer-evidence-receipts}
+
+The canonical replay receipt is \texttt{replay\_receipt\_sample.md}, containing a
+\texttt{ReceiptShapeTs}-conforming record with:
+\begin{itemize}
+  \item Fitness score: 0.982
+  \item Process hash: BLAKE3 hash (confirmed present in \texttt{visualizer-validation.ts})
+  \item Supply-chain WF-net minimum model cost: 4
+  \item Fitness formula: $1 - \mathit{cost} / (\mathit{log\_length} + 4)$
+\end{itemize}
+
+The broader process intelligence receipt chain maintained in
+\texttt{/Users/sac/process-intelligence/receipts/} includes five domain receipts:
+\begin{itemize}
+  \item \texttt{rec\_ebitda\_rework\_001.json} — EBITDA rework process receipt
+  \item \texttt{rec\_wc\_ar\_002.json} — Working capital / accounts receivable receipt
+  \item \texttt{rec\_risk\_sla\_003.json} — Risk SLA process receipt
+  \item \texttt{rec\_risk\_compliance\_004.json} — Risk compliance process receipt
+  \item \texttt{rec\_residual\_standard\_005.json} — Residual standard receipt
+\end{itemize}
+
+The \texttt{.ggen/receipts/latest.json} receipt confirms the most recent manufacturing run
+against the process intelligence program. These domain receipts confirm that the
+\texttt{ReceiptShapeTs} structure demonstrated in the browser dashboard is not confined to
+simulation but is applied to real financial process domains.
+
+\subsection{Checkpoints}
+\label{sec:experiments-visualizer-evidence-checkpoints}
+
+Two checkpoints are relevant to the \texttt{experiments-visualizer}:
+
+\textbf{\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md}} — The primary checkpoint for the
+process intelligence program. Issues a GRADUATION VERIFIED verdict covering the token game
+fitness formula $f(L,N) = 1 - \sum m / \sum c - \sum r / \sum p$. This checkpoint covers
+the broader program, not the visualizer specifically.
+
+\textbf{\texttt{LIVESTREAM\_STATUS\_001.md}} — Confirms the livestream demonstration
+standards checkpoint for the visualizer dashboard.
+
+\textbf{\texttt{checkpoint\_\_experiments\_complete.md}} — Confirms all 16 experiment fixtures
+verified with no deferred TODOs in the experiment layer. This is the closest available
+visualizer-specific checkpoint, though it covers experiment completion rather than system
+ALIVE status.
+
+No visualizer-specific ALIVE checkpoint exists. The project's ALIVE status must be inferred
+from the broader program checkpoint and the experiment completion confirmation, making the
+attribution PARTIAL.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:experiments-visualizer-evidence-status}
+
+\textbf{Status: PARTIAL}
+
+The \texttt{experiments-visualizer} satisfies the type gate (compile-time validation of all
+10 boundary-law type projections) and the formula gate (fitness formula confirmed in source
+and receipt fixture). The audit gate is satisfied at the source level: \texttt{verifyChain()},
+\texttt{tamperBlock()}, and the genesis block message are all confirmed in \texttt{blockchain.js}.
+
+The project does not satisfy the runtime gate: no automated test harness confirms end-to-end
+MAPE-K loop execution, live audit chain growth, or DECLARE constraint evaluation over streaming
+traces. The \texttt{LIVESTREAM\_STANDARDS.md} v30.1.1 conformance claim covers the
+\emph{specification} of zero mocks and stubs; it does not constitute an executable test result.
+
+Furthermore, no visualizer-specific ALIVE checkpoint has been issued. The
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md} verdict covers the overall process intelligence
+program and cannot be directly attributed to the visualizer dashboard in isolation.
+
+PARTIAL status is the correct verdict: significant evidence supports the structural integrity
+of the implementation, but the runtime execution gate remains open and no project-specific
+ALIVE checkpoint has been issued.

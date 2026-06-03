@@ -1,0 +1,104 @@
+% FILE: 00_project_identity.tex
+% Project: ggen — Governance Generation Engine
+% Role in dissertation: manufacturing-machinery-and-code-generation-engine
+
+\section{Project Identity}
+\label{sec:ggen-identity}
+
+\subsection{Purpose}
+\label{sec:ggen-identity-purpose}
+
+The Governance Generation Engine (ggen) is the manufacturing machinery of the process intelligence
+research foundry. Its purpose is to transform ontological knowledge---expressed as RDF triples in
+the process intelligence knowledge base---into board-admissible capital-market artifacts and
+autonomic runtime code. Where other components in the foundry \emph{produce} process evidence,
+ggen \emph{converts} that evidence into artifacts that a board of directors, a financial due
+diligence team, or an autonomic runtime can consume.
+
+ggen operates as a configuration-driven pipeline declared in a single TOML manifest
+(\texttt{ggen.toml}). Every generation rule in that manifest wires exactly one SPARQL query file
+to exactly one Tera template file and exactly one output path. The engine executes each rule,
+seals the output with a BLAKE3 cryptographic receipt, and links that receipt to the previous
+receipt hash to form an immutable provenance chain. As declared in \texttt{ggen.toml}, the
+checksum algorithm is \texttt{blake3} and the proof format is \texttt{cryptographic-chain}.
+
+The project is identified by version \texttt{26.5.21} as recorded in \texttt{audit.json}, with
+\texttt{validation\_passed: true} at timestamp \texttt{2026-06-01T20:38:53Z}. This version string
+encodes the governance epoch rather than a semantic version, reflecting the foundry's
+calendar-based release discipline.
+
+\subsection{Repository Surface}
+\label{sec:ggen-identity-surface}
+
+The ggen repository is located at \texttt{/Users/sac/process-intelligence/ggen/}. Its top-level
+surface comprises the following directories and files of record:
+
+\begin{itemize}
+  \item \texttt{ggen.toml} --- the generation rule manifest; maps SPARQL queries to Tera
+    templates and output files for every manufacturing rule.
+  \item \texttt{queries/} --- three SPARQL query files: \texttt{extract-board-claims.rq},
+    \texttt{extract-diligence-claims.rq}, and \texttt{extract-lifecycle-governance.rq}, plus
+    \texttt{select-witness-projections.rq} for the wasm4pm-compat witness lattice.
+  \item \texttt{templates/} --- three primary Tera templates: \texttt{ma-deck.tera},
+    \texttt{ma-diligence.tera}, and \texttt{blue-river.tera}, plus \texttt{witness-marker.tera}
+    and auxiliary projection templates.
+  \item \texttt{rules/} --- governance law YAML files: \texttt{feature-law.yaml},
+    \texttt{graduation-law.yaml}, \texttt{ts-projection-law.yaml},
+    \texttt{wasm-boundary-law.yaml}, and \texttt{component-boundary-law.yaml}.
+  \item \texttt{audits/} --- seven audit shell scripts (\texttt{.sh.ggen}) covering 42 or more
+    named gates across feature law, TypeScript projection, WASM boundary, and component boundary.
+  \item \texttt{ontology-extensions.ttl} and \texttt{wasm4pm-compat.ttl} --- the RDF/Turtle
+    ontology extensions defining board claim types and wasm4pm-compat type law.
+  \item \texttt{.ggen/receipts/} --- the BLAKE3 cryptographic receipt chain storing four receipt
+    JSON files including \texttt{latest.json}.
+  \item \texttt{manifests/} --- source specification files including
+    \texttt{ts-projection-manifest.yaml} from which projection law was manufactured.
+\end{itemize}
+
+Notably, the \texttt{src/} directory exists but contains no Rust source files. ggen is a
+specification-and-template engine: it \emph{manufactures} Rust source code as an output artifact
+rather than being itself a compiled Rust binary. The \texttt{blue\_river\_dam/src/lib.rs} artifact
+is the manufactured Rust output, not ggen's own implementation.
+
+\subsection{Primary Research Role}
+\label{sec:ggen-identity-role}
+
+Within the dissertation, ggen occupies the role of \emph{manufacturing machinery and code
+generation engine}. It is the component that makes the research foundry's claims capital-market
+admissible and runtime-executable. Without ggen, the conformance verdicts produced by wasm4pm
+remain laboratory measurements. With ggen, those verdicts are materialized into PowerPoint slides
+traceable to BLAKE3 receipts, Excel due-diligence workbooks traceable to SPARQL query results, and
+Rust orchestrator source code that encodes the process lifecycle state machine as compilable law.
+
+ggen is designated as a Phase 3 consumer in the foundry's manufacturing sequence, as documented in
+\texttt{.ggen/receipts/phase-2-index.json}. It consumes Phase 2 outputs (conformance verdicts,
+witness lattice artifacts, lifecycle governance facts) and manufactures Phase 3 capital-market
+deliverables. Its position in the pipeline makes it the bridge between the research program and
+the board room.
+
+\subsection{Key Artifacts}
+\label{sec:ggen-identity-artifacts}
+
+The primary manufactured artifacts attributable to ggen are:
+
+\begin{enumerate}
+  \item \textbf{Blue River Orchestrator} (\texttt{../blue\_river\_dam/src/lib.rs}) --- A Rust
+    source file manufacturing a MAPE-K autonomic governance engine. The first receipt in the chain
+    (\texttt{sync-20260601-175316.json}) records the BLAKE3 output hash of this file as
+    \texttt{4e341f5a08c1fd35a5e6aa5dabdd328613263bbc9f7c23bc3bae4893a2562593}.
+  \item \textbf{Witness Marker Enumeration}
+    (\texttt{../sources/wasm4pm-compat/manufactured/witnesses/witness-markers-20260601.rs}) --- A
+    Rust enum defining the eight-position join-semilattice of algebraic proof structures, from
+    \texttt{VanDerAalst1989} at the bottom to \texttt{BlueRiverDam} at the top, with embedded
+    algebraic test proofs.
+  \item \textbf{WIT Boundary Artifact}
+    (\texttt{../sources/wasm4pm-compat/manufactured/boundaries/boundary-law-20260601.wit}) --- A
+    WebAssembly Interface Types world definition enforcing the compat-world / engine-world
+    boundary split.
+  \item \textbf{17 governance artifacts} documented in \texttt{GGEN\_MANUFACTURING\_SUMMARY.md}:
+    five governance rule files, five Tera templates, and seven audit scripts totaling 42 or more
+    named proof gates.
+  \item \textbf{BLAKE3 receipt chain} --- three receipts forming an unbroken provenance chain
+    from ontology fact to manufactured deliverable, with operation IDs \texttt{de2ad19f},
+    \texttt{95a9448c}, and \texttt{09084e1e}.
+\end{enumerate}

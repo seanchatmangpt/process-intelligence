@@ -1,0 +1,64 @@
+\section{Project Identity}
+\label{sec:receipts-identity}
+
+\subsection{Purpose}
+\label{sec:receipts-identity-purpose}
+
+The receipts corpus is the cryptographic anchor layer for the entire process-intelligence research
+program. Its purpose is to make every board-admissible claim in the doctoral research program
+independently verifiable and tamper-evident. Rather than asserting that a process-mining result
+is correct, the receipts corpus demands that each result be bound to a specific event log hash,
+a specific process model hash, a specific fitness and precision score, and a validator signature
+before any claim may enter the doctoral or commercial record. Without this anchoring layer, results
+produced by \texttt{wasm4pm} and analyzed through \texttt{pm4py} would remain asserted values with
+no durable chain of custody. The receipts corpus converts those assertions into receipted facts.
+
+The corpus also serves a secondary purpose as the integrity boundary between research and
+execution. Wasm4pm modules are certified by generation receipts before their outputs may feed
+into downstream M\&A claims. The M\&A claim receipts themselves carry fitness scores, precision
+scores, and replication verdicts. The entire system is designed so that a claim cannot flow from
+manufacturing to board presentation unless a receipt exists that anchors it to evidence.
+
+\subsection{Repository Surface}
+\label{sec:receipts-identity-surface}
+
+The receipts directory at \texttt{/Users/sac/process-intelligence/receipts/} contains fifteen
+named artifacts organized into three layers. The first layer is the five M\&A claim receipts:
+\texttt{rec\_ebitda\_rework\_001.json}, \texttt{rec\_wc\_ar\_002.json},
+\texttt{rec\_risk\_sla\_003.json}, \texttt{rec\_risk\_compliance\_004.json}, and
+\texttt{rec\_residual\_standard\_005.json}. Each is a signed JSON document carrying an Ed25519
+\texttt{validator\_signature} field, BLAKE3 \texttt{target\_log\_hash} and
+\texttt{process\_model\_hash} fields, a \texttt{wasm4pm\_query\_result} payload, and a
+\texttt{board\_admissibility} assessment object.
+
+The second layer is the four wasm4pm module generation receipts:
+\texttt{wasm4pm\_conformance\_authority\_generation.md},
+\texttt{wasm4pm\_mining\_generation.md}, \texttt{wasm4pm\_replay\_generation.md}, and
+\texttt{wasm4pm\_lifecycle\_generation.md}. These certify that the Rust module manufacturing
+pipeline compiled, tested, and sealed each module before its outputs were used.
+
+The third layer is the governance and ledger documents:
+\texttt{RECEIPT\_REGISTRY.md}, \texttt{ma\_deck\_rendering\_authority\_assessment.md}, and
+the Blue River Dam orchestrator generation receipt \texttt{blue\_river\_generation.md}.
+
+\subsection{Primary Research Role}
+\label{sec:receipts-identity-role}
+
+Within the dissertation, the receipts corpus plays the role of \emph{cryptographic-receipt-chain-and-claim-provenance}. It is the evidence layer that makes the thesis argument falsifiable. The doctoral claim is that process intelligence, as implemented through \texttt{wasm4pm} and anchored by this receipt chain, produces board-admissible results that meet or exceed the fitness threshold of $0.95$ and precision threshold of $0.90$ required for M\&A due diligence. The receipts corpus is the only artifact in the research program that can confirm or refute this claim through inspectable, signed, hash-bound documents.
+
+The corpus also establishes the boundary between the research program and downstream execution. No wasm4pm module may be represented as production-ready unless its generation receipt exists and is sealed. No M\&A financial claim may be represented as board-admissible unless its JSON receipt exists with a passing \texttt{board\_admissibility} verdict. This boundary is enforced by the \texttt{ConformanceAdmissionGate} (Blue River Dam Gate 3) in the conformance authority module.
+
+\subsection{Key Artifacts}
+\label{sec:receipts-identity-artifacts}
+
+The most structurally significant artifacts in the corpus are as follows. The
+\texttt{RECEIPT\_REGISTRY.md} acts as the authoritative ledger of seven named receipt types:
+\texttt{PAPER\_CANON}, \texttt{PM4PY\_ORACLE}, \texttt{WASM4PM\_GAP}, \texttt{LIFECYCLE},
+\texttt{MA}, \texttt{STANDARDS}, and \texttt{ADVERSARIAL}. Each type is associated with named
+witnesses and gap inventories. The conformance authority generation receipt documents the Blake3
+hash \texttt{75508e6e9e7acccb679e5c8be35ddd2adc9c4732f1fc331047d755703c9107c3} binding the
+664-line Rust module at version \texttt{v30.1.2}. The \texttt{ma\_deck\_rendering\_authority\_assessment.md}
+confirms that a seven-step board presentation pipeline is complete and ready for execution,
+with all steps marked either \texttt{VERIFIED} or \texttt{EXECUTABLE}. Together these artifacts
+constitute the physical receipt chain that anchors all board-admissible claims in the
+process-intelligence research program.

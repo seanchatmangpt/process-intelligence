@@ -8,7 +8,7 @@ hand_coding = false
 [[inference.rules]]
 name = "normalize"
 description = "Pass-through normalization for DMAIC measurement gate"
-construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(false) }"
+construct = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }"
 order = 1
 
 [ontology]

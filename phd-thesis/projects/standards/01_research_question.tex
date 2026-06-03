@@ -1,0 +1,86 @@
+% FILE: 01_research_question.tex
+% Project: standards
+% Thesis Role: public-standards-compliance-and-gravity-field-mapping
+
+\section{Research Question}
+\label{sec:standards-rq}
+
+\subsection{Problem Statement}
+\label{sec:standards-rq-problem}
+
+Process intelligence systems routinely issue claims about operational conformance, audit
+fitness, and process soundness. In practice, these claims are made in proprietary formats
+against proprietary models, with no named mathematical referent and no mechanism by which
+an independent party---a buyer's advisor in an M\&A data room, a regulator, a competing
+vendor---can replicate the verification. The result is an ecosystem where process evidence
+is structurally indistinguishable from marketing assertion.
+
+The problem this project addresses is: \emph{what formal apparatus is required to convert
+a process evidence claim into a board-admissible, cryptographically verifiable fact?} The
+answer demanded by the research program is a complete mapping from each claim type to a
+named public standard, a named mathematical formulation within that standard, a named
+validation threshold, and a BLAKE3 receipt chain that binds the claim to its evidence.
+Without this mapping, the Evidence lattice \texttt{Evidence<T, State, Witness>} has no
+external referent; it is a type system that witnesses only itself.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:standards-rq-old-regime}
+
+The old-regime assumption is that standards compliance is a documentation exercise: a
+vendor asserts conformance to XES, OCEL, or BPMN by stating it in a specification sheet.
+No formal mapping is required; no mathematical formulation is quoted; no validation
+threshold is named. The standard is treated as a badge rather than a constraint.
+
+This assumption has three structural defects. First, it permits process log laundering:
+event data can be formatted as XES while violating chronological invariance
+($\forall i,\ t(e_{i+1}) \ge t(e_i)$), with no enforcement mechanism to detect the
+violation. Second, it permits phantom object injection in OCEL logs---events bound to
+object identifiers that do not appear in the object set---because the bipartite graph
+invariants of $\mathcal{L}=(\mathcal{E}, \mathcal{O}, \text{E2O}, \text{O2O}, \Delta)$
+are never checked. Third, it permits WF-net soundness claims without executing the
+Karp-Miller Coverability Graph construction that would detect dead transitions or
+non-terminating markings.
+
+The adversarial test report \texttt{ocel-adversarial-gravity.md} (identifier
+OCEL-XES-ADV-V30.1.1) documents each of these vulnerabilities in XES and OCEL native
+formats under the old regime.
+
+\subsection{Hypothesis}
+\label{sec:standards-rq-hypothesis}
+
+\textbf{Hypothesis:} If each public standard is formally mapped to (a) a named
+mathematical formulation, (b) a Blue River Dam validation threshold, (c) a type-law
+surface in the \texttt{Evidence<T, State, Witness>} lattice, and (d) a BLAKE3 receipt
+schema, then process evidence claims become independently replicable, machine-verifiable
+facts rather than vendor assertions---and this replicability is both a customer protection
+and a competitive weapon.
+
+The hypothesis further claims that this mapping, when applied to 16 standards, creates a
+gravitational field: the foundry's architecture is held in place by the mutual
+gravitational pull of independently verifiable specifications, such that no single
+proprietary element is load-bearing. This is the architectural basis for the reverse
+lock-in doctrine.
+
+\subsection{Success Criteria}
+\label{sec:standards-rq-success}
+
+The graduation gate for this research project, as recorded in checkpoint
+\texttt{chk-public-standards-crosswalk-001}, specifies five criteria:
+
+\begin{enumerate}
+  \item \textbf{Type-safety mapping}: All 16 standards are mapped to the
+        \texttt{Evidence<T, State, Witness>} lattice, as verified against the Type-Law Atlas
+        at \texttt{sources/wasm4pm-compat/type-law-atlas.md}.
+  \item \textbf{PM4Py Oracle Map alignment}: Mappings are aligned with the limits and
+        assumptions identified in the PM4Py Oracle Map at
+        \texttt{sources/pm4py/oracle-map.md}.
+  \item \textbf{Audit completeness}: The audit matrix \texttt{audit\_\_standards\_coverage.md}
+        registers green (VERIFIED) status for all 16 standards.
+  \item \textbf{No template files}: All placement files contain fully realized schemas,
+        mathematical formulations, and execution rules.
+  \item \textbf{Link integrity}: All cross-references are written as absolute markdown
+        links with no broken paths.
+\end{enumerate}
+
+All five criteria were satisfied at checkpoint timestamp \texttt{2026-05-31T23:59:59Z},
+graduating the standards crosswalk to ALIVE status.

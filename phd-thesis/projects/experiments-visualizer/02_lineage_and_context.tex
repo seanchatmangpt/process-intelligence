@@ -1,0 +1,88 @@
+% FILE: 02_lineage_and_context.tex
+% Project: experiments-visualizer
+% Thesis Role: process-intelligence-simulation-dashboard
+
+\section{Lineage and Context}
+\label{sec:experiments-visualizer-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:experiments-visualizer-lineage-2016}
+
+The thesis lineage begins with a 2016 language-model experiment whose negative result anchors
+the entire research program: local text imitation does not conserve consequence. A model trained
+to reproduce surface patterns of business text can produce outputs that are locally fluent but
+causally disconnected from the process state that generated the input. The output \emph{looks}
+correct but carries no verifiable relationship to the event history from which it was derived.
+
+The \texttt{experiments-visualizer} is a direct response to this lesson. Every rendered metric
+in the dashboard is either computed from a formula whose inputs are recorded in the audit ledger,
+or it is not rendered at all. The Blue River Dam Epistemic Containment Protocol — referenced
+explicitly in the application's self-identification string ``WASM4PM Core JS Emulator v2.1.0''
+and in its doctrine file references — is the architectural enforcement of the 2016 lesson:
+no output may be asserted without traceable derivation from auditable evidence.
+
+The connection is not metaphorical. The SHA-256 block chain in \texttt{blockchain.js} and
+\texttt{ledger.js} exists precisely because surface-correct output without a tamper-evident
+derivation chain is epistemically indistinguishable from fabrication. The dashboard makes
+fabrication structurally impossible: a block cannot be inserted into the chain without
+recomputing all subsequent hashes, and \texttt{verifyChain()} will detect the inconsistency.
+
+\subsection{Enterprise Process Gap}
+\label{sec:experiments-visualizer-lineage-gap}
+
+The enterprise process gap identified in the thesis lineage is the absence of a unified,
+inspectable, auditable surface where process intelligence algorithms can be observed operating
+together on live data. Commercial process mining tools of the pre-2020 era (AUTHOR THESIS)
+separated discovery, conformance, and monitoring into distinct UI panels backed by distinct
+server-side services, making it impossible to observe the causal chain from raw trace through
+conformance score through autonomic response in a single unbroken sequence.
+
+The \texttt{experiments-visualizer} closes this gap within the browser. The seven subsystems
+are not merely co-located in the same HTML page; they are causally wired. The EWMA drift score
+computed in \texttt{drift-detector.js} is consumed by \texttt{autonomic.js} in the same
+\texttt{tick()} cycle. The alignment cost computed by \texttt{astar.js} feeds the fitness
+reported in the \texttt{ReceiptShapeTs} record. The \texttt{DeclareValidator} constraint
+violations are visible in the same dashboard panel as the token game animation, so an analyst
+can observe a DECLARE violation and immediately trace it to the token game state that produced it.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:experiments-visualizer-lineage-chatman-eq}
+
+The Chatman Equation $A = \mu(O^*)$ expresses the thesis claim that accountability is a
+function of the observable object model: no observable object model, no accountability. The
+\texttt{experiments-visualizer} operationalizes this equation in three concrete ways.
+
+First, the \texttt{EvidenceTs<T, State, Witness>} typestate wrapper in \texttt{bindings.d.ts}
+makes the lifecycle of every evidence object — from \texttt{Raw} through \texttt{Parsed},
+\texttt{Admitted}, \texttt{Refused}, \texttt{Projected}, \texttt{Exportable}, to
+\texttt{Receipted} — statically visible at compile time. An evidence object that has not reached
+\texttt{Receipted} state cannot appear in a \texttt{ReceiptShapeTs} record without a type error.
+This is $\mu(O^*)$ enforced by the TypeScript compiler.
+
+Second, the \texttt{WitnessKey} markers — \texttt{Ocel20}, \texttt{Xes1849},
+\texttt{WfNetSoundnessPaper}, \texttt{Dec20}, \texttt{Pmax24} — attach the source authority
+for each evidence type directly to the type signature, making the epistemic grounding of every
+object observable without inspecting runtime state.
+
+Third, the \texttt{GraduationCandidateTs} structure — \texttt{\{reason, subject, evidence\_ref\}}
+— requires that any graduation request carry an explicit reference to the evidence that supports
+it, directly encoding the Chatman Equation's requirement that accountability be traceable to
+observable objects.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:experiments-visualizer-lineage-receipts}
+
+The receipt and replay layer of the thesis lineage is embodied most directly in
+\texttt{replay\_receipt\_sample.md}, which contains a concrete \texttt{ReceiptShapeTs}-conforming
+record with a fitness score of 0.982 computed against the supply-chain WF-net. This fixture is
+not illustrative; it is the ground-truth value against which \texttt{visualizer-validation.ts}
+validates the type projections at compile time.
+
+The broader receipt chain for the process intelligence program is maintained in
+\texttt{/Users/sac/process-intelligence/receipts/} and includes records
+\texttt{rec\_ebitda\_rework\_001.json}, \texttt{rec\_risk\_sla\_003.json},
+\texttt{rec\_risk\_compliance\_004.json}, \texttt{rec\_residual\_standard\_005.json}, and
+\texttt{rec\_wc\_ar\_002.json}. These receipts confirm that the receipt-chain architecture
+demonstrated in the browser dashboard has been applied to real financial process domains,
+establishing that the visualizer is not an isolated research artifact but the simulation
+counterpart to a production-oriented receipt infrastructure.

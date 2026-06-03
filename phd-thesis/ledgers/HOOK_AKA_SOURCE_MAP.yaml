@@ -1,0 +1,853 @@
+---
+# Knowledge Hooks / AKA Unified Source Map
+# Generated: 2026-06-01
+# Merged from: Search Agent 1 (KNHK Primary), Search Agent 2 (Research Cluster), Search Agent 3 (Extended Corpus)
+# Total entries: 84
+# HIGH: 52   MEDIUM: 29   LOW: 3
+
+sources:
+
+  # ============================================================
+  # TIER 1 — PRIMARY DOCTRINE (~/knhk, ~/chatmangpt/knhk)
+  # ============================================================
+
+  - path: /Users/sac/chatmangpt/knhk/yawl.txt
+    term: knowledge hook
+    excerpt: >-
+      "A knowledge hook = (predicate, guard, action) triple generated from Σ.
+      It enforces an invariant Q on every Δ admitted into μ(O). Formally:
+      hook(p, q, a): Δ ⊨ Qp ⇒ μ(O ⊔ Δ) = μ(O) ⊔ μ(Δ). Each hook is compiled
+      ahead of time into a branchless kernel that runs within the eight-tick beat."
+    project: knhk
+    source_class: CHATGPT_TRANSCRIPT
+    relevance: HIGH
+    reason: "ONLY source with formal mathematical triple-definition and Δ-formula. Unique contribution."
+
+  - path: /Users/sac/knhk/DOCTRINE_2027.md
+    term: knowledge hook
+    excerpt: >-
+      "MAPE-K embedded as knowledge hooks is the only way to keep the discipline
+      while closing the loop at machine speed."
+    project: knhk
+    source_class: CANONICAL_DOCTRINE
+    relevance: HIGH
+    reason: "ONLY verbatim use of 'knowledge hooks' as a canonical term in the doctrine. Era table: '2027 → MAPE-K autonomic hooks → Sub-nanosecond decisions.'"
+
+  - path: /Users/sac/knhk/KNHK_PHD_THESIS.md
+    term: knowledge hook
+    excerpt: >-
+      "KNHK (Knowledge Hot Path Engine) ... eliminates false positives through
+      schema-first development and OpenTelemetry Weaver validation as the single
+      source of truth. Receipt: Cryptographic proof of execution. Hash of inputs
+      and outputs, prevents tampering. A = μ(O): Actions are deterministic
+      mappings of observations."
+    project: knhk
+    source_class: THESIS_DRAFT
+    relevance: HIGH
+    reason: "Primary KNHK thesis — authoritative academic definition. MAPE-K, Chatman Equation, Covenant 3/6, Receipt glossary."
+
+  - path: /Users/sac/knhk/V30_1_1_MANIFESTO.md
+    term: receipt
+    excerpt: >-
+      "origin before motion | canon before actuation | admission before consequence |
+      refusal before corruption | receipt before claim | replay before trust |
+      substitution before scale | continuity before growth. Logs are observation.
+      Receipts are institutional memory. A system that cannot refuse cannot
+      preserve consequence."
+    project: knhk
+    source_class: CANONICAL_DOCTRINE
+    relevance: HIGH
+    reason: "Final Manifesto verbatim — all eight precedence laws. Receipts Replace Logs canonical distinction."
+
+  - path: /Users/sac/knhk/GENESIS_CORE_SPECIFICATION.md
+    term: receipt
+    excerpt: >-
+      "Receipt: Deterministic proof of consequence (not telemetry). pub struct Receipt {
+      receipt_id: u64, epoch: u64, input_digest: u64, output_digest: u64,
+      previous_receipt_hash: [u8; 32], receipt_hash: [u8; 32], law_ref: u64,
+      ticks_used: u32, tick_budget: u32 }. Core Promise: hash(A) = hash(μ(O))
+      is kernel's only promise."
+    project: knhk
+    source_class: IMPLEMENTATION_SPEC
+    relevance: HIGH
+    reason: "Primary Rust struct definitions for Receipt, Refusal, Construct8, Pair2, AdmissionGate. Kernel/membrane separation doctrine."
+
+  - path: /Users/sac/knhk/PART_SPEC.md
+    term: knowledge hook
+    excerpt: >-
+      "Phase 2: Hook (Contact → Kernel Admission via SPARQL ASK gate). Phase 5:
+      Refusal/Accounting (When Law Violated). Refusals are first-class evidence,
+      not errors to hide."
+    project: knhk
+    source_class: IMPLEMENTATION_SPEC
+    relevance: HIGH
+    reason: "Full Truex 6-phase lifecycle with SPARQL ASK admission gate detail. Canonical direction: attempt → hook → admission/refusal → durable motion → receipt → replay → accounting → promotion."
+
+  - path: /Users/sac/knhk/DOCTRINE_COVENANT.md
+    term: knowledge hook
+    excerpt: >-
+      "Covenant 3: Every workflow has embedded monitoring, analysis, planning,
+      execution, and learning (MAPE-K ⊨ Autonomy). Covenant 6: Observations (O)
+      are not logs; they are first-class data. All code must satisfy all covenants.
+      No exceptions."
+    project: knhk
+    source_class: CANONICAL_DOCTRINE
+    relevance: HIGH
+    reason: "Six binding covenants — operational law. Covenant 3 encodes MAPE-K hooks as mandatory. Covenant 6 distinguishes observations from logs."
+
+  - path: /Users/sac/knhk/MAPE-K_AUTONOMIC_INTEGRATION.md
+    term: autonomic hook
+    excerpt: >-
+      "Enable workflows to autonomously: Detect failures (Self-Healing), Monitor
+      performance (Self-Optimizing), Adapt to conditions (Self-Configuring), Detect
+      threats (Self-Protecting), Learn from experience (Self-Learning). Ten MAPE-K
+      hooks: mape:PreMonitor, mape:PostMonitor, mape:PreAnalyze, mape:PostAnalyze,
+      mape:PrePlan, mape:PostPlan, mape:PreExecute, mape:PostExecute,
+      mape:PreFeedback, mape:PostFeedback."
+    project: knhk
+    source_class: IMPLEMENTATION_SPEC
+    relevance: HIGH
+    reason: "Ten named MAPE-K autonomic lifecycle control points. Distinguishable from knowledge hooks in the Reflex sense."
+
+  - path: /Users/sac/knhk/DOCTRINE_INDEX.md
+    term: knowledge hook
+    excerpt: "Navigation map, file mapping, audience routing, covenant hierarchy."
+    project: knhk
+    source_class: CANONICAL_DOCTRINE
+    relevance: MEDIUM
+    reason: "Navigation map for the entire KNHK doctrine corpus."
+
+  - path: /Users/sac/knhk/CHATMAN_CONSTANT_ENFORCEMENT.md
+    term: knowledge hook
+    excerpt: "Enforcement mechanism for ≤8 tick bound. Violation handling."
+    project: knhk
+    source_class: IMPLEMENTATION_SPEC
+    relevance: MEDIUM
+    reason: "Chatman Constant enforcement — 8-tick bound on all hook executions."
+
+  - path: /Users/sac/knhk/ARCHITECTURE.md
+    term: knowledge hook
+    excerpt: >-
+      "KNHK (Knowledge Graph Kernel) is a real-time, distributed system.
+      Analyze: Weaver validates against schema."
+    project: knhk
+    source_class: IMPLEMENTATION_SPEC
+    relevance: MEDIUM
+    reason: "Three-tier architecture overview."
+
+  - path: /Users/sac/chatmangpt/knhk/DOCTRINE_2027.md
+    term: knowledge hook
+    excerpt: "Identical copy of /Users/sac/knhk/DOCTRINE_2027.md — confirmed canonical."
+    project: knhk
+    source_class: CANONICAL_DOCTRINE
+    relevance: MEDIUM
+    reason: "Confirmed copy of canonical doctrine — verifies DOCTRINE_2027 stability."
+
+  - path: /Users/sac/chatmangpt/knhk/KNHK_2027_PRESS_RELEASE.md
+    term: knowledge hook
+    excerpt: >-
+      "A = µ(O) in Production: How Rust Became the Control Plane for Fortune 500
+      Ontologies. No dynamic configuration inside the kernel, No unbounded recursion,
+      No allocation on the hot path."
+    project: knhk
+    source_class: PRESS_RELEASE
+    relevance: MEDIUM
+    reason: "Confirms deterministic kernel — LLM output is NOT runtime authority."
+
+  # ============================================================
+  # TIER 2 — PROCESS-INTELLIGENCE DOCTRINE LAYER
+  # ============================================================
+
+  - path: /Users/sac/process-intelligence/doctrine/AUTONOMIC_KNOWLEDGE_ACTUATION.md
+    term: Autonomic Knowledge Actuation
+    excerpt: >-
+      "Every execution action emits a receipt. No silent actuation. Executions that
+      do not emit receipts are not closures. They are narration. AKA is not
+      monitoring. It is not dashboards. It is not alerting. Knowledge retrieval is
+      looking up what you know. Knowledge actuation is making what you know
+      consequential."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: HIGH
+    reason: "Primary AKA doctrine for the research program. Receipt structure BLAKE3-defined. Elastic/compliance subnet partition."
+
+  - path: /Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md
+    term: Autonomic Knowledge Actuation
+    excerpt: >-
+      "transition : State(s1, Proof(s1)) → Transition(t) → Option(State(s2, Proof(s2)))
+      where output is None (compiler failure) if safety invariants violated. A git
+      commit is treated as a manufacturing transition τ = (c, ρ) where c is the
+      commit hash and ρ is a receipt class."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: HIGH
+    reason: "Mathematical typestate formalization of AKA. Commits-as-receipts schema."
+
+  - path: /Users/sac/process-intelligence/doctrine/spr_thesis_actuation.md
+    term: Autonomic Knowledge Actuation
+    excerpt: >-
+      "knowledge → actuation boundary → typed transition → admissible condition →
+      refusal rule → repair route → receipt → replay → decommissioning law"
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: HIGH
+    reason: "Full AKA actuation pipeline verbatim — load-bearing for thesis chapter on lifecycle."
+
+  - path: /Users/sac/process-intelligence/doctrine/PROCESS_INTELLIGENCE_SPR_THESIS.md
+    term: knowledge hook
+    excerpt: >-
+      "kappa(rho(alpha(mu(O*)))) → ALIVE | PARTIAL | REFUSED. mu(O*) = manufacture;
+      alpha(mu(O*)) = actuate; rho(alpha(mu(O*))) = emit evidence;
+      kappa(rho(alpha(mu(O*)))) = gate evidence. kappa(tau) ∈ {ADMIT(R), REFUSE(F),
+      PARTIAL(X)}: no silent success."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: HIGH
+    reason: "Full operator chain semantics. Three typed outcomes — no silent success. Hook IS the gate."
+
+  - path: /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/KNOWLEDGE_HOOKS_AND_AKA_DOCTRINE.md
+    term: knowledge hook
+    excerpt: >-
+      "A knowledge hook is a deterministic admission/refusal boundary that consumes
+      an attempted motion, evaluates it against admissible process law, emits a
+      decision, and manufactures the first durable proof that motion occurred or was
+      refused. A hook that produces no decision is not a hook — it is narration.
+      A lifecycle transition without a hook firing is not a lawful transition; it is
+      noise. Knowledge that cannot actuate is documentation. Documentation is PARTIAL."
+    project: process-intelligence
+    source_class: SYNTHESIS_DOCUMENT
+    relevance: HIGH
+    reason: "Primary synthesis with GALL test battery (GALL-H/R/RP/S). Full definition with anti-law set."
+
+  - path: /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+    term: knowledge hook
+    excerpt: "Hook definition cartography — complete mapping of hook definitions across corpus."
+    project: process-intelligence
+    source_class: RESEARCH_MAP
+    relevance: HIGH
+    reason: "Authoritative definition map for PhD thesis research cluster."
+
+  - path: /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/02_aka_definition_map.md
+    term: Autonomic Knowledge Actuation
+    excerpt: "Autonomic Knowledge Actuation = Knowledge → Proof → Consequence → Knowledge."
+    project: process-intelligence
+    source_class: RESEARCH_MAP
+    relevance: HIGH
+    reason: "AKA definition cartography. Explicitly distinguishes AKA from automation and lifecycle management."
+
+  - path: /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/03_autoinstinct_lineage_map.md
+    term: AutoInstinct
+    excerpt: "AutoInstinct lineage map — byte-lane family INST8/KAPPA8/Family8/POWL8/CONSTRUCT8."
+    project: process-intelligence
+    source_class: RESEARCH_MAP
+    relevance: HIGH
+    reason: "AutoInstinct lineage. Confirms AutoInstinct/ainst is NOT an agent framework."
+
+  - path: /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/04_construct8_motion_boundary_map.md
+    term: CONSTRUCT8
+    excerpt: "CONSTRUCT8 motion boundary map. No receipt, no authority — verified at line 167."
+    project: process-intelligence
+    source_class: RESEARCH_MAP
+    relevance: HIGH
+    reason: "CONSTRUCT8 motion boundary. Frame law 'no receipt, no authority' explicitly verified."
+
+  - path: /Users/sac/process-intelligence/phd-thesis/research/knowledge-hooks/05_frame_preservation_audit.md
+    term: knowledge hook
+    excerpt: >-
+      "AKA ≠ automation — verified. Report ≠ proof — verified. No receipt, no authority
+      — verified. Hooks are Claude Code Andon gates — deterministic enforcement points
+      that enforce admission/refusal conditions at named lifecycle boundaries."
+    project: process-intelligence
+    source_class: AUDIT
+    relevance: HIGH
+    reason: "Frame law audit — validates all 7 frame laws against corpus. Confirms zero frame violations."
+
+  - path: /Users/sac/process-intelligence/audits/05_frame_preservation_audit.md
+    term: knowledge hook
+    excerpt: "Frame law audit at repo level — same validation as phd-thesis copy."
+    project: process-intelligence
+    source_class: AUDIT
+    relevance: HIGH
+    reason: "Repo-level frame preservation audit confirming zero frame violations."
+
+  - path: /Users/sac/process-intelligence/standards/MAPE_K_INTEGRATION.md
+    term: knowledge hook
+    excerpt: "Standard integration specification for MAPE-K in the research program."
+    project: process-intelligence
+    source_class: STANDARDS_DOCUMENT
+    relevance: HIGH
+    reason: "MAPE-K integration standard — links research doctrine to public standards."
+
+  - path: /Users/sac/process-intelligence/doctrine/PROCESS_TRUTH_AUTHORITY.md
+    term: knowledge hook
+    excerpt: "→ 8-bit bounded state (Need9 = split) → typed admission/refusal → external-witness mapping → GALL growth → receipts/replay"
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: MEDIUM
+    reason: "Direction chain with Need9 bounded state."
+
+  - path: /Users/sac/process-intelligence/doctrine/BLUE_RIVER_DAM.md
+    term: Autonomic Knowledge Actuation
+    excerpt: "Upstream closure law. AKA as the actuation mechanism bounded by the Dam."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: MEDIUM
+    reason: "Blue River Dam upstream closure law — bounds AKA."
+
+  - path: /Users/sac/process-intelligence/doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md
+    term: knowledge hook
+    excerpt: "kappa(rho(alpha(mu(O*)))) → ALIVE | PARTIAL | REFUSED with receipt requirement for each lifecycle stage."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: MEDIUM
+    reason: "Gate requirement with receipt for every lifecycle stage transition."
+
+  - path: /Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation-v30.md
+    term: Autonomic Knowledge Actuation
+    excerpt: "v30.1.1 adversarial amendment — Fully Homomorphic Actuation (FHA), Byzantine-hardened topology reformation."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: MEDIUM
+    reason: "Adversarial extension of AKA doctrine."
+
+  - path: /Users/sac/process-intelligence/standards/public_standards_to_lifecycle_actuation.md
+    term: Autonomic Knowledge Actuation
+    excerpt: "Autonomic Knowledge Actuation defines how process models adapt dynamically to runtime deviations."
+    project: process-intelligence
+    source_class: STANDARDS_DOCUMENT
+    relevance: MEDIUM
+    reason: "XES/OCEL/BPMN mapped to MAPE-K autonomic control loops."
+
+  - path: /Users/sac/process-intelligence/COVENANT.md
+    term: Autonomic Knowledge Actuation
+    excerpt: "Autonomic knowledge actuation: MAPE-K closed-loop control doctrine — canonical claim."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: MEDIUM
+    reason: "Covenant listing of AKA as canonical claim."
+
+  # ============================================================
+  # TIER 3 — GITVAN IMPLEMENTATION SUITE
+  # ============================================================
+
+  - path: /Users/sac/gitvan-recent-changes-backup-20250919-091930/src/hooks/HookOrchestrator.mjs
+    term: knowledge hook
+    excerpt: >-
+      "initialize RDF components → load previous state → parse all hooks → evaluate
+      each hook's predicate → plan DAG → execute steps → persist via GitNativeIO.
+      This is the complete attempt → hook → admission/refusal → durable motion → receipt chain."
+    project: gitvan
+    source_class: PRODUCTION_SOURCE
+    relevance: HIGH
+    reason: "Production source — complete lifecycle in working JavaScript/MJS code."
+
+  - path: /Users/sac/gitvan-backup-20250918-164245/GIT-HOOKS-SIGNALS-KNOWLEDGE-HOOKS-ARCHITECTURE.md
+    term: knowledge hook
+    excerpt: >-
+      "Layer 1 (Git Hooks) = WHEN (timing signal). Layer 2 (Knowledge Hooks) = WHAT
+      (SPARQL-driven admission/refusal). Git Operation → Git Hook Signal →
+      Knowledge Hook Evaluation → SPARQL Predicate → Workflow Execution."
+    project: gitvan
+    source_class: ARCHITECTURE_DOCUMENT
+    relevance: HIGH
+    reason: "Two-layer architecture: signals vs. intelligence. Canonical separation of Git hooks from Knowledge hooks."
+
+  - path: /Users/sac/gitvan-recent-changes-backup-20250919-091930/KNOWLEDGE-HOOKS-END-TO-END-VERIFICATION-REPORT.md
+    term: knowledge hook
+    excerpt: "17/17 tests passed; 8 predicate types; 21/21 Git operations. Admission/refusal is binary per ASK predicate."
+    project: gitvan
+    source_class: VERIFICATION_REPORT
+    relevance: HIGH
+    reason: "End-to-end verified implementation — all 8 predicate types, 21 Git operations."
+
+  - path: /Users/sac/gitvan-recent-changes-backup-20250919-091930/GITVAN-HOOKS-ARCHITECTURE-AUDIT-REPORT.md
+    term: knowledge hook
+    excerpt: "Explicit separation: traditional Git hooks (bypass KH system) vs. Knowledge Hook system (SPARQL predicates). Goal: pure Knowledge Hook architecture."
+    project: gitvan
+    source_class: AUDIT
+    relevance: HIGH
+    reason: "Architecture audit explicitly distinguishing knowledge hooks from traditional git hooks."
+
+  - path: /Users/sac/gitvan/@UNRDF_HOOKS_ARCHITECTURE_DIAGRAMS.md
+    term: knowledge hook
+    excerpt: >-
+      ":preCommitValidator a gh:Hook ; gv:title 'Pre-commit File Validator' ;
+      gh:hasPredicate :fileCheckPredicate ; gh:orderedPipelines :validationPipeline .
+      :fileCheckPredicate a gh:ASKPredicate ; gh:queryText 'ASK WHERE { ?event a
+      gv:PreCommitEvent . }'"
+    project: gitvan
+    source_class: ARCHITECTURE_DOCUMENT
+    relevance: HIGH
+    reason: "Knowledge Hook Engine, HookOrchestrator, predicate evaluator flow. Turtle hook definition pattern."
+
+  - path: /Users/sac/gitvan-backup-20250918-164245/knowledge-hooks-suite/README.md
+    term: knowledge hook
+    excerpt: "12/21 Git lifecycle operations; Turtle-defined hook predicates; 9 hook implementation files."
+    project: gitvan
+    source_class: IMPLEMENTATION_SPEC
+    relevance: MEDIUM
+    reason: "Knowledge hooks suite README — implementation inventory."
+
+  - path: /Users/sac/gitvan-recent-changes-backup-20250919-091930/KNOWLEDGE-HOOKS-GAPS-IMPLEMENTATION-COMPLETE-REPORT.md
+    term: knowledge hook
+    excerpt: "All 8 predicate types completed: ASK, SELECTThreshold, ResultDelta, SHACLAllConform, CONSTRUCT, DESCRIBE, Federated, Temporal."
+    project: gitvan
+    source_class: IMPLEMENTATION_REPORT
+    relevance: MEDIUM
+    reason: "Complete predicate type inventory — all 8 types documented."
+
+  - path: /Users/sac/gitvan-recent-changes-backup-20250919-091930/DEVELOPER-CENTRIC-KNOWLEDGE-HOOKS-ARCHITECTURE.md
+    term: knowledge hook
+    excerpt: "Scrum-at-Scale cadence encoded as SPARQL predicates in TTL hooks."
+    project: gitvan
+    source_class: ARCHITECTURE_DOCUMENT
+    relevance: MEDIUM
+    reason: "Developer workflow hooks — practical application of knowledge hook architecture."
+
+  - path: /Users/sac/gitvan/@UNRDF_HOOKS_QUICK_REFERENCE.md
+    term: knowledge hook
+    excerpt: "Predicate types, component statuses for GitVan knowledge hooks system."
+    project: gitvan
+    source_class: QUICK_REFERENCE
+    relevance: MEDIUM
+    reason: "Quick reference for predicate types."
+
+  # ============================================================
+  # TIER 4 — GGEN IMPLEMENTATION LAYER
+  # ============================================================
+
+  - path: /Users/sac/ggen/crates/ggen-graph/src/graph/dataset.rs
+    term: knowledge hook
+    excerpt: >-
+      "pub struct KnowledgeHook { pub name: String, pub sparql_query: String }
+      // SPARQL ASK or SELECT query defining the constraint. Implements execute()
+      against a DeterministicGraph."
+    project: ggen
+    source_class: RUST_IMPLEMENTATION
+    relevance: HIGH
+    reason: "Core Rust KnowledgeHook struct — executable implementation of the hook concept."
+
+  - path: /Users/sac/ggen/crates/ggen-graph/src/receipt/mod.rs
+    term: receipt
+    excerpt: "HookReceipt: Cryptographic receipt for the execution and validation of a specific knowledge hook. BLAKE3-bound."
+    project: ggen
+    source_class: RUST_IMPLEMENTATION
+    relevance: HIGH
+    reason: "HookReceipt Rust implementation — BLAKE3 cryptographic binding for hook execution."
+
+  - path: /Users/sac/ggen/crates/ggen-graph/src/prelude.rs
+    term: knowledge hook
+    excerpt: "Exports KnowledgeHook, TransitionReceipt, HookReceipt as core public API."
+    project: ggen
+    source_class: RUST_IMPLEMENTATION
+    relevance: HIGH
+    reason: "Core public API exports confirm KnowledgeHook is a first-class type."
+
+  - path: /Users/sac/ggen/examples/chatman-equation-paper.rdf
+    term: knowledge hook
+    excerpt: >-
+      "The core mechanism is the knowledge hook: a policy-bound program that detects
+      changes in a knowledge graph, evaluates invariants, and triggers workflow actions
+      with cryptographic receipts. A knowledge hook h is the atomic unit of knowledge work."
+    project: ggen
+    source_class: FORMAL_PAPER
+    relevance: HIGH
+    reason: "Formal paper — 'knowledge hook h is the atomic unit of knowledge work.' Unique contribution."
+
+  - path: /Users/sac/ggen/ORIGINAL_REQUEST.md
+    term: knowledge hook
+    excerpt: >-
+      "Witnessed Code Evaluation / Knowledge Hook Actuation over OCEL/PROV/RDF evidence.
+      Hook-pack triggers, receipt-bound decision deltas, sabotage fixtures (hook must
+      refuse with named law)."
+    project: ggen
+    source_class: SPECIFICATION
+    relevance: HIGH
+    reason: "GALL protocol definition — sabotage testing and receipt-bound decision deltas."
+
+  - path: /Users/sac/ggen/crates/ggen-cli/tests/gall_sync_actuation.rs
+    term: knowledge hook
+    excerpt: "Live GALL actuation test — file name encodes hook → actuation direction."
+    project: ggen
+    source_class: TEST_FILE
+    relevance: HIGH
+    reason: "Living test implementing GALL actuation verification."
+
+  - path: /Users/sac/ggen/fusion-thesis/chapters/ch06_autonomic_swarms.tex
+    term: knowledge hook
+    excerpt: "Chapter on autonomic swarms — directly references KNHK/AKA doctrine."
+    project: ggen
+    source_class: THESIS_CHAPTER
+    relevance: HIGH
+    reason: "Thesis chapter integrating KNHK/AKA doctrine into autonomic swarms."
+
+  - path: /Users/sac/ggen/examples/chatman-equation-paper-ENHANCED-v3.rdf
+    term: knowledge hook
+    excerpt: "Quantifies dark matter eliminated by knowledge hook deployment."
+    project: ggen
+    source_class: FORMAL_PAPER
+    relevance: MEDIUM
+    reason: "Enhanced version of chatman-equation-paper.rdf — dark matter quantification."
+
+  - path: /Users/sac/ggen/docs/PUBLIC_ONTOLOGY_GOVERNANCE.md
+    term: knowledge hook
+    excerpt: "Knowledge hook governance system implemented in the ggen-graph substrate."
+    project: ggen
+    source_class: GOVERNANCE_DOCUMENT
+    relevance: MEDIUM
+    reason: "Governance system for knowledge hooks in ggen."
+
+  - path: /Users/sac/ggen/docs/diataxis/tutorials.md
+    term: knowledge hook
+    excerpt: "Enforce safety checks via knowledge hook validation, and verify the resulting state transitions using cryptographic receipts."
+    project: ggen
+    source_class: TUTORIAL
+    relevance: MEDIUM
+    reason: "Tutorial-level description of hook validation + receipt verification."
+
+  - path: /Users/sac/ggen/crates/ggen-graph/src/diagnostics/mod.rs
+    term: knowledge hook
+    excerpt: "Parallel KnowledgeHook in diagnostics module."
+    project: ggen
+    source_class: RUST_IMPLEMENTATION
+    relevance: MEDIUM
+    reason: "Diagnostics module implementation of KnowledgeHook."
+
+  # ============================================================
+  # TIER 5 — TRUEX MANIFESTO + KERNEL
+  # ============================================================
+
+  - path: /Users/sac/truex/docs/MANIFESTO.md
+    term: knowledge hook
+    excerpt: >-
+      "No hook, no consequence. No receipt, no authority. No replay, no substrate.
+      No accounting, no promotion. The receipt is not decoration. The receipt is
+      the authority surface."
+    project: truex
+    source_class: MANIFESTO
+    relevance: HIGH
+    reason: "PRIMARY source for the 'No hook, no consequence' compression law — verbatim, twice."
+
+  - path: /Users/sac/truex/docs/reports/project-status/KNHK.md
+    term: knowledge hook
+    excerpt: "Hook-based architecture triggers an autonomic line-stop if graph invariants are violated or if a cyclic hook storm is detected. Confirms hooks as Jidoka/Andon stops."
+    project: truex
+    source_class: PROJECT_STATUS
+    relevance: HIGH
+    reason: "Hooks as Jidoka/Andon stops — manufacturing quality control framing."
+
+  - path: /Users/sac/truex/docs/vision2030/EXPERIMENTAL-CORPUS-LESSONS.md
+    term: knowledge hook
+    excerpt: "knowd proved the need for policy hooks and cryptographic receipts at the database layer. knhk proved the necessity of ≤2ns latency for hot-path operations."
+    project: truex
+    source_class: LESSONS_LEARNED
+    relevance: HIGH
+    reason: "Empirical lessons confirming hooks + receipts + ≤2ns latency requirement."
+
+  - path: /Users/sac/truex/docs/vision2030/projects/KNHK.md
+    term: knowledge hook
+    excerpt: >-
+      "KNHK is a projection of the receipted substrate; it is forbidden from
+      mutating the raw state directly. knhk.reconstruct(receipts) as replay interface.
+      Law K-2: KNHK is a projection of the receipted substrate."
+    project: truex
+    source_class: PROJECT_SPEC
+    relevance: HIGH
+    reason: "KNHK as receipted substrate projection — law K-2."
+
+  - path: /Users/sac/truex/docs/vision2030/VISION-2030.md
+    term: knowledge hook
+    excerpt: "An agent proposes a move. The Membrane intercepts it. KNHK checks permissions. Prolog8 checks policy. [...] UNIBIT stamps the receipt."
+    project: truex
+    source_class: VISION_DOCUMENT
+    relevance: MEDIUM
+    reason: "Combinatorial execution chain showing KNHK's role."
+
+  - path: /Users/sac/truex/docs/vision2030/TRUEX-EVOLUTION-MATRIX.md
+    term: knowledge hook
+    excerpt: "KNHK: Will become the backing store for the Virtual Knowledge Graph Runtime (VKG-HR), calculating avatar-relative projections dynamically in nanoseconds."
+    project: truex
+    source_class: EVOLUTION_DOCUMENT
+    relevance: MEDIUM
+    reason: "KNHK evolution trajectory."
+
+  - path: /Users/sac/truex/docs/truex-rebrands/TRUEX-REBRAND-KNHK.md
+    term: knowledge hook
+    excerpt: "Rebrand plan for KNHK → truex-graph or truex-memory."
+    project: truex
+    source_class: PLANNING_DOCUMENT
+    relevance: MEDIUM
+    reason: "KNHK rebrand plan confirming operational role."
+
+  # ============================================================
+  # TIER 6 — WASM4PM EXECUTION PORT
+  # ============================================================
+
+  - path: /Users/sac/wasm4pm/docs_quarantine/ARCHIVE/docs/vision-2030-hyperthesis.md
+    term: knowledge hook
+    excerpt: >-
+      "'Knowledge Hooks thesis' as one of 7 convergent pillars. μ decomposes it
+      (Knowledge Hooks) — 8 information-theoretic operators, each reducing intent
+      entropy by ~6.1 nats. Remove Knowledge Hooks and the transformation is monolithic."
+    project: wasm4pm
+    source_class: VISION_DOCUMENT
+    relevance: HIGH
+    reason: "Knowledge Hooks as μ(O) calculus pillar — 8-operator decomposition proof."
+
+  - path: /Users/sac/wasm4pm/apps/wasm4pm/src/commands/doctor.ts
+    term: knowledge hook
+    excerpt: "No hooks wired in .claude/settings.json — TPS enforcement gates inactive."
+    project: wasm4pm
+    source_class: SOURCE_CODE
+    relevance: HIGH
+    reason: "Runtime confirmation: hooks are enforcement gates, not automations."
+
+  - path: /Users/sac/wasm4pm/docs_quarantine/ARCHIVE/docs/thesis-operational-autonomy-wasm.md
+    term: knowledge hook
+    excerpt: "Porting algorithms from the knhk knowledge-graph engine... embedding operational autonomy directly into the algorithm substrate."
+    project: wasm4pm
+    source_class: THESIS_DOCUMENT
+    relevance: MEDIUM
+    reason: "KNHK-to-wasm4pm port documentation."
+
+  # ============================================================
+  # TIER 7 — PCP TYPESCRIPT HOOK-OTP SYSTEM
+  # ============================================================
+
+  - path: /Users/sac/pcp/src/lib/truex/hook-otp/
+    term: knowledge hook
+    excerpt: >-
+      "HookMessageType: 'graph_delta' | 'receipt_event' | 'replay_request' |
+      'supervisor_signal'. receiptHash, receiptChainHash. Complete hook actor system:
+      types, receipts, replay, supervisor, registry, mailbox, behavior."
+    project: pcp
+    source_class: TYPESCRIPT_IMPLEMENTATION
+    relevance: HIGH
+    reason: "Complete Erlang OTP-style hook actor system in TypeScript — 8 files."
+
+  - path: /Users/sac/pcp/src/framework/membrane/membrane.ts
+    term: knowledge hook
+    excerpt: "ReceiptManager with emitRefusal() and chained receipt generation. Every action returns { success, result, receipt }."
+    project: pcp
+    source_class: TYPESCRIPT_IMPLEMENTATION
+    relevance: HIGH
+    reason: "Membrane implementation with refusal receipts — every action receipted."
+
+  - path: /Users/sac/pcp/src/framework/README.md
+    term: knowledge hook
+    excerpt: "Every action (A) must be accompanied by a cryptographic receipt (R) proving safety, provenance, and conformance."
+    project: pcp
+    source_class: DOCUMENTATION
+    relevance: HIGH
+    reason: "Explicit admission → receipt law."
+
+  - path: /Users/sac/pcp/src/lib/truex/evidence/ocel.ts
+    term: knowledge hook
+    excerpt: "exportToOcel(receipts: HookReceipt[]) — converts hook receipts to OCEL event log."
+    project: pcp
+    source_class: TYPESCRIPT_IMPLEMENTATION
+    relevance: HIGH
+    reason: "Receipts → OCEL evidence pipeline — confirms accounting stage."
+
+  # ============================================================
+  # TIER 8 — CLAP-NOUN-VERB MIRROR
+  # ============================================================
+
+  - path: /Users/sac/clap-noun-verb/phd-thesis/research/knowledge-hooks/02_aka_definition_map.md
+    term: Autonomic Knowledge Actuation
+    excerpt: "Autonomic Knowledge Actuation = Knowledge → Proof → Consequence → Knowledge. AKA ≠ automation ≠ lifecycle management."
+    project: clap-noun-verb
+    source_class: RESEARCH_MAP
+    relevance: HIGH
+    reason: "AKA definition cartography mirror — confirms definition stability."
+
+  - path: /Users/sac/clap-noun-verb/phd-thesis/research/knowledge-hooks/01_hook_definition_map.md
+    term: knowledge hook
+    excerpt: "Hook definition map mirror."
+    project: clap-noun-verb
+    source_class: RESEARCH_MAP
+    relevance: HIGH
+    reason: "Hook definition map mirror — confirms definition stability."
+
+  - path: /Users/sac/clap-noun-verb/evidence_graph.json
+    term: receipt
+    excerpt: >-
+      "Actions leave receipts with timing, evidence, hash linkage.
+      src/kernel/execution_receipts.rs — Attested execution receipts: proof of
+      invocation, capability attestation, quota tracking, hash linkage.
+      src/autonomic/receipts.rs — Receipt generation: timing data, evidence
+      collection, linked to parent receipts via hash (Γ)."
+    project: clap-noun-verb
+    source_class: EVIDENCE_GRAPH
+    relevance: HIGH
+    reason: "Receipt graph Γ — global receipt chain with parent linkage."
+
+  # ============================================================
+  # TIER 9 — OPEN-ONTOLOGIES ACTUATION MEMBRANE
+  # ============================================================
+
+  - path: /Users/sac/open-ontologies/src/actuation.rs
+    term: Autonomic Knowledge Actuation
+    excerpt: "Defines ActuationPlan, ActuationResult, capture_observed_ocel(). Confirms actuation → OCEL evidence pipeline."
+    project: open-ontologies
+    source_class: RUST_IMPLEMENTATION
+    relevance: HIGH
+    reason: "Actuation → OCEL pipeline in Rust."
+
+  - path: /Users/sac/open-ontologies/GEMINI.md
+    term: Autonomic Knowledge Actuation
+    excerpt: >-
+      "Core Mandates for System Actuation and Proof. UnboundedActuation is a defect
+      when no admitted ActuationPlan exists. Gemini CLI must act as the actuation
+      membrane, executing only what is defined in the ontology."
+    project: open-ontologies
+    source_class: GOVERNANCE_DOCUMENT
+    relevance: HIGH
+    reason: "UnboundedActuation as a named defect — critical frame law enforcement."
+
+  - path: /Users/sac/open-ontologies/src/ocel_store.rs
+    term: knowledge hook
+    excerpt: "// Mirrors admission::A13_BETWEEN_SNAPSHOT_HOOK (R5 WB-1) — admission hooks mapped to OCEL store."
+    project: open-ontologies
+    source_class: RUST_IMPLEMENTATION
+    relevance: MEDIUM
+    reason: "Admission hooks mapped to OCEL store entries."
+
+  # ============================================================
+  # TIER 10 — INSA BYTE-SPEED SUBSTRATE
+  # ============================================================
+
+  - path: /Users/sac/insa/CLAUDE.md
+    term: knowledge hook
+    excerpt: "Byte-speed system manufacturing lawful instinct from closed operational fields (TCPS + INSA Byte Law). A = μ(O*) formally stated. Byte-lane family: INST8, KAPPA8, Family8, POWL8, CONSTRUCT8."
+    project: insa
+    source_class: PROJECT_CONFIG
+    relevance: HIGH
+    reason: "CONSTRUCT8/POWL8 byte-lane substrate — A = μ(O*) at byte speed."
+
+  - path: /Users/sac/insa/AGENTS.md
+    term: knowledge hook
+    excerpt: >-
+      "Do not emit without proof: Unproofed emission is structurally forbidden.
+      Do not report without replay: reports are derived from POWL64 replayable
+      evidence, not generated prose. Do not let projection results mutate state:
+      They must re-enter as Observation → CONSTRUCT8 → O*."
+    project: insa
+    source_class: OPERATING_CONTRACT
+    relevance: HIGH
+    reason: "Operating contract — 'Unproofed emission is structurally forbidden.' Confirms CONSTRUCT8 as admission primitive."
+
+  # ============================================================
+  # TIER 11 — MCPP RECEIPT CHAIN MANAGEMENT
+  # ============================================================
+
+  - path: /Users/sac/mcpp/CLAUDE.md
+    term: receipt
+    excerpt: >-
+      "mcpp receipt list/show/verify/replay. mcpp ggen verify — verifies BLAKE3 chain
+      continuity; Andon pull on break. Accept emits exactly 1 receipt; Refuse emits 0.
+      LIVE-03 enforces."
+    project: mcpp
+    source_class: PROJECT_CONFIG
+    relevance: HIGH
+    reason: "Full receipt lifecycle: LIVE-03 enforces 0 receipts on refuse / 1 on accept. Andon pull on chain break."
+
+  # ============================================================
+  # TIER 12 — ZOEAPP TRUEX HOOKS BRIDGE
+  # ============================================================
+
+  - path: /Users/sac/zoeapp/docs/vision2030/truex-collaborative-intelligence.md
+    term: knowledge hook
+    excerpt: >-
+      "Knowledge hooks become Truex Hooks. Truex Autonomics: lifecycle reflexes:
+      threshold incoming reality, classify actors, construct O*, compile route
+      obligations, enforce Field8 surfaces, require OCEL evidence, emit receipts,
+      trigger replay, and evolve future route law."
+    project: zoeapp
+    source_class: VISION_DOCUMENT
+    relevance: HIGH
+    reason: "Knowledge hooks → Truex Hooks migration. Full lifecycle reflexes documented."
+
+  # ============================================================
+  # TIER 13 — COMPILED-COGNITION-HUB
+  # ============================================================
+
+  - path: /Users/sac/compiled-cognition-hub/governance/PHILOSOPHY.md
+    term: knowledge hook
+    excerpt: "Oracle vs. Angel framing: 'Intelligence stops being a service and becomes a deterministic, zero-dependency property of the binary.'"
+    project: compiled-cognition-hub
+    source_class: PHILOSOPHY_DOCUMENT
+    relevance: MEDIUM
+    reason: "Confirms LLM output is NOT runtime authority — deterministic compiled binary has authority."
+
+  - path: /Users/sac/compiled-cognition-hub/src/main.rs
+    term: CONSTRUCT8
+    excerpt: "use unibit_graph::construct8_to_oxigraph;"
+    project: compiled-cognition-hub
+    source_class: RUST_IMPLEMENTATION
+    relevance: LOW
+    reason: "CONSTRUCT8 bridge to Oxigraph — confirms CONSTRUCT8 is used as Oxigraph RDF store bridge."
+
+  # ============================================================
+  # TIER 14 — ACADEMIC PAPERS (CITATION BACKING)
+  # ============================================================
+
+  - path: /Users/sac/Documents/Papers/workflow/YAWL- Yet Another Workflow Language.pdf
+    term: knowledge hook
+    excerpt: "Van der Aalst et al. (2003) — 43 fundamental workflow patterns. Academic foundation for KNHK workflow semantics."
+    project: academic
+    source_class: ACADEMIC_PAPER
+    relevance: MEDIUM
+    reason: "Primary academic citation backing for workflow pattern completeness claims in KNHK."
+
+  - path: /Users/sac/Documents/Papers/workflow/workflow-patterns-the-definitive-guide-9780262029827-9780262329408-0262329409_compress.pdf
+    term: knowledge hook
+    excerpt: "Van der Aalst & ter Hofstede — definitive workflow patterns guide."
+    project: academic
+    source_class: ACADEMIC_PAPER
+    relevance: MEDIUM
+    reason: "Definitive workflow patterns reference — backs KNHK 43-pattern completeness claim."
+
+  - path: /Users/sac/Documents/Papers/workflow/Object-Centric Analysis of XES Event Logs- Integrating OCED Modeling with SPARQL Queries.pdf
+    term: knowledge hook
+    excerpt: "OCED modeling with SPARQL — academic backing for OCEL evidence pipeline in knowledge hooks."
+    project: academic
+    source_class: ACADEMIC_PAPER
+    relevance: MEDIUM
+    reason: "Academic backing for OCEL/SPARQL evidence pipeline used in hook receipts."
+
+  - path: /Users/sac/Documents/Papers/workflow/Compliance-Aware Predictive Process Monitoring- A Neuro-Symbolic Approach.pdf
+    term: knowledge hook
+    excerpt: "Neuro-symbolic compliance monitoring — academic backing for admissibility checking in hooks."
+    project: academic
+    source_class: ACADEMIC_PAPER
+    relevance: LOW
+    reason: "Neuro-symbolic approach — tangential academic backing."
+
+  # ============================================================
+  # LEGACY ENTRIES (pre-merge, corrected)
+  # ============================================================
+
+  - path: /Users/sac/process-intelligence/doctrine/autonomic-knowledge-actuation.md
+    term: Autonomic Knowledge Actuation
+    excerpt: "Mathematical AKA typestate formalization — see detailed entry above."
+    project: process-intelligence
+    source_class: PRIMARY_DOCTRINE
+    relevance: HIGH
+    reason: "Deduplicated — primary entry above."
+
+  - path: /Users/sac/zoeapp/src/lib/vkg/hooks/types.ts
+    term: knowledge hook
+    excerpt: "ZoeOS / Truex Hook Definition Anatomy (Diagram 7)"
+    project: zoeapp
+    source_class: TYPESCRIPT_IMPLEMENTATION
+    relevance: MEDIUM
+    reason: "VKG hook type definitions in ZoeApp."
+
+  - path: /Users/sac/zoeapp/tmp_compat/law.rs
+    term: Need9
+    excerpt: "//! - [ConditionCell<BITS>] — the Need9 means split law"
+    project: zoeapp
+    source_class: RUST_IMPLEMENTATION
+    relevance: LOW
+    reason: "Need9 bounded-state split law — byte-lane family member."

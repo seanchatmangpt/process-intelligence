@@ -1,0 +1,24 @@
+slug: ma
+absolute_path: /Users/sac/process-intelligence/ma
+description: >
+  M&A claim taxonomy, board admissibility framework, and buyer reliance proofs. Contains
+  master M&A-ready process intelligence framework, board claim taxonomy, synergy proof claims,
+  integration risk claims, operational debt claims, diligence claim requirements,
+  slide-to-receipt map, Reverse Porter Five, and hostile takeover receipts.
+detected_languages: []
+detected_frameworks: []
+detected_research_surfaces:
+  - m-and-a-claims
+  - board-claims
+  - receipt-chain
+  - process-evidence
+likely_thesis_role: ma-claim-taxonomy-and-board-projection-surface
+key_files:
+  - /Users/sac/process-intelligence/ma/README.md
+  - /Users/sac/process-intelligence/ma/MASTER_m&a-ready_process_intelligence_framework.md
+  - /Users/sac/process-intelligence/ma/BOARD_CLAIM_TAXONOMY.md
+  - /Users/sac/process-intelligence/ma/SLIDE_TO_RECEIPT_MAP.md
+  - /Users/sac/process-intelligence/ma/REVERSE_PORTER_FIVE.md
+readme_present: true
+receipt_present: false
+ontology_present: false

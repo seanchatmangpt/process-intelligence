@@ -1,0 +1,24 @@
+slug: research-open-ontologies
+absolute_path: /Users/sac/process-intelligence/research/open-ontologies
+description: >
+  Open ontologies research surface. RDF ontology research corpus studying how public
+  ontologies (PROV-O, SKOS, ODRL, DCTERMS, SHACL) ground process intelligence claims.
+  Contains federated cross-project dependency graph. Authority for the ontology layer
+  of the thesis.
+detected_languages:
+  - Turtle
+  - SPARQL
+detected_frameworks:
+  - RDF
+  - SHACL
+  - PROV-O
+detected_research_surfaces:
+  - ontology
+  - federated-graph
+  - cross-project-dependency
+likely_thesis_role: open-ontology-research-and-rdf-authority
+key_files:
+  - /Users/sac/process-intelligence/research/open-ontologies/federated/CROSS_PROJECT_DEPENDENCY_GRAPH_20260601.yaml
+readme_present: false
+receipt_present: false
+ontology_present: true

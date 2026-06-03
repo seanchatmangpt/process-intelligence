@@ -1,0 +1,121 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Architecture and Primitives}
+\label{sec:comparisons-arch}
+
+\subsection{Core Objects}
+\label{sec:comparisons-arch-objects}
+
+The comparisons corpus establishes a three-tier object hierarchy across the stacks.
+In PM4Py, the core object is a Python \texttt{EventLog} carrying traces as lists
+of dictionaries, quality metrics as \texttt{float} values, and errors as
+\texttt{Exception} instances. No type parameter encodes the admission state of
+the log or the standard under which it was validated.
+
+In wasm4pm, the core object is a Rust \texttt{EventLog} struct carrying traces
+as flat contiguous byte arrays in WebAssembly linear memory. Markings are
+represented as dense integer arrays, enabling 8.2M events/sec raw trace replay.
+The struct carries no admission state type parameter; it is a plain struct
+accepted by all algorithm functions without a validation requirement.
+
+In wasm4pm-compat, the core object is \texttt{Evidence<T, State, W>}, a generic
+carrier defined in \texttt{src/evidence.rs}:
+
+\begin{verbatim}
+pub struct Evidence<T, State, W> {
+    value: T,
+    _state: PhantomData<State>,
+    _witness: PhantomData<W>,
+}
+\end{verbatim}
+
+The three type parameters are: \texttt{T} (the payload type, e.g., \texttt{OcelLog}
+or \texttt{ConformanceVerdicts}); \texttt{State} (a typestate token from
+\texttt{src/state.rs}: \texttt{Raw}, \texttt{Parsed}, \texttt{Admitted},
+\texttt{Refused}, \texttt{Projected}, \texttt{Exportable}, \texttt{Receipted});
+and \texttt{W} (a witness marker from \texttt{src/witness.rs}: \texttt{Ocel20},
+\texttt{Xes1849}, \texttt{WfNetSoundnessPaper}, \texttt{VanDerAalst1998}, and
+others, each implementing the \texttt{Witness} trait with const metadata).
+
+Quality metrics are represented as \texttt{Metric<KIND, NUM, DEN>} in
+\texttt{src/conformance.rs} with the two compile-time bounds
+\texttt{Require<\{DEN > 0\}>: IsTrue} and \texttt{Require<\{NUM <= DEN\}>: IsTrue}.
+The five van der Aalst quality dimensions have dedicated type aliases:
+\texttt{FitnessConst<NUM, DEN>}, \texttt{PrecisionConst<NUM, DEN>},
+\texttt{F1Const<NUM, DEN>}, \texttt{GeneralizationConst<NUM, DEN>}, and
+\texttt{SimplicityConst<NUM, DEN>}. All five are bundled in
+\texttt{QualityProfile<F\_N, F\_D, P\_N, P\_D, F1\_N, F1\_D, G\_N, G\_D, S\_N, S\_D>}.
+
+\subsection{Admissible Transitions}
+\label{sec:comparisons-arch-transitions}
+
+The only lawful path from \texttt{Evidence<T, Raw, W>} to
+\texttt{Evidence<T, Admitted, W>} is through the \texttt{Admit} trait:
+
+\begin{verbatim}
+pub trait Admit<T, W>: Sized {
+    type Reason;
+    fn admit(raw: Evidence<T, Raw, W>)
+        -> Result<Admission<T, W>, Refusal<Self::Reason, W>>;
+}
+\end{verbatim}
+
+The \texttt{Admitted} constructor is \texttt{pub(crate)}, making direct
+construction outside the admission module a compile error. There is no coercion
+from \texttt{Raw} to \texttt{Admitted}: no cast, no transmute, no unsafe path.
+
+For conformance metrics, the WASM linear memory layout places the Event Log
+Arena at addresses 0--1.5GB, the Model Graph at 1.5--2.5GB, the Scratch/DFG
+buffer at 2.5--4.0GB, and Receipts at 4.0--4.06GB. Cycle budgets are enforced:
+Inductive Miner at 5,000,000 cycles, Heuristics Miner at 3,000,000 cycles;
+overflow triggers error code \texttt{0xFB01}. The A* queue is bounded to
+1,000,000 states and trace length is capped at 10,000 activities.
+
+The witness join-semilattice $(W, \sqsubseteq, \sqcup, \bot, \top)$ governs
+lattice-based compliance checking. Transition monotonicity (Axiom 2) is:
+$\forall w \in W, \forall a \in \Sigma, \; w \sqsubseteq \delta(w, a)$.
+The conflict state $\top$ is absorbing: $\forall a \in \Sigma, \; \delta(\top, a) = \top$.
+
+\subsection{Boundaries}
+\label{sec:comparisons-arch-boundaries}
+
+The architectural boundary between wasm4pm and wasm4pm-compat is precisely the
+admission gate. wasm4pm accepts \texttt{\&EventLog} directly; wasm4pm-compat
+requires \texttt{Evidence<T, Admitted, W>}. The comparisons corpus establishes
+that the boundary is not a runtime check but a type-level constraint: calling
+any wasm4pm-compat function that requires \texttt{Admitted} evidence with
+\texttt{Raw} evidence is a \texttt{rustc} type error at the call site.
+
+The boundary between PM4Py and the wasm4pm stack is the GIL/WASM boundary.
+PM4Py runs inside a GIL-bound CPython process; wasm4pm runs as isolated,
+parallel WASM worker instances with $< 16$MB static linear memory. The performance
+boundary is documented in \texttt{wasm\_vs\_native\_pm\_performance.md}: wasm4pm
+achieves 134.7K events/sec for alignment conformance vs.\ 6.3K events/sec for
+PM4Py --- a $21\times$ throughput advantage --- while maintaining 96.2\% of
+native Rust speed.
+
+\subsection{Failure Modes Refused}
+\label{sec:comparisons-arch-failures}
+
+The following failure modes are compile-time impossibilities in wasm4pm-compat
+and are documented as type-level refusals, not runtime assertions:
+
+\begin{itemize}
+  \item \textbf{Fitness $> 1.0$}: \texttt{FitnessConst<2, 1>} is a \texttt{rustc}
+    type error. The \texttt{Require<\{NUM <= DEN\}>: IsTrue} bound prevents it.
+  \item \textbf{Zero denominator}: \texttt{FitnessConst<1, 0>} is a \texttt{rustc}
+    type error. The \texttt{Require<\{DEN > 0\}>: IsTrue} bound prevents it.
+  \item \textbf{Raw log laundering}: constructing \texttt{Evidence<T, Admitted, W>}
+    without passing through \texttt{Admit::admit()} is a compile error because the
+    \texttt{Admitted} constructor is \texttt{pub(crate)}.
+  \item \textbf{Standard substitution}: an \texttt{Admission<OcelLog, Ocel20>}
+    cannot be used where \texttt{Admission<XesLog, Xes1849>} is required; the
+    witness type parameter \texttt{W} distinguishes them at the type level.
+  \item \textbf{Catch-all refusal}: a \texttt{Refusal<InvalidInput, W>} is a
+    design defect detectable in code review because \texttt{R = InvalidInput}
+    fails the named-law requirement. Every \texttt{R} must be a specific structural
+    law type such as \texttt{DanglingEventObjectLink} or \texttt{EmptyLog}.
+\end{itemize}

@@ -1,0 +1,125 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: ggen — Governance Generation Engine
+
+\section{Open Questions and Next Work}
+\label{sec:ggen-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:ggen-open-questions-gaps}
+
+Four structural gaps are identified in the available artifacts.
+
+\textbf{Gap 1: ggen binary non-existence.} The \texttt{src/} directory is empty. ggen is
+declared as a manufacturing engine with a command-line interface (\texttt{ggen --config
+ggen.toml --execute-all}), but no compiled binary or Rust source file implementing that interface
+exists in the repository. Whether ggen is an external tool installed in the environment, a cargo
+plugin, or whether the manufacturing runs were performed by manually authoring outputs against
+the template contract is not documented in any available artifact. The BLAKE3 receipt chain
+proves that manufacturing operations occurred (timestamps, input hashes, output hashes, and
+signatures are present), but the agent that performed those operations cannot be identified from
+the repository surface alone.
+
+\textbf{Gap 2: Visualizer generation rule disabled.} The
+\texttt{visualizer-dashboard-nextjs} generation rule is commented out in \texttt{ggen.toml} with
+the note ``DISABLED: visualizer-dashboard-nextjs template parse error - deferred to Phase 6
+recovery.'' The template file \texttt{templates/visualizer-dashboard.tsx.tera} would have
+manufactured a NextJS page at
+\texttt{../experiments/visualizer-nextjs/src/app/page.tsx}. The nature of the Tera template
+parse error and the Phase 6 recovery plan are not documented in any available artifact.
+
+\textbf{Gap 3: Empty output hashes in receipts 2 and 3.} The chain-root receipt
+(\texttt{sync-20260601-175316.json}) records the BLAKE3 hash of \texttt{blue\_river\_dam/src/lib.rs}
+as a concrete output. The second receipt (\texttt{sync-20260601-203853.json}) and third receipt
+(\texttt{sync-20260601-230600.json}) both record \texttt{output\_hashes: []}. This means the
+second and third manufacturing runs committed receipts without producing or hashing new output
+artifacts. Whether this reflects a deliberate re-run of the configuration step only, or an
+execution failure that the receipt chain does not surface, is unresolved.
+
+\textbf{Gap 4: Ontology population uncertainty.} The SPARQL query endpoint is configured as
+\texttt{in-memory} in \texttt{ggen.toml}. The board admissibility query
+(\texttt{extract-board-claims.rq}) requires \texttt{wasm4pm:ConformanceVerdict} instances with
+fitness $\geq 0.95$ and precision $\geq 0.90$ to be present in the in-memory triple store at
+manufacturing time. The TTL files (\texttt{ontology-extensions.ttl},
+\texttt{wasm4pm-compat.ttl}) define the schema but do not contain pre-populated verdict
+instances. Whether the board deck and diligence workbook were ever manufactured with actual
+conformance data, or whether those generation rules were not activated because the in-memory
+store was empty at manufacturing time, is not documented.
+
+\subsection{Deferred Gates}
+\label{sec:ggen-open-questions-deferred}
+
+The following proof gates are declared in the manufacturing summary but not confirmed as having
+passed:
+
+\begin{itemize}
+  \item \textbf{Audit gate execution}: Seven audit scripts covering 42 or more named gates exist
+    as manufactured artifacts. Whether these scripts have been executed against the actual
+    wasm4pm-compat Rust source and produced passing results is not recorded in the BLAKE3
+    receipt chain. The \texttt{audit.json} records \texttt{validation\_passed: true} but its
+    \texttt{inputs}, \texttt{pipeline}, and \texttt{outputs} fields are all empty, suggesting
+    the validation was structural (schema check) rather than executable (gate execution).
+  \item \textbf{Test execution against compiled artifact}: The embedded test suites in
+    \texttt{witness-markers-20260601.rs} and \texttt{blue\_river\_dam/src/lib.rs} declare lawful
+    algebraic proof obligations. Whether \texttt{cargo test} has been run against the compiled
+    manufactured artifacts and all tests have passed is not documented in the receipt chain.
+  \item \textbf{PROCESS\_INTELLIGENCE\_ALIVE\_001}: The checkpoint is referenced as pending in
+    \texttt{GGEN\_MANUFACTURING\_SUMMARY.md}. No committed checkpoint file for this verdict
+    has been located.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:ggen-open-questions-risks}
+
+\textbf{Risk 1: Circular provenance.} The \texttt{[[inference.rules]]} normalize rule uses
+\texttt{FILTER(false)}, making it a no-op. If meaningful inference was intended to populate
+conformance verdict instances in the in-memory triple store before executing the board claims
+query, the no-op means no inferred facts were ever produced. In this scenario, the manufactured
+M\&A deck would be an empty artifact (no claims passing the FILTER) rather than a substantive
+board deliverable. This risk cannot be resolved without evidence of what RDF facts were loaded
+into the in-memory store at manufacturing time.
+
+\textbf{Risk 2: Template-only manufacturing.} The GGEN\_MANUFACTURING\_SUMMARY.md's Phase 3
+scope is the conversion of manifests into governance law files, templates, and audit scripts.
+This is a form of manufacturing---specification artifacts manufactured from higher-order
+specifications---but it is one level of abstraction removed from the pipeline's declared purpose
+of manufacturing capital-market artifacts from conformance verdicts. The research risk is that
+ggen is documented as a manufacturing engine but has, to date, primarily manufactured its own
+manufacturing specification rather than the downstream capital-market artifacts the specification
+describes.
+
+\textbf{Risk 3: Binary-external dependency.} If ggen is an external binary, it introduces an
+undocumented dependency on a tool not versioned in this repository. Any future re-execution of
+the manufacturing pipeline requires that external tool to be available at the same version. The
+receipt chain records \texttt{ggen\_version: 26.5.21} but does not record where or how to obtain
+that binary, creating a reproducibility risk.
+
+\subsection{Next Receipted Work}
+\label{sec:ggen-open-questions-next}
+
+The following work items, each requiring a new BLAKE3 receipt to be considered complete, are
+indicated by the gap analysis:
+
+\begin{enumerate}
+  \item \textbf{Phase 6 recovery: visualizer-dashboard-nextjs.} Diagnose the Tera template
+    parse error in \texttt{templates/visualizer-dashboard.tsx.tera}, repair the template, and
+    re-enable the generation rule in \texttt{ggen.toml}. Execute the rule, confirm the NextJS
+    artifact is manufactured at
+    \texttt{../experiments/visualizer-nextjs/src/app/page.tsx}, and seal with a BLAKE3 receipt
+    recording a non-empty \texttt{output\_hashes}.
+  \item \textbf{Ontology population and board deck manufacturing.} Populate the in-memory triple
+    store with actual \texttt{wasm4pm:ConformanceVerdict} instances (sourced from wasm4pm
+    execution outputs) before executing \texttt{extract-board-claims.rq}. Execute the board deck
+    and diligence workbook generation rules and seal with BLAKE3 receipts recording non-empty
+    \texttt{output\_hashes}.
+  \item \textbf{Audit gate execution and receipt.} Execute all seven audit scripts against the
+    actual wasm4pm-compat source. Record pass/fail results and seal the audit execution log with
+    a BLAKE3 receipt. Update \texttt{audit.json} to record non-empty \texttt{inputs},
+    \texttt{pipeline}, and \texttt{outputs} fields.
+  \item \textbf{Test execution and receipt.} Run \texttt{cargo test} against the compiled
+    \texttt{blue\_river\_dam} and \texttt{wasm4pm-compat} crates. Record the test output
+    (pass count, test names) and seal with a BLAKE3 receipt referencing the compiled artifact
+    hashes.
+  \item \textbf{PROCESS\_INTELLIGENCE\_ALIVE\_001 checkpoint.} Once all four preceding items
+    are receipted and all gates pass, commit the \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001}
+    checkpoint file to the receipts directory and update the ggen status from PARTIAL to ALIVE.
+\end{enumerate}

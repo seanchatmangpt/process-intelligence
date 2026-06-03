@@ -1,0 +1,102 @@
+\section{Architecture and Primitives}
+\label{sec:receipts-architecture}
+
+\subsection{Core Objects}
+\label{sec:receipts-architecture-objects}
+
+The receipts corpus is built on six core cryptographic and type-theoretic objects. The
+first is the \textbf{Ed25519 validator signature}, carried in the \texttt{validator\_signature}
+field of every M\&A claim receipt. This signature is computed over the JCS canonical form
+(RFC 8785) of the JSON receipt, ensuring that the signature covers a deterministic byte
+sequence regardless of key ordering in the source document. Any modification to any field
+in the JSON receipt after signing invalidates the signature, making post-hoc tampering
+detectable without access to the private key.
+
+The second core object is the \textbf{BLAKE3 hash}, appearing as both \texttt{target\_log\_hash}
+and \texttt{process\_model\_hash} in each M\&A receipt. BLAKE3 is a cryptographic hash
+function that provides content addressing: two event logs with the same hash are guaranteed
+to have the same content. This binding ensures that the conformance score reported in a receipt
+was computed over the specific event log identified by the hash, not a different or modified log.
+
+The third core object is the \textbf{ConformanceVerdicts} payload type, a Rust struct carrying
+four quality metrics: fitness, precision, generalization, and simplicity. These four metrics
+correspond to the van der Aalst quality framework for process-mining results. The
+\texttt{ConformanceAdmissionGate} (Blue River Dam Gate 3) evaluates the fitness and precision
+fields of this struct against thresholds $\geq 0.95$ and $\geq 0.90$ respectively, and refuses
+to emit a board-admissible receipt if either threshold is not met.
+
+The fourth core object is the \textbf{Evidence\textless{}T, State, Witness\textgreater{}} Rust
+generic type, which enforces lifecycle state at the type-law boundary. This type ensures that
+evidence objects can only transition through lawful states---from raw to validated to admitted---
+and that the witness type parameter records which entity authorized each transition. The
+fifth core object is the \textbf{RECEIPT\_REGISTRY}, a governance ledger enumerating seven
+canonical receipt types. The sixth is the \textbf{JCS canonical serialization} layer (RFC 8785)
+that makes JSON hashing deterministic.
+
+\subsection{Admissible Transitions}
+\label{sec:receipts-architecture-transitions}
+
+The receipt lifecycle enforces three admissible transitions. The first is \emph{manufacture},
+in which a wasm4pm query is executed over an event log and the resulting
+\texttt{ConformanceVerdicts} payload is assembled into a JSON receipt document. At this stage
+the receipt exists but carries no signature. The second transition is \emph{gate evaluation},
+in which the \texttt{ConformanceAdmissionGate} evaluates the fitness and precision fields against
+the board admissibility thresholds. If the gate passes, the receipt is forwarded for signing.
+If the gate fails (fitness below $0.95$), the receipt is rejected and no signature is emitted.
+
+The third transition is \emph{sealing}, in which the Ed25519 signing authority computes the
+JCS canonical form of the JSON document and signs it. The signed receipt is then eligible for
+inclusion in the M\&A board record and for citation in doctoral research claims. The
+\texttt{RECEIPT\_REGISTRY.md} governs which receipt types may enter the board record and
+which witnesses must be named for each type.
+
+The wasm4pm module generation receipts follow a parallel but distinct transition sequence:
+\emph{compile}, \emph{test}, \emph{hash}, \emph{seal}. The Blake3 hash of the compiled
+module binds the generation receipt to a specific binary artifact. The test pass count
+(e.g., $8/8$ for conformance authority) is recorded in the receipt body as the test witness.
+
+\subsection{Boundaries}
+\label{sec:receipts-architecture-boundaries}
+
+The receipts corpus enforces four architectural boundaries. The first is the
+\textbf{manufacture-to-claim boundary}: no financial claim may enter the M\&A record without
+a receipted conformance measurement. The \texttt{board\_admissibility} field in each JSON
+receipt is the machine-readable assertion that this boundary has been crossed lawfully.
+
+The second is the \textbf{module-to-output boundary}: no wasm4pm module output may be used
+in a claim unless the module's generation receipt exists and documents a passing compilation
+and test suite. The conformance authority generation receipt for version \texttt{v30.1.2}
+documents this boundary with Blake3 hash
+\texttt{75508e6e9e7acccb679e5c8be35ddd2adc9c4732f1fc331047d755703c9107c3}.
+
+The third is the \textbf{research-to-execution boundary}: no downstream wasm4pm refactor
+may proceed until the research program's receipt chain has spoken. This boundary is
+enforced by doctrine, not by code, and is documented in the process-intelligence
+\texttt{CLAUDE.md} configuration.
+
+The fourth is the \textbf{assertion-to-evidence boundary}: no receipt type may carry a
+claim derived from inference alone. Claims derived from assumption or inference are
+\texttt{PARTIAL} findings, documented in \texttt{gaps/} rather than the signed receipt chain.
+
+\subsection{Failure Modes Refused}
+\label{sec:receipts-architecture-failures}
+
+The receipts architecture refuses four specific failure modes by design. The first is
+\emph{fitness inflation}: the \texttt{ConformanceAdmissionGate} hard-rejects any receipt
+with fitness below $0.95$, preventing a low-conformance result from being represented
+as board-admissible. The unit test \texttt{test\_admission\_gate\_hard\_reject} verifies
+this behavior programmatically.
+
+The second refused failure mode is \emph{log substitution}: because each receipt carries
+a BLAKE3 \texttt{target\_log\_hash}, substituting a different event log after signing
+invalidates the hash binding and can be detected by recomputing the hash of the claimed
+log.
+
+The third refused failure mode is \emph{signature forgery}: the Ed25519 scheme is
+existentially unforgeable under chosen-message attack, meaning no party without the
+private key can manufacture a valid signature for a modified receipt.
+
+The fourth refused failure mode is \emph{premature board admission}: the
+\texttt{board\_admissibility} assessment object is only populated after the
+\texttt{ConformanceAdmissionGate} passes, ensuring that a receipt in an intermediate
+manufacturing state cannot be mistaken for a finalized, board-admissible claim.

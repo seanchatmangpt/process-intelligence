@@ -1,0 +1,127 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: lifecycle
+% Role: process-lifecycle-state-definitions-and-transitions
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:lifecycle-evidence}
+
+\subsection{Tests}
+\label{sec:lifecycle-evidence-tests}
+
+The lifecycle project defines four test assertion blueprints in
+\texttt{checkpoint\_\_lifecycle\_model\_complete.md}, expressed as Python pseudocode.
+These blueprints constitute a formal specification of what a conforming test suite must
+verify, but they are not executable test files. No \texttt{.py}, \texttt{.rs}, or
+test runner files exist within the \texttt{lifecycle/} directory. The gap between
+specification and execution is a known open item, documented explicitly in the
+checkpoint status and in the open questions section of this chapter.
+
+The four assertion blueprints are: \texttt{assert\_soundness(N)}, which verifies that
+the net is a valid WF-net, 1-bounded, live, and free of dead transitions;
+\texttt{assert\_fitness(N, L, threshold=0.95)}, which computes alignment fitness and
+asserts it meets the threshold; \texttt{assert\_no\_ghost\_transitions(N, L)}, which
+verifies that every labeled transition is fired at least once in the log or is classified
+as a silent transition; and \texttt{assert\_decommission\_receipt(R\_d, K\_\mathrm{pub})},
+which re-computes the model hash and log hash and verifies the receipt signature.
+
+The checkpoint verdict rule is stated as a formal conjunction:
+\[
+\mathrm{status}(N) = \texttt{ALIVE} \iff
+  \texttt{assert\_soundness}(N) \land
+  \texttt{assert\_fitness}(N, L, 0.95) \land
+  \texttt{assert\_no\_ghost\_transitions}(N, L)
+\]
+This conjunction is a formal specification, not a passed test. The lifecycle project
+does not claim ALIVE at the module level because no executable test suite has run these
+assertions against real Petri nets and real event logs in a running \texttt{wasm4pm}
+instance. The PARTIAL status reflects this distinction precisely.
+
+The adversarial test requirements are specified in the Van der Aalst Constitution
+(Chicago TDD doctrine): inject impossible logs and verify rejection; verify that
+model-vs-log mismatch is refused, not warned; verify temporal conformance so that
+stages occur in lawful order with no impossible overlaps. These requirements are
+specified but not yet executed.
+
+\subsection{Receipts}
+\label{sec:lifecycle-evidence-receipts}
+
+The LIFECYCLE\_RECEIPT is recorded in \texttt{receipts/RECEIPT\_REGISTRY.md} with the
+following fields:
+
+\begin{itemize}
+  \item \textbf{name}: LIFECYCLE\_RECEIPT
+  \item \textbf{produced\_by}: lifecycle/ phase definition workflow
+  \item \textbf{witness}: process mining lifecycle literature + wasm4pm-compat typestate
+  \item \textbf{result\_type}: 12+ lifecycle phases defined with compat/wasm4pm coverage
+    per phase
+  \item \textbf{criteria\_met}: lifecycle $\geq 8$ files (actual: 41+); every phase has
+    name, input type, output type, wasm4pm-compat state tag, admission requirement;
+    phases cover ingest, extract, clean, admit, discover, conform, predict, export,
+    archive, diligence
+  \item \textbf{gaps\_remaining}: none listed
+\end{itemize}
+
+Five additional JSON receipts exist in the parent \texttt{receipts/} directory that
+are relevant to the lifecycle framework's M\&A claims:
+\texttt{rec\_ebitda\_rework\_001.json} (EBITDA rework cost quantification),
+\texttt{rec\_wc\_ar\_002.json} (working capital accounts receivable),
+\texttt{rec\_risk\_sla\_003.json} (SLA risk quantification),
+\texttt{rec\_risk\_compliance\_004.json} (compliance risk), and
+\texttt{rec\_residual\_standard\_005.json} (process residual standard). These are
+sample receipts; the RECEIPT\_REGISTRY notes that production receipts require live
+operational data.
+
+The BLAKE3 hash-chaining ledger $H_n = \mathrm{BLAKE3}(\mathrm{Payload}_n \parallel
+H_{n-1})$ is the specification for how receipts accumulate provenance across the full
+lifecycle. The receipt chain is tamper-evident: any modification to a past receipt
+invalidates all subsequent receipts in the chain. The receipt chain specification is
+defined in the lifecycle doctrine but the running ledger is a \texttt{wasm4pm}
+execution obligation.
+
+\subsection{Checkpoints}
+\label{sec:lifecycle-evidence-checkpoints}
+
+The program-level checkpoint \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md} issues the
+ALIVE verdict at the research program level with verification status code \texttt{0x00}
+(SUCCESS\_ALIVE). The checkpoint confirms the following mathematical invariants:
+admissibility boundary $R \vdash P_i = \mu(O^*, T, L)$, autonomic actuation
+$\alpha(K, P, L, T) \to \tau$, token game fitness
+$f(L, N) = 1 - \frac{\sum m}{\sum c} - \frac{\sum r}{\sum p}$, OCPQ refinement
+$p \sqsubseteq_L c$, and decommissioning retirement $\delta(P)$.
+
+The lifecycle-specific checkpoint \texttt{checkpoint\_\_lifecycle\_model\_complete.md}
+defines the module-level ALIVE criteria as the four-assertion conjunction described
+above. This checkpoint does not carry an ALIVE verdict stamp; it specifies the criteria
+that would warrant one. The distinction between the program-level ALIVE checkpoint and
+the module-level criteria document is material: the program-level checkpoint is a
+research program milestone; the module-level ALIVE requires executable test passage.
+
+The \texttt{lifecycle/audit\_\_lifecycle\_completeness.md} provides the completeness
+audit checklist, verifying that every stage and taxonomy is covered by at least one
+file with the required fields populated.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:lifecycle-evidence-status}
+
+The lifecycle project's current status is \textbf{PARTIAL}.
+
+The PARTIAL verdict reflects the following precise state. The doctrine surface is
+complete: 43 files covering all 13 lifecycle stages, all six quality gates, all five
+taxonomies, the MAPE-K mapping, the maturity model, and the receipt specification.
+The LIFECYCLE\_RECEIPT is satisfied with no gaps remaining. The type definitions in
+\texttt{wasm4pm-compat} provide the type-level enforcement of the evidence lifecycle
+state machine. The program-level ALIVE checkpoint (\texttt{0x00}) is issued.
+
+The PARTIAL verdict is warranted because the following criteria are not yet met. First,
+no executable test suite has run \texttt{assert\_soundness}, \texttt{assert\_fitness},
+\texttt{assert\_no\_ghost\_transitions}, or \texttt{assert\_decommission\_receipt}
+against real Petri nets and real event logs. Second, the \texttt{wasm4pm} execution
+engine---required for online token replay, alignment computation, variant enumeration,
+repair plan evaluation, actuation, receipt emission, model storage, and metric
+time-series storage---is a separate downstream product that has not yet closed the
+MAPE-K loop at runtime. Third, the Board Projection Holography framework does not yet
+have a formal connection to the receipt chain or \texttt{wasm4pm} types established
+through a compiled, running bridge.
+
+No BLOCKED conditions exist: the path to ALIVE is well-specified and the required
+downstream work is documented in the \texttt{wasm4pm} obligations per lifecycle phase.

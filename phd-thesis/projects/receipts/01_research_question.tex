@@ -1,0 +1,71 @@
+\section{Research Question}
+\label{sec:receipts-question}
+
+\subsection{Problem Statement}
+\label{sec:receipts-question-problem}
+
+The central problem addressed by the receipts corpus is the absence of a durable, tamper-evident
+chain of custody for process-mining claims entering a board-level M\&A transaction. In current
+enterprise practice, process-mining outputs are reported as dashboard metrics or spreadsheet
+summaries with no cryptographic binding to the event logs from which they were derived, no
+binding to the specific discovery or conformance algorithm that produced them, and no
+independent replication proof. A financial buyer relying on such outputs cannot verify that
+the reported EBITDA impact reflects an actual process-conformance measurement rather than a
+manually entered or post-hoc adjusted figure. This problem is not merely an audit inconvenience;
+it is a structural defect in the M\&A due diligence chain. The receipts corpus addresses it
+directly by requiring every M\&A claim to carry a BLAKE3-hashed event log reference, a
+BLAKE3-hashed process model reference, a \texttt{wasm4pm\_query\_result} payload, and an
+Ed25519 \texttt{validator\_signature} before the claim may be admitted to the board record.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:receipts-question-old-regime}
+
+The old-regime assumption challenged by this research is that \emph{reported results are
+trustworthy by virtue of their source system}. Under the old regime, a process-mining vendor
+asserts fitness of $0.98$ in a slide deck, and the buyer accepts this assertion because the
+vendor is reputable and the tool is commercially licensed. No event log is provided. No process
+model hash is supplied. No independent replication is possible. The assertion is taken on faith
+because the alternative---manual reconstruction of the entire conformance checking pipeline from
+raw transaction logs---is prohibitively expensive.
+
+This assumption is challenged by the thesis that trustworthiness must be \emph{manufactured
+into} the result at the point of computation, not asserted after the fact. The manufacturing
+approach, implemented through the \texttt{ConformanceAdmissionGate} and the receipt serialization
+pipeline using JCS canonical form (RFC 8785), produces results that can be independently
+verified by any party with access to the original event log and the published process model hash.
+The Ed25519 signature scheme ensures that a post-hoc alteration of any field in the JSON receipt
+invalidates the signature, making tampering detectable without access to the signing authority.
+
+\subsection{Hypothesis}
+\label{sec:receipts-question-hypothesis}
+
+The primary hypothesis of the receipts corpus is: \emph{A cryptographic receipt chain
+employing Ed25519 validator signatures, BLAKE3 content-addressed event log references,
+and JCS-canonical JSON serialization is sufficient to make process-intelligence claims
+board-admissible in M\&A due diligence contexts, provided that the underlying conformance
+authority passes fitness $\geq 0.95$ and precision $\geq 0.90$ thresholds on a replicable
+event log.}
+
+A secondary hypothesis is that the manufacturing of wasm4pm modules can itself be receipted
+through generation receipts that bind module version, Blake3 hash, test pass count, and
+cargo compilation status, such that the module's manufacturing pipeline is as auditable as
+the claims it produces.
+
+Both hypotheses are evaluated against concrete evidence: five signed JSON receipts with
+fitness scores ranging from $0.975$ to $1.0$ across five M\&A claim domains, and four
+wasm4pm generation receipts documenting successful compilation and test passage rates of
+$8/8$ for the conformance authority and $5/5$ for the Blue River Dam orchestrator.
+
+\subsection{Success Criteria}
+\label{sec:receipts-question-success}
+
+Success for the receipts corpus is defined by four criteria that must all be met simultaneously.
+First, all five M\&A claim receipts must carry Ed25519 \texttt{validator\_signature} fields and
+BLAKE3 hash fields, with fitness $\geq 0.95$ and precision $\geq 0.90$ on each. Second, the
+conformance authority module that underwrites those receipts must pass all unit tests and compile
+without errors under \texttt{cargo check}. Third, the \texttt{RECEIPT\_REGISTRY.md} must
+enumerate all seven canonical receipt types with named witnesses. Fourth, the
+\texttt{ma\_deck\_rendering\_authority\_assessment.md} must confirm the board presentation
+pipeline is ready for execution. All four criteria are met as documented in
+\texttt{checkpoints/ALIVE\_GATE\_ASSESSMENT.md} with 12/12 gate criteria satisfied and the
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} checkpoint sealed.

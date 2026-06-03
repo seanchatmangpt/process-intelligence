@@ -1,0 +1,122 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Architecture and Primitives}
+\label{sec:research-open-ontologies-architecture}
+
+\subsection{Core Objects}
+\label{sec:research-open-ontologies-core-objects}
+
+The ontology corpus is organized into several layers of named objects, each grounded in a
+specific TTL file validated by the Phase~7 roundtrip report.
+
+\paragraph{M\&A Claim Hierarchy (\texttt{ma:BoardClaim}).}
+Defined as an OWL class hierarchy with five subclasses: \texttt{SynergyProjection},
+\texttt{OperationalDebtClaim}, \texttt{IntegrationRiskClaim}, \texttt{ProcessAssetClaim},
+and \texttt{ControlClaim}. Each subclass requires a named receipt type and a named witness
+marker before the claim is board-admissible. This hierarchy is the formal type system for
+the 42 M\&A claim files in the \texttt{ma/} directory.
+
+\paragraph{Conformance Verdict (\texttt{wasm4pm:ConformanceVerdict}).}
+A typed individual requiring \texttt{fitness >= 0.95} and \texttt{precision >= 0.90},
+backed by a \texttt{BLAKE3 CryptographicReceipt}. This is the minimum threshold for a
+process intelligence claim to be presented at board level.
+
+\paragraph{Witness Lattice (\texttt{compat:WitnessMarker}).}
+Eight named witnesses defined in \path{ggen/wasm4pm-compat.ttl}, forming a join-semilattice:
+VanDerAalst1989 (Petri net marking, lattice position \texttt{bottom}), VanDerAalst1998
+(soundness proof), VanDerAalst2016 (OCEL object-centric), Murata1989 (Petri net semantics,
+\texttt{bottom}), Weijters2011 (causal net / Heuristics Miner), Leemans2013 (process tree /
+Inductive Miner), Adriansyah2011 (alignment-based conformance), and BlueRiverDam (autonomic
+actuation, lattice position \texttt{top}). Every conformance claim must name a witness from
+this lattice.
+
+\paragraph{Type-Law Atoms (\texttt{compat:TypeLawAtom}).}
+Six named laws: 1BoundednessLaw, TerminalMarkingLaw, ObjectInstanceLaw, FitnessThresholdLaw,
+RoleBasedSignatureLaw, and JcsCanonicalLaw. These laws are the admission predicates for
+process evidence at the compatibility layer boundary.
+
+\paragraph{Boundary Crossings (\texttt{compat:BoundaryCrossing}).}
+Nine named crossings: LogToPetriNet, LogToProcessTree, OcelToObjectCentric,
+ConstraintEvaluation, TokenReplay, Alignment, ReceiptGraduation, AutonomicActuation,
+WitWorldExport. Each crossing defines a typed boundary in the execution architecture.
+
+\paragraph{Lifecycle States (\texttt{lifecycle:ProcessState}).}
+Seven states: Design, Simulation, Validation, Monitoring, Optimization, Repair, Decommission.
+Governed by MAPE-K rules defined in \path{autonomic-law.ttl}.
+
+\paragraph{Program Role Taxonomy (\texttt{pi:ProgramRole}).}
+Eight roles defined in \path{pi-program.ttl}: PROGRAM, PROOF\_CELL, ENGINE,
+COMPATIBILITY\_LAYER, MANUFACTURING\_CELL, TELEMETRY\_FEEDSTOCK, MOBILE\_SUBSTRATE,
+WORKFLOW\_SUBSTRATE. Every artifact in the research program is classified under one of these
+roles.
+
+\subsection{Admissible Transitions}
+\label{sec:research-open-ontologies-transitions}
+
+The MAPE-K loop defined in \path{autonomic-law.ttl} governs all transitions between
+lifecycle states. The transition partition is binary:
+
+\begin{itemize}
+  \item \texttt{aka:ElasticTransition} --- autonomous local repair and scaling operations
+        that do not require a governance token (\texttt{aka:requiresGovToken false}).
+        Subtypes: LocalRepair (single S-component modification maintaining boundary
+        preservation), ScalingTuning (queue capacity, resource scaling, logging adjustments).
+  \item \texttt{aka:ComplianceTransition} --- policy mutation and structural replacement
+        operations that require a governance token (\texttt{aka:requiresGovToken true}).
+        Subtypes: PolicyMutation (modify global LTL safety policies $\Phi_{Gov}$),
+        StructuralReplacement (global model hot-swap $W \to W'$), LifecyclePromotion
+        (move models to active status or decommission).
+\end{itemize}
+
+The primary containment invariant is the LTL safety invariant:
+\[
+  \texttt{gov:LTLSafetyInvariant:}\ G(\neg\mathit{compliant} \implies \mathbf{X}(\neg\mathit{actuated}))
+\]
+This invariant is encoded in \path{governance-policy.ttl} and states: globally, if a process
+state is not compliant, then at the next step it must not be actuated. No autonomic action
+may actuate a non-compliant process.
+
+\subsection{Boundaries}
+\label{sec:research-open-ontologies-boundaries}
+
+The ontology corpus enforces two categories of boundaries:
+
+\paragraph{DTO/JSON Boundary (\texttt{pi:FORBIDDEN\_COLLAPSE}).}
+Defined as a law: no data transfer object or JSON serialization method may cross the
+compatibility layer boundary. JSON serialization belongs inside the wasm4pm ENGINE, not in
+the COMPATIBILITY\_LAYER. The conformance audit (PI\_GGEN\_UNIFIED\_RUN\_CONFORMANCE\_AUDIT\_001)
+identified two violations of this law (\texttt{to\_json\_string()} and \texttt{receipt\_json()}
+in \path{compat/src/manufacturing/}), confirmed as Gate~1 FAIL in the GGEN conformance audit.
+
+\paragraph{Namespace Boundary.}
+The ontology files use two namespace regimes: local extension namespaces
+(\texttt{http://process-intelligence.local/} for autonomic law, MAPE-K) and
+published-prefix namespaces (\texttt{https://process.intelligence/} for the pi-program,
+compat, wasm4pm, lifecycle, and ma ontologies). The roundtrip report exposed a SPARQL
+prefix mismatch: \texttt{count\_checkpoints=0} despite 3{,}684 triples loaded, indicating
+that ontology entities are present in the graph but the SPARQL queries used the wrong
+prefix to address them. This is a known open gap.
+
+\subsection{Failure Modes Refused}
+\label{sec:research-open-ontologies-failure-modes}
+
+The following failure modes are explicitly refused by the architecture:
+
+\begin{description}
+  \item[Circular dependency in TTL imports.] The federated dependency graph enforces
+        \texttt{ACYCLIC} status as a gate criterion. A circular import chain would cause
+        the gate to fail, blocking all downstream manufacturing. As of 2026-06-01, zero
+        circular dependencies exist.
+  \item[Dangling namespace references.] The dependency graph validates that every namespace
+        prefix used in a TTL file resolves to a loaded ontology. Zero dangling references
+        were found in the Phase~4 analysis.
+  \item[Forced ALIVE on partial evidence.] The program COVENANT explicitly forbids declaring
+        ALIVE without all gate criteria met. The open-ontologies project is correctly
+        classified as PARTIAL pending TTL syntax validation via \texttt{rapper} and receipt
+        TTL manufacture.
+  \item[Ad hoc conformance claims.] A claim of fitness or precision without a named
+        \texttt{compat:WitnessMarker} and a BLAKE3 receipt is inadmissible. The ontology
+        corpus provides the type system that makes this refusal enforceable at the RDF layer.
+\end{description}

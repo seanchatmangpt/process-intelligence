@@ -1,0 +1,141 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:research-prompt-manufactory-evidence}
+
+\subsection{Tests}
+\label{sec:research-prompt-manufactory-evidence-tests}
+
+As of the issued checkpoint \texttt{GGEN\_PROMPT\_MANUFACTORY\_PARTIAL\_001.md}, no
+automated test suite exists for the Prompt Manufactory. The \texttt{audit.json}
+\texttt{tests\_found} field is empty. This is a material gap in the evidence chain.
+
+The conformance assurances that do exist are:
+\begin{itemize}
+  \item \textbf{Ontology parse validation}: All 8 \texttt{.ttl} files parse without
+    error when loaded into the RDF graph during ggen sync. This is validated on every
+    \texttt{ggen sync} invocation because \texttt{validate\_after = true} is set in
+    \texttt{ggen.toml}. [Evidence: checkpoint gate ``Ontology files present'' PASS]
+  \item \textbf{SPARQL query execution}: Core queries execute and return valid results
+    against the loaded graph. [Evidence: checkpoint gate ``Queries valid'' PASS]
+  \item \textbf{Template syntax validation}: \texttt{ggen.toml} syntax is valid; the
+    proof-specimen template renders correctly. [Evidence: checkpoint gate ``Templates
+    ready'' PASS]
+  \item \textbf{End-to-end warrant path}: One complete warrant path has been proved:
+    from \texttt{research-program-law.ttl} instance through SPARQL query through Tera
+    template to emitted \texttt{PI\_RESEARCH\_PROGRAM\_INTEL\_001.md} with receipt.
+    [Evidence: checkpoint gate ``End-to-end warrant path proven'' PASS]
+  \item \textbf{SHACL constraint enforcement}: The SHACL shape on
+    \texttt{pm:RenderedPrompt} requiring \texttt{pm:derivedFrom} is defined in
+    \texttt{prompt-manufactory.ttl}. However, there is no recorded SHACL validation
+    run proving it rejects non-conforming instances.
+\end{itemize}
+
+The absence of a repeatable automated test suite means that the SHACL shape constraints
+and SPARQL query correctness have no proof beyond manual invocation of ggen sync. This
+is documented in the open questions for the program (see Section~\ref{sec:research-prompt-manufactory-open}).
+
+\subsection{Receipts}
+\label{sec:research-prompt-manufactory-evidence-receipts}
+
+Four receipt surfaces exist for the Prompt Manufactory:
+
+\begin{description}
+  \item[\texttt{.ggen/receipts/phase-2-index.json}] Batch receipt recording 42 artifacts
+    manufactured across 5 artifact types (workflow-prompts, subagent-prompts,
+    checkpoint-prompts, skill-prompts, hook-policies), with a ledger reference to the
+    full RECEIPT\_LEDGER\_20260601.yaml.
+
+  \item[\texttt{emitted/indexes/prompt-receipt-ledger.md}] The manufacturing receipt
+    ledger. Documents one complete fallback manufacture of
+    \texttt{PI\_RESEARCH\_PROGRAM\_INTEL\_001.md} with a 7-step provenance chain: read
+    instance (SUCCESS), design query (VALID, not executable due to incomplete ontology),
+    design template (VALID, rendering blocked), fallback manufacture (SUCCESSFUL),
+    emit artifact (WRITTEN, 4,587 bytes), generate receipt (WRITTEN). Five proof gates
+    are recorded: Manifest Schema Validation (PASS), Ontology Availability (PARTIAL),
+    Query Syntax (PASS), Template Syntax (PASS), Warrant Completeness (PASS).
+
+  \item[\texttt{emitted/manifests/manufacturing-manifest-20260601.yaml}] The ggen
+    execution manifest. Records: execution timestamp
+    \texttt{2026-06-01T23:09:45Z}, generator \texttt{ggen-v26.5.21}, 6 rules executed,
+    41 artifacts emitted, 41 receipts issued, 41,867 total bytes, status SUCCESS, two
+    gate checks both PASS (artifacts\_emitted\_gte\_40, receipts\_eq\_artifacts).
+
+  \item[\texttt{ggen/.ggen/sync-state.json}] Engine state receipt. Records ontology hash
+    \texttt{01b52b81...}, manifest hash \texttt{dafc71e3...}, sync timestamp
+    \texttt{2026-06-01T23:08:25Z}, sync duration 6ms, 0 files synced (indicating the
+    sync was a validation run rather than a file-writing run).
+\end{description}
+
+A 1-artifact discrepancy exists between the phase-2-index (42 artifacts) and the
+manufacturing manifest (41 artifacts). This discrepancy is unresolved in the evidence
+and is documented in the open questions.
+
+\subsection{Checkpoints}
+\label{sec:research-prompt-manufactory-evidence-checkpoints}
+
+One checkpoint has been issued: \texttt{GGEN\_PROMPT\_MANUFACTORY\_PARTIAL\_001.md},
+dated \texttt{2026-06-01}, issued by the Prompt Manufactory Agent under status code
+\texttt{0x01 (PARTIAL)}.
+
+The checkpoint records an 11-gate audit:
+
+\begin{center}
+\begin{tabular}{|l|c|}
+\hline
+\textbf{Gate} & \textbf{Result} \\
+\hline
+Ontology files present (8 files, parse/load) & PASS \\
+Queries valid (core queries execute) & PASS \\
+Templates ready (\texttt{ggen.toml} valid, proof specimen renders) & PASS \\
+Seed programs encoded (7 in \texttt{research-program-law.ttl}) & PASS \\
+End-to-end warrant path proven & PASS \\
+No hand-written program prompts & PASS \\
+No forced ALIVE & PASS \\
+No new \texttt{.ggen} source files in \texttt{ggen/} & PASS \\
+Legacy \texttt{.ggen} files classified (22 files) & PASS \\
+PI\_INTEL topology complete & PENDING \\
+Remaining templates implemented (7 of 8) & PENDING \\
+\hline
+\textbf{Score} & \textbf{9/11} \\
+\hline
+\end{tabular}
+\end{center}
+
+The checkpoint explicitly certifies: the Prompt Manufactory substrate is functionally
+operational; at least one complete research warrant has been successfully manufactured
+from graph law via SPARQL query and Tera template with proof-of-manufacture receipt;
+zero hand-written prompts exist (all warrants carry \texttt{pm:derivedFrom}); honest
+ALIVE/PARTIAL checkpoint logic is in place.
+
+The remediation path to ALIVE requires: PI\_RESEARCH\_PROGRAM\_INTEL\_001 completing
+its classification phase, the remaining 7 Tera templates being implemented, all 8
+generation rules executing successfully, and the issuance of
+\texttt{GGEN\_PROMPT\_MANUFACTORY\_ALIVE\_001}.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:research-prompt-manufactory-evidence-status}
+
+\textbf{Current status: PARTIAL.}
+
+The Prompt Manufactory is correctly classified PARTIAL, not ALIVE and not BLOCKED.
+The evidence supporting this verdict:
+\begin{itemize}
+  \item \textbf{PARTIAL is justified} because: the manufacturing substrate functions
+    (ontologies load, queries execute, one warrant is fully manufactured and receipted);
+    and the program is incomplete because PI\_INTEL topology is pending and 7 of 8
+    templates are unimplemented.
+  \item \textbf{ALIVE is not claimed} because: 2 of 11 audit gates remain pending;
+    the SHACL enforcement has no automated repeatable proof; the ggen v5 template
+    rendering failure (empty SPARQL result set) during Phase 6 fallback manufacture
+    indicates an unresolved defect in the manufacturing pipeline.
+  \item \textbf{BLOCKED is not the verdict} because: zero gates are failing (2 are
+    pending, not failing); all 22 legacy \texttt{.ggen} files have non-blocking status;
+    the manufacturing pipeline has a documented remediation path to ALIVE.
+\end{itemize}
+
+The checkpoint authority explicitly states: \textit{``This is not a failure. It is an
+honest verdict.''} The PARTIAL status is the epistemically correct claim given the
+available evidence.

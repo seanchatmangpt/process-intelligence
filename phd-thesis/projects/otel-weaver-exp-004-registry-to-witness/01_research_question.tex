@@ -1,0 +1,98 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Research Question Chapter
+
+\section{Research Question}
+\label{sec:otel-weaver-exp-004-registry-to-witness-question}
+
+\subsection{Problem Statement}
+\label{sec:otel-weaver-exp-004-registry-to-witness-problem}
+
+Process-mining systems that ingest distributed telemetry face a structural brittleness at
+the boundary between observability infrastructure and process-evidence courts. The OTel
+Weaver toolchain provides convention registries --- machine-readable YAML definitions of
+span attributes, their types, and their requirement levels --- that specify the exact shape
+of telemetry payloads emitted by instrumented systems. The \texttt{wasm4pm-compat} type
+court, by contrast, requires Rust types implementing the \texttt{Lattice} trait so that
+admission decisions carry compile-time correctness guarantees.
+
+Between these two layers lies a gap: someone or something must translate convention
+definitions into court-compatible Rust types. When this translation is performed by hand,
+two failure modes become endemic. First, field name drift: a developer transcribes
+\texttt{process.pi.witness.hash} as \texttt{witness\_hash} in one module and
+\texttt{witnesshash} in another, and the type system cannot detect the discrepancy. Second,
+registry evolution: when a convention attribute is renamed or retyped in the upstream
+Weaver registry, the corresponding Rust struct does not update automatically and the
+mismatch surfaces as a runtime deserialization failure rather than a build-time error.
+
+EXP-004 addresses this gap directly. The problem it solves is: how can the OTel Weaver
+convention registry be used as the authoritative specification source such that changes to
+the registry automatically propagate, as type errors, to any code that depends on the
+materialized witness types?
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:otel-weaver-exp-004-registry-to-witness-old-regime}
+
+The old-regime assumption is that telemetry schema compliance and process-evidence court
+compatibility are separate concerns that can be managed independently by separate teams
+using separate tools. Under this assumption, an observability engineer owns the Weaver
+registry and ensures telemetry payloads are structurally valid, while a process-mining
+engineer owns the wasm4pm type definitions and ensures court boundaries are type-safe.
+The two engineers communicate through documentation, and mismatches are discovered at
+integration time.
+
+The Feedstock Theorem, stated in
+\texttt{otel-weaver/doctrine/otel-weaver-is-feedstock.md} and anchored at
+\texttt{OTEL\_WEAVER\_FEEDSTOCK\_001}, already refutes the assumption that structural
+telemetry validity equals process compliance:
+\[
+\text{SchemaValidation}(\text{Telemetry}) \neq \text{ProcessCompliance}(\text{ProcessState})
+\]
+EXP-004 extends this refutation in a different direction: it challenges the assumption that
+the \emph{structural mapping} between the feedstock layer and the court boundary must be
+maintained by hand. The experiment demonstrates that the mapping can itself be
+manufactured from the registry definition, making the structural gap between the two layers
+a machine-enforceable invariant rather than a documentation contract.
+
+\subsection{Hypothesis}
+\label{sec:otel-weaver-exp-004-registry-to-witness-hypothesis}
+
+\textbf{H1.} A Rust code generator that parses the resolved JSON output of a Weaver
+registry resolution step and filters on the \texttt{process.pi.activity} group can
+materialize \texttt{ActivityWitness} structs and \texttt{Lattice} trait implementations
+that are structurally identical to what a domain expert would write by hand, without
+manual field transcription.
+
+\textbf{H2.} The materialized \texttt{ActivityWitness} type, when consumed by the
+\texttt{wasm4pm-compat} type court through \texttt{Admission<T,\,W>} and \texttt{Refusal}
+wrappers, will pass the integration test suite (\texttt{weaver\_integration\_tests.rs})
+without modification, confirming that the code-generation path is functionally equivalent
+to the hand-coded path.
+
+\textbf{H3.} The BLAKE3 hash semantics encoded in the \texttt{Lattice} trait implementation
+--- where an empty \texttt{witness\_hash} maps to the lattice bottom and a non-empty
+64-character hex string maps to the lattice top --- correctly model the partial order
+required by the wasm4pm conformance court for process-activity witness comparison.
+
+\subsection{Success Criteria}
+\label{sec:otel-weaver-exp-004-registry-to-witness-success}
+
+\begin{enumerate}
+  \item The generator (\texttt{codegen/generator.rs}) parses the inline resolved schema
+    JSON, identifies the \texttt{process.pi.activity} group, and materializes
+    \texttt{ActivityWitness} and \texttt{Lattice} definitions without runtime error.
+  \item The materialized file \texttt{src/generated\_witnesses.rs} exists on disk and
+    matches the specification in the project \texttt{README.md} exactly. \emph{Status:
+    confirmed} --- the file exists and its content matches the README specification.
+  \item The \texttt{weaver\_integration\_tests.rs} test
+    (\texttt{test\_weaver\_integration\_synthesis}) passes, confirming that the
+    court-boundary types (\texttt{Admission}, \texttt{Refusal}, \texttt{BridgeRx}) operate
+    correctly over the materialized witness surface. \emph{Status: confirmed} ---
+    62 tests pass per \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}.
+  \item No \texttt{Cargo.toml} gap prevents the experiment from being invoked as part of
+    the broader crate build. \emph{Status: PARTIAL} --- no standalone manifest exists;
+    the generator operates as a research artifact, not a standalone binary.
+  \item A Weaver-produced \texttt{resolved\_schema.json} file is read from disk rather than
+    inlined as a string literal. \emph{Status: PARTIAL} --- the current generator inlines
+    the schema as a Rust raw string; genuine Weaver CLI invocation against
+    \texttt{process\_pi.yaml} has not been verified.
+\end{enumerate}

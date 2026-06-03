@@ -1,0 +1,104 @@
+\section{Evidence, Receipts, and Gates}
+\label{sec:otel-weaver-exp-005-collector-to-intake-evidence}
+
+\subsection{Tests}
+\label{sec:otel-weaver-exp-005-collector-to-intake-evidence-tests}
+
+The primary test artifact for EXP-005 is \texttt{harness.py}, the synthetic load generator
+located at:
+\begin{verbatim}
+/Users/sac/process-intelligence/otel-weaver/experiments/
+  exp-005-collector-to-pi-intake/harness.py
+\end{verbatim}
+
+The harness manufactures a three-class feedstock taxonomy:
+
+\begin{itemize}
+  \item \textbf{Span A} --- fully compliant span carrying both \texttt{process.pi.instance\_id}
+        and \texttt{process.pi.witness.hash}. Expected outcome: admitted by \texttt{filter/pi},
+        normalised by \texttt{transform/pi}, written to \texttt{pi\_intake\_events.json}, and
+        passing the downstream live-check gate.
+  \item \textbf{Span B} --- span missing \texttt{process.pi.instance\_id}. Expected outcome:
+        silently dropped by \texttt{filter/pi}; absent from \texttt{pi\_intake\_events.json}.
+  \item \textbf{Span C} --- span carrying \texttt{process.pi.instance\_id} but missing
+        \texttt{process.pi.witness.hash}. Expected outcome: admitted by \texttt{filter/pi},
+        written to \texttt{pi\_intake\_events.json}, but rejected by the downstream
+        \texttt{validator.rs} live-check gate in EXP-003, producing a sealed refusal record.
+\end{itemize}
+
+These three test classes cover the full admission/rejection surface at the collector boundary.
+However, the harness has not been executed against a live collector. The expected outcomes are
+specified but unconfirmed by observed collector output. The test surface is PARTIAL: the test
+code is manufactured and correct by specification review, but no execution evidence exists.
+
+The \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} runtime integration checkpoint confirms
+that all 62 wasm4pm/wasm4pm-compat/blue\_river\_dam tests pass, but these tests operate on
+the downstream processing stack, not on the live collector pipeline. EXP-005 live execution
+is not covered by those 62 tests.
+
+\subsection{Receipts}
+\label{sec:otel-weaver-exp-005-collector-to-intake-evidence-receipts}
+
+EXP-005 requires one receipt artifact:
+
+\begin{description}
+  \item[\texttt{live-check-intake-receipt.json}] A BLAKE3 receipt store at path
+        \texttt{/Users/sac/process-intelligence/receipts/live-check-intake-receipt.json}.
+        Referenced by the ggen manifest
+        \texttt{otel-weaver/ggen/manifests/live-check-intake.manifest.yaml}.
+        \textbf{Status: does not exist.} This receipt has not been materialised because the
+        live collector run that would produce \texttt{pi\_intake\_events.json} has not been
+        executed. The receipt chain for EXP-005 is open: no cryptographic seal exists for any
+        EXP-005 output artifact.
+\end{description}
+
+No other receipts are declared for this experiment. The absence of the receipt is the primary
+evidence gap that distinguishes the PARTIAL status from an ALIVE verdict.
+
+\subsection{Checkpoints}
+\label{sec:otel-weaver-exp-005-collector-to-intake-evidence-checkpoints}
+
+EXP-005 is referenced in three checkpoints:
+
+\begin{description}
+  \item[\texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}] (SHA-256 sealed) Lists EXP-005 as
+        component~E in the OTel Weaver pipeline. This checkpoint declares the overall OTel
+        Weaver system ALIVE based on the combination of all five experiments. EXP-005's
+        component-E status is included in this ALIVE verdict, but the checkpoint predates the
+        discovery that \texttt{pi\_intake\_events.json} was never materialised.
+
+  \item[\texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}] Runtime integration checkpoint
+        confirming 62 downstream tests pass. Does not cover the live collector execution path
+        of EXP-005.
+
+  \item[\texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md}] Documents the PARTIAL status of the
+        OTel Weaver system, explicitly noting that the live execution proof artifact is absent.
+        This is the authoritative checkpoint for the current EXP-005 status.
+\end{description}
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:otel-weaver-exp-005-collector-to-intake-evidence-status}
+
+\textbf{EXP-005 status: PARTIAL.}
+
+The following gate criteria are met:
+\begin{itemize}
+  \item Complete specification (README.md with pipeline diagram, OCEL~2.0 schema, Docker
+        command) --- \checkmark
+  \item Production-ready OTTL processor configuration (collector YAML) --- \checkmark
+  \item Three-class feedstock taxonomy harness (harness.py) --- \checkmark
+  \item Checkpoint references (ALIVE\_001 component E, PARTIAL\_001) --- \checkmark
+\end{itemize}
+
+The following gate criteria are not met:
+\begin{itemize}
+  \item \texttt{output/pi\_intake\_events.json} materialised by live Docker run --- \texttimes
+  \item \texttt{live-check-intake-receipt.json} BLAKE3 receipt materialised --- \texttimes
+  \item Span~B confirmed absent from output --- \texttimes
+  \item Span~C confirmed admitted by collector and refused by downstream court --- \texttimes
+  \item Config field name mismatch (\texttt{max\_megabytes} vs. \texttt{max\_size\_megabytes})
+        resolved --- \texttimes
+\end{itemize}
+
+An ALIVE verdict cannot be issued. The experiment is structurally complete but lacks live
+execution evidence. This status is accurately reflected in \texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md}.

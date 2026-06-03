@@ -1,0 +1,71 @@
+\section{Research Question}
+\label{sec:otel-weaver-exp-005-collector-to-intake-rq}
+
+\subsection{Problem Statement}
+\label{sec:otel-weaver-exp-005-collector-to-intake-rq-problem}
+
+Process intelligence requires event logs that satisfy strict object-centric structural laws:
+every event must be bound to a named process instance (\texttt{process.pi.instance\_id}),
+every refusal must be sealed with a BLAKE3 witness hash, and every admitted span must carry
+a provenance timestamp (\texttt{pi.intake.ingested\_at}) that anchors the event to the
+collector's clock rather than the emitting service's clock. Production observability
+infrastructure does not emit logs in this form. OpenTelemetry spans carry arbitrary
+attributes chosen by application developers, with no guarantee that process-intelligence
+namespace attributes are present, correctly typed, or consistently populated.
+
+The problem EXP-005 addresses is: \textit{can a stock OTel Collector deployment, configured
+with OTTL processors, serve as the sole gatekeeping and normalisation layer between arbitrary
+live OTLP traffic and a process intelligence intake pipeline, without requiring any
+modification to the emitting service?} If yes, the collector becomes the first law-enforcing
+membrane and the upstream application stack remains observability-standard-compliant without
+process-intelligence-specific instrumentation obligations.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:otel-weaver-exp-005-collector-to-intake-rq-old-regime}
+
+The old regime assumes that process evidence is manufactured by instrumenting applications
+with process-aware SDKs, custom middleware, or bespoke log formatters. Under this assumption,
+the process intelligence layer is tightly coupled to the emitting service: changing the
+process model requires changing the service instrumentation. This creates a coupling that
+makes process intelligence expensive to retrofit and fragile under schema evolution.
+
+EXP-005 challenges this assumption by positioning the OTel Collector as the law-enforcement
+boundary. The collector's OTTL processor language is expressive enough to express attribute
+presence checks (\texttt{filter/pi} dropping spans where
+\texttt{attributes["process.pi.instance\_id"] == nil}), attribute transformations
+(\texttt{transform/pi} lowercasing activity names and injecting ingestion timestamps), and
+structured export (\texttt{file/pi\_json} writing OCEL~2.0 JSON). If the collector can
+enforce these laws without service-side changes, the old-regime coupling assumption is
+falsified for the class of services that already emit OTLP spans.
+
+\subsection{Hypothesis}
+\label{sec:otel-weaver-exp-005-collector-to-intake-rq-hypothesis}
+
+A three-stage OTel Collector pipeline --- OTLP receiver, OTTL filter+transform processors,
+file exporter --- is sufficient to gatekeep, normalise, and emit OCEL~2.0-structured JSON
+from live OTLP traffic. Specifically: spans missing \texttt{process.pi.instance\_id} will be
+silently dropped at the \texttt{filter/pi} stage; admitted spans will have activity names
+lowercased and an ISO~8601 ingestion timestamp injected at the \texttt{transform/pi} stage;
+and the \texttt{file/pi\_json} exporter will write structurally valid OCEL~2.0 JSON to
+\texttt{output/pi\_intake\_events.json} on every span batch flush. The harness Span~A/B/C
+taxonomy provides a falsifiable three-class test surface: Span~A must appear in the output,
+Span~B must be absent, and Span~C must appear but be rejected by the downstream live-check
+gate.
+
+\subsection{Success Criteria}
+\label{sec:otel-weaver-exp-005-collector-to-intake-rq-success}
+
+\begin{enumerate}
+  \item \texttt{output/pi\_intake\_events.json} is materialised by a live Docker collector
+        run processing harness output, and contains exactly Span~A and Span~C records.
+  \item Span~B is absent from \texttt{pi\_intake\_events.json}, confirming \texttt{filter/pi}
+        dropped it at the namespace boundary.
+  \item Every admitted span record carries \texttt{pi.intake.ingested\_at} (ISO~8601) and
+        \texttt{pi.intake.collector\_version} fields injected by \texttt{transform/pi}.
+  \item The \texttt{live-check-intake-receipt.json} BLAKE3 receipt is materialised at
+        \texttt{receipts/} and matches the hash declared in
+        \texttt{live-check-intake.manifest.yaml}.
+  \item Span~C fails the downstream live-check gate (exp-003 \texttt{validator.rs}) due to
+        absent \texttt{process.pi.witness.hash}, producing a sealed refusal record.
+  \item All criteria verified and the checkpoint upgraded from PARTIAL to ALIVE.
+\end{enumerate}

@@ -1,0 +1,153 @@
+% FILE: 03_architecture_and_primitives.tex
+% PROJECT: sources-papers
+% ROLE: academic-paper-classification-and-evidence-grounding
+
+\section{Architecture and Primitives}
+\label{sec:sources-papers-arch}
+
+\subsection{Core Objects}
+\label{sec:sources-papers-arch-objects}
+
+The paper corpus defines the following core formal objects, each traceable to
+a specific paper and a specific Rust surface in \texttt{wasm4pm-compat}:
+
+\paragraph{WF-net soundness (van der Aalst 1998).}
+\texttt{WfNetConst<SOUNDNESS>} is a const-generic type encoding soundness as a
+compile-time boolean. \texttt{WfNetConst<true>} cannot be constructed without a
+\texttt{WfNetSoundnessWitness} whose constructor is \texttt{pub(crate)},
+making forgery a compile error. The three-condition soundness criterion (option
+to complete, proper completion, no dead transitions) is formalized in
+\texttt{runtime-verification-wasm.md} as:
+\[
+\forall M \in R(N, M_i),\; M \xrightarrow{*} M_f \quad
+\land \quad (M \geq [o]) \Rightarrow (M = M_f) \quad
+\land \quad \forall t \in T, \exists M \in R(N, M_i),\; M \xrightarrow{t}
+\]
+
+\paragraph{OCEL 2.0 object surface (van der Aalst et al.\ 2023).}
+Seven formal objects are reified in \texttt{src/ocel.rs}:
+\texttt{OcelLog}, \texttt{OcelEvent}, \texttt{OcelObject},
+\texttt{EventObjectLink}, \texttt{ObjectObjectLink}, \texttt{OcelDims},
+\texttt{OcelAttribute}. Event-to-object and object-to-object links are
+first-class structural elements, not optional annotations.
+
+\paragraph{DECLARE constraint templates (Pesic \& van der Aalst 2006).}
+\texttt{DeclareConstraint} and \texttt{DeclareTemplate} are encoded as
+\texttt{ConstParamTy} variants in \texttt{src/declare.rs}. Each of the 12
+LTLf templates is a named compile-time type. Unary constraint instantiation
+is rejected by a compile-fail fixture (\texttt{declare\_unary\_constraint.rs}).
+
+\paragraph{5-valued dynamic valuation lattice.}
+The \texttt{declare-satisfaction-lattice.md} defines $\mathcal{V} = \{\bot,
+\text{PossiblySatisfied}, \text{Satisfied}, \text{Violated}, \top\}$ with a
+verified join-semilattice structure. The partial order is:
+\[
+\bot \sqsubseteq \text{PossiblySatisfied} \sqsubseteq \text{Satisfied}
+\sqsubseteq \top, \quad
+\bot \sqsubseteq \text{PossiblySatisfied} \sqsubseteq \text{Violated}
+\sqsubseteq \top
+\]
+with \texttt{Satisfied} and \texttt{Violated} incomparable. This lattice
+supports streaming DECLARE constraint evaluation over trace prefixes.
+
+\paragraph{POWL 2.0 conversion witness (Kourani, Park, van der Aalst 2026).}
+\texttt{WfNet2PowlWitness} and \texttt{SeparableWfNet} are non-forgeable
+markers encoding language-preserving WF-net to POWL 2.0 conversion.
+The \texttt{ChoiceGraph} type names the inter-decision dependency structure.
+
+\paragraph{Admission gate.}
+\texttt{Admitted<T, W>} prevents raw event laundering: any event log entering
+the execution pipeline must carry an admission witness $W$. The
+\texttt{LossPolicy} type governs loss accounting when a XES case-centric log
+is projected to an object-centric format.
+
+\paragraph{Conformance metric bounds.}
+\texttt{Between01<NUM, DEN>} is a const-generic fraction type bounding all
+conformance metrics (fitness, precision, F1) in $[0,1]$. This is the type-level
+encoding of the measurement requirement: a conformance score without a
+compile-time bound is an assertion, not a measurement.
+
+\subsection{Admissible Transitions}
+\label{sec:sources-papers-arch-transitions}
+
+The Paper-to-Law mapping algorithm $\mathcal{M}: I_P \to
+(\mathcal{T}_{\text{Rust}}, \mathcal{W})$ defines the admissible transition
+from published invariant to enforced type law. The algorithm proceeds in five
+steps (per \texttt{core\_lifecycle\_algorithms.md}):
+
+\begin{enumerate}
+  \item \textbf{Analyze \& Filter}: Scan paper $P$ for structural invariants
+    $I_P = \{\lambda_1, \ldots, \lambda_n\}$. Classify each $\lambda_i$ as
+    statically expressible or runtime-dependent.
+  \item \textbf{Declare Witness}: Emit a
+    \texttt{witness\_marker!(PaperWitness, \ldots)} binding the witness to the
+    paper's title and publication year.
+  \item \textbf{Implement Types}: Construct Rust types that enforce $\lambda_i$
+    by construction --- e.g., bipartite arc law via \texttt{PlaceToTransitionArc}
+    and \texttt{TransitionToPlaceArc} newtypes with no constructors for
+    place-to-place or transition-to-transition arcs.
+  \item \textbf{Compile-Fail Fixtures}: Write trybuild fixtures that attempt
+    to violate $\lambda_i$ and verify \texttt{Compile(Program\_violating} $\lambda_i$\texttt{)} $\equiv$ \texttt{Failure}.
+  \item \textbf{Graduation Boundary}: For runtime-dependent invariants, declare
+    a named \texttt{GraduationReason} variant that defers execution to wasm4pm
+    without abandoning the type-level I/O boundary.
+\end{enumerate}
+
+The lawful evidence path for board claims is:
+\[
+\texttt{Admitted<OcelLog, Ocel20>} \to \text{discovery} \to
+\text{conformance} \to \text{board claim}
+\]
+
+\subsection{Boundaries}
+\label{sec:sources-papers-arch-boundaries}
+
+The paper corpus defines five explicit classification boundaries:
+
+\begin{itemize}
+  \item \texttt{COVERED\_BY\_TYPE}: Formal objects fully reified as Rust types;
+    compile-pass and compile-fail fixtures both present. Applies to 18 papers.
+  \item \texttt{COVERED\_BY\_GRADUATION\_BOUNDARY}: Type-level I/O shapes
+    defined; computation absent from \texttt{wasm4pm-compat} by design,
+    graduating to \texttt{wasm4pm}. Applies to 39 papers.
+  \item \texttt{PARTIAL\_WITH\_REASON}: One or more named formal objects missing
+    from the type surface. 10 papers carry this status with 22 named missing
+    types identified.
+  \item \texttt{DUPLICATE\_OR\_BACKGROUND}: Paper introduces no new formal
+    objects beyond those covered by a primary paper.
+  \item \texttt{OUT\_OF\_SCOPE\_WITH\_REASON}: Paper's formal objects fall
+    outside the wasm4pm execution scope with a stated reason.
+\end{itemize}
+
+\subsection{Failure Modes Refused}
+\label{sec:sources-papers-arch-failures}
+
+The paper corpus explicitly documents failure modes that the type system
+refuses to represent:
+
+\begin{itemize}
+  \item \textbf{Forged soundness}: \texttt{WfNetConst<true>} without a
+    \texttt{WfNetSoundnessWitness} is a compile error, not a runtime panic.
+    The fixture \texttt{wfnet\_forged\_soundness.rs} verifies this refusal.
+  \item \textbf{Bipartite arc violation}: \texttt{PlaceToPlaceArc} and
+    \texttt{TransitionToTransitionArc} do not exist as types. Petri nets
+    (Murata 1989 \S2) require bipartite structure; the type system enforces
+    it by omission of constructors.
+  \item \textbf{XES treated as object-centric}: \texttt{XesLog} carries a
+    \texttt{CaseCentricMarker}; the fixture \texttt{xes\_not\_object\_centric.rs}
+    rejects any path from XES to object-centric analysis that bypasses an
+    explicit \texttt{LossPolicy}.
+  \item \textbf{Raw event laundering}: Any event log that bypasses the
+    \texttt{Admitted<T, W>} admission gate is refused at the type level.
+    This refusal is documented in \texttt{PAPER\_TO\_BOARD\_CLAIM.md} as a
+    precondition for all Tier-1 board claims.
+  \item \textbf{Unary DECLARE constraint}: DECLARE templates have binary arity
+    by definition (Pesic \& van der Aalst 2006). The compile-fail fixture
+    \texttt{declare\_unary\_constraint.rs} rejects single-activity instantiation.
+  \item \textbf{Sybil-forged event provenance}: The adversarial canon
+    (\texttt{adversarial-canon.md}) documents the structural requirement for
+    BLAKE3 cryptographic receipt verification as the replacement for case-ID
+    correlation. Systems that accept event logs without receipt verification
+    are refused admission by the documented (though not yet implemented)
+    adversarial admission gate.
+\end{itemize}

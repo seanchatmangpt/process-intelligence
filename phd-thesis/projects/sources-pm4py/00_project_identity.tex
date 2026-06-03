@@ -1,0 +1,79 @@
+% FILE: 00_project_identity.tex
+% Project: sources-pm4py — PM4Py Comparative Oracle Atlas
+% Thesis role: pm4py-comparative-oracle-atlas
+
+\section{Project Identity}
+\label{sec:sources-pm4py-identity}
+
+\subsection{Purpose}
+\label{sec:sources-pm4py-identity-purpose}
+
+The \texttt{sources/pm4py} corpus is the comparative oracle atlas for the process-intelligence
+research program. Its function is not to replicate PM4Py but to define, with precision, what
+wasm4pm must match, what it may safely diverge on, and what it must never replicate. PM4Py
+(Process Intelligence Solutions GmbH fork, 2026) is treated as a deterministic baseline
+against which the wasm4pm WebAssembly bridge (\texttt{pm4wasm.d.ts}) is measured. The corpus
+catalogues approximately 120 distinct capabilities across process discovery, conformance
+checking, filtering, variant analysis, I/O, and organizational mining. For each capability
+it records three verdicts: whether the WASM bridge exposes it (\texttt{YES}/\texttt{NO}/\texttt{PARTIAL}),
+whether the wasm4pm-compat Rust crate provides the corresponding type surface
+(\texttt{COVERED}/\texttt{PARTIAL}/\texttt{MISSING}), and whether the PM4Py implementation
+constitutes an anti-pattern that must not be ported. The PM4PY\_ORACLE\_RECEIPT in the
+research program's receipt registry, witnessed by \texttt{pm4wasm.d.ts} TypeScript interface
+definitions, certifies that every PM4Py function has a signed WASM equivalent or documented
+GAP status entry.
+
+\subsection{Repository Surface}
+\label{sec:sources-pm4py-identity-surface}
+
+The corpus contains fourteen files at assessment date (2026-05-31), satisfying criterion 4
+of the ALIVE gate (target: $\geq$ 4 files; actual: 14). The primary artifacts are the
+\texttt{CAPABILITY\_ATLAS.md}, which enumerates capabilities in ten categories with
+WASM-bridge status per entry; the \texttt{ORACLE\_MAP.md}, which cross-references every
+PM4Py function against its \texttt{pm4wasm.d.ts} WASM counterpart and the required
+wasm4pm-compat type surface; the \texttt{ALGORITHM\_CROSSWALK.md}, which provides a formal
+gap count across 37 algorithms (2 COVERED, 16 PARTIAL, 19 MISSING); and the
+\texttt{NOT\_TO\_COPY.md} manifesto, which names ten PM4Py architectural anti-patterns that
+would violate wasm4pm's type-law covenant if ported. Supporting files include the
+\texttt{divergence-matrix.md} (v2.0, updated 2026-05-31), the
+\texttt{POWL\_CHOICEGRAPH\_ANALYSIS.md}, the \texttt{conformance-authority-map.md},
+the \texttt{mining-authority-map.md}, the \texttt{oracle-vulnerability.md} adversarial
+assessment, the \texttt{oracle-map.md}, the \texttt{algorithm-crosswalk.md}, and the
+\texttt{process-form-crosswalk.md}.
+
+\subsection{Primary Research Role}
+\label{sec:sources-pm4py-identity-role}
+
+The atlas serves as the divergence oracle: it is the document that answers the question
+``on which PM4Py capabilities must wasm4pm produce bitwise-identical results, and on which
+may it legitimately diverge?'' The divergence matrix (v2.0) establishes two primary categories.
+The must-match category covers all deterministic algorithms and all deterministic conformance
+metrics --- including alpha miner, inductive miner, DFG, token-based replay, footprints
+conformance, log skeleton conformance, DECLARE conformance, and all frequency-count
+aggregations. Divergence in these categories would break the audit chain and render any
+M\&A claim indefensible. The safe-divergence category covers heuristic optimizers (genetic
+algorithm, ILP miner), A*-alignment search heuristics, clustering algorithms (roles
+discovery, batch detection), and all visualization rendering --- any of which may use a
+different implementation as long as outputs are semantically equivalent or not part of
+the proof chain. LLM-produced outputs are explicitly excluded from all conformance-critical
+paths, as they carry no deterministic receipt anchor.
+
+\subsection{Key Artifacts}
+\label{sec:sources-pm4py-identity-artifacts}
+
+The five JSON receipts in \texttt{receipts/} provide the empirical grounding for the
+oracle's claims. Receipt \texttt{rec\_ebitda\_rework\_001.json} records verification results
+of fitness $= 0.982$, precision $= 0.945$, and throughput of 4.12 days on an EBITDA
+rework-reduction query, with an ed25519 validator signature and BLAKE3-anchored log and
+model hashes. The \texttt{POWL\_CHOICEGRAPH\_ANALYSIS.md} traces a specific academic paper
+--- Kourani, Park, and van der Aalst, arXiv:2505.07052, 2025 --- to a concrete missing type
+surface (\texttt{DecisionGraph}) in \texttt{src/powl.rs}, with proposed Rust type sketches
+and a \texttt{ChoiceGraphPaper2025} witness enum. The \texttt{WfNetConst<SOUNDNESS>} type
+in wasm4pm-compat \texttt{src/petri.rs} is the only COVERED conformance type in the
+crosswalk, providing a non-forgeable soundness witness absent from PM4Py's Python runtime.
+
+\bigskip
+\noindent\textit{Source authority:} CAPABILITY\_ATLAS.md, ORACLE\_MAP.md,
+ALGORITHM\_CROSSWALK.md, NOT\_TO\_COPY.md, divergence-matrix.md,
+POWL\_CHOICEGRAPH\_ANALYSIS.md, receipts/RECEIPT\_REGISTRY.md (PM4PY\_ORACLE\_RECEIPT),
+checkpoints/ALIVE\_GATE\_ASSESSMENT.md (criterion 4: MET).

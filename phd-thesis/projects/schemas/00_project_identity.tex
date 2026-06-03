@@ -1,0 +1,88 @@
+% FILE: 00_project_identity.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Project Identity}
+\label{sec:schemas-identity}
+
+\subsection{Purpose}
+\label{sec:schemas-identity-purpose}
+
+The \texttt{schemas} project establishes the structural contract between two critical surfaces of the
+process intelligence manufacturing pipeline: M\&A deck generation and cryptographic receipt
+validation. Its primary artifact, \texttt{slide\_verification\_ledger.schema.json}, is a JSON Schema
+draft-07 document that defines the data shape every cryptographic receipt must carry to be
+admissible as board-level evidence. A companion schema, \texttt{otel\_trace\_integration\_schema.json},
+governs how W3C OpenTelemetry trace telemetry is linked to BLAKE3 event-chain roots.
+
+Without these schemas, the receipt chain is informally specified and cannot be mechanically
+validated. With them, any receipt file can be tested for structural conformance before it is
+admitted into the slide-to-receipt ledger. The schemas therefore occupy the lowest stratum of
+the evidence stack: they precede all upstream claim taxonomy, rendering pipeline, and
+cryptographic signing work.
+
+The project is minimal by design. It contains exactly one schema in the canonical \texttt{schemas/}
+directory, with no build system, no test runner attached at commit time, and no README. This
+minimalism is not incidental---it reflects the deliberate choice to keep the contract surface
+narrow and stable. Every field in the schema has a corresponding required entry in the five
+production receipts that serve as the project's principal validation evidence.
+
+\subsection{Repository Surface}
+\label{sec:schemas-identity-surface}
+
+The repository surface consists of two JSON Schema files occupying different directories:
+
+\begin{itemize}
+  \item \texttt{schemas/slide\_verification\_ledger.schema.json} --- the primary schema governing
+    the \texttt{SlideVerificationLedger} type. This file uses \texttt{patternProperties} keyed on
+    a UUIDv4 regular expression (\verb|^[0-9a-fA-F]{8}-...-[0-9a-fA-F]{12}$|) so that each
+    key in the ledger object is itself a UUID identifying a specific M\&A deck slide.
+  \item \texttt{standards/otel\_trace\_integration\_schema.json} --- a companion schema defining
+    the \texttt{OTelTraceBlake3IntegrationSchema}. This schema sits in \texttt{standards/} rather
+    than \texttt{schemas/}, a governance boundary that is currently undocumented and treated as
+    an open question in the research program.
+\end{itemize}
+
+Both files reference JSON Schema draft-07 as their meta-schema. The \texttt{additionalProperties: false}
+constraint on the ledger schema enforces strict conformance: any receipt carrying fields not listed
+in the required set is structurally invalid and must be refused.
+
+\subsection{Primary Research Role}
+\label{sec:schemas-identity-role}
+
+Within the dissertation, the \texttt{schemas} project plays the role of
+\emph{data-schema-definitions-for-ma-and-receipt-surfaces}. It answers the question: what is the
+minimal structural contract that a cryptographic receipt must satisfy to be admissible as
+board-level process intelligence evidence?
+
+The schemas do not perform computation. They do not discover process models, replay event logs, or
+compute fitness metrics. Their function is entirely definitional: they assert what fields must
+exist, what patterns those fields must match, and what enumerated values are permitted. In this
+sense they are analogous to type signatures in a programming language---the contract that upstream
+manufacturers and downstream consumers must both respect.
+
+This definitional role places the schemas at the intersection of three dissertation themes:
+(1)~the receipt-chain architecture that makes process claims cryptographically auditable;
+(2)~the M\&A evidence stack that renders those claims board-admissible; and
+(3)~the manufacturing discipline that refuses to ship artifacts that cannot pass a proof gate.
+
+\subsection{Key Artifacts}
+\label{sec:schemas-identity-artifacts}
+
+\begin{description}
+  \item[\texttt{slide\_verification\_ledger.schema.json}] The canonical schema. Eight required
+    fields per ledger entry: \texttt{slide\_id}, \texttt{slide\_title}, \texttt{assertion\_text},
+    \texttt{target\_log\_hash} (64-hex BLAKE3), \texttt{process\_model\_hash} (64-hex BLAKE3),
+    \texttt{query\_definition}, \texttt{verification\_results} (with status enum
+    \texttt{verified}~$|$~\texttt{failed}~$|$~\texttt{unverified}), and \texttt{validator\_signature}
+    (128-hex Ed25519).
+  \item[\texttt{otel\_trace\_integration\_schema.json}] Companion schema. Requires \texttt{trace\_id}
+    (32-hex W3C TraceID), \texttt{event\_chain\_root} (64-hex BLAKE3), and a \texttt{spans} array
+    where each span carries a \texttt{blake3\_receipt} computed as
+    $\operatorname{BLAKE3}(\text{PriorReceipt} \| \text{SpanData})$.
+  \item[\texttt{rec\_ebitda\_rework\_001.json} through \texttt{rec\_residual\_standard\_005.json}]
+    Five production receipts in \texttt{receipts/} that conform to the ledger schema, carrying
+    real UUIDv4 \texttt{slide\_id} values, 64-hex BLAKE3 hashes, wasm4pm query URIs,
+    fitness/precision metrics in the 0.975--1.0 range, and 128-hex Ed25519 signatures prefixed
+    \texttt{ed25519\_sig\_}.
+\end{description}

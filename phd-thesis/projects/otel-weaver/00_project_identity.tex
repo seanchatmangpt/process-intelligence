@@ -1,0 +1,104 @@
+% FILE: 00_project_identity.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+
+\section{Project Identity}
+\label{sec:otel-weaver-identity}
+
+\subsection{Purpose}
+\label{sec:otel-weaver-identity-purpose}
+
+The \texttt{otel-weaver} project is the telemetry-to-process-evidence ingestion layer of the
+Process Intelligence Research Foundry. Its singular institutional purpose is to enforce a formal,
+non-negotiable boundary between raw OpenTelemetry observability data---designated \emph{feedstock}
+within the foundry---and court-grade process evidence, designated \emph{receipts}. This boundary is
+not cosmetic. The project's foundational Feedstock Theorem states:
+\begin{quote}
+$\text{Telemetry} \in \text{Feedstock};\quad \text{SchemaValidation}(\text{Telemetry}) \neq
+\text{ProcessCompliance}(\text{ProcessState})$
+\end{quote}
+The theorem is anchored at doctrine constant \texttt{TELEMETRY\_NOT\_EVIDENCE\_001} and appears
+verbatim in \texttt{doctrine/telemetry-is-not-process-evidence.md}. The distinction it encodes is
+operationally consequential: a passing Weaver schema check does not constitute a conformance
+finding, and a conformance finding cannot be asserted without a signed receipt chain. The project
+prevents \emph{category collapse}---the silent substitution of observability signal for process
+truth---by requiring every ingestion path to traverse a typed admission gate before any downstream
+process-evidence consumer may reference the payload.
+
+The scope extends across five executable experiments, six immutable doctrine files, five YAML
+mapping tables, a custom OTel \texttt{process.pi} semantic convention registry, and two
+\texttt{ggen}-manufactured manifest chains. Each layer is designed to compose without gap: the
+registry defines what feedstock looks like, the doctrine defines what feedstock is not, the mapping
+tables define the translation rules, and the experiments materialize those rules as Rust type
+systems and validated pipeline configurations.
+
+\subsection{Repository Surface}
+\label{sec:otel-weaver-identity-surface}
+
+The project repository resides at \texttt{\$HOME/process-intelligence/otel-weaver/} and is
+organized into the following primary directories:
+
+\begin{description}
+  \item[\texttt{doctrine/}] Six immutable doctrine files, each anchored at a named constant.
+    Doctrine files are append-only by foundry policy and may not be rebased.
+  \item[\texttt{experiments/}] Five subdirectories (\texttt{exp-001} through \texttt{exp-005}),
+    each containing a \texttt{README.md} with full implementation specification, and in the cases
+    of \texttt{exp-002} and \texttt{exp-003}, a \texttt{Cargo.toml} with real dependency
+    declarations including \texttt{serde}, \texttt{blake3}, and a path reference to
+    \texttt{wasm4pm-compat}.
+  \item[\texttt{mappings/}] Five YAML mapping files governing OTel-to-PI witness translation,
+    signal-to-evidence classification, registry-diff-to-drift disambiguation, live-check findings
+    to refusal codes, and schema URL to receipt context.
+  \item[\texttt{checkpoints/}] Three \texttt{ggen}-signed checkpoint files:
+    \texttt{GGEN\_OTEL\_WEAVER\_PI\_PARTIAL\_001.md},
+    \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md}, and
+    \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md}.
+  \item[\texttt{ggen/}] Two manifest files and one audit script, governing the \texttt{ggen}
+    manufacturing chain for this project.
+  \item[\texttt{intel/}] Two YAML files mapping Weaver command surface and registry model
+    structure.
+\end{description}
+
+The repository has no \texttt{.ttl}, \texttt{.rq}, or ontology files. The type surface is
+expressed entirely through Rust type systems, YAML mapping tables, and doctrine constants rather
+than through an RDF/SPARQL layer.
+
+\subsection{Primary Research Role}
+\label{sec:otel-weaver-identity-role}
+
+Within the Process Intelligence Research Foundry, \texttt{otel-weaver} occupies the ingestion
+stratum: it is the first component a raw OTel span touches before any process-intelligence
+inference is permitted. No downstream component---including \texttt{wasm4pm},
+\texttt{wasm4pm-compat}, or the M\&A claim layer---may consume telemetry-derived data unless it
+has passed through an \texttt{Admission<T,\,W>} gate manufactured by this project's type
+definitions.
+
+This role is architecturally load-bearing. The Chatman foundry equation $A = \mu(O^*)$ requires
+that every asserted activity $A$ be the manufactured output $\mu$ of an authoritative object state
+$O^*$. The \texttt{otel-weaver} ingestion layer is the mechanism by which raw span data is either
+promoted to a typed activity witness or refused with a structured \texttt{Refusal} diagnostic. No
+middle ground is permitted by the type system.
+
+\subsection{Key Artifacts}
+\label{sec:otel-weaver-identity-artifacts}
+
+The key artifacts manufactured or specified within this project are:
+
+\begin{enumerate}
+  \item \textbf{Admission\texttt{<T,\,W>}} --- A type-safe gate struct wrapping a verified
+    feedstock payload \texttt{T} with a witness \texttt{W}. Defined in
+    \texttt{exp-003-live-check-to-refusal/src/validator.rs}.
+  \item \textbf{Refusal} --- An immutable structured diagnostic containing \texttt{RefusalCode},
+    \texttt{violated\_rule}, \texttt{raw\_feedstock}, and a \texttt{blake3\_digest}.
+  \item \textbf{BridgeRx} --- A Rust schema translation bridge mapping schema version diffs
+    $\Delta W$ to a zero conformance residual $R_\Delta = 0$. Specified in
+    \texttt{exp-002-weaver-diff-to-pi-residual/src/bridge.rs}.
+  \item \textbf{ActivityWitness} --- A lattice-bounded Rust struct materialized from a resolved
+    OTel Weaver registry JSON, anchoring the \texttt{OtelSpanToOcelEventProjection} witness type.
+  \item \textbf{process.pi registry} --- A custom OTel semantic convention group defining
+    \texttt{instance\_id}, \texttt{activity.name}, \texttt{lifecycle}, token state fields, and
+    a \texttt{witness.hash} field constrained to BLAKE3 64-character digests.
+  \item \textbf{LossReport} --- A mandatory declaration of lossy projection from OTel spans to
+    OCEL events, covering \texttt{span\_duration\_truncation},
+    \texttt{resource\_scope\_collapse}, and \texttt{causality\_to\_correlation\_degradation}.
+\end{enumerate}

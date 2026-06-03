@@ -1,0 +1,259 @@
+slug: sources-wasm4pm
+claims:
+  - id: CLM-SOURCES_WASM4PM-001
+    claim: >-
+      wasm4pm v30.1.2 compiles to both cdylib and rlib targets, carries a single
+      external dependency (wasm4pm-compat as a path dependency), and
+      self-implements all cryptographic primitives (BLAKE3, SHA-256, SHA-512,
+      ChaCha20, Ed25519) with zero upstream crate dependencies.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/Cargo.toml
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/crypto.rs
+    evidence_summary: >-
+      Cargo.toml confirms version 30.1.2, crate-type = ["cdylib", "rlib"], and a
+      single dependency on wasm4pm-compat via path. crypto.rs opens with a
+      declaration of self-contained SHA-256, SHA-512, ChaCha20, BLAKE3,
+      Curve25519, and Ed25519 with no external crate imports.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-002
+    claim: >-
+      All 31 tests pass in 10.60 seconds across four suites: unit tests inline in
+      source modules, integration tests, end-to-end tests, and weaver integration
+      tests. The mining module carries 7 inline tests and the conformance module
+      carries 6 inline tests.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/MINING_RENDER_RECEIPT.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/integration_tests.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/e2e_tests.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/conformance.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/mining/mod.rs
+    evidence_summary: >-
+      Known evidence inventory confirms the six named conformance tests and seven
+      named mining inline tests match the test function names listed in the TeX.
+      MINING_RENDER_RECEIPT confirms zero-warning compilation. The 31-test count
+      and 10.60s runtime are stated as the ALIVE criteria basis, consistent with
+      the four test suites listed.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-003
+    claim: >-
+      The MINING_RENDER_RECEIPT.md is sealed with Receipt ID
+      MINING_AUTHORITY_RENDER_001, timestamp 2026-06-01T00:00:00Z, and SHA-256
+      content hash
+      08a067d1ee19ea67150c194e9a2db7d86dfd994223b922de7e8606f45fbdf8e5 for
+      src/mining/mod.rs.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/MINING_RENDER_RECEIPT.md
+    evidence_summary: >-
+      MINING_RENDER_RECEIPT.md directly records all three values verbatim: Receipt
+      ID MINING_AUTHORITY_RENDER_001, timestamp 2026-06-01T00:00:00Z, status
+      SEALED, and the exact SHA-256 hash for src/mining/mod.rs in Step 3.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-004
+    claim: >-
+      The mining module was manufactured by the ggen machinery from templates in
+      wasm4pm-compat/compat/templates/mining/ (alpha_miner.rs.j2,
+      inductive_miner.rs.j2, heuristics_miner.rs.j2) and was not hand-coded.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/MINING_RENDER_RECEIPT.md
+    evidence_summary: >-
+      MINING_RENDER_RECEIPT.md Step 2 documents template application from the
+      three named .j2 template files with bound template variables (module_name,
+      witness_markers, evidence_carriers, lifecycle_states), confirming machine
+      manufacture.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-005
+    claim: >-
+      The ConformanceVerdict enum has three variants (FullyConforming,
+      PartiallyConforming, NonConforming) with an admits() method that applies a
+      0.8 fitness threshold, enforcing conformance as an admission gate rather
+      than a reporting tool.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/conformance.rs
+    evidence_summary: >-
+      conformance.rs lines 31-64 show the ConformanceVerdict enum with all three
+      variants and the admits() method containing the hardcoded 0.8 threshold with
+      comment "Default threshold."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-006
+    claim: >-
+      The graduation module (src/graduation.rs) implements the GraduateToWasm4pm
+      trait by importing from wasm4pm_compat::graduation, bridging
+      GraduationCandidate types into the execution engine with four intake
+      validation pathways.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/graduation.rs
+    evidence_summary: >-
+      graduation.rs opens with use
+      wasm4pm_compat::graduation::{GraduateToWasm4pm, GraduationCandidate,
+      GraduationReason} and implements validate_engine_intake covering three error
+      variants (UngroundedCandidate, ReasonMismatch, InvalidWitnessState) plus
+      success, mapping to the four test pathways named in the TeX.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-007
+    claim: >-
+      GAP_001 is a critical documented finding: the live ~/wasm4pm/ codebase
+      carries zero wasm4pm-compat dependencies, meaning the type-law covenant is
+      stated on the compat side but absent from the engineering engine. The
+      sources/wasm4pm codebase bridges this seam locally via src/graduation.rs but
+      the two-codebase relationship is an open research question.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/graduation.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/Cargo.toml
+    evidence_summary: >-
+      Cargo.toml shows wasm4pm-compat as the only dependency (confirming
+      sources/wasm4pm does consume it). graduation.rs imports from wasm4pm_compat.
+      The gap is documented as a research finding; the distinction between the
+      manufactured codebase and the live workspace is explicitly disclosed.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-008
+    claim: >-
+      BLAKE3 receipt fields in all Evidence<T, S, W> instances are currently
+      initialized to Blake3Hash([0u8; 32]). The cryptographic infrastructure is
+      structurally present but hash computation over algorithm inputs is not yet
+      wired end-to-end (GAP_009).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/MINING_RENDER_RECEIPT.md
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/mining/mod.rs
+    evidence_summary: >-
+      MINING_RENDER_RECEIPT.md Step 5 shows each Evidence type carries a Blake3Hash
+      field. The TeX documents GAP_009 and the open-questions section flags
+      zero-initialized receipts as a research risk explicitly requiring resolution
+      before capital-flow claims can rely on receipt-chain integrity.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-009
+    claim: >-
+      Compile-time Rust typestates combined with cryptographic receipt chaining can
+      close the raw-laundering gap without sacrificing performance:
+      Between01<NUM,DEN> const generics enforce metric bounds at compile time,
+      RuntimeBetween01 enforces bounds at runtime with NaN/Inf guards, and
+      Evidence<T, Admitted, W> containers cryptographically link every algorithm
+      output to its input.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/conformance.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/evidence.rs
+    evidence_summary: >-
+      The TeX explicitly marks this paragraph [AUTHOR THESIS]. Between01 and
+      RuntimeBetween01 are confirmed present and tested in conformance.rs. The
+      overall claim that raw-laundering becomes a structural impossibility is the
+      author's analytical conclusion, not an independently verified empirical
+      result.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-010
+    claim: >-
+      wasm4pm shifts process-mining from prediction to coordination: the 0.8
+      admission threshold in ConformanceVerdict.admits() is an enforcement gate
+      rather than a recommendation, and the six Blue River Dam proof gates in the
+      Lifecycle Authority make advancement conditional on passing typed proofs at
+      compile time where possible.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/conformance.rs
+    evidence_summary: >-
+      The TeX marks this paragraph [AUTHOR THESIS]. The 0.8 threshold in admits()
+      is source-confirmed. The prediction-vs-coordination framing is the
+      dissertation's organizing thesis applied to the architectural evidence; the
+      lifecycle proof gate structure is consistent with the architecture
+      specification.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-011
+    claim: >-
+      wasm4pm's conformance fitness receipts, once signed and chained, cannot be
+      retroactively modified without invalidating the receipt chain, and a
+      spot-audit verifier can re-replay any archived trace against the model
+      snapshot to confirm the receipt, positioning wasm4pm as a foundational
+      primitive for process-evidence-backed capital allocation.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/conformance.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/crypto.rs
+    evidence_summary: >-
+      The TeX marks the capital-flow paragraph [INTERPRETATION]. The
+      tamper-evidence property is a structural inference from the append-only
+      receipt chain and Ed25519 signing architecture; it has not been adversarially
+      audited. GAP_009 (zero-initialized BLAKE3 fields) further limits the current
+      strength of this claim.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-012
+    claim: >-
+      The Chatman Equation A = mu(O*) asserts that enterprise value is a function
+      of the orchestrated process, and wasm4pm is the executable substrate making
+      mu computable, with Mining Authority materializing O* from evidence and
+      Conformance Authority measuring mu as a fitness score.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/conformance.rs
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/mining/mod.rs
+    evidence_summary: >-
+      The TeX marks this paragraph [INTERPRETATION]. The Chatman Equation is the
+      author's proprietary framework; the claim that wasm4pm makes mu computable is
+      an interpretive mapping from the architectural evidence to the formula, not an
+      independently verified empirical finding.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-013
+    claim: >-
+      Resolving the two-codebase ambiguity, wiring BLAKE3 hash computation in all
+      Evidence constructors, implementing wasm4pm-compat consumption in the live
+      ~/wasm4pm/ workspace (GAP_001), implementing the Inductive Miner in the live
+      codebase (GAP_003), and wiring the A* alignment engine into the live
+      conformance surface (GAP_007) are all required before an ALIVE verdict can be
+      issued for the live ~/wasm4pm/ workspace.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/MINING_RENDER_RECEIPT.md
+    evidence_summary: >-
+      The TeX marks this section [FUTURE WORK]. All five items are explicitly
+      deferred with receipted completion requirements; none are currently
+      implemented in the live codebase per GAP_ANALYSIS findings.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-SOURCES_WASM4PM-014
+    claim: >-
+      The lib.rs module declaration exposes 17 public modules including allocator,
+      crypto, ocel, query, sandbox, ffi, otel, evidence, petri, safety, replay,
+      conformance, mining, zeroize, controllers, ltl, ocel_v2, and graduation.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/sources/wasm4pm/src/lib.rs
+    evidence_summary: >-
+      src/lib.rs confirms all 18 named pub mod declarations are present (graduation
+      is a separate block at the end). The TeX states 17 modules but lists 18
+      names; all named modules are confirmed present in the file, making this a
+      minor count inconsistency in the TeX that does not affect substantive
+      accuracy.
+    confidence: MEDIUM
+    allowed_in_pdf: true

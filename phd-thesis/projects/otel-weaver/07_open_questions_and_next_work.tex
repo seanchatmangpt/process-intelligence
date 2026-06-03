@@ -1,0 +1,128 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+
+\section{Open Questions and Next Work}
+\label{sec:otel-weaver-open}
+
+\subsection{Known Gaps}
+\label{sec:otel-weaver-open-gaps}
+
+\paragraph{Absent RDF/SPARQL layer.}
+\label{sec:otel-weaver-open-rdf}
+The \texttt{otel-weaver} project contains no \texttt{.ttl}, \texttt{.rq}, or ontology files.
+The type surface is expressed entirely through Rust type systems, YAML mapping tables, and
+doctrine constants. This is an open architectural question: is the absence of an RDF/SPARQL
+layer intentional for an ingestion-layer component, or does it represent a gap in the foundry's
+ability to represent process-evidence provenance in machine-readable semantic web formats? The
+foundry's other research components (notably the ontology layer) use OWL/SPARQL extensively.
+If \texttt{otel-weaver} is intended as the ingestion stratum below the ontology layer, the
+absence may be architecturally correct. If the ingestion layer is expected to produce
+ontology-compatible output, an RDF mapping surface is required. This question is deferred to
+the author's judgment and classified as AUTHOR THESIS pending resolution.
+
+\paragraph{Narrated vs.\ materialized runtime evidence.}
+The \texttt{RUNTIME\_001} checkpoint quotes a test execution transcript (1 passed / 0 failed in
+\texttt{weaver\_integration\_tests.rs}) and claims 62 total tests passing. No compiled artifacts,
+\texttt{target/} directories, or test runner output files were found on disk in the
+\texttt{otel-weaver} directory tree at the time of evidence extraction. The question of whether
+these tests were ever actually compiled and run against Rust source code is unresolved.
+This gap is the primary blocker for an ALIVE verdict and is classified as a structural defect,
+not a documentation omission, per foundry doctrine: model-vs-log mismatch is a defect.
+
+\paragraph{wasm4pm-compat path dependency resolution.}
+The \texttt{exp-003} \texttt{Cargo.toml} declares \texttt{wasm4pm-compat} as a path dependency
+at \texttt{../../../../wasm4pm-compat}. Whether this relative path resolves correctly from the
+experiment's filesystem location, and whether \texttt{wasm4pm-compat} exports the required
+\texttt{Admission} and \texttt{Refusal} types at the declared interface, has not been verified.
+If the path is broken, \texttt{exp-003} cannot compile, and the admission gate's Rust
+implementation is untestable.
+
+\paragraph{Unmaterialized ggen templates.}
+\label{sec:otel-weaver-open-ggen}
+Three \texttt{ggen} templates are referenced in the project's manifest chain
+(\texttt{pi-live-check-intake.rs.ggen}, \texttt{pi-witness-map.rs.ggen},
+\texttt{pi-otel-constants.rs.ggen}) but no \texttt{generated/} directory exists in the
+repository. The templates have been authored but \texttt{ggen} actuation has not materialized
+the output files to disk. This gap means that the Rust constants, witness map, and intake
+pipeline that the manufacturing chain is supposed to produce do not yet exist as artifacts.
+
+\paragraph{Lattice join soundness for ActivityWitness.}
+The \texttt{ActivityWitness} lattice implementation in \texttt{exp-004} uses witness hash
+emptiness as the criterion for the partial order. The join operation's soundness for all
+\texttt{ActivityWitness} states---particularly when two distinct non-empty witnesses meet---has
+not been formally proven. A lattice homomorphism requires that the join of any two elements
+is the least upper bound; the current implementation's join behavior when
+\texttt{witness\_hash} is non-empty in both operands is unspecified. This is an open formal
+correctness question for the \texttt{ActivityWitness} type.
+
+\subsection{Deferred Gates}
+\label{sec:otel-weaver-deferred-gates}
+
+The following proof gates are deferred, meaning they are required for ALIVE certification
+but have not yet been cleared:
+
+\begin{enumerate}
+  \item \textbf{Compiled artifact gate}: At least one \texttt{exp-00x} experiment must
+    compile to a runnable binary or test suite, with output materialized to disk.
+  \item \textbf{ggen actuation gate}: The three \texttt{.ggen} templates must be actuated
+    by \texttt{ggen}, producing a \texttt{generated/} directory with on-disk Rust source.
+  \item \textbf{Receipt verification gate}: The two receipt files referenced in the manifests
+    must be confirmed to exist at their declared paths and their BLAKE3 hashes must be
+    independently verifiable.
+  \item \textbf{Integration test materialization gate}: The
+    \texttt{weaver\_integration\_tests.rs} file must be directly read and its test execution
+    must produce a materialized result artifact rather than a narrated checkpoint claim.
+  \item \textbf{Lattice proof gate}: A formal proof or mechanized verification that the
+    \texttt{ActivityWitness} join operation satisfies the least-upper-bound property for
+    all pairs of non-empty witnesses.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:otel-weaver-open-risks}
+
+\paragraph{Category collapse recurrence.}
+The ingestion gate prevents category collapse at the type boundary, but cannot prevent it at the
+claim-making boundary. If downstream components (wasm4pm, the M\&A layer) are modified to accept
+raw feedstock through an alternative path that bypasses the \texttt{Admission<T,\,W>} requirement,
+the gate's protection is nullified. This risk requires ongoing audit of downstream interfaces.
+
+\paragraph{Loss report incompleteness.}
+The \texttt{OtelToOcelLossPolicy} names three loss categories. Production OTel-to-OCEL
+projections may involve additional loss types not covered by the current policy---for example,
+clock skew between distributed nodes, trace context propagation failures, or span truncation
+due to collector buffer overflow. An incomplete \texttt{LossReport} is epistemically misleading:
+it implies that all losses are declared when they are not.
+
+\paragraph{Schema drift masking process drift.}
+The \texttt{REGISTRY\_DIFF\_NOT\_DRIFT\_001} doctrine establishes that schema diffs are not
+process drift. However, if a schema migration introduces a change that alters which spans pass
+the \texttt{process.pi} registry live-check, the effective population of admitted spans changes,
+which can produce a spurious signal in process conformance metrics. The \texttt{BridgeRx}
+zero-residual guarantee addresses this for the conformance measurement, but the admission
+population change itself is a potential source of false process drift signals.
+
+\subsection{Next Receipted Work}
+\label{sec:otel-weaver-open-next}
+
+The following work items are required to advance the project from PARTIAL to ALIVE, in priority
+order. Each item must produce a materialized artifact and a corresponding \texttt{ggen}-signed
+receipt before the next checkpoint can be issued:
+
+\begin{enumerate}
+  \item Actuate the three \texttt{ggen} templates to produce a \texttt{generated/} directory.
+    Receipt: \texttt{receipts/otel-weaver-codegen-receipt.json}.
+  \item Verify and fix the \texttt{wasm4pm-compat} path dependency in \texttt{exp-003/Cargo.toml}.
+    Compile \texttt{exp-003} and run \texttt{test\_successful\_admission} and
+    \texttt{test\_refusal\_missing\_id}. Receipt: materialized \texttt{cargo test} output.
+  \item Directly read and confirm \texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs}.
+    Execute the test suite and materialize output. Receipt: test runner artifact.
+  \item Confirm existence of \texttt{receipts/otel-weaver-source-receipt.json} and
+    \texttt{receipts/pi-telemetry-bridge-receipt.json} on disk. Verify BLAKE3 hashes
+    against manifest declarations.
+  \item Author a formal lattice soundness argument or mechanized proof for
+    \texttt{ActivityWitness} join. Receipt: proof document anchored at a new doctrine constant.
+  \item Issue \texttt{GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_002.md} only after all five items above
+    are complete and receipted. The ALIVE\_001 checkpoint stands as issued; the new checkpoint
+    supersedes its runtime claims with materialized evidence.
+\end{enumerate}

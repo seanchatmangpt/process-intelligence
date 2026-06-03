@@ -1,0 +1,105 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Contribution to the Dissertation}
+\label{sec:schemas-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:schemas-contribution-prediction}
+
+The central distinction drawn in this dissertation is between systems that predict process behavior
+and systems that coordinate process evidence. Prediction systems consume event logs and produce
+probability distributions, forecasts, or recommendations. Coordination systems consume evidence
+artifacts and produce admissible claims---claims that a counterparty can independently verify.
+
+The schemas project contributes to the coordination side of this distinction by defining the
+contract that makes coordination possible. A prediction system can produce a fitness score of 0.982
+without any structural requirement that the score be linked to a specific event log by content
+address. A coordination system, operating under the \texttt{SlideVerificationLedger} schema,
+must produce a receipt that carries a 64-hex BLAKE3 hash of the event log, a 64-hex BLAKE3 hash
+of the process model, a query definition identifying the execution engine, and an Ed25519 signature
+over the JCS-canonical payload.
+
+This difference is not cosmetic. It determines whether a claim can be independently replayed. A
+prediction system's output is opaque to a counterparty who does not have access to the original
+model and data. A coordination system's receipt is transparent: it names the inputs by content
+address, names the execution engine, and certifies the result with a verifiable signature. The
+schema is what enforces this transparency as a structural property rather than a voluntary practice.
+
+The dissertation contribution is therefore: a receipts-based coordination architecture requires
+a schema layer that elevates receipt transparency from convention to contract.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:schemas-contribution-evidence}
+
+Process evidence, as defined in this research program, is evidence that a lawful process happened.
+It is not evidence of a model that could describe a process, or a metric that summarizes a process,
+or a dashboard that visualizes a process. It is a traceable chain from a specific event log,
+through a specific model, via a specific query, to a specific result---signed by a verifiable key.
+
+The schemas project contributes to the process evidence architecture by specifying the shape of
+the terminal artifact in this chain: the receipt. Without the schema, the chain terminates in an
+informal document. With the schema, the chain terminates in a typed artifact that a validator can
+accept or reject without consulting the original analyst.
+
+The \texttt{OTelTraceBlake3IntegrationSchema} extends this contribution to the execution layer.
+By requiring a per-span \texttt{blake3\_receipt} computed as
+$\operatorname{BLAKE3}(\text{PriorReceipt} \| \text{SpanData})$, the schema makes the execution
+path itself part of the evidence chain. An auditor can verify not only that the result is as
+claimed, but that the execution that produced it proceeded through a specific sequence of spans
+in a specific order with specific instruction counts. This is a stronger form of process evidence
+than conformance checking alone provides.
+
+The contribution to the dissertation is: process evidence requires two schema layers---one
+governing the content of the analysis inputs (log hash, model hash), and one governing the
+structure of the execution trace (span chain, BLAKE3 receipts per span).
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:schemas-contribution-manufacturing}
+
+The manufacturing architecture of this research program---as expressed in the Chatman Equation
+$A = \mu(O^*, T, L)$---requires a type law surface $T$ that constrains what artifacts are
+admissible. The schemas project materializes the type law surface for the receipt domain.
+
+This contribution is architectural in a specific sense: the schema is not a test, not a policy,
+and not a recommendation. It is a structural constraint that the manufacturing function $\mu$ must
+satisfy. Any receipt that does not conform to the \texttt{SlideVerificationLedger} schema is not
+a valid output of the manufacturing function---it is a malformed artifact that the proof gate must
+refuse.
+
+The \texttt{additionalProperties: false} constraint is the architectural expression of this
+principle. It means the schema does not merely describe what a receipt should contain; it refuses
+what a receipt must not contain. This is the difference between a guideline and a law.
+
+Within the seven-step M\&A deck rendering pipeline, the schema governs Step~3 (Cross-Reference
+Compat Evidence Ledger) and Step~6 (Validate Artifacts). Its presence in both steps reflects its
+role as both an input contract (Step~3: receipts must conform before they are cross-referenced)
+and an output contract (Step~6: receipts must be verified against the schema before the deck is
+sealed).
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:schemas-contribution-capital}
+
+The capital-flow and settlement use case for process intelligence---including M\&A transactions,
+DAO governance, and board-level financial claims---requires that process evidence carry legal
+defensibility. Legal defensibility requires that claims be independently verifiable, which requires
+that the artifacts underlying the claims be identifiable by content address and signed by a
+verifiable key.
+
+The schemas project is the lowest-level technical artifact that enables this capital-flow
+infrastructure. The five production receipts demonstrate the application to concrete M\&A claims:
+\$1,250,000 EBITDA improvement, \$1,369,863 working capital release, \$450,000 SLA cap,
+\$0 compliance leakage, and 97.5\% conformance standardization. Each of these dollar-value
+assertions is backed by a receipt that identifies its evidential basis by BLAKE3 hash, names its
+execution engine, and carries an Ed25519 signature.
+
+The slide-to-receipt map (\texttt{ma/slide-to-receipt-map.md}) operationalizes this capital-flow
+connection by linking each M\&A deck slide to its receipt file with explicit dollar-value
+assertions and defensibility rules. The schema is what makes this linkage mechanically verifiable
+rather than informally asserted. Without the schema, the slide-to-receipt map is a documentation
+convention. With the schema, it is an enforceable contract.
+
+The contribution to capital-flow infrastructure is: a receipts schema is the foundational artifact
+that makes process intelligence claims legally defensible at the structural level---prior to any
+question of whether the underlying process mining analysis was conducted correctly.

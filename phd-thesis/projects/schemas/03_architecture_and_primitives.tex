@@ -1,0 +1,108 @@
+% FILE: 03_architecture_and_primitives.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Architecture and Primitives}
+\label{sec:schemas-architecture}
+
+\subsection{Core Objects}
+\label{sec:schemas-architecture-objects}
+
+The schemas project defines two core objects, each materialized as a JSON Schema draft-07 document.
+
+\textbf{SlideVerificationLedger.} The ledger is a JSON object whose keys are UUIDv4 strings
+matching the pattern \verb|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$|.
+Each value is a receipt object with the following required fields:
+
+\begin{description}
+  \item[\texttt{slide\_id}] UUIDv4 string. Identifies the M\&A deck slide to which this receipt
+    is bound. Redundantly encoded as both the key and the \texttt{slide\_id} field inside the value
+    object, enabling self-contained receipt documents.
+  \item[\texttt{slide\_title}] Free-form string. The human-readable title of the slide, e.g.,
+    ``Slide 1: EBITDA Optimization via Process Rework Reduction.''
+  \item[\texttt{assertion\_text}] Free-form string. The exact claim text as it appears on the slide,
+    including dollar amounts, rework rates, and formula references.
+  \item[\texttt{target\_log\_hash}] 64-hex string. BLAKE3 hash of the XES or OCEL event log file
+    that the analysis consumed. Pattern: \verb|^[0-9a-fA-F]{64}$|.
+  \item[\texttt{process\_model\_hash}] 64-hex string. BLAKE3 hash of the Petri net or BPMN model
+    file. Pattern: \verb|^[0-9a-fA-F]{64}$|.
+  \item[\texttt{query\_definition}] Object. Specifies the execution engine (\texttt{wasm4pm} or
+    \texttt{pm4py}), the query URI (e.g., a \texttt{file:///} path to a \texttt{.wasm} module),
+    and a parameters object carrying domain-specific inputs such as rework activity labels,
+    projected annual volume, and labor cost per event.
+  \item[\texttt{verification\_results}] Object. Required subfield: \texttt{status} enum
+    \{\texttt{verified}, \texttt{failed}, \texttt{unverified}\}. Optional subfields include
+    \texttt{timestamp} and \texttt{details}. Production receipts extend this object with domain
+    fields (\texttt{fitness}, \texttt{precision}, \texttt{ebitda\_impact\_usd}, etc.) that are
+    not enumerated in the base schema.
+  \item[\texttt{validator\_signature}] 128-hex string. Ed25519 signature over the JCS-canonical
+    serialization (RFC~8785) of the unsigned receipt payload. Pattern: \verb|^[0-9a-fA-F]{128}$|.
+\end{description}
+
+\textbf{OTelTraceBlake3IntegrationSchema.} This schema governs trace telemetry. It requires:
+\texttt{trace\_id} (32-hex W3C TraceID), \texttt{event\_chain\_root} (64-hex BLAKE3 of the
+final event-chain state), and \texttt{spans} (array). Each span requires: \texttt{span\_id}
+(16-hex W3C SpanID), \texttt{parent\_span\_id} (16-hex or null), \texttt{span\_name} (canonical
+activity label), \texttt{start\_time\_unix\_us} and \texttt{end\_time\_unix\_us} (integer
+microseconds), \texttt{instruction\_count} (cumulative guest instruction count), and
+\texttt{blake3\_receipt} (64-hex, computed as $\operatorname{BLAKE3}(\text{PriorReceipt} \| \text{SpanData})$).
+
+\subsection{Admissible Transitions}
+\label{sec:schemas-architecture-transitions}
+
+The schema defines three status values for \texttt{verification\_results.status}:
+\texttt{verified}, \texttt{failed}, and \texttt{unverified}. These correspond to the three
+observable states of a receipt in the manufacturing pipeline:
+
+\begin{itemize}
+  \item \texttt{unverified}: The receipt has been manufactured but the query has not yet been
+    re-executed against the identified event log. This is the initial state.
+  \item \texttt{verified}: The query was re-executed, the results match the stored metrics within
+    the defined tolerance, and the Ed25519 signature validates against the known public key.
+  \item \texttt{failed}: Re-execution produced results inconsistent with the stored metrics, or
+    the signature validation failed.
+\end{itemize}
+
+The schema does not enforce transition rules between these states---that is the responsibility of
+the validation protocol defined in the slide-to-receipt map. The schema only constrains the
+\emph{set} of permitted status values, refusing any receipt that carries a status outside this
+enumeration.
+
+\subsection{Boundaries}
+\label{sec:schemas-architecture-boundaries}
+
+The schema enforces two hard boundaries via \texttt{additionalProperties: false}:
+
+\begin{enumerate}
+  \item \textbf{Key boundary}: Only UUIDv4-pattern keys are admitted in the ledger object. Any
+    key that does not match the pattern is refused. This prevents ad-hoc slide identifiers
+    (sequential integers, slug strings) from entering the ledger.
+  \item \textbf{Field boundary}: Only the eight named properties are admitted within each
+    receipt object. Any receipt carrying extra fields is structurally invalid.
+\end{enumerate}
+
+The \texttt{query\_definition.engine} enum (\texttt{wasm4pm} $|$ \texttt{pm4py}) establishes a
+third boundary: only recognized execution engines may be named. This prevents receipts from
+citing unrecognized or informal analysis tools.
+
+\subsection{Failure Modes Refused}
+\label{sec:schemas-architecture-failure-modes}
+
+The schema explicitly refuses the following failure modes:
+
+\begin{description}
+  \item[Missing hash] A receipt without \texttt{target\_log\_hash} or \texttt{process\_model\_hash}
+    fails the \texttt{required} check and is refused. This prevents claims that cannot be verified
+    by event log re-identification.
+  \item[Malformed hash] A hash with incorrect length or non-hex characters fails the pattern check.
+    This prevents truncated or base64-encoded hashes from being mistaken for valid content addresses.
+  \item[Missing signature] A receipt without \texttt{validator\_signature} fails the \texttt{required}
+    check. This prevents unsigned claims from entering the ledger.
+  \item[Unknown engine] A \texttt{query\_definition.engine} value outside the enum fails the
+    schema check. This prevents informal or unaudited execution engines from being cited.
+  \item[Unknown status] A \texttt{verification\_results.status} outside the three-value enum
+    is refused. This prevents ambiguous or vendor-specific status strings.
+  \item[Extra fields] \texttt{additionalProperties: false} refuses any receipt carrying fields
+    not named in the schema. This prevents schema drift where downstream tools add fields that
+    the contract does not govern.
+\end{description}

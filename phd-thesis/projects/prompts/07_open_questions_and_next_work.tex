@@ -1,0 +1,123 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: prompts — Downstream Manufacturing Prompt Corpus
+
+\section{Open Questions and Next Work}
+\label{sec:prompts-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:prompts-open-questions-gaps}
+
+Five structural gaps were identified during examination of the corpus.
+
+\textbf{Gap 1: PROCESS\_INTELLIGENCE\_ALIVE\_001 seal not confirmed.}
+The seal is the authorization gate for all downstream execution. It is cited as a
+precondition in \texttt{downstream\_wasm4pm\_refactor.md} but no evidence of its
+issuance appears within the \texttt{prompts/} directory. The seal must be confirmed
+by examining \texttt{receipts/} and \texttt{checkpoints/} in the parent research
+program before any downstream engineering directive is invoked. This is the highest
+priority open question for the corpus's authorization status.
+
+\textbf{Gap 2: AGI Court authority relationship is underdocumented.}
+The \texttt{v30-execution-mandate.md} references an ``AGI Court'' that has determined
+execution paths must adhere to Blue River Dam law. The mandate is seven lines and
+lacks the mathematical depth of other directives. The authority relationship between
+the AGI Court mandate and the gap register agent mandates is not specified. It is
+unclear whether the AGI Court mandate supersedes, supplements, or merely reframes the
+gap register directives. This is \textbf{AUTHOR THESIS / INTERPRETATION}: the AGI
+Court construct appears to be an authority-naming convention for the research program's
+own mandate-issuance process, not an external body.
+
+\textbf{Gap 3: EBITDA figures are self-derived, not empirically grounded.}
+The ggen integration directive maps fitness thresholds to EBITDA impact percentages
+(fitness $\geq 0.95$ $\to$ $+5\%$, $f < 0.85$ $\to$ $-8\%$ to $-15\%$). These
+figures are derived from the M\&A board claim taxonomy documents produced by the same
+research program. No external empirical study is cited as the source of these
+thresholds. This is an open question for the dissertation's capital-flow claims
+chapter: the mapping from conformance metrics to financial impact requires independent
+validation before board-admissible use.
+
+\textbf{Gap 4: No ZKP gap document exists.}
+\texttt{execution-plans/zkp-execution-boundaries.md} references SNARK/STARK proofs
+attached to the execution context. Neither \texttt{wasm4pm} nor \texttt{wasm4pm-compat}
+has ZKP infrastructure implemented, and no gap document appears to track this as a
+formal gap. This is a \textbf{FUTURE WORK} item that requires a gap register entry
+before it can be authorized for engineering.
+
+\textbf{Gap 5: No benchmark receipts exist.}
+The PM4Py benchmark comparison directive specifies success criteria (20--30$\times$
+speedup) but these are targets, not achieved results. No benchmark execution receipts
+exist in the \texttt{prompts/} directory or the referenced experiments directory.
+
+\subsection{Deferred Gates}
+\label{sec:prompts-open-questions-deferred}
+
+Three gates are formally deferred pending upstream work:
+
+\begin{itemize}
+  \item \textbf{GAP\_001 bridge}: The wasm4pm refactor sequence cannot begin its
+    critical-path work until GAP\_007 is closed and the compat crate is importable
+    as a dependency. GAP\_001 itself requires that all algorithm function signatures
+    accept \texttt{Admitted} types from compat, which requires the crate to be
+    available in \texttt{wasm4pm/Cargo.toml}.
+  \item \textbf{Cross-witness fixture}: The compile-fail fixture demonstrating that
+    \texttt{Admission<T, Ocel20>} is not interchangeable with
+    \texttt{Admission<T, Xes1849>} is specified in \texttt{DOWNSTREAM\_COMPAT\_GAP\_CLOSE.md}
+    Task 3 but not yet present in \texttt{tests/ui/compile\_fail/}.
+  \item \textbf{COVERED\_BY\_TYPE audit}: Every paper classified as
+    \texttt{COVERED\_BY\_TYPE} must be backed by a (type, module, field/bound) triple.
+    Any label that cannot be backed must be downgraded to \texttt{COVERED\_BY\_STRUCTURE},
+    \texttt{COVERED\_BY\_WITNESS}, or \texttt{RESEARCH\_CLAIM}.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:prompts-open-questions-risks}
+
+\textbf{Risk 1: Specification completeness without execution validation.}
+The corpus claims ``99\% specification completeness'' (DOCTORAL THESIS confidence)
+but no execution has occurred. Specification completeness and implementation
+correctness are distinct properties. A directive can be formally complete while the
+implementation it authorizes fails to satisfy the completion criterion. The risk is
+that the corpus's confidence rating will be taken as evidence of implementation
+readiness.
+
+\textbf{Risk 2: Fitness threshold calibration.}
+The fitness thresholds ($\geq 0.95$, $0.85$--$0.95$, $< 0.85$) are used consistently
+across the lifecycle gate, ggen claim taxonomy, and M\&A risk framework. If these
+thresholds are miscalibrated for a specific industry or process type, all downstream
+claims derived from them will be systematically biased. No sensitivity analysis of
+the thresholds is present in the corpus.
+
+\textbf{Risk 3: ZKP theoretical exposure.}
+The ZKP execution boundaries blueprint introduces SNARK/STARK proofs without an
+implementation path. If this remains theoretical indefinitely, it constitutes an
+unfalsifiable claim in the architecture description that could undermine the corpus's
+credibility as an engineering specification.
+
+\subsection{Next Receipted Work}
+\label{sec:prompts-open-questions-next}
+
+The following work items are the immediate next steps, in priority order:
+
+\begin{enumerate}
+  \item Confirm the \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} seal by examining
+    \texttt{receipts/} and \texttt{checkpoints/} in the parent research program.
+    If the seal is present, record its path here. If absent, this is the highest
+    priority gap.
+  \item Execute GAP\_007 closure in \texttt{wasm4pm-compat}: gate or remove
+    \texttt{WfNet::attest\_witnessed()}, produce a compile-fail fixture with a
+    matching E0616/E0624 \texttt{.stderr} file.
+  \item Execute GAP\_008 closure: audit all \texttt{tests/ui/compile\_fail/}
+    \texttt{.stderr} files for E0425/E0432 errors and replace each offending fixture
+    with a structural law fixture.
+  \item Add the cross-witness compile-fail fixture for \texttt{Ocel20} vs.\
+    \texttt{Xes1849} witness isolation.
+  \item Execute the \texttt{COVERED\_BY\_TYPE} audit and downgrade any label that
+    cannot be backed by a (type, module, field/bound) triple.
+  \item Open a gap register entry for ZKP execution boundaries to convert the
+    theoretical SNARK/STARK reference into a tracked engineering gap with defined
+    completion criteria.
+  \item Execute at least one PM4Py benchmark run on a small dataset (10K events) and
+    materialize the result as a \texttt{ProcessIntelligenceVerificationReceipt} with
+    Ed25519 signature, converting the benchmark from a success criterion to an
+    achieved result.
+\end{enumerate}

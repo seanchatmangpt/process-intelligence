@@ -1,0 +1,157 @@
+% FILE: 07_open_questions_and_next_work.tex
+% PROJECT: sources-papers
+% ROLE: academic-paper-classification-and-evidence-grounding
+
+\section{Open Questions and Next Work}
+\label{sec:sources-papers-open}
+
+\subsection{Known Gaps}
+\label{sec:sources-papers-open-gaps}
+
+Five known gaps are documented in the paper corpus as of the PARTIAL status
+assessment (2026-05-31). Each gap is named, traceable to a source document,
+and classified by priority.
+
+\paragraph{Gap 1 (P0): Alpha Miner output type correctness.}
+\texttt{ALPHA\_MINER\_ANALYSIS.md} identifies an unconfirmed P0 defect:
+\texttt{wasm4pm-algos/src/alpha.rs} may type its discovery output as
+\texttt{WfNetConst<Sound>} --- a sound WF-net --- without having verified the
+three soundness conditions. Alpha Miner is known to produce non-sound nets in
+the presence of duplicate activities, loops, or noise. If the output type is
+\texttt{WfNetConst<true>}, this is a forged soundness claim --- the exact
+category of defect that the \texttt{wfnet\_forged\_soundness.rs} compile-fail
+fixture was designed to prevent. This gap has not been confirmed resolved.
+
+\paragraph{Gap 2 (P0): Inductive Miner absent from wasm4pm.}
+\texttt{INDUCTIVE\_MINER\_ANALYSIS.md} confirms that no implementation of
+Inductive Miner (Leemans, Fahland, van der Aalst 2013) exists in wasm4pm. The
+Heuristics Miner that is present does not produce a \texttt{ProcessTree} type
+and does not guarantee soundness. All board claims about ``sound algorithm
+discovery'' that cite Inductive Miner are currently unattested. This is a
+strategic execution gap: without Inductive Miner, the discovery pipeline cannot
+certify that discovered models are sound, which invalidates the
+\texttt{WfNetConst<true>} output type for any discovered model.
+
+\paragraph{Gap 3 (P1): POWL 2.0 ChoiceGraph and mineDG absent.}
+\texttt{POWL\_ANALYSIS.md} documents that the \texttt{ChoiceGraph} shape
+required by the Separable WF-net / POWL 2.0 paper (Kourani, Park, van der
+Aalst 2026) is absent from \texttt{wasm4pm-compat/src/powl.rs}, and that
+\texttt{mineDG} (the inter-decision dependency mining algorithm) is absent
+from wasm4pm. This is identified as a strategic first-mover opportunity:
+PM4Py mainline also lacks POWL 2.0 support, meaning wasm4pm could be the
+first execution engine with a typed POWL 2.0 surface.
+
+\paragraph{Gap 4 (P1): 22 named missing types in 10 PARTIAL papers.}
+\texttt{PAPER\_TO\_TYPE\_LAW.md} lists 22 named missing types across 10 papers.
+Until these types are manufactured, 5 board claims explicitly listed in
+\texttt{PAPER\_TO\_BOARD\_CLAIM.md} are not board-admissible. The named missing
+types include: \texttt{AlignmentResult}, \texttt{MoveCost},
+\texttt{OptimalAlignment} (alignment-based conformance); \texttt{CausalNet},
+\texttt{DependencyMeasure} (Heuristics Miner); \texttt{DriftKind} (concept
+drift detection); \texttt{PrefixLength}, \texttt{PredictionHorizon}
+(predictive monitoring); \texttt{ZScore}, \texttt{TimeDelta} (temporal profile
+conformance); \texttt{BranchingProcess}, \texttt{UnfoldingPrefix} (Petri net
+unfolding); and others.
+
+\paragraph{Gap 5 (P1): Adversarial admission gate unimplemented.}
+\texttt{adversarial-canon.md} documents the requirement for Byzantine-fault-
+tolerant discovery via BLAKE3 cryptographic receipt verification. No
+implementation evidence exists in wasm4pm or wasm4pm-compat. The gap between
+the theoretical requirement (documented) and the runtime enforcement
+(absent) means that the adversarial threat model is acknowledged but not
+defended against in the current codebase.
+
+\subsection{Deferred Gates}
+\label{sec:sources-papers-open-deferred}
+
+Three gates that would elevate the paper corpus from PARTIAL to ALIVE are
+currently deferred:
+
+\begin{enumerate}
+  \item \textbf{Alpha Miner output type audit gate}: Confirm or correct the
+    output type of \texttt{wasm4pm-algos/src/alpha.rs}. If the output is
+    \texttt{WfNetConst<true>}, either verify soundness is being checked (via
+    WOFLAN reduction or equivalent) or retype the output as
+    \texttt{WfNetConst<false>} and manufacture a soundness-checking step.
+
+  \item \textbf{Inductive Miner implementation gate}: Implement Inductive Miner
+    in wasm4pm with a \texttt{ProcessTree} output type. The implementation must
+    produce a typed, receipted \texttt{ProcessTree} that can be converted to a
+    \texttt{WfNetConst<true>} via the Inductive Miner soundness guarantee.
+
+  \item \textbf{BLAKE3 adversarial admission gate}: Implement the
+    \texttt{Admitted<T, BLAKE3Receipt>} variant that rejects event logs without
+    cryptographic receipt verification. This gate is a precondition for any
+    board claim about adversarial-environment process conformance.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:sources-papers-open-risks}
+
+The following research risks are active as of the PARTIAL status assessment:
+
+\begin{itemize}
+  \item \textbf{Alpha Miner forged soundness risk}: If Gap~1 is confirmed
+    (Alpha Miner incorrectly types its output as sound), then any downstream
+    conformance check that consumes \texttt{WfNetConst<true>} from the Alpha
+    Miner is operating on a forged soundness witness. All board claims derived
+    from Alpha Miner discovery would be retroactively invalidated.
+
+  \item \textbf{PM4Py oracle drift risk}: The execution law table in
+    \texttt{PAPER\_TO\_EXECUTION\_LAW.md} is dated 2026-05-31. PM4Py releases
+    new algorithm implementations on a rolling basis. The oracle reference may
+    drift from the wasm4pm gap status without automated reconciliation.
+
+  \item \textbf{POWL 2.0 specification instability}: The Kourani, Park, van
+    der Aalst (2026) POWL 2.0 paper is a 2026 publication. The formal objects
+    it introduces (\texttt{SeparableWfNet}, \texttt{ChoiceGraph}) may be
+    revised in subsequent publications or errata. The type law obligations
+    derived from it carry a specification stability risk that 1998 and 2004
+    papers do not.
+
+  \item \textbf{Adversarial threat model scope creep}: The adversarial-canon
+    currently addresses Sybil attacks and non-deterministic reality receipts.
+    Additional Byzantine fault classes (replay attacks, event log tampering,
+    timestamp forgery) are not yet documented. The scope of the adversarial
+    admission gate may expand as the threat model is refined.
+\end{itemize}
+
+\subsection{Next Receipted Work}
+\label{sec:sources-papers-open-next}
+
+The following work items must be completed and receipted to close the PARTIAL
+status of the paper corpus project:
+
+\begin{enumerate}
+  \item \textbf{Alpha Miner audit receipt}: Read \texttt{wasm4pm-algos/src/alpha.rs},
+    determine the actual output type, and emit an audit receipt classifying the
+    output as either correctly typed (\texttt{WfNetConst<false>} with explicit
+    soundness check) or defect-confirmed (\texttt{WfNetConst<true>} without
+    soundness verification). Commit type: \texttt{audit}.
+
+  \item \textbf{Inductive Miner implementation receipt}: Implement
+    \texttt{src/inductive\_miner.rs} in wasm4pm with a \texttt{ProcessTree}
+    output type, emit a compile-pass fixture confirming the output type, and
+    register the result as a \texttt{INDUCTIVE\_MINER\_EXECUTION\_RECEIPT}.
+    Commit type: \texttt{research-wasm4pm}.
+
+  \item \textbf{22 missing type fulfillment receipts}: Manufacture each of
+    the 22 named missing types in \texttt{wasm4pm-compat}, accompanied by
+    compile-pass fixtures and named witness markers. Each type fulfillment
+    closes one entry in the PARTIAL obligation backlog and unlocks the
+    associated board claim. Commit type: \texttt{research-compat}.
+
+  \item \textbf{POWL 2.0 ChoiceGraph receipt}: Manufacture \texttt{ChoiceGraph}
+    in \texttt{wasm4pm-compat/src/powl.rs} with compile-fail fixtures for
+    non-separable conversion. Commit type: \texttt{research-compat}.
+
+  \item \textbf{Adversarial admission gate receipt}: Implement
+    \texttt{Admitted<T, Blake3Receipt>} in wasm4pm-compat with a compile-fail
+    fixture rejecting non-receipted event logs, and register the result as
+    \texttt{ADVERSARIAL\_ADMISSION\_RECEIPT}. Commit type:
+    \texttt{research-compat}.
+\end{enumerate}
+
+Completion of all five receipted work items would close the PARTIAL status and
+enable ALIVE certification of the paper corpus project as a fully evidenced
+research layer.

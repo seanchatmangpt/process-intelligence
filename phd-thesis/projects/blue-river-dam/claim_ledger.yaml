@@ -1,0 +1,244 @@
+slug: blue-river-dam
+claims:
+  - id: CLM-BLUE_RIVER_DAM-001
+    claim: >
+      Blue River Dam is a synthesized (not hand-coded) governance library manufactured
+      from five formal doctrine sources via the Lifecycle Orchestrator Renderer, and its
+      lib.rs contains 965 lines as of 2026-06-01.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+      - /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+      - /Users/sac/process-intelligence/receipts/blue_river_generation.md
+    evidence_summary: >
+      wc -l on lib.rs returns exactly 965; GENERATION_RECEIPT.md documents five consumed
+      input doctrine sources and explicitly states the library was "synthesized (not
+      hand-coded)"; upstream receipt records the render operation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-002
+    claim: >
+      The project has zero external Rust dependencies; both [dependencies] and
+      [dev-dependencies] tables in Cargo.toml are empty.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/Cargo.toml
+    evidence_summary: >
+      Cargo.toml read directly shows empty [dependencies] and [dev-dependencies]
+      sections, confirming the entire implementation uses only the Rust standard library.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-003
+    claim: >
+      The library enforces zero unsafe code via #![forbid(unsafe_code)] at the module
+      level, and compilation succeeded with zero warnings, as certified by GENERATION_RECEIPT.md.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+      - /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+    evidence_summary: >
+      Line 14 of lib.rs contains `#![forbid(unsafe_code)]`; GENERATION_RECEIPT.md
+      records "Unsafe Code Scan: CLEAN" and "Compilation Status: PASS (zero errors,
+      zero warnings)".
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-004
+    claim: >
+      The lib.rs contains exactly 8 test functions: 5 certified passing at receipt time
+      (test_governance_hierarchy, test_lifecycle_state_machine, test_quality_gate_soundness,
+      test_conformance_metric, test_mape_k_knowledge_persistence) and 3 added post-receipt
+      (test_validate_wf_net_soundness, test_compute_fitness_genuine, test_mape_k_cycle_execution).
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+      - /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+    evidence_summary: >
+      grep of test function names in lib.rs returns all 8 named functions;
+      GENERATION_RECEIPT.md certifies 5/5 passing; the 3 post-receipt functions
+      are present in source but not captured in any receipt.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-005
+    claim: >
+      A compiled ARM64 Mach-O test binary exists at
+      target/debug/deps/blue_river_dam-89f933de4cf483d1 (1,272,256 bytes, executable),
+      confirming successful compilation on the native platform.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/target/debug/deps/blue_river_dam-89f933de4cf483d1
+    evidence_summary: >
+      Direct filesystem check confirms the file is 1272256 bytes, executable, and
+      identified by the `file` command as "Mach-O 64-bit executable arm64".
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-006
+    claim: >
+      The project is ALIVE: two receipts exist (GENERATION_RECEIPT.md and
+      receipts/blue_river_generation.md), both declaring ORCHESTRATOR_ALIVE, and the
+      SUBSTRATE_COMPLETE_001 checkpoint attests Phase 6 completion.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+      - /Users/sac/process-intelligence/receipts/blue_river_generation.md
+      - /Users/sac/process-intelligence/checkpoints/SUBSTRATE_COMPLETE_001.md
+    evidence_summary: >
+      GENERATION_RECEIPT.md verdict is "ORCHESTRATOR_ALIVE"; upstream receipt status
+      is "ORCHESTRATOR_ALIVE"; SUBSTRATE_COMPLETE_001.md records Phase 6 as complete
+      with Blue River Dam operational.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-007
+    claim: >
+      Quality gates 1, 2, 4, and 6 return hardcoded `passes: true` values and are not
+      dynamically integrated with Architect::validate_wf_net_soundness() at runtime;
+      only Gate 3 dynamically computes its passes value from a fitness argument.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+    evidence_summary: >
+      Source inspection at lines 559-614 shows gate_1_soundness(), gate_2_reachability(),
+      gate_4_repair_soundness(), and gate_6_decommission_receipt() all return
+      `passes: true` as a hardcoded literal; Gate 3 is the only gate accepting a
+      fitness parameter.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-008
+    claim: >
+      Executor::execute_plan() does not enforce the requires_authorization flag on
+      high-risk plans; a caller can pass a Plan with requires_authorization=true without
+      resolution and execution will proceed.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+    evidence_summary: >
+      The execute_plan() method body (lines 467-483) only checks plan.actions.is_empty();
+      there is no check of plan.requires_authorization before proceeding to emit a
+      Receipt, confirming this security gap in the source.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-009
+    claim: >
+      The Auditor::compute_fitness() method uses a hardcoded reference sequence [1, 2, 3]
+      rather than deriving the reference from Knowledge.reference_model, making the fitness
+      computation correct for test cases but not generalized to arbitrary process models.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+      - /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      07_open_questions_and_next_work.tex explicitly documents this as Risk 1 and states
+      "this is a known implementation gap"; test_compute_fitness_genuine in lib.rs
+      confirms the hardcoded [1,2,3] reference behavior.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-010
+    claim: >
+      The autonomic activation log records SIMULATED_DEPLOYMENT status and
+      scheduling_system "simulated-cron"; actual deployment to an autonomic-executor-primary
+      in a wasm4pm runtime has not been executed.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/governance/AUTONOMIC_ACTIVATION_LOG_20260601.yaml
+      - /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/07_open_questions_and_next_work.tex
+    evidence_summary: >
+      07_open_questions_and_next_work.tex at Deferred Gate 2 states the activation log
+      records SIMULATED_DEPLOYMENT and that "Deployment to an actual
+      autonomic-executor-primary... has not been executed".
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-011
+    claim: >
+      Blue River Dam constitutes a coordination-first process governance model that encodes
+      admissible state transitions at compile time via Rust's exhaustive enum match, making
+      illegal backward transitions (e.g., Monitoring -> Design) structurally impossible
+      to compile rather than detected at runtime.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+      - /Users/sac/process-intelligence/blue_river_dam/GENERATION_RECEIPT.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/06_contribution_to_thesis.tex
+    evidence_summary: >
+      The transition_state() exhaustive match in lib.rs implements the enforcement
+      mechanically; GENERATION_RECEIPT.md certifies typestate encoding; the
+      "coordination-first" framing and its contrast with prediction-first systems is the
+      author's analytical conclusion stated in 06_contribution_to_thesis.tex.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-012
+    claim: >
+      The authority_id string "ostar-governor" in the Governor struct programmatically
+      instantiates the Chatman Equation A = mu(O*), where the manufacturing operator mu
+      is realized by the render operation consuming five governance doctrine sources.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/blue_river_dam/src/lib.rs
+      - /Users/sac/process-intelligence/receipts/blue_river_generation.md
+      - /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/02_lineage_and_context.tex
+    evidence_summary: >
+      The authority_id "ostar-governor" is confirmed in lib.rs line 38; the render
+      operation consuming five sources is confirmed in receipts/blue_river_generation.md;
+      02_lineage_and_context.tex explicitly marks the formal proof as "[AUTHOR THESIS:
+      deferred to the dissertation's methods chapter]".
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-013
+    claim: >
+      The 2016 language-model lesson that "local text imitation does not conserve
+      consequence" is the foundational motivation for compile-time governance as the only
+      form of governance that conserves consequence, forming the lineage arc from the LM
+      experiment to this artifact.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/02_lineage_and_context.tex
+    evidence_summary: >
+      02_lineage_and_context.tex states this lineage claim but also acknowledges in Gap 4
+      that the formal bridge from the 2016 LM experiment is documented in upstream doctrine/
+      and ggen/ layers, not in this project directory; the interpretive connection is
+      asserted but not mechanically verified in project artifacts.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-014
+    claim: >
+      Blue River Dam's governance architecture provides a foundation for capital-flow and
+      settlement infrastructure where conformance scores from Auditor::compute_fitness()
+      could gate financial payouts, making governance structurally equivalent to a legal
+      contract rather than a policy document.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/06_contribution_to_thesis.tex
+    evidence_summary: >
+      06_contribution_to_thesis.tex explicitly marks this section as "[AUTHOR THESIS: not
+      directly evidenced by artifacts in this project directory. Marked as FUTURE WORK.]";
+      no capital-flow or DAO artifacts exist in the project directory.
+    confidence: LOW
+    allowed_in_pdf: true
+
+  - id: CLM-BLUE_RIVER_DAM-015
+    claim: >
+      The autonomic activation log records 5 feedback loop tests with confidence scores
+      0.92-1.0 and 4 deployment gates cleared (all-components-deployed,
+      all-test-loops-successful, governance-chain-valid, monitoring-schedules-active),
+      with overall status ALL_GATES_PASSED.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/research/pi-program/governance/AUTONOMIC_ACTIVATION_LOG_20260601.yaml
+      - /Users/sac/process-intelligence/phd-thesis/projects/blue-river-dam/05_evidence_receipts_and_gates.tex
+    evidence_summary: >
+      05_evidence_receipts_and_gates.tex cites the AUTONOMIC_ACTIVATION_LOG_20260601.yaml
+      for these specific metrics; the file is listed in known evidence sources and is
+      present on disk at the declared path.
+    confidence: HIGH
+    allowed_in_pdf: true

@@ -1,0 +1,140 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Open Questions and Next Work}
+\label{sec:research-open-ontologies-open-questions}
+
+\subsection{Known Gaps}
+\label{sec:research-open-ontologies-gaps}
+
+Four structural gaps are confirmed by evidence in the research corpus:
+
+\paragraph{Gap 1: TTL Syntax Validation Not Run.}
+The conformance audit (PI\_GGEN\_UNIFIED\_RUN\_CONFORMANCE\_AUDIT\_001) Gate~3 FAIL
+reports 23 TTL files ``assumed invalid pending tooling installation.'' The \texttt{rapper}
+command (\texttt{librdf-utils} package) has never been installed on the research machine.
+The Phase~7 roundtrip report confirms that rdflib loads the files without error, but rdflib
+is a Python parser and may tolerate syntax that a strict Turtle parser would reject. Until
+\texttt{rapper} is run against all 24 TTL files and returns zero errors, this gate cannot
+be closed.
+
+\paragraph{Gap 2: SPARQL Prefix Mismatch.}
+The Phase~7 roundtrip report shows \texttt{count\_checkpoints=0} and
+\texttt{count\_artifacts=0} despite 3{,}684 triples loaded. The \texttt{sample\_subjects}
+query confirms that entities \emph{are} present (e.g.,
+\texttt{https://process.intelligence/checkpoint/SUBSTRATE\_COMPLETE\_001}). The
+\texttt{count\_checkpoints} query must be using a different prefix (likely the class
+\texttt{pi:Checkpoint} or \texttt{pi:Artifact} from \path{pi-program.ttl}) than the
+instance IRIs actually use. This is a SPARQL namespace alignment gap, not an ontology
+design defect. Resolution: inspect the failing queries, align prefixes to the IRI patterns
+confirmed by \texttt{sample\_subjects}.
+
+\paragraph{Gap 3: Receipt TTL Absent.}
+The Phase~7 report records \texttt{RECEIPT\_NOT\_FOUND} after checking three candidate paths:
+\path{receipt.ttl}, \path{pi-ggen-receipt.ttl}, \path{checkpoint-receipt.ttl}. The receipt
+chain is JSON-only. The ontology corpus lacks a self-describing provenance graph in RDF
+form. This means the ontology layer cannot describe its own provenance using the same
+vocabulary it uses to describe other research artifacts, which is an architectural
+inconsistency.
+
+\paragraph{Gap 4: Namespace Regime Fragmentation.}
+The ontology files use two distinct namespace regimes: \texttt{http://process-intelligence.local/}
+(autonomic law, MAPE-K) and \texttt{https://process.intelligence/} (pi-program, compat,
+wasm4pm, lifecycle, ma). The declared alignment with public standard vocabularies (PROV-O,
+SKOS, ODRL, DCTERMS, SHACL) is declared by prefix import but not verified at the
+semantic level. Whether the local class definitions are genuine subclasses or alignments
+of the public standard classes is unverified. This is an \textbf{[AUTHOR THESIS / INTERPRETATION]}
+gap: the alignment is structurally plausible but has not been validated by a formal ontology
+alignment tool.
+
+\subsection{Deferred Gates}
+\label{sec:research-open-ontologies-deferred-gates}
+
+The following gates are deferred pending tool availability or resource allocation:
+
+\begin{description}
+  \item[Gate 3 (TTL Syntax):]
+        Blocked by: \texttt{rapper}/\texttt{librdf-utils} not installed.
+        23 violations assumed; actual count unknown.
+        Deferred to: next environment provisioning pass.
+
+  \item[Gate 4 (SPARQL Syntax):]
+        Blocked by: no \texttt{.rq} query parser installed.
+        61 violations assumed; actual count unknown.
+        Deferred to: next environment provisioning pass.
+
+  \item[Gate 9 (Legacy .ggen Classified):]
+        13 legacy \texttt{.ggen} files in \path{research/pi-program/.ggen/} and
+        \path{research/prompt-manufactory/.ggen/} are present but not classified
+        in the ggen manifest registry.
+        Deferred to: next ggen audit cycle.
+
+  \item[Receipt TTL Manufacture:]
+        A receipt TTL must be manufactured that describes the ontology corpus provenance
+        in RDF using PROV-O (\texttt{prov:wasDerivedFrom}, \texttt{prov:wasGeneratedBy},
+        \texttt{prov:hadPrimarySource}). This artifact would close the architectural
+        inconsistency noted in Gap~3.
+        Deferred to: next ggen generation rule authoring session.
+\end{description}
+
+\subsection{Research Risks}
+\label{sec:research-open-ontologies-risks}
+
+\paragraph{Risk 1: rdflib Tolerance Masking Real Errors.}
+The 14/14 TTL validation result from rdflib may overstate the health of the corpus. If
+\texttt{rapper} finds parse errors in files that rdflib silently accepts, the Phase~7
+AVAILABLE verdict would need to be downgraded. This risk is \textbf{medium}: rdflib is
+a mature library, but strict Turtle parsers can reject valid-looking files that use
+non-standard whitespace or escape sequences.
+
+\paragraph{Risk 2: Namespace Boundary Proliferation.}
+The two-regime namespace architecture (\texttt{process-intelligence.local} vs.
+\texttt{https://process.intelligence/}) may cause federation failures in future SPARQL
+federation scenarios where both regimes are queried together. If the regimes are not
+formally aligned as OWL equivalent classes, cross-regime SPARQL queries will silently
+return incomplete results.
+
+\paragraph{Risk 3: SPARQL Prefix Mismatch Suppressing Real Data.}
+The \texttt{count\_checkpoints=0} and \texttt{count\_artifacts=0} results indicate that
+the smoke queries used in \texttt{run-ontology-audit.py} are querying for classes that
+do not match the actual IRIs in the corpus. Until this is diagnosed, the audit tool may
+report AVAILABLE even when the corpus is missing expected individuals.
+
+\subsection{Next Receipted Work}
+\label{sec:research-open-ontologies-next-work}
+
+The following work items are defined as next receipted work for the open-ontologies project,
+in priority order:
+
+\begin{enumerate}
+  \item \textbf{Install \texttt{rapper} and run syntax validation.} Command:
+        \texttt{sudo apt-get install librdf-utils \&\& rapper -i turtle <file>.ttl}
+        for each of the 24 TTL files. Expected outcome: zero errors, Gate~3 and Gate~4
+        PASS, conformance audit reissued as ALIVE candidate.
+
+  \item \textbf{Fix SPARQL prefix alignment.} Inspect the
+        \texttt{count\_checkpoints} and \texttt{count\_artifacts} queries in
+        \path{run-ontology-audit.py}. Replace class IRIs with the patterns confirmed by
+        \texttt{sample\_subjects} (e.g., \texttt{https://process.intelligence/checkpoint/}).
+        Re-run audit; verify non-zero counts.
+
+  \item \textbf{Manufacture receipt.ttl.} Author a new ggen generation rule that
+        emits a PROV-O receipt graph describing the ontology corpus provenance:
+        which files were loaded, by which operator, at which timestamp, under which
+        checkpoint authority. The emitted TTL becomes the fourth SPARQL smoke query
+        target and closes the RECEIPT\_NOT\_FOUND gap.
+
+  \item \textbf{Classify legacy .ggen files.} Audit the 13 unclassified legacy
+        \texttt{.ggen} files in the pi-program and prompt-manufactory sub-programs.
+        For each: determine if it is a standard ggen receipt, a custom extension, or a
+        stale artifact. Update the ggen manifest registry accordingly. This closes
+        conformance audit Gate~9.
+
+  \item \textbf{Formal ontology alignment verification.} \textbf{[FUTURE WORK]}
+        Use an ontology alignment tool (e.g., LogMap, AgreementMakerLight) to verify
+        that local class definitions in the corpus are correctly aligned to their
+        public standard counterparts in PROV-O, SKOS, and SHACL. This gate is not
+        required for program ALIVE but is required for claims of open-standard
+        interoperability.
+\end{enumerate}

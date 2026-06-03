@@ -1,0 +1,126 @@
+% Blue River Dam — Open Questions and Next Work
+% PhD Thesis Chapter: Lifecycle Authority and Governance Engine
+
+\section{Open Questions and Next Work}
+\label{sec:blue-river-dam-questions}
+
+\subsection{Known Gaps}
+\label{sec:blue-river-dam-questions-gaps}
+
+Four open questions are identified from direct inspection of the project
+artifacts. None of these gaps invalidate the ALIVE verdict; all are scoped
+defects in documentation, integration, or coverage rather than in the
+governance implementation itself.
+
+\textbf{Gap 1: Post-receipt tests not receipt-captured.}
+The \texttt{GENERATION\_RECEIPT.md} certifies 5/5 tests. The current
+\texttt{src/lib.rs} contains 8 test functions. The three additional tests
+(\texttt{test\_validate\_wf\_net\_soundness}, \texttt{test\_compute\_fitness\_genuine},
+\texttt{test\_mape\_k\_cycle\_execution}) exercise the most mathematically
+substantive paths in the library --- WF-net soundness BFS/DFS, LCS fitness
+computation, and the full MAPE-K cycle. Their pass/fail status is not captured
+in any receipt. A gap exists between the certified test surface and the current
+test surface.
+
+\textbf{Gap 2: \texttt{liblib.rlib} provenance undocumented.}
+A \texttt{liblib.rlib} artifact (95{,}336 bytes, dated 2026-06-01T00:09) exists
+at the project root. The \texttt{GENERATION\_RECEIPT.md} records a direct
+\texttt{rustc} invocation during initial synthesis, which is the probable
+origin. However, the relationship of this artifact to the Cargo-built rlibs at
+\texttt{target/release/} and \texttt{target/debug/} is undocumented. The
+existence of a non-Cargo compilation path suggests a hybrid compile history
+whose full trace is not preserved.
+
+\textbf{Gap 3: Quality gates 1, 2, 4, and 6 are hardcoded.}
+\texttt{gate\_1\_soundness()}, \texttt{gate\_2\_reachability()},
+\texttt{gate\_4\_repair\_soundness()}, and \texttt{gate\_6\_decommission\_receipt()}
+all return \texttt{passes: true} as a hardcoded value. The mathematical
+verification --- WF-net soundness, reachability graph boundedness, soundness
+preservation, receipt verification --- is implemented in
+\texttt{Architect::validate\_wf\_net\_soundness()} but is not integrated into
+the gate enforcement path at runtime. Gate~3 is the only gate whose
+\texttt{passes} field is dynamically computed from a fitness argument.
+
+\textbf{Gap 4: Formal lineage from 2016 LM experiment to this artifact is not
+documented in this project directory.}
+The authority string \texttt{"ostar-governor"} asserts a connection to the
+$O^*$ governance layer, but the formal bridge from the 2016 LM experiment
+through ggen templates to this synthesized Rust artifact is documented in the
+upstream \texttt{doctrine/} and \texttt{ggen/} layers, not here. The project
+directory contains no cross-reference to those upstream layers.
+
+\subsection{Deferred Gates}
+\label{sec:blue-river-dam-questions-deferred}
+
+Three gates are explicitly deferred in the current implementation:
+
+\begin{enumerate}
+  \item \textbf{Runtime gate integration.} The hardcoded \texttt{passes: true}
+    values in gates 1, 2, 4, and 6 must be replaced with calls to
+    \texttt{Architect::validate\_wf\_net\_soundness()} and equivalent runtime
+    checks. This requires the orchestrator to carry a \texttt{PetriNetTopology}
+    reference in its state, which would change the \texttt{BlueRiverDamOrchestrator}
+    struct signature.
+  \item \textbf{Actual wasm4pm runtime deployment.} The autonomic activation log
+    records \texttt{SIMULATED\_DEPLOYMENT} status. Deployment to an actual
+    \texttt{autonomic-executor-primary} in the wasm4pm runtime is declared
+    \texttt{READY\_FOR\_PRODUCTION} but has not been executed; the wasm4pm
+    runtime is not present in the \texttt{blue\_river\_dam/} project directory.
+  \item \textbf{Post-receipt receipt.} A new receipt certifying all 8 tests
+    passing (not just the original 5) is required to close the gap between the
+    certified test surface and the current test surface.
+\end{enumerate}
+
+\subsection{Research Risks}
+\label{sec:blue-river-dam-questions-risks}
+
+\textbf{Risk 1: LCS fitness algorithm scope.}
+The \texttt{Auditor::compute\_fitness()} method uses a reference sequence
+\texttt{[1, 2, 3]} hardcoded in the source. For production use with arbitrary
+process models, this reference sequence must be derived from the
+\texttt{Knowledge.reference\_model} field, which currently stores a string
+identifier rather than a parsed sequence. The fitness computation is correct
+for the test cases that exercise it but is not yet generalized to arbitrary
+reference models. [AUTHOR THESIS: this is a known implementation gap, not an
+algorithmic error in the LCS approach.]
+
+\textbf{Risk 2: Scheduling system reality.}
+The autonomic activation log records \texttt{scheduling\_system:
+"simulated-cron"}. The monitoring schedules (realtime, 1-second, hourly, daily)
+are declared \texttt{ACTIVE} but are simulated. The transition from simulated
+scheduling to actual cron or event-driven scheduling in a production wasm4pm
+runtime is an integration risk with no current mitigation plan in this project
+directory.
+
+\textbf{Risk 3: Governor token validation not enforced at call site.}
+High-risk plans set \texttt{requires\_authorization: true}, but the
+\texttt{Executor::execute\_plan()} method does not check this flag before
+execution. The authorization requirement is recorded as a plan attribute but
+is not enforced at the call site. A caller could pass a high-risk plan to
+\texttt{execute\_plan()} without resolving the authorization requirement.
+
+\subsection{Next Receipted Work}
+\label{sec:blue-river-dam-questions-next}
+
+The following items constitute the next receipted work for this project, in
+priority order:
+
+\begin{enumerate}
+  \item \textbf{Run \texttt{cargo test} and issue a new receipt} certifying all
+    8 test functions, closing Gap~1.
+  \item \textbf{Integrate gate enforcement.} Replace hardcoded \texttt{passes:
+    true} in gates 1, 2, 4, and 6 with runtime calls to
+    \texttt{Architect::validate\_wf\_net\_soundness()} and issue a receipt
+    certifying gate integration, closing Gap~3.
+  \item \textbf{Enforce authorization at \texttt{execute\_plan()}.} Add a
+    check for \texttt{plan.requires\_authorization} before execution and
+    return a new \texttt{ExecutorRefusal::AuthorizationRequired} variant,
+    closing Risk~3.
+  \item \textbf{Generalize fitness reference sequence.} Replace the hardcoded
+    \texttt{[1, 2, 3]} reference in \texttt{Auditor::compute\_fitness()} with a
+    sequence derived from \texttt{Knowledge.reference\_model}, closing Risk~1.
+  \item \textbf{Document \texttt{liblib.rlib} provenance.} Add a note to
+    \texttt{GENERATION\_RECEIPT.md} recording the direct \texttt{rustc}
+    invocation that produced it and its relationship to the Cargo-built
+    artifacts, closing Gap~2.
+\end{enumerate}

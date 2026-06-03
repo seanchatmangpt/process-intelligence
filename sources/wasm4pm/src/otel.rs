@@ -18,6 +18,15 @@ pub struct OtelSpan {
     pub end_time_unix_us: i64,
     pub instruction_count: i64,
     pub blake3_receipt: String,
+    // Standard-compliant process intelligence span metadata
+    pub instance_id: String,
+    pub activity_name: String,
+    pub activity_type: Option<String>,
+    pub lifecycle: String,
+    pub token_state_before: Option<String>,
+    pub token_state_after: Option<String>,
+    pub witness_id: String,
+    pub witness_hash: String,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -288,6 +297,50 @@ impl OtelTrace {
                 Some(JsonValue::String(s)) => s.clone(),
                 _ => return Err("Missing or invalid blake3_receipt"),
             };
+
+            let empty_map = std::collections::BTreeMap::new();
+            let attrs_map = match span_map.get("attributes") {
+                Some(JsonValue::Object(m)) => m,
+                _ => &empty_map,
+            };
+
+            let get_attr = |key: &str| -> Option<String> {
+                attrs_map.get(key)
+                    .or_else(|| span_map.get(key))
+                    .and_then(|v| match v {
+                        JsonValue::String(s) => Some(s.clone()),
+                        _ => None,
+                    })
+            };
+
+            let instance_id = get_attr("process.pi.instance_id")
+                .or_else(|| get_attr("instance_id"))
+                .unwrap_or_else(|| "inst_legacy".to_string());
+
+            let activity_name = get_attr("process.pi.activity.name")
+                .or_else(|| get_attr("activity_name"))
+                .unwrap_or_else(|| span_name.clone());
+
+            let activity_type = get_attr("process.pi.activity.type")
+                .or_else(|| get_attr("activity_type"));
+
+            let lifecycle = get_attr("process.pi.lifecycle")
+                .or_else(|| get_attr("lifecycle"))
+                .unwrap_or_else(|| "complete".to_string());
+
+            let token_state_before = get_attr("process.pi.token.state_before")
+                .or_else(|| get_attr("token_state_before"));
+
+            let token_state_after = get_attr("process.pi.token.state_after")
+                .or_else(|| get_attr("token_state_after"));
+
+            let witness_id = get_attr("process.pi.witness.id")
+                .or_else(|| get_attr("witness_id"))
+                .unwrap_or_else(|| "witness_legacy".to_string());
+
+            let witness_hash = get_attr("process.pi.witness.hash")
+                .or_else(|| get_attr("witness_hash"))
+                .unwrap_or_else(|| blake3_receipt.clone());
             
             spans.push(OtelSpan {
                 span_id,
@@ -297,6 +350,14 @@ impl OtelTrace {
                 end_time_unix_us,
                 instruction_count,
                 blake3_receipt,
+                instance_id,
+                activity_name,
+                activity_type,
+                lifecycle,
+                token_state_before,
+                token_state_after,
+                witness_id,
+                witness_hash,
             });
         }
         
@@ -308,6 +369,7 @@ impl OtelTrace {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn hash_span(
     prior_hash: Option<&[u8; 32]>,
     trace_id: &str,
@@ -317,6 +379,14 @@ pub fn hash_span(
     start_time: i64,
     end_time: i64,
     instruction_count: i64,
+    instance_id: &str,
+    activity_name: &str,
+    activity_type: Option<&str>,
+    lifecycle: &str,
+    token_state_before: Option<&str>,
+    token_state_after: Option<&str>,
+    witness_id: &str,
+    witness_hash: &str,
 ) -> [u8; 32] {
     let mut hasher = Blake3::new();
     if let Some(prior) = prior_hash {
@@ -329,6 +399,14 @@ pub fn hash_span(
     hasher.update(&start_time.to_le_bytes());
     hasher.update(&end_time.to_le_bytes());
     hasher.update(&instruction_count.to_le_bytes());
+    hasher.update(instance_id.as_bytes());
+    hasher.update(activity_name.as_bytes());
+    hasher.update(activity_type.unwrap_or("").as_bytes());
+    hasher.update(lifecycle.as_bytes());
+    hasher.update(token_state_before.unwrap_or("").as_bytes());
+    hasher.update(token_state_after.unwrap_or("").as_bytes());
+    hasher.update(witness_id.as_bytes());
+    hasher.update(witness_hash.as_bytes());
     hasher.finalize()
 }
 
@@ -380,6 +458,14 @@ pub fn verify_otel_trace(trace: &OtelTrace) -> Result<bool, &'static str> {
             span.start_time_unix_us,
             span.end_time_unix_us,
             span.instruction_count,
+            &span.instance_id,
+            &span.activity_name,
+            span.activity_type.as_deref(),
+            &span.lifecycle,
+            span.token_state_before.as_deref(),
+            span.token_state_after.as_deref(),
+            &span.witness_id,
+            &span.witness_hash,
         );
 
         let computed_hex = hex_encode(&computed);

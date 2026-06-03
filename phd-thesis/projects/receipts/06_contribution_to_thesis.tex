@@ -1,0 +1,103 @@
+\section{Contribution to the Dissertation}
+\label{sec:receipts-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:receipts-contribution-prediction}
+
+The central epistemological tension in the doctoral thesis is between prediction and
+coordination. A predictive system makes claims about what will happen based on learned
+patterns. A coordination system makes claims about what has happened based on observed
+event evidence, and uses those claims to coordinate action. The 2016 language-model
+lesson established that prediction alone---local text imitation---does not conserve
+consequence. The receipts corpus establishes the complementary principle: that
+coordination claims, to be board-admissible, must be grounded in receipted event evidence.
+
+The five M\&A claim receipts are coordination artifacts, not prediction artifacts. Each
+receipt documents a conformance measurement computed over an observed event log---a
+record of what a process actually did, not a model of what it is predicted to do.
+The fitness of $0.982$ in \texttt{rec\_ebitda\_rework\_001.json} is not a prediction
+of EBITDA improvement; it is a measurement of how closely the observed manufacturing
+process conforms to a standard process model, from which the \$1.25M EBITDA impact
+is derived. This distinction between prediction and measurement is the epistemological
+core of the receipts corpus's contribution to the dissertation.
+
+The receipts corpus demonstrates that coordination at board level---the coordination
+of capital allocation decisions in an M\&A transaction---requires an evidence chain
+that cannot be manufactured from prediction alone. It requires receipted, hash-bound,
+signed measurements derived from observed event logs. This is the empirical refutation
+of the old-regime assumption identified in Section~\ref{sec:receipts-question-old-regime}.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:receipts-contribution-evidence}
+
+The receipts corpus is the primary contribution of this research program to the theory
+and practice of process evidence. Process evidence, as defined in the Van der Aalst
+Constitution (Process Mining Chicago TDD), is event log evidence that can be mined into
+a conforming object-centric process. The receipts corpus operationalizes this definition
+by requiring that every board-admissible claim be traceable to a specific event log
+identified by a BLAKE3 hash.
+
+The corpus demonstrates three properties of process evidence that the dissertation
+argues are necessary for board admissibility. First, \emph{content-addressability}:
+the BLAKE3 hash ensures that the specific log from which a claim was derived can be
+identified and re-accessed. Second, \emph{measurement reproducibility}: the
+\texttt{wasm4pm\_query\_result} payload in each receipt documents the specific algorithm,
+parameters, and numerical result of the conformance computation, allowing independent
+replication. The \texttt{rec\_wc\_ar\_002.json} receipt explicitly carries a
+replication verdict of \texttt{PASSED}, demonstrating that this property has been
+verified for at least one of the five claims. Third, \emph{tamper-evidence}: the
+Ed25519 signature over the JCS canonical form of the entire JSON document ensures
+that no field can be modified after signing without detection.
+
+Together these three properties define what the dissertation terms a \emph{receipted
+fact}---a claim that has crossed the manufacture-to-claim boundary with its evidence
+chain intact and its integrity sealed. The receipts corpus is the first instantiation
+of this concept in the process-intelligence research program.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:receipts-contribution-manufacturing}
+
+The receipts corpus makes a structural contribution to the manufacturing architecture
+of the \texttt{wasm4pm} execution platform. The module generation receipts establish
+the principle that the manufacturing pipeline itself must be receipted, not just its
+outputs. A conformance authority module that produces correct results but whose
+manufacturing provenance is unknown cannot be trusted to produce correct results
+in a future context. The generation receipt for version \texttt{v30.1.2}---Blake3
+hash \texttt{75508e6e9e7acccb679e5c8be35ddd2adc9c4732f1fc331047d755703c9107c3},
+$8/8$ tests passing, zero compilation errors---establishes the manufacturing provenance
+of the module that underwrites the five M\&A claim receipts.
+
+This recursive receipting---receipts for the receipting infrastructure---is the
+architectural contribution that distinguishes the receipts corpus from conventional
+audit trails. It implements a trust chain that extends from the board presentation
+artifacts (Tera2 templates, \texttt{pptx-rs} rendering) backward through the
+conformance authority module, through the \texttt{cargo check} and \texttt{cargo test}
+results, to the Rust source code identified by its Blake3 hash. At every stage of
+this chain, the evidence is bound to a specific, immutable artifact. No stage can
+be silently substituted without breaking the hash chain.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:receipts-contribution-capital}
+
+The doctoral lineage culminates in a capital-flow and settlement infrastructure that
+depends on receipted process evidence as its legitimacy layer. The thesis argues that
+autonomous capital allocation---whether in M\&A transactions, DAO governance, or
+AI-mediated settlement---requires a receipted evidence chain of the kind demonstrated
+by this corpus. A DAO voting on a capital allocation decision cannot rely on asserted
+metrics; it requires receipted measurements that any member can independently verify.
+
+The receipts corpus demonstrates the feasibility of this infrastructure at the
+M\&A due diligence scale. The five board-admissible claim receipts, totalling
+approximately \$3.07M in documented process-improvement value across EBITDA rework,
+working capital velocity, SLA penalty exposure, compliance leakage, and residual
+standardization, constitute a capital-flow claim set that is fully receipted, fully
+hash-bound, and fully signed. This is the proof of concept for a capital-flow
+infrastructure in which every value claim carries its own cryptographic derivation
+chain.
+
+The \texttt{RECEIPT\_REGISTRY.md} anticipates the extension of this infrastructure
+through its \texttt{ADVERSARIAL} receipt type, which is reserved for claims that
+have been stress-tested against hostile process variants. This anticipates a future
+in which capital-flow claims must pass not only conformance gates but also adversarial
+resilience gates, a requirement that becomes essential as the infrastructure moves
+from M\&A due diligence into live settlement and DAO governance contexts.

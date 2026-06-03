@@ -1,0 +1,30 @@
+slug: research-prompt-manufactory
+absolute_path: /Users/sac/process-intelligence/research/prompt-manufactory
+description: >
+  Prompt manufacturing research program. Manufactures typed, receipted, ontology-grounded
+  prompts for downstream subagents. Contains ontology for checkpoint law, forbidden-collapse
+  law, hook law, skill law, subagent role law, and workflow law. Emits manufactured prompt
+  artifacts for checkpoints, hooks, skills, subagents, and workflows.
+detected_languages:
+  - Turtle
+  - SPARQL
+  - Tera
+detected_frameworks:
+  - ggen
+  - SPARQL/RDF
+detected_research_surfaces:
+  - ontology
+  - manufacturing-pipeline
+  - receipt-chain
+  - command-grammar
+  - prompt-manufacturing
+likely_thesis_role: prompt-manufacturing-and-subagent-command-surface
+key_files:
+  - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+  - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/workflow-law.ttl
+  - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ontology/skill-law.ttl
+  - /Users/sac/process-intelligence/research/prompt-manufactory/ggen/ggen.toml
+  - /Users/sac/process-intelligence/research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+readme_present: false
+receipt_present: true
+ontology_present: true

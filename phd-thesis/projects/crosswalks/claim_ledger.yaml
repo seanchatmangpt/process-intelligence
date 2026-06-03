@@ -1,0 +1,226 @@
+slug: crosswalks
+claims:
+
+  - id: CLM-CROSSWALKS-001
+    claim: >
+      The crosswalks directory contains exactly eight Markdown documents covering every
+      major translation surface in the process intelligence stack: BPMN to WF-net, OCEL 2.0
+      to XES, Process Tree to WF-net, WF-net to POWL, Declare to WASM witness automata,
+      PM4Py Python types to wasm4pm-compat Rust structs, ALIVE_001 gates to ISO/IEC
+      compliance standards, and BPMN to Declare conformance via LTLf lattice algebra.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/crosswalks/project_manifest.yaml
+      - /Users/sac/process-intelligence/checkpoints/ALIVE_GATE_ASSESSMENT.md
+    evidence_summary: >
+      ALIVE_GATE_ASSESSMENT.md criterion 9 records actual count 8 MET; project_manifest.yaml
+      lists key_files and the TeX enumerates all 8 by name.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-002
+    claim: >
+      PM4Py's convert_to_petri_net(bpmn) silently approximates OR-gateways as XOR or AND,
+      drops data objects, annotations, and lane structure, and returns a (PetriNet, Marking,
+      Marking) triple with no record of what was lost.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/BPMN_TO_WFNET.md
+    evidence_summary: >
+      BPMN_TO_WFNET.md PM4Py Comparison section describes this behavior verbatim including
+      OR-gateway approximation, dropped data objects/annotations/lane info, and no loss report.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-003
+    claim: >
+      PM4Py's convert_to_event_log(ocel) picks a default case notion without declaration,
+      drops all non-chosen object types, and produces a XES log with no indication that it
+      was projected from a multi-object OCEL source.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/OCEL_TO_XES.md
+    evidence_summary: >
+      OCEL_TO_XES.md PM4Py's Approach section confirms default case notion selection,
+      silent drop of all other object types and O2O links, and no LossReport emitted.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-004
+    claim: >
+      Every cross-formalism projection in the process intelligence stack can be given a
+      formal type-law contract (LossPolicy enum) that names each category of loss, requires
+      an explicit policy decision before loss occurs, and refuses the projection when loss
+      is not permitted.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/OCEL_TO_XES.md
+      - /Users/sac/process-intelligence/crosswalks/BPMN_TO_WFNET.md
+    evidence_summary: >
+      Marked [AUTHOR THESIS] in 01_research_question.tex; LossPolicy enum with
+      RefuseLoss/AllowNamedProjection/AllowLossWithReport variants is specified in both
+      source crosswalk documents as research specifications awaiting wasm4pm-compat
+      implementation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-005
+    claim: >
+      The Process Tree to WF-net projection is universally lossless, proven by citation to
+      the block-structure theorem (van der Aalst and Weijters 2004; Leemans 2022), and enforced
+      at compile time by TypedLoopNode<ARITY> with Require<{ ARITY == 2 }>: IsTrue.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/PROCESS_TREE_TO_WFNET.md
+    evidence_summary: >
+      PROCESS_TREE_TO_WFNET.md is listed in project_manifest.yaml and described in
+      04_implementation_surface.tex as defining the lossless projection citing van der Aalst
+      and Leemans; compile-time enforcement is specified in that document.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-006
+    claim: >
+      The ALIVE_001 gate criterion 9 (crosswalks/ file count >= 3) was verified as MET with
+      an actual count of 8 files on 2026-05-31.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/checkpoints/ALIVE_GATE_ASSESSMENT.md
+    evidence_summary: >
+      ALIVE_GATE_ASSESSMENT.md criterion 9 row reads: target >= 3, actual 8, verdict MET.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-007
+    claim: >
+      The crosswalks project status is PARTIAL: structural contracts are defined but no
+      explicit BLAKE3-signed receipt chain exists for the directory as a unit, and no
+      compilation evidence confirms the specified Rust structs are implemented in the actual
+      wasm4pm-compat crate.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/crosswalks/project_manifest.yaml
+      - /Users/sac/process-intelligence/checkpoints/ALIVE_GATE_ASSESSMENT.md
+    evidence_summary: >
+      project_manifest.yaml records receipt_present: false; 05_evidence_receipts_and_gates.tex
+      explicitly states PARTIAL status and documents both missing gates preventing ALIVE.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-008
+    claim: >
+      The enterprise process gap is not a data integration problem but a type-law problem:
+      closing it requires formal projection contracts that make loss refusable, nameable,
+      and auditable rather than better ETL pipelines.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/BPMN_TO_WFNET.md
+      - /Users/sac/process-intelligence/crosswalks/OCEL_TO_XES.md
+    evidence_summary: >
+      Marked [AUTHOR THESIS] in 02_lineage_and_context.tex; the distinction between
+      ETL-style silent conversion and policy-declared typed projection is demonstrated
+      by PM4Py comparison sections in both source crosswalk documents.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-009
+    claim: >
+      The OCEL to XES projection follows a mandatory five-step covenant: raw bytes to
+      FormatEnvelope, ImportFormat::import to Admission or Refusal, admitted value to Project
+      with declared LossPolicy, LossReport emitted, projected value to ExportFormat::export.
+      No step can be skipped.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/OCEL_TO_XES.md
+    evidence_summary: >
+      OCEL_TO_XES.md wasm4pm-compat: No Silent Loss section lists the exact five-step
+      sequence with the boundary covenant quoted from src/formats.rs.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-010
+    claim: >
+      An OCEL log projected to XES without a LossReport is laundered evidence: its structural
+      ancestry has been erased, and any receipt chain that binds it cryptographically binds a
+      laundered artifact rather than the original multi-object process.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/OCEL_TO_XES.md
+    evidence_summary: >
+      Marked [AUTHOR THESIS] in 06_contribution_to_thesis.tex; the evidence-laundering
+      framing is the author's analytical conclusion grounded in the information-destruction
+      described in OCEL_TO_XES.md.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-011
+    claim: >
+      The alive_001_to_iso_compliance.md crosswalk maps ALIVE_001 gates to ISO/IEC 23745,
+      ISO 9001:2015, ISO/IEC 27001, and ISO/IEC 12207:2017 with mathematical formulations
+      for each gate, grounding the receipt doctrine in international information security
+      standards.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/alive_001_to_iso_compliance.md
+    evidence_summary: >
+      alive_001_to_iso_compliance.md is listed in project_manifest.yaml and described in
+      04_implementation_surface.tex as defining these four ISO mappings with mathematical
+      formulations.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-012
+    claim: >
+      The ISO standard mappings in alive_001_to_iso_compliance.md are author-level research
+      claims, not certified compliance assertions, and citing them as regulatory compliance
+      in an M&A diligence package without qualification is a research integrity risk.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/alive_001_to_iso_compliance.md
+    evidence_summary: >
+      Risk 3 in 07_open_questions_and_next_work.tex explicitly states no formal compliance
+      audit or third-party verification exists for these mappings and warns against unqualified
+      M&A citation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-013
+    claim: >
+      A Turtle or OWL ontology for the crosswalk taxonomy enabling SPARQL queries over the
+      projection direction graph and loss-type lattice will be authored as future work.
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: >
+      Marked [FUTURE WORK] in 07_open_questions_and_next_work.tex; project_manifest.yaml
+      records ontology_present: false confirming this does not yet exist.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-014
+    claim: >
+      If the wasm4pm-compat crate implements an OR-gateway approximation rather than a clean
+      refusal, the BpmnToWfNetRefusal::InclusiveGatewayNotRepresentable type would be
+      unreachable code and the crosswalk law would be vacuously satisfied without being enforced.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/crosswalks/BPMN_TO_WFNET.md
+    evidence_summary: >
+      Identified as Risk 1 in 07_open_questions_and_next_work.tex; a valid logical consequence
+      of the unverified gap between research specification and actual crate implementation.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-CROSSWALKS-015
+    claim: >
+      The crosswalks project defines no commands, no Makefile, no Cargo.toml, and no CLI
+      entrypoint; it consists entirely of research specification Markdown documents with no
+      compiled language surface.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/phd-thesis/projects/crosswalks/project_manifest.yaml
+    evidence_summary: >
+      project_manifest.yaml records detected_languages: [] confirming no compiled language
+      surface; 04_implementation_surface.tex explicitly states no commands, Makefile, Cargo.toml,
+      or CLI exist in crosswalks/.
+    confidence: HIGH
+    allowed_in_pdf: true

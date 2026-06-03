@@ -1,0 +1,105 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: otel-weaver-exp-002-diff-to-residual
+% Thesis Role: weaver-diff-to-pi-residual-bridge-experiment
+
+\section{Contribution to the Dissertation}
+\label{sec:otel-weaver-exp-002-diff-to-residual-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:otel-weaver-exp-002-diff-to-residual-contribution-prediction}
+
+The dissertation's central argument is that full-lifecycle process intelligence
+requires a clean separation between the prediction layer (what the process model
+declares should happen) and the coordination layer (what the telemetry infrastructure
+reports did happen). EXP-002 enforces this separation at a specific and practically
+dangerous juncture: schema version transitions.
+
+Without \texttt{BridgeRx}, a schema evolution event in the coordination layer
+(the rename of \texttt{process.pi.activity.name}) propagates into the prediction
+layer as apparent evidence that a declared activity stopped occurring. The prediction
+layer cannot distinguish between ``this activity did not execute'' and ``this activity
+executed but its telemetry label changed.'' The conformance fitness score degrades,
+and the process model's predictions appear violated---not because the process changed
+but because the schema changed.
+
+EXP-002's contribution is to demonstrate that this cross-layer contamination is
+preventable by a typed, testable translation contract placed at the boundary. The
+\texttt{BridgeRx} struct is not merely a convenience mapping; it is an architectural
+declaration that the coordination layer's evolution must never be allowed to forge
+false signals in the prediction layer. The Rust type system's enforcement of the
+S1/S2 distinction makes this declaration executable and compiler-verified.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:otel-weaver-exp-002-diff-to-residual-contribution-evidence}
+
+The research program's process evidence doctrine, as articulated in
+\texttt{otel-weaver-is-feedstock.md}, distinguishes between validated feedstock
+(structurally correct telemetry) and process evidence (receipt-backed, replayable
+proof of lawful execution). EXP-002 contributes a specific mechanism for maintaining
+the integrity of the transition from feedstock to evidence under schema evolution:
+the witness hash preservation guarantee.
+
+The \texttt{translate()} method's direct assignment of \texttt{witness\_hash} through
+the S2-to-S1 boundary ensures that the BLAKE3 cryptographic hash emitted by
+instrumentation survives the schema normalization step intact. This is not a trivial
+property: a naive translation implementation might recompute or discard the hash,
+severing the audit chain. By asserting hash preservation in
+\texttt{test\_bridge\_translation\_equivalence}, the experiment establishes that
+translated records carry unbroken provenance from the point of emission to the
+conformance court.
+
+This contribution positions EXP-002 as a necessary precondition for any downstream
+process evidence claim. A conformance receipt issued after BridgeRx translation can
+only be trusted if the witness hash that receipt is anchored to has not been
+corrupted in transit. EXP-002 is the architectural guarantee that it has not been.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:otel-weaver-exp-002-diff-to-residual-contribution-manufacturing}
+
+Within the CodeManufactory manufacturing architecture, EXP-002 occupies the feedstock
+normalization stage of the manufacturing pipeline. Before telemetry feedstock can
+enter the type-law court for conformance evaluation, it must pass through a series
+of ingestion operators that prepare it for the court's validators. \texttt{BridgeRx}
+is one such operator: it receives raw S2 feedstock and emits normalized S1 feedstock
+as its artifact.
+
+The manufacturing significance of EXP-002 is that it makes the schema-normalization
+operator a first-class, versioned, receipted component rather than an implicit
+parser quirk buried in ingestion code. By implementing \texttt{BridgeRx} as a named
+Rust struct with a documented rename map, the manufacturing pipeline can be audited:
+what schema version transitions does this operator handle? What fields does it drop?
+What YAML boundary rules govern its routing decisions? All of these questions have
+documented answers in the experiment's source surface.
+
+The broader manufacturing architecture (exp-001 through exp-005) is designed so that
+each experiment manufactures one operator in the pipeline from raw telemetry to
+process evidence. EXP-002's operator is the schema version bridge. Its placement
+before exp-003 (live-check to refusal) ensures that the live-check validator never
+encounters field name mismatches that originate from schema evolution rather than
+from malformed feedstock.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:otel-weaver-exp-002-diff-to-residual-contribution-capital}
+
+\textsc{[AUTHOR THESIS / INTERPRETATION]} The capital-flow and settlement
+infrastructure described in the research program's thesis lineage requires that
+process evidence be trustworthy enough to anchor financial claims. An approval
+decision, a payment dispatch, or a compliance certification can only be settled on
+process evidence that has not been contaminated by schema noise. If a schema rename
+causes a conformance court to report that an approval activity did not execute---when
+in reality it executed correctly but under a new attribute name---the false negative
+propagates into the settlement layer as an incorrect dispute signal.
+
+EXP-002's categorical law $\Delta_W(S_1, S_2) \neq \delta_P(\mathcal{L}_1, \mathcal{L}_2)$
+is a precondition for trustworthy capital-flow evidence. The bridge ensures that the
+evidence reaching the settlement layer reflects only genuine behavioral deviations,
+not measurement artifacts. In the test case \texttt{approve\_loan} used in
+\texttt{test\_bridge\_translation\_equivalence}, the activity name is preserved
+exactly through the schema normalization step, meaning a loan approval event cannot
+be lost to schema noise in a production settlement pipeline that builds on this
+architecture.
+
+The BLAKE3 witness hash preservation is similarly capital-relevant: a dispute
+over whether an approval occurred requires an unbroken hash chain from the
+instrumentation event to the conformance receipt. EXP-002's translation contract
+ensures that chain is not broken by the schema normalization operator.

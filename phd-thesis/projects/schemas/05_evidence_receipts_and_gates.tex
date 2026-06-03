@@ -1,0 +1,114 @@
+% FILE: 05_evidence_receipts_and_gates.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Evidence, Receipts, and Gates}
+\label{sec:schemas-evidence}
+
+\subsection{Tests}
+\label{sec:schemas-evidence-tests}
+
+No automated test harness exists for the schemas project at time of assessment. The research
+program's \texttt{TEST\_INFRA.md} specification defines an E2E test philosophy grounded in three
+principles---opaque-box enforcement, mathematical invariant assertions, and forensic
+admissibility---but does not instantiate a test case that validates receipt files against the
+\texttt{SlideVerificationLedger} schema.
+
+Adversarial test scripts exist in the \texttt{adversarial/} directory:
+
+\begin{description}
+  \item[\texttt{adversarial/validate\_standards.py}] Validates that standards files carry required
+    fields. Does not validate receipt JSON against the ledger schema.
+  \item[\texttt{adversarial/simulate\_laundering\_spoofing.py}] Simulates raw log laundering and
+    hash spoofing attacks. Tests the adversarial robustness of the receipt chain concept but
+    does not execute schema validation.
+  \item[\texttt{experiments/validate\_ocpq\_refinement.py}] Validates OCPQ subset inclusion.
+    Not schema-related.
+  \item[\texttt{experiments/validate\_log\_fitness.py}] Validates log fitness metrics.
+    Not schema-related.
+\end{description}
+
+The \texttt{TEST\_INFRA.md} integrity mandate explicitly states: ``No test case shall utilize mock
+validators, dummy signatures, hardcoded hashes, or stubbed state machines.'' By this standard,
+the five production receipts in \texttt{receipts/}---which carry hardcoded hashes and sample
+signatures manufactured for schema demonstration---do not meet the integrity mandate for live
+test evidence. They satisfy structural conformance but not execution conformance.
+
+\subsection{Receipts}
+\label{sec:schemas-evidence-receipts}
+
+Five receipts in \texttt{receipts/} serve as the primary evidence base for the schemas project.
+Each receipt demonstrates that the \texttt{SlideVerificationLedger} schema is practicable for
+real M\&A claims:
+
+\begin{enumerate}
+  \item \textbf{rec\_ebitda\_rework\_001.json} --- Slide 1 (EBITDA). \texttt{slide\_id}:
+    \texttt{8a3e811c-2290-482a-a5f1-3215903b41fa}. Fitness: 0.982. Precision: 0.945.
+    EBITDA impact: \$1,250,000. Behavioral constraint: Invoice Approval must follow Goods Receipt
+    (compliance rate: 1.0).
+  \item \textbf{rec\_wc\_ar\_002.json} --- Slide 2 (Working Capital). \texttt{slide\_id}:
+    \texttt{7b2c91df-4b72-4d2a-89aa-cde490218b2c}. Fitness: 0.978. Precision: 0.923.
+    Working capital released: \$1,369,863. Replication verdict: PASSED with absolute deviation
+    $0.0$ (tolerance $10^{-6}$).
+  \item \textbf{rec\_risk\_sla\_003.json} --- Slide 3 (SLA Risk). \$450,000 penalty cap.
+    Late delivery rate verified below 2.5\%. Log coverage: 12 months, 98.4\% volume.
+  \item \textbf{rec\_risk\_compliance\_004.json} --- Slide 4 (Compliance). \$0 leakage.
+    Zero SoD or SOX/GDPR/AML violations.
+  \item \textbf{rec\_residual\_standard\_005.json} --- Slide 5 (Residual). 97.5\% conformance.
+    $W_R \le 0.025$, $H_R = 0.85$. Drift index $< 0.1$ across quarterly time windows.
+\end{enumerate}
+
+The M\&A deck rendering authority assessment (2026-06-01) declares: ``All sample receipts conform
+to schema.'' This declaration is based on inspection, not automated validation.
+
+The \texttt{RECEIPT\_REGISTRY.md} identifies these five receipts as part of the \texttt{MA\_RECEIPT}
+entry and notes: ``Monetization receipts (rec\_ebitda\_rework\_001.json etc.) are samples;
+production receipts require live data.'' This confirms the PARTIAL status: the schema and its
+sample conforming instances exist, but live-executed receipts do not.
+
+\subsection{Checkpoints}
+\label{sec:schemas-evidence-checkpoints}
+
+The \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001} checkpoint (sealed 2026-05-31, reaffirmed 2026-06-01)
+names the receipt schema in its evidence base. The checkpoint asserts 12/12 criteria met for the
+overall research program. The schemas project contributes to criteria 10 (\texttt{ma} file count
+$\ge 6$, actual: 40) and implicitly to the receipt infrastructure that makes board-level claim
+delivery authorized.
+
+The \texttt{ALIVE\_GATE\_ASSESSMENT.md} identifies five synthesis documents produced during the
+ALIVE assessment, including \texttt{doctrine/RECEIPT\_DOCTRINE.md} (``receipt as typed, witnessed,
+bound evidence artifact; board claim traceability doctrine'') and \texttt{receipts/RECEIPT\_REGISTRY.md}
+(``registry of 7 canonical research program receipts with criteria, witnesses, and gap inventory'').
+
+The schemas project is not the subject of a dedicated checkpoint. Its PARTIAL status is the
+status of the overall receipt schema surface as assessed by the M\&A deck rendering authority
+assessment on 2026-06-01.
+
+\subsection{ALIVE/PARTIAL/BLOCKED Status}
+\label{sec:schemas-evidence-status}
+
+\textbf{Status: PARTIAL.}
+
+The schemas project satisfies the structural requirements for an admissible receipt contract:
+
+\begin{itemize}
+  \item[$\checkmark$] Schema artifact exists and is structurally valid JSON Schema draft-07.
+  \item[$\checkmark$] All eight required fields are defined with appropriate type and pattern constraints.
+  \item[$\checkmark$] \texttt{additionalProperties: false} enforces strict boundaries.
+  \item[$\checkmark$] Five production receipts conform to the schema by inspection.
+  \item[$\checkmark$] Schema is integrated into the M\&A rendering pipeline documentation.
+  \item[$\checkmark$] Schema is referenced in the ALIVE\_001 checkpoint evidence base.
+\end{itemize}
+
+The following conditions prevent an ALIVE verdict:
+
+\begin{itemize}
+  \item[$\times$] No automated CI validation enforces schema conformance against \texttt{rec\_*.json}
+    files at commit time.
+  \item[$\times$] The five sample receipts carry hardcoded hashes and are not live-executed evidence.
+  \item[$\times$] No public key registry exists for the Ed25519 \texttt{validator\_signature} field;
+    the verifier public key is not materialized in any schema or key registry file.
+  \item[$\times$] The governance boundary between \texttt{schemas/} and \texttt{standards/} is
+    undocumented; the design rationale for placing \texttt{OTelTraceBlake3IntegrationSchema} in
+    \texttt{standards/} rather than \texttt{schemas/} is not recorded.
+\end{itemize}

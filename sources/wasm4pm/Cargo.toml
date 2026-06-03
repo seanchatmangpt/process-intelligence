@@ -10,3 +10,4 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 # Completely self-contained implementation with zero external dependencies to prevent supply chain and network access issues.
+wasm4pm-compat = { path = "../wasm4pm-compat/compat" }

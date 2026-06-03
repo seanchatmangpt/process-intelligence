@@ -1,0 +1,258 @@
+slug: ggen
+claims:
+  - id: CLM-GGEN-001
+    claim: >-
+      ggen operates as a configuration-driven pipeline declared in ggen.toml,
+      where every generation rule wires exactly one SPARQL query to one Tera
+      template to one output path, and the engine seals each output with a
+      BLAKE3 cryptographic receipt linked to the previous receipt hash.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/ggen.toml
+      - /Users/sac/process-intelligence/ggen/audit.json
+    evidence_summary: >-
+      ggen.toml declares four active generation rules each mapping
+      query/template/output_file, with checksum_algorithm = "blake3" and
+      proof_format = "cryptographic-chain"; audit.json records ggen_version
+      26.5.21 and validation_passed: true.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-002
+    claim: >-
+      The BLAKE3 receipt chain consists of three unbroken receipts: chain-root
+      operation de2ad19f (previous_receipt_hash: null) records output hash
+      4e341f5a... for blue_river_dam/src/lib.rs; operation 95a9448c records
+      predecessor 612d222...; operation 09084e1e records predecessor 057521e5...,
+      forming a tamper-evident manufacturing history.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-175316.json
+      - /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-203853.json
+      - /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-230600.json
+      - /Users/sac/process-intelligence/ggen/.ggen/receipts/latest.json
+    evidence_summary: >-
+      All three receipt JSON files are present with the exact operation IDs,
+      timestamps, and predecessor hashes stated; the chain root records a
+      concrete output hash for lib.rs.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-003
+    claim: >-
+      Receipts 2 and 3 record output_hashes: [] meaning the second and third
+      manufacturing runs produced no new output artifacts, and ggen's current
+      status is therefore PARTIAL rather than ALIVE.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-203853.json
+      - /Users/sac/process-intelligence/ggen/.ggen/receipts/sync-20260601-230600.json
+      - /Users/sac/process-intelligence/ggen/.ggen/receipts/phase-2-index.json
+    evidence_summary: >-
+      Receipt files for operations 95a9448c and 09084e1e both contain empty
+      output_hashes arrays, confirming no artifacts were produced in runs 2 and
+      3; phase-2-index.json shows artifacts_manufactured: 0 at Phase 2.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-004
+    claim: >-
+      Seven audit shell scripts in audits/ define 42 or more named proof gates
+      covering feature law, TypeScript projection surface, monomorphization,
+      brand tokens, enum tagging, WASM boundary isolation, and component
+      boundary separation.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/audits/audit-feature-law.sh.ggen
+      - /Users/sac/process-intelligence/ggen/audits/audit-ts-monomorphization.sh.ggen
+      - /Users/sac/process-intelligence/ggen/audits/audit-ts-brand-tokens.sh.ggen
+      - /Users/sac/process-intelligence/ggen/audits/audit-ts-enum-tagging.sh.ggen
+      - /Users/sac/process-intelligence/ggen/audits/audit-ts-projection-surface.sh.ggen
+      - /Users/sac/process-intelligence/ggen/audits/audit-no-engine-in-wasm-feature.sh.ggen
+      - /Users/sac/process-intelligence/ggen/audits/audit-component-boundary.sh.ggen
+    evidence_summary: >-
+      All seven .sh.ggen files exist with gate counts matching: 6 (feature-law),
+      6 (monomorphization), 6 (brand-tokens), 8 (enum-tagging), 3
+      (projection-surface), plus WASM and component boundary scripts totaling
+      at least 42 named gates.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-005
+    claim: >-
+      The audit scripts exist as manufactured artifacts but whether they have
+      been executed against the actual wasm4pm-compat source and produced
+      passing results is not documented in the BLAKE3 receipt chain; audit.json's
+      inputs, pipeline, and outputs fields are all empty.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/audit.json
+    evidence_summary: >-
+      audit.json records validation_passed: true but the inputs, pipeline, and
+      outputs fields are empty hash maps and arrays, indicating structural schema
+      validation rather than actual gate execution was recorded.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-006
+    claim: >-
+      Embedded Rust test suites manufactured into the Tera templates define
+      lawful algebraic proof obligations: test_witness_lattice_monotonicity,
+      test_witness_partial_order, test_orchestrator_initialization, and
+      test_mape_k_cycle.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/templates/witness-marker.tera
+      - /Users/sac/process-intelligence/ggen/templates/blue-river.tera
+    evidence_summary: >-
+      Both template files contain embedded Rust #[cfg(test)] modules with the
+      four named test functions verifying join-semilattice axioms and MAPE-K
+      cycle validity; these are template definitions, not executed test results.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-007
+    claim: >-
+      ggen challenges the old-regime assumption that capital-market artifacts
+      are prepared by human analysts by positing that both capital-market
+      artifacts and autonomic runtime code can be manufactured from a shared
+      ontological source through a deterministic, receipt-sealed pipeline.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/ggen/README.md
+      - /Users/sac/process-intelligence/ggen/ggen.toml
+    evidence_summary: >-
+      The pipeline architecture (SPARQL -> Tera -> BLAKE3) instantiates this
+      thesis mechanically; ggen.toml configures strict_variables = true enforcing
+      derivation over imitation, and README.md documents the board admissibility
+      contract as a machine-enforced protocol.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-008
+    claim: >-
+      The FILTER(false) no-op in the inference.rules normalize rule is an
+      architectural statement encoding inference discipline -- that no speculative
+      inference is applied to the ontology and all RDF facts must be explicitly
+      authored or manufactured upstream.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/ggen/ggen.toml
+    evidence_summary: >-
+      ggen.toml contains a normalize inference rule with FILTER(false), which
+      makes it a deliberate no-op; whether this reflects intentional inference
+      discipline or an unresolved placeholder is not conclusively documented,
+      making this a reasonable but uncertain reading.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-009
+    claim: >-
+      The ggen CLI (ggen --config ggen.toml --execute-all / --rule / --verify-all)
+      and cargo-make targets are declared in README.md and
+      GGEN_MANUFACTURING_SUMMARY.md, but no compiled ggen binary or Rust src/
+      files implementing that interface exist in the repository.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/README.md
+      - /Users/sac/process-intelligence/ggen/GGEN_MANUFACTURING_SUMMARY.md
+    evidence_summary: >-
+      The src/ directory exists but contains no Rust source; README.md documents
+      the CLI invocation patterns; the agent that performed the manufacturing
+      operations cannot be identified from the repository surface alone.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-010
+    claim: >-
+      The in-memory SPARQL endpoint means conformance verdicts required by
+      extract-board-claims.rq must have been pre-populated in the TTL files at
+      manufacturing time, but ontology-extensions.ttl and wasm4pm-compat.ttl
+      define schema only with no populated verdict instances, leaving open
+      whether the M&A deck was ever manufactured with actual conformance data.
+    claim_type: INTERPRETATION
+    source_files:
+      - /Users/sac/process-intelligence/ggen/ggen.toml
+      - /Users/sac/process-intelligence/ggen/ontology-extensions.ttl
+      - /Users/sac/process-intelligence/ggen/wasm4pm-compat.ttl
+      - /Users/sac/process-intelligence/ggen/queries/extract-board-claims.rq
+    evidence_summary: >-
+      ggen.toml sets endpoint = "in-memory"; extract-board-claims.rq requires
+      ConformanceVerdict instances; the TTL files contain class/property
+      definitions but no populated verdict individuals, making it uncertain
+      whether board artifacts were manufactured with real data.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-011
+    claim: >-
+      The visualizer-dashboard-nextjs generation rule is explicitly disabled in
+      ggen.toml due to a Tera template parse error deferred to Phase 6 recovery,
+      with no Phase 6 recovery plan documented in any available artifact, and
+      full ALIVE status requires this rule to be re-enabled.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/ggen.toml
+      - /Users/sac/process-intelligence/ggen/GGEN_MANUFACTURING_SUMMARY.md
+    evidence_summary: >-
+      ggen.toml contains a commented-out visualizer-dashboard-nextjs rule with
+      the note DISABLED: template parse error - deferred to Phase 6 recovery;
+      GGEN_MANUFACTURING_SUMMARY.md references the pending
+      PROCESS_INTELLIGENCE_ALIVE_001 checkpoint but no recovery plan is
+      documented.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-012
+    claim: >-
+      ggen is the direct engineering instantiation of the Chatman Equation
+      A = mu(O*), where mu is implemented as the three-layer pipeline (SPARQL
+      extraction, Tera rendering, BLAKE3 sealing) and O* is the process
+      intelligence knowledge base queried through the in-memory endpoint.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - /Users/sac/process-intelligence/ggen/ggen.toml
+      - /Users/sac/process-intelligence/ggen/ontology-extensions.ttl
+    evidence_summary: >-
+      The architecture of ggen mechanically implements the equation's three
+      components; ggen.toml declares the namespace prefixes and pipeline stages;
+      this is an authorial interpretive claim connecting the engineering to a
+      named theoretical construct present throughout the dissertation.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-013
+    claim: >-
+      The Blue River orchestrator, once manufactured and deployed in an M&A
+      context, will monitor post-close process behavior and trigger remediation
+      when process behavior drifts below the contracted fitness threshold,
+      functioning as a closed-loop governance system.
+    claim_type: FUTURE_WORK
+    source_files:
+      - /Users/sac/process-intelligence/ggen/templates/blue-river.tera
+      - /Users/sac/process-intelligence/ggen/DELIVERY_SUMMARY.md
+    evidence_summary: >-
+      The blue-river.tera template manufactures the MAPE-K orchestrator struct
+      with monitor/analyze/plan/execute methods sealed as output hash 4e341f5a,
+      but deployment and post-close monitoring in an actual M&A context has not
+      occurred and is a projected future use.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-GGEN-014
+    claim: >-
+      The PROCESS_INTELLIGENCE_ALIVE_001 checkpoint is referenced as pending
+      final audit in GGEN_MANUFACTURING_SUMMARY.md, but no committed checkpoint
+      file for this verdict has been located in the receipts directory or
+      checkpoints directory.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - /Users/sac/process-intelligence/ggen/GGEN_MANUFACTURING_SUMMARY.md
+      - /Users/sac/process-intelligence/ggen/audit.json
+    evidence_summary: >-
+      GGEN_MANUFACTURING_SUMMARY.md declares Status: MANUFACTURED for Phase 3
+      and references PROCESS_INTELLIGENCE_ALIVE_001 as pending; no file with
+      that name exists in the known receipt chain artifacts confirming the
+      checkpoint was never committed.
+    confidence: HIGH
+    allowed_in_pdf: true

@@ -1,0 +1,223 @@
+slug: research-prompt-manufactory
+claims:
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-001
+    claim: >
+      The Prompt Manufactory is PARTIAL (not ALIVE): 9 of 11 audit gates pass, 2
+      remain pending (PI_INTEL topology completion and remaining 7 Tera templates), and
+      0 gates are blocking.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+      - research/prompt-manufactory/audit.json
+    evidence_summary: >
+      The checkpoint GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md explicitly records the
+      11-gate audit table with score 9/11, status code 0x01 (PARTIAL), and certifies
+      the verdict as correct and honest.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-002
+    claim: >
+      The Manufactory operates an 8-file Turtle ontology stack encoding 15 classes,
+      7 seed research programs, 15 subagent roles, 6 hook policies, 10 checkpoint gates,
+      and 3 forbidden-collapse bans.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+      - research/prompt-manufactory/ggen/ontology/research-program-law.ttl
+      - research/prompt-manufactory/ggen/ontology/workflow-law.ttl
+      - research/prompt-manufactory/ggen/ontology/subagent-role-law.ttl
+      - research/prompt-manufactory/ggen/ontology/hook-law.ttl
+      - research/prompt-manufactory/ggen/ontology/checkpoint-law.ttl
+      - research/prompt-manufactory/ggen/ontology/forbidden-collapse-law.ttl
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    evidence_summary: >
+      The checkpoint's "What Is Present" section lists all 8 ontology files with specific
+      instance counts and records "RDF Validation: All 8 ontologies parse without error
+      and load into RDF graph."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-003
+    claim: >
+      ggen v26.5.21 executed 6 generation rules on 2026-06-01T23:09:45Z, emitting
+      41 artifacts (7 workflow, 17 subagent, 2 checkpoint, 6 skill, 6 hook, 3 index)
+      totaling 41,867 bytes, with both gate checks PASS.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/emitted/manifests/manufacturing-manifest-20260601.yaml
+    evidence_summary: >
+      The manufacturing manifest records these exact values verbatim under
+      execution_timestamp, rules_executed, artifacts_emitted broken out by type,
+      total_bytes, and gate_checks.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-004
+    claim: >
+      A 1-artifact discrepancy exists between the manufacturing manifest (41 artifacts)
+      and the phase-2-index receipt (42 artifacts); this discrepancy has not been
+      reconciled and the exact artifact count cannot be stated with confidence.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/emitted/manifests/manufacturing-manifest-20260601.yaml
+      - research/prompt-manufactory/.ggen/receipts/phase-2-index.json
+    evidence_summary: >
+      The manifest records artifacts_emitted: 41 while phase-2-index.json records
+      artifacts_manufactured: 42; both files exist and contain these conflicting values.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-005
+    claim: >
+      Zero hand-written prompts exist in the Manufactory: every emitted warrant carries
+      a pm:derivedFrom triple, and ggen.toml records hand_coding = false as a
+      project-level assertion enforced by a SHACL shape that rejects any pm:RenderedPrompt
+      lacking this triple.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/ggen/ggen.toml
+      - research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    evidence_summary: >
+      The checkpoint audit gate "No hand-written program prompts" records PASS with
+      evidence "Warrant has derivedFrom triple"; ggen.toml is a listed source file
+      confirming hand_coding = false.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-006
+    claim: >
+      The proof-specimen warrant PI_RESEARCH_PROGRAM_INTEL_001.md was manufactured
+      via fallback (manual) method because ggen v5 template rendering failed on an
+      empty SPARQL result set; the automated pipeline for the workflow warrant type
+      remains unproven.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/emitted/indexes/prompt-receipt-ledger.md
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    evidence_summary: >
+      The prompt-receipt-ledger.md records manufacture method as "fallback manual due
+      to ggen v5 template rendering failure on empty SPARQL result set" and proof status
+      PARTIAL; the checkpoint's open questions section identifies this as Gap 2.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-007
+    claim: >
+      All 22 legacy .ggen files have been classified in forbidden-collapse-law.ttl with
+      remediation routes: 12 need extension renames (non-blocking), 10 are external
+      (no action); zero files have blocking status.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/ggen/ontology/forbidden-collapse-law.ttl
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    evidence_summary: >
+      The checkpoint's "Legacy .ggen Classification" section states "All 22 legacy .ggen
+      files classified" with the 12/10 split and "Zero blocking files — no .ggen prevents
+      ALIVE."
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-008
+    claim: >
+      No automated test suite exists for the Prompt Manufactory; the audit.json
+      tests_found field is empty, meaning SHACL shape constraints and SPARQL query
+      correctness rest on single observed manual ggen sync invocations rather than
+      reproducible proof.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/audit.json
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    evidence_summary: >
+      The audit.json file confirms tests_found is empty (pipeline and outputs arrays are
+      empty); Gap 4 in the checkpoint documentation explicitly acknowledges the absence
+      of an automated test suite as a material gap in the evidence chain.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-009
+    claim: >
+      The Chatman Equation A = mu(O*) is instantiated at the command-surface layer:
+      each manufactured warrant A_i is mu_i(O*) where mu_i is the composition of a
+      SPARQL SELECT query with a Tera template, and O* is the union of the 8 ontology
+      files loaded into the RDF graph.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - research/prompt-manufactory/ggen/ontology/prompt-manufactory.ttl
+      - research/prompt-manufactory/ggen/ggen.toml
+      - research/prompt-manufactory/ggen/.ggen/sync-state.json
+    evidence_summary: >
+      The TeX source marks this section "AUTHOR THESIS / INTERPRETATION"; while the
+      SPARQL-plus-Tera-plus-ontology pipeline is source-supported, the framing as an
+      instantiation of the Chatman Equation is the author's analytical construction.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-010
+    claim: >
+      A manufactured prompt creates a verifiable alignment between declared law and the
+      operational instruction — a property that prediction-derived (hand-written) prompts
+      cannot provide — constituting the Manufactory's coordination contribution to the
+      thesis's prediction-vs-coordination argument.
+    claim_type: AUTHOR_THESIS
+    source_files:
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+      - research/prompt-manufactory/ggen/ontology/subagent-role-law.ttl
+    evidence_summary: >
+      The TeX source marks the concluding paragraph "AUTHOR THESIS / INTERPRETATION";
+      the underlying claim that pm:SubagentRole encodes owned/forbidden surfaces and
+      output contracts is source-supported, but the characterization as what
+      prediction-derived prompts cannot provide is analytical framing.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-011
+    claim: >
+      Only 1 of 6 generation rules has a fully verified end-to-end automated pipeline
+      (law -> query -> template -> artifact -> receipt); whether the remaining 5 rules
+      used full automation or fallback methods is not established by available evidence.
+    claim_type: SOURCE_SUPPORTED
+    source_files:
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+      - research/prompt-manufactory/emitted/manifests/manufacturing-manifest-20260601.yaml
+    evidence_summary: >
+      The checkpoint explicitly states "only 1 proof specimen warrant path has been fully
+      verified end-to-end" (Gap 3), while the manifest shows 41 artifacts with PASS —
+      and the checkpoint acknowledges the manifest's PASS may reflect artifact existence
+      rather than full automated pipeline execution for all 6 rules.
+    confidence: HIGH
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-012
+    claim: >
+      The ggen v5 template rendering failure may represent an architectural limit in
+      ggen's SPARQL-to-Tera context binding for multi-hop SELECT joins (4 hops: program,
+      workflow, phase, subagent), potentially making workflow warrant manufacture
+      unautomatable with the current engine version.
+    claim_type: INTERPRETATION
+    source_files:
+      - research/prompt-manufactory/emitted/indexes/prompt-receipt-ledger.md
+      - research/prompt-manufactory/checkpoints/GGEN_PROMPT_MANUFACTORY_PARTIAL_001.md
+    evidence_summary: >
+      The receipt ledger documents the rendering failure as "BLOCKED (empty result set)"
+      and the checkpoint's Risk 1 section names this as a possible architectural limit;
+      however, the root cause has not been definitively diagnosed, making this an
+      interpretation of observed failure rather than a confirmed finding.
+    confidence: MEDIUM
+    allowed_in_pdf: true
+
+  - id: CLM-RESEARCH_PROMPT_MANUFACTORY-013
+    claim: >
+      The Prompt Manufactory's pm:RenderedPrompt warrant-manufacturing pattern could be
+      extended to capital-flow, settlement, and DAO infrastructure by instantiating the
+      same law-to-warrant pipeline at the governance layer, with settlement and governance
+      warrant types added to pm:PromptClass.
+    claim_type: FUTURE_WORK
+    source_files: []
+    evidence_summary: >
+      The TeX file explicitly marks this section "AUTHOR THESIS / INTERPRETATION" and
+      "FUTURE WORK"; no evidence file demonstrates capital-flow or DAO warrant manufacture
+      and no pm:PromptClass extension exists yet.
+    confidence: LOW
+    allowed_in_pdf: true

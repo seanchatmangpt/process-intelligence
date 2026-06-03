@@ -1,0 +1,123 @@
+% FILE: 03_architecture_and_primitives.tex
+% PROJECT: ma — M&A Claim Taxonomy and Board Projection Surface
+
+\section{Architecture and Primitives}
+\label{sec:ma-architecture}
+
+\subsection{Core Objects}
+\label{sec:ma-arch-objects}
+
+The \texttt{ma/} framework is built on six core object types, each defined in a dedicated
+specification file and referenced by the master consolidation document.
+
+\paragraph{Claim.} A typed assertion about an organization's process, expressed as a
+mathematical formula whose variables are derivable from an XES or OCEL 2.0 event log. The
+nine claim taxonomies enumerate specific claim classes with their formulas:
+
+\begin{itemize}
+  \item \textbf{C-EBITDA-001} --- EBITDA Optimization:
+    $E = V_{\text{annual}} \times (r_{\text{baseline}} - r_{\text{target}}) \times
+    \bar{C}_{\text{rework}}$
+  \item \textbf{C-WC-002} --- Working Capital Release:
+    $WC = (\text{Revenue}_{\text{credit\_annual}} / 365) \times (T_{\text{AR, baseline}} -
+    T_{\text{AR, target}})$
+  \item \textbf{C-RISK-003} --- SLA Penalty Exposure:
+    $L_{\text{SLA}} = \sum_{c \in C_{\text{late}}} P_{\text{penalty}}(c) +
+    \sum_{c \in C_{\text{active}}} \Pr(T(c) > T_{\text{SLA}} \mid \sigma_c) \times
+    P_{\text{penalty}}(c)$
+  \item \textbf{C-RISK-004} --- Compliance Leakage:
+    $L_{\text{compliance}} = \sum_{r \in \mathcal{R}} (N_{\text{violations}}(r, L) \times
+    F_{\text{statutory}}(r) + \Pr(\text{Audit}_{\text{ext}}) \times F_{\text{systemic}}(r))$
+  \item \textbf{C-RESIDUAL-005} --- Process Standardization: residual weight
+    $W_R = |R| / |L|$ and residual entropy $H_R = -\sum_{v \in V_R} P(v) \log_2 P(v)$
+\end{itemize}
+
+\paragraph{Receipt.} A JSON document conforming to RFC 8785 (JCS canonical form), containing
+the slide UUID, BLAKE3 hashes of event log and process model, wasm4pm query definition,
+numeric verification results, and an Ed25519 validator signature. Five materialized receipts
+exist in \texttt{receipts/}; additional receipts are specified by schema.
+
+\paragraph{Event Log.} An XES (IEEE 1849-2016) or OCEL 2.0 event log extracted from a source
+ERP or CRM system, with W3C PROV-O provenance lineage mapping events to source database WAL
+sequence numbers. Each trace $\sigma = \langle e_1, e_2, \ldots, e_n \rangle$ forms a hash
+chain: $\mathcal{H}(e_j) = \text{BLAKE3}(e_j \Vert \mathcal{H}(e_{j-1}) \Vert
+\text{Sig}_{\text{system}}(e_j))$.
+
+\paragraph{Process Model.} A Workflow Net, POWL structure, or process tree discovered from the
+event log via Inductive Miner (Leemans 2013) or equivalent algorithm. Models must satisfy
+soundness: option to complete ($\forall M \in [M_0\rangle$, $[o] \in [M\rangle$), liveness
+($\forall t \in T$, $\exists M', M'' : M \xrightarrow{*} M' \xrightarrow{t} M''$), and
+boundedness ($\exists k \in \mathbb{N}^+ : \forall M \in [M_0\rangle$, $\forall p \in P$,
+$M(p) \le k$).
+
+\paragraph{Virtual Data Room (VDR).} A structured evidence archive containing six directories:
+\texttt{/event-logs/}, \texttt{/models/}, \texttt{/receipts/}, \texttt{/conformance/},
+\texttt{/provenance/}, \texttt{/synergy/}. The VDR is the delivery vehicle by which the seller
+provides all evidence necessary for independent buyer replay.
+
+\paragraph{Board Presentation.} A PowerPoint deck produced by the seven-step Board Projection
+Renderer pipeline. Every slide assertion is sealed to a receipt via the Slide-to-Receipt Map.
+
+\subsection{Admissible Transitions}
+\label{sec:ma-arch-transitions}
+
+The framework defines a strict evidence-escalation protocol. A claim advances through the
+Board Claim Taxonomy tiers only when the evidence minimum for the target tier is met:
+
+\begin{itemize}
+  \item T1 $\to$ T2: Volume metrics and coverage mapping available from system-of-record.
+  \item T2 $\to$ T3: OCEL/XES event log available; process model discovered; conformance
+    report with $f \ge 0.95$, $p \ge 0.90$ produced.
+  \item T3 $\to$ T4: Event timestamps admitted; case duration CDF computed; performance
+    claims numerically bounded.
+  \item T4 $\to$ T5: \texttt{wasm4pm} running on live data; refusal evidence---queries that
+    correctly reject non-conforming traces---demonstrated.
+  \item T5 $\to$ T6: Process variant analysis performed; conformance delta quantified;
+    remediation receipt produced with root-cause trace.
+\end{itemize}
+
+The Four-Pillar Board Admissibility Protocol governs admission at T3 and above: Pillar A
+(Event Log Integrity), Pillar B (Mathematical Conformance Bounds), Pillar C (Structural Model
+Soundness), Pillar D (Cryptographic Slide-to-Receipt Mapping) must all pass.
+
+\subsection{Boundaries}
+\label{sec:ma-arch-boundaries}
+
+The \texttt{ma/} module is bounded on three sides:
+
+\textbf{Upstream boundary:} \texttt{wasm4pm} is the execution engine. Conformance queries
+must be expressible as \texttt{wasm4pm} query URIs. The module does not define the query
+execution engine---it defines the claim taxonomy, admissibility protocol, and receipt schema
+that constrain what queries must produce.
+
+\textbf{Downstream boundary:} The Board Projection Renderer (Rust: \texttt{Tera2},
+\texttt{pptx-rs}, \texttt{calamine}) is the rendering surface. The module does not define
+rendering implementation---it defines the claims JSON contract that the renderer must consume.
+
+\textbf{Lateral boundary:} The five-step Auditor Evidence Path defines the external-auditor
+interface. Auditors receive the VDR and execute the protocol; they do not modify receipts or
+re-run discovery. Replay tolerance is $\Delta f, \Delta p < 10^{-6}$ across independent runs.
+
+\subsection{Failure Modes Refused}
+\label{sec:ma-arch-failure-modes}
+
+The framework explicitly refuses four failure modes that are endemic to traditional M\&A
+diligence:
+
+\begin{enumerate}
+  \item \textbf{Narration without replay:} A claim that cannot be independently replayed
+    from VDR contents is not a board-admissible claim---it is narration. The Slide-to-Receipt
+    Map makes orphaned assertions structurally impossible: any slide without a receipt UUID
+    fails the Pillar D check.
+  \item \textbf{Statistical sampling without event log:} T2 coverage claims are explicitly
+    lower-tier. A process with 100\% coverage and 40\% conformance fitness is a liability, not
+    an asset. The taxonomy requires escalation to T3 before operational claims are priced.
+  \item \textbf{Synergy claims without behavioral similarity proof:} Post-merger synergy
+    claims require Behavioral Profile Similarity $\text{Sim}(M_1, M_2, C) \ge 0.75$ (Weidlich
+    2011) and Execution Path Intersection evidence. A synergy claim without bisimulation
+    equivalence evidence is inadmissible under v30.1.1.
+  \item \textbf{Soundness-uncertified process models:} All Workflow Nets submitted as
+    conformance evidence must carry a soundness certificate. An unsound model can admit traces
+    that replay against it without meaningful conformance---a form of false positive that inflates
+    fitness scores. The module requires $k$-boundedness $k \le 5$ for financial processes.
+\end{enumerate}

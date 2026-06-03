@@ -1,0 +1,87 @@
+% FILE: 00_project_identity.tex
+% Project: comparisons
+% Role: cross-system-capability-comparison-corpus
+% Protocol: v30.1.1
+
+\section{Project Identity}
+\label{sec:comparisons-identity}
+
+\subsection{Purpose}
+\label{sec:comparisons-identity-purpose}
+
+The \texttt{comparisons} corpus is the cross-system capability authority for the
+process-intelligence research program. Its purpose is to establish, with
+source-traceable evidence, the precise capability boundaries of three distinct
+execution stacks: PM4Py (CPython/Pandas), wasm4pm (WebAssembly/Rust execution
+engine), and wasm4pm-compat (Rust compile-time type-law enforcement layer). The
+corpus does not argue that one stack is universally superior. It establishes what
+each stack can and cannot do, at what cost, and at which enforcement level.
+
+The central architectural thesis is that PM4Py is a data-science prototyping
+tool with runtime-only validation; wasm4pm is an edge-native execution engine with
+strong Rust types but no admission gates; and wasm4pm-compat is the type-law
+authority that makes invalid conformance metrics (fitness $> 1.0$), unvalidated
+event log input, and generic exception handling compile-time impossibilities rather
+than runtime defects. This three-way comparison is the evidentiary basis for
+design decisions across all downstream engineering surfaces in the research
+program.
+
+\subsection{Repository Surface}
+\label{sec:comparisons-identity-surface}
+
+The corpus resides at \texttt{/Users/sac/process-intelligence/comparisons/} and
+consists of eleven substantive markdown documents authored under the v30.1.1
+research protocol, all timestamped 2026-05-31 to 2026-06-01. The eleven documents
+cover: architecture comparison, conformance metric surfaces, algorithm coverage
+matrix, type safety comparison, admission/refusal law comparison, WASM vs.\ native
+performance benchmarks, declarative vs.\ imperative conformance, lattice vs.\ trace
+compliance checking, PM4Py vs.\ wasm4pm conformance details, algorithm comparison,
+and core lifecycle algorithms.
+
+The ALIVE gate assessment (\texttt{checkpoints/ALIVE\_GATE\_ASSESSMENT.md})
+explicitly lists the comparisons file count as criterion 8: target $\geq 4$,
+actual 11, verdict MET. The corpus thus satisfies one of the twelve criteria that
+sealed the PROCESS\_INTELLIGENCE\_ALIVE\_001 checkpoint on 2026-05-31.
+
+\subsection{Primary Research Role}
+\label{sec:comparisons-identity-role}
+
+Within the dissertation, the comparisons corpus performs the role of
+\emph{cross-system capability comparison corpus}. It is the empirical surface on
+which claims about type-law superiority, performance parity, and algorithmic gap
+structure are grounded. No downstream engineering claim about wasm4pm-compat
+design choices can be made without a comparisons-corpus entry tracing it.
+
+The corpus also provides the comparative baseline for the M\&A claim layer: the
+\texttt{PM4PY\_ORACLE\_RECEIPT} and \texttt{WASM4PM\_GAP\_RECEIPT} in the receipt
+registry are explicitly described as covering the comparison surface. Any
+board-level fitness, precision, or algorithmic coverage claim must trace to a
+comparisons entry.
+
+\subsection{Key Artifacts}
+\label{sec:comparisons-identity-artifacts}
+
+The key artifacts produced by or consumed in this corpus are:
+
+\begin{itemize}
+  \item \texttt{pm4py\_vs\_wasm4pm\_architecture.md} --- Three-system architectural
+    comparison with mathematical WF-net soundness definitions and LTL semantics.
+  \item \texttt{CONFORMANCE\_METRIC\_SURFACES.md} --- Source-traced demonstration
+    that \texttt{Metric<KIND, NUM, DEN>} with \texttt{Require<\{NUM <= DEN\}>:
+    IsTrue} makes out-of-range quality metrics a compile-time error.
+  \item \texttt{ALGORITHM\_COVERAGE\_MATRIX.md} --- Eleven-row coverage table
+    classifying every algorithm as Full, Shape, Partial, or No across the three
+    stacks.
+  \item \texttt{TYPE\_SAFETY\_COMPARISON.md} --- The laundering test: can
+    unvalidated event logs reach algorithm results without detection? The answer
+    is No only in wasm4pm-compat.
+  \item \texttt{ADMISSION\_REFUSAL\_VS\_PM4PY\_ERRORS.md} --- Named-law refusal
+    architecture vs.\ Python exception strings.
+  \item \texttt{wasm\_vs\_native\_pm\_performance.md} --- Performance figures:
+    8.2M events/sec wasm4pm vs.\ 6.3K events/sec PM4Py for alignment conformance;
+    $< 1$ms WASM instantiation vs.\ 10--50ms native.
+  \item \texttt{lattice\_vs\_trace\_compliance\_checking.md} --- Formal proof that
+    the witness join-semilattice $(W, \sqsubseteq, \sqcup, \bot, \top)$ with
+    Monotonicity Axiom 2 is sound and complete with respect to trace-based
+    language acceptance.
+\end{itemize}

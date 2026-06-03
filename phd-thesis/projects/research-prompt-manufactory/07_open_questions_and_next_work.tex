@@ -1,0 +1,126 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Open Questions and Next Work}
+\label{sec:research-prompt-manufactory-open}
+
+\subsection{Known Gaps}
+\label{sec:research-prompt-manufactory-open-gaps}
+
+Four structural gaps are documented by the existing evidence and have not been resolved
+as of the issued checkpoint:
+
+\textbf{Gap 1: Artifact count discrepancy.} The manufacturing manifest
+(\texttt{manufacturing-manifest-20260601.yaml}) records 41 artifacts emitted, while the
+\texttt{.ggen/receipts/phase-2-index.json} records 42 artifacts manufactured. A
+1-artifact discrepancy exists between these two receipt surfaces. The discrepancy has
+not been explained or reconciled. It could indicate a double-counted artifact, an
+artifact manufactured outside the ggen manifest scope, or a counting methodology
+difference between the two receipt layers. Until reconciled, the exact artifact count
+cannot be stated with confidence.
+
+\textbf{Gap 2: ggen v5 template rendering failure root cause undiagnosed.} During
+Phase 6 manufacture of \texttt{PI\_RESEARCH\_PROGRAM\_INTEL\_001.md}, ggen v5 template
+rendering failed with an empty SPARQL result set. The \texttt{prompt-receipt-ledger.md}
+documents this as ``BLOCKED (ontology incomplete)'' for the query execution step and
+``BLOCKED (empty result set)'' for the rendering step. The root cause --- whether the
+workflow/phase ontology data was missing from \texttt{workflow-law.ttl} at time of
+execution, or whether the ggen context binding fails to handle SPARQL SELECT joins
+across multiple graph hops --- has not been definitively diagnosed. The fallback manual
+manufacture succeeded, but the automated pipeline remains unproven for this warrant type.
+
+\textbf{Gap 3: Only 1 of 6 rules has a full verified pipeline.} The manufacturing
+manifest records 6 rules executed with 41 artifacts emitted and receipts-equal-artifacts
+PASS. However, the checkpoint states that only 1 proof specimen warrant path has been
+fully verified end-to-end (law $\to$ query $\to$ template $\to$ artifact $\to$ receipt).
+Whether the remaining 5 rules executed through the full automated SPARQL$\to$Tera$\to$
+artifact pipeline, or used fallback or partial methods, is not established by the
+available evidence. The manifest's PASS verdict may reflect artifact existence rather
+than full pipeline execution for all 6 rules.
+
+\textbf{Gap 4: No automated test suite.} The \texttt{audit.json} \texttt{tests\_found}
+field is empty. The SHACL shape constraints on \texttt{pm:RenderedPrompt},
+\texttt{pm:ResearchProgram}, and \texttt{pm:SubagentRole} have no repeatable automated
+test proving they reject non-conforming instances. SPARQL query correctness relies
+entirely on manual ggen sync invocation rather than a test harness. This means
+conformance claims rest on single observed executions, not on reproducible proof.
+
+\subsection{Deferred Gates}
+\label{sec:research-prompt-manufactory-open-deferred}
+
+Two audit gates from the 11-gate checkpoint audit are deferred pending external
+completion:
+
+\begin{description}
+  \item[PI\_INTEL topology complete] Blocked on
+    \texttt{PI\_RESEARCH\_PROGRAM\_INTEL\_001} completing its classification phase
+    (Phase 2 of 8). The concurrent INTEL workflow was in progress as of the checkpoint.
+    The Manufactory's seed data becomes richer when this phase completes: the 7 program
+    instances gain full type definitions, enabling richer warrant manufacture for all
+    downstream programs.
+
+  \item[Remaining templates implemented] Seven of 8 Tera templates are specified in
+    \texttt{ggen.toml} but not yet implemented. Only \texttt{workflow-prompt.md.tera}
+    is operational. The checkpoint recommends proceeding with template implementation
+    in parallel with PI\_INTEL, since templates are independent of the PI\_INTEL output
+    and can be tested against the existing seed data.
+\end{description}
+
+\subsection{Research Risks}
+\label{sec:research-prompt-manufactory-open-risks}
+
+\textbf{Risk 1: ggen context binding architectural limit.} If the ggen v5 template
+rendering failure is caused by an architectural limit in ggen's SPARQL$\to$Tera context
+binding (inability to handle result aggregation/nesting for multi-hop SELECT joins), then
+the manufacturing pipeline for workflow warrants --- which require a 4-hop join across
+program, workflow, phase, and subagent --- may be fundamentally unautomatable with the
+current engine version. The receipt ledger notes this as ``Option B: Fix ggen v5'' and
+suggests upstream engagement with the ggen maintainer.
+
+\textbf{Risk 2: PI\_INTEL workflow incompletion.} The PARTIAL verdict on the Prompt
+Manufactory depends on PI\_INTEL completing its classification phase. If that workflow
+remains incomplete indefinitely, the Manufactory's seed data remains sparse and the
+richer warrant manufacture for all 7 programs cannot be proved. This is an external
+dependency that the Manufactory cannot resolve through its own manufacturing pipeline.
+
+\textbf{Risk 3: Warrant stub incompleteness.} The proof-specimen warrant
+\texttt{PI\_RESEARCH\_PROGRAM\_INTEL\_001.md} contains only a stub for the Workflow
+Phases section, indicating the SPARQL join over \texttt{pm:hasPhase} and
+\texttt{pm:hasSubagentRole} did not return results even after the later successful ggen
+run. If this is a persistent data gap rather than a timing artifact, the workflow warrant
+type cannot be fully manufactured even with a functioning template pipeline.
+
+\subsection{Next Receipted Work}
+\label{sec:research-prompt-manufactory-open-next}
+
+The checkpoint's remediation path to \texttt{GGEN\_PROMPT\_MANUFACTORY\_ALIVE\_001}
+specifies four receipted work items for the Prompt Manufactory:
+
+\begin{enumerate}
+  \item \textbf{Implement remaining 7 Tera templates} against specification in
+    \texttt{ggen.toml}. Each template implementation must produce a receipted render
+    against at least one seed program instance before the implementation is considered
+    complete.
+
+  \item \textbf{Create remaining SPARQL queries} for the 12 query slots specified in
+    \texttt{ggen.toml} but not yet implemented. Each query must be validated to return
+    non-empty results against the loaded graph.
+
+  \item \textbf{Run \texttt{ggen sync} to render all 6 generation rules} after template
+    and query implementation, verifying that each of the 6 rules executes through the
+    full automated pipeline (not fallback). The receipt must record
+    \texttt{COMPLETE\_VIA\_AUTOMATION} rather than \texttt{COMPLETE\_VIA\_FALLBACK}.
+
+  \item \textbf{Populate remaining 6 program receipts} in
+    \texttt{prompt-receipt-ledger.md} --- one for each of the 7 seed programs minus the
+    proof specimen already receipted. Each receipt must carry the full 7-step provenance
+    chain with no fallback methods.
+\end{enumerate}
+
+% FUTURE WORK
+Beyond the immediate remediation path, the research program defers to future work: an
+automated SHACL validation harness that can reject non-conforming \texttt{pm:RenderedPrompt}
+instances; reconciliation of the 1-artifact count discrepancy between receipt surfaces;
+and diagnosis of the ggen v5 template rendering failure root cause with either a fix or
+a documented architectural constraint boundary.

@@ -1,0 +1,116 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: audits
+% Role: completeness-audit-and-compliance-verification-corpus
+
+\section{Contribution to the Dissertation}
+\label{sec:audits-contribution}
+
+\subsection{Contribution to Prediction vs.\ Coordination}
+\label{sec:audits-contribution-prediction}
+
+The central thesis distinguishes \emph{prediction}~--- inference from historical
+patterns~--- from \emph{coordination}~--- real-time synchronization of process
+state across agents and artifacts under cryptographic receipt discipline.
+
+The audits corpus contributes to this distinction by demonstrating that quality
+enforcement requires coordination, not prediction. A machine-learning model
+trained on historical test outcomes could predict, with high probability, that
+the \texttt{wasm4pm-compat} crate is conformant: after all, 4 of 5 audits pass,
+84 tests pass, and the forensic audit returns \textsc{clean}. But the prediction
+would be wrong. The \textsc{dto\_001} violation at \texttt{mod.rs:735} is
+undetectable by behavioral testing; it is detectable only by a deterministic
+pattern audit that queries the type-law surface of the source artifact.
+
+Coordination, in this context, means that the audit must run, the receipt must be
+committed, and the graduation checkpoint must be withheld until the receipt is
+\textsc{pass}. No amount of prediction can substitute for this causal chain of
+evidence. The audits corpus is the concrete proof that the coordination model
+catches defects the prediction model cannot.
+
+The EWMA concept drift detection mechanism contributes a complementary result:
+statistical process control (a predictive technique) is insufficient for
+conformance monitoring when the underlying process law has changed. Within 4
+traces of injected drift, the EWMA statistic crosses the \(LCL = 0.92\) boundary,
+triggering a coordination-level alert that stops the process and demands human
+review. The alert is a coordination event, not a prediction.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:audits-contribution-evidence}
+
+The dissertation argues that process evidence must satisfy three properties: it
+must be derivable from event logs (not from code assertions), it must be auditable
+against a declared process model, and it must carry a cryptographic receipt that
+can be replayed.
+
+The audits corpus demonstrates all three properties at the system level. First,
+the five deterministic shell audits are event-log derivations in miniature: they
+extract the type-law surface of the codebase as a set of observable events
+(method names, feature dependencies, public item counts) and compare these events
+against the declared process model (the graduation boundary specification).
+Second, the comparison is explicit and reproducible: the declared graduation
+boundary is \texttt{compilation \&\& audit\_pass}, and the actual surface is
+verified to be a conformant superset of the declared 6-item manifest (87 actual
+public items versus 6 declared, with the superset lawfully encompassing the
+declared minimum). Third, the receipt chain~--- five committed text files plus
+four agent SHA-256 signatures plus the BLAKE3+Ed25519 \texttt{ALIVE\_001}
+certification~--- satisfies the cryptographic replay requirement.
+
+The compile-fail fixture corpus contributes an additional evidence layer: 199
+type-law receipts that prove, by Rust's type checker, that 97.7\% of the
+specified violations are correctly rejected at compile time. This transforms
+type-law claims from documentation assertions into machine-verified process
+evidence.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:audits-contribution-manufacturing}
+
+The audits corpus contributes to the manufacturing architecture by establishing
+the \emph{audit layer} as a first-class manufacturing stage. In the CodeManufactory
+doctrine, manufacturing stages are not merely sequential steps: they are lawful
+objects with defined receipt shapes, proof gates, and admission refusal
+signatures. The audits corpus instantiates this doctrine for the quality
+enforcement dimension.
+
+Concretely, the five-audit program defines a manufacturing stage with:
+\begin{itemize}
+  \item \textbf{Input:} The \texttt{wasm4pm-compat} source tree.
+  \item \textbf{Operators:} Five deterministic shell scripts.
+  \item \textbf{Proof gate:} All five scripts return \textsc{pass}.
+  \item \textbf{Receipt:} Five committed \texttt{.txt} files with
+    re-executable audit scripts.
+  \item \textbf{Admission refusal:} Any \textsc{fail} result blocks the
+    downstream graduation checkpoint.
+  \item \textbf{Artifact:} The
+    \texttt{PROCESS\_INTELLIGENCE\_COMPAT\_CONFORMANCE\_001} checkpoint file.
+\end{itemize}
+
+This pattern~--- operator, proof gate, receipt, refusal, artifact~--- is the
+canonical manufacturing stage structure. The audits corpus provides the only
+instantiation of this structure that is itself subject to Van der Aalst
+conformance auditing, making it the self-validating layer of the manufacturing
+architecture.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:audits-contribution-capital}
+
+The board claim support audit (\texttt{audit-board-claim-support.md}) directly
+connects the audits corpus to the capital-flow and settlement infrastructure of
+the dissertation's final chapter. Board claims in M\&A contexts~--- EBITDA
+optimization, working capital improvement, GRC defensibility, integration
+velocity~--- must be traceable to process-intelligence evidence if they are to be
+board-admissible.
+
+The audit confirms traceability for all nine claim types across four strategic
+domains. Each claim type has a verified research support citation (academic paper
+and formula), a receipt shape specification (schema, required fields, signing
+protocol), a public standard reference (IEEE/OCEL/BPMN), and a lifecycle state
+mapping (Autonomic MAPE-K stage). This four-layer traceability chain is the
+minimum structure required for a claim to be admitted to a board process.
+
+The audit thereby establishes the architectural bridge between the technical
+manufacturing infrastructure (type-law receipts, cryptographic ledgers, Petri net
+soundness verification) and the capital-allocation decisions that motivate the
+enterprise's investment in process intelligence. Claims that cannot be traced
+through this bridge are refused as board-inadmissible~--- applying the same
+admission refusal discipline at the business layer that the \texttt{Evidence<T>}
+type applies at the code layer.

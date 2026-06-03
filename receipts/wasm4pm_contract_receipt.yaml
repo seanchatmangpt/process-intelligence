@@ -1,0 +1,97 @@
+---
+receipt_type: CONTRACT_CREATED
+status: CONTRACT_CREATED
+timestamp: "2026-06-01T21:30:00Z"
+authority: "Agent 5 / Process Intelligence Research Foundry"
+document_uri: "cross-project-coordinate-alpha/adapters/wasm4pm_evidence_contract.md"
+
+evidence_boundary_contract:
+  compat_owns:
+    - raw_event_data
+    - event_logs
+    - ocel_logs
+    - process_models_structure_only
+    - temporal_properties
+    - causality_witness_markers
+    - market_planck_cells
+    - conformance_verdicts_shapes
+    - receipt_structure_and_chain
+  
+  wasm4pm_owns_exclusively:
+    - discovery_algorithms
+    - conformance_execution
+    - replay
+    - receipt_minting_cryptographic
+    - benchmark_gates
+    - object_centric_query_execution_ocpq
+    - optimization_algorithms
+    - visualization_rendering
+
+  transformation_boundary:
+    marketplankcell_to_ocel:
+      compat_layer: "MarketPlanckCell → Construct8Delta → OcelLog"
+      graduation_trigger: "NeedsDiscovery | NeedsConformanceExecution | NeedsReplay"
+
+graduation_reasons:
+  - needs_discovery
+  - needs_conformance_execution
+  - needs_replay
+  - needs_receipts
+  - needs_benchmark_gate
+  - needs_object_centric_query_execution
+  - rebuilding_process_mining_locally
+
+enforcement:
+  type_system:
+    - Evidence<T, Raw> vs Evidence<T, Admitted> are different types
+    - Witness markers prevent silent format confusion
+    - LossPolicy enforces lossy decisions upfront
+    - Temporal constraints checked in compat
+    - Causal consistency via VectorClock8 comparison
+  
+  execution_layer:
+    - Algorithms run only if evidence is lawfully shaped
+    - Receipts minted only on successful execution
+    - Gates pass only if measurements meet bounds
+    - Queries return results only on OCPQ termination
+
+forbidden_in_compat:
+  - discovery_algorithms: "Execution, not structure"
+  - conformance_checkers: "Algorithmic replay, not type law"
+  - replay_engines: "Stateful execution"
+  - cryptographic_minting: "Runtime operation"
+  - benchmarking_harness: "Measurement and timing"
+  - query_execution: "Language evaluation"
+  - optimization_algorithms: "Algorithmic search"
+  - visualization_rendering: "Graphics output"
+
+maxim: "If a feature requires running code, not validating structure, it does not belong in compat."
+
+covenant: "Compat makes the case for graduation. Wasm4pm answers it by executing."
+
+references:
+  - url: "~/wasm4pm-compat/README.md"
+    title: "Structure-only design philosophy"
+  - url: "~/wasm4pm/README.md"
+    title: "Execution engine CLI and algorithms"
+  - url: "~/wasm4pm-compat/src/engine_bridge.rs"
+    title: "GraduationReason enum"
+  - url: "~/wasm4pm-compat/c8-market/README.md"
+    title: "MarketPlanckCell specification"
+  - url: "~/wasm4pm-compat/src/ocel.rs"
+    title: "OcelLog structure"
+
+checklist:
+  - "[ ] Is this structure, not execution?"
+  - "[ ] Can the type system enforce it?"
+  - "[ ] Does it require running an algorithm?"
+  - "[ ] Does it require measuring runtime?"
+  - "[ ] Does it require cryptographic operations?"
+  - "[ ] Is it a query language evaluation?"
+  - "[ ] Does it transform state across multiple time steps?"
+
+signature:
+  signer: "Agent 5"
+  signer_role: "Process Intelligence Research Authority"
+  timestamp: "2026-06-01T21:30:00Z"
+  chain_hash: "CONTRACT_CREATED_001"

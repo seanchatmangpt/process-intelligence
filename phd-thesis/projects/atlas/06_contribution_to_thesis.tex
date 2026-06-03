@@ -1,0 +1,130 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: atlas
+% Role: doctrine-atlas-and-thesis-chapter-surface-map
+
+\section{Contribution to the Dissertation}
+\label{sec:atlas-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:atlas-contribution-prediction}
+
+The atlas makes a structural contribution to the thesis argument that process
+intelligence is a coordination technology, not a prediction technology. Each of
+the seven doctrine modules encodes a coordination law --- a rule about what must
+happen between actors, artifacts, and systems at a named boundary --- rather than
+a predictive claim about future behavior.
+
+The Aalst Broadcaster exemplifies this. It does not predict the next commit; it
+coordinates the transformation of Git history into an OCEL stream so that every
+past commit becomes admissible process evidence. The Conformance Stream does not
+predict conformance; it continuously coordinates the actual event sequence
+against the declared WF-net or Petri Net model and emits severity-rated alerts
+when the coordination breaks down. The Blue River Dam operator chain
+$\kappa(\rho(\alpha(\mu(O^*))))$ does not predict whether a process instance
+will be ALIVE; it enforces the coordination law that every transition must emit
+a receipt and every receipt must be gated before the next transition is
+authorized.
+
+The AGI Adversarial Defenses module makes this distinction sharpest: the four
+Iron Law safeguards (Schr\"odinger's Interface Fallback, Turing Trap Circuit
+Breakers, Causal Window P2P Constraints, Hardware Attestation via ZKP) are not
+predictive filters; they are coordination boundaries that prevent complexity
+collapse regardless of what the AI component predicts. A Turing Trap Circuit
+Breaker does not predict infinite reasoning loops; it enforces a boundary that
+terminates them.
+
+\textbf{[AUTHOR THESIS]} The atlas thus contributes the claim that the thesis
+argument ``prediction does not conserve consequence; coordination does'' is
+instantiated across all seven doctrine modules --- each module names a
+coordination law that would be dissolved if prediction were substituted for it.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:atlas-contribution-evidence}
+
+The atlas contributes to the process evidence strand of the thesis by naming the
+\texttt{Evidence<T, State, Witness>} typed receipt structure as the canonical
+form of process evidence across all seven modules. This is not a contribution of
+the atlas alone --- the SPR thesis formal objects define it, and the
+wasm4pm-compat type foundry enforces it at the Rust type level. But the atlas
+makes the contribution visible at the doctrine-surface level by showing that
+each module produces or consumes typed evidence rather than untyped outputs.
+
+The Aalst Broadcaster produces OCEL-typed event objects. The GGEN Prompt
+Manufactory produces Prompt-typed research warrants. The Supabase Law Substrate
+produces RLS-typed authorization decisions. The WASM Boundary Law enforces that
+the TypeScript projection (Specta) and the binary execution (tsify/wasm-bindgen)
+are separately typed surfaces that cannot be silently coerced into each other.
+The ZoeApp Ministry Ontology produces process-law-typed lifecycle states
+(healthy, degraded, critical). In every case, the type is the evidence: an
+untyped output is not admissible as process evidence under the covenant
+definition.
+
+The RECEIPT\_REGISTRY defines seven canonical receipts that correspond to the
+seven major evidence surfaces of the foundry (papers, PM4Py oracle, gaps,
+lifecycle, M\&A, standards, adversarial). The atlas maps its seven doctrine
+modules to this receipt structure at the naming level, establishing which
+doctrine module relies on which receipt category for its evidentiary basis.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:atlas-contribution-manufacturing}
+
+The atlas contributes to the manufacturing architecture of the dissertation by
+providing the naming layer that connects the Chatman Equation
+$A = \mu(O^*, T, L)$ to the implementation repositories that instantiate it.
+Without the atlas, the manufacturing architecture would require readers to
+navigate seven distinct repositories to understand how the four operators
+($\mu$, $\alpha$, $\rho$, $\kappa$) are instantiated in each domain. With the
+atlas, the mapping is explicit:
+
+\begin{itemize}
+  \item $\mu$ is instantiated by the GGEN Prompt Manufactory (TTL $\to$ RQ
+        $\to$ TERA $\to$ Prompt) and by the Aalst Broadcaster (Git $\to$ OCEL).
+  \item $\alpha$ is instantiated by the Blue River Dam actuation boundary:
+        Future Claim (Intent) $\to$ Public Law (Evaluation) $\to$ Actuation
+        Boundary (Execution) $\to$ Receipt (Proof).
+  \item $\rho$ is instantiated by the WASM Boundary Law (every execution across
+        the membrane emits a typed receipt) and by the Supabase RLS Authorization
+        Court (every SQL command decision is audited and logged).
+  \item $\kappa$ is instantiated by the Blue River Dam gate
+        ($\kappa(\tau) \in \{\textsc{ALIVE}, \textsc{PARTIAL}, \textsc{REFUSED}\}$)
+        and by the AGI Adversarial Defenses (circuit breakers and fallbacks enforce
+        $\kappa$ against adversarial inputs).
+\end{itemize}
+
+The atlas also contributes the Combinatorial Maximalism thesis point: the
+manufacturing surface is not additive but multiplicative. Adding one standard
+(one column) adds $|L| \times |A| \times |F| \times |R| \times |Q| \times |B|
+\times |D|$ new manufacturing cells --- not one.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:atlas-contribution-capital}
+
+The atlas contributes to the capital-flow infrastructure strand of the thesis
+through two modules: the Supabase Law Substrate and the ZoeApp Ministry
+Ontology.
+
+The Supabase Law Substrate defines the data-layer governance infrastructure
+through which all capital-flow actors (donors, ministry administrators, event
+participants) interact with the system. The RLS Authorization Court establishes
+that the database, not the frontend, is the authoritative host of capital-flow
+data. The five demonstration-mode tables (actor\_commands, actor\_events,
+actor\_receipts, actor\_outbox, actor\_quarantine) are the specific technical
+surfaces through which capital-flow actors emit and consume process events. Their
+current ``Allow public access'' policy is a flagged liability; their production
+hardening is a receipted next step.
+
+The ZoeApp Ministry Ontology encodes the capital-flow domain itself: Connect
+(membership and relationship), Give (financial transaction and stewardship),
+Watch (content consumption and engagement), Serve (volunteer and operational
+participation), and Pray (liturgical and intercessory participation) are the
+five capital-flow channels of a ministry organization. By encoding these as
+process-laws rather than UI categories, the atlas establishes that each channel
+can be receipted, replayed, audited, and projected onto a board-admissible
+claim. This is the contribution to capital-flow infrastructure: the ministry
+is a receipted process, not an observed phenomenon.
+
+The Reverse Porter Five Algebra (from the SPR thesis) applies directly here:
+as competitive pressure on ministry organizations increases (substitutes,
+new entrants, donor bargaining power), the demand for validation authority
+--- the ability to prove that ministry capital flowed through lawful, receipted
+channels --- increases correspondingly.

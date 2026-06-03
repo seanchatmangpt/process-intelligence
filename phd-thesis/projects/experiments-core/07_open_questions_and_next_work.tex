@@ -1,0 +1,104 @@
+% FILE: 07_open_questions_and_next_work.tex
+% PROJECT: experiments-core
+% THESIS ROLE: benchmark-experiments-and-equation-verification
+
+\section{Open Questions and Next Work}
+\label{sec:experiments-core-open}
+
+\subsection{Known Gaps}
+\label{sec:experiments-core-open-gaps}
+
+Four structural gaps are documented in the experiment layer:
+
+\textbf{GAP\_001 (Blocking): wasm4pm Admission type mismatch.} The wasm4pm
+\texttt{token\_replay} and \texttt{alignment} APIs currently accept a flat
+\texttt{EventLog} and a bare \texttt{PetriNet}, not an \texttt{Admission<OcelLog, Ocel20>}
+and a \texttt{WfNetConst<Sound>}. This means the Ocel20 witness thread is broken:
+a conformance receipt manufactured by the current API cannot carry a type-level
+proof that the input log passed through a lawful Admission gate. Any board claim
+that cites such a receipt is citing a laundered input, not a witnessed one. This
+gap is documented in \texttt{EVIDENCE\_CHAIN\_TRACE.md} and is the primary reason
+the overall status is PARTIAL rather than ALIVE. No evidence of an API fix is
+present in the repository.
+
+\textbf{GAP\_002 (Empty subdirectories).} The \texttt{ma-deck-projection/} and
+\texttt{wasm4pm-gap-analysis/} subdirectories contain no files (64 bytes each).
+The M\&A deck projection experiment is described in \texttt{paper-to-m\&a-claim\_mapping\_sample.md}
+as a structured Markdown sample, but no executable verification has been manufactured.
+The wasm4pm gap analysis is implied by the capability matrix but has no dedicated
+analysis artifact.
+
+\textbf{GAP\_003 (Fixture materialization).} The \texttt{paper-fixture-design/spec.md}
+specifies adversarial fixture manufacturing using GAN-based trace generation with
+hyper-concurrent loops, invisible prime branches, and 15\% missing events. No GAN
+implementation, no fixture files, and no tooling for adversarial trace injection
+are present in the repository. The specification exists; the fixtures do not.
+
+\textbf{GAP\_004 (ZKP benchmark reproducibility).} The zero-knowledge benchmark
+results---wasm4pm completing 10,000-event ZKP conformance in $2^{18}$ cycles,
+142-second proof time, 220\,KB STARK, versus PM4Py timing out at $2^{30}+$---are
+presented as empirical results in \texttt{pm4py-comparison/zero-knowledge-benchmarks.md}
+but no reproducible harness exists in the repository. There is no BPI Challenge 2017
+log subset, no zkVM configuration file, and no script that will reproduce the
+reported cycle counts on a fresh environment.
+
+\subsection{Deferred Gates}
+\label{sec:experiments-core-open-deferred}
+
+Three proof gates are deferred pending gap closure:
+
+\begin{itemize}
+  \item \textbf{Board-Admissible Receipt Gate}: Cannot be satisfied until GAP\_001 is
+    closed. Requires that \texttt{token\_replay} or \texttt{alignment} accept
+    \texttt{Admission<OcelLog, Ocel20>} and emit \texttt{Receipt<Metric<FITNESS, NUM, DEN>, Ocel20>}
+    with the Ocel20 witness thread intact.
+  \item \textbf{ZKP Reproducibility Gate}: Cannot be satisfied until GAP\_004 is closed.
+    Requires a runnable benchmark script, a log subset of documented provenance, and
+    a zkVM configuration that produces the reported cycle counts.
+  \item \textbf{Adversarial Fixture Gate}: Cannot be satisfied until GAP\_003 is closed.
+    Requires at least one manufactured adversarial trace that demonstrates a lawful
+    Refusal under the Admission gate.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:experiments-core-open-risks}
+
+The primary research risk is that GAP\_001 requires a non-trivial refactor of the
+wasm4pm public API. Changing the input type of \texttt{token\_replay} from
+\texttt{EventLog} to \texttt{Admission<OcelLog, Ocel20>} is a breaking change that
+will affect all downstream consumers of the API, including the visualizer and any
+integrated conformance pipelines. The refactor cannot be undertaken without a
+protocol from the process-intelligence research program authorizing the change, as
+specified in the CLAUDE.md directive: ``No downstream wasm4pm refactor until this
+research program speaks.''
+
+A secondary risk is that the ZKP benchmark results, if not reproducible, may represent
+aspirational rather than empirical performance characteristics. If the $2^{18}$-cycle
+result cannot be reproduced from the artifact set, the performance comparison argument
+loses its empirical foundation and must be reclassified as a projection. [AUTHOR THESIS:
+The benchmark methodology used to produce the reported results is not described with
+sufficient detail in the current artifacts to permit independent reproduction.]
+
+\subsection{Next Receipted Work}
+\label{sec:experiments-core-open-next}
+
+The following receipted work items, in priority order, would advance the status from
+PARTIAL to ALIVE:
+
+\begin{enumerate}
+  \item \textbf{Close GAP\_001}: Refactor the wasm4pm \texttt{token\_replay} and
+    \texttt{alignment} APIs to accept \texttt{Admission<OcelLog, Ocel20>} +
+    \texttt{WfNetConst<Sound>}. Manufacture a live \texttt{Receipt<Metric<FITNESS, NUM, DEN>, Ocel20>}
+    from a test OCEL log. Record the receipt hash in a new checkpoint file.
+  \item \textbf{Manufacture the ZKP Benchmark Harness}: Write a reproducible script
+    that takes a BPI Challenge 2017 log subset (to be committed to the repository),
+    runs wasm4pm conformance in a zkVM, and records the cycle count and STARK size.
+    Commit the results as a new checkpoint.
+  \item \textbf{Manufacture One Adversarial Fixture}: Implement the simplest case
+    from \texttt{paper-fixture-design/spec.md}---a trace with 15\% missing events---and
+    verify that the Admission gate emits a \texttt{Refusal} rather than passing the
+    trace. Record the refusal as a receipt.
+  \item \textbf{Populate \texttt{ma-deck-projection/}}: Translate the conformance
+    receipt from step~(1) into a structured M\&A synergy projection, linking the
+    fitness metric to a dollar-denominated process efficiency estimate.
+\end{enumerate}

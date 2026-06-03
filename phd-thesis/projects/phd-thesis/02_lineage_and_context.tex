@@ -1,0 +1,109 @@
+% FILE: 02_lineage_and_context.tex
+% PROJECT: phd-thesis
+% MANUFACTURED: 2026-06-01
+% AUTHORITY: ledgers/PROJECT_INDEX.yaml (lineage header), checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+% DO NOT CLAIM: See ledgers/DO_NOT_CLAIM_LEDGER.md
+
+\section{Lineage and Context}
+\label{sec:phd-thesis-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:phd-thesis-lineage-2016}
+
+The thesis lineage recorded in the header of \texttt{ledgers/PROJECT\_INDEX.yaml} begins with
+a 2016 language-model experiment. The finding of that experiment, stated in the lineage
+record, is: \emph{local text imitation does not conserve consequence}. This is the
+foundational negative result from which the entire research program derives.
+
+The 2016 experiment is not documented in the 34 project manifests currently catalogued in the
+foundry --- its source materials predate the \texttt{process-intelligence} repository. It is
+cited here as lineage, not as a reproduced artifact: the experimental finding is the author's
+thesis (AUTHOR THESIS), not a claim backed by a file in this repository. What the experiment
+established was a boundary: language models trained to imitate local token sequences do not
+learn the causal, temporal, and custodial structure of the processes those sequences describe.
+A model that predicts the next word in an invoice approval log does not understand that
+``Invoice Approval must follow Goods Receipt'' is a binding constraint --- it learns a
+statistical correlation, not a process law.
+
+This boundary --- the gap between local imitation and process consequence --- is the
+motivating observation for the entire downstream research program. It explains why receipt
+chains, conformance checking, and object-centric event logs are necessary rather than
+optional: they exist to restore the consequence structure that prediction-only approaches
+discard.
+
+\subsection{Enterprise Process Gap}
+\label{sec:phd-thesis-lineage-gap}
+
+The enterprise process gap is the observable manifestation of the 2016 lesson at organizational
+scale. It is the structural condition in which an enterprise's declared process model diverges
+from its actual runtime process in ways that are invisible to the enterprise's own monitoring
+and reporting systems. The gap surfaces only under formal process mining: discovery, conformance
+checking, replay, and object-lifecycle analysis.
+
+The adversarial research surface of the foundry documents four categories of this gap:
+raw laundering refusal (emitting conformance claims without a named witness),
+conformance theater (passing conformance gates on fabricated or incomplete logs),
+metric fabrication (presenting fitness/precision scores without a verifiable model-log binding),
+and variant explosion (declaring a single happy-path model while the mined log reveals
+dozens of rework and exception variants). These findings are recorded in
+\texttt{adversarial/RED\_TEAM\_FINDINGS\_001.md} and
+\texttt{adversarial/RED\_TEAM\_FINDINGS\_002.md}, and are operationalized in the
+adversarial scripts
+\texttt{adversarial/simulate\_laundering\_spoofing.py} and
+\texttt{adversarial/validate\_standards.py}.
+
+The gap has a direct M\&A consequence: a buyer performing process diligence on an acquisition
+target cannot rely on the target's internal conformance reports if those reports are not backed
+by receipts. The M\&A claim taxonomy in \texttt{ma/BOARD\_CLAIM\_TAXONOMY.md} and the
+slide-to-receipt map in \texttt{ma/SLIDE\_TO\_RECEIPT\_MAP.md} exist specifically to close this
+gap at the board level --- converting process mining findings into board-admissible claims with
+verifiable receipt chains.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:phd-thesis-lineage-equation}
+
+The Chatman Equation $A = \mu(O^*)$ formalizes the thesis that process authority is the
+application of the process mining function to the full object-centric process state. It appears
+in the thesis lineage recorded in \texttt{ledgers/PROJECT\_INDEX.yaml} and is operationalized
+in the mathematical invariants of checkpoint \texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md},
+which lists the admissibility boundary as $R \vdash P_i = \mu(O^*, T, L)$, the autonomic
+actuation function as $\alpha(K, P, L, T) \to \tau$, the token-game fitness formula
+$f(L, N) = 1 - \frac{\sum m}{\sum c} - \frac{\sum r}{\sum p}$, and the OCPQ refinement
+relation $p \sqsubseteq_L c$.
+
+These formulas are not illustrative; they are the mathematical invariants verified in the
+research program. The fitness formula is verified by the script
+\texttt{experiments/validate\_log\_fitness.py}; the OCPQ refinement is verified by
+\texttt{experiments/validate\_ocpq\_refinement.py}; the equations are verified by
+\texttt{experiments/verify\_equations.py}. The Chatman Equation is thus grounded in executable
+verification, not assertion alone.
+
+The equation's significance is architectural: it specifies that authority over a process claim
+can only be derived from a mining function applied to a specific, identified object-centric
+process state --- not from a rule engine, not from a prediction model, and not from a
+monitoring dashboard. This constraint is the source of the receipt doctrine and the named-witness
+requirement that permeate the entire foundry.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:phd-thesis-lineage-receipts}
+
+Receipts and replay are the two mechanisms by which the Chatman Equation's authority constraint
+is enforced at the artifact level. A receipt is a typed, witnessed, cryptographically bound
+record that a specific process claim was derived from a specific event log using a specific
+process model and algorithm. A replay is the execution of the token game against the event log
+to compute fitness and precision metrics under a named algorithm.
+
+The receipt doctrine is defined in \texttt{doctrine/RECEIPT\_DOCTRINE.md}. The physical receipt
+chain is anchored by five JSON receipts in the \texttt{receipts/} directory:
+\texttt{rec\_ebitda\_rework\_001.json} through \texttt{rec\_residual\_standard\_005.json},
+each carrying an ed25519 validator signature, a target log hash, a process model hash, and
+wasm4pm-computed verification results. For example, \texttt{rec\_ebitda\_rework\_001.json}
+records: fitness 0.982, precision 0.945, throughput 4.12 days, EBITDA impact \$1,250,000 ---
+all derived by the wasm4pm engine and bound to specific BLAKE3-intended hashes. The ed25519
+signature is:
+\texttt{ed25519\_sig\_8a3e811c\_02e0df...} (full value in the receipt file).
+
+The ggen ecosystem manufactures these receipts through SPARQL queries over the process
+intelligence ontology, rendering them via Tera templates into board-admissible claim surfaces.
+The receipt chain is the physical implementation of the Chatman Equation's authority
+requirement: every claim is $\mu(O^*, T, L)$ instantiated, hashed, signed, and registered.

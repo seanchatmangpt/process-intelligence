@@ -1,0 +1,112 @@
+\section{Research Question}
+\label{sec:doctrine-question}
+
+\subsection{Problem Statement}
+\label{sec:doctrine-question-problem}
+
+The foundational problem addressed by the doctrine corpus is this: consequential software
+systems presently accumulate activity records downstream of the work that matters. Logs,
+dashboards, analytics, and audit trails are collected \emph{after} execution has already
+occurred, by systems that had no governing role in that execution. The activity record says
+something happened; it does not and cannot prove that what happened was lawful, witnessed,
+refusal-capable, or replayable.
+
+The \texttt{BLUE\_RIVER\_DAM.md} doctrine file frames this as the sediment problem:
+``downstream data is sediment --- residue left by work. By the time logs, dashboards, and
+analytics appear, the governing act already happened.'' Under this regime, governance is
+retrospective narration rather than upstream law. Audit trails are constructed post hoc from
+records that were never designed to carry evidentiary weight.
+
+This problem is not merely organizational. It is structural. A system that cannot refuse
+non-conforming execution cannot govern it. A system whose conformance checks are performed
+after execution has no mechanism to stop non-conforming execution from propagating into
+downstream claims. Board-level projections, M\&A diligence packages, and regulatory
+submissions built on such a foundation carry claims that cannot be independently replayed or
+falsified. The doctrine corpus addresses this structural defect at its root by specifying
+what an upstream admission and refusal layer must look like in formal, type-theoretic terms.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:doctrine-question-old-regime}
+
+The old regime assumes the following sequence to be sufficient and correct: write code,
+deploy, observe execution, collect logs, and explain observed behavior in retrospect. This
+assumption underlies conventional business intelligence, observability tooling, workflow
+automation, and monitoring dashboards. Each of these disciplines records what happened but
+does not adjudicate whether what happened conforms to what was declared.
+
+\texttt{PROCESS\_INTELLIGENCE\_DEFINED.md} catalogues the specific distinctions:
+
+\begin{itemize}
+  \item Process intelligence is \emph{not} business intelligence. BI aggregates reported
+    data. Process intelligence mines actual execution behavior and detects model-log
+    divergence.
+  \item Process intelligence is \emph{not} observability. Observability records what
+    happened. Process intelligence proves whether what happened conforms to what was declared.
+  \item Process intelligence is \emph{not} workflow automation. Automation executes declared
+    steps. Process intelligence validates that execution conforms to law and refuses
+    non-conforming paths.
+  \item Process intelligence is \emph{not} monitoring dashboards. Dashboards display metrics.
+    Process intelligence issues typed verdicts grounded in formal process models.
+\end{itemize}
+
+The challenged assumption is that recording activity is equivalent to governing it. The
+doctrine corpus argues this assumption produces unclosed process truth: activity records with
+no admission gate, no refusal surface, no witness, and no replayable receipt. Claims built
+on such records are inadmissible under the board-admissibility criteria established in the
+M\&A doctrine.
+
+\subsection{Hypothesis}
+\label{sec:doctrine-question-hypothesis}
+
+The hypothesis of the doctrine corpus is:
+
+\begin{quote}
+Full-lifecycle process intelligence --- defined as the systematic application of process
+mining, conformance checking, and evidence-grounded execution control from design through
+decommission --- can be manufactured from a typed, receipt-bearing, refusal-capable upstream
+admission layer such that every downstream claim is independently replayable and every gap is
+explicitly accounted for rather than silently absorbed.
+\end{quote}
+
+This hypothesis has several formal components. First, the admission layer must be
+type-enforced: \texttt{Evidence\textless{}T, State, W\textgreater{}} with
+\texttt{PhantomData} lifecycle states and witness tags ensures that only lawfully admitted
+evidence can enter execution paths, and this guarantee is enforced at compile time, not at
+runtime. Second, refusals must be named: generic string-typed catch-alls such as
+\texttt{ValidationError(String)} are explicitly forbidden by doctrine, and every refusal must
+name the specific violated law. Third, every critical transition must emit a
+\texttt{Receipt\textless{}T, W\textgreater{}} --- a typed, witnessed proof artifact --- so
+that the audit chain is machine-verifiable rather than narrative. Fourth, gaps must be
+documented rather than hidden: the hostile-witness posture of the research program, evidenced
+by the self-discovered \texttt{GAP\_001} finding, demonstrates that honest accounting of
+structural defects is an integral part of the doctrine, not a failure mode.
+
+\subsection{Success Criteria}
+\label{sec:doctrine-question-criteria}
+
+The doctrine corpus defines success using the ALIVE gate framework established in
+\texttt{PROCESS\_INTELLIGENCE\_ALIVE\_001.md}. The sealed checkpoint at 588 commits with
+12/12 criteria verified constitutes the primary success evidence. The six specific gate
+criteria relevant to the doctrine layer are:
+
+\begin{enumerate}
+  \item \textbf{Admissibility boundary}: $R \vdash P_i = \mu(O^*, T, L)$ --- compile-time
+    state-space bounds are validated.
+  \item \textbf{Autonomic actuation}: $\alpha(K, P, L, T) \to \tau$ --- typestate
+    compile-fail loops preventing invalid state transitions are verified.
+  \item \textbf{Token-game fitness}: $f(L, N) = 1 - \frac{\sum m}{\sum c} - \frac{\sum
+    r}{\sum p}$ --- verified via automated execution gate.
+  \item \textbf{OCPQ refinement}: $p \sqsubseteq_L c$ --- subset inclusion and matching
+    bindings are programmatically verified.
+  \item \textbf{Decommissioning retirement}: $\delta(P)$ --- formal closure maps preventing
+    orphan dependencies and active leaks.
+  \item \textbf{Downstream authorization}: six specific workflows authorized and receipted
+    against the sealed checkpoint.
+\end{enumerate}
+
+The doctrine corpus also defines partial success honestly. The overall project status is
+\textbf{PARTIAL}: the doctrine layer is sealed and authoritative, but the downstream
+execution layer (wasm4pm) has not yet implemented the bridge to receive admitted evidence
+from wasm4pm-compat. All fifteen algorithm families in the taxonomy show wasm4pm execution as
+\emph{missing}. PARTIAL is declared explicitly, not absorbed silently. This is itself a
+success criterion: honest accounting of incompleteness is a core requirement of the doctrine.

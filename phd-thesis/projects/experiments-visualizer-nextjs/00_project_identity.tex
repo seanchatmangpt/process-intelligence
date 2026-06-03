@@ -1,0 +1,79 @@
+% FILE: 00_project_identity.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Project Identity}
+\label{sec:experiments-visualizer-nextjs-identity}
+
+\subsection{Purpose}
+\label{sec:experiments-visualizer-nextjs-identity-purpose}
+
+The \texttt{experiments/visualizer-nextjs} project is the intended web-based process intelligence
+visualization surface for the research program housed in \texttt{{\textasciitilde}/process-intelligence}.
+Its purpose is to render, in a browser, the full range of process-intelligence evidence that the
+research program manufactures: Petri net replay states, A{*} alignment move sequences, EWMA
+drift-detection time series, and cryptographic receipt ledger blocks. The project is architecturally
+positioned as the human-facing observation layer that sits above the Rust and Python computation
+cores (\texttt{wasm4pm}, \texttt{pm4py}), translating machine-produced process evidence into
+interactive visual artefacts inspectable by a researcher or auditor.
+
+The project was bootstrapped via \texttt{create-next-app} targeting Next.js 16.2.6 and React 19.2.4,
+establishing the scaffold for a TypeScript/React application. At the time of evidence extraction
+the application had been compiled to a \texttt{.next} production build with
+\texttt{BUILD\_ID: 9NFA-LnYiAijWLGnz8L79}, confirming that the underlying framework integrates
+without error. However, the application's primary page (\texttt{src/app/page.tsx}) remains the
+stock \texttt{create-next-app} welcome page; no process-intelligence-specific React components
+have been implemented.
+
+\subsection{Repository Surface}
+\label{sec:experiments-visualizer-nextjs-identity-surface}
+
+The project resides at \texttt{/Users/sac/process-intelligence/experiments/visualizer-nextjs/}
+inside the broader \texttt{experiments/} corpus. The directory structure follows the Next.js 16
+App Router convention: page and layout components live under \texttt{src/app/}, global styles
+are declared in \texttt{src/app/globals.css}, and build output is emitted to \texttt{.next/}.
+Turbopack is the configured bundler, confirmed by the \texttt{build-diagnostics.json} record
+(\texttt{buildStage: static-generation}, \texttt{useBuildWorker: true}).
+
+The most substantive source artefact is \texttt{globals.css} at 973 lines. This file encodes a
+complete dark-mode dashboard design system using CSS custom properties and class-based component
+tokens. The design system covers five distinct visual subsystems: a Petri net SVG panel, an A{*}
+process alignment block sequence, an EWMA drift-detection chart with alarm banners, a
+cryptographic ledger explorer with tamper-detection UI states, and a primary dashboard grid
+layout with a 320-pixel sidebar and a fluid main content area.
+
+\subsection{Primary Research Role}
+\label{sec:experiments-visualizer-nextjs-identity-role}
+
+Within the thesis the project occupies the role of \textbf{web-based-pi-visualization-surface}.
+Process intelligence research produces evidence in machine-readable form --- OCEL event logs,
+conformance fitness scores, receipt JSON blobs, alignment traces. The visualizer-nextjs project
+is designed to be the surface through which that evidence becomes human-auditable. In the full
+architecture the visualizer is the terminal layer of the evidence chain: Raw event data is
+admitted to a process model, replayed against it, scored for fitness, and the resulting
+provenance chain is written to a cryptographic receipt ledger; the visualizer presents all of
+these artefacts simultaneously in a single browser session.
+
+The project also demonstrates that TypeScript and React can serve as a proof-of-concept UI
+manufacturing substrate for process intelligence tooling, complementing the Rust execution core
+and the Python oracle layer.
+
+\subsection{Key Artifacts}
+\label{sec:experiments-visualizer-nextjs-identity-artifacts}
+
+\begin{itemize}
+  \item \texttt{src/app/globals.css} (973 lines) --- the primary substantive artefact;
+        encodes the complete visual vocabulary for all five process-intelligence UI subsystems.
+  \item \texttt{.next/BUILD\_ID} (value: \texttt{9NFA-LnYiAijWLGnz8L79}) --- confirms
+        successful compilation of the Next.js 16 scaffold against Turbopack.
+  \item \texttt{.next/diagnostics/build-diagnostics.json} --- records
+        \texttt{buildStage: static-generation} and \texttt{useBuildWorker: true}.
+  \item \texttt{.next/server/app/index.html} --- the rendered static output of the current
+        (placeholder) \texttt{page.tsx}.
+  \item \texttt{src/app/page.tsx} --- the stock \texttt{create-next-app} welcome page;
+        the implementation gap for the visualizer surface.
+  \item \texttt{package.json} --- declares Next.js 16.2.6, React 19.2.4, TypeScript 5,
+        Tailwind CSS v4 with \texttt{@tailwindcss/postcss}, and Geist/Geist Mono fonts.
+  \item \texttt{AGENTS.md} and \texttt{CLAUDE.md} --- authoring-agent instructions noting
+        breaking changes in Next.js 16 relative to prior training data.
+\end{itemize}

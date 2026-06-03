@@ -1,0 +1,23 @@
+slug: checkpoints
+absolute_path: /Users/sac/process-intelligence/checkpoints
+description: >
+  Phase milestone verdict ledger. Contains ALIVE, PARTIAL, and FAILED checkpoint verdicts
+  including PROCESS_INTELLIGENCE_ALIVE_001, PI_RESEARCH_PROGRAM_ALIVE_001,
+  GGEN_ECOSYSTEM_INTEL_ALIVE_001, SUBSTRATE_COMPLETE_001, and multiple PARTIAL/RUNTIME
+  verdicts. Verdicts are permanent — they stand as issued.
+detected_languages: []
+detected_frameworks: []
+detected_research_surfaces:
+  - receipt-chain
+  - process-evidence
+  - proof-gate
+likely_thesis_role: phase-milestone-verdict-ledger
+key_files:
+  - /Users/sac/process-intelligence/checkpoints/PROCESS_INTELLIGENCE_ALIVE_001.md
+  - /Users/sac/process-intelligence/checkpoints/PI_RESEARCH_PROGRAM_ALIVE_001.md
+  - /Users/sac/process-intelligence/checkpoints/GGEN_ECOSYSTEM_INTEL_ALIVE_001.md
+  - /Users/sac/process-intelligence/checkpoints/SUBSTRATE_COMPLETE_001.md
+  - /Users/sac/process-intelligence/checkpoints/RESEARCH_CRITERIA.md
+readme_present: false
+receipt_present: false
+ontology_present: false

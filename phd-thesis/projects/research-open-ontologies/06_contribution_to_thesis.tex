@@ -1,0 +1,103 @@
+% FILE: 06_contribution_to_thesis.tex
+% Project: research-open-ontologies
+% Role: open-ontology-research-and-rdf-authority
+
+\section{Contribution to the Dissertation}
+\label{sec:research-open-ontologies-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:research-open-ontologies-contrib-prediction}
+
+The central thesis argument distinguishes \emph{prediction} from \emph{coordination}: language
+models predict plausible next tokens; process intelligence coordinates actual process execution
+against a conformance model backed by admissible evidence. The open-ontologies project
+contributes to this distinction by instantiating the formal type system that makes
+``coordination'' a precise technical predicate rather than a vague aspiration.
+
+Coordination, in this architecture, means: an autonomic actuation that transitions a process
+from one \texttt{lifecycle:ProcessState} to another must pass the LTL safety invariant
+$G(\neg\mathit{compliant} \implies \mathbf{X}(\neg\mathit{actuated}))$. This invariant is not
+a policy stated in natural language; it is encoded as a named individual in
+\path{governance-policy.ttl} and enforced by the MAPE-K loop in \path{autonomic-law.ttl}.
+The transition from Monitoring to Optimization cannot occur unless the process is compliant;
+the transition from Validation to Monitoring cannot occur unless the conformance verdict
+passes the fitness and precision thresholds defined in \texttt{wasm4pm:ConformanceVerdict}.
+
+The prediction/coordination distinction therefore has a formal instantiation in the corpus:
+an LLM predicts the next process step; the open-ontologies corpus defines what it means for
+that step to be admissible. The thesis contribution is the demonstration that admissibility is
+a machine-checkable predicate, not a subjective judgment.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:research-open-ontologies-contrib-evidence}
+
+The open-ontologies project provides the formal grounding for process evidence across the
+entire research program. Every receipt in the RECEIPT\_REGISTRY.md names a witness;
+every witness is a named \texttt{compat:WitnessMarker} individual in the corpus; every
+\texttt{WitnessMarker} has a defined lattice position and formalism. This chain from
+raw event to named witness to formal ontology individual is the contribution to process
+evidence.
+
+Concretely: when the PM4PY\_ORACLE\_RECEIPT names ``pm4wasm.d.ts TypeScript interface
+definitions'' as its witness, the ontology corpus provides the type-theoretic context
+for interpreting that witness. When the ADVERSARIAL\_RECEIPT names ``Chicago TDD hostile
+assumptions doctrine'' as its witness, the corpus provides the MAPE-K loop and
+\texttt{aka:ElasticTransition}/\texttt{aka:ComplianceTransition} partition that determines
+whether an adversarial probe is a local repair (no governance token needed) or a structural
+replacement (governance token required).
+
+The federated dependency graph's validation that 13 M\&A claims reference the wasm4pm-compat
+layer (\texttt{q2\_ma\_claims\_referencing\_wasm4pm\_compat: 13}) is direct evidence that
+the ontology corpus is being used as a grounding surface for board-admissible claims, not
+merely as documentation.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:research-open-ontologies-contrib-manufacturing}
+
+The open-ontologies project is the knowledge source for the ggen SPARQL-to-Tera manufacturing
+pipeline. This is a concrete architectural contribution: the pipeline does not manufacture
+artifacts from templates applied to static YAML files, but from SPARQL queries against a
+validated RDF graph. The distinction matters because:
+
+\begin{enumerate}
+  \item SPARQL queries are formal; they cannot retrieve triples that do not exist.
+        A template applied to a YAML file can silently produce empty or malformed artifacts
+        if the YAML is incomplete. A SPARQL query against a validated RDF graph either
+        returns conforming results or returns the empty set, which fails the manufacturing
+        gate.
+  \item The RDF graph is dependency-validated. The federated dependency graph ensures that
+        the SPARQL query operates against a consistent, acyclic corpus. A manufacturing
+        pipeline whose knowledge source has circular imports or dangling references cannot
+        produce receipted artifacts with a trustworthy provenance chain.
+  \item BLAKE3 receipts over manufactured artifacts are meaningful only if the knowledge
+        source is itself stable and validated. The Phase~4 ACYCLIC/CONSISTENT gate
+        provides that stability guarantee for the corpus state as of 2026-06-01.
+\end{enumerate}
+
+The three manufactured artifacts (witness-markers.rs, process-forms.md, boundary-law.wit)
+demonstrate that the ontology corpus is operationalized, not merely documented. This is
+the thesis contribution to manufacturing architecture: an RDF knowledge graph as the
+authority surface for a typed, receipted code manufacturing pipeline.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:research-open-ontologies-contrib-capital}
+
+The \texttt{ma:BoardClaim} class hierarchy and the seven canonical receipts in the
+RECEIPT\_REGISTRY.md connect the ontology layer directly to capital-flow infrastructure.
+Board-admissible M\&A claims (\texttt{SynergyProjection}, \texttt{OperationalDebtClaim},
+\texttt{IntegrationRiskClaim}, \texttt{ProcessAssetClaim}, \texttt{ControlClaim}) are
+typed individuals in the RDF corpus, not assertions in a PowerPoint slide. Each requires
+a receipt type and a named witness before it is admissible.
+
+The five monetization receipt files (\path{rec\_ebitda\_rework\_001.json},
+\path{rec\_wc\_ar\_002.json}, \path{rec\_risk\_sla\_003.json},
+\path{rec\_risk\_compliance\_004.json}, \path{rec\_residual\_standard\_005.json}) represent
+the current state of the capital-flow proof chain: they are sample receipts, not production
+receipts backed by live data. The MA\_RECEIPT acknowledges this gap. The contribution is the
+architecture that makes such production receipts possible once live event data is admitted:
+the formal claim types, the witness requirements, and the receipt format are all defined in
+the corpus.
+
+The long-term trajectory of this contribution --- from receipt chains to DAO settlement and
+autonomous capital-flow governance --- is \textbf{[FUTURE WORK]} and is not claimed to be
+implemented by this project.

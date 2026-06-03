@@ -1,0 +1,58 @@
+\chapter{Process Evidence, Receipts, and Replay}
+\label{chap:process_evidence}
+
+\section{What Process Evidence Is}
+
+Process evidence is the substrate from which the Chatman Equation is evaluated. It is not log data in the system-operations sense. It is not a sequence of debug messages or error reports. Process evidence is a structured record of process events: activities performed, objects involved, agents responsible, timestamps precise enough to support temporal conformance analysis, and relationships between objects that make cross-artifact causality recoverable.
+
+The authoritative formalization of process evidence is the OCEL 2.0 standard, published by van der Aalst and colleagues \cite{vanderaalst2022ocel}. OCEL 2.0 defines an Object-Centric Event Log as a data structure in which each event is associated with multiple objects, each object has a type and a lifecycle, and events can be linked to each other through their shared object participation. This object-centric model corrects a long-standing limitation of earlier event-log standards (notably XES), which assumed that each event belonged to exactly one case. In real processes, an event --- an invoice approval, for example --- involves multiple objects simultaneously: the invoice, the purchase order, the approving agent's authorization record, and the payment batch. The XES model forces these into a single case identifier, losing the cross-object relationships. OCEL 2.0 preserves them.
+
+The research program's \texttt{sources-pm4py} project provides an oracle atlas of process-mining capability built on OCEL 2.0 compatible analysis. The \texttt{otel-weaver} project family (five experiments, slugs \texttt{otel-weaver-exp-001} through \texttt{otel-weaver-exp-005}) addresses the ingestion problem: how do operational systems --- which emit OpenTelemetry traces, not OCEL events --- produce process evidence?
+
+\section{The Ingestion Problem}
+
+Most operational software systems do not natively emit OCEL 2.0 event logs. They emit traces: spans with start and end timestamps, parent-child relationships, and attribute key-value pairs. The OpenTelemetry (OTel) standard has become the dominant framework for distributed trace emission. OTel traces are rich with operational information, but they are not process events in the OCEL sense. They are not organized around process activities. They do not carry object types and object lifecycles. They do not support the cross-case object relationships that OCEL 2.0 requires.
+
+The \texttt{otel-weaver} experiment series is the research program's systematic investigation of this translation gap. Each experiment isolates one aspect of the translation:
+
+\begin{itemize}
+  \item \texttt{otel-weaver-exp-001}: Custom process-intelligence registry --- defining the OTel attribute conventions that make process evidence recoverable from traces.
+  \item \texttt{otel-weaver-exp-002}: Diff-to-residual bridge --- converting the difference between a declared process model and an observed trace into a residual event that can be fed back to the intake layer.
+  \item \texttt{otel-weaver-exp-003}: Live-check refusal enforcement --- implementing process-aware span rejection when incoming traces violate declared process constraints.
+  \item \texttt{otel-weaver-exp-004}: Registry-to-witness lattice codegen --- manufacturing witness-lattice code from OTel registry definitions, so that type conformance is verified at the boundary.
+  \item \texttt{otel-weaver-exp-005}: Collector-to-intake --- the full pipeline from live telemetry collection through OCEL-compatible process-intelligence intake.
+\end{itemize}
+
+The \texttt{otel-weaver} project and its five experiments are all currently \textsc{partial}. The experiments have defined the problem space, established the translation architecture, and produced partial implementations. The gap between their current state and \textsc{alive} is documented in \texttt{gaps/}. What the experiments establish, even in their \textsc{partial} state, is the boundary conditions: what a conforming OTel-to-OCEL translation must preserve and what it must not lose.
+
+\section{Receipts: Definition and Structure}
+
+A receipt is not a hash. It is not a proof-of-work token. It is not a transaction record. In the research program's formal usage, a receipt is the verified materialization of $R \vdash A = \mu(O^{*})$: a cryptographically bound record that certifies a consequential action was admitted on the basis of observed operational state.
+
+The \texttt{receipts/} project in this corpus is \textsc{alive}. It contains a chain of receipts that has been verified for internal consistency: each receipt references the prior receipt in the chain, the evidence it was evaluated against, and the action it certifies. The chain is not a blockchain in the distributed-consensus sense. It does not require a network. It requires only that the cryptographic commitments be verifiable by any party with access to the receipt chain and the evidence it references.
+
+Why do receipts matter? Because the alternative is assertion. A system that asserts a consequential action occurred, without a receipt, is a system that cannot be audited. It is a system that cannot be replayed. It is a system that cannot be distinguished from a system that asserted the same thing falsely. For customers who need to demonstrate compliance, recover from process failures, or verify that contracted work was performed, assertion without receipt is not sufficient.
+
+The receipt infrastructure connects directly to the capital-market authority stack discussed in Chapter~\ref{chap:ai_xynz}. Securities-market compliance, audit-trail requirements, and DAO settlement all require receipts that can survive adversarial scrutiny. The post-quantum receipt infrastructure in that chapter is an extension of the receipt-chain architecture documented here.
+
+\section{Replay: Proving Consequence Occurred}
+
+Replay is the verification operation. Given an event log and a process model, replay asks: does the log conform to the model? Specifically: can the events in the log be matched to the activities in the model in a way that satisfies the model's constraints on ordering, frequency, and resource assignment?
+
+The Van der Aalst Constitution (formalized in \texttt{rules/process-mining-chicago-tdd.md}) establishes replay as the primary verification mechanism for this research program. The doctrine is explicit: if the code says it worked but the event log cannot prove a lawful process happened, then it did not work.
+
+The \texttt{sources-wasm4pm} project (\textsc{alive}) provides the execution authority for replay. It implements process-mining algorithms in WebAssembly, enabling replay to be performed in browser, server, and edge environments without a Python dependency. The \texttt{sources-pm4py} project (\textsc{alive}) provides the comparative oracle: pm4py's conformance-checking implementations serve as the reference against which the WebAssembly implementations are validated.
+
+Replay produces quality metrics: fitness (how much of the log the model can explain), precision (how much of the model's behavior is observed in the log), generalization (how well the model extends beyond the specific log), and simplicity (the parsimony of the model). A receipt-chain entry that is backed by conformance scores meeting the declared thresholds is a replay-verified receipt. The research program distinguishes replay-verified receipts from unverified assertions at every evaluation stage.
+
+\section{The Verdict System: ALIVE, PARTIAL, BLOCKED}
+
+The verdict system is the practical implementation of the receipted Chatman Equation at the project level.
+
+\textbf{\textsc{alive}}: All required receipts exist. Replay-verified conformance has been demonstrated. The checkpoint in \texttt{checkpoints/} references verifiable evidence. The project is a functioning instance of $R \vdash A = \mu(O^{*})$.
+
+\textbf{\textsc{partial}}: Some receipts exist. Some gap between the declared state and the evidenced state remains open. The project is on the path to \textsc{alive} but has not satisfied all gate criteria. The gap is documented in \texttt{gaps/}.
+
+\textbf{\textsc{blocked}}: The receipt chain cannot be constructed. Either $O^{*}$ is unavailable (no event log exists or cannot be recovered), or $\mu$ is undefined (the projection function has not been implemented), or $A$ cannot be verified (no conformance check is possible). \textsc{blocked} is not a failure verdict in the sense of being terminal. It is a structural diagnostic: the project cannot advance until the blocking condition is resolved.
+
+Critically, \textsc{alive} requires all gate criteria. It is not possible to achieve \textsc{alive} on the basis of partial evidence and a compelling argument. The verdicts in this dissertation's evaluation chapter (Chapter~\ref{chap:evaluation}) are grounded in this definition without exception. Projects that have compelling implementations but incomplete receipt chains are \textsc{partial}, not \textsc{alive}. The refusal of false closure is not a pedantic formalism. It is the core customer-accountability commitment of the research program.

@@ -1,0 +1,117 @@
+% FILE: 04_implementation_surface.tex
+% Project: prompts — Downstream Manufacturing Prompt Corpus
+
+\section{Implementation Surface}
+\label{sec:prompts-implementation}
+
+\subsection{Source Files}
+\label{sec:prompts-implementation-sources}
+
+The corpus is organized into two layers of source files.
+
+\textbf{Top-level directives} (16 files in \texttt{prompts/}):
+\begin{itemize}
+  \item \texttt{downstream\_wasm4pm\_refactor.md} --- Gap-sequenced refactor mandate
+    covering GAP\_001 through GAP\_008 with P1/P2/P3 priority tiers and blocking
+    claims table.
+  \item \texttt{downstream\_wasm4pm-compat\_gap\_close.md} and
+    \texttt{DOWNSTREAM\_COMPAT\_GAP\_CLOSE.md} --- Four self-contained compat gap
+    tasks (GAP\_007, GAP\_008, cross-witness fixtures, \texttt{COVERED\_BY\_TYPE}
+    audit).
+  \item \texttt{downstream\_ggen\_projection\_integration.md} --- Receipt admission
+    pipeline, Ed25519 verification, fitness-to-EBITDA claim taxonomy, and board
+    summary format.
+  \item \texttt{downstream\_blue\_river\_dam\_lifecycle\_authority.md} --- Six-gate
+    lifecycle state machine with proof receipt formats, autonomic authority partition,
+    and instance-level case tracking.
+  \item \texttt{downstream\_audit\_mesh\_expansion.md} --- Automated capability
+    verification and type boundary test requirements.
+  \item \texttt{downstream\_m\&a\_deck\_manufacturing.md} --- Slide-to-receipt
+    verification index and EBITDA risk calculation mappings.
+  \item \texttt{downstream\_paper\_fixture\_manufacturing.md} --- Academic paper
+    citation targets and test schema requirements.
+  \item \texttt{downstream\_pm4py\_benchmark\_comparison.md} --- Throughput and
+    memory comparison targets for seven algorithms with four dataset scales.
+  \item \texttt{downstream\_public\_standards\_expansion.md} --- XES/OCEL/BPMN
+    schema validations and cross-standard loss policy mapping.
+  \item \texttt{v30-execution-mandate.md} --- AGI Court mandate for absolute Blue
+    River Dam conformance in the \texttt{wasm4pm} execution engine.
+  \item \texttt{checkpoint\_\_downstream\_prompts\_complete.md} --- Master
+    verification checklist with absolute markdown link integrity requirements.
+\end{itemize}
+
+\textbf{Execution-plan blueprints} (10 files in \texttt{execution-plans/}):
+\begin{itemize}
+  \item \texttt{blue-river-dam-bridge.md} --- Three-phase cryptographic linkage with
+    BLAKE3/Ed25519 receipt schema and Rust typestate enforcement.
+  \item \texttt{witness-lattice-blueprint.md} --- Join-semilattice mathematics with
+    \texttt{WitnessState} and \texttt{UnifiedWitnessState} Rust implementations.
+  \item \texttt{absence-proof-fixtures.md} --- Refusal capital strategy with
+    TypeScript \texttt{@ts-expect-error} and Rust \texttt{trybuild} fixture patterns.
+  \item \texttt{wfnet-forgeability-patch.md} --- \texttt{WfNetConst<SOUNDNESS>}
+    enforcement and deprecation plan for \texttt{attest\_witnessed()}.
+  \item \texttt{loss-policy-blueprint.md} --- \texttt{LossReport} and
+    \texttt{LossPolicy} (Strict vs.\ Lenient) thermodynamic loss auditing for
+    cross-standard conversion.
+  \item \texttt{mining-authority-boundary.md}, \texttt{lifecycle-state-authority.md},
+    \texttt{ocel-structural-boundaries.md}, \texttt{zkp-execution-boundaries.md},
+    \texttt{raw-laundering-block.md} --- Authority and boundary specifications for
+    mining, lifecycle, OCEL, ZKP, and raw-input laundering domains.
+\end{itemize}
+
+\subsection{Commands}
+\label{sec:prompts-implementation-commands}
+
+The directives specify no standalone CLI commands for the \texttt{prompts/} corpus
+itself. The commands referenced are execution targets in downstream crates:
+
+\begin{itemize}
+  \item \texttt{cargo test --test ui\_tests -- --ignored} --- Run compile-fail
+    fixtures in \texttt{wasm4pm-compat} to inspect \texttt{.stderr} files for
+    E0425/E0432 errors (GAP\_008 diagnostic).
+  \item \texttt{npm run test:absence} --- Run the TypeScript absence-proof suite
+    before behavioral unit tests in CI.
+  \item PM4Py benchmark runner (unspecified invocation) producing wall-clock timing,
+    algorithm-specific timing, and peak memory metrics for the seven algorithm
+    comparison targets.
+\end{itemize}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:prompts-implementation-data}
+
+The corpus references five external data authority surfaces:
+
+\begin{itemize}
+  \item \texttt{ma/define\_slide-to-receipt\_map.md} --- The
+    \texttt{ProcessIntelligenceVerificationReceipt} JSON schema with UUID, SHA-256
+    hashes, Ed25519 signature, and fitness/precision/throughput fields.
+  \item \texttt{ma/define\_board\_claim\_taxonomy.md} --- Conformance, efficiency,
+    and scalability claim types with board-admissibility rules.
+  \item \texttt{ma/define\_operational\_debt\_taxonomy.md} --- Process debt score
+    (0--100), structural complexity, rework cycles, and variant explosion metrics.
+  \item \texttt{ma/define\_synergy\_claim\_taxonomy.md} --- Behavioral similarity
+    index (0--1) and merger complexity tiers (LOW/MEDIUM/HIGH).
+  \item \texttt{gaps/GAP\_REGISTER.md} and \texttt{gaps/GAP\_PRIORITY\_MATRIX.md}
+    --- The authoritative gap registry and dependency analysis from which all
+    engineering task sequences are derived.
+\end{itemize}
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:prompts-implementation-templates}
+
+The corpus defines two families of rendered artifact templates:
+
+\textbf{Receipt JSON schemas}: Six gate-specific proof receipts for the Blue River
+Dam lifecycle (soundness, behavioral bounds, conformance, repair soundness, discovery
+conformance, decommissioning), plus the \texttt{ProcessIntelligenceVerificationReceipt}
+schema for ggen claim manufacture, plus the audit trail entry schema for receipt
+admission logging.
+
+\textbf{Claim JSON schemas}: Four claim types (conformance, efficiency,
+scalability-throughput, operational debt), one synergy claim type, and two risk
+mitigation types (non-conformance, signature failure), plus the board summary report
+aggregating all claims with aggregate EBITDA impact and auditor signature.
+
+All templates specify that claims at EBITDA impact $> \pm2\%$ must be signed by an
+auditor role from the \texttt{RoleKeyRegistry} (\texttt{Auditor}, \texttt{Runner},
+\texttt{Board}, \texttt{Validator}) using Ed25519 public key verification.

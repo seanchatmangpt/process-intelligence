@@ -1,0 +1,46 @@
+% FILE: 04_implementation_surface.tex
+% Project: research-pi-program
+% Role: pi-program-governance-and-ontology-authority
+
+\section{Implementation Surface}
+\label{sec:research-pi-program-impl}
+
+\subsection{Source Files}
+\label{sec:research-pi-program-impl-sources}
+
+The pi-program's implementation surface is organized into three strata: the ontology layer (TTL files), the query layer (SPARQL files), and the template layer (Tera files). All three strata reside under \texttt{research/pi-program/ggen/}.
+
+The \textbf{ontology layer} comprises 17 OWL/SHACL TTL files in \texttt{ggen/ontology/}. Per the ontology census at \texttt{intel/ggen-unified/ttl-ontology-census.md}, these files collectively define 389 semantic entities across 16 actively-parsed files. The five principal ontology files are \texttt{pi-program.ttl}, \texttt{autonomic-law.ttl}, \texttt{governance-policy.ttl}, \texttt{forbidden-collapse-law.ttl}, and \texttt{graduation-boundary.ttl}. The remaining 12 files define supporting law surfaces for specific manufacturing domains including API specification (\texttt{api-specification.ttl}), M\&A claim taxonomy, lifecycle state definitions, and receipt surface law.
+
+The \textbf{query layer} comprises 61 SPARQL \texttt{.rq} files in \texttt{ggen/queries/}. These queries are the sole data-extraction mechanism: no artifact may be manufactured without a corresponding SPARQL query that selects data from the ontology graph. Key queries include \texttt{audit-commitment-integrity.rq} (validates that all manufacturing commitments have corresponding receipts), \texttt{select-all-checkpoints.rq} (enumerates the checkpoint registry), and \texttt{select-api-endpoints.rq} (extracts API endpoint descriptions from \texttt{api-specification.ttl} for OpenAPI rendering). The full query inventory is registered in the \texttt{ggen.toml} manifest via \texttt{[[generation.rules]]} entries.
+
+The \textbf{template layer} comprises 18 Tera \texttt{.md.tera} and \texttt{.yaml.tera} files in \texttt{ggen/templates/}. Notable templates include \texttt{checkpoint.md.tera} (manufactures ALIVE/PARTIAL/FAILED checkpoint documents), \texttt{openapi-3-0-spec.yaml.tera} (manufactures the OpenAPI 3.0 specification at \texttt{api/manufactured/openapi-3.0-spec.yaml}), and templates for governance ledgers, gate summaries, and remediation plans. The ggen engine enforces \texttt{strict\_variables=true}, which causes template rendering to fail immediately on any undefined variable reference rather than silently emitting empty strings.
+
+\subsection{Commands}
+\label{sec:research-pi-program-impl-commands}
+
+The primary manufacturing command is \texttt{ggen sync}, executed against \texttt{research/pi-program/ggen/ggen.toml}. With the \texttt{--validate\_only} flag it validates templates and queries without writing artifacts; without the flag it executes all \texttt{[[generation.rules]]} triplets in sequence. The \texttt{ggen receipt --all} subcommand traverses all emitted artifacts and writes BLAKE3 receipts to the \texttt{.ggen/receipts/} subdirectory.
+
+The checkpoint PI\_GGEN\_UNIFIED\_RUN\_PARTIAL\_001 documents that as of 2026-06-01, the \texttt{ggen-002} pipeline (pi-program research ggen) fails at manifest parsing due to a non-standard \texttt{[ontology]} section that is missing the required \texttt{source} field. The \texttt{ggen/audit.json} file confirms this: it records an empty pipeline (\texttt{pipeline: [], outputs: [], total\_duration\_ms: 0}), indicating that \texttt{ggen v26.5.21} was present and invoked but the pi-program-specific manifest was never successfully executed. This is the primary manufacturing blocker as of the record date.
+
+Governance deployment commands are not standard ggen subcommands; they are executed by the Blue River Dam orchestrator, which reads the manufactured MAPE-K artifacts (\texttt{mape-monitor-001.yaml}, \texttt{andon-gates-001.yaml}, \texttt{drift-watch-001.sparql}) and registers them in the autonomic executor. The \texttt{AUTONOMIC\_ACTIVATION\_LOG\_20260601.yaml} records each deployment step at millisecond granularity.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:research-pi-program-impl-data}
+
+The ontology graph, when fully loaded into a Jena SPARQL endpoint with RDFS inference, constitutes the authoritative data surface for all pi-program manufacturing. Queries execute against this graph to produce structured result sets that are then passed to Tera templates as variable bindings. The \texttt{proof\_format=cryptographic-chain} configuration in \texttt{ggen.toml} ensures that each query result set is hashed (BLAKE3) before template rendering, so that the hash recorded in the receipt covers the \textit{input data} not only the output artifact.
+
+The \texttt{emitted/project-registry.yaml} is a materialized projection of the \texttt{pi:ProgramRole} taxonomy, listing all 10 downstream projects with their classified roles, ALIVE/PARTIAL/FAILED status, and downstream authorization grants. This file is consumed by downstream M\&A manufacturing workflows and by the Blue River Dam project registry.
+
+The \texttt{emitted/alive-partial-matrix.md} is a cross-project evidence matrix manufactured from the ontology. It maps each project to its current gate status and receipt coverage, providing the board-admissible summary that M\&A stakeholders consume. Per the evidence record, its authority derives from the PROCESS\_INTELLIGENCE\_ALIVE\_001 parent checkpoint (11/11 gates, sealed 2026-06-01).
+
+The OpenAPI 3.0 specification at \texttt{api/manufactured/openapi-3.0-spec.yaml} is manufactured from \texttt{api-specification.ttl} via the SPARQL$\to$Tera pipeline, making the API surface itself an ontology-derived artifact. It is published at \url{https://api.process-intelligence.org} and defines the external interface through which downstream capital-flow and settlement infrastructure queries the governance authority layer.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:research-pi-program-impl-templates}
+
+The 18 Tera templates in \texttt{ggen/templates/} define the canonical form of every manufactured artifact. Each template is a typed document specification: it declares expected variable names (which must match SPARQL result set column names), conditional blocks for optional evidence fields, and iteration blocks for multi-valued result sets.
+
+The manufacturing ledger at \texttt{manufacturing/MANUFACTURING\_SUMMARY.md} reports that Phase 2 manufacturing produced 123 artifacts across 6 sub-projects: 74 for the pi-program root, 42 for the prompt-manufactory, 5 for the pi-program/api subproject, 1 for pi-program/governance, and 1 for pi-program/m-and-a. These artifacts break down by type as 84 Markdown documents (68\%), 25 YAML manifests (20\%), 10 JSON receipts (8\%), and 4 Rust/other files (4\%). The principal manufacturing rule \texttt{pi-program-intelligence} alone produced 52 artifacts.
+
+The governance artifacts manufactured by the MAPE-K templates include \texttt{mape-monitor-001.yaml} (4 monitor rules: event ingestion, trace alignment, conformance fitness, state space), \texttt{andon-gates-001.yaml} (5 policy enforcement gates), and \texttt{drift-watch-001.sparql} (6 SPARQL CONSTRUCT drift rules). These are deployed to the autonomic executor in streaming, synchronous, and query-based modes respectively, with monitoring schedules operating at realtime (event-driven), 1-second (timer-based), and hourly/daily frequencies.

@@ -1,0 +1,129 @@
+% FILE: 04_implementation_surface.tex
+% Project: otel-weaver
+% Role: telemetry-to-process-evidence-ingestion-layer
+
+\section{Implementation Surface}
+\label{sec:otel-weaver-impl}
+
+\subsection{Source Files}
+\label{sec:otel-weaver-impl-sources}
+
+The implementation surface of \texttt{otel-weaver} spans five experiment subdirectories, six
+doctrine files, five YAML mapping tables, and supporting \texttt{ggen} and \texttt{intel}
+artifacts. The following experiment-level source files are the primary loci of runnable
+specification:
+
+\paragraph{exp-001: Custom PI Weaver Registry.}
+Defined in \texttt{experiments/exp-001-custom-pi-weaver-registry/README.md}. This experiment
+specifies the \texttt{process.pi} semantic convention group as a custom OTel Weaver registry.
+The registry defines six required attribute fields: \texttt{instance\_id} (process instance
+identifier), \texttt{activity.name} (declared activity label), \texttt{lifecycle} (lifecycle
+state string), token state fields \texttt{before} and \texttt{after}, \texttt{witness.id}
+(witness identifier), and \texttt{witness.hash} (BLAKE3 64-character digest). The registry
+is the feedstock schema; passing it is necessary but not sufficient for process-evidence status.
+
+\paragraph{exp-002: Weaver Diff to PI Residual.}
+Defined in \texttt{experiments/exp-002-weaver-diff-to-pi-residual/README.md} with an accompanying
+\texttt{Cargo.toml} declaring dependencies on \texttt{serde} and \texttt{blake3}. The Rust
+implementation in \texttt{src/bridge.rs} specifies the \texttt{BridgeRx} struct and its
+core property: $R_\Delta = |f_{S_1}(L_2, M) - f_{S_2}(L_2, M)| = 0$ after bridge translation.
+The PI conformance residual formula $R_\Delta = |f_{S_1}(L_2, M) - f_{S_2}(L_2, M)|$ is the
+formal measurement of error introduced by schema mismatch between two Weaver schema versions
+$S_1$ and $S_2$ when replaying event log $L_2$ against process model $M$.
+
+\paragraph{exp-003: Live-Check to Refusal.}
+Defined in \texttt{experiments/exp-003-live-check-to-refusal/README.md} with a \texttt{Cargo.toml}
+declaring a path dependency on \texttt{wasm4pm-compat} at \texttt{../../../../wasm4pm-compat}.
+The Rust implementation in \texttt{src/validator.rs} specifies the \texttt{Admission<T,\,W>}
+gate function and the \texttt{Refusal} struct. Two inline test cases are fully specified:
+\texttt{test\_successful\_admission} (verifies that a well-formed \texttt{process.pi} span
+produces an \texttt{Admission} wrapping an \texttt{ActivityWitness}) and
+\texttt{test\_refusal\_missing\_id} (verifies that a span missing \texttt{instance\_id}
+produces a \texttt{Refusal} with \texttt{RefusalCode::MissingRequiredField} and a BLAKE3
+digest of the rejected payload).
+
+\paragraph{exp-004: Registry to wasm4pm-compat Witness.}
+Defined in \texttt{experiments/exp-004-registry-to-wasm4pm-compat-witness/README.md}. This
+experiment specifies the \texttt{ActivityWitness} lattice struct and its code-materialization
+path from a resolved OTel Weaver registry JSON. The \texttt{Lattice} trait implementation
+uses witness hash emptiness as the partial order criterion. The codegen path produces
+\texttt{ActivityWitness} Rust source as output of the Weaver \texttt{generate} command applied
+to the \texttt{process.pi} registry.
+
+\paragraph{exp-005: Collector to PI Intake.}
+Defined in \texttt{experiments/exp-005-collector-to-pi-intake/README.md}. This experiment
+specifies the OTel Collector YAML configuration that routes spans through the ingestion pipeline.
+The configuration declares receiver, processor, and exporter stages that enforce the Ingestion
+Covenant: Admit-Don't-Assume (no span assumed to be evidence without gate passage), Loss Reports
+(every projection declares its \texttt{OtelToOcelLossPolicy}), and Witness Seal (every admitted
+payload carries an \texttt{ActivityWitness}).
+
+\subsection{Commands}
+\label{sec:otel-weaver-impl-commands}
+
+The \texttt{intel/weaver-command-map.yaml} file maps the full OTel Weaver command surface to
+ingestion-layer roles. The commands relevant to this project's implementation are:
+
+\begin{description}
+  \item[\texttt{weaver registry check}] Validates a registry definition against its schema.
+    Used in experiment \texttt{exp-001} to verify the \texttt{process.pi} registry is
+    well-formed before it is referenced by the admission gate.
+  \item[\texttt{weaver registry live-check}] Real-time feedstock validation gateway. The
+    primary command in \texttt{exp-003}: incoming spans are validated against the
+    \texttt{process.pi} registry in real time. A passing live-check is a precondition for
+    the admission gate but does not constitute admission.
+  \item[\texttt{weaver registry diff}] Computes $\Delta R = R_{\text{new}} \ominus R_{\text{old}}$
+    between two registry versions. Used in \texttt{exp-002} as the input to \texttt{BridgeRx}.
+  \item[\texttt{weaver registry generate}] Materializes Rust source from a resolved registry
+    JSON. Used in \texttt{exp-004} to manufacture the \texttt{ActivityWitness} struct.
+  \item[\texttt{weaver registry stats}] Reports registry coverage and attribute population
+    statistics. Used in audit scripts to verify \texttt{process.pi} field coverage across
+    ingested span samples.
+  \item[\texttt{weaver registry infer}] Infers a registry schema from observed span samples.
+    Used in the gap-analysis phase to identify \texttt{process.pi} fields absent from
+    production telemetry streams.
+\end{description}
+
+Additional commands documented in \texttt{weaver-command-map.yaml} include \texttt{update-markdown},
+\texttt{json-schema}, \texttt{package}, and \texttt{mcp}, which support registry documentation
+and distribution but are not primary ingestion-layer mechanisms.
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:otel-weaver-impl-data}
+
+The project's data surface is expressed entirely through five YAML mapping files and the
+\texttt{process.pi} registry definition. There is no RDF/SPARQL layer; this is an open question
+noted in Section~\ref{sec:otel-weaver-open-rdf}.
+
+\begin{description}
+  \item[\texttt{otel-to-pi-witness-map.yaml}] Maps OTel span attribute paths to
+    \texttt{ActivityWitness} struct fields. Status: ACTIVE.
+  \item[\texttt{otel-signal-to-process-evidence-map.yaml}] Maps OTel signal types
+    (span, metric, log) to process-evidence classification (feedstock, inadmissible,
+    conditional). Status: ACTIVE.
+  \item[\texttt{registry-diff-to-pi-drift-map.yaml}] Maps Weaver registry diff categories
+    to the explicit verdict that each category is \emph{not} process drift. Status: ACTIVE.
+  \item[\texttt{live-check-finding-to-refusal-map.yaml}] Maps Weaver live-check failure
+    codes to \texttt{RefusalCode} enum variants with \texttt{violated\_rule} references.
+    Status: ACTIVE.
+  \item[\texttt{schema-url-to-receipt-context-map.yaml}] Maps OTel schema URLs to receipt
+    context metadata required for BLAKE3 chain construction. Status: ACTIVE.
+\end{description}
+
+The \texttt{intel/weaver-registry-model.yaml} file provides a structural model of the Weaver
+registry format, used as a reference during \texttt{ActivityWitness} codegen.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:otel-weaver-impl-templates}
+
+Three \texttt{ggen} template files are referenced in the project's manifest chain:
+\texttt{pi-live-check-intake.rs.ggen}, \texttt{pi-witness-map.rs.ggen}, and
+\texttt{pi-otel-constants.rs.ggen}. These templates specify the Rust source to be manufactured
+by \texttt{ggen} actuation. At time of writing, no \texttt{generated/} directory exists in the
+repository tree, indicating that the templates have been authored but \texttt{ggen} actuation
+has not materialized the output files to disk. This constitutes a deferred gate (see
+Section~\ref{sec:otel-weaver-deferred-gates}). The two \texttt{ggen} manifests
+(\texttt{otel-weaver-source.manifest.yaml} and \texttt{pi-telemetry-bridge.manifest.yaml})
+reference BLAKE3 receipt files at \texttt{receipts/otel-weaver-source-receipt.json} and
+\texttt{receipts/pi-telemetry-bridge-receipt.json}; these receipt files were not verified on
+disk at the time of evidence extraction.

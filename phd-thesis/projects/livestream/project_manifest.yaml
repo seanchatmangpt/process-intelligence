@@ -1,0 +1,23 @@
+slug: livestream
+absolute_path: /Users/sac/process-intelligence/livestream
+description: >
+  AALST livestream standards and real-time process broadcast modules. Contains autonomic
+  feedback loop broadcaster, master OCEL stream, replay aggregator, conformance audit, and
+  agent conversation log. Covers AALST livestream standards, AGI adversarial defenses, and
+  doctrine broadcast modules.
+detected_languages:
+  - JavaScript
+detected_frameworks: []
+detected_research_surfaces:
+  - process-evidence
+  - conformance-checking
+  - OCEL-v2
+likely_thesis_role: real-time-process-broadcast-and-livestream-standards
+key_files:
+  - /Users/sac/process-intelligence/livestream/aalst_broadcaster.js
+  - /Users/sac/process-intelligence/livestream/master_ocel_stream.js
+  - /Users/sac/process-intelligence/livestream/replay_aggregator.js
+  - /Users/sac/process-intelligence/livestream/conformance_audit.md
+readme_present: false
+receipt_present: false
+ontology_present: false

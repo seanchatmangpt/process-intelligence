@@ -1,0 +1,129 @@
+% FILE: 04_implementation_surface.tex
+% Project: atlas
+% Role: doctrine-atlas-and-thesis-chapter-surface-map
+
+\section{Implementation Surface}
+\label{sec:atlas-impl}
+
+\subsection{Source Files}
+\label{sec:atlas-impl-source}
+
+The atlas implementation surface consists exclusively of the seven doctrine
+markdown files located at \texttt{/Users/sac/process-intelligence/atlas/}. Each
+file was authored on 2026-06-01. No build scripts, Makefiles, Cargo manifests,
+or executables reside in the atlas directory. The files and their definitional
+scope are:
+
+\begin{description}
+  \item[\texttt{aalst\_livestream\_standards.md}] Defines the Aalst Broadcaster
+        (Git history $\to$ OCEL stream transformation) and the Conformance Stream
+        (ZKP validation diagnostics, WF-net structural alignment, real-time
+        severity-rated deviation alerts). Encodes the doctrine: ``If code says it
+        worked but the event log cannot prove a lawful process happened, then it
+        did not work.''
+
+  \item[\texttt{agi\_adversarial\_defenses.md}] Names the four Iron Law
+        safeguards: Schr\"odinger's Interface Fallback, Turing Trap Circuit
+        Breakers, Causal Window P2P Constraints, and Hardware Attestation (ZKP).
+        This file is intentionally minimal (four bullet points); its expansion
+        is an open manufacturing task.
+
+  \item[\texttt{doctrine\_blue\_river\_dam.md}] Defines the Blue River Dam
+        doctrine (v30.1.1) and the Mathematical Transition:
+        Future Claim (Intent) $\to$ Public Law (Evaluation) $\to$ Actuation
+        Boundary (Execution) $\to$ Receipt (Proof). The dam converts
+        probabilistic AI output into deterministic power through receipted
+        operational manufacturing.
+
+  \item[\texttt{ggen\_prompt\_manufactory.md}] Defines the GGEN transformation
+        chain: TTL (Ontology) $\to$ RQ (SPARQL) $\to$ TERA (Templating) $\to$
+        Prompt (Warrant). The chain is the generative engine of the manufacturing
+        pipeline, transitioning human prose into manufactured research warrants.
+
+  \item[\texttt{supabase\_law\_substrate.md}] Defines the Supabase Law Substrate
+        (\texttt{<urn:ostar:law:SupabaseRLS>}), the RLS Authorization Court, and
+        the audited RLS Policy Ledger. Tables governed: \texttt{profiles} (with
+        \texttt{auth.uid() = id} policies), plus five demonstration-mode tables
+        (\texttt{actor\_commands}, \texttt{actor\_events},
+        \texttt{actor\_receipts}, \texttt{actor\_outbox},
+        \texttt{actor\_quarantine}) flagged for secondary audit before production
+        hardening.
+
+  \item[\texttt{wasm\_boundary\_law.md}] Defines the strict separation between
+        Specta (Type Surface, TypeScript control) and tsify/wasm-bindgen (Binary
+        Surface, WASM ABI). States the law: separation is required to maintain
+        stability and receipt integrity across the WASM membrane.
+
+  \item[\texttt{zoeapp\_ministry\_ontology.md}] Encodes Connect, Give, Watch,
+        Serve, and Pray as process-laws, and models livestream health as a
+        three-state machine (healthy, degraded, critical) with a formal recovery
+        path. This file is thin; the formal Petri net or typestate encoding of
+        the state machine is an open manufacturing task.
+\end{description}
+
+\subsection{Commands}
+\label{sec:atlas-impl-commands}
+
+There are no commands internal to the atlas directory. The atlas is a
+read-only doctrine surface; it does not expose a CLI, a build target, or an
+executable. Downstream commands that consume the atlas are:
+
+\begin{itemize}
+  \item \textbf{GGEN manufacturing pipeline} (from \texttt{/Users/sac/process-intelligence/ggen/}):
+        reads TTL ontology files (\texttt{wasm4pm-compat.ttl},
+        \texttt{ontology-extensions.ttl}) and manufactures research warrants
+        according to the GGEN transformation chain defined in the atlas.
+  \item \textbf{Audit scripts} referenced in \texttt{aalst\_livestream\_standards.md}:
+        \texttt{run\_audit\_*.sh} scripts check structural integrity and
+        alignment; they are external to the atlas directory.
+  \item \textbf{BLAKE3 receipt emission protocol}: authorized by
+        PROCESS\_INTELLIGENCE\_ALIVE\_001 and referenced in the atlas as the
+        cryptographic basis for receipt chains.
+\end{itemize}
+
+\subsection{Data and Ontology Surfaces}
+\label{sec:atlas-impl-ontology}
+
+The atlas references two primary ontology files from the ggen directory:
+
+\begin{itemize}
+  \item \texttt{/Users/sac/process-intelligence/ggen/wasm4pm-compat.ttl} ---
+        the wasm4pm-compat type law ontology, which is the TTL input surface for
+        the GGEN transformation chain defined in the atlas.
+  \item \texttt{/Users/sac/process-intelligence/ggen/ontology-extensions.ttl}
+        --- extension ontology defining additional law surfaces consumed by the
+        GGEN manufacturing pipeline.
+\end{itemize}
+
+The Supabase Law Substrate references an external \texttt{rls-policy-ledger.yaml}
+that records the audited RLS policies for each governed table. This file is
+external to both the atlas directory and the process-intelligence repository; it
+resides in the ZoeApp research program sources.
+
+The \texttt{doctrine/PROCESS\_INTELLIGENCE\_SPR\_THESIS.md} defines the formal
+object system that all atlas modules inhabit: $O$, $O^*$, $P$, $L$, $E$, $T$,
+$R$, $F$, $X$, $Q$, $M$, $C$, $B$, $D$, and the operator set $\mu$, $\alpha$,
+$\rho$, $\pi$, $\kappa$, $\delta$.
+
+\subsection{Templates and Rendered Artifacts}
+\label{sec:atlas-impl-templates}
+
+The atlas does not directly maintain templates. The GGEN manufacturing
+infrastructure (\texttt{ggen/rules/} and \texttt{ggen/templates/}) contains
+eight rendering templates (Specta TypeScript projection, WASM ABI, WIT schema,
+and others) that are governed by the WASM Boundary Law and GGEN Prompt
+Manufactory doctrine modules defined in the atlas. These templates are:
+
+\begin{itemize}
+  \item TypeScript projection law template (Specta-based)
+  \item WASM ABI conversion layer template (tsify/wasm-bindgen-based)
+  \item Component Model WIT schema template
+  \item Graduation law template
+  \item Four additional boundary-specific templates sealed under
+        GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001
+\end{itemize}
+
+The atlas names the doctrine that governs these templates (WASM Boundary Law,
+GGEN Prompt Manufactory); the templates themselves are manufactured artifacts
+that instantiate the named doctrine. The relationship is unidirectional: the
+atlas names the law; the templates instantiate it.

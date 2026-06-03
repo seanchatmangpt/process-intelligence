@@ -1,0 +1,1265 @@
+roots:
+  - root: /Users/sac
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 1093
+  - root: /Users/sac/proc
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 100
+  - root: /Users/sac/receipts
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/phd-thesis
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/kgn
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/research
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.erlmcp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/mac-artifact-cleaner
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/mcpp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.hex
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.config
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ansible_async
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/hive-mind-monorepo
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.wasm4pm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ultrathink-bpm-engine
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/home
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cursor
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/helloworld
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/cns_forge
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.genkit
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.rest-client
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/bitactor
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clnrm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/gitvan
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.expo
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.kaggle
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/pigsty-supabase-osx
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/cell8
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.speckit-ralph
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ai-first-2026
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/jotp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/truex
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/portfolio-reports
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.docker
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.traycer
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.copilot
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.gsutil
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.gemini
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.windsurf
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.codeium
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/RepoPrompt
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.claude-server-commander
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.kani
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.claude-flow-contexts
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.fly
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dtr
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/verdicts
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/tools
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/gitvan-recent-changes-backup-20250919-091930
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.virtualenvs
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yaml-server
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.vim
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/claude-desktop-context
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dashboard.bak
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/A2CI
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dteam
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ostar
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/wasm4pm
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 49
+  - root: /Users/sac/go
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.gitvan
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/blue_river_dam
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.gnupg
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.claude-server-commander-logs
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.automagik-forge
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clawdbot
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/a2a-rs
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.logfire
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/coordination
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/app
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/memory
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.supabase
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.lldb
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.uvmgr_maximizer
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yac
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.moon
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/test
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/erlmcp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/nuxt-layer
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/unrdf
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.uvmgr_cache
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/bin
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.dtr
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/unibit
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dist
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/testbed
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.vagrant.d
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.flow-nexus
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/backup-critical
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ktemp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/stpnt
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yawlv52
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yaml-cloud-clean
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yawlv6
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.mix
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/A2A
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/teamwork_projects
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.pnpm-store
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.bazel-cache
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.oci
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.streamlit
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/cre
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.continue
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/chatmangpt
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.local
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/upscale
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/test-unjucks-nuxt4
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/claude
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clawd
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/multipass
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.chat
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/knowd
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/knowtro
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/gitvan-backup-20250919-084758
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/zoeapp
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 57
+  - root: /Users/sac/.claude-squad
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/remo
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clnrm-dogfood-innovations
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.pkg-cache
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.nvm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.bundle
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/bytestar
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ai_context
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/tests
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.agents
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/etc
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.mcpp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cookiecutters
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.lima
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clnrm.bak
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/wasm4pm-compat
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 49
+  - root: /Users/sac/.colima
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cursor-tools
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.weavergen
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.claude
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.semgrep
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/chicago-tdd-tools
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/teleport
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.antigravitycli
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.biome
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.asdf
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cpmp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/var
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/CascadeProjects
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/java
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.jdks
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ipython
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yawl
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/java-maven-template
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/Desktop
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/Library
+    classification: SKIP_SYSTEM
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.chelper
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/s2s
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.matplotlib
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.sdkman
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.storybook
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/otel
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/process-intelligence
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 100
+  - root: /Users/sac/docs
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.fgn
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clap-noun-verb
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/otp_src_28.3.1
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/storehouse
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/SparsePrimingRepresentations
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.kgen
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ycloud
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/my-dev-process
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.maestro
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yaml-cloud
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.kgcl
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.dspy_cache
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/yawlw52
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/speckit-ralph
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/capability-map
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.clawdbot
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.osa
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cargo
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.android
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/pcp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.pgadmin
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/cre-pre-reset-backup-20260206-175352
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.uvmgr
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cocoapods
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/cns
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/untitled1
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cups
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.duckdb
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/results
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ai-chatbot
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/pigsty-supabase
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dcmcp_cli_test
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/autotel
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.codex
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/Public
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ggen
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 562
+  - root: /Users/sac/storehouse-infrastructure
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/Virtual Machines.localized
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/open-ontologies
+    classification: MUST_CRAWL
+    searched: true
+    high_relevance_hits: 325
+  - root: /Users/sac/.frozen-duckdb
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clnrm-backup-20251015-224552
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/homebrew-clnrm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/bitstar
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/interview
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/obsr
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.pnpm-cache
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/emitted
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.kube
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.bitactor
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/mcp-mqtt-erl
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ai
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/optimus
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.mvnd
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/knhk
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/zod-to-from
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/pigsty-terraform
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/_build
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/mcp_search_test
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ansible
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.yaml-cloud
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/scripts
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/kgc-sidecar
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.claude-flow
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.n8n
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.conan2
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/seth
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.github
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.lh
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/compiled-cognition-hub
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.rustup
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/cachedir_joblib
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ssh
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.clearml
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ggen-mcp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/local_cache
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.degit
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.data
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/gitvan-backup-20250918-164245
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/full-stack-rubric
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dis
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cookiecutter_replay
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/gitvan-backup-20250918-164242
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/claude-backup
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/semantic_bit
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/opt
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/weaver-driven-development-book
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dev
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.weaver
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/dogturk
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/nuxt-ui-pro-landing
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/pigsty
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.clnrm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/user-data
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.tmp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/erlmcp_validation
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.jupyter
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/intvw
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.pnpm-state
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.aider
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/hive-queen
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.npm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.terraform.d
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/Documents
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/universe-chain
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/powlv2lsp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.knhk
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ionic
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/insa
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/neako
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.hive-mind
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.zai
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/nuxt-supabase-book
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.vscode
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.dapr
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.m2
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/practice
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.kerl
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/claude-code-context
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/nuxt-catalog-mdbook
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.gem
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.swiftpm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/citty-test-utils
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/Legal
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/clnrm-backup-20251015-233810
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.portfolio
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.oh-my-zsh
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/sos
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/exampleSpecs
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/mcp_erl
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.swarm
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/Downloads
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.cache
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.aws
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.gmail-mcp
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/unjucks
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/wasm4pm-backups
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ostar
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.open-ontologies
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ollama
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.zsh_sessions
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.ggen
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/seven_tick
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/unrdf-clean
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.nexe
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.conda
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.knowledge
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.diagrid
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/reports
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/wf
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/zoela
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.unrdf
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.groovy
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/doctester
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.proto
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/__snapshots__
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/ggen-spec-kit
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/src
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0
+  - root: /Users/sac/.prefect
+    classification: MAYBE_CRAWL
+    searched: false
+    high_relevance_hits: 0

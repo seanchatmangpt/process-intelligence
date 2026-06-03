@@ -1,0 +1,91 @@
+% FILE: 02_lineage_and_context.tex
+% Project: schemas
+% Thesis Role: data-schema-definitions-for-ma-and-receipt-surfaces
+
+\section{Lineage and Context}
+\label{sec:schemas-lineage}
+
+\subsection{2016 Language-Model Lesson}
+\label{sec:schemas-lineage-2016}
+
+The 2016 language-model experiment established that local text imitation does not conserve
+consequence. A model trained to reproduce the surface form of process mining reports can emit
+plausible fitness scores, conformance verdicts, and financial projections without those outputs
+being grounded in any actual event log, process model, or executing query. The outputs are
+structurally indistinguishable from genuine evidence to a reader who does not have access to the
+underlying computation.
+
+This lesson is directly relevant to the schemas project. If a receipt is expressed only as a
+natural-language or loosely typed JSON document, an adversary can manufacture a receipt that
+passes informal inspection without satisfying any of the cryptographic requirements that make
+re-execution possible. The schema is the formal response to the 2016 lesson: it moves the
+receipt from the domain of surface-form text imitation into the domain of machine-checkable
+structural contracts. A receipt that does not carry a 64-hex BLAKE3 hash in \texttt{target\_log\_hash}
+will fail schema validation, regardless of how plausible its prose assertions appear.
+
+The schema therefore serves as the boundary between the regime the 2016 experiment identified as
+defective---text that imitates evidence---and the regime this research program requires: structured
+artifacts that are evidence by construction.
+
+\subsection{Enterprise Process Gap}
+\label{sec:schemas-lineage-enterprise-gap}
+
+The enterprise process gap is the observation that enterprise software systems produce operational
+data that is not automatically process-intelligence-ready. Event logs must be extracted,
+canonicalized, and admitted before they can be used as evidence. Process models must be identified
+by content address before they can be cited in a claim. The gap between raw operational data and
+board-admissible evidence is where most process intelligence projects fail.
+
+The schemas project addresses the downstream end of this gap. It does not specify how event logs
+are extracted or how process models are manufactured---those concerns belong to the \texttt{wasm4pm}
+and \texttt{wasm4pm-compat} layers. What it does specify is the shape of the artifact that
+\emph{proves} the gap was bridged: a receipt with a BLAKE3 hash of the admitted event log, a
+BLAKE3 hash of the discovered process model, a query definition naming the execution engine, and
+a signature certifying the result.
+
+Without the schema, the gap-bridging claim cannot be validated. The enterprise produces data;
+the process intelligence layer produces a receipt; the schema is the contract that makes the
+receipt auditable.
+
+\subsection{Relationship to the Chatman Equation}
+\label{sec:schemas-lineage-chatman-equation}
+
+The Chatman Equation $A = \mu(O^*, T, L)$ expresses that an admissible artifact $A$ is the
+result of applying the manufacturing function $\mu$ to an objective $O^*$, a type law surface $T$,
+and an event log $L$. The schemas project materializes the type law surface $T$ for the receipt
+domain: it specifies what type a receipt must have to be admissible.
+
+Concretely, the \texttt{SlideVerificationLedger} schema defines the type of the receipt artifact.
+A receipt of type \texttt{SlideVerificationLedger} is one that carries a \texttt{slide\_id} of
+type UUIDv4, a \texttt{target\_log\_hash} of type 64-hex BLAKE3, a \texttt{process\_model\_hash}
+of type 64-hex BLAKE3, a \texttt{query\_definition} with an \texttt{engine} field constrained to
+the \texttt{wasm4pm}~$|$~\texttt{pm4py} enum, a \texttt{verification\_results} object with a
+status in \{\texttt{verified}, \texttt{failed}, \texttt{unverified}\}, and a
+\texttt{validator\_signature} of type 128-hex Ed25519.
+
+The manufacturing function $\mu$ must produce artifacts of this type. Artifacts that do not
+conform are not of type $A$---they are rejected by the schema's \texttt{additionalProperties: false}
+constraint, which refuses any receipt that carries fields outside the defined property set.
+
+\subsection{Relationship to Receipts and Replay}
+\label{sec:schemas-lineage-receipts-replay}
+
+The receipt-and-replay architecture requires that every process intelligence claim be backed by a
+receipt that enables independent replay of the underlying analysis. Replay requires three
+identifiers: the event log (by content address), the process model (by content address), and the
+query (by URI and engine). The \texttt{SlideVerificationLedger} schema encodes exactly these three
+identifiers as required fields, plus the results of the original execution and a signature that
+binds the whole payload together.
+
+The \texttt{OTelTraceBlake3IntegrationSchema} extends the receipt architecture to the execution
+trace level. Where the ledger schema tracks the content of the \emph{inputs} to the analysis
+(event log, process model), the OTel schema tracks the content of the \emph{execution} itself:
+each span in the trace carries a \texttt{blake3\_receipt} computed as
+$\operatorname{BLAKE3}(\text{PriorReceipt} \| \text{SpanData})$, forming a chain that makes the
+execution unforgeable. A forged trace would require inverting the BLAKE3 hash function at every
+span boundary---a computationally infeasible operation.
+
+Together, the two schemas cover both the content of the analysis and the execution path that
+produced it. This two-layer coverage is what distinguishes receipt-backed process intelligence
+from informal reporting: the claim is not only asserted, it is traced back to an execution that
+can be replayed and verified.

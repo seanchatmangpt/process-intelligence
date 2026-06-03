@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command // empty'); echo \"$CMD\" | grep -qE 'git[[:space:]].*\\bcommit\\b' || exit 0; REPO=$(echo \"$CMD\" | grep -oE -- '-C [^[:space:]]+' | awk '{print $2}' | head -1); if [ -n \"$REPO\" ]; then git -C \"$REPO\" push 2>&1; else git push 2>&1; fi || true",
+            "statusMessage": "Pushing to remote...",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}

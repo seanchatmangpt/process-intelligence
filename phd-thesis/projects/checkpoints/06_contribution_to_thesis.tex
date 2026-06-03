@@ -1,0 +1,97 @@
+\section{Contribution to the Dissertation}
+\label{sec:checkpoints-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:checkpoints-contribution-prediction-coordination}
+
+The dissertation's central argument distinguishes between prediction-oriented architectures, which
+anticipate future states by extending patterns from historical data, and coordination-oriented
+architectures, which enforce causal constraints across distributed processes. The checkpoint ledger
+is a coordination artifact: it does not predict whether research will be complete; it enforces the
+constraint that downstream manufacturing cannot begin until the evidence base satisfies declared
+minimum thresholds.
+
+This distinction is most visible in the authorization lists that each ALIVE verdict carries.
+PROCESS\_INTELLIGENCE\_ALIVE\_001 authorizes board-level claim delivery and M\&A diligence package
+assembly. It does not predict that the M\&A deck will be high-quality; it certifies that the
+evidence base is sufficient to make board-admissible claims. The difference is between a
+probabilistic forecast (the deck will probably be good) and a causal constraint (the deck may not
+be manufactured until the receipt registry contains the required entries). Coordination does not
+merely describe the future; it restricts it.
+
+The no-forced-ALIVE rule is the sharpest expression of this contribution. A predictive system can
+always produce an optimistic forecast. A coordination system can refuse to issue an authorization
+until the evidence exists. The checkpoint ledger implements the latter by making Gate 12
+(No Forced ALIVE Verdicts) a first-class audit criterion that must pass for any ALIVE verdict to be
+sealed.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:checkpoints-contribution-process-evidence}
+
+The checkpoint ledger contributes to the process evidence subsystem of the thesis by demonstrating
+that the \texttt{Evidence<T, State, W>} type-law carrier pattern is not merely a programming
+construct but a research governance mechanism. Every receipt in the RECEIPT\_REGISTRY.md is an
+instance of the Evidence pattern applied to a research artifact: the artifact type is the
+manufactured object (paper inventory, lifecycle phase definition, M\&A claim document), the state is
+the gate-pass status, and the witness is the named law or standard that certifies the artifact's
+admissibility.
+
+The Petri net snapshot in PETRI\_NET\_SNAPSHOT.md provides formal process evidence at the program
+level. The decoded final marking---[Decommissioning]:1, all intermediate places at zero---satisfies
+the proper completion criterion for a sound Petri net. This is not a claim; it is an evidence
+object. The reachability of the [Decommissioning] state from the initial [Design] state, with no
+deadlocks, confirms that the research lifecycle process model is sound in the Van der Aalst sense:
+every case that enters the process can complete, and no case is permanently stuck.
+
+The adversarial evidence in PROCESS\_INTELLIGENCE\_ADVERSARIAL\_V30.1.1\_OMEGA contributes negative
+test coverage: the 20-agent swarm evaluation tests whether the evidence base can withstand hostile
+attack vectors, recursive logic bombs, and ontological contradictions. All attack vectors were
+neutralized, which is process evidence that the research program's boundary enforcement is effective
+under adversarial conditions.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:checkpoints-contribution-manufacturing}
+
+The checkpoint system's contribution to manufacturing architecture is the \emph{authorization gate}
+pattern: no manufacturing operator runs until its prerequisites are certified by a sealed checkpoint.
+This pattern appears throughout the SUBSTRATE\_COMPLETE\_001 document, which records that all six
+manufacturing phases (wasm4pm-compat validation, ggen template embedding, rendering engine
+activation, wasm4pm module rendering, M\&A deck manufacturing, Blue River Dam integration) were
+completed in declared sequence, each phase dependent on the completion of the prior phase.
+
+The receipt-sealed generation records in SUBSTRATE\_COMPLETE\_001 demonstrate that the manufacturing
+architecture is auditable end-to-end. Each of the five wasm4pm module receipts (mining, conformance,
+replay, lifecycle, Blue River Dam) records the input governance sources, the rendering decisions, the
+test results, and the witness markers injected into the rendered code. An auditor can trace any
+line in the manufactured code back to the governance document that authorized it, and can verify
+the receipt independently by re-running the rendering engine against the same inputs.
+
+The GGEN\_ECOSYSTEM\_INTEL\_ALIVE\_001 checkpoint contributes the boundary audit pattern: four
+automated audits (No DTO Flattening, No Tool Smuggling, Feature Isolation, Graduation Boundary)
+that enforce the structural separation between the wasm4pm execution engine and the wasm4pm-compat
+FFI layer. Audit 1 is currently failing, which demonstrates that the boundary audit pattern can
+detect violations rather than merely permitting them to pass unnoticed.
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:checkpoints-contribution-capital-flow}
+
+The checkpoint ledger contributes to the capital-flow and settlement infrastructure of the thesis
+by establishing the receipt-to-board-claim traceability chain. Every M\&A claim in the \texttt{ma/}
+directory is traceable to a receipt in the RECEIPT\_REGISTRY.md. The SLIDE\_TO\_RECEIPT\_MAP.md in
+the \texttt{ma/} directory maps each board presentation slide to the specific module receipt that
+authorizes its claim: process discovery accuracy to the wasm4pm mining generation receipt, conformance
+status to the conformance generation receipt, compliance automation to the Blue River Dam generation
+receipt.
+
+The five monetization claim sample receipts (EBITDA rework, working capital/accounts receivable,
+risk/SLA compliance, risk/compliance, residual standard) are JSON documents carrying BLAKE3 proof
+chains. They represent the data model for production receipts that will be manufactured against
+live M\&A target data in subsequent phases. These samples demonstrate that the receipt format is
+expressive enough to carry financial claim evidence and that the proof chain mechanism can support
+board-admissible M\&A diligence packages.
+
+The ALIVE authorization of board-level claim delivery in PROCESS\_INTELLIGENCE\_ALIVE\_001 is the
+specific connection between the checkpoint system and the capital-flow infrastructure: a board claim
+is only admissible if its underlying receipt is indexed in the RECEIPT\_REGISTRY.md. This requirement
+converts the receipt ledger from a research bookkeeping tool into an enforcement mechanism for
+capital-market claim integrity.

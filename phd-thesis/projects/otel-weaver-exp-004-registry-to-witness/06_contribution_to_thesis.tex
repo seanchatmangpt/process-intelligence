@@ -1,0 +1,113 @@
+% EXP-004: OTel Weaver Registry to wasm4pm-compat Witness Generator
+% Contribution to the Dissertation Chapter
+
+\section{Contribution to the Dissertation}
+\label{sec:otel-weaver-exp-004-registry-to-witness-contribution}
+
+\subsection{Contribution to Prediction vs.~Coordination}
+\label{sec:otel-weaver-exp-004-registry-to-witness-prediction}
+
+The central thesis argument distinguishes \emph{prediction} --- the statistical inference
+of likely future states from historical patterns --- from \emph{coordination} --- the
+lawful execution of processes under type-enforced constraints with auditable receipts.
+Telemetry-first architectures conflate the two: they treat structurally valid telemetry
+as sufficient evidence that a process was lawfully executed, collapsing coordination into
+a prediction problem (``if the spans look right, the process probably ran correctly'').
+
+EXP-004 instantiates the counter-claim at the type-system layer. The \texttt{ActivityWitness}
+struct manufactured by the generator is not a prediction of process state; it is a
+typed assertion that specific, named fields required by the \texttt{wasm4pm-compat} court
+are present and structurally sound. The \texttt{Lattice} trait bounds
+(\texttt{Eq + PartialOrd + Serialize}) enforce that witnesses participate in a formal
+algebraic structure --- a partial order with defined bottom, top, and join operations ---
+rather than being floating-point confidence scores or probability distributions.
+
+The \texttt{partial\_cmp} implementation makes the coordination semantics explicit: two
+distinct non-empty witnesses are \emph{incomparable} (\texttt{None}), not averaging into
+a blended prediction. Incomparability is a coordination concept, not a prediction concept.
+A prediction model would interpolate; the lattice refuses to interpolate and instead
+escalates the incomparability to the court via \texttt{Lattice::top()}. This is the
+architectural expression of the thesis claim that coordination requires a court, not a
+regression.
+
+\subsection{Contribution to Process Evidence}
+\label{sec:otel-weaver-exp-004-registry-to-witness-process-evidence}
+
+Process evidence in this dissertation means event records that can be replayed against a
+normative process model to yield a conformance verdict. EXP-004 contributes a specific
+mechanism for ensuring that telemetry-derived records carry the minimum typed assertions
+required to qualify as process evidence: an instance identifier, a witness identifier, and
+a BLAKE3 hash sealing the transition trace.
+
+The feedstock doctrine established in
+\texttt{otel-weaver/doctrine/otel-weaver-is-feedstock.md} states that structural telemetry
+validity is insufficient for process compliance: a span that passes Weaver schema
+validation has not been admitted as process evidence. EXP-004 provides the first step of
+the admission pipeline: it manufactures the types that the \texttt{validate\_and\_project}
+boundary checks. Without those types, the court has no contract to enforce at compile
+time. With them, the five refusal cases tested in \texttt{weaver\_integration\_tests.rs}
+are compile-time contracts, not runtime assertions that could be silently bypassed.
+
+The Ingestion Covenant articulated in the feedstock doctrine --- Admit, Don't Assume; Loss
+Reports; Witness Seal --- is partially instantiated by EXP-004. The \texttt{ActivityWitness}
+type serves as the Witness Seal: a zero-cost, compile-time attestation that the
+translation from OTel telemetry to court-compatible event representation was performed
+through the registered, auditable code-generation path rather than an ad-hoc hand-written
+alternative.
+
+\subsection{Contribution to Manufacturing Architecture}
+\label{sec:otel-weaver-exp-004-registry-to-witness-manufacturing}
+
+The dissertation's manufacturing architecture thesis holds that artifacts emitted by the
+research program should be manufactured from authoritative source definitions through
+auditable pipelines rather than hand-coded from documentation. EXP-004 is a direct
+instantiation of this thesis within the process-mining domain.
+
+The generator (\texttt{codegen/generator.rs}) is itself a manufacturing operator: it
+accepts the resolved convention registry as input, applies a deterministic transformation
+(group filtering, attribute iteration, field name derivation, Lattice implementation
+materialization), and emits a Rust source artifact. The header comment in the emitted
+artifact (\texttt{DO NOT EDIT HAND-CODED}) is a manufacturing provenance assertion: it
+declares that the file is a manufactured artifact whose authority derives from the
+generator, not from human curation.
+
+The \texttt{ggen} framework, listed as a detected framework in \texttt{project\_manifest.yaml},
+is the broader manufacturing authority for this class of code-generation step. EXP-004
+demonstrates that \texttt{ggen}-style manufacturing can reach the lowest level of the
+wasm4pm architecture --- the Rust type definitions at the court boundary --- not just
+higher-level configuration or documentation artifacts.
+
+The gap between the current implementation (inlined schema, no Cargo.toml) and a
+production-quality manufacturing step is documented but does not diminish the
+architectural demonstration. The pattern is established; the receipted execution of that
+pattern is deferred work
+(Section~\ref{sec:otel-weaver-exp-004-registry-to-witness-next-work}).
+
+\subsection{Contribution to Capital-Flow Infrastructure}
+\label{sec:otel-weaver-exp-004-registry-to-witness-capital-flow}
+
+The thesis lineage runs from process evidence to capital-flow settlement: if process
+execution can be verified against a normative model with cryptographic receipts, then
+capital flows contingent on process completion can be settled automatically and
+auditively. The \texttt{ActivityWitness} BLAKE3 hash is the atom of this chain: a sealed
+transition trace is the minimal unit of process evidence that can be aggregated into a
+conformance receipt, and a conformance receipt is the minimal unit of process proof that
+can authorize a capital-flow settlement event.
+
+EXP-004's contribution to this infrastructure is foundational rather than operational: it
+establishes that the typed witness structures entering the conformance court are derived
+from standardized, machine-readable convention definitions (OTel Weaver registries) rather
+than from proprietary, hand-maintained schemas. This matters for capital-flow
+infrastructure because convention registries are public, versioned, and independently
+auditable. A settlement authority that checks process compliance can verify the witness
+type definitions against the public OTel registry rather than trusting a proprietary
+specification. The code-generation pipeline makes the traceability chain
+registry~$\to$~type~$\to$~witness~$\to$~conformance~$\to$~settlement mechanically
+verifiable at each step.
+
+The connection from EXP-004 to the DAO settlement layer and industry-complete architecture
+is asserted at the research program level and is not directly evidenced within the
+EXP-004 artifact set. This connection is therefore marked as \textsc{Author Thesis}: the
+architectural path is coherent and the types are correctly positioned, but the receipted
+evidence chain connecting EXP-004 outputs to capital-flow authorization has not been
+manufactured within the experiment boundary.

@@ -1,0 +1,90 @@
+% FILE: 00_project_identity.tex
+% Project: sources-wasm4pm-compat
+% Role: type-foundry-and-witness-lattice-authority
+
+\section{Project Identity: \texttt{wasm4pm-compat}}
+\label{sec:sources-wasm4pm-compat-identity}
+
+\subsection{Purpose}
+\label{sec:sources-wasm4pm-compat-identity-purpose}
+
+The \texttt{wasm4pm-compat} project is the type-law foundry and witness lattice
+authority for the process intelligence stack. Its purpose is to define, enforce, and
+manufacture the mathematical and cryptographic boundaries that separate structure-only
+evidence---what the compatibility layer carries---from execution, which is adjudicated
+by \texttt{wasm4pm}. The foundry encodes those boundaries as Rust type laws enforced
+at compile time, so that an invalid evidence block cannot reach the execution engine
+without triggering a type error, not merely a runtime panic.
+
+The project serves two distinct functions simultaneously. First, it is a type-law
+authority: it defines what constitutes admissible process evidence, what refusal means,
+what a receipt-shaped object is, and what graduation to the execution engine requires.
+Second, it is a manufacturing facility: it houses the \texttt{ggen} machinery (Jinja2-style
+\texttt{.rs.j2} templates, Tera rendering engines, SPARQL query runners, and a receipt
+ledger) that manufactures Rust witness markers, WebAssembly Interface Type boundary
+definitions, and type-law documentation from the \texttt{wasm4pm-compat.ttl} RDF
+ontology as the authoritative source of truth.
+
+Neither function is subordinate to the other. The type laws govern what may be manufactured;
+the manufacturing machinery makes the type laws inspectable, receipted, and reproducible.
+
+\subsection{Repository Surface}
+\label{sec:sources-wasm4pm-compat-identity-surface}
+
+The \texttt{wasm4pm-compat} repository surface spans several layers. The \texttt{compat/src/}
+directory houses the Rust type-law core, including \texttt{lib.rs} (public API re-exports),
+\texttt{graduation.rs} (the \texttt{GraduationReason} enum and \texttt{GraduationCandidate}
+struct), and the \texttt{manufacturing/} subdirectory containing the \texttt{receipt\_ledger.rs},
+\texttt{audit.rs}, \texttt{rendering\_engine.rs}, and \texttt{toml\_generator.rs} modules.
+The \texttt{compat/templates/} directory contains 11 \texttt{.rs.j2} Jinja2-style templates
+and the \texttt{config.toml} that declares the ALIVE gate as 406 compile-pass fixtures
+and 398 compile-fail fixtures.
+
+The \texttt{manufactured/} directory contains sealed artifacts: \texttt{witnesses/witness-markers-20260601.rs},
+\texttt{forms/process-forms-20260601.md}, and \texttt{boundaries/boundary-law-20260601.wit}.
+Each carries a corresponding receipt in \texttt{manufactured/manifests/manufacturing-manifest-20260601.yaml}.
+Research-facing documentation is housed in \texttt{type-law-atlas.md}, \texttt{witness-lattices.md},
+\texttt{admission-refusal-map.md}, \texttt{loss-policy-map.md}, \texttt{GRADUATION\_BOUNDARY\_MAP.md},
+\texttt{STRUCTURAL\_GAPS.md}, and \texttt{research-verdict.md}. The RDF ontology
+\texttt{ggen/wasm4pm-compat.ttl} is the authoritative source from which all manufactured artifacts
+derive via SPARQL queries and Tera template rendering.
+
+\subsection{Primary Research Role}
+\label{sec:sources-wasm4pm-compat-identity-role}
+
+Within the dissertation, \texttt{wasm4pm-compat} occupies the role of
+\emph{type-foundry and witness lattice authority}. It is the layer that answers the question:
+``What structural guarantees must hold before any process evidence may be admitted to an
+execution engine?'' It does not discover processes, replay traces, or compute fitness scores---those
+are execution obligations belonging to \texttt{wasm4pm}. Instead, it defines the
+type-level contracts that make those operations verifiable: the \texttt{Evidence<T, State, Witness>}
+triadic container, the \texttt{WitnessMarker} lattice, the \texttt{GraduationCandidate} boundary,
+and the \texttt{LossPolicy} thermodynamic limits.
+
+The project's authority is specifically bounded to the structural and cryptographic tier.
+It cannot claim an execution is sound; it can claim that the type system makes an unsound
+execution inexpressible at compile time---and it can receipt that claim through compile-fail
+fixtures.
+
+\subsection{Key Artifacts}
+\label{sec:sources-wasm4pm-compat-identity-artifacts}
+
+Three sealed artifacts were manufactured as of 2026-06-01, each carrying a BLAKE3 content
+hash and an Ed25519 signature status of ISSUED per the manufacturing manifest:
+
+\begin{enumerate}
+  \item \textbf{witness-markers-20260601.rs} (7{,}942 bytes): A Rust enumeration defining
+    the eight \texttt{WitnessMarker} algebraic proof structures, the \texttt{witness\_join}
+    join-semilattice operation, and \texttt{\#[test]} blocks verifying lattice monotonicity,
+    idempotency, commutativity, and partial order properties.
+  \item \textbf{process-forms-20260601.md} (8{,}794 bytes): Type-law documentation covering
+    five process forms: Workflow Net (WF-net), BPMN~2.0 Gateway, Object-Centric Event Log
+    (OCEL~2.0), Process Tree, and Process-Log Alignment.
+  \item \textbf{boundary-law-20260601.wit} (9{,}156 bytes): WebAssembly Interface Type
+    world definitions specifying 12 component boundary crossings, including receipt graduation,
+    autonomic actuation (MAPE-K), and JCS canonicalization (RFC~8785).
+\end{enumerate}
+
+All three artifacts derive from the \texttt{wasm4pm-compat.ttl} ontology via three SPARQL
+queries that matched 8, 15, and 36 triples respectively, and three Tera templates that
+materialized 187, 293, and 256 lines respectively.

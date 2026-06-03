@@ -1,0 +1,107 @@
+% FILE: 00_project_identity.tex
+% Project: otel-weaver-exp-003-live-check-to-refusal
+% Thesis Role: live-check-refusal-enforcement-experiment
+
+\section{Project Identity}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-identity}
+
+\subsection{Purpose}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-identity-purpose}
+
+Experiment EXP-003 is a Rust-based boundary validator that enforces the named-law refusal
+doctrine at the OpenTelemetry telemetry ingestion frontier. Its singular mandate is to
+prevent structurally invalid or witness-unsigned telemetry feedstock from contaminating
+the \texttt{wasm4pm} conformance court. The experiment implements a type-level gate
+function with the signature:
+
+\begin{verbatim}
+validate_and_project: Feedstock -> Result<Admission<T,W>, Refusal>
+\end{verbatim}
+
+This gate is not a runtime predicate that returns boolean values; it is a structural
+transformer that either promotes raw telemetry into a first-class \texttt{Admission}
+value carrying a cryptographic witness, or demotes it into an immutable, BLAKE3-digested
+\texttt{Refusal} record. In either branch the type system encodes the outcome with
+no escape hatch: unverified feedstock cannot be cast to \texttt{Admission} by caller
+code because no such conversion exists in the type lattice. Admission is only obtainable
+by passing through \texttt{validate\_and\_project}. This property is enforced at
+compile-time by Rust's ownership and generics model.
+
+The purpose of EXP-003 within the broader research program is to demonstrate that
+the refusal doctrine articulated in doctrine file
+\texttt{otel-weaver/doctrine/weaver-finding-is-not-receipt.md} can be operationalized
+as executable, testable Rust code, not merely as policy prose. The experiment grounds
+the claim that telemetry is feedstock --- not process evidence --- in a machine-checkable
+artifact that blocks unlawful ingestion at the frontier.
+
+\subsection{Repository Surface}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-identity-repo}
+
+The experiment is rooted at:
+\begin{verbatim}
+/Users/sac/process-intelligence/otel-weaver/experiments/exp-003-live-check-to-refusal/
+\end{verbatim}
+
+The primary source file is \texttt{src/validator.rs}, which contains the complete
+\texttt{validate\_and\_project} function, all struct and enum definitions, and two
+inline \texttt{\#[test]} functions (\texttt{test\_successful\_admission} and
+\texttt{test\_refusal\_missing\_id}). The \texttt{Cargo.toml} at the experiment root
+declares the crate name as \texttt{exp-003-live-check-to-refusal}, edition 2021, with
+dependencies on \texttt{serde 1.0}, \texttt{serde\_json 1.0}, \texttt{blake3 1.3},
+and a path dependency on \texttt{wasm4pm-compat} at the relative path
+\texttt{../../../../wasm4pm-compat}. This path dependency is the structural link that
+places EXP-003 inside the type-law lattice maintained by \texttt{wasm4pm-compat};
+it is not merely a library import but a membership declaration in the conformance
+type hierarchy.
+
+Supporting doctrine, mapping artifacts, and checkpoint records reside in sibling
+directories: \texttt{otel-weaver/doctrine/}, \texttt{otel-weaver/mappings/}, and
+\texttt{otel-weaver/checkpoints/}. The integration test that validates all five
+refusal codes against live BLAKE3 digests lives at:
+\begin{verbatim}
+/Users/sac/process-intelligence/sources/wasm4pm/tests/weaver_integration_tests.rs
+\end{verbatim}
+
+\subsection{Primary Research Role}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-identity-role}
+
+EXP-003 occupies the third position in a five-experiment OTel Weaver integration
+suite. It sits between EXP-002, which implements the schema-diff bridge
+(\texttt{BridgeRx}), and EXP-004, which manufactures registry-to-witness type
+bindings. This placement is architecturally significant: EXP-002 translates schema
+version divergence before feedstock reaches the gate, while EXP-003 applies the
+refusal policy at the gate, and EXP-004 manufactures the witnesses that EXP-003
+requires for admission. The three experiments are therefore sequentially dependent;
+none functions correctly in isolation.
+
+Within the thesis, EXP-003 serves as the evidentiary anchor for the claim that
+process-intelligence boundaries can be enforced through type-level law rather than
+runtime policy evaluation. A runtime policy can be circumvented by passing malformed
+data through an untested code path; a type-level gate cannot be circumvented without
+changing the type system itself.
+
+\subsection{Key Artifacts}
+\label{sec:otel-weaver-exp-003-live-check-to-refusal-identity-artifacts}
+
+The following artifacts constitute the evidentiary substrate of EXP-003:
+
+\begin{itemize}
+  \item \texttt{src/validator.rs} --- Complete Rust implementation of the boundary gate,
+        including all struct definitions, the \texttt{validate\_and\_project} function,
+        the internal \texttt{build\_refusal} constructor, and two inline unit tests.
+  \item \texttt{Cargo.toml} --- Crate manifest declaring the \texttt{wasm4pm-compat}
+        path dependency and the \texttt{blake3 1.3} cryptographic hashing dependency.
+  \item \texttt{otel-weaver/mappings/live-check-finding-to-refusal-map.yaml} --- The
+        authoritative YAML document mapping six named laws (EmptyTrace, MissingCaseId,
+        InvalidTimestampOrder, DanglingEventObjectLink, ProjectionNameRequired,
+        SchemaVersionMismatch) to refusal verdicts and remediation guidance.
+  \item \texttt{sources/wasm4pm/tests/weaver\_integration\_tests.rs} --- Integration
+        test exercising all four \texttt{RefusalCode} variants against live
+        \texttt{wasm4pm::crypto::Blake3} digests within the parent workspace.
+  \item \texttt{otel-weaver/checkpoints/GGEN\_OTEL\_WEAVER\_PI\_ALIVE\_001.md} and
+        \texttt{GGEN\_OTEL\_WEAVER\_PI\_RUNTIME\_001.md} --- Dated checkpoint documents
+        carrying SHA-256 audit seals confirming passage of the runtime integration gate.
+  \item \texttt{otel-weaver/doctrine/weaver-finding-is-not-receipt.md} and
+        \texttt{otel-weaver/doctrine/otel-weaver-is-feedstock.md} --- Foundational
+        doctrine files establishing the nominal category boundary that EXP-003 enforces.
+\end{itemize}

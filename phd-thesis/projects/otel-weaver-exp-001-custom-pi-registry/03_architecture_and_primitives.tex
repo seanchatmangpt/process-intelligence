@@ -1,0 +1,98 @@
+% FILE: 03_architecture_and_primitives.tex
+% PROJECT: otel-weaver-exp-001-custom-pi-registry
+% THESIS ROLE: otel-semconv-evidence-surface-experiment
+
+\section{Architecture and Primitives}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-architecture}
+
+\subsection{Core Objects}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-architecture-objects}
+
+The \texttt{process.pi.activity} span group is the central schema object. It organizes eight
+named attributes into two cardinality classes:
+
+\textbf{Required attributes:}
+\begin{itemize}
+  \item \texttt{process.pi.instance\_id} --- the case identifier; maps to the OCEL case ID that
+        groups all events belonging to one process instance.
+  \item \texttt{process.pi.activity.name} --- the Petri net transition label; must name a
+        declared transition in the process model, not a free-form application string.
+  \item \texttt{process.pi.lifecycle} --- the lifecycle phase; constrained to the enumeration
+        \{\texttt{schedule}, \texttt{start}, \texttt{suspend}, \texttt{resume},
+        \texttt{complete}, \texttt{abort}\}; maps to OCEL lifecycle transitions.
+  \item \texttt{process.pi.witness.hash} --- a BLAKE3 64-character hexadecimal seal over the
+        span's process-relevant payload; provides independent verifiability.
+  \item \texttt{process.pi.witness.id} --- the identifier of the witness node that sealed the
+        span; enables tracing of witness provenance across distributed executions.
+\end{itemize}
+
+\textbf{Recommended attributes:}
+\begin{itemize}
+  \item \texttt{process.pi.token.state\_before} --- JSON-serialized Petri net marking before the
+        transition fires; enables pre-condition verification in replay.
+  \item \texttt{process.pi.token.state\_after} --- JSON-serialized Petri net marking after the
+        transition fires; enables post-condition verification in replay.
+  \item \texttt{process.pi.activity.type} --- an architectural category tag; recommended, not
+        required; its optional status creates a known open gap (see Section~\ref{sec:otel-weaver-exp-001-custom-pi-registry-questions-gaps}).
+\end{itemize}
+
+The downstream Rust structs \texttt{BridgeRx} (EXP-002, \texttt{bridge.rs}) and the
+\texttt{validate\_and\_project} function (EXP-003, \texttt{validator.rs}) consume these attributes
+as their input contract. The zero-sized witness type
+\texttt{OtelSpanToOcelEventProjection} seals the translation from OTel span to OCEL event.
+
+\subsection{Admissible Transitions}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-architecture-transitions}
+
+A span transitions from \emph{raw telemetry} to \emph{admissible feedstock} by satisfying all
+five required attributes. The transition is gated by the \texttt{validate\_and\_project} function
+in EXP-003, which produces either an \texttt{Admission<T,W>} value (feedstock accepted, typed by
+the witness \texttt{W}) or a \texttt{Refusal} value carrying a \texttt{RefusalCode} from the
+enum: \{\texttt{MissingInstanceId}, \texttt{MissingActivityName}, \texttt{MissingWitnessId},
+\texttt{InvalidWitnessSignature}\}. The gate is a type-law gateway: refusal is expressed as a
+typed value in the Rust type system, not as a runtime exception or a logged warning.
+
+Once admitted, feedstock passes through \texttt{BridgeRx} for schema-version translation. The
+bridge translates schema-version diffs without producing residual state: a span arriving from a
+registry version prior to the current pin is bridged to the current attribute set without
+contaminating the conformance court with legacy field interpretations. This property --- no
+residual from bridging --- is the \emph{BridgeRx} invariant stated in EXP-002's \texttt{bridge.rs}.
+
+\subsection{Boundaries}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-architecture-boundaries}
+
+EXP-001 is bounded on the upstream side by the OTel instrumentation layer: the experiment
+specifies the schema that instrumented services must emit but does not specify how instrumentation
+is implemented. The experiment is bounded on the downstream side by the \texttt{BridgeRx}
+layer in EXP-002: the registry defines the attribute set; EXP-002 handles version translation;
+EXP-003 handles admission gating. EXP-001 does not perform conformance replay; that responsibility
+belongs to \texttt{wasm4pm} and \texttt{wasm4pm-compat} after feedstock has been admitted and
+projected to OCEL.
+
+The doctrine boundary is stated in \texttt{otel-weaver/doctrine/otel-weaver-is-feedstock.md}:
+OTel Weaver is a feedstock-layer tool, not a process-intelligence tool. It validates that spans
+satisfy a schema; it does not determine whether those spans conform to a process model. The
+process-intelligence claim begins after the feedstock boundary, not at it.
+
+\subsection{Failure Modes Refused}
+\label{sec:otel-weaver-exp-001-custom-pi-registry-architecture-failures}
+
+The architecture explicitly refuses the following failure modes:
+
+\begin{enumerate}
+  \item \textbf{Schema-drift-as-process-drift conflation.} A change to \texttt{process\_pi.yaml}
+        does not imply that the process has changed. Registry diff tracking and process conformance
+        tracking are independent concerns, as stated in
+        \texttt{doctrine/registry-diff-is-not-process-drift.md}.
+  \item \textbf{Telemetry-as-evidence conflation.} A span that satisfies no required attributes
+        is not process evidence. It is refused at the \texttt{validate\_and\_project} gate with
+        a typed \texttt{RefusalCode}; it does not silently pass into the conformance court.
+  \item \textbf{Aspirational receipt claims.} The receipt chain is declared in the manifest but
+        is marked PARTIAL until the file at \texttt{receipts/otel-weaver-source-receipt.json} is
+        materialized on disk. The architecture refuses to treat a declared receipt as an
+        equivalent of a sealed receipt.
+  \item \textbf{Self-certified ALIVE status without independent replay.} The ALIVE checkpoint
+        was issued by the ggen manufacturing authority. The architecture treats this as a
+        necessary but not sufficient condition for full ALIVE status; an independent pm4py-based
+        fitness/precision check against a live event log is required to close the PARTIAL gap.
+\end{enumerate}

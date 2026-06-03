@@ -1,0 +1,132 @@
+% FILE: 07_open_questions_and_next_work.tex
+% Project: experiments-visualizer-nextjs
+% Role: web-based-pi-visualization-surface
+
+\section{Open Questions and Next Work}
+\label{sec:experiments-visualizer-nextjs-open}
+
+\subsection{Known Gaps}
+\label{sec:experiments-visualizer-nextjs-open-gaps}
+
+The following gaps are established by direct inspection of the project's source files and
+build artefacts. Each gap is a factual deficiency, not a design critique.
+
+\begin{description}
+  \item[\textbf{GAP-VIZ-001: Unimplemented page.tsx}]
+    \texttt{src/app/page.tsx} is the stock \texttt{create-next-app} welcome page. The
+    entire process-intelligence visualization surface encoded in \texttt{globals.css} has
+    no React implementation. The rendered \texttt{index.html} contains no
+    process-intelligence content.
+
+  \item[\textbf{GAP-VIZ-002: No data source}]
+    No data-fetching layer, API routes, WASM module bindings, Python API client, or static
+    fixture JSON files are present. The dashboard design presupposes a data source supplying
+    case trace lists, fitness scores, Petri net markings, EWMA time series, and receipt
+    ledger blocks. The question of which data source is authoritative --- wasm4pm WASM
+    module, pm4py Python API, or static JSON fixtures --- is unresolved.
+
+  \item[\textbf{GAP-VIZ-003: No tests}]
+    No testing framework is installed and no test files exist. The CSS class vocabulary
+    cannot be verified as correctly applied without component-level tests.
+
+  \item[\textbf{GAP-VIZ-004: No project receipt}]
+    No project-specific cryptographic receipt has been emitted. The \texttt{BUILD\_ID}
+    is not a receipt. The project is not covered by the parent experiments receipt chain.
+
+  \item[\textbf{GAP-VIZ-005: No ALIVE verdict}]
+    No project-specific checkpoint file exists. The project has no documented verdict file
+    of its own; its PARTIAL status is inferred from the gap analysis, not from a formal
+    checkpoint.
+
+  \item[\textbf{GAP-VIZ-006: CSS error states absent}]
+    The \texttt{globals.css} design system does not define CSS classes for panels whose
+    data source is unavailable or returns an error. A panel that fails to fetch data would
+    render as empty rather than as an explicit error state, introducing visual ambiguity
+    into the observation surface.
+
+  \item[\textbf{GAP-VIZ-007: Agentic authorship gap unexplained}]
+    The \texttt{AGENTS.md} file implies agentic authorship was anticipated but not executed.
+    It is not documented whether the CSS design system was authored speculatively as a
+    surface specification, whether a prior React implementation was deleted, or whether
+    the authoring agent was never invoked.
+\end{description}
+
+\subsection{Deferred Gates}
+\label{sec:experiments-visualizer-nextjs-open-deferred}
+
+The following proof gates are deferred until the implementation gaps above are closed:
+
+\begin{itemize}
+  \item \textbf{Component test gate:} A suite of React component tests covering all five
+        visualization subsystems. Cannot be opened until GAP-VIZ-001 and GAP-VIZ-003
+        are remediated.
+  \item \textbf{Data integration gate:} A verified data pipeline from at least one
+        authoritative source (wasm4pm WASM, pm4py API, or fixture JSON) to the dashboard
+        panels. Cannot be opened until GAP-VIZ-002 is resolved.
+  \item \textbf{Receipt gate:} A project-specific receipt emitted after the first
+        successful full-chain rendering session. Cannot be opened until GAP-VIZ-001,
+        GAP-VIZ-002, and GAP-VIZ-003 are remediated.
+  \item \textbf{ALIVE checkpoint gate:} A formal checkpoint file recording the ALIVE
+        verdict. Cannot be opened until all preceding gates pass.
+\end{itemize}
+
+\subsection{Research Risks}
+\label{sec:experiments-visualizer-nextjs-open-risks}
+
+\begin{description}
+  \item[\textbf{RISK-VIZ-001: Next.js 16 breaking changes}]
+    The \texttt{AGENTS.md} file explicitly warns that Next.js 16 contains breaking changes
+    relative to prior training data. Any agentic or human author implementing the React
+    components must read \texttt{node\_modules/next/dist/docs/} before writing code.
+    Failure to do so risks producing components that compile but behave incorrectly
+    against the App Router's React Server Component model.
+
+  \item[\textbf{RISK-VIZ-002: CSS specification drift}]
+    The \texttt{globals.css} design system was authored without an accompanying component
+    implementation. If the upstream process-intelligence type algebra changes (e.g., A{*}
+    alignment gains a fourth move type; EWMA gains multiple alarm levels), the CSS
+    specification will silently become incomplete. The design system has no mechanism for
+    detecting or reporting specification drift.
+
+  \item[\textbf{RISK-VIZ-003: WASM integration complexity}]
+    If the authoritative data source for the Petri net and alignment panels is a WASM-compiled
+    \texttt{wasm4pm} module, the integration must handle WASM lifecycle management within
+    the React Server Component model --- a technically complex boundary that may require
+    a dedicated client component architecture.
+
+  \item[\textbf{RISK-VIZ-004: Scope expansion}]
+    The dashboard grid layout (\texttt{.dashboard-grid}) and the \texttt{.global-metrics-bar}
+    class imply a multi-panel, multi-metric dashboard that may require significantly more
+    implementation effort than a single-panel proof of concept. The risk is that scope
+    expansion delays the minimum viable ALIVE qualification indefinitely.
+\end{description}
+
+\subsection{Next Receipted Work}
+\label{sec:experiments-visualizer-nextjs-open-next}
+
+FUTURE WORK: The following sequence of receipted work items is recommended to advance the
+project from PARTIAL to ALIVE, in dependency order:
+
+\begin{enumerate}
+  \item \textbf{Data fixture manufacture:} Create static JSON fixture files representing
+        one complete evidence chain: a Petri net marking, an alignment trace, an EWMA
+        time series with one alarm, and a receipt ledger with one healthy and one tampered
+        block. Receipt the manufacture of these fixtures.
+
+  \item \textbf{Component implementation:} Replace \texttt{page.tsx} with a set of React
+        components that consume the fixture JSON and apply the CSS classes from
+        \texttt{globals.css}. Implement all five subsystem panels. Receipt the first
+        successful build of the implemented page.
+
+  \item \textbf{Test manufacture:} Implement the minimum test suite (unit, integration,
+        end-to-end) described in Section~\ref{sec:experiments-visualizer-nextjs-evidence-tests}.
+        All tests must pass before the receipt gate opens. Receipt the first full test-pass event.
+
+  \item \textbf{Receipt chain linkage:} Emit a project-specific receipt that links the
+        dashboard \texttt{BUILD\_ID}, the fixture data receipt, and the test-pass receipt
+        into a single hash-chain entry. Link this receipt to the parent experiments receipt chain.
+
+  \item \textbf{ALIVE checkpoint:} Create the project checkpoint file recording an ALIVE
+        verdict, citing all four preceding receipts. At this point the project graduates
+        and the gap documents (GAP-VIZ-001 through GAP-VIZ-005) receive resolution addendums.
+\end{enumerate}

@@ -1,0 +1,62 @@
+\section{Research Question}
+\label{sec:sources-wasm4pm-research-question}
+
+\subsection{Problem Statement}
+\label{sec:sources-wasm4pm-rq-problem}
+
+The dominant process-mining tools — including the Python \texttt{pm4py} library — compute fitness
+scores, discover Petri nets, and replay traces against models, but they do not make those
+computations \emph{verifiable}. A caller receives a floating-point fitness value with no
+cryptographic binding to the input log, no receipt of what algorithm consumed what trace, and no
+type-level enforcement preventing a client from substituting a hand-forged model for a discovered
+one. This dissertation identifies that deficiency as the \emph{raw-laundering problem}: a caller
+can present a model as if it were discovered when it was never subjected to discovery at all.
+
+The problem extends to the type layer. When wasm4pm-compat defines \texttt{Evidence<T,~State,~W>}
+as the universal carrier binding evidence to admission state and witness markers, that definition
+is meaningful only if the execution engine actually consumes it. As documented in GAP\_001 of the
+\texttt{GAP\_ANALYSIS.md}, the live \texttt{\textasciitilde/wasm4pm/} codebase carries zero
+\texttt{wasm4pm-compat} dependencies: the type-law covenant is stated on the compat side but
+entirely absent on the engine side. The research question is: \emph{Can a Rust-based WASM
+execution engine enforce process-evidence type laws at compile time so that raw-laundering becomes
+a type error, not merely a policy violation?}
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:sources-wasm4pm-rq-old-regime}
+
+The old-regime assumption is that process-mining correctness is a matter of algorithmic
+implementation quality: if the algorithm is correctly coded, the output is trustworthy. This
+assumption leaves two attack surfaces entirely open. First, the output surface: a caller who
+receives a raw \texttt{f64} fitness score has no way to verify it was produced by a conforming
+execution of the declared algorithm rather than a hand-inserted value. Second, the input surface:
+nothing in the old regime prevents a caller from feeding a pre-fabricated model to a conformance
+checker as if it had been discovered from a log. The \texttt{GAP\_ANALYSIS.md} documents both
+surfaces as open gaps (GAP\_001 for the type-law seam, GAP\_009 for the provenance receipt
+disconnect). The dissertation challenges the assumption that implementation quality alone
+is sufficient without cryptographic receipts and type-level admission enforcement.
+
+\subsection{Hypothesis}
+\label{sec:sources-wasm4pm-rq-hypothesis}
+
+The hypothesis is that compile-time Rust typestates combined with cryptographic receipt chaining
+can close the raw-laundering gap without sacrificing performance. Specifically: (1)
+\texttt{Between01<NUM,DEN>} const generics can enforce metric bounds at compile time for constant
+parameters; (2) \texttt{RuntimeBetween01} can enforce bounds at runtime for computed \texttt{f64}
+values with NaN/Inf guards; (3) \texttt{Evidence<T,~Admitted,~W>} containers with BLAKE3 receipt
+bindings can cryptographically link every algorithm output to its input; and (4) the
+\texttt{GraduateToWasm4pm} trait implemented in \texttt{src/graduation.rs} can serve as a typed
+seam ensuring that only compat-admitted evidence enters the execution engine. Together, these
+mechanisms make raw-laundering a structural impossibility rather than a policy preference.
+[AUTHOR THESIS]
+
+\subsection{Success Criteria}
+\label{sec:sources-wasm4pm-rq-success}
+
+Success requires all of the following, per the research verdict dated 2026-05-31: (1) all 31
+tests pass (unit, integration, end-to-end, and weaver); (2) the mining module carries a sealed
+receipt with verified SHA-256 content hash; (3) the four execution authorities (Mining,
+Conformance, Replay, Lifecycle) are each specified to doctoral-level precision with proof
+obligations documented; (4) the \texttt{Evidence<T,~State,~W>} lattice is monotonic (witnesses
+can only move upward, never lose information); and (5) the MAPE-K 13-state lifecycle typestate
+machine rejects illegal transitions at compile time. As of 2026-06-01, all five criteria are met
+in the \texttt{sources/wasm4pm} codebase with the caveats documented in the ten open gaps.

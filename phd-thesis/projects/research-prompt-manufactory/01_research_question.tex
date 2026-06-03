@@ -1,0 +1,88 @@
+% FILE: 01_research_question.tex
+% Project: research-prompt-manufactory
+% Thesis Role: prompt-manufacturing-and-subagent-command-surface
+
+\section{Research Question}
+\label{sec:research-prompt-manufactory-question}
+
+\subsection{Problem Statement}
+\label{sec:research-prompt-manufactory-question-problem}
+
+Multi-agent research programs depend on subagent instructions to direct bounded inspection
+stations, enforce surface constraints, and authorize artifact emission. In the conventional
+regime, these instructions are hand-written natural-language text: authored by a human,
+stored as opaque files, and possessing no traceable derivation from the domain model they
+purport to implement. A hand-written prompt cannot be audited against the law it claims to
+enforce. It cannot carry a receipt. It cannot be proved to be consistent with the ontology
+that governs the research program. When a subagent deviates from its chartered surface, no
+manufacturing defect is detectable because the prompt was never manufactured --- it was
+merely written.
+
+The Prompt Manufactory addresses this defect directly. The research problem is: \textit{Can
+subagent command surfaces be manufactured from graph-encoded law such that every emitted
+instruction carries provenance, a type classification, a receipt, and a derivation triple
+traceable to a specific ontology instance?} If so, the prompt becomes a first-class
+manufactured artifact subject to the same proof requirements as any other artifact in a
+receipted manufacturing pipeline.
+
+\subsection{Old-Regime Assumption Challenged}
+\label{sec:research-prompt-manufactory-question-old-regime}
+
+The old-regime assumption is that prompts are speech acts: the author's intent expressed
+in natural language, communicating desired behavior to an agent. This assumption is deeply
+embedded in current practice. Prompt engineering is taught as a craft of phrasing and
+iteration. Prompt libraries are version-controlled like documentation. There is no concept
+of prompt provenance, prompt type classification, or prompt receipt in the conventional
+model.
+
+The Prompt Manufactory challenges this assumption on three grounds. First, if the research
+program is governed by an ontology encoding workflow law, subagent roles, hook policies,
+and checkpoint verdicts, then a hand-written prompt that claims to implement that law has
+no verifiable relationship to it. The prompt may contradict the law without detection.
+Second, the forbidden-collapse-law ontology (\texttt{forbidden-collapse-law.ttl}) defines
+three absolute bans --- \texttt{.ggen} source files, DTO/JSON flattening, and forced ALIVE
+verdicts --- which are graph-expressible constraints. A manufactured warrant can carry these
+constraints as typed properties; a hand-written prompt cannot. Third, the Van der Aalst
+Constitution (governing all research in this foundry) requires that process claims be
+provable from event evidence. A prompt that cannot be traced to its source law produces no
+event evidence of lawful derivation.
+
+\subsection{Hypothesis}
+\label{sec:research-prompt-manufactory-question-hypothesis}
+
+The hypothesis of the Prompt Manufactory research program is: \textit{A SPARQL-plus-Tera
+manufacturing pipeline operating over a typed RDF ontology graph can manufacture all
+subagent command surfaces required by a multi-agent research workflow, with zero
+hand-written prompt text, such that every emitted warrant carries a
+\texttt{pm:derivedFrom} triple and a receipt entry in the manufacturing ledger.}
+
+The secondary hypothesis is that this manufacturing discipline imposes useful
+constraints: it prevents forbidden collapses (DTO flattening, forced ALIVE, illegal
+surface access) by making constraint violations detectable as ontology violations rather
+than runtime defects. A subagent instructed by a manufactured warrant that encodes its
+owned and forbidden surfaces cannot plausibly claim ignorance of those surfaces --- the
+instruction is typed, receipted, and derived from the same law that governs the audit.
+
+\subsection{Success Criteria}
+\label{sec:research-prompt-manufactory-question-success}
+
+The Prompt Manufactory defines success through the 11-gate audit declared in
+\texttt{GGEN\_PROMPT\_MANUFACTORY\_PARTIAL\_001.md}. An ALIVE verdict requires all 11 gates
+to pass. As of the issued checkpoint (2026-06-01), 9 gates pass:
+
+\begin{enumerate}
+  \item Ontology files present and parsing without error (8 \texttt{.ttl} files).
+  \item Core SPARQL queries execute and return valid results.
+  \item \texttt{ggen.toml} syntax valid; proof specimen template renders correctly.
+  \item Seven seed programs encoded in \texttt{research-program-law.ttl}.
+  \item End-to-end warrant path proven for at least one program instance.
+  \item Zero hand-written program prompts (all warrants carry \texttt{pm:derivedFrom}).
+  \item No forced ALIVE (both ALIVE and PARTIAL verdict paths documented).
+  \item Zero \texttt{.ggen} source files in \texttt{prompt-manufactory/ggen/}.
+  \item All 22 legacy \texttt{.ggen} files classified with remediation routes.
+\end{enumerate}
+
+Two gates remain pending: PI\_INTEL topology completion (dependent on the concurrent
+\texttt{PI\_RESEARCH\_PROGRAM\_INTEL\_001} workflow completing its classification phase),
+and implementation of the remaining 7 Tera templates. The current verdict is correctly
+PARTIAL.
