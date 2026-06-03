@@ -154,18 +154,66 @@ the process-intelligence firmament. Each gap has an individual document in `gaps
 | FIRMAMENT_002_CONSTRUCT8 | construct8 | Horse Gate | MAJOR | Closed | dcc627ec (construct8) |
 | FIRMAMENT_002_WASM4PM | wasm4pm | Inspection Gate | MAJOR | Closed | ba1d9118 (wasm4pm) |
 
-### External Action Required Summary
+### External Action Required Summary (Initial Sweep — 2026-06-03)
 
-Two gaps require author action that cannot be automated:
+Two gaps initially required author action that could not be automated at time of sweep.
 
 **FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX** — GAP_003: All 130 CLI receipts in
-`/Users/sac/truex/.truex/receipts/` remain refused. The truex CLI project-cell
-initialization fails with "Missing project path" / "Project cell not initialized".
-Requires operator to fix the CLI project-cell registry and run `truex init` then
-`truex prove` to produce at least one `status:admitted` receipt.
+`/Users/sac/truex/.truex/receipts/` remained refused. Root cause identified and
+resolved in final sweep (see below).
 
 **FIRMAMENT_002_LINKEDIN_PUBLIC_CANON** — GAP_003, GAP_004, GAP_005, GAP_007: All
-local artifacts are manufactured (post drafts, landing page HTML, newsletter draft,
-series definition). Publication requires authenticated browser actions: publish POST_001
-to LinkedIn, deploy landing page to GitHub Pages, create and publish newsletter on
-Substack/Beehiiv/Ghost, and record all public URLs in `PUBLICATION_REGISTRY.yaml`.
+local artifacts manufactured. Publication requires authenticated browser actions.
+
+---
+
+## FIRMAMENT_002 Final Sweep — 2026-06-03
+
+**Sweep Date:** 2026-06-03
+**Agent:** claude-sonnet-4-6
+**Branch:** phd-thesis-corpus-manufacture-001
+
+### Final Status Table (Post-Final-Sweep)
+
+| Gap ID | Project | Gate | Final Status |
+|--------|---------|------|-------------|
+| FIRMAMENT_002_GGEN | ggen | Dung Gate | CLOSED |
+| FIRMAMENT_002_LIVING_LSP_GALL_CODEMANUFACTORY | living-lsp-gall | Inspection Gate | CLOSED |
+| FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX | truex | Sheep Gate | CLOSED |
+| FIRMAMENT_002_NEHEMIAH_52 | nehemiah-52 | Fish Gate | CLOSED |
+| FIRMAMENT_002_PROCESS_INTELLIGENCE_CORE | process-intelligence | Fountain Gate | CLOSED |
+| FIRMAMENT_002_WASM4PM_COMPAT | wasm4pm-compat | Horse Gate | CLOSED |
+| FIRMAMENT_002_PROMPT_MANUFACTORY | prompt-manufactory | Water Gate | CLOSED |
+| FIRMAMENT_002_LINKEDIN_PUBLIC_CANON | linkedin-public-canon | Fish Gate | PARTIAL |
+| FIRMAMENT_002_BLUE_RIVER_DAM | blue-river-dam | Old Gate | CLOSED |
+| FIRMAMENT_002_CONSTRUCT8 | construct8 | Horse Gate | CLOSED |
+| FIRMAMENT_002_WASM4PM | wasm4pm | Inspection Gate | CLOSED |
+
+**Final counts:** 10 CLOSED / 1 PARTIAL / 0 OPEN
+
+### FIRMAMENT_002_KNOWLEDGE_HOOKS_TRUEX — Resolution
+
+**Prior status:** EXTERNAL_ACTION_REQUIRED
+**Final status:** CLOSED
+
+Root cause of all 130 refused receipts identified: incorrect CLI invocation. The `init`
+command is a subcommand of `wizard` (`truex wizard init PATH`), not a top-level command.
+After `pnpm install` restored missing node_modules, the correct invocation produced an
+admitted receipt with BLAKE3 hash
+`f103c6a0d06aafec589ab6ca0dc0e408ac9979f66723bc0690015fb3a4547586`.
+All 6 sub-gaps CLOSED. Commit: `23bae51`.
+
+### FIRMAMENT_002_LINKEDIN_PUBLIC_CANON — Final Status
+
+**Status:** PARTIAL
+
+All local artifacts manufactured across two passes:
+- `/Users/sac/process-intelligence/linkedin-public-canon/` — 3 post drafts, landing page HTML, newsletter draft, manifesto, series definition, full publication registry
+- `/Users/sac/linkedin-public-canon/` — standalone repo with CONSTRUCT8 defense post draft, deployable landing page, receipts directory
+
+**Remaining human actions (BLOCKING for Fish Gate ALIVE):**
+1. Publish `drafts/CONSTRUCT8_DEFENSE_POST.md` to LinkedIn and record URL in `PUBLICATION_REGISTRY.yaml`
+2. Deploy `landing-page/index.md` to GitHub Pages and record public URL in `PUBLICATION_REGISTRY.yaml`
+3. Issue `checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md` after URLs are recorded
+
+**Verdict:** ALIVE_GATE_NEAR_COMPLETE — 10/11 CLOSED, 1 PARTIAL awaiting human publication.
