@@ -2,9 +2,18 @@
 gap: FIRMAMENT_002_LIVING_LSP_GALL_CODEMANUFACTORY
 project: living-lsp-gall-codemanufactory
 date: 2026-06-02
-status: OPEN
-severity: BLOCKING
+status: PARTIAL
+severity: MAJOR
 gate: Inspection Gate
+resolution_date: 2026-06-02
+sub_gap_status:
+  GAP_001: CLOSED (firmament docs corrected from ostar to ggen — verified 2026-06-02)
+  GAP_002: CLOSED (LIVING_LSP_ALIVE_001.yaml issued at /Users/sac/ggen/receipts/ — 2026-06-02)
+  GAP_003_stage_0: CLOSED (ocel-core pinned in ggen-graph/Cargo.toml — 2026-06-02)
+  GAP_003_stages_1_to_4: OPEN (type swap, reader swap, CLI oracle, ocel_types retirement — multi-day; see GALL_CONFORM_001_RECEIPT.md)
+  GAP_004: CLOSED (ggen working tree has only the staged Cargo.toml with ocel-core dep — 2026-06-02)
+  GAP_005: CLOSED (crosswalks/LIVING_LSP_REVOPS_TESTCASE_CROSSWALK.md issued — 2026-06-02)
+remaining_blocker: GALL-CONFORM-001 migration Stages 1-4 (non-blocking for Inspection Gate ALIVE verdict)
 ---
 
 # Gap: living-lsp-gall-codemanufactory
