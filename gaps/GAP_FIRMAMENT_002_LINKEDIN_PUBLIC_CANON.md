@@ -2,8 +2,8 @@
 gap: FIRMAMENT_002_LINKEDIN_PUBLIC_CANON
 project: linkedin-public-canon
 date: 2026-06-02
-date-updated: 2026-06-02
-status: PARTIAL
+date-updated: 2026-06-03
+status: EXTERNAL_ACTION_REQUIRED
 severity: BLOCKING
 gate: Fish Gate
 resolution-checkpoint: checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md
@@ -122,3 +122,57 @@ Ordered steps to bring linkedin-public-canon from its current state (ABSENT) to 
 ## Doctrine Note
 
 A project that exists only in a ledger and not on the filesystem violates the foundational principle that every ALIVE claim must be grounded in a locally verifiable artifact — no artifact, no gate, no verdict.
+
+---
+
+## Addendum — 2026-06-03: EXTERNAL_ACTION_REQUIRED
+
+**Agent:** Claude Code (automated closure sweep, FIRMAMENT_002 series)
+**Date:** 2026-06-03
+**Prior status:** PARTIAL
+
+### What was verified
+
+The local workspace at `/Users/sac/process-intelligence/linkedin-public-canon/` was inspected. The following artifacts are present and committed:
+
+| Artifact | Path | Status |
+|---|---|---|
+| Publication registry | `PUBLICATION_REGISTRY.yaml` | POPULATED — 3 posts + newsletter + manifesto + landing page entries |
+| Post drafts (3) | `posts/POST_001_C8_DEFENSE_SENTENCE.md`, `POST_002_RUST_WITNESS.md`, `POST_003_ACTIVITY_VS_EVIDENCE.md` | DRAFT_COMPLETE |
+| Series definition | `posts/SERIES_DEFINITION.md` | ACTIVE — weekly cadence, topic framework defined |
+| Newsletter issue | `newsletter/ISSUE_001_DRAFT.md` | DRAFT_COMPLETE |
+| Manifesto | `MANIFESTO.md` | DRAFT_COMPLETE |
+| Landing page | `artifacts/landing_page/index.html` | DRAFT_COMPLETE |
+| Project configuration | `CLAUDE.md` | PRESENT |
+
+All seven local-filesystem sub-gaps (001–007) have been addressed at the artifact level:
+- GAP_LINKEDIN_PUBLIC_CANON_001: CLOSED — local workspace exists
+- GAP_LINKEDIN_PUBLIC_CANON_002: CLOSED — registry populated with schema and entries
+- GAP_LINKEDIN_PUBLIC_CANON_006: CLOSED — MANIFESTO.md written from ALIVE-gated doctrine
+- GAP_LINKEDIN_PUBLIC_CANON_003: PARTIAL — POST_001 draft complete; LinkedIn URL is PENDING
+- GAP_LINKEDIN_PUBLIC_CANON_004: PARTIAL — landing page HTML complete; GitHub Pages URL is PENDING
+- GAP_LINKEDIN_PUBLIC_CANON_005: PARTIAL — ISSUE_001_DRAFT.md complete; newsletter platform URL is PENDING
+- GAP_LINKEDIN_PUBLIC_CANON_007: PARTIAL — series definition + 3 post drafts complete; publication PENDING
+
+### Why automation cannot fully close this gap
+
+The remaining blockers require human author action that no local automation can perform:
+
+1. **LinkedIn publication** — Posting to linkedin.com/in/seanchatman requires authenticated browser action by the account owner. No API key or programmatic access exists. Post URLs cannot be generated without publication.
+2. **GitHub Pages deployment** — Deploying `artifacts/landing_page/index.html` to a public URL requires creating/configuring a GitHub Pages repository under the author's account.
+3. **Newsletter platform** — Creating a Substack, Beehiiv, or Ghost account and publishing ISSUE_001 requires account registration and manual author action.
+4. **Fish Gate ALIVE verdict** — The verdict cannot be issued until at least one LinkedIn post URL and one public landing page URL are recorded in PUBLICATION_REGISTRY.yaml with `status: PUBLISHED`.
+
+### Required author actions to close this gap
+
+Ordered by BLOCKING priority:
+
+1. Publish POST_001 (`posts/POST_001_C8_DEFENSE_SENTENCE.md`) to LinkedIn. Record the post URL in `PUBLICATION_REGISTRY.yaml` under `POST_001.linkedin_url`. Change `status: DRAFT` to `status: PUBLISHED`.
+2. Deploy `artifacts/landing_page/index.html` to GitHub Pages or equivalent. Record the public URL in `PUBLICATION_REGISTRY.yaml` under `LANDING_PAGE.public_url`. Change `status: DRAFT_COMPLETE` to `status: PUBLISHED`.
+3. (Secondary — Water Gate) Create newsletter platform account. Publish `newsletter/ISSUE_001_DRAFT.md`. Record platform and issue URLs in registry.
+4. (Secondary — Sheep Gate) Publish `MANIFESTO.md` to a public URL. Record in registry.
+5. After steps 1 and 2 are complete: issue `checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md` verdict and commit. Update this gap status to CLOSED.
+
+### Status update
+
+This gap is classified **EXTERNAL_ACTION_REQUIRED**. No further local artifact work is needed. The gap remains open solely because LinkedIn, GitHub Pages, and newsletter platform actions require the human author. Automation has manufactured every local artifact required.
