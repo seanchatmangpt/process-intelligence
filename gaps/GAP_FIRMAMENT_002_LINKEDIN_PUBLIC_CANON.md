@@ -2,9 +2,11 @@
 gap: FIRMAMENT_002_LINKEDIN_PUBLIC_CANON
 project: linkedin-public-canon
 date: 2026-06-02
-status: OPEN
+date-updated: 2026-06-02
+status: PARTIAL
 severity: BLOCKING
 gate: Fish Gate
+resolution-checkpoint: checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md
 ---
 
 # Gap: linkedin-public-canon

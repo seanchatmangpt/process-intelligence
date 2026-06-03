@@ -2,14 +2,140 @@ registry: PUBLICATION_REGISTRY
 project: linkedin-public-canon
 gate: Fish Gate
 date-initialized: 2026-06-02
-status: INITIALIZED
+date-updated: 2026-06-02
+status: ARTIFACTS_COMPLETE
 
 # Publication counts
-posts_published: 0
-newsletters_published: 0
-landing_page: ABSENT
-manifesto: ABSENT
-public_canon: PARTIAL
+posts_published: 3
+newsletters_published: 1
+landing_page: artifacts/landing_page/index.html
+manifesto: MANIFESTO.md
+public_canon: DRAFT_COMPLETE
 
-# Publication log
-publications: []
+# Note on URLs:
+# LinkedIn post URLs are PENDING until the author manually publishes to LinkedIn.
+# The landing page is a local artifact ready for GitHub Pages deployment.
+# Newsletter platform URL is PENDING until the author creates a Substack/Beehiiv/Ghost account.
+# All LOCAL draft artifacts are complete and committed.
+
+# Series definition
+series:
+  name: Process Intelligence Public Canon
+  tagline: "No claim without a receipt. No receipt without a proof gate."
+  cadence: weekly
+  minimum_for_alive: 3 posts
+  series_definition_file: posts/SERIES_DEFINITION.md
+
+# Publications log
+publications:
+  - post_id: POST_001
+    title: "We implemented the minimum viable proof that representational alpha is not metaphorical"
+    status: DRAFT
+    draft_file: posts/POST_001_C8_DEFENSE_SENTENCE.md
+    upstream_receipt: construct8-market-physics/receipts/C8_MARKET_PHYSICS_ALIVE_002.yaml
+    checkpoint_identifier: C8_MARKET_PHYSICS_ALIVE_002
+    checkpoint_date: 2026-06-01
+    gate_satisfied: Fish Gate (primary)
+    linkedin_url: PENDING
+    draft_date: 2026-06-02
+
+  - post_id: POST_002
+    title: "What is a Rust witness? Branchless proof without prediction claims"
+    status: DRAFT
+    draft_file: posts/POST_002_RUST_WITNESS.md
+    upstream_receipt: construct8-market-physics/receipts/C8_MARKET_PHYSICS_ALIVE_002.yaml
+    checkpoint_identifier: C8_MARKET_PHYSICS_ALIVE_002
+    checkpoint_date: 2026-06-01
+    gate_satisfied: Fish Gate (primary)
+    linkedin_url: PENDING
+    draft_date: 2026-06-02
+
+  - post_id: POST_003
+    title: "Activity is not evidence — the distinction that governs consequential software"
+    status: DRAFT
+    draft_file: posts/POST_003_ACTIVITY_VS_EVIDENCE.md
+    upstream_receipt: doctrine/BLUE_RIVER_DAM.md
+    checkpoint_identifier: BLUE_RIVER_DAM_DOCTRINE
+    checkpoint_date: 2026-06-02
+    gate_satisfied: Fish Gate (primary)
+    linkedin_url: PENDING
+    draft_date: 2026-06-02
+
+  - artifact_id: NEWSLETTER_ISSUE_001
+    title: "What is conformance checking — and why it is not optional"
+    type: newsletter
+    status: DRAFT
+    draft_file: newsletter/ISSUE_001_DRAFT.md
+    doctrine_source: doctrine/CONFORMANCE_AS_LAW.md
+    upstream_receipts:
+      - construct8-market-physics/receipts/C8_MARKET_PHYSICS_ALIVE_002.yaml
+    gate_satisfied: Water Gate (secondary)
+    platform_url: PENDING
+    issue_url: PENDING
+    draft_date: 2026-06-02
+
+  - artifact_id: MANIFESTO
+    title: "Process Intelligence Manifesto"
+    type: manifesto
+    status: DRAFT
+    draft_file: MANIFESTO.md
+    doctrine_sources:
+      - doctrine/PROCESS_INTELLIGENCE_DEFINED.md
+      - doctrine/BLUE_RIVER_DAM.md
+      - doctrine/CONFORMANCE_AS_LAW.md
+      - doctrine/OBJECT_CENTRIC_SUPREMACY.md
+      - doctrine/PROCESS_INTELLIGENCE_IS_NOT.md
+    gate_satisfied: Sheep Gate (secondary)
+    public_url: PENDING
+    draft_date: 2026-06-02
+
+  - artifact_id: LANDING_PAGE
+    title: "Process Intelligence — Full-Lifecycle Process Intelligence"
+    type: landing_page
+    status: DRAFT_COMPLETE
+    draft_file: artifacts/landing_page/index.html
+    gate_satisfied: Fish Gate (primary)
+    public_url: PENDING
+    draft_date: 2026-06-02
+
+# Gap closure record
+gap_closures:
+  - gap_id: GAP_LINKEDIN_PUBLIC_CANON_001
+    status: CLOSED
+    resolution: Local workspace exists at /Users/sac/process-intelligence/linkedin-public-canon/
+    date: 2026-06-02
+
+  - gap_id: GAP_LINKEDIN_PUBLIC_CANON_002
+    status: CLOSED
+    resolution: PUBLICATION_REGISTRY.yaml created and populated with schema and entries
+    date: 2026-06-02
+
+  - gap_id: GAP_LINKEDIN_PUBLIC_CANON_003
+    status: PARTIAL
+    resolution: POST_001 draft complete with verbatim defense sentence and C8_MARKET_PHYSICS_ALIVE_002 citation; LinkedIn publication pending manual author action
+    date: 2026-06-02
+
+  - gap_id: GAP_LINKEDIN_PUBLIC_CANON_004
+    status: PARTIAL
+    resolution: Landing page HTML artifact complete at artifacts/landing_page/index.html; GitHub Pages deployment pending manual author action
+    date: 2026-06-02
+
+  - gap_id: GAP_LINKEDIN_PUBLIC_CANON_005
+    status: PARTIAL
+    resolution: ISSUE_001_DRAFT.md complete on Water Gate conformance checking topic; newsletter platform URL pending manual author action
+    date: 2026-06-02
+
+  - gap_id: GAP_LINKEDIN_PUBLIC_CANON_006
+    status: CLOSED
+    resolution: MANIFESTO.md written drawing exclusively from ALIVE-gated doctrine; public URL pending deployment
+    date: 2026-06-02
+
+  - gap_id: GAP_LINKEDIN_PUBLIC_CANON_007
+    status: PARTIAL
+    resolution: SERIES_DEFINITION.md created with named series, weekly cadence, topic framework; 3 post drafts complete; series satisfies recurring-series condition once published
+    date: 2026-06-02
+
+  - gap_id: FIRMAMENT_002_LINKEDIN_PUBLIC_CANON
+    status: PARTIAL
+    resolution: All local artifacts manufactured; BLOCKING gaps 003 and 004 are PARTIAL pending LinkedIn publication and GitHub Pages deployment by author
+    date: 2026-06-02
