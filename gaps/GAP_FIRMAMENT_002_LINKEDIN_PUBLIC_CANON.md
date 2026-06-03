@@ -176,3 +176,26 @@ Ordered by BLOCKING priority:
 ### Status update
 
 This gap is classified **EXTERNAL_ACTION_REQUIRED**. No further local artifact work is needed. The gap remains open solely because LinkedIn, GitHub Pages, and newsletter platform actions require the human author. Automation has manufactured every local artifact required.
+
+---
+
+## PARTIAL_UPDATE Addendum — 2026-06-02
+
+**Status:** PARTIAL (all local artifacts manufactured; publication actions require human author)
+
+### What was closed
+
+- **GAP_LINKEDIN_PUBLIC_CANON_001 (no directory):** CLOSED — workspace exists at `/Users/sac/process-intelligence/linkedin-public-canon/`
+- **GAP_LINKEDIN_PUBLIC_CANON_002 (no registry):** CLOSED — `PUBLICATION_REGISTRY.yaml` fully populated with 3 posts, newsletter, manifesto, landing page entries
+- **GAP_LINKEDIN_PUBLIC_CANON_006 (no manifesto):** CLOSED — `MANIFESTO.md` written from ALIVE-gated doctrine
+- All seven local artifact sub-gaps resolved at commit `146460c`
+
+### What remains (EXTERNAL_ACTION_REQUIRED)
+
+Three sub-gaps require human author action that no local automation can perform:
+- **GAP_LINKEDIN_PUBLIC_CANON_003:** LinkedIn post publication — requires authenticated browser session by account owner
+- **GAP_LINKEDIN_PUBLIC_CANON_004:** GitHub Pages deployment — requires creating/configuring repository under author's account
+- **GAP_LINKEDIN_PUBLIC_CANON_005:** Newsletter platform — requires account registration and manual author action
+- **GAP_LINKEDIN_PUBLIC_CANON_007:** Series publication — 3 post drafts complete; publication PENDING
+
+The Fish Gate ALIVE verdict cannot be issued until at least one LinkedIn post URL and one public landing page URL are recorded in `PUBLICATION_REGISTRY.yaml` with `status: PUBLISHED`.

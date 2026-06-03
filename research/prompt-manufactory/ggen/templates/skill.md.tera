@@ -1,9 +1,9 @@
-# Skill Warrant: {{ skill_id }}
+# Skill Warrant: {{ skillId }}
 
-**Program:** {{ program_name }}
-**Skill URI:** {{ skill_uri }}
-**Authority Layer:** Research Program Law
-**Manufacturing Timestamp:** {{ mfg_timestamp }}
+**Skill Label:** {{ skillLabel }}
+**Mission:** {{ skillMission }}
+**Authority Layer:** Skill Law
+**Refusal Condition:** {{ skillRefusal | default(value="NONE") }}
 
 ---
 
@@ -11,104 +11,16 @@
 
 | Property | Value |
 |----------|-------|
-| **Skill ID** | {{ skill_id }} |
-| **Canonical Name** | {{ skill_name }} |
-| **Description** | {{ skill_description }} |
-| **Proficiency Levels** | {{ proficiency_levels | join(", ") }} |
-| **Authority Reference** | {{ authority_ref }} |
-
----
-
-## Capability Matrix
-
-| Capability | Level | Proof Gate | Status |
-|-----------|-------|-----------|--------|
-{%- for capability in capabilities %}
-| {{ capability.name }} | {{ capability.level }} | {{ capability.proof_gate }} | {{ capability.status }} |
-{%- endfor %}
-
----
-
-## Competency Assessment
-
-### Knowledge Requirements
-
-{%- for knowledge in knowledge_requirements %}
-- {{ knowledge.topic }}
-  - **Depth:** {{ knowledge.depth }}
-  - **Evidence:** {{ knowledge.evidence_type }}
-  - **Authority:** {{ knowledge.authority }}
-
-{%- endfor %}
-
-### Practical Skills
-
-{%- for practical_skill in practical_skills %}
-- {{ practical_skill.name }}
-  - **Demonstration:** {{ practical_skill.demonstration_required }}
-  - **Test Cases:** {{ practical_skill.test_cases }}
-  - **Proof Requirement:** {{ practical_skill.proof_requirement }}
-
-{%- endfor %}
-
----
-
-## Prerequisites
-
-{%- for prerequisite in prerequisites %}
-- {{ prerequisite.skill_name }} ({{ prerequisite.required_level }})
-  - **Authority:** {{ prerequisite.authority }}
-  - **Waiver Terms:** {{ prerequisite.waiver_terms }}
-
-{%- endfor %}
-
----
-
-## Success Metrics
-
-{%- for metric in success_metrics %}
-- **{{ metric.name }}**
-  - **Threshold:** {{ metric.threshold }}
-  - **Measurement:** {{ metric.measurement_method }}
-  - **Warrant Authority:** {{ metric.warrant_authority }}
-
-{%- endfor %}
-
----
-
-## Proof of Competency
-
-- **Proof Gate:** {{ proof_gate }}
-- **Test Case(s):** {{ test_cases | join(", ") }}
-- **Validation Authority:** {{ validation_authority }}
-- **Receipt Required:** {{ receipt_required }}
-
----
-
-## Boundary Conditions
-
-{%- for boundary in boundary_conditions %}
-- **Condition:** {{ boundary.condition }}
-  - **Constraint:** {{ boundary.constraint }}
-  - **Enforcement:** {{ boundary.enforcement }}
-
-{%- endfor %}
+| **Skill ID** | {{ skillId }} |
+| **Canonical Name** | {{ skillLabel }} |
+| **Mission** | {{ skillMission }} |
+| **Refusal Gate** | {{ skillRefusal | default(value="NONE") }} |
 
 ---
 
 ## Manufacturing Authorization
 
-- **Authorized by:** {{ authorized_by }}
-- **Authority Layer:** {{ authority_layer }}
-- **Binding Doctrine:** {{ binding_doctrine }}
-- **COVENANT Status:** {{ covenant_status }}
-
----
-
-## Warrant Proof
-
-```
-receipt_hash: {{ receipt_hash }}
-manufacture_chain: {{ manufacture_chain }}
-proof_timestamp: {{ proof_timestamp }}
-```
+- **Authority Layer:** Skill Law
+- **Warrant Type:** Skill Permit
+- **Status:** AUTHORIZED
+- **Binding Doctrine:** Research Program Intelligence Law

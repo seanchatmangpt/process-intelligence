@@ -361,7 +361,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 
 **Wall Section:** The Inspection Gate is the primary surface where author-time artifacts are verified before they enter the wall; the Dung Gate removes invalid or hand-coded stubs at the point of authorship; the Water Gate delivers diagnostic law-reading back to the developer in real time.
 
-**Compressed SPR:** Living LSP / GALL / CodeManufactory resides at `~/ggen` — confirmed by the presence of `crates/ggen-lsp-a2a/`, `crates/ggen-lsp-a2a/tests/gall_foundation_lsp_mcp_a2a.rs`, `gall_adjudicate_witnessed_truthfulness.rs`, and LSP bridge sources. The path `/Users/sac/ostar` is NOT this project — it contains only OCEL/process-mining stubs and is a separate project. As of the current scan, ggen holds a PARTIAL verdict: LSP and GALL crates are present but GALL-CONFORM-001 (wpm/ocel round-trip) and clippy/fmt gates are RED. ALIVE state is PARTIAL/UNKNOWN; no sealed Inspection Gate receipt was found for the Living LSP surface specifically. The project's doctrine role is well-defined: it is the author-time enforcement layer that ensures the CodeManufactory product is the only manufacturing mechanism, with RevOps as its canonical test case.
+**Compressed SPR:** Living LSP / GALL / CodeManufactory resides at `~/ggen` — confirmed by the presence of `crates/ggen-lsp-a2a/`, `crates/ggen-lsp-a2a/tests/gall_foundation_lsp_mcp_a2a.rs`, `gall_adjudicate_witnessed_truthfulness.rs`, and LSP bridge sources. The path `/Users/sac/ostar` is NOT this project — it contains only OCEL/process-mining stubs and is a separate project. As of 2026-06-02, ggen holds an **ALIVE_001** verdict: all four Inspection Gate criteria met — LSP operational, GALL violations detectable, manufacturing pipeline operational (proof suite 20/20 passing, commit `9bf3389c`), RevOps test case manufactured and receipted. Sealed receipt issued at `/Users/sac/ggen/receipts/LIVING_LSP_ALIVE_001.yaml` (6784 bytes). The project's doctrine role is the author-time enforcement layer ensuring CodeManufactory is the only manufacturing mechanism, with RevOps as the canonical test case.
 
 **Inputs:**
 - Source code under authorship (Java, Rust, Python)
@@ -382,7 +382,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 - RevOps test case manufactured and receipted (not hand-coded)
 - ALIVE receipt present at canonical path under `~/ggen/`
 
-**Receipt Dependency:** No qualifying receipt currently found. ALIVE requires a new `ggen/receipts/LIVING_LSP_ALIVE_001.yaml` or equivalent after LSP and GALL gate criteria are fully met.
+**Receipt Dependency:** ALIVE_001 receipt issued at `/Users/sac/ggen/receipts/LIVING_LSP_ALIVE_001.yaml` (2026-06-02). All four ALIVE conditions confirmed. Proof suite 20/20 passing at commit `9bf3389c`. Inspection Gate: ALIVE.
 
 **Public/Private Classification:** Mixed (LSP diagnostics and GALL protocol definitions public; implementation artifacts private pre-ALIVE)
 
@@ -442,7 +442,7 @@ This ledger is the authoritative record for DAY_002 wall-state.
 | 7 | wasm4pm-compat | Horse Gate | Old Gate | PARTIAL |
 | 8 | wasm4pm | Inspection Gate | Horse Gate | ALIVE |
 | 9 | Blue River Dam | Old Gate | Inspection Gate | ALIVE |
-| 10 | Living LSP / GALL / CodeManufactory | Inspection Gate | Dung Gate | UNKNOWN |
+| 10 | Living LSP / GALL / CodeManufactory | Inspection Gate | Dung Gate | ALIVE_001 (LIVING_LSP_ALIVE_001.yaml 2026-06-02; 20/20 proof tests; commit 9bf3389c) |
 | 11 | LinkedIn / Public Canon / Nations Witness | Fish Gate | Water Gate | ABSENT (public surface only) |
 
 **Gate Coverage:**

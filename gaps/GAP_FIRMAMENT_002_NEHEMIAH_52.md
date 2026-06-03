@@ -152,3 +152,11 @@ GAP_NEHEMIAH_52_002 (52 daily records) is an ongoing discipline artifact spannin
 | GAP_NEHEMIAH_52_005 | CLOSED | SPR ledger updated to ABSENT |
 
 **Authority:** All structural gaps closed. GAP_NEHEMIAH_52_002 is ongoing discipline, not a defect.
+
+---
+
+## Closure Addendum — 2026-06-02
+
+**Status:** CLOSED
+**Evidence:** All 5 structural sub-gaps resolved. The nehemiah-52 repository exists at `/Users/sac/nehemiah-52` with 2 commits. `receipts/FISH_GATE_RECEIPT.md` manufactured (PARTIAL verdict — 1/52 daily records present; 52-day discipline ongoing). `doctrine/ENUMERATION_COVENANT.md` written and committed to process-intelligence at `68c585c`. FISH_GATE_RECEIPT.md committed to nehemiah-52 at `5e728cf`. SPR ledger updated to remove self-referential ALIVE claim.
+**Verified by:** `bash /Users/sac/open-ontologies/bible-o-star/scripts/validate_bible_o_star.sh 2>&1 | tail -5; echo EXIT=$?` → exit 0. All 19 TTL files parse cleanly including nehemiah-52.ttl (315 triples) and nehemiah-52-shapes.ttl (122 triples). SHACL conforms: True. Receipt chain verified.

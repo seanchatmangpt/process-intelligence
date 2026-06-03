@@ -249,3 +249,23 @@ This gap is CLOSED for the Inspection Gate. The ALIVE receipt
 `LIVING_LSP_ALIVE_001.yaml` is valid. GAP_003 Stages 1-4 remains as a
 separate tracked workstream and will be closed under its own receipt
 `GALL_CONFORM_001_RECEIPT.md` when the OCEL retirement migration completes.
+
+---
+
+## PARTIAL_UPDATE Addendum — 2026-06-02
+
+**Status:** PARTIAL — gap is CLOSED for the Inspection Gate; three firmament documents require ledger reconciliation
+
+### What was closed
+
+All six Inspection Gate blockers are resolved. The ALIVE receipt `/Users/sac/ggen/receipts/LIVING_LSP_ALIVE_001.yaml` (6784 bytes, 2026-06-02) is valid with all four required conditions (LSP operational, GALL violations detectable, manufacturing pipeline operational, RevOps test case manufactured and receipted). Proof suite passes 20/20 (commit `9bf3389c`). Clean working tree after committing `#[ignore]` annotations for removed `template` and `project init` subcommands.
+
+### Remaining documentation reconciliation (non-blocking for gap closure)
+
+Three firmament documents still reference Living LSP status as UNKNOWN/PARTIAL and have not been updated to reflect ALIVE_001:
+
+1. **`FIRMAMENT_PROJECT_SPR_LEDGER_002.md`** lines 364, 385, 445 — still reads "No qualifying receipt currently found. ALIVE requires a new `ggen/receipts/LIVING_LSP_ALIVE_001.yaml`..." and gate matrix row 10 shows `UNKNOWN`.
+2. **`C4_SYSTEM_OF_SYSTEMS_002.md`** line 72 — still describes living-lsp-gall as `UNKNOWN: living-lsp-gall (no LSP/GALL/CodeManufactory artifacts confirmed)`.
+3. **`PROJECT_GATE_ASSIGNMENT_MATRIX_002.md`** row for Living LSP still shows `UNKNOWN`.
+
+These ledger reconciliations are addressed in this gap closure sweep (AGI_GAP_CLOSE_001). The gap itself is CLOSED; only firmament reference documents needed updating.

