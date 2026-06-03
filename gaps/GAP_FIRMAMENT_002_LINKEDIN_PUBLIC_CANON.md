@@ -3,10 +3,11 @@ gap: FIRMAMENT_002_LINKEDIN_PUBLIC_CANON
 project: linkedin-public-canon
 date: 2026-06-02
 date-updated: 2026-06-03
-status: PARTIAL
+status: INFRASTRUCTURE_READY
 severity: BLOCKING
 gate: Fish Gate
 resolution-checkpoint: checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md
+repository_url: https://github.com/seanchatmangpt/linkedin-public-canon
 ---
 
 # Gap: linkedin-public-canon
@@ -233,3 +234,38 @@ A standalone git repository was initialized at `/Users/sac/linkedin-public-canon
 1. Publish `drafts/CONSTRUCT8_DEFENSE_POST.md` to LinkedIn. Record post URL in `PUBLICATION_REGISTRY.yaml`. Change `status: DRAFT` to `status: PUBLISHED`.
 2. Deploy `landing-page/index.md` to GitHub Pages. Record public URL in `PUBLICATION_REGISTRY.yaml`. Change `status: DRAFT_COMPLETE` to `status: PUBLISHED`.
 3. After steps 1 and 2: issue `checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md` and update this gap status to CLOSED.
+
+---
+
+## INFRASTRUCTURE_READY Addendum — 2026-06-03: GitHub Remote Live
+
+**Agent:** Claude Code (FIRMAMENT_002 gap closure sweep — Phase 3)
+**Date:** 2026-06-03
+**Prior status:** PARTIAL
+**New status:** INFRASTRUCTURE_READY
+
+### What was done
+
+1. Created private GitHub repository: `https://github.com/seanchatmangpt/linkedin-public-canon`
+2. Added remote to local repo at `/Users/sac/linkedin-public-canon` and pushed `main` branch
+3. Updated `PUBLICATION_REGISTRY.yaml`:
+   - Added `repository_url: https://github.com/seanchatmangpt/linkedin-public-canon`
+   - Set `LANDING_PAGE.public_url` to `EXTERNAL_ACTION_REQUIRED` with note explaining private repo / Pages constraint
+   - Advanced `GAP_LINKEDIN_PUBLIC_CANON_001` to CLOSED (remote live, code pushed)
+   - Advanced `GAP_LINKEDIN_PUBLIC_CANON_004` to INFRASTRUCTURE_READY (content authored, hosting pending)
+4. Committed and pushed registry update at commit `a9b4deb`
+
+### Sub-gap status update
+
+| Gap | Prior | Now | Blocker |
+|-----|-------|-----|---------|
+| GAP_LINKEDIN_PUBLIC_CANON_001 | PARTIAL | **CLOSED** | None — repo exists locally and on GitHub |
+| GAP_LINKEDIN_PUBLIC_CANON_002 | CLOSED | **CLOSED** | None |
+| GAP_LINKEDIN_PUBLIC_CANON_003 | PARTIAL | **PARTIAL** | LinkedIn post publication requires human browser action |
+| GAP_LINKEDIN_PUBLIC_CANON_004 | PARTIAL | **INFRASTRUCTURE_READY** | Content authored; private repo cannot use free GitHub Pages — deploy to Netlify/Vercel/custom domain |
+
+### Remaining human actions to reach ALIVE
+
+1. Deploy `landing-page/index.md` to a hosting platform (Netlify, Vercel, or custom domain). Record the live URL in `PUBLICATION_REGISTRY.yaml` under `LANDING_PAGE.public_url`. Update status to `PUBLISHED`.
+2. Publish `drafts/CONSTRUCT8_DEFENSE_POST.md` to LinkedIn. Record the post URL in `PUBLICATION_REGISTRY.yaml` under `POST_001.linkedin_url`. Update status to `PUBLISHED`.
+3. After both steps: issue `checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md` and commit. Update this gap status from INFRASTRUCTURE_READY to CLOSED.

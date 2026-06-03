@@ -205,15 +205,18 @@ All 6 sub-gaps CLOSED. Commit: `23bae51`.
 
 ### FIRMAMENT_002_LINKEDIN_PUBLIC_CANON — Final Status
 
-**Status:** PARTIAL
+**Status:** INFRASTRUCTURE_READY (advanced from PARTIAL — 2026-06-03)
 
 All local artifacts manufactured across two passes:
 - `/Users/sac/process-intelligence/linkedin-public-canon/` — 3 post drafts, landing page HTML, newsletter draft, manifesto, series definition, full publication registry
 - `/Users/sac/linkedin-public-canon/` — standalone repo with CONSTRUCT8 defense post draft, deployable landing page, receipts directory
 
-**Remaining human actions (BLOCKING for Fish Gate ALIVE):**
-1. Publish `drafts/CONSTRUCT8_DEFENSE_POST.md` to LinkedIn and record URL in `PUBLICATION_REGISTRY.yaml`
-2. Deploy `landing-page/index.md` to GitHub Pages and record public URL in `PUBLICATION_REGISTRY.yaml`
-3. Issue `checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md` after URLs are recorded
+GitHub remote created (private): `https://github.com/seanchatmangpt/linkedin-public-canon`
+Code pushed to origin/main at commit `a9b4deb`.
 
-**Verdict:** ALIVE_GATE_NEAR_COMPLETE — 10/11 CLOSED, 1 PARTIAL awaiting human publication.
+**Remaining human actions (BLOCKING for Fish Gate ALIVE):**
+1. Deploy `landing-page/index.md` to Netlify, Vercel, or custom domain (private repo — GitHub Pages requires Pro). Record URL in `PUBLICATION_REGISTRY.yaml` under `LANDING_PAGE.public_url`.
+2. Publish `drafts/CONSTRUCT8_DEFENSE_POST.md` to LinkedIn and record URL in `PUBLICATION_REGISTRY.yaml` under `POST_001.linkedin_url`.
+3. Issue `checkpoints/LINKEDIN_PUBLIC_CANON_ALIVE_001.md` after both URLs are recorded.
+
+**Verdict:** INFRASTRUCTURE_READY — 10/11 CLOSED, 1 INFRASTRUCTURE_READY awaiting human publication.
