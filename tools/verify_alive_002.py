@@ -22,7 +22,7 @@ from typing import Iterable
 WORD_RE = re.compile(r"\b[\w’'-]+\b", re.UNICODE)
 DOI_RE = re.compile(r"(?:https?://(?:dx\.)?doi\.org/|\bdoi\s*:\s*|\b)(10\.\d{4,9}/[-._;()/:A-Z0-9]+)", re.I)
 AUTHOR_YEAR_RE = re.compile(r"\([^\n)]*[A-Za-z][^\n)]*(?:19|20)\d{2}[a-z]?[^\n)]*\)")
-STATUS_RE = re.compile(r"^\*\*Status:\*\*\s*(.+?)\s*$", re.I | re.M)
+STATUS_RE = re.compile(r"^(?:\*\*Status(?::\*\*|\*\*:)|status:)\s*(.+?)\s*$", re.I | re.M)
 OPEN_STATUS_RE = re.compile(r"\b(OPEN|PARTIAL(?:_ALIVE)?|BLOCKED|BUILD_BROKEN|UNKNOWN)\b", re.I)
 CLOSED_STATUS_RE = re.compile(r"\b(CLOSED|RESOLVED|ALIVE)\b", re.I)
 
@@ -114,6 +114,23 @@ def is_open_gap(text: str) -> bool:
     return bool(OPEN_STATUS_RE.search(status))
 
 
+def open_gap_inventory(root: Path) -> list[dict]:
+    accepted = re.compile(r"^## (?:Resolution Path|Required Remediation Path|Remediation Path|Mitigation Path)\s*$", re.M)
+    exact = re.compile(r"^## Resolution Path\s*$", re.M)
+    rows: list[dict] = []
+    for path in markdown_files(root, "gaps"):
+        text = read(path)
+        if is_open_gap(text):
+            rows.append({
+                "path": path.relative_to(root).as_posix(),
+                "status": status_of(text),
+                "has_exact_resolution_path": bool(exact.search(text)),
+                "has_mitigation_path": bool(accepted.search(text)),
+                "sha256": digest(path),
+            })
+    return rows
+
+
 def exact_resolution_path_probe(root: Path) -> list[Evidence]:
     out: list[Evidence] = []
     for path in markdown_files(root, "gaps"):
@@ -148,7 +165,8 @@ def build_receipt(root: Path) -> dict:
     }
     counts = {name: len(items) for name, items in probes.items()}
     criteria = {name: counts[name] >= threshold for name, threshold in thresholds.items()}
-    unmitigated = unmitigated_open_gaps(root)
+    open_gaps = open_gap_inventory(root)
+    unmitigated = [row["path"] for row in open_gaps if not row["has_mitigation_path"]]
     criteria["all_open_gaps_have_mitigation_path"] = not unmitigated
     passed = all(criteria.values())
 
@@ -164,6 +182,7 @@ def build_receipt(root: Path) -> dict:
         "criteria": criteria,
         "thresholds": thresholds,
         "counts": counts,
+        "open_gaps": open_gaps,
         "unmitigated_open_gaps": unmitigated,
         "evidence": {name: [asdict(item) for item in items] for name, items in probes.items()},
     }
