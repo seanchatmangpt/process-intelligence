@@ -1,0 +1,54 @@
+{
+  "schema": "process-intelligence.definition-of-done.seal/v1",
+  "name": "PROCESS_INTELLIGENCE_DEFINITION_OF_DONE_001",
+  "status": "ALIVE",
+  "standing": "RELEASE_CANDIDATE_DONE",
+  "scope": [
+    "artifact",
+    "evidence",
+    "gate",
+    "repository",
+    "release_candidate"
+  ],
+  "subject": {
+    "repository": "seanchatmangpt/process-intelligence",
+    "pull_request": 3,
+    "git_head": "bed1379ddadafd104a4957fd9bea0a1872fb50ca",
+    "git_tree": "2fbd170e7b8c2e1f6e7cc53e497d34d3d34212e5"
+  },
+  "execution": {
+    "workflow": "PROCESS_INTELLIGENCE_DEFINITION_OF_DONE",
+    "run_id": 31776067139,
+    "job_id": 94691638132,
+    "conclusion": "success",
+    "dod_tests": "6/6 PASS",
+    "alive_002": "PASS",
+    "dfcm_double_execution": "PASS",
+    "dfcm_byte_replay": "PASS",
+    "composite_falsifier_gate": "PASS",
+    "receipt_upload": "PASS"
+  },
+  "runtime_receipts": {
+    "definition_of_done_sha256": "d1e9a6781b0a2b86c8091b52ef8b24751bd17670b0a194d716fcd2bde7565756",
+    "dfcm_sha256": "8b2856291338e325c85d5fdb52c7b4d60d1b22982dab9f754ab30c63a93a6c33",
+    "manifest_sha256": "afeae63960a94fe63422d929c81fd65117d472660be72d908916b0213a8f9d24"
+  },
+  "artifact": {
+    "id": 9209900278,
+    "name": "PROCESS_INTELLIGENCE_DEFINITION_OF_DONE-bed1379ddadafd104a4957fd9bea0a1872fb50ca",
+    "digest": "sha256:e4c7366a00ede53f670c46f183c46ab8fe17b3f9dff69a3c68ca856d5ab7a502"
+  },
+  "falsifiers": {
+    "missing_scope": false,
+    "duplicate_scope": false,
+    "definition_without_requirements_or_falsifiers": false,
+    "missing_required_file": false,
+    "required_gate_failed": false,
+    "receipt_transport_failed": false
+  },
+  "finalization": {
+    "pre_seal_subject_only": true,
+    "final_branch_requires_reexecution": true,
+    "merge_commit_requires_main_reexecution": true
+  }
+}

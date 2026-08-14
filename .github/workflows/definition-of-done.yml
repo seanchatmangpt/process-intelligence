@@ -1,0 +1,77 @@
+name: PROCESS_INTELLIGENCE_DEFINITION_OF_DONE
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  definition-of-done:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - name: Record exact identity
+        run: |
+          git rev-parse HEAD
+          git rev-parse 'HEAD^{tree}'
+          python3 --version
+
+      - name: Verify DoD implementation
+        run: |
+          python3 -m py_compile tools/verify_done.py tests/test_definition_of_done.py
+          python3 -m unittest tests.test_definition_of_done -v
+
+      - name: Execute underlying ALIVE gate
+        run: |
+          mkdir -p .dod-runtime
+          python3 tools/verify_alive_002.py --root . --receipt .dod-runtime/alive.json --expect-head "$(git rev-parse HEAD)"
+
+      - name: Execute underlying DFCM twice
+        run: |
+          python3 tools/dfcm.py plan dfcm/process-intelligence.toml --root . --output .dod-runtime/dfcm-a.json --check
+          python3 tools/dfcm.py plan dfcm/process-intelligence.toml --root . --output .dod-runtime/dfcm-b.json --check
+          cmp .dod-runtime/dfcm-a.json .dod-runtime/dfcm-b.json
+
+      - name: Execute Definition of Done
+        run: |
+          python3 tools/verify_done.py --root . --output .dod-runtime/done.json --check
+
+      - name: Composite falsifier gate
+        run: |
+          python3 - <<'PY'
+          import json
+          alive = json.load(open('.dod-runtime/alive.json'))
+          dfcm = json.load(open('.dod-runtime/dfcm-a.json'))
+          done = json.load(open('.dod-runtime/done.json'))
+          assert alive['status'] == 'ALIVE', alive
+          assert dfcm['status'] == 'ALIVE', dfcm
+          assert dfcm['falsifiers']['do_path_admitted'] is False, dfcm['falsifiers']
+          assert done['status'] == 'ALIVE', done
+          assert done['standing'] == 'RELEASE_CANDIDATE_DONE', done
+          assert done['subject']['head'], done['subject']
+          assert done['subject']['tree'], done['subject']
+          print(json.dumps({
+              'status': 'DONE',
+              'subject': done['subject'],
+              'alive_receipt': alive.get('receipt_sha256', ''),
+              'dfcm_receipt': dfcm['receipt_sha256'],
+              'dod_receipt': done['receipt_sha256'],
+          }, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload Definition of Done receipts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PROCESS_INTELLIGENCE_DEFINITION_OF_DONE-${{ github.event.pull_request.head.sha || github.sha }}
+          path: .dod-runtime/
+          if-no-files-found: error
+          include-hidden-files: true
