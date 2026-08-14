@@ -1,0 +1,54 @@
+{
+  "schema": "chatmangpt.dfcm.seal.v1",
+  "name": "PROCESS_INTELLIGENCE_DFCM_ALIVE_001",
+  "status": "ALIVE",
+  "mode": "CONSTRUCT_ONLY",
+  "authority": "process-intelligence research foundry",
+  "observed_subject": {
+    "head": "ec039444a2ab66fcb1b7e890a93480da33ada05d",
+    "tree": "12fde6f66234a6a62806791b6c9ebc8d18dfcb97"
+  },
+  "manifest": {
+    "path": "dfcm/process-intelligence.toml",
+    "version": "26.8.13-dfcm.1",
+    "sha256": "d7677fadb5439a8fad929297817612b4129db68b3117e5e7a34a98a1dc337750"
+  },
+  "execution": {
+    "workflow": "PROCESS_INTELLIGENCE_DFCM",
+    "run_id": 31775065467,
+    "job_id": 94688700071,
+    "conclusion": "success",
+    "runtime_receipt_sha256": "7f9195acf59c56349a5300d25980c52a3545e74cc0b1aa13449f8e80be2f6e31"
+  },
+  "artifact": {
+    "id": 9209551242,
+    "name": "PROCESS_INTELLIGENCE_DFCM-ec039444a2ab66fcb1b7e890a93480da33ada05d",
+    "sha256": "02c633977e9b0a004579b95b621573a5d312a474c993d9a8a3fc1eea31a57be1",
+    "retention_expires": "2026-11-12T06:04:44Z"
+  },
+  "space": {
+    "cartesian_total": 6720,
+    "admitted_constructs": 2149,
+    "refused_constraints": 1211,
+    "refused_do": 3360,
+    "selected": 64
+  },
+  "verification": {
+    "unit_tests_passed": 7,
+    "unit_tests_failed": 0,
+    "double_execution_byte_identical": true,
+    "do_path_admitted": false,
+    "minimum_admitted": true,
+    "exact_head_bound": true,
+    "exact_tree_bound": true
+  },
+  "source_authority": [
+    "doctrine/ENUMERATION_COVENANT.md",
+    "doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md",
+    "doctrine/EVIDENCE_CHAIN.md",
+    "doctrine/RECEIPT_DOCTRINE.md",
+    "checkpoints/PROCESS_INTELLIGENCE_ALIVE_002.md",
+    "doctrine/DFCM_DESIGN_FOR_COMBINATORIAL_MAXIMALISM.md"
+  ],
+  "scope": "Reversible design-space enumeration, constraint refusal, deterministic selection, and receipt emission for process-intelligence. External-state changes remain outside this seal."
+}
