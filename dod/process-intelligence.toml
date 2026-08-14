@@ -1,0 +1,73 @@
+[meta]
+name = "process-intelligence"
+version = "26.8.13-dod.1"
+required_scopes = ["artifact", "evidence", "gate", "repository", "release_candidate"]
+
+[[definitions]]
+scope = "artifact"
+requires = ["identity", "source_binding", "reversibility", "verification"]
+falsifiers = ["anonymous_artifact", "unbound_source", "unverifiable_output"]
+
+[[definitions]]
+scope = "evidence"
+requires = ["named_witness", "receipt", "replay", "named_refusal"]
+falsifiers = ["activity_without_witness", "hash_only_receipt", "unreplayable_claim"]
+
+[[definitions]]
+scope = "gate"
+requires = ["named_gate", "exact_subject", "deterministic_execution", "fail_closed", "receipt_artifact"]
+falsifiers = ["synthetic_subject", "non_deterministic_result", "failure_relabelled_alive"]
+
+[[definitions]]
+scope = "repository"
+requires = ["alive_002", "dfcm_alive_001", "zero_unmitigated_gaps", "exact_head_receipt", "tests_green"]
+falsifiers = ["missing_required_gate", "unmitigated_gap", "head_drift"]
+
+[[definitions]]
+scope = "release_candidate"
+requires = ["repository_done", "mergeable", "draft_or_reviewed_pr", "all_required_checks_green", "no_unreceipted_external_state"]
+falsifiers = ["required_check_failed", "merge_conflict", "unreceipted_external_state"]
+
+[[required_files]]
+path = "checkpoints/PROCESS_INTELLIGENCE_ALIVE_002.md"
+kind = "checkpoint"
+
+[[required_files]]
+path = "checkpoints/PROCESS_INTELLIGENCE_DFCM_ALIVE_001.md"
+kind = "checkpoint"
+
+[[required_files]]
+path = "receipts/PROCESS_INTELLIGENCE_ALIVE_002.json"
+kind = "receipt"
+
+[[required_files]]
+path = "receipts/PROCESS_INTELLIGENCE_DFCM_ALIVE_001.json"
+kind = "receipt"
+
+[[required_files]]
+path = "doctrine/DFCM_DESIGN_FOR_COMBINATORIAL_MAXIMALISM.md"
+kind = "doctrine"
+
+[[required_files]]
+path = "doctrine/DEFINITION_OF_DONE.md"
+kind = "doctrine"
+
+[[required_files]]
+path = "tools/verify_alive_002.py"
+kind = "verifier"
+
+[[required_files]]
+path = "tools/dfcm.py"
+kind = "verifier"
+
+[[required_files]]
+path = "tools/verify_done.py"
+kind = "verifier"
+
+[commands]
+alive = "python3 tools/verify_alive_002.py --root . --output .dod-runtime/alive.json --check"
+dfcm = "python3 tools/dfcm.py plan dfcm/process-intelligence.toml --root . --output .dod-runtime/dfcm.json --check"
+
+[thresholds]
+required_definitions = 5
+required_files = 9
