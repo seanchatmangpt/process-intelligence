@@ -65,7 +65,7 @@ path = "tools/verify_done.py"
 kind = "verifier"
 
 [commands]
-alive = "python3 tools/verify_alive_002.py --root . --output .dod-runtime/alive.json --check"
+alive = "python3 tools/verify_alive_002.py --root . --receipt .dod-runtime/alive.json"
 dfcm = "python3 tools/dfcm.py plan dfcm/process-intelligence.toml --root . --output .dod-runtime/dfcm.json --check"
 
 [thresholds]

@@ -33,7 +33,7 @@ jobs:
       - name: Execute underlying ALIVE gate
         run: |
           mkdir -p .dod-runtime
-          python3 tools/verify_alive_002.py --root . --output .dod-runtime/alive.json --check
+          python3 tools/verify_alive_002.py --root . --receipt .dod-runtime/alive.json --expect-head "$(git rev-parse HEAD)"
 
       - name: Execute underlying DFCM twice
         run: |
@@ -62,7 +62,7 @@ jobs:
           print(json.dumps({
               'status': 'DONE',
               'subject': done['subject'],
-              'alive_receipt': alive['receipt_sha256'],
+              'alive_receipt': alive.get('receipt_sha256', ''),
               'dfcm_receipt': dfcm['receipt_sha256'],
               'dod_receipt': done['receipt_sha256'],
           }, indent=2, sort_keys=True))

@@ -57,6 +57,13 @@ class DefinitionOfDoneTests(unittest.TestCase):
         finally:
             td.cleanup()
 
+    def test_alive_command_matches_verifier_contract(self):
+        manifest = module.load_manifest(ROOT / "dod/process-intelligence.toml")
+        command = manifest["commands"]["alive"]
+        self.assertIn("--receipt", command)
+        self.assertNotIn("--output", command)
+        self.assertNotIn("--check", command)
+
     def test_receipt_digest_is_deterministic(self):
         a = module.inspect(ROOT, ROOT / "dod/process-intelligence.toml")
         b = module.inspect(ROOT, ROOT / "dod/process-intelligence.toml")
