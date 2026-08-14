@@ -46,6 +46,11 @@ class Alive002GateTests(unittest.TestCase):
             self.assertEqual(receipt["status"], "PARTIAL_ALIVE")
             self.assertEqual(receipt["counts"]["open_gaps_with_exact_resolution_path"], 1)
 
+    def test_status_parser_admits_supported_repository_spellings(self):
+        self.assertEqual(gate.status_of("**Status:** OPEN"), "OPEN")
+        self.assertEqual(gate.status_of("**Status**: PARTIAL"), "PARTIAL")
+        self.assertEqual(gate.status_of("status: BLOCKED"), "BLOCKED")
+
     def test_unmitigated_open_gap_fails_closed(self):
         with tempfile.TemporaryDirectory() as td:
             root = Path(td)

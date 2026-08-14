@@ -150,6 +150,36 @@ def unmitigated_open_gaps(root: Path) -> list[str]:
     return missing
 
 
+
+def doctrine_diagnostics(root: Path) -> list[dict]:
+    rows: list[dict] = []
+    for path in markdown_files(root, "doctrine"):
+        text = read(path)
+        words = len(WORD_RE.findall(text))
+        headings = re.findall(r"^#{1,2}\s+(.+?)\s*$", text, re.M)
+        if words >= 200:
+            rows.append({
+                "path": path.relative_to(root).as_posix(),
+                "words": words,
+                "law_or_definition_headings": [h for h in headings if re.search(r"\b(?:law|definition)\b", h, re.I)],
+                "has_source_anchor": bool(re.search(r"(?:\*\*Paper|\*\*Source|\*\*Authority|checkpoints/|sources/papers/|doi\b)", text, re.I)),
+            })
+    return rows
+
+
+def standards_diagnostics(root: Path) -> list[dict]:
+    rows: list[dict] = []
+    semantic = re.compile(r"\b(?:coverage|compliance|implementation|mapping|standard overview)\b", re.I)
+    for path in markdown_files(root, "standards"):
+        text = read(path)
+        headings = re.findall(r"^##\s+(.+?)\s*$", text, re.M)
+        rows.append({
+            "path": path.relative_to(root).as_posix(),
+            "has_authority": bool(re.search(r"^\*\*Authority:\*\*", text, re.I | re.M)),
+            "semantic_headings": [h for h in headings if semantic.search(h)],
+        })
+    return rows
+
 def build_receipt(root: Path) -> dict:
     probes = {
         "doctrine": doctrine_probe(root),
@@ -183,6 +213,10 @@ def build_receipt(root: Path) -> dict:
         "thresholds": thresholds,
         "counts": counts,
         "open_gaps": open_gaps,
+        "diagnostics": {
+            "doctrine_substantive": doctrine_diagnostics(root),
+            "standards_semantic": standards_diagnostics(root),
+        },
         "unmitigated_open_gaps": unmitigated,
         "evidence": {name: [asdict(item) for item in items] for name, items in probes.items()},
     }
