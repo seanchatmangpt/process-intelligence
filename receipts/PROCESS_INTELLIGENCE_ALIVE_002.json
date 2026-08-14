@@ -1,0 +1,153 @@
+{
+  "counts": {
+    "doctrine": 5,
+    "open_gaps_with_resolution_path": 0,
+    "papers": 8,
+    "standards": 10
+  },
+  "criteria": {
+    "all_open_gaps_have_resolution_path": true,
+    "doctrine": true,
+    "papers": true,
+    "standards": true
+  },
+  "evidence": {
+    "doctrine": [
+      {
+        "detail": "words=889; heading=Conformance as the Process Law Enforcement Surface; source=true",
+        "path": "doctrine/CONFORMANCE_AS_LAW.md",
+        "sha256": "283ed959c65335ed0e7c1309af90057fb8f581ff6b8b6e825cc1a7b7be6e811b"
+      },
+      {
+        "detail": "words=615; heading=The Law; source=true",
+        "path": "doctrine/DOWNSTREAM_AUTHORIZATION_LAW.md",
+        "sha256": "422ea2a942142f4e165ef775f4b5ebd7a647b702537d0ef891d1a0daa7dfc3d0"
+      },
+      {
+        "detail": "words=993; heading=The Exclusion Law; source=true",
+        "path": "doctrine/PROCESS_INTELLIGENCE_IS_NOT.md",
+        "sha256": "973fc03702ee459fda9f124b38c30e730b5b816956e80483cb6ce2f9367b82e1"
+      },
+      {
+        "detail": "words=1508; heading=2. Mathematical Definition of the Witness Lattice; source=true",
+        "path": "doctrine/lattice-monotonicity-verification.md",
+        "sha256": "0c4762f8fd0225279235bbda2999ec08e8118e7aa9180faa341318f855d2fd98"
+      },
+      {
+        "detail": "words=2265; heading=1. Algorithm 1: Paper-to-Law Mapping; source=true",
+        "path": "doctrine/lifecycle_algorithms.md",
+        "sha256": "4eda7348bb55365d757393391a36ef44f5950b59bfe919d152fb1498f1b3f177"
+      }
+    ],
+    "open_gaps_with_resolution_path": [],
+    "papers": [
+      {
+        "detail": "citation=(IEEE TKDE, 2004)",
+        "path": "sources/papers/ALPHA_MINER_ANALYSIS.md",
+        "sha256": "b626a772b87d67203fc11b33237215f69a8119cc2d40320e92f3da44975313af"
+      },
+      {
+        "detail": "citation=(van der Aalst et al. 2023)",
+        "path": "sources/papers/PAPER_CANON_SCOPE.md",
+        "sha256": "b0d8ad0ba348674a7b731c486d4dc740d4b03ab9cd6b7b293a7fca247d33af12"
+      },
+      {
+        "detail": "citation=(Weijters & Ribeiro 2011)",
+        "path": "sources/papers/PAPER_TO_EXECUTION_LAW.md",
+        "sha256": "f5dd91c269b094c24a52f0aa6bcf6c11d48abf2c3dc589f53f05d034b5a73121"
+      },
+      {
+        "detail": "citation=(van der Aalst 1998)",
+        "path": "sources/papers/PAPER_TO_TYPE_LAW.md",
+        "sha256": "a670d59f32c85a774cc74334f6d758a92b8f53b9497648bca3f6b4ab449fab27"
+      },
+      {
+        "detail": "citation=(ICPM 2023)",
+        "path": "sources/papers/POWL_ANALYSIS.md",
+        "sha256": "14fc30c1f3c1c2eb01bd5b25643321f5c50786998ebc70de012502774708a32d"
+      },
+      {
+        "detail": "citation=(van der Aalst & ter Hofstede 2004)",
+        "path": "sources/papers/WORKFLOW_LEDGER.md",
+        "sha256": "093fc152a81b9f6fb95230f3a74b64a32ae155339353e67f4a2df65dcc4ee022"
+      },
+      {
+        "detail": "citation=(Information Systems, 2005)",
+        "path": "sources/papers/YAWL_WORKFLOW_ANALYSIS.md",
+        "sha256": "5d54c3942ca9171e478236bb27c3536ee73782f0f1572ea642e3e7ba7547cd29"
+      },
+      {
+        "detail": "citation=(Software Impacts 2023)",
+        "path": "sources/papers/workflow-ledger.md",
+        "sha256": "ab39ed2b3deb5985946e29d7a40fae7b26ccaf82fefe75e580df129e7e4119bb"
+      }
+    ],
+    "standards": [
+      {
+        "detail": "authority=true; heading=Standard Overview",
+        "path": "standards/BPMN_20.md",
+        "sha256": "06605a985d7c2b7ec5c68cf9fedd06a7be74d3d1dd64999907a8b993de58f796"
+      },
+      {
+        "detail": "authority=true; heading=wasm4pm-compat Implementation (dfg.rs)",
+        "path": "standards/DFG.md",
+        "sha256": "fc7b8e1af5bb87077d01f3a0b2693df2f136bd85c98d445b3a2674ea6cc4dd1b"
+      },
+      {
+        "detail": "authority=true; heading=wasm4pm Implementation",
+        "path": "standards/OCEL_20.md",
+        "sha256": "8a537907225d74f1a9ed2f1042720ddfa37adbd7ec7e74d1fa729c4d91730eec"
+      },
+      {
+        "detail": "authority=true; heading=wasm4pm-compat Implementation (petri.rs)",
+        "path": "standards/PETRI_AND_WFNET.md",
+        "sha256": "9e252d038b0cd25e7cc0526737d40e26bfbed3581269a41757e062c6536798b3"
+      },
+      {
+        "detail": "authority=true; heading=wasm4pm-compat Implementation (process_tree.rs)",
+        "path": "standards/PROCESS_TREE.md",
+        "sha256": "c7f557012daeb9ace2e034d8de3ae61c00236d2107fe3012c9dc8ec74de30dd8"
+      },
+      {
+        "detail": "authority=true; heading=wasm4pm-compat Implementation (receipt.rs, witness.rs)",
+        "path": "standards/PROV_O_PROVENANCE.md",
+        "sha256": "43fc882d377a13c0c44be46ea2f58242edfa44d20457d9385fe752cbe99c2805"
+      },
+      {
+        "detail": "authority=true; heading=The Mapping",
+        "path": "standards/STANDARDS_TO_BOARD_CLAIMS.md",
+        "sha256": "0991b9a2459d7f1daf1de72e5aa14ffdc0a7cf5dd9ad09a6277ebebe5fb6182b"
+      },
+      {
+        "detail": "authority=true; heading=Standard Overview",
+        "path": "standards/XES_1849.md",
+        "sha256": "70e5286e81e33953532dede12f4d432306bfde3999f90c1b0eaac325a1d18853"
+      },
+      {
+        "detail": "authority=true; heading=LTLf Formula Mapping",
+        "path": "standards/declare.md",
+        "sha256": "3d65fac3012336633585a94a63be524d8b69b70c1424eea278acfa886da32c77"
+      },
+      {
+        "detail": "authority=true; heading=wasm4pm-compat Implementation (powl.rs)",
+        "path": "standards/powl.md",
+        "sha256": "a63ef4a306010034ef703172a997c63830cd7bf09e3e4a101550c5c181e5e492"
+      }
+    ]
+  },
+  "gate": "PROCESS_INTELLIGENCE_ALIVE_002",
+  "open_gaps": [],
+  "schema": "process-intelligence.alive-002.receipt/v2",
+  "status": "ALIVE",
+  "subject": {
+    "git_head": "9c20b785923036e2fcf4515f684d0c5c17fcfc6f",
+    "git_tree": "99a1d244946b04063de371dd1fd0834faa6b0fb4",
+    "repository": "seanchatmangpt/process-intelligence"
+  },
+  "thresholds": {
+    "doctrine": 5,
+    "papers": 7,
+    "standards": 10
+  },
+  "unmitigated_open_gaps": []
+}
