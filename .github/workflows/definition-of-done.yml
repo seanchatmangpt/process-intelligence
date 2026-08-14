@@ -74,3 +74,4 @@ jobs:
           name: PROCESS_INTELLIGENCE_DEFINITION_OF_DONE-${{ github.event.pull_request.head.sha || github.sha }}
           path: .dod-runtime/
           if-no-files-found: error
+          include-hidden-files: true
