@@ -1,0 +1,65 @@
+name: PROCESS_INTELLIGENCE_DFCM
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dfcm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - name: Record exact identity
+        run: |
+          git rev-parse HEAD
+          git rev-parse 'HEAD^{tree}'
+          python3 --version
+
+      - name: Verify DFCM implementation
+        run: |
+          python3 -m py_compile tools/dfcm.py tests/test_dfcm.py
+          python3 -m unittest tests.test_dfcm -v
+
+      - name: Execute DFCM twice
+        run: |
+          mkdir -p .dfcm-runtime
+          python3 tools/dfcm.py plan dfcm/process-intelligence.toml --root . --output .dfcm-runtime/receipt-a.json --check
+          python3 tools/dfcm.py plan dfcm/process-intelligence.toml --root . --output .dfcm-runtime/receipt-b.json --check
+          cmp .dfcm-runtime/receipt-a.json .dfcm-runtime/receipt-b.json
+
+      - name: Falsifier gate
+        run: |
+          python3 - <<'PY'
+          import json
+          r = json.load(open('.dfcm-runtime/receipt-a.json'))
+          assert r['status'] == 'ALIVE', r
+          assert r['mode'] == 'CONSTRUCT_ONLY', r
+          assert r['space']['admitted_constructs'] >= 128, r['space']
+          assert r['space']['refused_do'] > 0, r['space']
+          assert r['falsifiers']['do_path_admitted'] is False, r['falsifiers']
+          assert r['subject']['head'], r['subject']
+          assert r['subject']['tree'], r['subject']
+          print(json.dumps({
+              'status': r['status'],
+              'space': r['space'],
+              'receipt_sha256': r['receipt_sha256'],
+              'subject': r['subject'],
+          }, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload DFCM receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: PROCESS_INTELLIGENCE_DFCM-${{ github.event.pull_request.head.sha || github.sha }}
+          path: .dfcm-runtime/receipt-a.json
+          if-no-files-found: error

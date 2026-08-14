@@ -1,0 +1,202 @@
+[meta]
+name = "process-intelligence"
+version = "26.8.13-dfcm.1"
+mode = "CONSTRUCT_ONLY"
+select_limit = 64
+min_admitted = 128
+
+[policy]
+actuation_axis = "effect"
+construct_value = "construct_only"
+
+[weights]
+reversibility = 5
+evidence = 4
+coverage = 3
+cost = 2
+
+[[axes]]
+name = "phase"
+values = ["preserve", "fence", "calculus", "exclusions", "falsifier", "extension", "operationalization"]
+
+[[axes]]
+name = "evidence"
+values = ["doctrine", "standards", "papers", "experiments", "gaps", "receipts"]
+
+[[axes]]
+name = "representation"
+values = ["markdown", "json", "toml", "rdf", "ocel"]
+
+[[axes]]
+name = "verification"
+values = ["static", "semantic", "executable", "replay"]
+
+[[axes]]
+name = "projection"
+values = ["none", "checkpoint", "downstream_prompt", "board_claim"]
+
+[[axes]]
+name = "effect"
+values = ["construct_only", "external_state"]
+
+[[rules]]
+when = { phase = "operationalization" }
+require_axis = "verification"
+allowed = ["executable", "replay"]
+reason = "operationalization must be executable or replayable"
+
+[[rules]]
+when = { projection = "board_claim" }
+require_axis = "verification"
+allowed = ["replay"]
+reason = "board claims require replay evidence"
+
+[[rules]]
+when = { projection = "board_claim" }
+require_axis = "evidence"
+allowed = ["receipts"]
+reason = "board claims require receipt evidence"
+
+[[rules]]
+when = { representation = "rdf" }
+require_axis = "verification"
+allowed = ["semantic", "executable", "replay"]
+reason = "RDF constructions require semantic-or-stronger verification"
+
+[[rules]]
+when = { representation = "ocel" }
+require_axis = "verification"
+allowed = ["semantic", "executable", "replay"]
+reason = "OCEL constructions require semantic-or-stronger verification"
+
+[[exclusions]]
+match = { phase = "preserve", projection = "board_claim" }
+reason = "preservation does not manufacture new board claims"
+
+[[exclusions]]
+match = { phase = "exclusions", projection = "board_claim" }
+reason = "exclusion analysis cannot directly project a board claim"
+
+# Ratings are ordinal design metadata, not empirical performance claims.
+[[ratings]]
+axis = "phase"
+value = "preserve"
+reversibility = 5
+evidence = 5
+coverage = 3
+cost = 1
+[[ratings]]
+axis = "phase"
+value = "fence"
+reversibility = 5
+evidence = 4
+coverage = 4
+cost = 1
+[[ratings]]
+axis = "phase"
+value = "calculus"
+reversibility = 5
+evidence = 4
+coverage = 5
+cost = 2
+[[ratings]]
+axis = "phase"
+value = "exclusions"
+reversibility = 5
+evidence = 5
+coverage = 4
+cost = 1
+[[ratings]]
+axis = "phase"
+value = "falsifier"
+reversibility = 5
+evidence = 5
+coverage = 5
+cost = 2
+[[ratings]]
+axis = "phase"
+value = "extension"
+reversibility = 4
+evidence = 4
+coverage = 5
+cost = 3
+[[ratings]]
+axis = "phase"
+value = "operationalization"
+reversibility = 3
+evidence = 5
+coverage = 5
+cost = 4
+
+[[ratings]]
+axis = "verification"
+value = "static"
+reversibility = 5
+evidence = 2
+coverage = 2
+cost = 1
+[[ratings]]
+axis = "verification"
+value = "semantic"
+reversibility = 5
+evidence = 4
+coverage = 4
+cost = 2
+[[ratings]]
+axis = "verification"
+value = "executable"
+reversibility = 4
+evidence = 5
+coverage = 5
+cost = 3
+[[ratings]]
+axis = "verification"
+value = "replay"
+reversibility = 4
+evidence = 5
+coverage = 5
+cost = 4
+
+[[ratings]]
+axis = "projection"
+value = "none"
+reversibility = 5
+evidence = 3
+coverage = 2
+cost = 0
+[[ratings]]
+axis = "projection"
+value = "checkpoint"
+reversibility = 5
+evidence = 5
+coverage = 4
+cost = 1
+[[ratings]]
+axis = "projection"
+value = "downstream_prompt"
+reversibility = 4
+evidence = 4
+coverage = 5
+cost = 2
+[[ratings]]
+axis = "projection"
+value = "board_claim"
+reversibility = 2
+evidence = 5
+coverage = 5
+cost = 4
+
+[[ratings]]
+axis = "effect"
+value = "construct_only"
+reversibility = 5
+evidence = 5
+coverage = 3
+cost = 0
+[[ratings]]
+axis = "effect"
+value = "external_state"
+reversibility = 0
+evidence = 0
+coverage = 5
+cost = 5
