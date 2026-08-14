@@ -1,0 +1,39 @@
+name: PROCESS_INTELLIGENCE_ALIVE_002
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'feat/alive-002-*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  alive-002:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact subject
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Record toolchain
+        run: python3 --version
+
+      - name: Verify gate implementation
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Execute ALIVE_002 gate
+        run: |
+          mkdir -p receipts/runtime
+          python3 tools/verify_alive_002.py --receipt receipts/runtime/PROCESS_INTELLIGENCE_ALIVE_002.json
+
+      - name: Upload execution receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: PROCESS_INTELLIGENCE_ALIVE_002-${{ github.sha }}
+          path: receipts/runtime/PROCESS_INTELLIGENCE_ALIVE_002.json
+          if-no-files-found: error
