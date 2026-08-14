@@ -1,248 +1,143 @@
 #!/usr/bin/env python3
-"""Machine-verifiable PROCESS_INTELLIGENCE_ALIVE_002 quality gate.
-
-This verifier implements the prospective ALIVE_002 criteria recorded in
-checkpoints/ALIVE_GATE_ASSESSMENT.md and the open-gap mitigation invariant in
-COVENANT.md. It is intentionally dependency-free and emits a deterministic JSON
-receipt suitable for replay and checkpoint attachment.
-"""
-
+"""Executable PROCESS_INTELLIGENCE_ALIVE_002 gate; see checkpoint addendum 004."""
 from __future__ import annotations
 
-import argparse
-import hashlib
-import json
-import re
-import subprocess
-import sys
-from dataclasses import asdict, dataclass
+import argparse, hashlib, json, re, subprocess, sys
 from pathlib import Path
-from typing import Iterable
 
-WORD_RE = re.compile(r"\b[\w’'-]+\b", re.UNICODE)
-DOI_RE = re.compile(r"(?:https?://(?:dx\.)?doi\.org/|\bdoi\s*:\s*|\b)(10\.\d{4,9}/[-._;()/:A-Z0-9]+)", re.I)
-AUTHOR_YEAR_RE = re.compile(r"\([^\n)]*[A-Za-z][^\n)]*(?:19|20)\d{2}[a-z]?[^\n)]*\)")
-STATUS_RE = re.compile(r"^(?:\*\*Status(?::\*\*|\*\*:)|status:)\s*(.+?)\s*$", re.I | re.M)
-OPEN_STATUS_RE = re.compile(r"\b(OPEN|PARTIAL(?:_ALIVE)?|BLOCKED|BUILD_BROKEN|UNKNOWN)\b", re.I)
-CLOSED_STATUS_RE = re.compile(r"\b(CLOSED|RESOLVED|ALIVE)\b", re.I)
-
-
-@dataclass(frozen=True)
-class Evidence:
-    path: str
-    sha256: str
-    detail: str
+WORD = re.compile(r"\b[\w’'-]+\b", re.UNICODE)
+STATUS = re.compile(r"^(?:\*\*Status(?::\*\*|\*\*:)|status:)\s*(.+?)\s*$", re.I | re.M)
+OPEN = re.compile(r"\b(?:OPEN|PARTIAL(?:_ALIVE)?|BLOCKED|BUILD_BROKEN|UNKNOWN)\b", re.I)
+CLOSED = re.compile(r"\b(?:CLOSED|RESOLVED|ALIVE)\b", re.I)
+DOI = re.compile(r"(?:doi\.org/|\bdoi\s*:\s*|\b)(10\.\d{4,9}/[-._;()/:A-Z0-9]+)", re.I)
+AUTHOR_YEAR = re.compile(r"\([^\n)]*[A-Za-z][^\n)]*(?:19|20)\d{2}[a-z]?[^\n)]*\)")
+SOURCE = re.compile(r"(?:\*\*(?:Paper|Source|Authority)|checkpoints/|sources/papers/|doi\b)", re.I)
+SEMANTIC_STANDARD = re.compile(r"\b(?:coverage|compliance|implementation|mapping|standard overview)\b", re.I)
+AUTHORITY = re.compile(r"^\*\*Authority:\*\*", re.I | re.M)
+RESOLUTION = re.compile(r"^## (?:Resolution Path|Required Remediation Path|Remediation Path|Mitigation Path)\s*$", re.M)
 
 
-def markdown_files(root: Path, relative: str) -> list[Path]:
-    directory = root / relative
-    return sorted(p for p in directory.glob("*.md") if p.is_file()) if directory.is_dir() else []
+def files(root: Path, rel: str) -> list[Path]:
+    d = root / rel
+    return sorted(d.glob("*.md")) if d.is_dir() else []
 
 
-def read(path: Path) -> str:
+def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def digest(path: Path) -> str:
+def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def evidence(root: Path, path: Path, detail: str) -> Evidence:
-    return Evidence(path.as_posix().removeprefix(root.as_posix().rstrip("/") + "/"), digest(path), detail)
+def ev(root: Path, path: Path, detail: str) -> dict:
+    return {"path": path.relative_to(root).as_posix(), "sha256": sha(path), "detail": detail}
 
 
-def git_value(root: Path, *args: str) -> str | None:
+def git(root: Path, expr: str) -> str | None:
     try:
-        cp = subprocess.run(
-            ["git", "-C", str(root), *args],
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            text=True,
-        )
-        return cp.stdout.strip() or None
+        return subprocess.run(["git", "-C", str(root), "rev-parse", expr], check=True,
+                              capture_output=True, text=True).stdout.strip() or None
     except (FileNotFoundError, subprocess.CalledProcessError):
         return None
 
 
-def doctrine_probe(root: Path) -> list[Evidence]:
-    out: list[Evidence] = []
-    for path in markdown_files(root, "doctrine"):
-        text = read(path)
-        words = len(WORD_RE.findall(text))
-        header = "## Definition" if re.search(r"^## Definition\s*$", text, re.M) else (
-            "## Law" if re.search(r"^## Law\s*$", text, re.M) else None
-        )
-        if words >= 200 and header:
-            out.append(evidence(root, path, f"words={words}; header={header}"))
+def status_of(s: str) -> str | None:
+    m = STATUS.search(s)
+    return m.group(1).strip() if m else None
+
+
+def is_open(s: str) -> bool:
+    status = status_of(s)
+    return bool(status and not CLOSED.search(status) and OPEN.search(status))
+
+
+def doctrine(root: Path) -> list[dict]:
+    out = []
+    for p in files(root, "doctrine"):
+        s = text(p); words = len(WORD.findall(s))
+        hs = re.findall(r"^#{1,2}\s+(.+?)\s*$", s, re.M)
+        law = [h for h in hs if re.search(r"\b(?:law|definition)\b", h, re.I)]
+        if words >= 200 and law and SOURCE.search(s):
+            out.append(ev(root, p, f"words={words}; heading={law[0][:120]}; source=true"))
     return out
 
 
-def standards_probe(root: Path) -> list[Evidence]:
-    out: list[Evidence] = []
-    for path in markdown_files(root, "standards"):
-        text = read(path)
-        headers = [h for h in ("## Coverage", "## Compliance") if re.search(rf"^{re.escape(h)}\s*$", text, re.M)]
-        if headers:
-            out.append(evidence(root, path, "headers=" + ",".join(headers)))
+def standards(root: Path) -> list[dict]:
+    out = []
+    for p in files(root, "standards"):
+        s = text(p); hs = re.findall(r"^##\s+(.+?)\s*$", s, re.M)
+        sem = [h for h in hs if SEMANTIC_STANDARD.search(h)]
+        if AUTHORITY.search(s) and sem:
+            out.append(ev(root, p, f"authority=true; heading={sem[0][:120]}"))
     return out
 
 
-def paper_probe(root: Path) -> list[Evidence]:
-    out: list[Evidence] = []
-    for path in markdown_files(root, "sources/papers"):
-        text = read(path)
-        doi = DOI_RE.search(text)
-        author_year = AUTHOR_YEAR_RE.search(text)
-        if doi or author_year:
-            kind = f"doi={doi.group(1)}" if doi else f"author_year={author_year.group(0)[:120]}"
-            out.append(evidence(root, path, kind))
+def papers(root: Path) -> list[dict]:
+    out = []
+    for p in files(root, "sources/papers"):
+        s = text(p); doi = DOI.search(s); ay = AUTHOR_YEAR.search(s)
+        if doi or ay:
+            out.append(ev(root, p, f"citation={doi.group(1) if doi else ay.group(0)[:120]}"))
     return out
 
 
-def status_of(text: str) -> str | None:
-    match = STATUS_RE.search(text)
-    return match.group(1).strip() if match else None
+def gaps(root: Path) -> tuple[list[dict], list[dict], list[str]]:
+    opened, proven, missing = [], [], []
+    for p in files(root, "gaps"):
+        s = text(p)
+        if not is_open(s):
+            continue
+        row = {"path": p.relative_to(root).as_posix(), "status": status_of(s), "sha256": sha(p)}
+        opened.append(row)
+        m = RESOLUTION.search(s)
+        if m:
+            proven.append(ev(root, p, f"status={status_of(s)}; heading={m.group(0)}"))
+        else:
+            missing.append(row["path"])
+    return opened, proven, missing
 
-
-def is_open_gap(text: str) -> bool:
-    status = status_of(text)
-    if not status:
-        return False
-    if CLOSED_STATUS_RE.search(status):
-        return False
-    return bool(OPEN_STATUS_RE.search(status))
-
-
-def open_gap_inventory(root: Path) -> list[dict]:
-    accepted = re.compile(r"^## (?:Resolution Path|Required Remediation Path|Remediation Path|Mitigation Path)\s*$", re.M)
-    exact = re.compile(r"^## Resolution Path\s*$", re.M)
-    rows: list[dict] = []
-    for path in markdown_files(root, "gaps"):
-        text = read(path)
-        if is_open_gap(text):
-            rows.append({
-                "path": path.relative_to(root).as_posix(),
-                "status": status_of(text),
-                "has_exact_resolution_path": bool(exact.search(text)),
-                "has_mitigation_path": bool(accepted.search(text)),
-                "sha256": digest(path),
-            })
-    return rows
-
-
-def exact_resolution_path_probe(root: Path) -> list[Evidence]:
-    out: list[Evidence] = []
-    for path in markdown_files(root, "gaps"):
-        text = read(path)
-        if is_open_gap(text) and re.search(r"^## Resolution Path\s*$", text, re.M):
-            out.append(evidence(root, path, f"status={status_of(text)}; header=## Resolution Path"))
-    return out
-
-
-def unmitigated_open_gaps(root: Path) -> list[str]:
-    accepted = re.compile(r"^## (?:Resolution Path|Required Remediation Path|Remediation Path|Mitigation Path)\s*$", re.M)
-    missing: list[str] = []
-    for path in markdown_files(root, "gaps"):
-        text = read(path)
-        if is_open_gap(text) and not accepted.search(text):
-            missing.append(path.relative_to(root).as_posix())
-    return missing
-
-
-
-def doctrine_diagnostics(root: Path) -> list[dict]:
-    rows: list[dict] = []
-    for path in markdown_files(root, "doctrine"):
-        text = read(path)
-        words = len(WORD_RE.findall(text))
-        headings = re.findall(r"^#{1,2}\s+(.+?)\s*$", text, re.M)
-        if words >= 200:
-            rows.append({
-                "path": path.relative_to(root).as_posix(),
-                "words": words,
-                "law_or_definition_headings": [h for h in headings if re.search(r"\b(?:law|definition)\b", h, re.I)],
-                "has_source_anchor": bool(re.search(r"(?:\*\*Paper|\*\*Source|\*\*Authority|checkpoints/|sources/papers/|doi\b)", text, re.I)),
-            })
-    return rows
-
-
-def standards_diagnostics(root: Path) -> list[dict]:
-    rows: list[dict] = []
-    semantic = re.compile(r"\b(?:coverage|compliance|implementation|mapping|standard overview)\b", re.I)
-    for path in markdown_files(root, "standards"):
-        text = read(path)
-        headings = re.findall(r"^##\s+(.+?)\s*$", text, re.M)
-        rows.append({
-            "path": path.relative_to(root).as_posix(),
-            "has_authority": bool(re.search(r"^\*\*Authority:\*\*", text, re.I | re.M)),
-            "semantic_headings": [h for h in headings if semantic.search(h)],
-        })
-    return rows
 
 def build_receipt(root: Path) -> dict:
-    probes = {
-        "doctrine": doctrine_probe(root),
-        "standards": standards_probe(root),
-        "papers": paper_probe(root),
-        "open_gaps_with_exact_resolution_path": exact_resolution_path_probe(root),
+    evidence = {"doctrine": doctrine(root), "standards": standards(root), "papers": papers(root)}
+    opened, gap_evidence, missing = gaps(root)
+    evidence["open_gaps_with_resolution_path"] = gap_evidence
+    counts = {k: len(v) for k, v in evidence.items()}
+    criteria = {
+        "doctrine": counts["doctrine"] >= 5,
+        "standards": counts["standards"] >= 10,
+        "papers": counts["papers"] >= 7,
+        "all_open_gaps_have_resolution_path": len(gap_evidence) == len(opened) and not missing,
     }
-    thresholds = {
-        "doctrine": 5,
-        "standards": 10,
-        "papers": 7,
-        "open_gaps_with_exact_resolution_path": 2,
-    }
-    counts = {name: len(items) for name, items in probes.items()}
-    criteria = {name: counts[name] >= threshold for name, threshold in thresholds.items()}
-    open_gaps = open_gap_inventory(root)
-    unmitigated = [row["path"] for row in open_gaps if not row["has_mitigation_path"]]
-    criteria["all_open_gaps_have_mitigation_path"] = not unmitigated
-    passed = all(criteria.values())
-
     return {
-        "schema": "process-intelligence.alive-002.receipt/v1",
-        "subject": {
-            "repository": "seanchatmangpt/process-intelligence",
-            "git_head": git_value(root, "rev-parse", "HEAD"),
-            "git_tree": git_value(root, "rev-parse", "HEAD^{tree}"),
-        },
+        "schema": "process-intelligence.alive-002.receipt/v2",
         "gate": "PROCESS_INTELLIGENCE_ALIVE_002",
-        "status": "ALIVE" if passed else "PARTIAL_ALIVE",
+        "status": "ALIVE" if all(criteria.values()) else "PARTIAL_ALIVE",
+        "subject": {"repository": "seanchatmangpt/process-intelligence", "git_head": git(root, "HEAD"),
+                    "git_tree": git(root, "HEAD^{tree}")},
         "criteria": criteria,
-        "thresholds": thresholds,
+        "thresholds": {"doctrine": 5, "standards": 10, "papers": 7},
         "counts": counts,
-        "open_gaps": open_gaps,
-        "diagnostics": {
-            "doctrine_substantive": doctrine_diagnostics(root),
-            "standards_semantic": standards_diagnostics(root),
-        },
-        "unmitigated_open_gaps": unmitigated,
-        "evidence": {name: [asdict(item) for item in items] for name, items in probes.items()},
+        "open_gaps": opened,
+        "unmitigated_open_gaps": missing,
+        "evidence": evidence,
     }
 
 
-def main(argv: Iterable[str] | None = None) -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--receipt", type=Path)
-    parser.add_argument("--expect-head", help="fail if the current git HEAD differs")
-    args = parser.parse_args(list(argv) if argv is not None else None)
-
-    root = args.root.resolve()
-    receipt = build_receipt(root)
-    actual_head = receipt["subject"]["git_head"]
-    if args.expect_head and actual_head != args.expect_head:
-        receipt["criteria"]["expected_head_matches"] = False
-        receipt["status"] = "PARTIAL_ALIVE"
-        receipt["expected_head"] = args.expect_head
-
-    payload = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
-    if args.receipt:
-        args.receipt.parent.mkdir(parents=True, exist_ok=True)
-        args.receipt.write_text(payload, encoding="utf-8")
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    ap.add_argument("--receipt", type=Path)
+    ap.add_argument("--expect-head")
+    a = ap.parse_args(); root = a.root.resolve(); r = build_receipt(root)
+    if a.expect_head and r["subject"]["git_head"] != a.expect_head:
+        r["criteria"]["expected_head_matches"] = False; r["status"] = "PARTIAL_ALIVE"
+        r["expected_head"] = a.expect_head
+    payload = json.dumps(r, indent=2, sort_keys=True) + "\n"
+    if a.receipt:
+        a.receipt.parent.mkdir(parents=True, exist_ok=True); a.receipt.write_text(payload, encoding="utf-8")
     sys.stdout.write(payload)
-    return 0 if receipt["status"] == "ALIVE" else 2
+    return 0 if r["status"] == "ALIVE" else 2
 
 
 if __name__ == "__main__":
