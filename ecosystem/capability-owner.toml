@@ -1,0 +1,15 @@
+schema = "chatman.federated-capability-owner.v1"
+version = "26.9.1"
+repository = "seanchatmangpt/process-intelligence"
+owner_id = "repository:process-intelligence"
+control_plane_repository = "seanchatmangpt/chatman-ecosystem"
+control_plane_subject = "git:7430dfc9b3ca138e703430d25de7c6f48a8d6ade"
+base_sha = "e441f182e74268220e9b45611050cdab0e844ac5"
+release_component = "process-intelligence"
+release_role = "research"
+release_dependencies = []
+allowed_authorities = ["observe", "classify"]
+simulation_only = false
+do_mode = "none"
+ambient_do = false
+automatic_irreversible_do = false
