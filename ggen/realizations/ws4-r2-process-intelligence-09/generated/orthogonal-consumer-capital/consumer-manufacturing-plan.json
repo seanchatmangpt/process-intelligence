@@ -1,0 +1,8 @@
+{
+  "schema": "ggen.orthogonal-consumer-capital/1",
+  "authority": "SELECT|CONSTRUCT|VERIFY",
+  "consequential_do": false,
+  "targets": [
+  {"repository":"seanchatmangpt/process-intelligence","expected_yield":1209,"dependency_unlocks":2209,"composition_unlocks":3209,"future_capacity":4209}
+  ]
+}
