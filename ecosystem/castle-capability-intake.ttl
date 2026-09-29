@@ -1,0 +1,21 @@
+@prefix eco: <https://ggen.dev/ecosystem#> .
+@prefix pi: <https://process-intelligence.dev/ontology/castle-intake#> .
+
+pi:intake
+    a eco:CapabilityProjection ;
+    eco:projectionSource "seanchatmangpt/ggen-ecosystem@50fdfa20c84205a80c6eb94e916cffbedc4b816e" ;
+    eco:ownerRepository "seanchatmangpt/process-intelligence" ;
+    eco:ownerCapability "PROCESS_ANALYTICS" ;
+    eco:projectionStanding "CANDIDATE" ;
+    eco:authorityCeiling "CONSTRUCT" ;
+    eco:forbidsCapability "PROCESS_EXECUTION_AUTHORITY", "CONSEQUENTIAL_ADMISSIBILITY" .
+
+pi:ash-ex4pm
+    a eco:ProjectedCapability ;
+    eco:sourceRepository "seanchatmangpt/ash_ex4pm" ;
+    eco:sourceSha "64a21504d3aab0165275cb3e1c9e2fc124d83413" ;
+    eco:capability "ASH_PROCESS_PROJECTION" ;
+    eco:disposition "WRAP" ;
+    eco:runtimePlacement "ASH_ADAPTER" ;
+    eco:projectionTarget pi:intake ;
+    eco:falsifier "Ash process projection invents process truth or standing not present in observed receipts." .
