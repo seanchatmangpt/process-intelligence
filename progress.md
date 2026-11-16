@@ -90,11 +90,11 @@ All 13 gate criteria check out successfully against their required thresholds:
 | compat type-law maps | `sources/wasm4pm-compat/` | 3 | 11 | PASS |
 | Lifecycle states | `lifecycle/` | 8 | 37 | PASS |
 | Comparison matrices | `comparisons/` | 5 | 5 | PASS |
-| Type-law crosswalks | `crosswalks/` | 4 | 4 | PASS |
+| Type-law crosswalks | `crosswalks/` | 4 | 10 | PASS |
 | M&A claim taxonomy | `ma/` | 6 | 32 | PASS |
 | Adversarial cases | `adversarial/` | 3 | 3 | PASS |
 | Documented gaps | `gaps/` | 2 | 2 | PASS |
-| Total commits | `.git/` | 80 | 570 | PASS |
+| Total commits | `.git/` | 80 | 993 | PASS |
 
 ---
 

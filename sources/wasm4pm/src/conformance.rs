@@ -22,7 +22,7 @@
 
 use crate::evidence::*;
 use crate::petri::*;
-use crate::refusal::ConformanceRefusalLaw;
+use crate::refusal::StringLaw;
 
 // =========================================================================
 // CONFORMANCE VERDICTS: Core Verdict Types
@@ -40,7 +40,7 @@ pub enum ConformanceVerdict {
     },
     /// Case does not conform (fitness = 0 or irreparable deviations)
     NonConforming {
-        reason: ConformanceRefusal,
+        reason: String,
     },
 }
 
@@ -146,43 +146,43 @@ impl SerializeBytes for ConformanceVerdicts {
 // CONFORMANCE REFUSAL REASONS
 // =========================================================================
 
-/// Backward-compatible refusal type — wraps ConformanceRefusalLaw for legacy code.
-/// New code should use ConformanceRefusalLaw directly.
+/// Backward-compatible refusal type — wraps StringLaw for legacy code.
+/// New code should use StringLaw directly.
 #[derive(Debug, Clone)]
-pub struct ConformanceRefusal {
-    pub law: ConformanceRefusalLaw,
+pub struct String {
+    pub law: StringLaw,
 }
 
-impl ConformanceRefusal {
-    pub fn new(law: ConformanceRefusalLaw) -> Self {
-        ConformanceRefusal { law }
+impl String {
+    pub fn new(law: StringLaw) -> Self {
+        String { law }
     }
 
     /// Create EmptyLog refusal
     pub fn empty_log() -> Self {
-        ConformanceRefusal {
-            law: ConformanceRefusalLaw::EmptyLog,
+        String {
+            law: StringLaw::EmptyLog,
         }
     }
 
     /// Create EmptyModel refusal
     pub fn empty_model() -> Self {
-        ConformanceRefusal {
-            law: ConformanceRefusalLaw::EmptyModel,
+        String {
+            law: StringLaw::EmptyModel,
         }
     }
 
     /// Create UnsoundNet refusal
     pub fn unsound_net(reason: String) -> Self {
-        ConformanceRefusal {
-            law: ConformanceRefusalLaw::UnsoundNet { reason },
+        String {
+            law: StringLaw::UnsoundNet { reason },
         }
     }
 
     /// Create UnknownActivity refusal
     pub fn unknown_activity(activity_name: String, available: Vec<String>) -> Self {
-        ConformanceRefusal {
-            law: ConformanceRefusalLaw::UnknownActivity {
+        String {
+            law: StringLaw::UnknownActivity {
                 activity_name,
                 available_transitions: available,
             },
@@ -191,8 +191,8 @@ impl ConformanceRefusal {
 
     /// Create EarlyTermination refusal
     pub fn early_termination(at_event: usize, total_events: usize, missing_tokens: usize) -> Self {
-        ConformanceRefusal {
-            law: ConformanceRefusalLaw::EarlyTermination {
+        String {
+            law: StringLaw::EarlyTermination {
                 at_event,
                 total_events,
                 missing_tokens,
@@ -202,8 +202,8 @@ impl ConformanceRefusal {
 
     /// Create StateSpaceExceeded refusal
     pub fn state_space_exceeded(threshold: usize, current_size: usize) -> Self {
-        ConformanceRefusal {
-            law: ConformanceRefusalLaw::StateSpaceExceeded {
+        String {
+            law: StringLaw::StateSpaceExceeded {
                 threshold,
                 current_size,
             },
@@ -212,31 +212,31 @@ impl ConformanceRefusal {
 
     /// Create MalformedCase refusal
     pub fn malformed_case(reason: String, case_id: String) -> Self {
-        ConformanceRefusal {
-            law: ConformanceRefusalLaw::MalformedCase { reason, case_id },
+        String {
+            law: StringLaw::MalformedCase { reason, case_id },
         }
     }
 }
 
-impl std::fmt::Display for ConformanceRefusal {
+impl std::fmt::Display for String {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}", self.law)
     }
 }
 
-impl SerializeBytes for ConformanceRefusal {
+impl SerializeBytes for String {
     fn serialize_bytes(&self, buf: &mut Vec<u8>) {
         self.law.serialize_bytes(buf);
     }
 }
 
-impl PartialEq for ConformanceRefusal {
+impl PartialEq for String {
     fn eq(&self, other: &Self) -> bool {
         self.law == other.law
     }
 }
 
-impl Eq for ConformanceRefusal {}
+impl Eq for String {}
 
 // =========================================================================
 // TOKEN REPLAY ENGINE
@@ -281,15 +281,15 @@ impl TokenReplayEngine {
     pub fn replay_case(
         &self,
         activities: &[String],
-    ) -> Result<Evidence<TokenReplayResult, Admitted, TokenReplay>, ConformanceRefusal> {
+    ) -> Result<Evidence<TokenReplayResult, Admitted, TokenReplay>, String> {
         // Validation
         if activities.is_empty() {
-            return Err(ConformanceRefusal::empty_log());
+            return Err(String::empty_log());
         }
 
         // Real token replay algorithm
         let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
-            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
+            .ok_or_else(|| String::unsound_net("missing source/sink place".to_string()))?.clone();
 
         let mut marking = Marking::initial(source_place);
 
@@ -300,7 +300,7 @@ impl TokenReplayEngine {
 
         for act in activities {
             if !self.net.transitions.contains(act) {
-                return Err(ConformanceRefusal::unknown_activity(
+                return Err(String::unknown_activity(
                     act.clone(),
                     self.net.transitions.iter().cloned().collect(),
                 ));
@@ -383,9 +383,9 @@ impl TokenReplayEngine {
     pub fn replay_log(
         &self,
         cases: &[(String, Vec<String>)],
-    ) -> Result<Evidence<ConformanceVerdicts, Admitted, TokenReplay>, ConformanceRefusal> {
+    ) -> Result<Evidence<ConformanceVerdicts, Admitted, TokenReplay>, String> {
         if cases.is_empty() {
-            return Err(ConformanceRefusal::empty_log());
+            return Err(String::empty_log());
         }
 
         let mut verdicts = ConformanceVerdicts::new();
@@ -411,7 +411,7 @@ impl TokenReplayEngine {
                 }
             } else {
                 ConformanceVerdict::NonConforming {
-                    reason: ConformanceRefusal::early_termination(0, 0, 0),
+                    reason: String::early_termination(0, 0, 0),
                 }
             };
 
@@ -543,16 +543,16 @@ impl AlignmentEngine {
         &self,
         case_id: &str,
         trace: &[String],
-    ) -> Result<Evidence<Alignment, Admitted, AlignmentWitness>, ConformanceRefusal> {
+    ) -> Result<Evidence<Alignment, Admitted, AlignmentWitness>, String> {
         if trace.is_empty() {
-            return Err(ConformanceRefusal::empty_log());
+            return Err(String::empty_log());
         }
 
         let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
-            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
+            .ok_or_else(|| String::unsound_net("missing source/sink place".to_string()))?.clone();
         
         let sink_place = self.net.places.iter().find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
-            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
+            .ok_or_else(|| String::unsound_net("missing source/sink place".to_string()))?.clone();
 
         // A* search for lowest-cost alignment
         #[derive(Clone, Eq, PartialEq)]
@@ -600,7 +600,7 @@ impl AlignmentEngine {
         while let Some(state) = heap.pop() {
             iterations += 1;
             if iterations > 5000 {
-                return Err(ConformanceRefusal::state_space_exceeded(5000, iterations));
+                return Err(String::state_space_exceeded(5000, iterations));
             }
 
             let state_key = (state.marking.clone(), state.trace_index);
@@ -674,7 +674,7 @@ impl AlignmentEngine {
             }
         }
 
-        let alignment = best_alignment.ok_or_else(|| ConformanceRefusal::early_termination(0, 0, 0))?;
+        let alignment = best_alignment.ok_or_else(|| String::early_termination(0, 0, 0))?;
 
         // Create Evidence with witness marker
         let evidence = Evidence {
@@ -745,18 +745,18 @@ impl AlignmentEngine {
     pub fn align_log(
         &self,
         cases: &[(String, Vec<String>)],
-    ) -> Result<Evidence<ConformanceVerdicts, Admitted, AlignmentWitness>, ConformanceRefusal> {
+    ) -> Result<Evidence<ConformanceVerdicts, Admitted, AlignmentWitness>, String> {
         if cases.is_empty() {
-            return Err(ConformanceRefusal::empty_log());
+            return Err(String::empty_log());
         }
 
         let mut verdicts = ConformanceVerdicts::new();
 
         let source_place = self.net.places.iter().find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
-            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
+            .ok_or_else(|| String::unsound_net("missing source/sink place".to_string()))?.clone();
         
         let sink_place = self.net.places.iter().find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
-            .ok_or_else(|| ConformanceRefusal::unsound_net("missing source/sink place".to_string()))?.clone();
+            .ok_or_else(|| String::unsound_net("missing source/sink place".to_string()))?.clone();
 
         let model_distance = self.compute_model_distance(&source_place, &sink_place);
 
@@ -782,7 +782,7 @@ impl AlignmentEngine {
                 }
             } else {
                 ConformanceVerdict::NonConforming {
-                    reason: ConformanceRefusal::early_termination(0, 0, 0),
+                    reason: String::early_termination(0, 0, 0),
                 }
             };
 
@@ -831,7 +831,7 @@ impl AlignmentConformance {
         trace: &[String],
     ) -> Result<
         Evidence<(Alignment, FitnessMetric), Admitted, AlignmentWitness>,
-        ConformanceRefusal,
+        String,
     > {
         // Align the trace
         let alignment_evidence = self.engine.align_trace(case_id, trace)?;
@@ -845,7 +845,7 @@ impl AlignmentConformance {
             .iter()
             .find(|p| p.to_lowercase() == "source" || p.to_lowercase() == "i")
             .ok_or_else(|| {
-                ConformanceRefusal::unsound_net("missing source/sink place".to_string())
+                String::unsound_net("missing source/sink place".to_string())
             })?
             .clone();
 
@@ -856,7 +856,7 @@ impl AlignmentConformance {
             .iter()
             .find(|p| p.to_lowercase() == "sink" || p.to_lowercase() == "o")
             .ok_or_else(|| {
-                ConformanceRefusal::unsound_net("missing source/sink place".to_string())
+                String::unsound_net("missing source/sink place".to_string())
             })?
             .clone();
 
@@ -873,7 +873,7 @@ impl AlignmentConformance {
         // Validate and bound fitness to [0, 1]
         let fitness_metric =
             FitnessMetric::new(fitness_value).map_err(|_| {
-                ConformanceRefusal::unsound_net(
+                String::unsound_net(
                     "fitness calculation produced invalid metric".to_string(),
                 )
             })?;
@@ -901,10 +901,10 @@ impl AlignmentConformance {
         cases: &[(String, Vec<String>)],
     ) -> Result<
         Evidence<ConformanceVerdicts, Admitted, AlignmentWitness>,
-        ConformanceRefusal,
+        String,
     > {
         if cases.is_empty() {
-            return Err(ConformanceRefusal::empty_log());
+            return Err(String::empty_log());
         }
 
         let mut verdicts = ConformanceVerdicts::new();
@@ -924,7 +924,7 @@ impl AlignmentConformance {
                         }
                     } else {
                         ConformanceVerdict::NonConforming {
-                            reason: ConformanceRefusal::early_termination(0, 0, 0),
+                            reason: String::early_termination(0, 0, 0),
                         }
                     };
 
@@ -1236,7 +1236,7 @@ mod tests {
         assert!(!v3.admits());
 
         let v4 = ConformanceVerdict::NonConforming {
-            reason: ConformanceRefusal::unknown_activity("unknown_activity".to_string(), vec![]),
+            reason: String::unknown_activity("unknown_activity".to_string(), vec![]),
         };
         assert_eq!(v4.fitness_score(), 0.0);
         assert!(!v4.admits());

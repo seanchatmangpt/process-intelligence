@@ -1,8 +1,8 @@
 // Zero-Copy OCEL 2.0 Binary Parser and Index Traversal Spec
 
-use crate::refusal::OcelRefusalLaw;
+use crate::refusal::StringLaw;
 
-/// Backward-compatible wrapper for OcelRefusalLaw
+/// Backward-compatible wrapper for StringLaw
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OcelError {
     InvalidMagic,
@@ -17,18 +17,18 @@ pub enum OcelError {
     UnknownObjectType,
 }
 
-impl From<OcelRefusalLaw> for OcelError {
-    fn from(law: OcelRefusalLaw) -> Self {
+impl From<StringLaw> for OcelError {
+    fn from(law: StringLaw) -> Self {
         match law {
-            OcelRefusalLaw::InvalidMagic { .. } => OcelError::InvalidMagic,
-            OcelRefusalLaw::InvalidVersion { .. } => OcelError::InvalidVersion,
-            OcelRefusalLaw::OutOfBounds { .. } => OcelError::OutOfBounds,
-            OcelRefusalLaw::Utf8Error { .. } => OcelError::Utf8Error,
-            OcelRefusalLaw::NullPointer { .. } => OcelError::NullPointer,
-            OcelRefusalLaw::DanglingReference { .. } => OcelError::DanglingReference,
-            OcelRefusalLaw::CycleDetected { .. } => OcelError::CycleDetected,
-            OcelRefusalLaw::TemporalAnomaly { .. } => OcelError::TemporalAnomaly,
-            OcelRefusalLaw::UnknownObjectType { .. } => OcelError::UnknownObjectType,
+            StringLaw::InvalidMagic { .. } => OcelError::InvalidMagic,
+            StringLaw::InvalidVersion { .. } => OcelError::InvalidVersion,
+            StringLaw::OutOfBounds { .. } => OcelError::OutOfBounds,
+            StringLaw::Utf8Error { .. } => OcelError::Utf8Error,
+            StringLaw::NullPointer { .. } => OcelError::NullPointer,
+            StringLaw::DanglingReference { .. } => OcelError::DanglingReference,
+            StringLaw::CycleDetected { .. } => OcelError::CycleDetected,
+            StringLaw::TemporalAnomaly { .. } => OcelError::TemporalAnomaly,
+            StringLaw::UnknownObjectType { .. } => OcelError::UnknownObjectType,
         }
     }
 }

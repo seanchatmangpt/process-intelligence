@@ -31,6 +31,15 @@ The product is CodeManufactory; RevOps is merely proof that CodeManufactory work
 
 ---
 
+## CASTLE Capability Intake
+
+`tools/castle_capability_intake.py` (6a5d6a2/03f6e05, 2026-09-29) is a descriptive, side-effect-free
+registry binding the `ash_ex4pm` donor (`ASH_PROCESS_PROJECTION` @ `64a2150`, disposition WRAP,
+runtime placement ASH_ADAPTER) to `PROCESS_ANALYTICS` at authority ceiling `CONSTRUCT`; standing
+`CANDIDATE` per `ecosystem/castle-capability-intake.ttl`. It grants no process-execution authority.
+
+---
+
 ## Research Phases Overview
 
 ### Phase 0: Foundation and Doctrine Lock

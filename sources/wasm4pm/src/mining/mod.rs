@@ -128,7 +128,7 @@ impl SerializeBytes for ProcessTree {
 
 /// Directly-Follows Graph: lightweight representation for conformance baseline.
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct DirectlyFollowsGraph {
+pub struct DFG {
     /// Activity nodes
     pub activities: Vec<String>,
     /// Edges: (source_activity, target_activity, frequency)
@@ -137,7 +137,7 @@ pub struct DirectlyFollowsGraph {
     pub variants: Vec<(Vec<String>, u32)>,
 }
 
-impl SerializeBytes for DirectlyFollowsGraph {
+impl SerializeBytes for DFG {
     fn serialize_bytes(&self, buf: &mut Vec<u8>) {
         buf.extend_from_slice(&(self.activities.len() as u64).to_le_bytes());
         for a in &self.activities {
@@ -172,7 +172,7 @@ pub enum ProcessModel {
     /// Process tree from Inductive mining
     Tree(ProcessTree),
     /// Directly-follows graph (baseline conformance)
-    DFG(DirectlyFollowsGraph),
+    DFG(DFG),
 }
 
 impl SerializeBytes for ProcessModel {
@@ -1271,7 +1271,7 @@ pub fn dfg_mining(
     }
 
     let edge_count = edges.len();
-    let dfg = DirectlyFollowsGraph {
+    let dfg = DFG {
         activities,
         edges,
         variants: variants.clone(),

@@ -946,8 +946,8 @@ impl ComplianceAuditor {
             ComplianceAuditor::check_evidence_usage(&mut result, content);
         }
 
-        // Check 4: WfNetConst soundness must be explicitly witnessed
-        if content.contains("WfNetConst") {
+        // Check 4: PetriNetConst soundness must be explicitly witnessed
+        if content.contains("PetriNetConst") {
             ComplianceAuditor::check_soundness_witnessing(&mut result, content);
         }
 
@@ -999,14 +999,14 @@ impl ComplianceAuditor {
         }
     }
 
-    /// Check WfNet soundness witnessing
+    /// Check PetriNet soundness witnessing
     fn check_soundness_witnessing(result: &mut AuditResult, content: &str) {
         if content.contains("SoundnessState::Witnessed") && !content.contains("witness_soundness") {
             result.add_finding(AuditFinding {
                 level: AuditLevel::Error,
                 code: "UNWITNESSED_SOUNDNESS".to_string(),
                 message: "Witnessed soundness must be obtained via witness_soundness(proof)".to_string(),
-                location: "WfNetConst usage".to_string(),
+                location: "PetriNetConst usage".to_string(),
             });
         }
     }

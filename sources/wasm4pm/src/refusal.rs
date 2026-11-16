@@ -15,7 +15,7 @@ use std::fmt;
 
 /// Reasons a conformance check may be refused — named law hierarchy.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ConformanceRefusalLaw {
+pub enum StringLaw {
     /// Event log is empty — no cases to replay
     EmptyLog,
     /// Petri Net has no transitions — cannot fire
@@ -47,7 +47,7 @@ pub enum ConformanceRefusalLaw {
     },
 }
 
-impl fmt::Display for ConformanceRefusalLaw {
+impl fmt::Display for StringLaw {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::EmptyLog => write!(f, "EmptyLog"),
@@ -76,7 +76,7 @@ impl fmt::Display for ConformanceRefusalLaw {
     }
 }
 
-impl SerializeBytes for ConformanceRefusalLaw {
+impl SerializeBytes for StringLaw {
     fn serialize_bytes(&self, buf: &mut Vec<u8>) {
         match self {
             Self::EmptyLog => buf.push(1u8),
@@ -129,7 +129,7 @@ impl SerializeBytes for ConformanceRefusalLaw {
 
 /// Reasons an OCEL parse may be refused.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum OcelRefusalLaw {
+pub enum StringLaw {
     /// Magic number mismatch — not a valid OCEL file
     InvalidMagic { found: u32, expected: u32 },
     /// Version not supported
@@ -164,7 +164,7 @@ pub enum OcelRefusalLaw {
     UnknownObjectType { object_type: String },
 }
 
-impl fmt::Display for OcelRefusalLaw {
+impl fmt::Display for StringLaw {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::InvalidMagic { found, expected } => {
@@ -200,7 +200,7 @@ impl fmt::Display for OcelRefusalLaw {
     }
 }
 
-impl SerializeBytes for OcelRefusalLaw {
+impl SerializeBytes for StringLaw {
     fn serialize_bytes(&self, buf: &mut Vec<u8>) {
         match self {
             Self::InvalidMagic { found, expected } => {
@@ -354,7 +354,7 @@ mod tests {
 
     #[test]
     fn test_conformance_empty_log_refusal() {
-        let law = ConformanceRefusalLaw::EmptyLog;
+        let law = StringLaw::EmptyLog;
         assert_eq!(law.to_string(), "EmptyLog");
 
         let mut buf = Vec::new();
@@ -364,7 +364,7 @@ mod tests {
 
     #[test]
     fn test_conformance_unknown_activity_refusal() {
-        let law = ConformanceRefusalLaw::UnknownActivity {
+        let law = StringLaw::UnknownActivity {
             activity_name: "BadActivity".to_string(),
             available_transitions: vec!["Task1".to_string(), "Task2".to_string()],
         };
@@ -380,7 +380,7 @@ mod tests {
 
     #[test]
     fn test_conformance_early_termination_refusal() {
-        let law = ConformanceRefusalLaw::EarlyTermination {
+        let law = StringLaw::EarlyTermination {
             at_event: 5,
             total_events: 10,
             missing_tokens: 3,
@@ -397,7 +397,7 @@ mod tests {
 
     #[test]
     fn test_conformance_state_space_exceeded_refusal() {
-        let law = ConformanceRefusalLaw::StateSpaceExceeded {
+        let law = StringLaw::StateSpaceExceeded {
             threshold: 5000,
             current_size: 5001,
         };
@@ -409,7 +409,7 @@ mod tests {
 
     #[test]
     fn test_ocel_invalid_magic_refusal() {
-        let law = OcelRefusalLaw::InvalidMagic {
+        let law = StringLaw::InvalidMagic {
             found: 0xDEADBEEF,
             expected: 0x4F43454C,
         };
@@ -424,7 +424,7 @@ mod tests {
 
     #[test]
     fn test_ocel_dangling_reference_refusal() {
-        let law = OcelRefusalLaw::DanglingReference {
+        let law = StringLaw::DanglingReference {
             ref_type: "event".to_string(),
             ref_id: 999,
             max_valid_id: 100,
@@ -438,7 +438,7 @@ mod tests {
 
     #[test]
     fn test_ocel_cycle_detected_refusal() {
-        let law = OcelRefusalLaw::CycleDetected {
+        let law = StringLaw::CycleDetected {
             cycle_origin: 1,
             cycle_members: vec![1, 2, 3, 1],
         };
@@ -450,7 +450,7 @@ mod tests {
 
     #[test]
     fn test_ocel_temporal_anomaly_refusal() {
-        let law = OcelRefusalLaw::TemporalAnomaly {
+        let law = StringLaw::TemporalAnomaly {
             event_id: 42,
             timestamp_ns: 1000000,
             causality_violation_with: 43,
